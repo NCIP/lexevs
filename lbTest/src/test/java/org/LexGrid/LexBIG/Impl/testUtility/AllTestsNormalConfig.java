@@ -382,6 +382,9 @@ public class AllTestsNormalConfig {
         //ConceptDomain tests
         mainSuite.addTestSuite(org.LexGrid.conceptdomain.LexEVSConceptDomainServicesTest.class);
 
+        //LexGrid XML Exporter tests
+        mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
+        
         // $JUnit-END$
 
         return mainSuite;
