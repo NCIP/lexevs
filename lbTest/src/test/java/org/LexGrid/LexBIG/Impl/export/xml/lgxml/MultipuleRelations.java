@@ -37,36 +37,20 @@ public class MultipuleRelations extends TestCase {
     };    
     
     private final String[] block2 = {
-    "<lgRel:associationPredicate associationName=\"SUB\">",
         "<lgRel:source",
             "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
             "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
             "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
             "<lgRel:target targetEntityCode=\"3\" targetEntityCodeNamespace=\"colors\"/>",
-        "</lgRel:source>",
-        "<lgRel:source",
-            "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-            "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
-            "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
-            "<lgRel:target targetEntityCode=\"4\" targetEntityCodeNamespace=\"colors\"/>",
-        "</lgRel:source>",
-    "</lgRel:associationPredicate>"};
+        "</lgRel:source>"};
 
     private final String[] block3 = {
-            "<lgRel:associationPredicate associationName=\"SUB\">",
                 "<lgRel:source",
                     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
                     "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
                     "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
                     "<lgRel:target targetEntityCode=\"5\" targetEntityCodeNamespace=\"colors\"/>",
-                "</lgRel:source>",
-                "<lgRel:source",
-                    "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                    "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
-                    "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
-                    "<lgRel:target targetEntityCode=\"6\" targetEntityCodeNamespace=\"colors\"/>",
-                "</lgRel:source>",
-            "</lgRel:associationPredicate>"};
+                "</lgRel:source>"};
     
     private final String[] block4 = {"<lgCS:relations containerName=\"colorsRelation\">"};
     private final String[] block5 = {"<lgCS:relations containerName=\"newRelation\">"};
