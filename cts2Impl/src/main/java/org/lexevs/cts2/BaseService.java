@@ -91,6 +91,25 @@ public abstract class BaseService {
     	return exporterNames;
     }
     
+    public ExtensionDescriptionList getSupportedFilters() throws LBException{
+    	ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+    	if (extensionRegistry != null)
+    		return extensionRegistry.getFilterExtensions();
+    	
+    	return null;
+    }
+    
+    public List<String> getSupportedFilterNames() throws LBException{
+    	List<String> filterNames = new ArrayList<String>();
+    	ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+    	if (extensionRegistry != null && extensionRegistry.getFilterExtensions() != null)
+    	{
+    		for (ExtensionDescription ed : extensionRegistry.getFilterExtensions().getExtensionDescription())
+    			filterNames.add(ed.getName());
+    	}
+    	return filterNames;
+    }
+    
     public LexBIGServiceManager getLexBIGServiceManager() throws LBException{
 		if (lbsm_ == null)
 			lbsm_ = getLexBIGService().getServiceManager(null);
@@ -104,5 +123,7 @@ public abstract class BaseService {
 		
 		return lbs_;
 	}   
+    
+    
     
 }

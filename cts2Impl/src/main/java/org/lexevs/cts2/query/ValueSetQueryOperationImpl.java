@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.LexEvsCTS2;
@@ -124,7 +125,7 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 			throw new LBException("Invalid parameters. valueSetId can not be empty");
 		ValueSetDefinition vsd = null;
 		try {
-			vsd = getValueSetService().getValueSetDefinition(new URI(valueSetId));
+			vsd = getValueSetService().getValueSetDefinition(new URI(valueSetId), valueSetVersion);
 		} catch (URISyntaxException e) {
 			throw new LBException("Problem processing Value Set Query Operation : ", e);
 		}
@@ -222,11 +223,13 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 		return true;
 	}
 	
-	private boolean validateValueSet(String vsID, String vsVersion){
+	private boolean validateValueSet(String vsID, String vsVersion) throws LBRevisionException{
 		ValueSetDefinition vsd = null;
 		try {
-			vsd = databaseServiceManager_.getValueSetDefinitionService().
-				getValueSetDefinitionByUri(new URI(vsID));
+			if (StringUtils.isNotEmpty(vsVersion))
+				vsd = vsdDBService_.getValueSetDefinitionByRevision(vsID, vsVersion);
+			else
+				vsd = vsdDBService_.getValueSetDefinitionByUri(new URI(vsID));
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

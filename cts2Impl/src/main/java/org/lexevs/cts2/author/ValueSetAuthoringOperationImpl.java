@@ -62,6 +62,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.removeAllDefinitionEntry();
 		vsd.removeAllRepresentsRealmOrContext();
 		vsd.removeAllSource();
+		vsd.setProperties(null);
 		
 		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
 		
@@ -245,6 +246,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.removeAllDefinitionEntry();
 		vsd.removeAllRepresentsRealmOrContext();
 		vsd.removeAllSource();
+		vsd.setProperties(null);
 		
 		// setup entry state for vsd
 		vsd.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
@@ -499,6 +501,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.removeAllDefinitionEntry();
 		vsd.removeAllRepresentsRealmOrContext();
 		vsd.removeAllSource();
+		vsd.setProperties(null);
 		
 		// setup entry state for vsd
 		String prevRevisionId = vsd.getEntryState() != null?vsd.getEntryState().getContainingRevision():null;
