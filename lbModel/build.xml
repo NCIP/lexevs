@@ -166,8 +166,9 @@
 		<mkdir dir="${dist}"/> 
 			
 		<!-- Put everything in ${build} into .jar file -->
-		<jar jarfile="${dist}/lbModel.jar" basedir="${classes}">
-		</jar>
+		<jar jarfile="${dist}/lbModel.jar" basedir="${classes}"/>
+		<jar jarfile="${dist}/lbModel-sources.jar" basedir="${generated}"/>
+
 	</target>
 	
 	<target name="copyXSDs" depends="init, compile" description="Copies Loader Preferences XSDs to jar." >
@@ -235,7 +236,10 @@ public class]]></replacevalue>
 	</target>
 	
 	<target name="all" depends="init, clean, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs" description="all - init, clean, genCastorXML, compile, jar, docs">
-		<ivy:publish resolver="nci-chain" pubrevision="6.0.0-SNAPSHOT" overwrite="true">
+		<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}.pom">
+			<mapping conf="*" scope="compile"/>
+		</ivy:makepom>
+		<ivy:publish resolver="nci-chain" pubrevision="6.0.0-SNAPSHOT" forcedeliver="true" overwrite="true">
 			<artifacts pattern="${dist}/[artifact].[ext]" />
 		</ivy:publish>
 	</target>

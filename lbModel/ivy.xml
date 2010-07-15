@@ -9,6 +9,7 @@
 	
 	<publications>
 	    <artifact name="lbModel" type="jar"/>
+	    <artifact name="lbModel" type="pom"/>
 	</publications>
     <dependencies>
     	<dependency org="lexevs" name="lgModel" rev="6.0.0-SNAPSHOT"/>	
