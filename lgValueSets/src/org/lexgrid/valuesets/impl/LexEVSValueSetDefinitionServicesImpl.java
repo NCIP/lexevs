@@ -270,17 +270,24 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getCodedNodeSetForValueSetDefinition(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getCodedNodeSetForValueSetDefinition(java.net.URI, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
 	 */
 	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
-            URI valueSetDefinitionURI,
+            URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
             AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String versionTag) throws LBException {
         getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
+        if (valueSetDefinitionURI == null)
+        	throw new LBException("Value Set Definition URI can not be empty");
         
         ResolvedValueSetCodedNodeSet domainNodes = null;
+        ValueSetDefinition vdDef = null;
         
-        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);  
+        if (StringUtils.isNotEmpty(valueSetDefinitionRevisionId))
+        	vdDef = this.vsds_.getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
+        else
+        	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        
         if(vdDef != null) {
             domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
             if (domainNodes != null && domainNodes.getCodedNodeSet() != null)
@@ -291,17 +298,25 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.SortOptionList)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#resolveValueSetDefinition(java.net.URI, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.SortOptionList)
 	 */
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
-			URI valueSetDefinitionURI,
+			URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
 			String versionTag, SortOptionList sortOptionList) throws LBException {
 		getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
         
- 
-        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);  
+		if (valueSetDefinitionURI == null)
+        	throw new LBException("Value Set Definition URI can not be empty");
+        
+        ValueSetDefinition vdDef = null;
+        
+        if (StringUtils.isNotEmpty(valueSetDefinitionRevisionId))
+        	vdDef = this.vsds_.getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
+        else
+        	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        
         if(vdDef != null) {
             ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
             
@@ -333,7 +348,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 */
 	@Override
 	public ResolvedValueSetDefinition resolveValueSetDefinition(
-			ValueSetDefinition vsDef,
+			ValueSetDefinition vsDef,  
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
 			String versionTag, SortOptionList sortOptionList) throws LBException {
 		getLogger().logMethod(new Object[] { vsDef, csVersionList, versionTag });

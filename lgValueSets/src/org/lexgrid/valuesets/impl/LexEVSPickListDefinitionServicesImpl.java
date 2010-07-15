@@ -498,7 +498,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         	sortCriteria = Constructors.createSortOptionList(new String[] { "entityDescription" });
         
         try {
-            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), csVersionList, versionTag, sortCriteria);
+            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), null, csVersionList, versionTag, sortCriteria);
         } catch (URISyntaxException e) {
             throw new LBException("Problem with ValueSet URI", e);
         }

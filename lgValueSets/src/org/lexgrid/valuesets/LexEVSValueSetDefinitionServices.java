@@ -111,6 +111,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * Returns unresolved CodedNodeSet populated using definition entries in the value set definition.
 	 *   
 	 * @param valueSetDefinitionURI - the URI of the value set definition
+	 * @param valueSetDefintionRevisionId - the version of the value set definition
 	 * @param csVersionList - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
 	 *                               the service.  If absent, the most recent version will be used instead.
 	 * @param csVersionTag - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
@@ -119,7 +120,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @throws LBException
 	 */
 	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
-            URI valueSetDefinitionURI,
+            URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
             AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String csVersionTag) throws LBException;
 	/**
@@ -127,6 +128,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 
 	 * @param valueSetDefinitionURI
 	 * 			  value set definition URI
+	 * @param valueSetDefintionRevisionId - the version of the value set definition
 	 * @param csVersionList
 	 *            list of coding scheme versions to use in resolution. IF the
 	 *            value set definition uses a version that isn't mentioned in this list,
@@ -146,7 +148,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @return Resolved Value Set Definition
 	 * @throws LBException
 	 */
-	public ResolvedValueSetDefinition resolveValueSetDefinition(URI valueSetDefinitionURI,
+	public ResolvedValueSetDefinition resolveValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag, SortOptionList sortOptionList) throws LBException;
 	
 	/**
@@ -173,7 +175,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @return Resolved Value Domain Definition
 	 * @throws LBException
 	 */
-	public ResolvedValueSetDefinition resolveValueSetDefinition(ValueSetDefinition vsDef,
+	public ResolvedValueSetDefinition resolveValueSetDefinition(ValueSetDefinition vsDef, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag, SortOptionList sortOptionList) throws LBException;
 
 	/**
