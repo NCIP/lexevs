@@ -237,7 +237,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         String entityCodeNamespaceString = entityCodeNamespace != null && !StringUtils.isEmpty(entityCodeNamespace.toString())? entityCodeNamespace.toString() : null;
         ValueSetDefinition vdDef = null;
         
-        if (StringUtils.isNotEmpty(valueSetDefinitionRevisionId))
+        if (StringUtils.isEmpty(valueSetDefinitionRevisionId))
         {
         	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
         }
@@ -410,11 +410,19 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 
     /*
      * (non-Javadoc)
-     * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinition(java.net.URI)
+     * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinition(java.net.URI, java.lang.String)
      */
-    public ValueSetDefinition getValueSetDefinition(URI valueDomainURI) throws LBException {
-        getLogger().logMethod(new Object[] { valueDomainURI });
-        return this.vsds_.getValueSetDefinitionByUri(valueDomainURI);
+    public ValueSetDefinition getValueSetDefinition(URI valueSetDefURI, String valueSetRevisionId) throws LBException {
+        getLogger().logMethod(new Object[] { valueSetDefURI });
+        if (valueSetDefURI == null)
+        	throw new LBException("Value Set Definition URI can not be null");
+        ValueSetDefinition vsd = null;
+        if (StringUtils.isNotEmpty(valueSetRevisionId))
+        	vsd = this.vsds_.getValueSetDefinitionByRevision(valueSetDefURI.toString(), valueSetRevisionId);
+        else
+        	vsd = this.vsds_.getValueSetDefinitionByUri(valueSetDefURI);
+        
+        return vsd;
     }
     
     /*

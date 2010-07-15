@@ -202,10 +202,12 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 
 	 * @param valueSetDefinitionURI
 	 * 			value set definition URI
+	 * @param valueSetDefintionRevisionId 
+	 * 			the version of the value set definition
 	 * @return value set definition
 	 * @throws LBException
 	 */
-	public ValueSetDefinition getValueSetDefinition(URI valueSetDefinitionURI) throws LBException;
+	public ValueSetDefinition getValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId) throws LBException;
 	
 	/**
 	 * Export value set definition to LexGrid cononical XML format.
