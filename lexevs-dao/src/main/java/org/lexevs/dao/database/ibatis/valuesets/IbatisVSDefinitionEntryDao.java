@@ -1,12 +1,12 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
@@ -46,7 +46,7 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 	
 	private static String GET_DEFINITION_ENTRY_BY_UID_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryByUId";
 	
-	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_DEFINITIONENTRY_SQL = VSDEFINITIONENTRY_NAMESPACE + "getPrevRevIdFromGivenRevIdForDefinitionEntry";
+//	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_DEFINITIONENTRY_SQL = VSDEFINITIONENTRY_NAMESPACE + "getPrevRevIdFromGivenRevIdForDefinitionEntry";
 
 	private static String GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL = VSDEFINITIONENTRY_NAMESPACE + "getDefinitionEntryHistoryByRevision";
 	
@@ -256,8 +256,6 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 		String vsdEntryUId = this.getDefinitionEntryUId(valueSetDefURI,
 				ruleOrder);
 
-		String tempRevId = revisionId;
-
 		if (vsdEntryUId == null) {
 			throw new LBRevisionException(
 					"Definition entry "
@@ -276,51 +274,13 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 		// then use getVSDefinitionEntryByUId to get the DefinitionEntry object
 		// and return.
 
-//		if (revisionId == null || definitionEntryRevisionId == null ) {
-//			return getVSDefinitionEntryByUId(vsdEntryUId);
-//		}
-		if (definitionEntryRevisionId == null ) {
+		if (StringUtils.isEmpty(revisionId) || StringUtils.isEmpty(definitionEntryRevisionId)) {
 			return getVSDefinitionEntryByUId(vsdEntryUId);
 		}
 
-		// 2. Get the earliest revisionId on which change was applied on given
-		// definition entry with reference given revisionId.
-
-		HashMap revisionIdMap = (HashMap) this
-				.getSqlMapClientTemplate()
-				.queryForMap(
-						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_DEFINITIONENTRY_SQL,
-						new PrefixedParameterTuple(prefix, vsdEntryUId,
-								revisionId), "revId", "revAppliedDate");
-
-//		if (revisionIdMap.isEmpty()) {
-//			revisionId = null;
-//		} else {
-//			revisionId = (String) revisionIdMap.keySet().toArray()[0];
-//			
-//			if( definitionEntryRevisionId.equals(revisionId) ) {
-//				this.getVSDefinitionEntryByUId(vsdEntryUId);
-//			}
-//		}
-
-//		// 3. Get the definition entry data from history.
-//		DefinitionEntry definitionEntry = null;
-//
-//		definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
-//				.queryForObject(
-//						GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL,
-//						new PrefixedParameterTuple(prefix, vsdEntryUId,
-//								revisionId));
-//
-//		// 4. If pick list entry is not in history, get it from base table.
-//		if (definitionEntry == null) {
-//
-//			definitionEntry = getVSDefinitionEntryByUId(vsdEntryUId);
-//		}
-
 		DefinitionEntry definitionEntry = null;
 
-		// 3. Check if the definition entry in base table is latest compared to the input revisionId
+		// 2. Check if the definition entry in base table is latest compared to the input revisionId
 		// if we get it in the base, we can just return it. Else will have to get it from history
 		
 		definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
@@ -329,7 +289,7 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 						new PrefixedParameterTuple(prefix, vsdEntryUId,
 								revisionId));
 
-		// 4. If the definition entry in base is applied after the revision in question, lets get it from history
+		// 3. If the definition entry in base is applied after the revision in question, lets get it from history
 		if (definitionEntry == null) {
 
 			definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()

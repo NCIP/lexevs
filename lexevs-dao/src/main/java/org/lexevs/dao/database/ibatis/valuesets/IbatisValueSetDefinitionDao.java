@@ -20,7 +20,6 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -148,9 +147,11 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	private static String GET_VALUESET_DEFINITION_LATEST_REVISION_ID_BY_UID = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionLatestRevisionIdByUId";
 	
-	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_VALUESETDEF_SQL = VALUESETDEFINITION_NAMESPACE + "getPrevRevisionIdFromGivenRevIdForValueSetDefinition";
+//	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_VALUESETDEF_SQL = VALUESETDEFINITION_NAMESPACE + "getPrevRevisionIdFromGivenRevIdForValueSetDefinition";
 	
-	private static String GET_VALUESET_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionMetaDataByRevision";
+	private static String GET_VALUESET_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionMetaDataHistoryByRevision";
+	
+	private static String GET_VALUESET_DEFINITION_METADATA_FROM_BASE_BY_REVISION_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionMetaDataByRevision";
 	
 	public static String GET_SOURCE_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getSourceListFromHistoryByParentEntryStateGuidandType";
 	
@@ -958,7 +959,6 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			String revisionId) throws LBRevisionException {
 		
 		String prefix = this.getPrefix();
-		String tempRevId = revisionId;
 		
 		String valueSetDefUId = this
 				.getGuidFromvalueSetDefinitionURI(valueSetDefURI);
@@ -978,39 +978,20 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the valueSetDefinition
 		// then use getValueSetDefinitionByURI to get the ValueSetDefinition object and return.
 		
-		if (revisionId == null || valueSetDefRevisionId == null ) {
+		if (StringUtils.isEmpty(revisionId) || StringUtils.isEmpty(valueSetDefRevisionId)) {
 			return this.getValueSetDefinitionByURI(valueSetDefURI);
 		}
 		
-		// 2. Get the earliest revisionId on which change was applied on given 
-		// valueset definition with reference to given revisionId.
-		
-		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
-				.queryForMap(
-						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_VALUESETDEF_SQL,
-						new PrefixedParameterTuple(prefix, valueSetDefURI,
-								revisionId), "revId", "revAppliedDate");
-		
-		if (revisionIdMap.isEmpty()) {
-			revisionId = null;
-		} else {
-			revisionId = (String) revisionIdMap.keySet().toArray()[0];
-
-			if (valueSetDefRevisionId.equals(revisionId)) {
-				return this.getValueSetDefinitionByURI(valueSetDefURI);
-			}
-		}
-			
-		// 3. Get the valueSet definition data from history.
 		ValueSetDefinition valueSetDefinition = null;
 		InsertValueSetDefinitionBean vsDefBean = null;
 			
+		// 2. Check if the value set definition metatdata in base table is latest compared to the input revisionId
+		// if we get it in the base, we can just return it. Else will have to get it from history
 		vsDefBean = (InsertValueSetDefinitionBean) this
-				.getSqlMapClientTemplate().queryForObject(
-						GET_VALUESET_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL,
-						new PrefixedParameterTuple(getPrefix(), valueSetDefURI,
-								revisionId));
-		
+			.getSqlMapClientTemplate().queryForObject(
+				GET_VALUESET_DEFINITION_METADATA_FROM_BASE_BY_REVISION_SQL,
+				new PrefixedParameterTuple(getPrefix(), valueSetDefURI,
+						revisionId));
 		if (vsDefBean != null) {
 			
 			valueSetDefinition = vsDefBean.getValueSetDefinition();
@@ -1019,9 +1000,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			List<Source> sourceList = this
 					.getSqlMapClientTemplate()
 					.queryForList(
-							GET_SOURCE_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+							GET_SOURCE_LIST_BY_PARENT_GUID_AND_TYPE_SQL,
 							new PrefixedParameterTuple(prefix, vsDefBean
-									.getEntryStateUId(),
+									.getUId(),
 									ReferenceType.VALUESETDEFINITION.name()));
 
 			if (sourceList != null)
@@ -1031,47 +1012,55 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			List<String> contextList = this
 					.getSqlMapClientTemplate()
 					.queryForList(
-							GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+							GET_CONTEXT_LIST_BY_PARENT_GUID_AND_TYPE_SQL,
 							new PrefixedParameterTuple(prefix, vsDefBean
-									.getEntryStateUId(),
+									.getUId(),
 									ReferenceType.VALUESETDEFINITION.name()));
 
 			if (contextList != null)
 				valueSetDefinition.setRepresentsRealmOrContext(contextList);
 		}
-		
-		// 4. If value set definition is not in history, get it from base table.
-		if (valueSetDefinition == null) {
-			InsertValueSetDefinitionBean valueSetDefBean = (InsertValueSetDefinitionBean) this
+
+		// 3. If thevalue set definition meta data in base is applied after the revision in question, lets get it from history
+		if (vsDefBean == null)
+		{
+			vsDefBean = (InsertValueSetDefinitionBean) this
 					.getSqlMapClientTemplate().queryForObject(
-							GET_VALUESET_DEFINITION_METADATA_BY_UID_SQL,
-							new PrefixedParameterTuple(prefix, valueSetDefUId,
+							GET_VALUESET_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL,
+							new PrefixedParameterTuple(getPrefix(), valueSetDefURI,
 									revisionId));
-
-			valueSetDefinition = valueSetDefBean.getValueSetDefinition();
-
-			for (InsertOrUpdateValueSetsMultiAttribBean multiAttrib : valueSetDefBean
-					.getVsMultiAttribList()) {
-
-				if (SQLTableConstants.TBLCOLVAL_SUPPTAG_SOURCE
-						.equals(multiAttrib.getAttributeType())) {
-					Source source = new Source();
-
-					source.setRole(multiAttrib.getRole());
-					source.setSubRef(multiAttrib.getSubRef());
-					source.setContent(multiAttrib.getAttributeValue());
-
-					valueSetDefinition.addSource(source);
-				} else if (SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT
-						.equals(multiAttrib.getAttributeType())) {
-
-					valueSetDefinition.addRepresentsRealmOrContext(multiAttrib
-							.getAttributeValue());
-				}
+		
+			if (vsDefBean != null) {
+				
+				valueSetDefinition = vsDefBean.getValueSetDefinition();
+				
+				// Get value set definition source
+				List<Source> sourceList = this
+						.getSqlMapClientTemplate()
+						.queryForList(
+								GET_SOURCE_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+								new PrefixedParameterTuple(prefix, vsDefBean
+										.getEntryStateUId(),
+										ReferenceType.VALUESETDEFINITION.name()));
+	
+				if (sourceList != null)
+					valueSetDefinition.setSource(sourceList);
+	
+				// Get value set definition context
+				List<String> contextList = this
+						.getSqlMapClientTemplate()
+						.queryForList(
+								GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
+								new PrefixedParameterTuple(prefix, vsDefBean
+										.getEntryStateUId(),
+										ReferenceType.VALUESETDEFINITION.name()));
+	
+				if (contextList != null)
+					valueSetDefinition.setRepresentsRealmOrContext(contextList);
 			}
 		}
 		
-		// 5. Get all definition entry nodes.
+		// 4. Get all definition entry nodes.
 		
 		List<String> definitionEntryRuleOrderList = this.getSqlMapClientTemplate().queryForList(
 				GET_DEFINITION_ENTRY_LIST_BY_VALUESET_DEFINITION_URI_SQL,
@@ -1092,7 +1081,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				valueSetDefinition.addDefinitionEntry(definitionEntry);
 		}
 		
-		// 6. Get all value set definition properties.
+		// 5. Get all value set definition properties.
 		
 		List<String> propertyList = this.getSqlMapClientTemplate().queryForList(
 				GET_VALUESET_DEF_PROPERTY_LIST_BY_VALUESET_DEFINITION_URI_SQL,
@@ -1109,7 +1098,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			} catch (LBRevisionException e) {
 				continue;
 			}
-			properties.addProperty(prop);
+			if (prop != null)
+				properties.addProperty(prop);
 		}
 		
 		valueSetDefinition.setProperties(properties);
