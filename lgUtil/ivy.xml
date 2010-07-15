@@ -7,6 +7,11 @@
   		<conf name="runtime" description="Run Time dependencies"/>
   		<conf name="sources" description="Source code"/>
 	</configurations>
+	
+	<publications>
+	    <artifact name="lgUtil" type="jar"/>
+	    <artifact name="lgUtil" type="pom"/>
+	</publications>
 
 	<dependencies>
 		<dependency org="lexevs" name="lbInterfaces" rev="6.0.0-SNAPSHOT"/>
