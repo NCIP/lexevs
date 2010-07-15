@@ -80,8 +80,8 @@ import edu.mayo.informatics.lexgrid.convert.formats.Option;
 public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefinitionServices {
 
 	// Associated service ...
-	private LexBIGService lbs_;
-	private VSDServiceHelper sh_;
+	private transient LexBIGService lbs_;
+	private transient VSDServiceHelper sh_;
 	protected MessageDirector md_;
 	protected LoadStatus status_;
 	private static final String name_ = "LexEVSValueSetDefinitionServicesImpl";
@@ -90,13 +90,8 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private static final String version_ = "2.0";
 	
 	private static LexEVSValueSetDefinitionServices valueSetService_ = null;
-	private ValueSetDefinitionService vsdDBService_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
-
-	private static final long serialVersionUID = 4995582014921448463L;
 	
-	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-	private ValueSetDefinitionService vsds_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
-
+	private static final long serialVersionUID = 4995582014921448463L;
 
 	/**
      * Returns a default singleton instance of the service.
@@ -164,7 +159,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		{
 			String uri = definition.getValueSetDefinitionURI();
 			md_.info("Loading value set definition : " + uri);
-			this.databaseServiceManager.getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
+			this.getDatabaseServiceManager().getValueSetDefinitionService().insertValueSetDefinition(definition, systemReleaseURI, mappings);
 			md_.info("Finished loading value set definition URI : " + uri);
 		}		
 	}
@@ -239,11 +234,11 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         
         if (StringUtils.isEmpty(valueSetDefinitionRevisionId))
         {
-        	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         }
         else
         {
-        	vdDef = this.vsdDBService_.getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
+        	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
         }
         
         if (vdDef != null) {
@@ -284,9 +279,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         ValueSetDefinition vdDef = null;
         
         if (StringUtils.isNotEmpty(valueSetDefinitionRevisionId))
-        	vdDef = this.vsds_.getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
+        	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
         else
-        	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         
         if(vdDef != null) {
             domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
@@ -313,9 +308,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         ValueSetDefinition vdDef = null;
         
         if (StringUtils.isNotEmpty(valueSetDefinitionRevisionId))
-        	vdDef = this.vsds_.getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
+        	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByRevision(valueSetDefinitionURI.toString(), valueSetDefinitionRevisionId);
         else
-        	vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         
         if(vdDef != null) {
             ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
@@ -391,13 +386,13 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         CodedNodeSet parentCNS = null;
         
         // populate ValueSetDefinitions for both child and parent value set definition
-        ValueSetDefinition childVDDef = this.vsds_.getValueSetDefinitionByUri(childValueSetDefinitionURI);
+        ValueSetDefinition childVDDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(childValueSetDefinitionURI);
         
         if(childVDDef == null) {
             md_.fatal("No Value set definition found for child domain URI : " + childValueSetDefinitionURI);
             throw new LBException("No Value set definition found for child domain URI : " + childValueSetDefinitionURI);
         }
-        ValueSetDefinition parentVDDef = this.vsds_.getValueSetDefinitionByUri(parentValueSetDefinitionURI);
+        ValueSetDefinition parentVDDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(parentValueSetDefinitionURI);
         if(parentVDDef == null) {
             md_.fatal("No Value set definition found for parent domain URI : " + parentValueSetDefinitionURI);
             throw new LBException("No Value set definition found for parent domain URI : " + parentValueSetDefinitionURI);
@@ -433,9 +428,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         	throw new LBException("Value Set Definition URI can not be null");
         ValueSetDefinition vsd = null;
         if (StringUtils.isNotEmpty(valueSetRevisionId))
-        	vsd = this.vsds_.getValueSetDefinitionByRevision(valueSetDefURI.toString(), valueSetRevisionId);
+        	vsd = this.getValueSetDefinitionService().getValueSetDefinitionByRevision(valueSetDefURI.toString(), valueSetRevisionId);
         else
-        	vsd = this.vsds_.getValueSetDefinitionByUri(valueSetDefURI);
+        	vsd = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefURI);
         
         return vsd;
     }
@@ -448,7 +443,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public List<String> listValueSetDefinitions(String valueSetDefinitionName)
 			throws LBException {
 		getLogger().logMethod(new Object[] { valueSetDefinitionName });
-        return this.vsds_.getValueSetDefinitionURISForName(valueSetDefinitionName);        
+        return this.getValueSetDefinitionService().getValueSetDefinitionURISForName(valueSetDefinitionName);        
     }
     
     /*
@@ -458,7 +453,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
     @Override
 	public List<String> listValueSetDefinitionURIs(){
 		getLogger().logMethod(new Object[]{});
-		return this.vsds_.listValueSetDefinitionURIs();
+		return this.getValueSetDefinitionService().listValueSetDefinitionURIs();
 	}
     
 	/*
@@ -468,7 +463,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	@Override
 	public List<String> getAllValueSetDefinitionsWithNoName() throws LBException {
 		getLogger().logMethod(new Object[]{});
-		return this.vsds_.getValueSetDefinitionURISForName(" ");
+		return this.getValueSetDefinitionService().getValueSetDefinitionURISForName(" ");
 	}
 	
 	/*
@@ -482,7 +477,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			String versionTag) throws LBException {
 		getLogger().logMethod(new Object[] { term, matchAlgorithm, valueSetDefinitionURI, csVersionList, versionTag });
         
-        ValueSetDefinition vdDef = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+        ValueSetDefinition vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         if (vdDef != null) {
             ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
             
@@ -523,7 +518,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		AbsoluteCodingSchemeVersionReferenceList csList = new AbsoluteCodingSchemeVersionReferenceList();
 		
 		// Get value set definition object for supplied uri.
-		ValueSetDefinition vd = this.vsds_.getValueSetDefinitionByUri(valueSetDefinitionURI);
+		ValueSetDefinition vd = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
 		
 		// Get a list of all the coding schemes in the domain
 		HashSet<String> vdURIs = getServiceHelper().getCodingSchemeURIs(vd);
@@ -579,7 +574,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		{
 			md_.info("removing value set definition : " + valueSetDefinitionURI);
 			SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
-			this.vsds_.removeValueSetDefinition(valueSetDefinitionURI.toString());
+			this.getValueSetDefinitionService().removeValueSetDefinition(valueSetDefinitionURI.toString());
 			service.removeValueSetDefinitionResourceFromSystem(valueSetDefinitionURI.toString(), null);
 			md_.info("DONE removing value set definition : " + valueSetDefinitionURI);
 		}
@@ -708,7 +703,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(
 			String supportedTag, String value) {
 		getLogger().logMethod(new Object[]{supportedTag, value});
-		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
+		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
 	}
 
 	/*
@@ -719,7 +714,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	public List<String> getValueSetDefinitionURIsWithCodingScheme(
 			String codingSchemename) {
 		getLogger().logMethod(new Object[]{codingSchemename});
-		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, codingSchemename);
+		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, codingSchemename);
 	}
 
 	/*
@@ -731,7 +726,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			String conceptDomain) {
 		getLogger().logMethod(new Object[]{conceptDomain});
 		
-		return this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain);
+		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain);
 	}
 	
 	@Override
@@ -743,7 +738,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		if (usageContexts != null)
 			for (String uc : usageContexts)
 			{
-				ucList.addAll(this.vsds_.getValueSetDefinitionURIForSupportedTagAndValue(
+				ucList.addAll(this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(
 											SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT, uc));
 			}
 		return new ArrayList<String>(ucList);
@@ -783,4 +778,13 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		
 		return vsdURIs;
 	}	
+	
+	private DatabaseServiceManager getDatabaseServiceManager() {
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+	}
+	
+	private ValueSetDefinitionService getValueSetDefinitionService() {
+		return this.getDatabaseServiceManager().getValueSetDefinitionService();
+	}
+
 }

@@ -1,5 +1,6 @@
 package org.lexgrid.conceptdomain;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
@@ -11,7 +12,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.concepts.Entity;
 
-public interface LexEVSConceptDomainServices {
+public interface LexEVSConceptDomainServices extends Serializable {
 	
 	/**
 	 * Gets the concept domain coding scheme.

@@ -62,12 +62,10 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  *@author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServices {
+
+	private static final long serialVersionUID = 6493716627706734222L;
 	
-	private CodingSchemeService csServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-	private EntityService entityServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-	private EntityIndexService eIdxServ_ = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
-	
-	private LexBIGService lbsvc_;
+	private transient LexBIGService lbsvc_;
 	private LexEVSValueSetDefinitionServices vsd_;
 	
 	private static LexEVSConceptDomainServices cdServ_;
@@ -241,7 +239,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 					null);
 				
 				// insert concept domain coding scheme into system
-				csServ_.insertCodingScheme(cs, null);
+				getCodingSchemeService().insertCodingScheme(cs, null);
 				
 				AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference(
 						ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
@@ -254,7 +252,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 					getLexBIGService().getServiceManager(null).setVersionTag(acsvr, csVT.getTag());
 				
 				// create empty Lucene entry for concept domain coding scheme
-				eIdxServ_.createIndex(acsvr);				
+				getEntityIndexService().createIndex(acsvr);				
 			}
 			else
 			{
@@ -263,11 +261,11 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		}
 		
 		// insert concept domain
-		entityServ_.insertEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
+		getDatabaseEntityService().insertEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
 				csVT.getVersion(), conceptDomain);
 		
 		// create lucene index for newly create concept domain
-		eIdxServ_.addEntityToIndex(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
+		getEntityIndexService().addEntityToIndex(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
 				csVT.getVersion(), conceptDomain);
 	}
 
@@ -283,7 +281,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			csVT = Constructors.createCodingSchemeVersionOrTag(null, 
 					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 		}
-		return entityServ_.getEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
+		return getDatabaseEntityService().getEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
 				csVT.getVersion(),
 				conceptDomainId, 
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME);
@@ -367,11 +365,13 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		if (entity != null)
 		{
 			// remove from database
-			entityServ_.removeEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
-				versionOrTag.getVersion(),
-				entity);
+			getDatabaseEntityService().
+					removeEntity(
+							ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
+							versionOrTag.getVersion(),
+							entity);
 			// remove from lucene index
-			eIdxServ_.deleteEntityFromIndex(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
+			getEntityIndexService().deleteEntityFromIndex(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
 				versionOrTag.getVersion(),
 				entity);
 		}
@@ -406,5 +406,17 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			vsd_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 		
 		return vsd_;
+	}
+	
+	private EntityService getDatabaseEntityService() {
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
+	}
+	
+	private CodingSchemeService getCodingSchemeService() {
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+	}
+	
+	private EntityIndexService getEntityIndexService() {
+		return LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
 	}
 }

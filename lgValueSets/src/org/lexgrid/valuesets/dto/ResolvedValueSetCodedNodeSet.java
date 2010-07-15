@@ -18,6 +18,8 @@
  */
 package org.lexgrid.valuesets.dto;
 
+import java.io.Serializable;
+
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
@@ -26,7 +28,9 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
  * and the coded node set.
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public class ResolvedValueSetCodedNodeSet {
+public class ResolvedValueSetCodedNodeSet implements Serializable {
+
+	private static final long serialVersionUID = -3146969083391859655L;
 
 	private AbsoluteCodingSchemeVersionReferenceList codingSchemeVersionRefList_;
 

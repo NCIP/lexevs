@@ -99,9 +99,9 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 */
 	private static final long serialVersionUID = 1L;
 	// Associated service ...
-	private LexBIGService lbs_;
-	private PickListDefinitionService pls_;
-	private VSDServiceHelper sh_;
+	private transient LexBIGService lbs_;
+	private transient PickListDefinitionService pls_;
+	private transient VSDServiceHelper sh_;
 	
 	protected MessageDirector md_;
 	protected LoadStatus status_;
@@ -111,8 +111,6 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	private static final String version_ = "2.0";
 	
 	private static LexEVSPickListDefinitionServices pickListService_ = null;
-	
-	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	
 	/**
      * Returns a default singleton instance of the service.
@@ -173,7 +171,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		{
 			String pickListId = pldef.getPickListId();
 			md_.info("Loading Pick List Definition with ID : " + pickListId);			
-			this.databaseServiceManager.getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
+			this.getDatabaseServiceManager().getPickListDefinitionService().insertPickListDefinition(pldef, systemReleaseURI != null ? systemReleaseURI.toString():null, mappings);
 			md_.info("Finished loading Pick list Definition ID : " + pickListId);
 		}
 	}
@@ -218,14 +216,14 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListDefinitionById(java.lang.String)
 	 */
 	public PickListDefinition getPickListDefinitionById(String pickListId) throws LBException{
-		return (PickListDefinition) this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
+		return (PickListDefinition) this.getDatabaseServiceManager().getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#listPickListIds()
 	 */
 	public List<String> listPickListIds() throws LBException {
-		return this.databaseServiceManager.getPickListDefinitionService().listPickListIds();
+		return this.getDatabaseServiceManager().getPickListDefinitionService().listPickListIds();
 	}	
 
 	/* (non-Javadoc)
@@ -250,7 +248,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListDefinitionsForValueSetDef(java.net.URI)
 	 */
 	public List<String> getPickListDefinitionIdForValueSetDefinitionUri(URI valueSetDefURI) throws LBException {
-		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForValueSetDefinitionUri(valueSetDefURI.toString());		
+		return this.getDatabaseServiceManager().getPickListDefinitionService().getPickListDefinitionIdForValueSetDefinitionUri(valueSetDefURI.toString());		
 	}
 	
 	/*
@@ -268,7 +266,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		{
 			CodedNodeSet cns = null;
 			ConceptReferenceList crList = new ConceptReferenceList();			
-			PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
+			PickListDefinition pickList = this.getDatabaseServiceManager().getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 			// Always add the default coding scheme, even if it isn't used
 			String defaultCS = null;
 		    if(!StringUtils.isEmpty(pickList.getDefaultEntityCodeNamespace()))
@@ -386,7 +384,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         List<String> excludeEntityCodes = new ArrayList<String>();
         Set<String> includedEntityCodes = new HashSet<String>();
         
-        PickListDefinition pickList = this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
+        PickListDefinition pickList = this.getDatabaseServiceManager().getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
 
         if (pickList != null)
         {
@@ -539,7 +537,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		{
 			md_.info("removing pick list definition : " + pickListId);
 			SystemResourceService service = LexEvsServiceLocator.getInstance().getSystemResourceService();
-			this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
+			this.getDatabaseServiceManager().getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
 			service.removePickListDefinitionResourceFromSystem(pickListId, null);
 			md_.info("DONE removing pick list definition : " + pickListId);
 		}
@@ -665,7 +663,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 
 	private PickListDefinitionService getPickListService() throws LBException {
 		if (pls_ == null)
-			pls_ = this.databaseServiceManager.getPickListDefinitionService();
+			pls_ = this.getDatabaseServiceManager().getPickListDefinitionService();
 		return pls_;
 	}
 	
@@ -727,7 +725,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	@Override
 	public List<String> getPickListIdsForSupportedTagAndValue(
 			String supportedTag, String value) {
-		return this.databaseServiceManager.getPickListDefinitionService().getPickListDefinitionIdForSupportedTagAndValue(supportedTag, value);
+		return this.getDatabaseServiceManager().getPickListDefinitionService().getPickListDefinitionIdForSupportedTagAndValue(supportedTag, value);
 	}
 	
 	/*
@@ -782,7 +780,12 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	public PickListDefinition resolvePickListByRevision(String pickListId,
 			String revisionId, Integer sortOrder ) throws LBRevisionException {
 
-		return this.databaseServiceManager.getPickListDefinitionService()
+		return this.getDatabaseServiceManager().getPickListDefinitionService()
 				.resolvePickListDefinitionByRevision(pickListId, revisionId, sortOrder);
 	}	
+	
+	
+	private DatabaseServiceManager getDatabaseServiceManager() {
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+	}
 }
