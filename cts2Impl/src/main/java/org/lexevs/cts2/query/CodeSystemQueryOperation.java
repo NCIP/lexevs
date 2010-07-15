@@ -17,11 +17,28 @@
  */
 package org.lexevs.cts2.query;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.relations.AssociationEntity;
+
 public interface CodeSystemQueryOperation {
-	public void listCodeSystems();
-	public void getCodeSystemDetails();
-	public void listCodeSystemConcepts();
-	public void getConceptDetails();
-	public void listAssociationTypes();
-	public void getAssociationTypeDetails();
+	public CodingSchemeRenderingList listCodeSystems(CodingSchemeSummary queryByExample);
+	
+	public void getCodeSystemDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag);
+	
+	public Iterator<ResolvedConceptReference> listCodeSystemConcepts(CodedNodeSet cns);
+	
+	public Entity getConceptDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String code, String namespace);
+	
+	public List<SupportedAssociation> listAssociationTypes();
+	
+	public AssociationEntity getAssociationTypeDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String associationName);
 }
