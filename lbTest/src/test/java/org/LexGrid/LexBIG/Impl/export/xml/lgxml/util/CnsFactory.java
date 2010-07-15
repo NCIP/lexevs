@@ -19,4 +19,9 @@ public class CnsFactory {
     public static CodedNodeSet createCnsAssociationsOnly(String urn, String ver) throws LBException {
         return null;
     }
+
+    public static CodedNodeSet crateCnsRestrictToAssociation(String urn, String ver) throws LBException {
+        return null;
+    }
+    
 }
