@@ -8,8 +8,6 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.CnsCngPair;
-
 public class CngFactory {
 	
     public static CodedNodeGraph createCngExportAll(String urn, String ver) throws LBException {
@@ -46,5 +44,9 @@ public class CngFactory {
 		}
         return cng;        
     }
+    
+    public static CodedNodeGraph createCngEntitiesOnly(String urn, String ver) throws LBException {
+        return null;
+    }    
     
 }
