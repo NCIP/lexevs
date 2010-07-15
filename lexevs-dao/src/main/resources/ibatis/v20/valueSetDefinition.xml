@@ -196,7 +196,7 @@
 		FROM
 			$prefix$vsdEntry vsdEntry
 		LEFT JOIN
-  			$prefix$vsentryState entryState
+  			$prefix$vsEntryState entryState
   		ON
   			vsdEntry.entryStateGuid =
   			entryState.entryStateGuid	
