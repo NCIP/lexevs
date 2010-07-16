@@ -24,7 +24,7 @@ import java.util.List;
 import org.LexGrid.commonTypes.Source;
 
 /**
- * A reference to a value domain definition.
+ * A reference to a value set definition.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @version $Revision$ $Date$
@@ -37,9 +37,9 @@ public class VSDSummary implements java.io.Serializable {
 	// --------------------------/
 
 	/**
-	 * The URI of the value domain
+	 * The URI of the value Set Definition
 	 */
-	private URI valueDomainURI_;
+	private URI valueSetDefinitionURI_;
 
 	private List<Source> source_;
 
@@ -47,18 +47,18 @@ public class VSDSummary implements java.io.Serializable {
 
 	private String defaultCodingScheme_;
 
-	private String valueDomainName_;
+	private String valueSetDefinitionName_;
 
 	public VSDSummary() {
 		super();
 	}
 
 	public URI getValueDomainURI() {
-		return valueDomainURI_;
+		return valueSetDefinitionURI_;
 	}
 
-	public void setValueDomainURI(URI valueDomainURI) {
-		this.valueDomainURI_ = valueDomainURI;
+	public void setValueSetDefinitionURI(URI valueSetDefinitionURI) {
+		this.valueSetDefinitionURI_ = valueSetDefinitionURI;
 	}
 
 	public List<Source> getSource() {
@@ -86,12 +86,12 @@ public class VSDSummary implements java.io.Serializable {
 		this.defaultCodingScheme_ = defaultCodingScheme;
 	}
 
-	public String getValueDomainName() {
-		return valueDomainName_;
+	public String getValueSetDefinitionName() {
+		return valueSetDefinitionName_;
 	}
 
-	public void setValueDomainName(String valueDomainName) {
-		this.valueDomainName_ = valueDomainName;
+	public void setValueSetDefinitionName(String valueSetDefinitionName) {
+		this.valueSetDefinitionName_ = valueSetDefinitionName;
 	}
 
 	// -----------/
