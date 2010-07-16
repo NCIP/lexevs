@@ -40,21 +40,15 @@
 		<result property="entryStateUId" column="esGuid" />
 	</resultMap>
 	
-<!--	<select id="getPropertyMultiAttribById" -->
-<!--		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"-->
-<!--		resultMap="Property.multiAttribResult">-->
-<!--		SELECT -->
-<!--			attributeType,-->
-<!--			attributeValue,-->
-<!--			subRef,-->
-<!--			role-->
-<!--		FROM -->
-<!--			$prefix$propertyMultiAttrib-->
-<!--		WHERE-->
-<!--			propertyGuid = #param1#	-->
-<!--		AND-->
-<!--			attributeType = #param2#	-->
-<!--	</select>-->
+	<delete id="deletePropertyMultiAttribByPropertyId" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM 
+			$prefix$propertyMultiAttrib
+		WHERE
+			propertyGuid = #param1#	
+		AND
+			attributeType = #param2#	
+	</delete>
 
 	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
 		INSERT INTO $prefix$propertyMultiAttrib (

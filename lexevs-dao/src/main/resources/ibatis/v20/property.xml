@@ -33,7 +33,7 @@
 		</discriminator>	
 	</resultMap>
 	
-	<resultMap id="propertyAttributes" class="insertOrUpdatePropertyBean">
+	<resultMap id="propertyAttributes" class="insertOrUpdatePropertyBean" groupBy="uid">
 		<result property="uid" column="propertyGuid" />
 		<result property="parentUId" column="referenceGuid" />
 		<result property="parentType" column="referenceType" />
