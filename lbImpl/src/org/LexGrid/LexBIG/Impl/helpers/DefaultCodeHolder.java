@@ -44,6 +44,10 @@ public class DefaultCodeHolder implements AdditiveCodeHolder, Serializable {
     public boolean wereScoresCollected() {
         return this.collectedScores_;
     }
+    
+    public DefaultCodeHolder(List<CodeToReturn> codes) {
+        codes_ = codes;
+    }
 
     public DefaultCodeHolder() {
         codes_ = new ArrayList<CodeToReturn>();
@@ -120,4 +124,9 @@ public class DefaultCodeHolder implements AdditiveCodeHolder, Serializable {
     public int getNumberOfCodes(){
         return this.codes_.size();
     }
+
+    @Override
+    public CodeHolder clone() throws CloneNotSupportedException {
+        return new DefaultCodeHolder(new ArrayList<CodeToReturn>(this.codes_));
+    } 
 }

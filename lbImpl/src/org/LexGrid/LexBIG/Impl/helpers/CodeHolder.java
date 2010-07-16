@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodeHolder extends Serializable {
+public interface CodeHolder extends Serializable, Cloneable {
     
     /**
      * Difference.
@@ -78,4 +78,6 @@ public interface CodeHolder extends Serializable {
      * @return the number of codes
      */
     public int getNumberOfCodes();
+    
+    public CodeHolder clone() throws CloneNotSupportedException;
 }

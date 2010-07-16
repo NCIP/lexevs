@@ -75,7 +75,11 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
 
     public ResolvedConceptReferencesIteratorImpl(CodeHolder codes, LocalNameList restrictToProperties,
             PropertyType[] restrictToPropertyTypes, Filter[] filters, boolean resolveEntities) {
-        codesToReturn_ = codes;
+        try {
+            codesToReturn_ = codes.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
         filters_ = filters;
         lastRead_ = System.currentTimeMillis();
         restrictToProperties_ = restrictToProperties;
