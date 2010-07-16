@@ -318,12 +318,12 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             // Assemble the reply
             ResolvedValueSetDefinition rvddef = new ResolvedValueSetDefinition();
             try {
-                rvddef.setValueDomainURI(new URI(vdDef.getValueSetDefinitionURI()));
+                rvddef.setValueSetDefinitionURI(new URI(vdDef.getValueSetDefinitionURI()));
             } catch (URISyntaxException e) {
                 md_.fatal("Value Set Definition URI is not a valid URI : " + vdDef.getValueSetDefinitionURI());
                 throw new LBException("Value Set Definition URI is not a valid URI : " + vdDef.getValueSetDefinitionURI());
             }
-            rvddef.setValueDomainName(vdDef.getValueSetDefinitionName());
+            rvddef.setValueSetDefinitionName(vdDef.getValueSetDefinitionName());
             rvddef.setDefaultCodingScheme(vdDef.getDefaultCodingScheme());
             rvddef.setRepresentsRealmOrContext(vdDef.getRepresentsRealmOrContextAsReference());
             rvddef.setSource(vdDef.getSourceAsReference());
@@ -354,12 +354,12 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             // Assemble the reply
             ResolvedValueSetDefinition rvddef = new ResolvedValueSetDefinition();
             try {
-                rvddef.setValueDomainURI(new URI(vsDef.getValueSetDefinitionURI()));
+                rvddef.setValueSetDefinitionURI(new URI(vsDef.getValueSetDefinitionURI()));
             } catch (URISyntaxException e) {
                 md_.fatal("Value Set Definition URI is not a valid URI : " + vsDef.getValueSetDefinitionURI());
                 throw new LBException("Value Set Definition URI is not a valid URI : " + vsDef.getValueSetDefinitionURI());
             }
-            rvddef.setValueDomainName(vsDef.getValueSetDefinitionName());
+            rvddef.setValueSetDefinitionName(vsDef.getValueSetDefinitionName());
             rvddef.setDefaultCodingScheme(vsDef.getDefaultCodingScheme());
             rvddef.setRepresentsRealmOrContext(vsDef.getRepresentsRealmOrContextAsReference());
             rvddef.setSource(vsDef.getSourceAsReference());
