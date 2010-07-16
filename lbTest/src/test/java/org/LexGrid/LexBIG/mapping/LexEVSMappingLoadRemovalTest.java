@@ -33,8 +33,8 @@ public class LexEVSMappingLoadRemovalTest extends TestCase {
 	public void testMappingRemoval()throws LBException {
 	
 				AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
-				scheme.setCodingSchemeURN("http://default.mapping.container");
-				scheme.setCodingSchemeVersion("1.0");
+				scheme.setCodingSchemeURN("urn:oid:11.11.0.2");
+				scheme.setCodingSchemeVersion("2.0");
 				lbsm.deactivateCodingSchemeVersion(scheme, null);
 				lbsm.removeCodingSchemeVersion(scheme);
 	

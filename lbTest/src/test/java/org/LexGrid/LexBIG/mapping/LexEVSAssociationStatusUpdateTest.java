@@ -57,7 +57,6 @@ public class LexEVSAssociationStatusUpdateTest extends TestCase {
 		revision.setRevisionDate(revisionDate);
 		EntryState entryState = new EntryState();
 		entryState.setContainingRevision("Mayo_Status_Revision");
-		entryState.setPrevRevision("Should_not_be_set");
 		entryState.setRelativeOrder(new Long(0));
 
 		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
