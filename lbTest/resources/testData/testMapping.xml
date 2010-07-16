@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codingScheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  https://ncisvn.nci.nih.gov/svn/lexevs/base/v6/trunk/lexgrid_model/lgModel/master/codingSchemes.xsd" 
+  xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+  xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+  xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+  xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" 
+  xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations" 
+  xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" 
+  xmlns:lgLDAP="http://LexGrid.org/schema/2010/01/LexGrid/ldap" 
+  xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" 
+  xmlns:lgService="http://LexGrid.org/schema/2010/01/LexGrid/service" 
+  xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains" 
+  xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" 
+  xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" 
+  approxNumConcepts="0" codingSchemeName="Mapping Sample" defaultLanguage="en" formalName="MappingSample" codingSchemeURI="urn:oid:mapping:sample" representsVersion="1.0">
+  <lgCommon:entityDescription>Mapping Sample</lgCommon:entityDescription>
+  <localName>Mapping:sample</localName>
+  <localName>Mappings</localName>
+  <localName>MappingSample</localName>
+  <source subRef="testSubRef" role="testRole">lexgrid.org</source>
+  <copyright>Copyright by Mayo Clinic.</copyright>  
+  <mappings>
+    <lgNaming:supportedAssociation localId="hasPart" uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
+    <lgNaming:supportedCodingScheme localId="MappingSample" uri="urn:oid:mapping:sample">MappingSample</lgNaming:supportedCodingScheme>
+    <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1">Automobiles</lgNaming:supportedCodingScheme>
+    <lgNaming:supportedCodingScheme localId="GermanMadeParts" uri="urn:oid:11.11.0.2">GermanMadeParts</lgNaming:supportedCodingScheme>   
+    <lgNaming:supportedContainerName localId="relations">AutoToGMPMappings</lgNaming:supportedContainerName>   
+    <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+    <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>    
+    <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>    
+    <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+    <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+    <lgNaming:supportedNamespace localId="GermanMadeParts" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">GermanMadeParts</lgNaming:supportedNamespace>
+    <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+    <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
+    <lgNaming:supportedProperty localId="genericProperty" >genericProperty</lgNaming:supportedProperty>
+    <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+  </mappings>
+  <entities/>
+  <relations containerName="AutoToGMPMappings" sourceCodingScheme="Automobiles" targetCodingScheme="GermanMadeParts">
+    <lgCommon:entityDescription>Automobiles To GMP Mappings</lgCommon:entityDescription>
+    <lgRel:associationPredicate  associationName="hasPart">
+      <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Jaguar">
+        <lgRel:target targetEntityCodeNamespace="GermanMadeParts" targetEntityCode="T0001"/>
+      </lgRel:source>
+	</lgRel:associationPredicate>      
+  </relations>
+</codingScheme>
