@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.relations.AssociationEntity;
@@ -37,13 +38,13 @@ public interface CodeSystemQueryOperation {
 
 	public CodingSchemeRenderingList listCodeSystems(CodingSchemeSummary queryByExample);
 	
-	public void getCodeSystemDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag);
+	public CodingScheme getCodeSystemDetails(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag);
 	
 	public Iterator<ResolvedConceptReference> listCodeSystemConcepts(CodedNodeSet cns);
 	
 	public Entity getConceptDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String code, String namespace);
 	
-	public List<SupportedAssociation> listAssociationTypes();
+	public List<SupportedAssociation> listAssociationTypes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag);
 	
 	public AssociationEntity getAssociationTypeDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String associationName);
 
