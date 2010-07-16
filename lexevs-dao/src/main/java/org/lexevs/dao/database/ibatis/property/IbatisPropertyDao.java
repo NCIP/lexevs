@@ -32,6 +32,7 @@ import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
@@ -114,6 +115,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	public static String GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribById";
 	
+	public static String DELETE_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL = PROPERTY_NAMESPACE + "deletePropertyMultiAttribByPropertyId";
+	
 	public static String UPDATE_PROPERTY_BY_UID_SQL = PROPERTY_NAMESPACE + "updatePropertyByUId";
 		
 	public static String UPDATE_PROPERTY_VERSIONABLE_ATTRIB_BY_UID_SQL = PROPERTY_NAMESPACE + "updatePropertyVersionableAttribByUId";	
@@ -136,7 +139,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	private static String GET_PROPERY_BY_PROPERTY_UID_AND_REVISION_ID_SQL = PROPERTY_NAMESPACE + "getPropertyByUidAndRevisionId";
 
-	PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
+	private PropertyMultiAttributeClassifier propertyMultiAttributeClassifier = new PropertyMultiAttributeClassifier();
 	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
@@ -429,29 +432,13 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		{
 			if (propMultiAttrib.getUId() != null) {
 				propMultiAttrib.setPrefix(historyPrefix);
+				propMultiAttrib.setEntryStateUId(propertyData.getEntryStateUId());
 
 				inserter.insert(
 						INSERT_PROPERTY_MULTIATTRIB_SQL, propMultiAttrib);
 			}
 		}
-		
-		if (!entryStateExists(prefix, propertyData.getEntryStateUId())) {
 
-			EntryState entryState = new EntryState();
-
-			entryState.setChangeType(ChangeType.NEW);
-			entryState.setRelativeOrder(0L);
-
-			ibatisVersionsDao.insertEntryState(
-					codingSchemeUId,
-					propertyData.getEntryStateUId(),
-					propertyData.getUId(),
-					EntryStateType.PROPERTY, 
-					null,
-					entryState,
-					inserter);
-		}
-		
 		return propertyData.getEntryStateUId();
 	}
 
@@ -481,9 +468,43 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						property),
 						1);	
 		
+		if(property.getSourceCount() > 0) {
+			String multiAttributeType = this.propertyMultiAttributeClassifier.classify(Source.class);
+			this.deleteMultiAttribOfProperty(codingSchemeUId, propertyUId, multiAttributeType);
+			for(Source source : property.getSource()) {
+				this.insertPropertySource(codingSchemeUId, propertyUId, source);
+			}
+		}
+		
+		if(property.getUsageContextCount() > 0) {
+			String multiAttributeType = this.propertyMultiAttributeClassifier.classify(String.class);
+			this.deleteMultiAttribOfProperty(codingSchemeUId, propertyUId, multiAttributeType);
+			for(String usageContext : property.getUsageContext()) {
+				this.insertPropertyUsageContext(codingSchemeUId, propertyUId, usageContext);
+			}
+		}
+		
+		if(property.getPropertyQualifierCount() > 0) {
+			String multiAttributeType = this.propertyMultiAttributeClassifier.classify(PropertyQualifier.class);
+			this.deleteMultiAttribOfProperty(codingSchemeUId, propertyUId, multiAttributeType);
+			for(PropertyQualifier qualifier : property.getPropertyQualifier()) {
+				this.insertPropertyQualifier(codingSchemeUId, propertyUId, qualifier);
+			}
+		}
+		
 		return entryStateUId;
 	}
 	
+	private void deleteMultiAttribOfProperty(String codingSchemeUId,
+			String propertyUId, String multiAttributeType) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
+				new PrefixedParameterTuple(prefix,propertyUId,multiAttributeType));
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#updateProperty(java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
