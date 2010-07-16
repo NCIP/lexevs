@@ -16,6 +16,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.types.EntityTypes;
@@ -32,8 +33,30 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 	@Override
 	public AssociationEntity getAssociationTypeDetails(String codingSchemeName,
 			CodingSchemeVersionOrTag versionOrTag, String associationName) {
+		
 		try {
-			LexBIGServiceImpl.defaultInstance().getCodingSchemeConcepts(codingSchemeName, versionOrTag);
+			
+			CodingScheme codingScheme = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingSchemeName, versionOrTag);
+			
+			String sacodingSchemeName = null;
+			String code = null;
+			String namespace = null;
+			for(SupportedAssociation assoc : codingScheme.getMappings().getSupportedAssociation()) {
+				if(assoc.getContent().equals(associationName)) {
+					sacodingSchemeName = assoc.getCodingScheme();
+					code = assoc.getEntityCode();
+					namespace = assoc.getEntityCodeNamespace();
+				}
+			}
+			
+			CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getCodingSchemeConcepts(sacodingSchemeName, versionOrTag);
+		
+			cns = cns.restrictToCodes(Constructors.createConceptReferenceList(code, namespace, sacodingSchemeName));
+			
+			AssociationEntity entity = (AssociationEntity) cns.resolve(null, null, null).next().getEntity();
+			
+			return entity;
+		
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
