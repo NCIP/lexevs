@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.SystemRelease;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
 import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.util.TestUtils;
 
 public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 
@@ -85,12 +87,12 @@ public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals(2,entity.getPropertyCount());
 		
-		List<String> propertyValues = new ArrayList<String>();
-		propertyValues.add(entity.getProperty(0).getValue().getContent());
-		propertyValues.add(entity.getProperty(1).getValue().getContent());
+		Property prop = TestUtils.getPropertyWithId(entity, "2");
+		assertEquals(0,prop.getPropertyQualifierCount());
 		
-		assertTrue(propertyValues.contains("revision2Value"));
-		assertTrue(propertyValues.contains("revision3Value"));
+		
+		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision2Value"));
+		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision3Value"));
 	}
 	
 	@Test
@@ -102,9 +104,10 @@ public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 
 		assertNotNull(entity);
 		
-		assertEquals(1,entity.getPropertyCount());
+		assertEquals(2,entity.getPropertyCount());
 		
-		assertEquals("revision3Value",entity.getProperty(0).getValue().getContent());
+		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision2Value"));
+		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision3Value"));
 	}
 	
 	@Test
@@ -117,12 +120,56 @@ public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 		assertNotNull(entity);
 		
 		assertEquals(2,entity.getPropertyCount());
-		
-		List<String> propertyValues = new ArrayList<String>();
-		propertyValues.add(entity.getProperty(0).getValue().getContent());
-		propertyValues.add(entity.getProperty(1).getValue().getContent());
-		
-		assertTrue(propertyValues.contains("revision3Value"));
-		assertTrue(propertyValues.contains("revision5Value"));
+
+		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision3Value"));
+		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision5Value"));
 	}
+	
+	@Test
+	public void testGetRevision6Entity() throws Exception {
+
+		Entity entity = entityService.resolveEntityByRevision(
+				"testUri", "1.0", "testEntity", "test",
+				"6");
+
+		assertNotNull(entity);
+		
+		Property prop = TestUtils.getPropertyWithId(entity, "2");
+		
+		assertEquals(1,prop.getPropertyQualifierCount());
+		assertEquals("TestQual",prop.getPropertyQualifier(0).getPropertyQualifierName());
+		assertEquals("TestQualValueR6",prop.getPropertyQualifier(0).getValue().getContent());
+		
+		assertEquals(2,entity.getPropertyCount());	
+	}
+	
+	@Test
+	public void testGetRevision7Entity() throws Exception {
+
+		Entity entity = entityService.resolveEntityByRevision(
+				"testUri", "1.0", "testEntity", "test",
+				"7");
+
+		assertNotNull(entity);
+		
+		Property prop = TestUtils.getPropertyWithId(entity, "2");
+		
+		assertEquals(2,prop.getPropertyQualifierCount());
+	}
+	
+	@Test
+	public void testGetRevision8Entity() throws Exception {
+
+		Entity entity = entityService.resolveEntityByRevision(
+				"testUri", "1.0", "testEntity", "test",
+				"8");
+
+		assertNotNull(entity);
+		
+		Property prop = TestUtils.getPropertyWithId(entity, "2");
+		
+		assertEquals(3,prop.getPropertyQualifierCount());
+	}
+	
+	
 }

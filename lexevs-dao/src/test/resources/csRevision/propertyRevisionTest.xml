@@ -137,6 +137,94 @@
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
+        
+        <revision revisionId="6">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="6" prevRevision="5" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="6" prevRevision="5"
+                                relativeOrder="0" changeType="DEPENDENT"/>    
+                                <lgCon:property propertyName="test-prop2" propertyId="2">
+                                	<lgCommon:entryState changeType="MODIFY"
+										prevRevision="3" 
+										relativeOrder="0" 
+										containingRevision="6"/>
+                                	<lgCommon:propertyQualifier propertyQualifierName="TestQual">
+                                		<lgCommon:value>TestQualValueR6</lgCommon:value>
+                                	</lgCommon:propertyQualifier>
+                                </lgCon:property> 
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+          <revision revisionId="7">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="7" prevRevision="6" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="7" prevRevision="6"
+                                relativeOrder="0" changeType="DEPENDENT"/>    
+                                <lgCon:property propertyName="test-prop2" propertyId="2">
+                                	<lgCommon:entryState changeType="MODIFY"
+										prevRevision="6" 
+										relativeOrder="0" 
+										containingRevision="7"/>
+                                	<lgCommon:propertyQualifier propertyQualifierName="TestQual">
+                                		<lgCommon:value>TestQualValueR6</lgCommon:value>
+                                	</lgCommon:propertyQualifier>
+                                	<lgCommon:propertyQualifier propertyQualifierName="TestQual2">
+                                		<lgCommon:value>TestQualValueR7</lgCommon:value>
+                                	</lgCommon:propertyQualifier>
+                                </lgCon:property> 
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+         <revision revisionId="8">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="8" prevRevision="7" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
+                            <lgCommon:entryState containingRevision="8" prevRevision="7"
+                                relativeOrder="0" changeType="DEPENDENT"/>    
+                                <lgCon:property propertyName="test-prop2" propertyId="2">
+                                	<lgCommon:entryState changeType="MODIFY"
+										prevRevision="7" 
+										relativeOrder="0" 
+										containingRevision="8"/>
+                                	<lgCommon:propertyQualifier propertyQualifierName="TestQual">
+                                		<lgCommon:value>TestQualValueR6</lgCommon:value>
+                                	</lgCommon:propertyQualifier>
+                                	<lgCommon:propertyQualifier propertyQualifierName="TestQual2">
+                                		<lgCommon:value>TestQualValueR7</lgCommon:value>
+                                	</lgCommon:propertyQualifier>
+                                	<lgCommon:propertyQualifier propertyQualifierName="TestQual3">
+                                		<lgCommon:value>TestQualValueR8</lgCommon:value>
+                                	</lgCommon:propertyQualifier>
+                                </lgCon:property> 
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
     </editHistory>
 
 </systemRelease>

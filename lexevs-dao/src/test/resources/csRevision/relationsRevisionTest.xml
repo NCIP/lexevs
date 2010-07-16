@@ -91,6 +91,23 @@
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
+        
+         <revision revisionId="5">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="test"
+                    codingSchemeURI="testUri" representsVersion="1.0">
+                    <lgCommon:entryState containingRevision="5" prevRevision="4" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:relations containerName="testRelations">
+                            <lgCommon:entryState containingRevision="5" prevRevision="4"
+                                relativeOrder="0" changeType="MODIFY"/>    
+                         	<lgRel:associationPredicate associationName="testPredicate"/>
+                         	<lgRel:associationPredicate associationName="testPredicate2"/>
+                    </lgCS:relations>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
     </editHistory>
 
 </systemRelease>
