@@ -17,9 +17,6 @@
  */
 package org.lexevs.cts2.query;
 
-
-import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
-
 import java.util.Iterator;
 import java.util.List;
 
