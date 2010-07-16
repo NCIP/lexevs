@@ -39,7 +39,14 @@ public class AssociationAuthoringOperationImpl implements
 		{
 			CodingScheme scheme = authoring.getCodingSchemeMetaData(sourceCodeSystemIdentifier);
 			AssociationTarget target = authoring.createAssociationTarget(
-					entryState, targetCodeSystemIdentifier,
+					entryState, 
+					null,
+					null,
+					false,
+					false,
+					null,
+					null,
+					targetCodeSystemIdentifier,
 					targetConceptCodeIdentifier);
 			String namespace = authoring.getCodingSchemeNamespace(scheme,
 					sourceCodeSystemIdentifier.getCodingSchemeURN());
@@ -60,7 +67,14 @@ public class AssociationAuthoringOperationImpl implements
 		if (createMappingScheme == false && mappingScheme != null){
 			CodingScheme sourceScheme = authoring.getCodingSchemeMetaData(sourceCodeSystemIdentifier);
 			AssociationTarget target = authoring.createAssociationTarget(
-					entryState, targetCodeSystemIdentifier,
+					entryState, 
+					null,
+					null,
+					false,
+					false,
+					null,
+					null,
+					targetCodeSystemIdentifier,
 					targetConceptCodeIdentifier);
 			String namespace = authoring.getCodingSchemeNamespace(sourceScheme,
 					sourceScheme.getCodingSchemeURI());
@@ -77,7 +91,14 @@ public class AssociationAuthoringOperationImpl implements
 		}
 		if (createMappingScheme == false && mappingScheme == null){
 			AssociationTarget target = authoring.createAssociationTarget(
-					entryState, targetCodeSystemIdentifier,
+					entryState,
+					null,
+					null,
+					false,
+					false,
+					null,
+					null,
+					targetCodeSystemIdentifier,
 					targetConceptCodeIdentifier);
 			AssociationTarget[] targets = new AssociationTarget[] { target };
 			source = authoring.createAssociationSource(revision, entryState,
