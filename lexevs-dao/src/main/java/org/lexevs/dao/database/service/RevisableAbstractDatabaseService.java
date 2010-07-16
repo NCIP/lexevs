@@ -456,24 +456,28 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 			String currentRevision = entryState.getContainingRevision();
 			String prevRevision = entryState.getPrevRevision();
 			
-			if (entryState.getPrevRevision() == null
+			if (prevRevision != null
 					&& latestRevId != null
-					&& !latestRevId.equals(currentRevision)
-					&& !latestRevId
-							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
-				throw new LBRevisionException(
-						invalid
-								+ "All changes of type other than NEW should have previous revisions.");
-			} else if (latestRevId != null
 					&& !latestRevId.equals(currentRevision)
 					&& !latestRevId.equals(prevRevision)
 					&& !latestRevId
 							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
 				throw new LBRevisionException(
 						invalid
-								+ "Revision source is not in sync with the database revisions. "
-								+ "Previous revision id does not match with the latest revision id of the coding scheme. "
-								+ "Please update the authoring instance with all the revisions and regenerate the source.");
+								+ "\n -- The Entry passed in is expecting the current Revision state to be Revsion Id: " + prevRevision
+								+ "\n -- The current Revsions state of this Entry is Revision Id: " + latestRevId
+								+ "\n -- For this revision to be placed in the authoring instance, you must update the current state to " + prevRevision);
+			} else if (latestRevId != null
+					&& prevRevision != null
+					&& !latestRevId.equals(currentRevision)
+					&& !latestRevId.equals(prevRevision)
+					&& !latestRevId
+							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
+				throw new LBRevisionException(
+						invalid
+								+ "\n -- Revision source is not in sync with the database revisions. "
+								+ "\n -- Previous revision id does not match with the latest revision id of the coding scheme. "
+								+ "\n -- Please update the authoring instance with all the revisions and regenerate the source.");
 			}
 		}
 		
