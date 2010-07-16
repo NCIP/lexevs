@@ -34,7 +34,7 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
+import org.LexGrid.LexBIG.Impl.SingleLuceneIndexCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -47,6 +47,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.util.PrintUtility;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -329,11 +330,15 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
 
         try {
-            CodedNodeSet cns = new CodedNodeSetImpl(
+            CodedNodeSet cns = new SingleLuceneIndexCodedNodeSet(
                     this.getCodingSchemeUri(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), null);
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), 
+                    null, 
+                    null);
             
             cns = cns.restrictToCodes(codeList);
+            
+            PrintUtility.print(cns);
             
             return cns;
         } catch (Exception e) {

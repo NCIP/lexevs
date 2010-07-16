@@ -24,6 +24,7 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -31,6 +32,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
@@ -60,6 +63,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
+    
+    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
     
     public PagingCodedNodeGraphImpl() {
         super();
@@ -115,6 +120,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         ResolvedConceptReference focus = null;
         
         if(graphFocus != null) {
+           
             focus =
                 LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
                 getEntityService().
@@ -126,6 +132,25 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                         this.shouldResolveNextLevel(resolveCodedEntryDepth),
                         DaoUtility.localNameListToString(propertyNames),
                         DaoUtility.propertyTypeArrayToString(propertyTypes));
+            
+            if(focus == null) {
+                if(graphFocus.getCodeNamespace() != null) {
+                    AbsoluteCodingSchemeVersionReference ref = 
+                        namespaceHandler.getCodingSchemeForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
+                
+                    focus =
+                        LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+                        getEntityService().
+                        getResolvedCodedNodeReference(
+                                ref.getCodingSchemeURN(), 
+                                ref.getCodingSchemeVersion(), 
+                                graphFocus.getCode(), 
+                                graphFocus.getCodeNamespace(),
+                                this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                                DaoUtility.localNameListToString(propertyNames),
+                                DaoUtility.propertyTypeArrayToString(propertyTypes));
+                }  
+            }
             if(focus == null) {
                focus = new ResolvedConceptReference();
                focus.setCode(graphFocus.getCode());

@@ -24,9 +24,12 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
@@ -34,11 +37,13 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.annotations.LgProxyClass;
+import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.paging.AbstractPageableIterator;
 import org.lexevs.paging.codednodegraph.TripleUidIterator;
 
@@ -52,6 +57,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     
     /** The association list builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
+    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
 
 	/** The triple uid iterator. */
 	private Iterator<String> tripleUidIterator;
@@ -178,7 +184,45 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	@Override
 	public AssociatedConcept next() {
 	    AssociatedConcept associatedConcept = super.next();
+	    
+	    String adjustedCodingSchemeUri;
+        String adjustedCodingSchemeVersion;
+        String adjustedRelationsContainer;
+        
+	    try {
+	        AbsoluteCodingSchemeVersionReference ref = this.namespaceHandler.getCodingSchemeForNamespace(
+                    this.codingSchemeUri, 
+                    this.codingSchemeVersion, 
+                    associatedConcept.getCodeNamespace());
+	        adjustedCodingSchemeUri = ref.getCodingSchemeURN();
+	        adjustedCodingSchemeVersion = ref.getCodingSchemeVersion();
+	        
+        } catch (LBParameterException e) {
+            LoggerFactory.getLogger().info("Cannot map namespace: " +  associatedConcept.getCodeNamespace());
+            
+            adjustedCodingSchemeUri =  this.codingSchemeUri;
+            adjustedCodingSchemeVersion = this.codingSchemeVersion;
+        }
+        
+        if(! adjustedCodingSchemeUri.equals(this.codingSchemeUri) ||
+                ! adjustedCodingSchemeVersion.endsWith(this.codingSchemeVersion)) {
+            adjustedRelationsContainer = null;
+            
+            if(shouldResolveNextLevel(resolveCodedEntryDepth)) {
 
+                associatedConcept = ServiceUtility.resolveResolvedConceptReference(
+                        adjustedCodingSchemeUri, 
+                        adjustedCodingSchemeVersion, 
+                        propertyNames, 
+                        propertyTypes, 
+                        associatedConcept
+                        );
+            }
+        } else {
+            adjustedRelationsContainer = this.relationsContainerName;
+            
+        }
+	    
 	    if(this.cycleDetectingCallback.isAssociatedConceptAlreadyInGraph(associationPredicateName, associatedConcept)) {
 	        return cycleDetectingCallback.getAssociatedConceptInGraph(associationPredicateName, associatedConcept);
 	    }
@@ -187,11 +231,11 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	        if(resolveForward) {
 	            associatedConcept.setSourceOf(
 	                    associationListBuilder.buildSourceOfAssociationList(
-	                            codingSchemeUri, 
-	                            codingSchemeVersion, 
+	                            adjustedCodingSchemeUri, 
+	                            adjustedCodingSchemeVersion, 
 	                            associatedConcept.getCode(), 
 	                            associatedConcept.getCodeNamespace(), 
-	                            relationsContainerName, 
+	                            adjustedRelationsContainer, 
 	                            resolveForward,
 	                            resolveBackward,
 	                            resolveForwardAssociationDepth - 1,
@@ -210,11 +254,11 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	        if(resolveBackward) {
 	            associatedConcept.setTargetOf(
 	                    associationListBuilder.buildTargetOfAssociationList(
-	                            codingSchemeUri, 
-	                            codingSchemeVersion, 
+	                            adjustedCodingSchemeUri, 
+	                            adjustedCodingSchemeVersion, 
 	                            associatedConcept.getCode(), 
 	                            associatedConcept.getCodeNamespace(), 
-	                            relationsContainerName, 
+	                            adjustedRelationsContainer, 
 	                            resolveForward,
 	                            resolveBackward,
 	                            resolveForwardAssociationDepth,
@@ -244,7 +288,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	private boolean shouldResolveNextLevel(int depth) {
 	    return ! (depth == 0);
 	}
-
+	
     /* (non-Javadoc)
      * @see org.lexevs.paging.AbstractPageableIterator#doPage(int, int)
      */
