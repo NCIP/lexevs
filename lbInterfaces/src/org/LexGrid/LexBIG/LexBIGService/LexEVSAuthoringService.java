@@ -7,6 +7,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
@@ -93,7 +94,12 @@ public interface LexEVSAuthoringService {
 	
 	public AssociationTarget createAssociationTarget(
 	        EntryState entryState,
-			//CodingScheme scheme, 
+            Versionable versionableData,
+            String instanceId,
+            Boolean isInferred,
+            Boolean isDefined,
+            List<String> usageContextList,
+            List<AssociationQualification> associationQualifiers,
 			AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier,
             String targetConceptCodeIdentifier)throws LBException;
 	
@@ -103,7 +109,7 @@ public interface LexEVSAuthoringService {
 	            boolean isActive) throws LBException ;
 	   
 	public EntryState createDefaultMappingsEntryState(
-			 String prevRevisionId );
+			String revisionId, String prevRevisionId);
 	
 	public AssociationSource mapTargetsToSource(
             EntryState entryState,
@@ -118,5 +124,12 @@ public interface LexEVSAuthoringService {
 			AbsoluteCodingSchemeVersionReference scheme,
 			String relationsContainerName,
 			String associationName)throws LBException;
+
+	void createMappingScheme(CodingScheme mappingSchemeMetadata,
+			AssociationSource[] sourcesAndTargets,
+			String sourceCodingScheme, String sourceCodingSchemeVersion,
+			String targetCodingScheme, String targetCodingSchemeVersion,
+			String associationName, String containerName, 
+			String revisionId, boolean loadEntities) throws LBException;
 
 }
