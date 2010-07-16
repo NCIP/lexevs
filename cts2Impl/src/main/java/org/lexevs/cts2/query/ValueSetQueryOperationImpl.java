@@ -152,7 +152,7 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 			sortOptionList.addEntry(sortOption);
 		}
 		try {
-			vsContents = getValueSetService().resolveValueSetDefinition(new URI(valueSetId), csVersionList, versionTag, sortOptionList);
+			vsContents = getValueSetService().resolveValueSetDefinition(new URI(valueSetId), valueSetVersion, csVersionList, versionTag, sortOptionList);
 		} catch (URISyntaxException e) {
 			throw new LBException("Problem processing Value Set Query Operation : ", e);
 		}

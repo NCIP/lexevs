@@ -71,7 +71,7 @@ public interface ValueSetQueryOperation {
 	 * @param csVersionList code system version reference list to be used to resolve value set
 	 * @param versionTag the tag (e.g. "devel", "production", ...) to be used to determine which code system to be used
 	 * @param sortOption (Optional) sort option to apply on resolved concepts
-	 * @return A resolved Value Domain definition containing the code system version reference list
+	 * @return A resolved Value Set definition containing the code system version reference list
 	 * that was used to resolve the value set and an iterator for resolved concepts.
 	 * @throws LBException
 	 */

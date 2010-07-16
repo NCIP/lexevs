@@ -7,14 +7,19 @@ import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 
 /**
  * @author m004181
@@ -82,7 +87,40 @@ public class ValueSetQueryOperationImplTest {
 	 */
 	@Test
 	public void testListValueSetContents() {
-		fail("Not yet implemented");
+		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
+		SortOption sortOption = new SortOption();
+		sortOption.setAscending(true);
+		try {
+			ResolvedValueSetDefinition vsdResolved = vsQueryop.listValueSetContents("SRITEST:AUTO:GM", null, null, null, sortOption);
+			if (vsdResolved != null)
+			{
+				AbsoluteCodingSchemeVersionReferenceList csList = vsdResolved.getCodingSchemeVersionRefList();
+				if (csList != null)
+				{
+					for (AbsoluteCodingSchemeVersionReference acsvr : csList.getAbsoluteCodingSchemeVersionReference())
+					{
+						System.out.println("cs urn : " + acsvr.getCodingSchemeURN());
+						System.out.println("cs version :" + acsvr.getCodingSchemeVersion());
+					}
+				}
+				System.out.println("vsd name : " + vsdResolved.getValueSetDefinitionName());
+				System.out.println("vsd uri : " + vsdResolved.getValueDomainURI());
+				
+				ResolvedConceptReferencesIterator cItr = vsdResolved.getResolvedConceptReferenceIterator();
+				if (cItr.hasNext())
+				{
+					ResolvedConceptReference rcr = cItr.next();
+					System.out.println("code : " + rcr.getCode());
+					System.out.println("namespace : " + rcr.getCodeNamespace());
+					System.out.println("cs uri : " + rcr.getCodingSchemeURI());
+					System.out.println("cs name : " + rcr.getCodingSchemeName());
+					System.out.println("-------------------------");
+				}
+			}
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -90,7 +128,19 @@ public class ValueSetQueryOperationImplTest {
 	 */
 	@Test
 	public void testListValueSets() {
-		fail("Not yet implemented");
+		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
+		SortOption sortOption = new SortOption();
+		sortOption.setAscending(true);
+		try {
+			List<String> vsdURIs = vsQueryop.listValueSets("Automobiles", "Autos", null, sortOption);
+			for (String vsdURI : vsdURIs)
+			{
+				System.out.println(vsdURI);
+			}
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -98,7 +148,19 @@ public class ValueSetQueryOperationImplTest {
 	 */
 	@Test
 	public void testListAllValueSets() {
-		fail("Not yet implemented");
+		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
+		SortOption sortOption = new SortOption();
+		sortOption.setAscending(true);
+		try {
+			List<String> vsdURIs = vsQueryop.listAllValueSets(sortOption);
+			for (String vsdURI : vsdURIs)
+			{
+				System.out.println(vsdURI);
+			}
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
