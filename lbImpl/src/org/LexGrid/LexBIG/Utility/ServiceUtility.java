@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Utility;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
@@ -26,11 +27,15 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.URIMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -143,6 +148,50 @@ public class ServiceUtility {
         }
 
         return pass;
+    }
+    
+    public static <T extends ResolvedConceptReference> T resolveResolvedConceptReference(
+            String uri, 
+            String version, 
+            LocalNameList propertyNames,
+            PropertyType[] propertyTypes,
+            NamespaceHandler namespaceHandler,
+            T resolvedConceptReference) throws LBParameterException {
+        if(resolvedConceptReference.getCodeNamespace() != null) {
+            AbsoluteCodingSchemeVersionReference ref = 
+                namespaceHandler.getCodingSchemeForNamespace(uri, version, resolvedConceptReference.getCodeNamespace());
+        
+            uri = ref.getCodingSchemeURN();
+            version = ref.getCodingSchemeVersion();
+        }
+        
+        return resolveResolvedConceptReference(
+                uri, 
+                version, 
+                propertyNames, 
+                propertyTypes, 
+                resolvedConceptReference);
+    }
+    
+    public static <T extends ResolvedConceptReference> T resolveResolvedConceptReference(
+            String uri, 
+            String version, 
+            LocalNameList propertyNames,
+            PropertyType[] propertyTypes,
+            T resolvedConceptReference){
+        Entity entity = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getEntityService().
+            getEntity(uri, 
+                    version, 
+                    resolvedConceptReference.getCode(), 
+                    resolvedConceptReference.getCodeNamespace(), 
+                    DaoUtility.localNameListToString(propertyNames), 
+                    DaoUtility.propertyTypeArrayToString(propertyTypes));
+        
+        resolvedConceptReference.setEntity(entity);
+        
+        return resolvedConceptReference;
     }
     
     public static String getSchemaVersionForCodingScheme(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {

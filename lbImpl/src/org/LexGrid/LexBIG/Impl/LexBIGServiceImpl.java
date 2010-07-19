@@ -124,6 +124,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
     private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
     private CodedNodeGraphFactory codedNodeGraphFactory = new CodedNodeGraphFactory();
+    private CodedNodeSetFactory codedNodeSetFactory = new CodedNodeSetFactory();
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -288,8 +289,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     public CodedNodeSet getCodingSchemeConcepts(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             boolean activeOnly) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, new Boolean(activeOnly) });
-        CodedNodeSetImpl cns = new CodedNodeSetImpl(codingScheme, versionOrTag, new Boolean(activeOnly));
-        cns.restrictToEntityTypes(Constructors.createLocalNameList("concept"));
+        CodedNodeSet cns = codedNodeSetFactory.getCodedNodeSet(codingScheme, versionOrTag, new Boolean(activeOnly), Constructors.createLocalNameList("concept"));
         cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         return cns;
     }
@@ -301,8 +301,11 @@ public class LexBIGServiceImpl implements LexBIGService {
     public CodedNodeSet getCodingSchemeConcepts(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag });
-        CodedNodeSetImpl cns = new CodedNodeSetImpl(codingScheme, versionOrTag, null);
-        cns.restrictToEntityTypes(Constructors.createLocalNameList("concept"));
+        CodedNodeSet cns = codedNodeSetFactory.getCodedNodeSet(
+                codingScheme, 
+                versionOrTag, 
+                null,
+                Constructors.createLocalNameList("concept"));
         cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         return cns;
     }
@@ -315,10 +318,8 @@ public class LexBIGServiceImpl implements LexBIGService {
     public CodedNodeSet getNodeSet(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             LocalNameList entityTypes) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, entityTypes });
-        CodedNodeSetImpl cns = new CodedNodeSetImpl(codingScheme, versionOrTag, null);
-        if (entityTypes != null && entityTypes.getEntryCount() > 0) {
-            cns.restrictToEntityTypes(entityTypes);
-        }
+        CodedNodeSet cns = codedNodeSetFactory.getCodedNodeSet(codingScheme, versionOrTag, null, entityTypes);
+        
         cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         return cns;
     }
