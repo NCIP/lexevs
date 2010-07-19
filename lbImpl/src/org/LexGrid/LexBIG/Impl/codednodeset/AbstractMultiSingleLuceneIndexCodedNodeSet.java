@@ -164,7 +164,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     }
 
     @Override
-    protected void runPendingOps() throws LBInvocationException, LBParameterException {
+    public void runPendingOps() throws LBInvocationException, LBParameterException {
         this.cns1.runPendingOps();
         this.cns2.runPendingOps();
   

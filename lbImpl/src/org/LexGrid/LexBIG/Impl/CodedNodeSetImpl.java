@@ -681,7 +681,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     /*
      * Run all of the stacked up operations.
      */
-    protected void runPendingOps() throws LBInvocationException, LBParameterException {
+    public void runPendingOps() throws LBInvocationException, LBParameterException {
         try {
             EntityIndexService entityIndexService = 
                   LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
