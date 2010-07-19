@@ -18,10 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-
 import java.io.Reader;
 
 import junit.framework.TestCase;
@@ -31,8 +27,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.AbstractField;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.lexevs.exceptions.MissingResourceException;
 
 /**
  * The Class LazyLoadableCodeToReturnTest.
@@ -42,7 +36,7 @@ import org.lexevs.exceptions.MissingResourceException;
 public class LazyLoadableCodeToReturnTest extends TestCase {
 
     /** The code to return. */
-    protected LazyLoadableCodeToReturn codeToReturn;
+    protected AbstractLazyLoadableCodeToReturn codeToReturn;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -74,7 +68,7 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
      * @throws Exception the exception
      */
     protected void buildCodeToReturn() throws Exception {
-        LazyLoadableCodeToReturn codeToReturn = new TestLazyLoadableCodeToReturn();
+    	AbstractLazyLoadableCodeToReturn codeToReturn = new TestLazyLoadableCodeToReturn();
         codeToReturn.setDocumentId(1);
         this.codeToReturn = codeToReturn;
     }
@@ -199,7 +193,7 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    private class TestLazyLoadableCodeToReturn extends LazyLoadableCodeToReturn {
+    private class TestLazyLoadableCodeToReturn extends AbstractLazyLoadableCodeToReturn {
 
         /* (non-Javadoc)
          * @see org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadableCodeToReturn#getIndexReader()
