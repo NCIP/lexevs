@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -193,6 +194,8 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             (LexBIGServiceConvenienceMethods) 
             LexBIGServiceImpl.defaultInstance().getGenericExtension("LexBIGServiceConvenienceMethods");
 
+        List<String> associationNamesToRestrictBy = new ArrayList<String>();
+        
         for(NameAndValue nameAndValue : directionalNames.getNameAndValue()) {
             String directionalName = nameAndValue.getName();
             String[] associationNames;
@@ -201,6 +204,8 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                         codingSchemeUri, 
                         Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
                         directionalName);
+                
+                associationNamesToRestrictBy.addAll(Arrays.asList(associationNames));
             } catch (LBException e) {
                 throw new RuntimeException(e);
             }
@@ -208,9 +213,11 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                 throw new LBParameterException("Directional Name:" + directionalName + 
                 " is not a valid Directional Name.");
             }
-
-            this.restrictToAssociations(Constructors.createNameAndValueList(associationNames), associationQualifiers); 
         }
+        
+        this.restrictToAssociations(Constructors.createNameAndValueList(
+                associationNamesToRestrictBy.toArray(new String[associationNamesToRestrictBy.size()])), 
+                associationQualifiers); 
     }
 
     /* (non-Javadoc)
