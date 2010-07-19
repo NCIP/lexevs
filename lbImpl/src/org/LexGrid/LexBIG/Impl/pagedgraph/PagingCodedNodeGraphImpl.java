@@ -138,17 +138,19 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     AbsoluteCodingSchemeVersionReference ref = 
                         namespaceHandler.getCodingSchemeForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
                 
-                    focus =
-                        LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
-                        getEntityService().
-                        getResolvedCodedNodeReference(
-                                ref.getCodingSchemeURN(), 
-                                ref.getCodingSchemeVersion(), 
-                                graphFocus.getCode(), 
-                                graphFocus.getCodeNamespace(),
-                                this.shouldResolveNextLevel(resolveCodedEntryDepth),
-                                DaoUtility.localNameListToString(propertyNames),
-                                DaoUtility.propertyTypeArrayToString(propertyTypes));
+                    if(ref != null) {
+                        focus =
+                            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+                            getEntityService().
+                            getResolvedCodedNodeReference(
+                                    ref.getCodingSchemeURN(), 
+                                    ref.getCodingSchemeVersion(), 
+                                    graphFocus.getCode(), 
+                                    graphFocus.getCodeNamespace(),
+                                    this.shouldResolveNextLevel(resolveCodedEntryDepth),
+                                    DaoUtility.localNameListToString(propertyNames),
+                                    DaoUtility.propertyTypeArrayToString(propertyTypes));
+                    }
                 }  
             }
             if(focus == null) {
