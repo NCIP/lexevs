@@ -118,9 +118,7 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 			if(StringUtils.isBlank(indexName)) {
 				throw new RuntimeException("Cannot autoregister index for CodingScheme: " + codingSchemeUri + " Version: " + version);
 			}
-			
-			Assert.state(! this.luceneIndexNameToTemplateMap.containsKey(indexName));
-			
+
 			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
 			
 		} catch (InternalErrorException e) {

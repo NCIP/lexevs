@@ -26,6 +26,7 @@ import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -61,7 +62,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	private MetaData metaData;
 	
 	private IndexRegistry indexRegistry;
-	
+
 	@Override
 	public String getIndexName(String codingSchemeUri,
 			String codingSchemeVersion) {
@@ -77,10 +78,16 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	
 	
 	@Override
-	public Document getDocumentById(String codingSchemeUri,
+	public Document getDocumentById(
+			String codingSchemeUri,
 			String codingSchemeVersion, int id) {
 		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).getDocumentById(codingSchemeUri,
 			codingSchemeVersion, id);
+	}
+
+	@Override
+	public Document getDocumentFromCommonIndexById(List<AbsoluteCodingSchemeVersionReference> references, int id) {
+		return indexDaoManager.getCommonEntityDao(references).getDocumentById(id);
 	}
 
 	/* (non-Javadoc)
@@ -157,6 +164,32 @@ public class LuceneEntityIndexService implements EntityIndexService {
 			List<? extends Query> combinedQueries, List<? extends Query> individualQueries){
 		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).
 			query(codingSchemeUri, codingSchemeVersion, combinedQueries, individualQueries);
+	}
+	
+	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query){
+		return indexDaoManager.getEntityDao(codingSchemeUri, version).
+			query(codingSchemeUri, version, query);
+	}
+
+	@Override
+	public Filter getBoundaryDocsHitAsAWholeFilter(
+			String codingSchemeUri,
+			String version, 
+			Query query) {
+		return indexDaoManager.getEntityDao(codingSchemeUri, version).
+			getBoundaryDocsHitAsAWholeFilter(codingSchemeUri, version, query);
+	}
+	
+	
+	
+	@Override
+	public Filter getCodingSchemeFilter(String uri, String version) {
+		return indexDaoManager.getEntityDao(uri, version).getCodingSchemeFilter(uri, version);
+	}
+
+	@Override
+	public List<ScoreDoc> queryCommonIndex(List<AbsoluteCodingSchemeVersionReference> codingSchemes, Query query) {
+		return indexDaoManager.getCommonEntityDao(codingSchemes).query(query);
 	}
 
 	/**

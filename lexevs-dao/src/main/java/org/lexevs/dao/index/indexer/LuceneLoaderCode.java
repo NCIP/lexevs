@@ -92,6 +92,9 @@ public abstract class LuceneLoaderCode {
     /** The CODIN g_ schem e_ i d_ field. */
     public static String CODING_SCHEME_ID_FIELD = "codingSchemeId";
     
+    /** The CODIN g_ schem e_ i d_ field. */
+    public static String CODING_SCHEME_VERSION_FIELD = "codingSchemeVersion";
+    
     /** The CODIN g_ schem e_ ur i_ versio n_ ke y_ field. */
     public static String CODING_SCHEME_URI_VERSION_KEY_FIELD = "csUriVersionKey";
     
@@ -203,6 +206,8 @@ public abstract class LuceneLoaderCode {
         fields.append(CODING_SCHEME_NAME_FIELD + " ");
         generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
         fields.append(CODING_SCHEME_ID_FIELD + " ");
+        generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
+        fields.append(CODING_SCHEME_VERSION_FIELD + " ");
         generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
         fields.append(idFieldName + "Tokenized ");
         generator_.addTextField(idFieldName, entityCode, true, true, false);

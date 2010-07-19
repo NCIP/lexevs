@@ -21,12 +21,18 @@ package org.lexevs.dao.index.access;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
+import org.lexevs.dao.index.lucene.v2010.entity.SingleTemplateDisposableLuceneCommonEntityDao;
+import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
+
 import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
@@ -46,6 +52,8 @@ public class IndexDaoManager {
 	private SystemResourceService systemResourceService;
 	
 	private MetaData metaData;
+	
+	private IndexRegistry indexRegistry;
 
 	/**
 	 * Gets the entity dao.
@@ -57,6 +65,24 @@ public class IndexDaoManager {
 	 */
 	public EntityDao getEntityDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
+	}
+	
+	public CommonEntityDao getCommonEntityDao(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+		LuceneIndexTemplate template = null;
+		for(AbsoluteCodingSchemeVersionReference ref : codingSchemes) {
+			LuceneIndexTemplate foundTemplate = 
+				indexRegistry.getLuceneIndexTemplate(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+			if(template == null) {
+				template = foundTemplate;
+			} else {
+				if(! foundTemplate.equals(template)) {
+					throw new RuntimeException("Cannot find a Common Index for the Coding Schemes Requested");
+				}
+			}
+		}
+		Assert.notNull(template);
+		
+		return new SingleTemplateDisposableLuceneCommonEntityDao(template, codingSchemes);
 	}
 	
 	public MetadataDao getMetadataDao(){
@@ -181,5 +207,13 @@ public class IndexDaoManager {
 
 	public MetaData getMetaData() {
 		return metaData;
+	}
+
+	public IndexRegistry getIndexRegistry() {
+		return indexRegistry;
+	}
+
+	public void setIndexRegistry(IndexRegistry indexRegistry) {
+		this.indexRegistry = indexRegistry;
 	}
 }

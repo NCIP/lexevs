@@ -728,6 +728,7 @@
 	<bean id="indexDaoManager" class="org.lexevs.dao.index.access.IndexDaoManager">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="metaData" ref="luceneIndexMetadataFactory"/>
+		<property name="indexRegistry" ref="indexRegistry"/>
 		<property name="entityDaos">
 			<list>
 				<ref bean="luceneIndexEntityDao"/>
@@ -810,6 +811,7 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="metaData" ref="luceneIndexMetadataFactory"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
 	</bean>
 
 </beans>

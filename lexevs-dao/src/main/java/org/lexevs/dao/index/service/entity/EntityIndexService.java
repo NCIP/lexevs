@@ -23,6 +23,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
@@ -84,6 +85,7 @@ public interface EntityIndexService {
 	 */
 	public List<ScoreDoc> query(String codingSchemeUri, String codingSchemeVersion, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 
+	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query);
 	/**
 	 * Gets the match all docs query.
 	 * 
@@ -92,5 +94,18 @@ public interface EntityIndexService {
 	 * @return the match all docs query
 	 */
 	public Query getMatchAllDocsQuery(AbsoluteCodingSchemeVersionReference reference);
+	
+	public Filter getBoundaryDocsHitAsAWholeFilter(
+			String codingSchemeUri, 
+			String version, 
+			Query query);
+	
+	public Document getDocumentFromCommonIndexById(List<AbsoluteCodingSchemeVersionReference> references, int id);
+	
+	public List<ScoreDoc> queryCommonIndex(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
+			Query query);
+
+	public Filter getCodingSchemeFilter(String uri, String internalVersionString);
 
 }

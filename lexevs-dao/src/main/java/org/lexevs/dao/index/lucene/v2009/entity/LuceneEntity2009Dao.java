@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
@@ -62,7 +63,7 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 	@Override
 	protected Filter getCodingSchemeFilterForCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion) {
-		return null;
+		return new QueryWrapperFilter(new MatchAllDocsQuery());
 	}
 
 	@Override
