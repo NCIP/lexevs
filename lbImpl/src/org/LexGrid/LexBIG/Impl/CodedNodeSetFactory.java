@@ -21,7 +21,9 @@ package org.LexGrid.LexBIG.Impl;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -49,7 +51,7 @@ public class CodedNodeSetFactory {
      * @throws LBParameterException the LB parameter exception
      */
     public CodedNodeSet getCodedNodeSet(String codingScheme, CodingSchemeVersionOrTag versionOrTag, Boolean activeOnly, LocalNameList types)
-    throws LBParameterException {
+    throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
         String version = ServiceUtility.getVersion(codingScheme, versionOrTag);
 
@@ -59,23 +61,17 @@ public class CodedNodeSetFactory {
             registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
 
         if(entry.getDbSchemaVersion().equals(VERSION_18)){
-            try {
-                return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
-            } catch (LBException e) {
-                throw new RuntimeException(e);
-            }
+
+            return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
 
         }
-        
+
         if(entry.getDbSchemaVersion().equals(VERSION_20)){
-             try {
-                 //return normal CodedNodeSet for now.
-                 return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
-            } catch (LBException e) {
-                throw new RuntimeException(e);
-            }
+
+            return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
+
         }
-        
+
         throw new LBParameterException("Could not create a CodedNodeSet for CodingScheme: " + codingScheme);
     }
 }
