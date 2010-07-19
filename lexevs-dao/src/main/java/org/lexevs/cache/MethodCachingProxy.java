@@ -36,6 +36,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.beans.factory.InitializingBean;
@@ -83,12 +84,8 @@ public class MethodCachingProxy implements InitializingBean {
 	 * 
 	 * @throws Throwable the throwable
 	 */
-	@Around("@within(org.lexevs.cache.annotation.Cacheable) && " +
-			"@annotation(org.lexevs.cache.annotation.ClearCache)")
-	public Object clearCache(ProceedingJoinPoint pjp) throws Throwable {
+	protected Object clearCache(ProceedingJoinPoint pjp) throws Throwable {
 		logger.debug("Clearing cache.");
-		
-		logCacheState(pjp);
 		
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(pjp.getThis().getClass(), Cacheable.class);
 		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
@@ -114,11 +111,15 @@ public class MethodCachingProxy implements InitializingBean {
 	 * @throws Throwable the throwable
 	 */
 	@Around("@within(org.lexevs.cache.annotation.Cacheable) && " +
-			"@annotation(org.lexevs.cache.annotation.CacheMethod)")
-	public Object cacheMethod(ProceedingJoinPoint pjp) throws Throwable {
+			"( @annotation(org.lexevs.cache.annotation.CacheMethod) || @annotation(org.lexevs.cache.annotation.ClearCache) )")
+	public synchronized Object cacheMethod(ProceedingJoinPoint pjp) throws Throwable {
 		logCacheState(pjp);
-		
+
 		MethodSignature sig = (MethodSignature)pjp.getSignature();
+		
+		if(sig.getMethod().isAnnotationPresent(ClearCache.class)) {
+			return this.clearCache(pjp);
+		}
 
 		Annotation[][] parameterAnnotations = sig.getMethod().getParameterAnnotations();
 		
