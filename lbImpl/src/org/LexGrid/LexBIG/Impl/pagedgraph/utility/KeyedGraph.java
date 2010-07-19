@@ -98,7 +98,6 @@ public class KeyedGraph {
             AssociatedConcept ac2 = slaveTree.nodes.get(pair);
             
             if(ac1 != null && ac2 != null) {
-                System.out.println("Unioning: " + pair.getCode());
                 AssociatedConcept unionedConcept = union(ac1, ac2);
                 ac1.setSourceOf(unionedConcept.getSourceOf());
                 ac1.setTargetOf(unionedConcept.getTargetOf());   
@@ -180,6 +179,5 @@ public class KeyedGraph {
 
     public void setRoots(Set<CodeNamespacePair> roots) {
         this.roots = roots;
-    }
-    
+    } 
 }
