@@ -62,7 +62,7 @@ public class AssociationAuthoringOperationImpl implements
 					sourceCodeSystemIdentifier.getCodingSchemeVersion(),
 					targetCodingSchemeName,
 					targetCodeSystemIdentifier.getCodingSchemeVersion(),
-					associationType);
+					associationType, false);
 		}
 		if (createMappingScheme == false && mappingScheme != null){
 			CodingScheme sourceScheme = authoring.getCodingSchemeMetaData(sourceCodeSystemIdentifier);
