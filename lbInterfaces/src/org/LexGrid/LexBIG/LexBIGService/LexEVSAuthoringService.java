@@ -59,7 +59,7 @@ public interface LexEVSAuthoringService {
 	public void createMappingWithDefaultValues(
 			AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
 			String sourceCodingSchemeVersion, String targetCodingScheme,
-			String targetCodingSchemeVersion, String associationName)
+			String targetCodingSchemeVersion, String associationName,  boolean loadEntities)
 			throws LBException;
 
 	public Entities createEntities(CodingScheme scheme)throws LBException;
