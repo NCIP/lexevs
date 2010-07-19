@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -29,34 +30,45 @@ import org.hibernate.type.EntityType;
 import org.lexevs.cts2.BaseService;
 
 public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
+	public CodeSystemQueryOperationImpl() {
+		
+	}
 
 	@Override
 	public AssociationEntity getAssociationTypeDetails(String codingSchemeName,
 			CodingSchemeVersionOrTag versionOrTag, String associationName) {
-		
 		try {
-			
-			CodingScheme codingScheme = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingSchemeName, versionOrTag);
-			
 			String sacodingSchemeName = null;
 			String code = null;
 			String namespace = null;
-			for(SupportedAssociation assoc : codingScheme.getMappings().getSupportedAssociation()) {
+			for(SupportedAssociation assoc : this.listAssociationTypes(codingSchemeName, versionOrTag)) {
 				if(assoc.getContent().equals(associationName)) {
-					sacodingSchemeName = assoc.getCodingScheme();
-					code = assoc.getEntityCode();
-					namespace = assoc.getEntityCodeNamespace();
+					if (assoc.getCodingScheme() == null)
+						sacodingSchemeName = codingSchemeName;
+					else
+						sacodingSchemeName = assoc.getCodingScheme();
+					if (assoc.getEntityCode() == null) 
+						code = associationName;
+					else
+						code = assoc.getEntityCode();
+					if (assoc.getEntityCodeNamespace() == null)
+						namespace = codingSchemeName;
+					else
+						namespace = assoc.getEntityCodeNamespace();
 				}
 			}
 			
-			CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getCodingSchemeConcepts(sacodingSchemeName, versionOrTag);
+			CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getNodeSet(sacodingSchemeName, versionOrTag, Constructors.createLocalNameList("association"));
 		
 			cns = cns.restrictToCodes(Constructors.createConceptReferenceList(code, namespace, sacodingSchemeName));
-			
-			AssociationEntity entity = (AssociationEntity) cns.resolve(null, null, null).next().getEntity();
-			
-			return entity;
-		
+			ResolvedConceptReferencesIterator resolvedConList = cns.resolve(null, null, null);
+			if (resolvedConList.hasNext()) {
+				Object entity = cns.resolve(null, null, null).next().getEntity();
+				if (entity instanceof AssociationEntity)
+					return (AssociationEntity)entity;
+				else
+					throw new LBException("Now valid Association Entity found");
+			}
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,7 +115,6 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 
 	@Override
 	public List<SupportedAssociation> listAssociationTypes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag) {
-		List<SupportedAssociation> associationList = new ArrayList<SupportedAssociation>();
 		CodingScheme cs = this.getCodeSystemDetails(codingSchemeName, versionOrTag);
 		return cs.getMappings().getSupportedAssociationAsReference();
 	}
@@ -124,22 +135,22 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 					.defaultInstance().getSupportedCodingSchemes()
 					.getCodingSchemeRendering()) {
 				CodingSchemeSummary css = csr.getCodingSchemeSummary();
-				if (css.getCodingSchemeURI() != null
+				if (queryByExample.getCodingSchemeURI() != null
 						&& StringUtils.equals(css.getCodingSchemeURI(),
 								queryByExample.getCodingSchemeURI()) == false)
 					continue;
 
-				if (css.getRepresentsVersion() != null
+				if (queryByExample.getRepresentsVersion() != null
 						&& StringUtils.equals(css.getRepresentsVersion(),
 								queryByExample.getRepresentsVersion()) == false)
 					continue;
 
-				if (css.getFormalName() != null
+				if (queryByExample.getFormalName() != null
 						&& StringUtils.equals(css.getFormalName(),
 								queryByExample.getFormalName()) == false)
 					continue;
 
-				if (css.getLocalName() != null
+				if (queryByExample.getLocalName() != null
 						&& StringUtils.equals(css.getLocalName(),
 								queryByExample.getLocalName()) == false)
 					continue;
