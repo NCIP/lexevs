@@ -18,9 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.*;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
@@ -51,8 +49,9 @@ public class ResolvedConceptReferencesIteratorImplTest extends LexBIGServiceTest
      * 
      * @throws LBResourceUnavailableException the LB resource unavailable exception
      */
-    public void testHasNext() throws LBResourceUnavailableException{   
+    public void testHasNext() throws Exception{   
         CodeHolder holder = createMock(CodeHolder.class);
+        expect(holder.clone()).andReturn(holder).anyTimes();
         expect(holder.getNumberOfCodes()).andReturn(10).anyTimes();
         replay(holder);
         
@@ -66,8 +65,9 @@ public class ResolvedConceptReferencesIteratorImplTest extends LexBIGServiceTest
      * 
      * @throws LBResourceUnavailableException the LB resource unavailable exception
      */
-    public void testHasNextWithEmptyCodeHolder() throws LBResourceUnavailableException{   
+    public void testHasNextWithEmptyCodeHolder() throws Exception{   
         CodeHolder holder = createMock(CodeHolder.class);
+        expect(holder.clone()).andReturn(holder).anyTimes();
         expect(holder.getNumberOfCodes()).andReturn(0).anyTimes();
         replay(holder);
         
