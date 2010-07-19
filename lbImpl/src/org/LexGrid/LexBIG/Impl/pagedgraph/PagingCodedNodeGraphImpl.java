@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -135,8 +136,12 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             
             if(focus == null) {
                 if(graphFocus.getCodeNamespace() != null) {
-                    AbsoluteCodingSchemeVersionReference ref = 
-                        namespaceHandler.getCodingSchemeForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
+                    AbsoluteCodingSchemeVersionReference ref = null;
+                    try {
+                        ref = namespaceHandler.getCodingSchemeForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
+                    } catch (LBParameterException e) {
+                       LoggerFactory.getLogger().warn(e.getMessage());
+                    }
                 
                     if(ref != null) {
                         focus =
