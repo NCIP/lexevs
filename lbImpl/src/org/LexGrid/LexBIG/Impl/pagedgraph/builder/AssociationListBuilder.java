@@ -27,8 +27,12 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
@@ -37,6 +41,7 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.Assert;
 
 /**
@@ -51,17 +56,14 @@ public class AssociationListBuilder implements Serializable{
     /** The associated concept page size. */
     private int associatedConceptPageSize = 100;
     
+    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
     /**
      * The Enum AssociationDirection.
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
     public enum AssociationDirection {
-        
-        /** The SOURC e_ of. */
         SOURCE_OF,
-        
-        /** The TARGE t_ of. */
         TARGET_OF}
     
     /** The database service manager. */
@@ -284,9 +286,48 @@ public class AssociationListBuilder implements Serializable{
 
                     returnList.addAssociation(association);
                 }
+            }
+        }
+        
+        if(returnList.getAssociationCount() == 0) {
+            String adjustedCodingSchemeUri;
+            String adjustedCodingSchemeVersion;
 
+            try {
+                AbsoluteCodingSchemeVersionReference ref = this.namespaceHandler.getCodingSchemeForNamespace(
+                        codingSchemeUri, 
+                        version, 
+                        entityCodeNamespace);
+                adjustedCodingSchemeUri = ref.getCodingSchemeURN();
+                adjustedCodingSchemeVersion = ref.getCodingSchemeVersion();
+
+            } catch (LBParameterException e) {
+                LoggerFactory.getLogger().info("Cannot map namespace: " +  entityCodeNamespace);
+
+                return returnList;
             }
 
+            if(! adjustedCodingSchemeUri.equals(codingSchemeUri) ||
+                    ! adjustedCodingSchemeVersion.endsWith(version)) {
+                return this.doBuildAssociationList(
+                        adjustedCodingSchemeUri, 
+                        adjustedCodingSchemeVersion, 
+                        entityCode, 
+                        entityCodeNamespace, 
+                        null, 
+                        resolveForward, 
+                        resolveBackward, 
+                        resolveForwardAssociationDepth, 
+                        resolveBackwardAssociationDepth, 
+                        resolveCodedEntryDepth,
+                        graphQuery, 
+                        propertyNames, 
+                        propertyTypes, 
+                        sortAlgorithms, 
+                        filterOptions, 
+                        cycleDetectingCallback, 
+                        direction);
+            }
         }
 
         if(ResultComparator.isSortOptionListValid(sortAlgorithms)) {

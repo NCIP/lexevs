@@ -37,7 +37,6 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.annotations.LgProxyClass;
-import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;

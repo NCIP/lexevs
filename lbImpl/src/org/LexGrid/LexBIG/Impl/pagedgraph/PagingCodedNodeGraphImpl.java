@@ -214,10 +214,11 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         }
 
         if(resolveForward && shouldResolveNextLevel(resolveAssociationDepth)) {
+ 
             focus.setSourceOf(
             		associationListBuilder.buildSourceOfAssociationList(
-                    codingSchemeUri,
-                    version, 
+            		this.getCodingSchemeUri(),
+            		this.getVersion(),
                     focus.getCode(),
                     focus.getCodeNamespace(),
                     relationsContainerName,
@@ -237,8 +238,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         if(resolveBackward && shouldResolveNextLevel(resolveAssociationDepth)) {
             focus.setTargetOf(
             		associationListBuilder.buildTargetOfAssociationList(
-                    codingSchemeUri,
-                    version, 
+            		this.getCodingSchemeUri(),
+                    this.getVersion(),
                     focus.getCode(),
                     focus.getCodeNamespace(),
                     relationsContainerName,
