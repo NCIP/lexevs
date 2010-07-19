@@ -156,11 +156,14 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
                                         + SQLTableConstants.TBLCOL_CONCEPTSTATUS
                                         + "' is no longer supported in this restriction - please use 'RestrictToStatus' instead");
                     } else {
-                        String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
-                        // this will throw the necessary exceptions
-                        if(!codingSchemeService.
-                            validatedSupportedAttribute(uri, internalVersionString, item, SupportedProperty.class)) {
-                            throw new LBParameterException("Property: " + item + " is not a Supported Property.");
+                        
+                        if(internalCodeSystemName!= null && internalVersionString != null) {
+                            String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+                            // this will throw the necessary exceptions
+                            if(!codingSchemeService.
+                                    validatedSupportedAttribute(uri, internalVersionString, item, SupportedProperty.class)) {
+                                throw new LBParameterException("Property: " + item + " is not a Supported Property.");
+                            }
                         }
                         
                         propertyList_.addEntry(item);

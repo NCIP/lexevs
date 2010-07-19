@@ -44,6 +44,11 @@ public class RestrictToMatchingDesignations implements Restriction, Operation {
     private Query textQuery_;
     private SearchDesignationOption preferredOnly_;
     private String language_;
+    
+    public RestrictToMatchingDesignations(String matchText, SearchDesignationOption preferredOnly,
+            String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
+        this(matchText, preferredOnly, matchAlgorithm, language, null, null);
+    }
 
     public RestrictToMatchingDesignations(String matchText, SearchDesignationOption preferredOnly,
             String matchAlgorithm, String language, String internalCodeSystemName, String internalVersionString)
@@ -56,8 +61,10 @@ public class RestrictToMatchingDesignations implements Restriction, Operation {
             textQuery_ = search.buildQuery(matchText);
 
             preferredOnly_ = preferredOnly;
+            
+            boolean canValidate = internalCodeSystemName != null && internalVersionString != null;
 
-            if (language != null && language.length() > 0) {
+            if (canValidate && language != null && language.length() > 0) {
                 // this validated that language (throws exceptions as necessary)
                 ServiceUtility.validateParameter(internalCodeSystemName, internalVersionString, language, SupportedLanguage.class);
             }

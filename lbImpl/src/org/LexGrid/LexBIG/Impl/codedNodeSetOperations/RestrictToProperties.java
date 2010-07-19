@@ -138,14 +138,17 @@ public class RestrictToProperties implements Restriction, Operation {
             String internalCodeSystemName, 
             String internalVersionString, 
             String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
-        String uri = 
-            LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
-        
-        boolean isValid = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+        if(internalCodeSystemName != null && internalVersionString != null) {
+
+            String uri = 
+                LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+
+            boolean isValid = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
             getCodingSchemeService().validatedSupportedAttribute(uri, internalVersionString, localId, supportedAttributeClass);
-        
-        if(!isValid) {
-            throw new LBParameterException("Attribute with Id: " + localId + " is not valid, or is not registered as a " + supportedAttributeClass.getSimpleName());
+
+            if(!isValid) {
+                throw new LBParameterException("Attribute with Id: " + localId + " is not valid, or is not registered as a " + supportedAttributeClass.getSimpleName());
+            }
         }
     }
 
