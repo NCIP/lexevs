@@ -19,7 +19,7 @@
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_codingScheme_codingScheme">
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_codingScheme_codingScheme" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
       <index name="releaseGuid">
@@ -198,9 +198,6 @@
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@propertyMultiAttrib" name="@PREFIX@FK_h_propertyMul_propertyMulti">
-        <reference local="propMultiAttribGuid" foreign="propMultiAttribGuid"/>
-      </foreign-key>
       <index name="@PREFIX@idx_h_propertyMultiAttrib">
         <index-column name="propertyGuid"/>
       </index>
