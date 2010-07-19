@@ -11,6 +11,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -64,114 +65,120 @@ public class LexEVSMappingLoadTest extends TestCase {
 		}
 	}
 
-	public void testMappingLoad() throws LBException {
-		AssociationSource source = new AssociationSource();
-		AssociationSource source1 = new AssociationSource();
-		AssociationSource source2 = new AssociationSource();
-		source.setSourceEntityCode("T0001");
-		source.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
-		AssociationTarget target = new AssociationTarget();
-		target.setTargetEntityCode("005");
-		target.setTargetEntityCodeNamespace("Automobiles");
-		source.addTarget(target);
-
-		source1.setSourceEntityCode("P0001");
-		source1.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
-		AssociationTarget target1 = new AssociationTarget();
-		target1.setTargetEntityCode("A0001");
-		target1.setTargetEntityCodeNamespace("Automobiles");
-		source1.addTarget(target1);
-
-		source2.setSourceEntityCode("P0001");
-		source2.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
-		AssociationTarget target2 = new AssociationTarget();
-		target2.setTargetEntityCode("005");
-		target2.setTargetEntityCodeNamespace("Automobiles");
-		source2.addTarget(target2);
-		AssociationSource[] sources = new AssociationSource[] { source,
-				source1, source2 };
-
-		try {
-			loadMappings(sources);
-		} catch (ClassNotFoundException e) {
-			// do nothing
-		}
-	}
-
-	public void testLoadMappings() throws LBException {
-		// LocalNameList localNameList =
-		// ConvenienceMethods.createLocalNameList(new String[]{"name1", "name2",
-		// "name3"});
-		List<String> localNameList = Arrays.asList(new String[] { "name1",
-				"name2", "name3" });
-		Source source = new Source();
-		source.setContent("Source_Vocabulary");
-		List<Source> sourceList = Arrays.asList();
-		Text copyright = new Text();
-		copyright.setContent("Mayo copyright");
-		CodingScheme mappingSchemeMetadata = authoring.populateCodingScheme(
-				"Mapping_Test", "Tested_URI", "Formal_Mapping_Name", "EN", 5L,
-				"0.0", localNameList, sourceList, copyright, new Mappings(),
-				null, null, null);
-
-		AssociationTarget target1 = createTargetWithValuesPopulated();
-		AssociationTarget target2 = createTarget("Ford", "Automobiles");
-		AssociationTarget target3 = createTarget("73", "Automobiles");
-		AssociationTarget[] targets = new AssociationTarget[] { target1,
-				target2, target3 };
-		AssociationSource associationSource = new AssociationSource();
-		associationSource.setSourceEntityCode("R0001");
-		associationSource
-				.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
-		associationSource.setTarget(targets);
-		AssociationSource[] sourcesAndTargets = new AssociationSource[] { associationSource };
-		String sourceCodingScheme = SOURCE_SCHEME;
-		String sourceCodingSchemeVersion = SOURCE_VERSION;
-		String targetCodingScheme = TARGET_SCHEME;
-		String targetCodingSchemeVersion = TARGET_VERSION;
-		String associationName = "SY";
-		String relationsContainerName = "GermanMadeParts_to_Automobiles_Mappings";
-		String revisionId = "Non-Default_NEW_Mapping";
-		authoring.createMappingScheme(mappingSchemeMetadata, sourcesAndTargets,
-				sourceCodingScheme, sourceCodingSchemeVersion,
-				targetCodingScheme, targetCodingSchemeVersion, associationName,
-				relationsContainerName, revisionId, true);
-		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
-		codingSchemeVersion.setCodingSchemeURN(mappingSchemeMetadata.getCodingSchemeURI());
-		codingSchemeVersion.setCodingSchemeVersion(mappingSchemeMetadata.getRepresentsVersion());
-		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
-	}
-
-	public void testLoadedMappingsEntities() throws LBException {
-
-		CodedNodeSet cns = lbs.getCodingSchemeConcepts(
-				"http://default.mapping.container", csvt);
-		String[] codes = new String[] { "T0001", "P0001", "A0001", "005" };
-		ConceptReferenceList list = ConvenienceMethods
-				.createConceptReferenceList(codes);
-		cns = cns.restrictToCodes(list);
-		ResolvedConceptReferencesIterator rcrl = cns.resolve(null, null, null);
-		List<String> codeList = Arrays.asList(codes);
-		while (rcrl.hasNext()) {
-			ResolvedConceptReference rcr = rcrl.next();
-			if (!codeList.contains(rcr.getConceptCode())) {
-				fail("code not found in concept reference list");
-			}
-		}
-	}
+//	public void testMappingLoad() throws LBException {
+//		AssociationSource source = new AssociationSource();
+//		AssociationSource source1 = new AssociationSource();
+//		AssociationSource source2 = new AssociationSource();
+//		source.setSourceEntityCode("T0001");
+//		source.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+//		AssociationTarget target = new AssociationTarget();
+//		target.setTargetEntityCode("005");
+//		target.setTargetEntityCodeNamespace("Automobiles");
+//		source.addTarget(target);
+//
+//		source1.setSourceEntityCode("P0001");
+//		source1.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+//		AssociationTarget target1 = new AssociationTarget();
+//		target1.setTargetEntityCode("A0001");
+//		target1.setTargetEntityCodeNamespace("Automobiles");
+//		source1.addTarget(target1);
+//
+//		source2.setSourceEntityCode("P0001");
+//		source2.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+//		AssociationTarget target2 = new AssociationTarget();
+//		target2.setTargetEntityCode("005");
+//		target2.setTargetEntityCodeNamespace("Automobiles");
+//		source2.addTarget(target2);
+//		AssociationSource[] sources = new AssociationSource[] { source,
+//				source1, source2 };
+//
+//		try {
+//			loadMappings(sources);
+//		} catch (ClassNotFoundException e) {
+//			// do nothing
+//		}
+//	}
+//
+//	public void testLoadMappings() throws LBException {
+//		// LocalNameList localNameList =
+//		// ConvenienceMethods.createLocalNameList(new String[]{"name1", "name2",
+//		// "name3"});
+//		List<String> localNameList = Arrays.asList(new String[] { "name1",
+//				"name2", "name3" });
+//		Source source = new Source();
+//		source.setContent("Source_Vocabulary");
+//		List<Source> sourceList = Arrays.asList();
+//		Text copyright = new Text();
+//		copyright.setContent("Mayo copyright");
+//		CodingScheme mappingSchemeMetadata = authoring.populateCodingScheme(
+//				"Mapping_Test", "Tested_URI", "Formal_Mapping_Name", "EN", 5L,
+//				"0.0", localNameList, sourceList, copyright, new Mappings(),
+//				null, null, null);
+//
+//		AssociationTarget target1 = createTargetWithValuesPopulated();
+//		AssociationTarget target2 = createTarget("Ford", "Automobiles");
+//		AssociationTarget target3 = createTarget("73", "Automobiles");
+//		AssociationTarget[] targets = new AssociationTarget[] { target1,
+//				target2, target3 };
+//		AssociationSource associationSource = new AssociationSource();
+//		associationSource.setSourceEntityCode("R0001");
+//		associationSource
+//				.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+//		associationSource.setTarget(targets);
+//		AssociationSource[] sourcesAndTargets = new AssociationSource[] { associationSource };
+//		String sourceCodingScheme = SOURCE_SCHEME;
+//		String sourceCodingSchemeVersion = SOURCE_VERSION;
+//		String targetCodingScheme = TARGET_SCHEME;
+//		String targetCodingSchemeVersion = TARGET_VERSION;
+//		String associationName = "SY";
+//		String relationsContainerName = "GermanMadeParts_to_Automobiles_Mappings";
+//		String revisionId = "Non-Default_NEW_Mapping";
+//		authoring.createMappingScheme(mappingSchemeMetadata, sourcesAndTargets,
+//				sourceCodingScheme, sourceCodingSchemeVersion,
+//				targetCodingScheme, targetCodingSchemeVersion, associationName,
+//				relationsContainerName, revisionId, false);
+//		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
+//		codingSchemeVersion.setCodingSchemeURN(mappingSchemeMetadata.getCodingSchemeURI());
+//		codingSchemeVersion.setCodingSchemeVersion(mappingSchemeMetadata.getRepresentsVersion());
+//		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
+//	}
+//
+//	public void testLoadedMappingsEntities() throws LBException {
+//
+//		CodedNodeSet cns = lbs.getCodingSchemeConcepts(
+//				"http://default.mapping.container", csvt);
+//		String[] codes = new String[] { "T0001", "P0001", "A0001", "005" };
+//		ConceptReferenceList list = ConvenienceMethods
+//				.createConceptReferenceList(codes);
+//		cns = cns.restrictToCodes(list);
+//		ResolvedConceptReferencesIterator rcrl = cns.resolve(null, null, null);
+//		List<String> codeList = Arrays.asList(codes);
+//		while (rcrl.hasNext()) {
+//			ResolvedConceptReference rcr = rcrl.next();
+//			if (!codeList.contains(rcr.getConceptCode())) {
+//				fail("code not found in concept reference list");
+//			}
+//		}
+//	}
 
 	public void testLoadedMappedAssociations() throws LBException {
 		String[] codes = new String[] { "T0001", "P0001", "A0001", "005" };
 		List<String> codeList = Arrays.asList(codes);
+		ConceptReference cr = new ConceptReference();
+		cr.setCode("T0001");
+		cr.setCodeNamespace("GermanMadePartsNamespace");
+		cr.setCodingSchemeName("GermanMadeParts");
+		ConceptReference cr2 = new ConceptReference();
+		cr2.setCode("005");
+		cr2.setCodeNamespace("Automobiles");
+		cr2.setCodingSchemeName("Automobiles");
 		CodedNodeGraph cng = lbs.getNodeGraph(
 				"http://default.mapping.container", csvt, null);
 		ResolvedConceptReferenceList rcrl = cng.resolveAsList(
-				ConvenienceMethods.createConceptReference("T0001",
-						"http://default.mapping.container"), true, true, -1,
+				cr, true, false, -1,
 				-1, null, null, null, -1);
 		ResolvedConceptReferenceList rcrl1 = cng.resolveAsList(
-				ConvenienceMethods.createConceptReference("P0001",
-						"http://default.mapping.container"), true, true, -1,
+			cr2, false, true, -1,
 				-1, null, null, null, -1);
 		ResolvedConceptReference[] conceptList1 = rcrl
 				.getResolvedConceptReference();
@@ -191,7 +198,7 @@ public class LexEVSMappingLoadTest extends TestCase {
 		}
 
 		for (ResolvedConceptReference rcr : conceptList2) {
-			Association[] assoc = rcr.getSourceOf().getAssociation();
+			Association[] assoc = rcr.getTargetOf().getAssociation();
 			for (Association a : assoc) {
 				AssociatedConcept[] concepts = a.getAssociatedConcepts()
 						.getAssociatedConcept();
@@ -207,7 +214,7 @@ public class LexEVSMappingLoadTest extends TestCase {
 	public void loadMappings(AssociationSource[] sources)
 			throws ClassNotFoundException, LBException {
 		authoring.createMappingWithDefaultValues(sources, "GermanMadeParts",
-				"2.0", "Automobiles", "1.0", "SY");
+				"2.0", "Automobiles", "1.0", "SY", false);
 		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
 		codingSchemeVersion
 				.setCodingSchemeURN("http://default.mapping.container");
