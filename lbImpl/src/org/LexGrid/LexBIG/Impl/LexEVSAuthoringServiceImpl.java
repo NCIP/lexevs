@@ -94,7 +94,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         setCodingSchemes();
     }
     
-    //TODO return void and persist the coding scheme as a revision
+ 
     @Override
     public CodingScheme createCodingScheme(Revision revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
@@ -149,7 +149,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             String relationsContainerName,
             Date effectiveDate,
             AssociationQualification[] associationQualifiers,
-            Revision revision
+            Revision revision 
             )
             throws LBException {
 
@@ -230,15 +230,14 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
           revisedScheme.setRelations(relations);
         
         //process the entities for the mappings coding scheme.
-        Entities entities = processEntitiesForExistingMappingScheme(revisedScheme,
-                associationSources, 
-                sourceCodingScheme.getCodingSchemeURN(),
-        sourceCodingScheme.getCodingSchemeVersion(), 
-        targetCodingScheme.getCodingSchemeURN(), 
-        targetCodingScheme.getCodingSchemeVersion(), 
-        newEntryState);
-        //TODO Recalculate concept count? revisedScheme.setApproxNumConcepts(new Long(entities.getEntityCount()));
-        revisedScheme.setEntities(entities);
+//        Entities entities = processEntitiesForExistingMappingScheme(revisedScheme,
+//                associationSources, 
+//                sourceCodingScheme.getCodingSchemeURN(),
+//        sourceCodingScheme.getCodingSchemeVersion(), 
+//        targetCodingScheme.getCodingSchemeURN(), 
+//        targetCodingScheme.getCodingSchemeVersion(), 
+//        newEntryState);
+//        revisedScheme.setEntities(entities);
         String sourceSchemeName = getCodingSchemeNameForMininumReference(sourceCodingScheme);
         String targetSchemeName = getCodingSchemeNameForMininumReference(targetCodingScheme);
         
@@ -271,7 +270,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     @Override
     public void createMappingWithDefaultValues(AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
             String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
-            String associationName) throws LBException {
+            String associationName,  boolean loadEntities) throws LBException {
         
         CodingScheme newScheme;
         //Create an entry state to attach to all version-able elements
@@ -289,11 +288,13 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         newScheme.setRelations(Arrays.asList(relationsContainer));
         
         //process the entities for the mappings coding scheme.
-        Entities entities = processMappingEntities(sourcesAndTargets,sourceCodingScheme,
+        Entities entities;
+        if(loadEntities){
+        entities = processMappingEntities(sourcesAndTargets,sourceCodingScheme,
         sourceCodingSchemeVersion, targetCodingScheme, targetCodingSchemeVersion, entryState);
         newScheme.setApproxNumConcepts(new Long(entities.getEntityCount()));
         newScheme.setEntities(entities);
-        
+        }
         //Set up the supported entitities necessary for this coding scheme.
         newScheme.setMappings(processMappingsForAssociationMappings(sourceCodingScheme,
             sourceCodingSchemeVersion, targetCodingScheme,targetCodingSchemeVersion,
@@ -348,12 +349,14 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         mappingSchemeMetadata.setRelations(relations);
 
         //process the entities for the mappings coding scheme.
-        Entities entities = processMappingEntities(sourcesAndTargets,sourceCodingScheme,
+        Entities entities = null;
+        if(loadEntities){
+        entities = processMappingEntities(sourcesAndTargets,sourceCodingScheme,
         sourceCodingSchemeVersion, targetCodingScheme, targetCodingSchemeVersion, entryState);
         mappingSchemeMetadata.setApproxNumConcepts(new Long(entities.getEntityCount()));
-        mappingSchemeMetadata.setEntities(entities);
+        mappingSchemeMetadata.setEntities(entities);}
         
-        //Set up the supported entitities necessary for this coding scheme.
+        //Set up the supported attributes necessary for this coding scheme.
         mappingSchemeMetadata.setMappings(processMappingsForAssociationMappings(sourceCodingScheme,
             sourceCodingSchemeVersion, targetCodingScheme,targetCodingSchemeVersion,
             associationName, null, null));
