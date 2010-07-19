@@ -144,7 +144,6 @@ import org.LexGrid.LexBIG.Impl.helpers.ConfigureTest;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImplTest;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparatorTest;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadableCodeToReturnTest;
-import org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadingCodeToReturnInterceptorTest;
 import org.LexGrid.LexBIG.Impl.load.meta.DefinitionPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.DefinitionQualifiersDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityAssnsToEntityDataTestIT;
@@ -235,7 +234,6 @@ public class AllTestsAllConfigs {
             
             TestSuite lazyLoadingSuite = new TestSuite("Lazy Loading Tests");
             lazyLoadingSuite.addTestSuite(LazyLoadableCodeToReturnTest.class);
-            lazyLoadingSuite.addTestSuite(LazyLoadingCodeToReturnInterceptorTest.class);
             currentSuite.addTest(lazyLoadingSuite);
             
             TestSuite comparatorSuite = new TestSuite("Comparator Tests");
