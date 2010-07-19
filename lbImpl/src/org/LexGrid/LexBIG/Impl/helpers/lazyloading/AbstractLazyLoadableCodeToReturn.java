@@ -32,7 +32,7 @@ import org.lexevs.system.service.SystemResourceService;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LazyLoadableCodeToReturn extends CodeToReturn {
+public abstract class AbstractLazyLoadableCodeToReturn extends CodeToReturn {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2847101693632620073L;
@@ -40,24 +40,16 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
     /** The document id. */
     private int documentId;
     
-    /** The internal code system name. */
-    private String internalCodeSystemName;
-    
-    /** The internal version string. */
-    private String internalVersionString;
-    
     /** The is hydrated. */
     private boolean isHydrated = false;
     
-    private transient EntityIndexService entityIndexService;
-    
     private transient SystemResourceService systemResourceService;
-    
+    private transient EntityIndexService entityIndexService;
     
     /**
      * Instantiates a new lazy loadable code to return.
      */
-    public LazyLoadableCodeToReturn(){
+    public AbstractLazyLoadableCodeToReturn(){
         super();
     }
     
@@ -68,9 +60,8 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
      * @param internalCodeSystemName the internal code system name
      * @param internalVersionString the internal version string
      */
-    public LazyLoadableCodeToReturn(ScoreDoc scoreDoc, String internalCodeSystemName, String internalVersionString){
-        this(   internalCodeSystemName,
-                internalVersionString,
+    public AbstractLazyLoadableCodeToReturn(ScoreDoc scoreDoc){
+        this(  
                 scoreDoc.score, 
                 scoreDoc.doc);
     }
@@ -83,20 +74,15 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
      * @param score the score
      * @param documentId the document id
      */
-    public LazyLoadableCodeToReturn(
-            String internalCodeSystemName, 
-            String internalVersionString, 
+    public AbstractLazyLoadableCodeToReturn(
             float score, 
             int documentId){
         super();
-        this.setVersion(internalVersionString);
-        this.setInternalCodeSystemName(internalCodeSystemName);
-        this.setInternalVersionString(internalVersionString);
         this.setScore(score);
         this.documentId = documentId;  
         
-        this.entityIndexService = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
         this.systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        this.entityIndexService = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
     }
     
     /**
@@ -116,8 +102,16 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
         
         this.setEntityDescription(
                 doc.get(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION));
-        this.setUri(
-                doc.get("codingSchemeId"));
+        
+        if(super.getUri() == null) {
+            this.setUri(
+                doc.get(LuceneLoaderCode.CODING_SCHEME_ID_FIELD));
+        }
+        
+        if(super.getVersion() == null) {
+            this.setVersion(
+                doc.get(LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD));
+        }
         
         this.setNamespace(
                 doc.get(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE));
@@ -126,20 +120,16 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
         isHydrated = true;       
     }
     
-    protected Document buildDocument() throws Exception {
-        String uri = getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
-        return getEntityIndexService().getDocumentById(
-                uri, internalVersionString, documentId);
-    }
+    protected abstract Document buildDocument() throws Exception;
     
-    private EntityIndexService getEntityIndexService() {
+    protected EntityIndexService getEntityIndexService() {
         if(this.entityIndexService == null) {
             this.entityIndexService = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
         }
         return this.entityIndexService;
     }
-    
-    private SystemResourceService getSystemResourceService() {
+ 
+    protected SystemResourceService getSystemResourceService() {
         if(this.systemResourceService == null) {
             this.systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         }
@@ -171,57 +161,5 @@ public class LazyLoadableCodeToReturn extends CodeToReturn {
      */
     public void setDocumentId(int documentId) {
         this.documentId = documentId;
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.Impl.helpers.CodeToReturn#setUri(java.lang.String)
-     */
-    @Override
-    public void setUri(String uri) {
-        super.setUri(uri);
-    }
-
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.Impl.helpers.CodeToReturn#setVersion(java.lang.String)
-     */
-    @Override
-    public void setVersion(String version) {
-        super.setVersion(version);
-    } 
- 
-    /**
-     * Gets the internal code system name.
-     * 
-     * @return the internal code system name
-     */
-    public String getInternalCodeSystemName() {
-        return internalCodeSystemName;
-    }
-
-    /**
-     * Sets the internal code system name.
-     * 
-     * @param internalCodeSystemName the new internal code system name
-     */
-    public void setInternalCodeSystemName(String internalCodeSystemName) {
-        this.internalCodeSystemName = internalCodeSystemName;
-    }
-
-    /**
-     * Gets the internal version string.
-     * 
-     * @return the internal version string
-     */
-    public String getInternalVersionString() {
-        return internalVersionString;
-    }
-
-    /**
-     * Sets the internal version string.
-     * 
-     * @param internalVersionString the new internal version string
-     */
-    public void setInternalVersionString(String internalVersionString) {
-        this.internalVersionString = internalVersionString;
     }
 }

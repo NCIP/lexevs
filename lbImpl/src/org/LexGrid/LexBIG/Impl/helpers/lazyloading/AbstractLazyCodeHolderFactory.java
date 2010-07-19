@@ -28,9 +28,14 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -48,7 +53,8 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory#buildCodeHolder(java.lang.String, java.lang.String, org.apache.lucene.search.Query)
      */
-    public CodeHolder buildCodeHolder(String internalCodeSystemName,
+    public CodeHolder buildCodeHolder(
+            String internalCodeSystemName,
             String internalVersionString, 
             List<BooleanQuery> combinedQuery, 
             List<Query> bitSetQueries) throws LBInvocationException, LBParameterException {
@@ -62,15 +68,71 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
             Constructors.createAbsoluteCodingSchemeVersionReference(
                 uri, internalVersionString);
 
-        AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
-
         List<ScoreDoc> scoreDocs = entityService.query(
                 ref.getCodingSchemeURN(), 
                 ref.getCodingSchemeVersion(), 
                         combinedQuery, bitSetQueries);
 
+        return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
+    }
+    
+    @Override
+    public CodeHolder buildCodeHolderWithFilters(
+            String internalCodeSystemName, 
+            String internalVersionString,
+            List<Query> queries, 
+            List<Filter> filters) throws LBInvocationException, LBParameterException {
+        IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+        EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+        
+        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+        
+        Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
+        
+        BooleanQuery combinedQuery = new BooleanQuery();
+        for(Query query : queries) {
+            combinedQuery.add(query, Occur.MUST);
+        }
+
+        Query query;
+        if(CollectionUtils.isNotEmpty(filters)) {
+            query = new FilteredQuery(combinedQuery, chainedFilter);
+        } else {
+            query = combinedQuery;
+        }
+        
+        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, query);
+
+        return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
+    }
+    
+    protected CodeHolder buildCodeHolder(
+            String internalCodeSystemName, 
+            String internalVersionString,
+            List<ScoreDoc> scoreDocs) {
+        AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
+        
         for(ScoreDoc doc : scoreDocs){
             codeHolder.add(buildCodeToReturn(doc, internalCodeSystemName, internalVersionString));
+        }
+
+        return codeHolder;
+    }
+
+    @Override
+    public CodeHolder buildCodeHolder(
+            List<AbsoluteCodingSchemeVersionReference> references, 
+            Query query) throws LBInvocationException, LBParameterException {
+        
+        List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+                getEntityIndexService().queryCommonIndex(references, query);
+        
+        AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
+        
+        for(ScoreDoc doc : scoreDocs){
+            codeHolder.add(buildCodeToReturn(doc, references));
         }
 
         return codeHolder;
@@ -86,4 +148,6 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
      * @return the code to return
      */
     protected abstract CodeToReturn buildCodeToReturn(ScoreDoc doc, String internalCodeSystemName, String internalVersionString);
+    
+    protected abstract CodeToReturn buildCodeToReturn(ScoreDoc doc, List<AbsoluteCodingSchemeVersionReference> references);
 }
