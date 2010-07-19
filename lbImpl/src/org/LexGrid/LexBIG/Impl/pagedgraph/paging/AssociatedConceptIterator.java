@@ -193,6 +193,10 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                     this.codingSchemeUri, 
                     this.codingSchemeVersion, 
                     associatedConcept.getCodeNamespace());
+	        if(ref == null) {
+	            return associatedConcept;
+	        }
+	        
 	        adjustedCodingSchemeUri = ref.getCodingSchemeURN();
 	        adjustedCodingSchemeVersion = ref.getCodingSchemeVersion();
 	        

@@ -298,9 +298,13 @@ public class AssociationListBuilder implements Serializable{
                         codingSchemeUri, 
                         version, 
                         entityCodeNamespace);
+                if(ref == null) {
+                    return returnList;
+                }
+                
                 adjustedCodingSchemeUri = ref.getCodingSchemeURN();
                 adjustedCodingSchemeVersion = ref.getCodingSchemeVersion();
-
+  
             } catch (LBParameterException e) {
                 LoggerFactory.getLogger().info("Cannot map namespace: " +  entityCodeNamespace);
 
