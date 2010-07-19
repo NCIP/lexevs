@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,6 +211,37 @@ public class DaoUtility {
 		acsvr.setCodingSchemeURN(urn);
 		acsvr.setCodingSchemeVersion(version);
 		return acsvr;
+	}
+	
+	public static String createKey(List<AbsoluteCodingSchemeVersionReference> refs) {
+		Collections.sort(refs, new Comparator<AbsoluteCodingSchemeVersionReference>() {
+
+			@Override
+			public int compare(AbsoluteCodingSchemeVersionReference o1,
+					AbsoluteCodingSchemeVersionReference o2) {
+				return (
+						o1.getCodingSchemeURN() + o1.getCodingSchemeVersion() )
+							.compareTo(
+									o2.getCodingSchemeURN() + o2.getCodingSchemeVersion());	
+			}
+		});
+		
+		String key = "";
+		for(AbsoluteCodingSchemeVersionReference ref : refs) {
+			key += createKey(ref);
+		}
+		
+		return String.valueOf(key.hashCode());
+	}
+	
+	public static String createKey(String uri, String version) {
+		Assert.noNullElements( new String[] {uri, version });
+		
+		return String.valueOf( ( uri + version ).hashCode() );
+	}
+	
+	public static String createKey(AbsoluteCodingSchemeVersionReference ref) {
+		return createKey(ref.getCodingSchemeURN(),ref.getCodingSchemeVersion());
 	}
 	
 	/**
