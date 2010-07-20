@@ -21,6 +21,8 @@
       <column name="isLocked" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
       <column name="dbSchemaVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="dbSchemaDescription" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="supplementsUri" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
+      <column name="supplementsVersion" primaryKey="false" required="false" type="VARCHAR" size="255" autoIncrement="false"/>
       <unique name="@PREFIX@UQ_registry">
         <unique-column name="resourceURI"/>
         <unique-column name="resourceVersion"/>

@@ -232,6 +232,8 @@ public interface SystemResourceService {
 	 */
 	public void updateCodingSchemeResourceStatus(AbsoluteCodingSchemeVersionReference codingScheme, CodingSchemeVersionStatus status) throws LBParameterException;
 	
+	public void registerCodingSchemeSupplement(AbsoluteCodingSchemeVersionReference parentScheme, AbsoluteCodingSchemeVersionReference supplement) throws LBParameterException;
+	
 	/**
 	 * Update non coding scheme resource status.
 	 * 

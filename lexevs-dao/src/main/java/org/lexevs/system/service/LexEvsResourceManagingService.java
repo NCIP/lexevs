@@ -514,7 +514,18 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	@Override
+	public void registerCodingSchemeSupplement(
+			AbsoluteCodingSchemeVersionReference parentScheme,
+			AbsoluteCodingSchemeVersionReference supplement)
+			throws LBParameterException {
+		RegistryEntry entry = this.registry.getCodingSchemeEntry(supplement);
+		entry.setSupplementsUri(parentScheme.getCodingSchemeURN());
+		entry.setSupplementsVersion(parentScheme.getCodingSchemeVersion());
+		
+		this.registry.updateEntry(entry);
+	}
 
 	/**
 	 * Checks if is single table mode.

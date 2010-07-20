@@ -1710,4 +1710,13 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void registerCodingSchemeSupplement(
+			AbsoluteCodingSchemeVersionReference parentScheme,
+			AbsoluteCodingSchemeVersionReference supplement)
+			throws LBParameterException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
 }

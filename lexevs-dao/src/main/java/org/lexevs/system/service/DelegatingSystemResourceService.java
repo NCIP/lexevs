@@ -268,7 +268,23 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 		}	
 		
 	}
-	
+
+	@Override
+	public void registerCodingSchemeSupplement(
+			AbsoluteCodingSchemeVersionReference parentScheme,
+			AbsoluteCodingSchemeVersionReference supplement)
+			throws LBParameterException {
+		if(
+				primarySystemResourceService.containsCodingSchemeResource(parentScheme.getCodingSchemeURN(), parentScheme.getCodingSchemeVersion())
+						&&
+				primarySystemResourceService.containsCodingSchemeResource(supplement.getCodingSchemeURN(), supplement.getCodingSchemeVersion())){
+			
+			primarySystemResourceService.registerCodingSchemeSupplement(parentScheme, supplement);
+		} else {
+			throw new LBParameterException("Could not find Resource");
+		}	
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(java.lang.String, java.lang.String)
 	 */
