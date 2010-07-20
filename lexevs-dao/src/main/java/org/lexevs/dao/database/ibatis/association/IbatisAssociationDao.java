@@ -31,7 +31,9 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
@@ -65,7 +67,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "IbatisAssociationDao", cacheSize=100)
+@Cacheable(cacheName = "ResourceCache", cacheSize=100)
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
 
 	/** The supported datebase version. */
@@ -185,6 +187,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getAssociationPredicateUIdByContainerUId(String codingSchemeId,
 			String relationContainerId, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
@@ -198,6 +201,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getAssociationPredicateId(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getAssociationPredicateUIdByContainerName(String codingSchemeUid,
 			String relationContainerName, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
@@ -213,6 +217,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 	
 	@SuppressWarnings("unchecked")
+	@CacheMethod
 	public List<String> getAssociationPredicateUidsForAssociationName(
 			String codingSchemeUid,
 			String relationContainerName, 
@@ -230,6 +235,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getAssociationPredicateUidsForDirectionalName(
 			String codingSchemeId, String directionalName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -246,6 +252,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#getRelationsId(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getRelationUId(String codingSchemeId, String relationsName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeId);
@@ -255,6 +262,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						relationsName));
 	}
 	
+	@CacheMethod
 	public String getRelationEntryStateUId(String codingSchemeUId, String relationUId) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -265,6 +273,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getAssociationPredicateUIdsForRelationsUId(
 			String codingSchemeId, String relationsId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -276,6 +285,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getRelationsUIdsForCodingSchemeUId(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -286,6 +296,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getRelationsNamesForCodingSchemeUId(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -295,6 +306,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
+	@ClearCache
 	public void deleteAssociationQualificationsByCodingSchemeUId(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
@@ -303,6 +315,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
 	
+	@CacheMethod
 	public String getAssociationPredicateNameForUId(String codingSchemeId, String associationPredicateId) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -314,6 +327,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertRelations(java.lang.String, org.LexGrid.relations.Relations)
 	 */
+	@ClearCache
 	public String insertRelations(
 			String codingSchemeId,
 			Relations relations,
@@ -417,6 +431,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationPredicate(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationPredicate)
 	 */
+	@ClearCache
 	public String insertAssociationPredicate(
 			String codingSchemeId, 
 			String relationId,
@@ -445,6 +460,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
 	 */
+	@ClearCache
 	public void insertBatchAssociationSources(final String codingSchemeId,
 			final List<AssociationSourceBatchInsertItem> list) {
 		
@@ -475,6 +491,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationSource(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
 	 */
+	@ClearCache
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source){
 		this.insertAssociationSource(codingSchemeId, associationPredicateId, source, 
@@ -485,6 +502,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.lang.String, java.util.List)
 	 */
 	@Override
+	@ClearCache
 	public void insertBatchAssociationSources(final String codingSchemeUId,
 			final String associationPredicateUId, final List<AssociationSource> batch) {
 		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
@@ -611,6 +629,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @param source the source
 	 * @param inserter the inserter
 	 */
+	@ClearCache
 	public void insertAssociationSource(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
 			Inserter inserter) {
@@ -637,6 +656,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationQualifier(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationQualification)
 	 */
+	@ClearCache
 	public void insertAssociationQualifier(String codingSchemeId,
 			String associationInstanceId, AssociationQualification qualifier) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -659,6 +679,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	
 	@Override
+	@CacheMethod
 	public AssociationPredicate getAssociationPredicateByUId(String codingSchemeId,
 			String associationPredicateUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -675,6 +696,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
+	@CacheMethod
 	public Relations getRelationsByUId(String codingSchemeId,
 			String relationsUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
