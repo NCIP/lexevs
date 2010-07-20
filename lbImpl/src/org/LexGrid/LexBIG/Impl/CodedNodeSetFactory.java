@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Impl.codednodeset.SingleLuceneIndexCodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -68,7 +69,7 @@ public class CodedNodeSetFactory {
 
         if(entry.getDbSchemaVersion().equals(VERSION_20)){
 
-            return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
+            return new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
 
         }
 
