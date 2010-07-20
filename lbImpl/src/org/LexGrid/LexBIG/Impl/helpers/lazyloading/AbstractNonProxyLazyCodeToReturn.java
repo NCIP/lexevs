@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
 
 
@@ -90,6 +91,29 @@ public abstract class AbstractNonProxyLazyCodeToReturn extends AbstractLazyLoada
     public String getUri() {
         hydrateIfNeeded();
         return super.getUri();
+    }
+
+    @Override
+    public String getVersion() {
+        hydrateIfNeeded();
+        return super.getVersion();
+    }
+
+    @Override
+    public String getEntityUid() {
+        hydrateIfNeeded();
+        return super.getEntityUid();
+    }
+
+    @Override
+    protected void doCompact() {
+        this.setCode(null);
+        this.setEntityDescription(null);
+        this.setEntityTypes(null);
+        this.setNamespace(null);
+        this.setUri(null);
+        this.setEntityUid(null);
+        this.setVersion(null);
     }
 
     /**

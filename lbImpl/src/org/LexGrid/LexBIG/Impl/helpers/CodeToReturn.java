@@ -180,4 +180,8 @@ public class CodeToReturn implements Serializable {
     public String getEntityUid() {
         return entityUid;
     }
+
+    public void compact() {
+        //do nothing -- subclasses or lazy loaded CodeToReturs may implement this;
+    }
 }

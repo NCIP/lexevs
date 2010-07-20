@@ -85,6 +85,13 @@ public abstract class AbstractLazyLoadableCodeToReturn extends CodeToReturn {
         this.entityIndexService = LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
     }
     
+    public void compact() {
+        this.doCompact();
+        this.isHydrated = false;
+    }
+    
+    protected abstract void doCompact();
+    
     /**
      * Hydrate.
      * 
