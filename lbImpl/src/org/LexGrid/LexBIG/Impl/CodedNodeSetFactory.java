@@ -20,11 +20,11 @@ package org.LexGrid.LexBIG.Impl;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.codednodeset.SingleLuceneIndexCodedNodeSet;
+import org.LexGrid.LexBIG.Impl.codednodeset.UnionSingleLuceneIndexCodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -69,8 +69,23 @@ public class CodedNodeSetFactory {
 
         if(entry.getDbSchemaVersion().equals(VERSION_20)){
 
-            return new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
-
+            if(entry.getSupplementsUri() != null && entry.getSupplementsVersion() != null) {
+                String parentUri = entry.getSupplementsUri();
+                String parentVersion = entry.getSupplementsVersion();
+                
+                SingleLuceneIndexCodedNodeSet supplement = new SingleLuceneIndexCodedNodeSet(
+                        parentUri, 
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(parentVersion), 
+                        activeOnly, 
+                        types);
+                
+                SingleLuceneIndexCodedNodeSet parent = new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
+                
+                return new UnionSingleLuceneIndexCodedNodeSet(parent, supplement);
+            } else {
+            
+                return new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
+            }
         }
 
         throw new LBParameterException("Could not create a CodedNodeSet for CodingScheme: " + codingScheme);

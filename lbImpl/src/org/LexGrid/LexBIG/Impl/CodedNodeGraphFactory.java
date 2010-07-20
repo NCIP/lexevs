@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl;
+import org.LexGrid.LexBIG.Impl.pagedgraph.UnionGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -68,7 +69,21 @@ public class CodedNodeGraphFactory {
         }
         
         if(entry.getDbSchemaVersion().equals(VERSION_20)){
-             return new PagingCodedNodeGraphImpl(uri, version, relationContainerName);
+            if(entry.getSupplementsUri() != null && entry.getSupplementsVersion() != null) {
+                String parentUri = entry.getSupplementsUri();
+                String parentVersion = entry.getSupplementsVersion();
+                
+                PagingCodedNodeGraphImpl supplement = new PagingCodedNodeGraphImpl(
+                        parentUri, 
+                        parentVersion, 
+                        relationContainerName);
+                
+                PagingCodedNodeGraphImpl parent = new PagingCodedNodeGraphImpl(uri, version, relationContainerName);
+                
+                return new UnionGraph(parent, supplement);
+            } else {
+                return new PagingCodedNodeGraphImpl(uri, version, relationContainerName);
+            }
         }
         
         throw new LBParameterException("Could not create a CodedNodeGraph for CodingScheme: " + codingScheme);
