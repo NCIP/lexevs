@@ -9,8 +9,12 @@ import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.relations.AssociationEntity;
@@ -86,7 +90,14 @@ public class CodeSystemQueryOperationImplTest {
 	}
 	@Test
 	public void testListCodeSystemConcepts() {
-		fail("");
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("1.1");
+		ResolvedConceptReferencesIterator conceptIterator = query.listCodeSystemConcepts("Automobiles", versionOrTag, Constructors.createLocalNameList(EntityTypes.CONCEPT.toString()));
+		try {
+			assertEquals(true, conceptIterator.hasNext());
+		} catch (LBResourceUnavailableException e) {
+			fail("expect a not null iterator, but interupt by an exception");
+		}
 	}
 	@Test
 	public void testGetConceptDetails() {
