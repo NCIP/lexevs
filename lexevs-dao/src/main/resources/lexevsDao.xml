@@ -680,6 +680,7 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="registry" ref="registry"/>
 		<property name="indexServiceManager" ref="indexServiceManager"/>
+		<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
