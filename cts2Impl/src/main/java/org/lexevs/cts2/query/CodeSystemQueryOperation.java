@@ -38,7 +38,7 @@ public interface CodeSystemQueryOperation {
 	/**
 	 * List the coding systems that are available in cts 2 system
 	 * @param queryByExample. Query by example. 
-	 * @return CodingSchemeRenderingList
+	 * @return a list of codingSystems
 	 * @throws LBInvocationException
 	 */
 	public CodingSchemeRenderingList listCodeSystems(CodingSchemeSummary queryByExample);
@@ -47,7 +47,7 @@ public interface CodeSystemQueryOperation {
 	 * Return a detailed codingScheme according to provided codingName and versionOrTag
 	 * @param codingSchemeName
 	 * @param versionOrTag
-	 * @return codingScheme
+	 * @return codingSystem
 	 * @throws LBInvocationException
 	 * @throws LBParameterException
 	 */
@@ -58,7 +58,7 @@ public interface CodeSystemQueryOperation {
 	 * @param codingSchemeName
 	 * @param versionOrTag
 	 * @param entityTypes
-	 * @return ResolvedConceptReferencesIterator
+	 * @return Iterator of codingSystemEntities
 	 * @throws LBException
 	 */
 	public ResolvedConceptReferencesIterator listCodeSystemConcepts(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, LocalNameList entityTypes);
@@ -69,7 +69,7 @@ public interface CodeSystemQueryOperation {
 	 * @param versionOrTag
 	 * @param code
 	 * @param namespace
-	 * @return Entity
+	 * @return coding system entity
 	 * @throws LBException
 	 */
 	public Entity getConceptDetails(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, String code, String namespace);
@@ -78,7 +78,7 @@ public interface CodeSystemQueryOperation {
 	 * List all the associationTypes in a specific codingSystem 
 	 * @param codingSchemeName
 	 * @param versionOrTag
-	 * @return a list of SupportedAssociation
+	 * @return a list of association types
 	 */
 	public List<SupportedAssociation> listAssociationTypes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag);
 	
@@ -87,7 +87,7 @@ public interface CodeSystemQueryOperation {
 	 * @param codingSchemeName
 	 * @param versionOrTag
 	 * @param associationName
-	 * @return associationEntity
+	 * @return association type detail
 	 * @throws LBException
 	 */
 	public AssociationEntity getAssociationTypeDetails(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, String associationName);
