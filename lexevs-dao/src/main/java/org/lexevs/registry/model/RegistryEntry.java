@@ -117,6 +117,10 @@ public class RegistryEntry {
 	
 	/** The tag. */
 	private String tag;
+	
+	private String supplementsUri;
+	
+	private String supplementsVersion;
 
 	/**
 	 * Gets the status.
@@ -491,6 +495,22 @@ public class RegistryEntry {
 		return stagingPrefix;
 	}
 
+	public String getSupplementsUri() {
+		return supplementsUri;
+	}
+
+	public void setSupplementsUri(String supplementsUri) {
+		this.supplementsUri = supplementsUri;
+	}
+
+	public String getSupplementsVersion() {
+		return supplementsVersion;
+	}
+
+	public void setSupplementsVersion(String supplementsVersion) {
+		this.supplementsVersion = supplementsVersion;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -513,7 +533,8 @@ public class RegistryEntry {
 		result = prime * result
 				+ ((fixedAtRevision == null) ? 0 : fixedAtRevision.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + (isLocked ? 1231 : 1237);
+		result = prime * result
+				+ ((isLocked == null) ? 0 : isLocked.hashCode());
 		result = prime * result
 				+ ((lastUpdateDate == null) ? 0 : lastUpdateDate.hashCode());
 		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
@@ -526,6 +547,12 @@ public class RegistryEntry {
 		result = prime * result
 				+ ((stagingPrefix == null) ? 0 : stagingPrefix.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result
+				+ ((supplementsUri == null) ? 0 : supplementsUri.hashCode());
+		result = prime
+				* result
+				+ ((supplementsVersion == null) ? 0 : supplementsVersion
+						.hashCode());
 		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
 		return result;
 	}
@@ -584,7 +611,10 @@ public class RegistryEntry {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (isLocked != other.isLocked)
+		if (isLocked == null) {
+			if (other.isLocked != null)
+				return false;
+		} else if (!isLocked.equals(other.isLocked))
 			return false;
 		if (lastUpdateDate == null) {
 			if (other.lastUpdateDate != null)
@@ -620,6 +650,16 @@ public class RegistryEntry {
 			if (other.status != null)
 				return false;
 		} else if (!status.equals(other.status))
+			return false;
+		if (supplementsUri == null) {
+			if (other.supplementsUri != null)
+				return false;
+		} else if (!supplementsUri.equals(other.supplementsUri))
+			return false;
+		if (supplementsVersion == null) {
+			if (other.supplementsVersion != null)
+				return false;
+		} else if (!supplementsVersion.equals(other.supplementsVersion))
 			return false;
 		if (tag == null) {
 			if (other.tag != null)
