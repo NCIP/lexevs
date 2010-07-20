@@ -94,7 +94,7 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 	}
 	
 	private String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
-		return DaoUtility.createKey(codingSchemeUri, codingSchemeUri);
+		return DaoUtility.createKey(codingSchemeUri, codingSchemeVersion);
 	}
 
 	protected abstract LuceneIndexTemplate getLuceneIndexTemplate(String codingSchemeUri, String version);
