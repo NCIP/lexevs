@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd" 
+    codingSchemeName="Authoring_Test_Shell"
+    codingSchemeURI="http://authoring.test.shell" representsVersion="1.1" defaultLanguage="EN" formalName="Authoring_Test_Shell">
+    <mappings>
+        <supportedAssociation xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="original_type"  uri="urn:oid:1170.17.70">original_type</supportedAssociation>
+        <supportedCodingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="Authoring_Test_Shell" uri= "http://authoring.test.shell"  ></supportedCodingScheme>
+        <supportedContainerName xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="authoring_relations"></supportedContainerName>
+        <supportedLanguage xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="EN"></supportedLanguage>
+        <supportedNamespace xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="Authoring_Test_Shell" equivalentCodingScheme="Authoring_Test_Shell"></supportedNamespace>
+    </mappings>
+    <relations containerName="authoring_relations">
+        <associationPredicate xmlns="http://LexGrid.org/schema/2010/01/LexGrid/relations" associationName="original_type">
+            <source sourceEntityCode="01" sourceEntityCodeNamespace="Authoring_Test_Shell">
+                <target targetEntityCode="02" targetEntityCodeNamespace="Authoring_Test_Shell" associationInstanceId="instance001"/>
+            </source>
+        </associationPredicate>
+    </relations>   
+</codingScheme>
