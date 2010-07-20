@@ -209,6 +209,13 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
             doc.add(new TestField("entityType","type2"));
             
             return doc;
-        }  
+        }
+
+		@Override
+		protected void doCompact() {
+			//
+		}  
+        
+        
     }
 }
