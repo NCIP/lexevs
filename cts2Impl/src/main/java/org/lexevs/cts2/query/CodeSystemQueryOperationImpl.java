@@ -120,9 +120,15 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 	}
 
 	@Override
-	public Iterator<ResolvedConceptReference> listCodeSystemConcepts(
-			CodedNodeSet cns) {
-		// TODO Auto-generated method stub
+	public ResolvedConceptReferencesIterator listCodeSystemConcepts(
+			String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, LocalNameList entityTypes) {
+		try {
+			CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getNodeSet(codingSchemeName, versionOrTag, entityTypes);
+			return cns.resolve(null, null, null, null);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
