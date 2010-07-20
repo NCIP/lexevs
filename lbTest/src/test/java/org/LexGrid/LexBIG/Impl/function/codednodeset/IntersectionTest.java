@@ -66,9 +66,9 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
 
         cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
-        cns.intersect(cns2);
+        CodedNodeSet intersect = cns.intersect(cns2);
 
-        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = intersect.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
         assertTrue(rcr.length == 1);
         assertTrue(contains(rcr, "005", "Automobiles"));

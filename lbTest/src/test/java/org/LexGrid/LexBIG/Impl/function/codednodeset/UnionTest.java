@@ -70,9 +70,9 @@ public class UnionTest extends BaseCodedNodeSetTest {
 
         cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
-        cns.union(cns2);
+        CodedNodeSet cnsUnion = cns.union(cns2);
 
-        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = cnsUnion.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
         assertTrue("Length: " + rcr.length, rcr.length == 2);
         assertTrue(contains(rcr, "005", LexBIGServiceTestCase.AUTO_SCHEME));
@@ -109,9 +109,9 @@ public class UnionTest extends BaseCodedNodeSetTest {
 
         cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
-        cns.union(cns);
+        CodedNodeSet union = cns.union(cns);
 
-        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = union.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
         assertTrue(rcr.length == 1);
         assertTrue(contains(rcr, "005", LexBIGServiceTestCase.AUTO_SCHEME));
@@ -157,7 +157,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
 
         ResolvedConceptReference[] rcr = superUnion.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 3);
+        assertEquals(3,rcr.length);
         assertTrue(contains(rcr, "005", LexBIGServiceTestCase.AUTO_SCHEME));
         assertTrue(contains(rcr, "Ford", LexBIGServiceTestCase.AUTO_SCHEME));
         assertTrue(contains(rcr, "GM", LexBIGServiceTestCase.AUTO_SCHEME));
@@ -182,7 +182,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
 
         ResolvedConceptReference[] rcr = superUnion.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 3);
+        assertEquals(3,rcr.length);
         assertTrue(contains(rcr, "005", LexBIGServiceTestCase.AUTO_SCHEME));
         assertTrue(contains(rcr, "Ford", LexBIGServiceTestCase.AUTO_SCHEME));
         assertTrue(contains(rcr, "GM", LexBIGServiceTestCase.AUTO_SCHEME));

@@ -69,9 +69,9 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
 
         cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
-        cns.difference(cns2);
+        CodedNodeSet difference = cns.difference(cns2);
 
-        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = difference.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
         assertTrue("Actual Length: " + rcr.length, rcr.length == 2);
         assertTrue(contains(rcr, "Chevy", "Automobiles"));
@@ -90,9 +90,9 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
 
         cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "A0001" }, "Automobiles"));
 
-        cns.difference(cns2);
+        CodedNodeSet difference = cns.difference(cns2);
 
-        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = difference.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
         assertTrue("Actual Length: " + rcr.length, rcr.length == 1);
         assertTrue(contains(rcr, "Chevy", "Automobiles"));
@@ -110,9 +110,9 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
 
         cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "A0001" }, "Automobiles"));
 
-        cns2.difference(cns);
+        CodedNodeSet difference =  cns2.difference(cns);
 
-        ResolvedConceptReference[] rcr = cns2.resolveToList(null, null, null, 50).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = difference.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
         assertTrue("Actual Length: " + rcr.length, rcr.length == 1);
         assertTrue(contains(rcr, "A0001", "Automobiles"));
