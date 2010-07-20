@@ -194,11 +194,12 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                     this.codingSchemeVersion, 
                     associatedConcept.getCodeNamespace());
 	        if(ref == null) {
-	            return associatedConcept;
+	            adjustedCodingSchemeUri = this.codingSchemeUri;
+                adjustedCodingSchemeVersion = this.codingSchemeVersion;
+	        } else {
+	            adjustedCodingSchemeUri = ref.getCodingSchemeURN();
+	            adjustedCodingSchemeVersion = ref.getCodingSchemeVersion();
 	        }
-	        
-	        adjustedCodingSchemeUri = ref.getCodingSchemeURN();
-	        adjustedCodingSchemeVersion = ref.getCodingSchemeVersion();
 	        
         } catch (LBParameterException e) {
             LoggerFactory.getLogger().info("Cannot map namespace: " +  associatedConcept.getCodeNamespace());
