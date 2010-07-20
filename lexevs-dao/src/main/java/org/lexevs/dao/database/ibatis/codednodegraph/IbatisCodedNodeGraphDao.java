@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -28,6 +30,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.Qualifier
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.util.CollectionUtils;
 
+@Cacheable(cacheName = "ResourceCache")
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 	
 	/** The supported datebase version. */
@@ -317,6 +320,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
 			String codingSchemeUid,
 			String relationContainerName) {
@@ -334,6 +338,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<Node> getDistinctSourceNodesForAssociationPredicate(
 			String codingSchemeUid, String associationPredicateUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
@@ -349,6 +354,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<Node> getTargetNodesForSource(String codingSchemeUid,
 			String associationPredicateUid, String sourceEntityCode,
 			String sourceEntityCodeNamespace) {
@@ -367,6 +373,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<ConceptReference> getRootNodes(String codingSchemeUid,
 			List<String> associationPredicateUids, TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
@@ -382,6 +389,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<ConceptReference> getTailNodes(String codingSchemeUid,
 			List<String> associationPredicateUids, TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
