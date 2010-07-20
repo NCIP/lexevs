@@ -348,63 +348,52 @@
   	</select>
 
 	<delete id="deleteCodingSchemePropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-		DELETE FROM
+		DELETE 
 			$prefix$property
+		FROM 
+			$prefix$property
+		INNER JOIN
+			$prefix$codingScheme
 		WHERE
 			referenceType = #param1#
+		AND
+			referenceGuid = codingSchemeGuid
 		AND 
-			referenceGuid = #param2#
-	</delete>
-
-	<delete id="deleteCodingSchemePropertyMultiAttribByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-		DELETE FROM
-			$prefix$propertyMultiAttrib
-		WHERE
-			propertyGuid 
-		IN
-			(SELECT 
-				propertyGuid 
-			FROM 
-				$prefix$property 
-			WHERE 	
-				referenceType = #param1#
-			AND 
-				referenceGuid = #param2#
-			)
+			codingSchemeGuid = #param2#
 	</delete>
 		
 	<delete id="deleteEntityPropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-		DELETE FROM
+		DELETE 
 			$prefix$property
+		FROM
+			$prefix$property
+		INNER JOIN
+			$prefix$entity entity
+		ON
+			referenceGuid = entity.entityGuid
+		INNER JOIN
+			$prefix$codingScheme cs
+		ON
+			entity.codingSchemeGuid = cs.codingSchemeGuid
 		WHERE
 			referenceType = #param1#
 		AND 
-			referenceGuid
-		IN	(
-			SELECT 
-				entityGuid
-			FROM
-				$prefix$entity
-			WHERE
-				codingSchemeGuid = #param2#
-			)
+			cs.codingSchemeGuid = #param2#
 	</delete>
 	
 	<delete id="deleteRelationPropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-		DELETE FROM
+		DELETE 
 			$prefix$property
+		FROM
+			$prefix$property
+		INNER JOIN
+			$prefix$relation rel
+		ON
+			referenceGuid = rel.relationGuid
 		WHERE
 			referenceType = #param1#
 		AND 
-			referenceGuid
-		IN	(
-			SELECT 
-				relationGuid
-			FROM
-				$prefix$relation
-			WHERE
-				codingSchemeGuid = #param2#
-			)
+			rel.codingSchemeGuid = #param2#
 	</delete>
 	
 	<delete id="deletePropertiesByParentUIdAndParentType" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">

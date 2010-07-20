@@ -30,9 +30,6 @@ import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
@@ -77,8 +74,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String INSERT_PROPERTY_SQL = PROPERTY_NAMESPACE + "insertProperty";
 	
 	public static String DELETE_ALL_CODINGSCHEME_PROPERTIES_OF_CODINGSCHEME_SQL = PROPERTY_NAMESPACE + "deleteCodingSchemePropertiesByCodingSchemeUId";
-
-	public static String DELETE_ALL_CODINGSCHEME_PROPERTY_MULTIATTRIB_OF_CODINGSCHEME_SQL = PROPERTY_NAMESPACE + "deleteCodingSchemePropertyMultiAttribByCodingSchemeUId";
 	
 	/** The DELET e_ al l_ entit y_ propertie s_ o f_ codingschem e_ sql. */
 	public static String DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL = PROPERTY_NAMESPACE + "deleteEntityPropertiesByCodingSchemeUId";
