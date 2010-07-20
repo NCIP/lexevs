@@ -23,6 +23,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -48,7 +49,7 @@ public class SingleLuceneIndexCodedNodeSet extends CodedNodeSetImpl {
             String codingScheme, 
             CodingSchemeVersionOrTag tagOrVersion, 
             Boolean activeOnly, 
-            LocalNameList types) throws LBException {
+            LocalNameList types) throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         super(codingScheme,tagOrVersion,activeOnly, types);
     }
     
