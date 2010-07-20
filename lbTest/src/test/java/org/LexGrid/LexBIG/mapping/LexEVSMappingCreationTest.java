@@ -23,12 +23,6 @@ public class LexEVSMappingCreationTest extends TestCase {
 	   LexEVSAuthoringServiceImpl authoring;
 	   LexBIGService lbs;
 		LexBIGServiceManager lbsm;
-		public static String SOURCE_SCHEME = "GermanMadeParts";
-		public static String SOURCE_VERSION = "2.0";
-		public static String MAPPING_SCHEME = "http://default.mapping.container";
-		public static String MAPPING_VERSION = "1.0";
-		public static String TARGET_SCHEME =  "Automobiles";
-		public static String TARGET_VERSION = "1.0";
 		
 	   public void setUp(){
 
@@ -50,14 +44,14 @@ public class LexEVSMappingCreationTest extends TestCase {
 		   entryState.setContainingRevision("TestNewMapping1");
 		  entryState.setRelativeOrder(new Long(1));
 		   AbsoluteCodingSchemeVersionReference mappingCodingScheme = new AbsoluteCodingSchemeVersionReference();
-		   mappingCodingScheme.setCodingSchemeURN(MAPPING_SCHEME);
-		   mappingCodingScheme.setCodingSchemeVersion(MAPPING_VERSION);
+		   mappingCodingScheme.setCodingSchemeURN(MappingTestConstants.MAPPING_SCHEME);
+		   mappingCodingScheme.setCodingSchemeVersion(MappingTestConstants.MAPPING_VERSION);
 		AbsoluteCodingSchemeVersionReference sourceCodingScheme = new AbsoluteCodingSchemeVersionReference();
-		   sourceCodingScheme.setCodingSchemeURN(SOURCE_SCHEME);
-		   sourceCodingScheme.setCodingSchemeVersion(SOURCE_VERSION);
+		   sourceCodingScheme.setCodingSchemeURN(MappingTestConstants.SOURCE_SCHEME);
+		   sourceCodingScheme.setCodingSchemeVersion(MappingTestConstants.SOURCE_VERSION);
 		AbsoluteCodingSchemeVersionReference targetCodingScheme = new AbsoluteCodingSchemeVersionReference();
-		   targetCodingScheme.setCodingSchemeURN(TARGET_SCHEME);
-		   targetCodingScheme.setCodingSchemeVersion(TARGET_VERSION);
+		   targetCodingScheme.setCodingSchemeURN(MappingTestConstants.TARGET_SCHEME);
+		   targetCodingScheme.setCodingSchemeVersion(MappingTestConstants.TARGET_VERSION);
 		   AssociationSource source = new AssociationSource();
 		   source.setSourceEntityCode("E0001");
 		   source.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
@@ -80,8 +74,9 @@ public class LexEVSMappingCreationTest extends TestCase {
 					   associationType , 
 					   relationsContainerName, 
 					   effectiveDate, 
-					   null, 
-					   revision);
+					   null,
+					   revision,
+					   true);
 	
 	   }
 	
@@ -91,14 +86,14 @@ public class LexEVSMappingCreationTest extends TestCase {
 		   entryState.setContainingRevision("TestNewMapping2");
 		  entryState.setRelativeOrder(new Long(1));
 		   AbsoluteCodingSchemeVersionReference mappingCodingScheme = new AbsoluteCodingSchemeVersionReference();
-		   mappingCodingScheme.setCodingSchemeURN(MAPPING_SCHEME);
-		   mappingCodingScheme.setCodingSchemeVersion(MAPPING_VERSION);
+		   mappingCodingScheme.setCodingSchemeURN(MappingTestConstants.MAPPING_SCHEME);
+		   mappingCodingScheme.setCodingSchemeVersion(MappingTestConstants.MAPPING_VERSION);
 		AbsoluteCodingSchemeVersionReference sourceCodingScheme = new AbsoluteCodingSchemeVersionReference();
-		   sourceCodingScheme.setCodingSchemeURN(SOURCE_SCHEME);
-		   sourceCodingScheme.setCodingSchemeVersion(SOURCE_VERSION);
+		   sourceCodingScheme.setCodingSchemeURN(MappingTestConstants.SOURCE_SCHEME);
+		   sourceCodingScheme.setCodingSchemeVersion(MappingTestConstants.SOURCE_VERSION);
 		AbsoluteCodingSchemeVersionReference targetCodingScheme = new AbsoluteCodingSchemeVersionReference();
-		   targetCodingScheme.setCodingSchemeURN(TARGET_SCHEME);
-		   targetCodingScheme.setCodingSchemeVersion(TARGET_VERSION);
+		   targetCodingScheme.setCodingSchemeURN(MappingTestConstants.TARGET_SCHEME);
+		   targetCodingScheme.setCodingSchemeVersion(MappingTestConstants.TARGET_VERSION);
 		   AssociationSource source = new AssociationSource();
 		   source.setSourceEntityCode("E0001");
 		   source.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
@@ -122,7 +117,8 @@ public class LexEVSMappingCreationTest extends TestCase {
 					   relationsContainerName, 
 					   effectiveDate, 
 					   null, 
-					   revision);
+					   revision,
+					   true);
 	}
 	public void testCreateNewMappingWithNewAssociationPredicate()throws LBException{
 			   EntryState entryState = new EntryState();
@@ -130,14 +126,14 @@ public class LexEVSMappingCreationTest extends TestCase {
 			   entryState.setContainingRevision("TestNewMapping3");
 			  entryState.setRelativeOrder(new Long(1));
 			   AbsoluteCodingSchemeVersionReference mappingCodingScheme = new AbsoluteCodingSchemeVersionReference();
-			   mappingCodingScheme.setCodingSchemeURN(MAPPING_SCHEME);
-			   mappingCodingScheme.setCodingSchemeVersion(MAPPING_VERSION);
+			   mappingCodingScheme.setCodingSchemeURN(MappingTestConstants.MAPPING_SCHEME);
+			   mappingCodingScheme.setCodingSchemeVersion(MappingTestConstants.MAPPING_VERSION);
 			AbsoluteCodingSchemeVersionReference sourceCodingScheme = new AbsoluteCodingSchemeVersionReference();
-			   sourceCodingScheme.setCodingSchemeURN(SOURCE_SCHEME);
-			   sourceCodingScheme.setCodingSchemeVersion(SOURCE_VERSION);
+			   sourceCodingScheme.setCodingSchemeURN(MappingTestConstants.SOURCE_SCHEME);
+			   sourceCodingScheme.setCodingSchemeVersion(MappingTestConstants.SOURCE_VERSION);
 			AbsoluteCodingSchemeVersionReference targetCodingScheme = new AbsoluteCodingSchemeVersionReference();
-			   targetCodingScheme.setCodingSchemeURN(TARGET_SCHEME);
-			   targetCodingScheme.setCodingSchemeVersion(TARGET_VERSION);
+			   targetCodingScheme.setCodingSchemeURN(MappingTestConstants.TARGET_SCHEME);
+			   targetCodingScheme.setCodingSchemeVersion(MappingTestConstants.TARGET_VERSION);
 			   AssociationSource source = new AssociationSource();
 			   source.setSourceEntityCode("E0001");
 			   source.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
@@ -161,6 +157,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 						   relationsContainerName, 
 						   effectiveDate, 
 						   null, 
-						   revision);
+						   revision,
+						   true);
 	}
 }

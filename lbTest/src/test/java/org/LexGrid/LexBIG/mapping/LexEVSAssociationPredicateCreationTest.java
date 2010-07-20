@@ -23,13 +23,7 @@ public class LexEVSAssociationPredicateCreationTest extends TestCase {
 	   LexEVSAuthoringServiceImpl authoring;
 	   LexBIGService lbs;
 
-		public static String TARGET_SCHEME =  "Automobiles";
-		public static String TARGET_VERSION = "1.0";
-		public static String TARGET_URN = "urn:oid:11.11.0.1";
-		public static String RELATIONS_CONTAINER = "relations";
-		public static String ASSOC_NAME_A = "BY";
-		public static String ASSOC_NAME_B = "NYE";
-		public static String NEW_RELATIONS_CONTAINER = "newRelation";
+
 		
 	   public void setUp(){
 
@@ -56,23 +50,23 @@ public class LexEVSAssociationPredicateCreationTest extends TestCase {
 		EntryState entryState = new EntryState();
 		entryState.setContainingRevision("Mayo_predicate_revision");
 		revision.setRevisionId("Mayo_predicate_revision");
-		entryState.setPrevRevision("Should_not_be_set");
+		//entryState.setPrevRevision("Should_not_be_set");
 		entryState.setRelativeOrder(new Long(0));
 
 		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
-		scheme.setCodingSchemeURN(TARGET_URN);
-		scheme.setCodingSchemeVersion(TARGET_VERSION);
-		authoring.createAssociationPredicate(revision, entryState, scheme, RELATIONS_CONTAINER, ASSOC_NAME_A);
+		scheme.setCodingSchemeURN(MappingTestConstants.AUTHORING_URN);
+		scheme.setCodingSchemeVersion(MappingTestConstants.AUTHORING_VERSION);
+		authoring.createAssociationPredicate(revision, entryState, scheme, MappingTestConstants.RELATIONS_CONTAINER, MappingTestConstants.ASSOC_NAME_A);
 		CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
-		csvt.setVersion(TARGET_VERSION);
-		CodingScheme revisedScheme = lbs.resolveCodingScheme(TARGET_SCHEME, csvt);
+		csvt.setVersion(MappingTestConstants.AUTHORING_VERSION);
+		CodingScheme revisedScheme = lbs.resolveCodingScheme(MappingTestConstants.AUTHORING_SCHEME, csvt);
 		Relations[] relations = revisedScheme.getRelations();
 		boolean predicateFound = false;
 		for(Relations rel: relations){
 			
 			AssociationPredicate[] predicates = rel.getAssociationPredicate();
 			for(AssociationPredicate predicate: predicates){
-				if(predicate.getAssociationName().equals(ASSOC_NAME_A)){
+				if(predicate.getAssociationName().equals(MappingTestConstants.ASSOC_NAME_A)){
 					predicateFound = true;
 				}
 			}
@@ -99,23 +93,23 @@ public class LexEVSAssociationPredicateCreationTest extends TestCase {
 		EntryState entryState = new EntryState();
 		entryState.setContainingRevision("Mayo_predicate_revisionb");
 		revision.setRevisionId("Mayo_predicate_revisionb");
-		entryState.setPrevRevision("Should_not_be_set");
+		///entryState.setPrevRevision("Should_not_be_set");
 		entryState.setRelativeOrder(new Long(0));
 
 		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
-		scheme.setCodingSchemeURN(TARGET_URN);
-		scheme.setCodingSchemeVersion(TARGET_VERSION);
-		authoring.createAssociationPredicate(revision, entryState, scheme, NEW_RELATIONS_CONTAINER, ASSOC_NAME_B);
+		scheme.setCodingSchemeURN(MappingTestConstants.AUTHORING_URN);
+		scheme.setCodingSchemeVersion(MappingTestConstants.AUTHORING_VERSION);
+		authoring.createAssociationPredicate(revision, entryState, scheme, MappingTestConstants.NEW_RELATIONS_CONTAINER, MappingTestConstants.ASSOC_NAME_B);
 		CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
-		csvt.setVersion(TARGET_VERSION);
-		CodingScheme revisedScheme = lbs.resolveCodingScheme(TARGET_SCHEME, csvt);
+		csvt.setVersion(MappingTestConstants.AUTHORING_VERSION);
+		CodingScheme revisedScheme = lbs.resolveCodingScheme(MappingTestConstants.AUTHORING_SCHEME, csvt);
 		Relations[] relations = revisedScheme.getRelations();
 		boolean predicateFound = false;
 		for(Relations rel: relations){
 			
 			AssociationPredicate[] predicates = rel.getAssociationPredicate();
 			for(AssociationPredicate predicate: predicates){
-				if(predicate.getAssociationName().equals(ASSOC_NAME_B)){
+				if(predicate.getAssociationName().equals(MappingTestConstants.ASSOC_NAME_B)){
 					predicateFound = true;
 				}
 			}

@@ -185,15 +185,7 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
 		
 	}
 	
-//	public void testGetAssociationRevisionId() throws LBException
-//	{
-//		authoring.getTargetEntryStateRevisionId("urn:oid:11.11.0.1", 
-//				"1.0", 
-//				"005", 
-//				"Automobiles", 
-//				"A", 
-//				"Automobiles", 
-//				"relations", 
-//				"hasSubtype");
-//	}
+	public void testCreateRelationsContainer(){
+		
+	}
 }

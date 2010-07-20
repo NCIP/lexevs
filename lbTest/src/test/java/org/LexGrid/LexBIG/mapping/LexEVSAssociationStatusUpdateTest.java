@@ -20,13 +20,9 @@ public class LexEVSAssociationStatusUpdateTest extends TestCase {
 	LexEVSAuthoringServiceImpl authoring;
 	LexBIGService lbs;
 	LexBIGServiceManager lbsm;
-	public static String SOURCE_SCHEME = "GermanMadeParts";
-	public static String SOURCE_VERSION = "2.0";
-	public static String MAPPING_SCHEME = "http://default.mapping.container";
-	public static String MAPPING_VERSION = "1.0";
-	public static String TARGET_SCHEME = "Automobiles";
-	public static String TARGET_URN = "urn:oid:11.11.0.1";
-	public static String TARGET_VERSION = "1.0";
+
+
+
 
 	public void setUp() {
 
@@ -60,11 +56,11 @@ public class LexEVSAssociationStatusUpdateTest extends TestCase {
 		entryState.setRelativeOrder(new Long(0));
 
 		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
-		scheme.setCodingSchemeURN(TARGET_URN);
-		scheme.setCodingSchemeVersion(TARGET_VERSION);
+		scheme.setCodingSchemeURN(MappingTestConstants.AUTHORING_URN);
+		scheme.setCodingSchemeVersion(MappingTestConstants.AUTHORING_VERSION);
 		assertTrue(authoring.setAssociationStatus(revision, entryState, scheme,
-				"relations", "hasSubtype", "005", "Automobiles", "A",
-				"Automobiles","instance001", "ACTIVE", true));
+				"authoring_relations", "original_type", "01", MappingTestConstants.AUTHORING_SCHEME, "02",
+				MappingTestConstants.AUTHORING_SCHEME,"instance001", "ACTIVE", true));
 	}
 
 	   

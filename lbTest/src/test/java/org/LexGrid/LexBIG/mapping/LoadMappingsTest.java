@@ -4,26 +4,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
-import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
@@ -31,27 +19,26 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.Revision;
-import org.LexGrid.versions.types.ChangeType;
 
 import junit.framework.TestCase;
 
-public class LexEVSMappingLoadTest extends TestCase {
-
+public class LoadMappingsTest extends TestCase {
 	LexEVSAuthoringServiceImpl authoring;
 	LexBIGService lbs;
 	LexBIGServiceManager lbsm;
-	CodingSchemeVersionOrTag csvt;
-	MappingTestUtility utility;
+
+	public static String SOURCE_SCHEME = "GermanMadeParts";
+	public static String SOURCE_VERSION = "2.0";
+	public static String MAPPING_SCHEME = "http://default.mapping.container";
+	public static String MAPPING_VERSION = "1.0";
+	public static String TARGET_SCHEME = "Automobiles";
+	public static String TARGET_VERSION = "1.0";
 
 	public void setUp() {
 
 		authoring = new LexEVSAuthoringServiceImpl();
 		lbs = LexBIGServiceImpl.defaultInstance();
-		csvt = new CodingSchemeVersionOrTag();
-		csvt.setVersion("1.0");
-		utility = new MappingTestUtility();
+
 		try {
 			lbsm = lbs.getServiceManager(null);
 		} catch (LBException e) {
@@ -59,7 +46,7 @@ public class LexEVSMappingLoadTest extends TestCase {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void testMappingLoad() throws LBException {
 		AssociationSource source = new AssociationSource();
 		AssociationSource source1 = new AssociationSource();
@@ -86,13 +73,12 @@ public class LexEVSMappingLoadTest extends TestCase {
 		source2.addTarget(target2);
 		AssociationSource[] sources = new AssociationSource[] { source,
 				source1, source2 };
-		authoring.createMappingWithDefaultValues(sources, "GermanMadeParts",
-				"2.0", "Automobiles", "1.0", "SY", false);
-		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
-		codingSchemeVersion
-				.setCodingSchemeURN("http://default.mapping.container");
-		codingSchemeVersion.setCodingSchemeVersion("1.0");
-		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
+
+		try {
+			loadMappings(sources);
+		} catch (ClassNotFoundException e) {
+			// do nothing
+		}
 	}
 
 	public void testLoadMappings() throws LBException {
@@ -111,9 +97,9 @@ public class LexEVSMappingLoadTest extends TestCase {
 				"0.0", localNameList, sourceList, copyright, new Mappings(),
 				null, null, null);
 
-		AssociationTarget target1 = utility.createTargetWithValuesPopulated();
-		AssociationTarget target2 = utility.createTarget("Ford", "Automobiles");
-		AssociationTarget target3 = utility.createTarget("73", "Automobiles");
+		AssociationTarget target1 = createTargetWithValuesPopulated();
+		AssociationTarget target2 = createTarget("Ford", "Automobiles");
+		AssociationTarget target3 = createTarget("73", "Automobiles");
 		AssociationTarget[] targets = new AssociationTarget[] { target1,
 				target2, target3 };
 		AssociationSource associationSource = new AssociationSource();
@@ -122,10 +108,10 @@ public class LexEVSMappingLoadTest extends TestCase {
 				.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
 		associationSource.setTarget(targets);
 		AssociationSource[] sourcesAndTargets = new AssociationSource[] { associationSource };
-		String sourceCodingScheme = MappingTestConstants.SOURCE_SCHEME;
-		String sourceCodingSchemeVersion = MappingTestConstants.SOURCE_VERSION;
-		String targetCodingScheme = MappingTestConstants.TARGET_SCHEME;
-		String targetCodingSchemeVersion = MappingTestConstants.TARGET_VERSION;
+		String sourceCodingScheme = SOURCE_SCHEME;
+		String sourceCodingSchemeVersion = SOURCE_VERSION;
+		String targetCodingScheme = TARGET_SCHEME;
+		String targetCodingSchemeVersion = TARGET_VERSION;
 		String associationName = "SY";
 		String relationsContainerName = "GermanMadeParts_to_Automobiles_Mappings";
 		String revisionId = "Non-Default_NEW_Mapping";
@@ -138,8 +124,41 @@ public class LexEVSMappingLoadTest extends TestCase {
 		codingSchemeVersion.setCodingSchemeVersion(mappingSchemeMetadata.getRepresentsVersion());
 		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
 	}
+	
+	private AssociationTarget createTargetWithValuesPopulated()
+			throws LBException {
+		Versionable versionableData = new Versionable();
+		versionableData.setEffectiveDate(new Date());
+		versionableData.setExpirationDate(new Date());
+		versionableData.setIsActive(Boolean.TRUE);
+		versionableData.setOwner("Mayo");
+		versionableData.setStatus("ACTIVE");
+		String instanceId = "instance_001";
 
-
+		List<String> usageContextList = null;
+		AssociationQualification qualifier = new AssociationQualification();
+		qualifier.setAssociationQualifier("qualifier");
+		Text text = new Text();
+		text.setContent("qualifies SY");
+		qualifier.setQualifierText(text);
+		List<AssociationQualification> associationQualifiers = Arrays
+				.asList(qualifier);
+		AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier = new AbsoluteCodingSchemeVersionReference();
+		targetCodeSystemIdentifier.setCodingSchemeURN("urn:oid:11.11.0.1");
+		targetCodeSystemIdentifier.setCodingSchemeVersion(TARGET_VERSION);
+		String targetConceptCodeIdentifier = "005";
+		return authoring.createAssociationTarget(null, versionableData,
+				instanceId, Boolean.FALSE, Boolean.TRUE, usageContextList,
+				associationQualifiers, targetCodeSystemIdentifier,
+				targetConceptCodeIdentifier);
+	}
+	
+	private AssociationTarget createTarget(String code, String namespace) {
+		AssociationTarget target = new AssociationTarget();
+		target.setTargetEntityCode(code);
+		target.setTargetEntityCodeNamespace(namespace);
+		return target;
+	}
 
 	public void loadMappings(AssociationSource[] sources)
 			throws ClassNotFoundException, LBException {
@@ -151,40 +170,5 @@ public class LexEVSMappingLoadTest extends TestCase {
 		codingSchemeVersion.setCodingSchemeVersion("1.0");
 		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
 	}
-
-//	private AssociationTarget createTarget(String code, String namespace) {
-//		AssociationTarget target = new AssociationTarget();
-//		target.setTargetEntityCode(code);
-//		target.setTargetEntityCodeNamespace(namespace);
-//		return target;
-//	}
-//
-//	private AssociationTarget createTargetWithValuesPopulated()
-//			throws LBException {
-//		Versionable versionableData = new Versionable();
-//		versionableData.setEffectiveDate(new Date());
-//		versionableData.setExpirationDate(new Date());
-//		versionableData.setIsActive(Boolean.TRUE);
-//		versionableData.setOwner("Mayo");
-//		versionableData.setStatus("ACTIVE");
-//		String instanceId = "instance_001";
-//
-//		List<String> usageContextList = null;
-//		AssociationQualification qualifier = new AssociationQualification();
-//		qualifier.setAssociationQualifier("qualifier");
-//		Text text = new Text();
-//		text.setContent("qualifies SY");
-//		qualifier.setQualifierText(text);
-//		List<AssociationQualification> associationQualifiers = Arrays
-//				.asList(qualifier);
-//		AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier = new AbsoluteCodingSchemeVersionReference();
-//		targetCodeSystemIdentifier.setCodingSchemeURN("urn:oid:11.11.0.1");
-//		targetCodeSystemIdentifier.setCodingSchemeVersion(TARGET_VERSION);
-//		String targetConceptCodeIdentifier = "005";
-//		return authoring.createAssociationTarget(null, versionableData,
-//				instanceId, Boolean.FALSE, Boolean.TRUE, usageContextList,
-//				associationQualifiers, targetCodeSystemIdentifier,
-//				targetConceptCodeIdentifier);
-//	}
 
 }
