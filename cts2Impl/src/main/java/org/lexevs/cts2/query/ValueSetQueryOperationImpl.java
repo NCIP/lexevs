@@ -102,8 +102,11 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 			String childValueSetVersion, String parentValueSetId,
 			String parentValueSetVersion, AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
 		
-		if (StringUtils.isEmpty(childValueSetId) || StringUtils.isEmpty(parentValueSetId))
-			throw new LBException("Invalid parameters. ChildValueSetId and ParentValueSetId can not be empty");
+		if (StringUtils.isEmpty(childValueSetId))
+			throw new LBException("Invalid parameters. ChildValueSetId can not be empty");
+		
+		if (StringUtils.isEmpty(parentValueSetId))
+			throw new LBException("Invalid parameters. ParentValueSetId can not be empty");
 		
 		boolean isSubset = false;
 		try {
