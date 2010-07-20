@@ -39,6 +39,7 @@ import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
@@ -60,6 +61,8 @@ public class MethodCachingProxy implements InitializingBean {
 	
 	/** The caches. */
 	private Map<String,Map<String,Object>> caches;
+	
+	private SystemVariables systemVariables;
 	
 	private static String NULL_VALUE = "null";
 	
@@ -302,19 +305,29 @@ public class MethodCachingProxy implements InitializingBean {
 		this.caches = caches;
 	}
 	
+	@SuppressWarnings("static-access")
 	private void logCacheState(ProceedingJoinPoint pjp) {
-		this.logger.debug("Called: " + pjp.toLongString());
-		
-		StringBuffer sb = new StringBuffer();
-		sb.append("Cache State: ");
-		sb.append(" - Caches: " );
-		
-		for(String key : this.caches.keySet()) {
-			sb.append(" -- Cache: " + key);
-			sb.append(" -- CacheSize: " + this.caches.get(key).size());
+		if(this.systemVariables.isDebugEnabled()) {
+			this.logger.debug("Called: " + pjp.toLongString());
+
+			StringBuffer sb = new StringBuffer();
+			sb.append("Cache State: ");
+			sb.append(" - Caches: " );
+
+			for(String key : this.caches.keySet()) {
+				sb.append(" -- Cache: " + key);
+				sb.append(" -- CacheSize: " + this.caches.get(key).size());
+			}
+
+			this.logger.debug(sb.toString());
 		}
-		
-		this.logger.debug(sb.toString());
 	}
 
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
+	}
 }
