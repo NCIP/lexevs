@@ -33,6 +33,7 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
@@ -394,8 +395,14 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 			String revisionId) throws LBRevisionException {
 		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
 				.getCurrentValueSetDefinitionDao();
-
-		return valueSetDefDao.getValueSetDefinitionByRevision(valueSetDefURI, revisionId);
+		
+		ValueSetDefinition vsd = null;
+		if (StringUtils.isEmpty(revisionId))
+			vsd = valueSetDefDao.getValueSetDefinitionByURI(valueSetDefURI);
+		else
+			vsd = valueSetDefDao.getValueSetDefinitionByRevision(valueSetDefURI, revisionId);
+		
+		return vsd;
 	}
 	
 	@Override
