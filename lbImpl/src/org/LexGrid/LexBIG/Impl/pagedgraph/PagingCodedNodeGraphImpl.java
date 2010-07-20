@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
@@ -65,7 +66,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
     
-    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
+    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
     
     public PagingCodedNodeGraphImpl() {
         super();

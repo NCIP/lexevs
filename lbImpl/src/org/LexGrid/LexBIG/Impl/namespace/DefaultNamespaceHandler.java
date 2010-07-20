@@ -9,6 +9,8 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
@@ -17,11 +19,13 @@ import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.util.CollectionUtils;
 
+@Cacheable(cacheName = "ResourceCache")
 public class DefaultNamespaceHandler implements NamespaceHandler {
 
     private static final long serialVersionUID = 7565547967975571009L;
 
     @Override
+    @CacheMethod
     public AbsoluteCodingSchemeVersionReference
     getCodingSchemeForNamespace(String codingSchemeUri, String version,
             String namespace) throws LBParameterException {
@@ -80,6 +84,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
     }
 
     @Override
+    @CacheMethod
     public List<String> getNamespacesForCodingScheme(
             String codingSchemeUri, 
             String version,

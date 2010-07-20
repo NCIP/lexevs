@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder.AssociationDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
@@ -56,7 +57,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     
     /** The association list builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
-    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
+    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
 
 	/** The triple uid iterator. */
 	private Iterator<String> tripleUidIterator;

@@ -33,6 +33,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
@@ -56,7 +57,7 @@ public class AssociationListBuilder implements Serializable{
     /** The associated concept page size. */
     private int associatedConceptPageSize = 100;
     
-    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
+    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
     /**
      * The Enum AssociationDirection.
      * 

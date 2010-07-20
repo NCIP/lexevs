@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -62,7 +63,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
 
-    private NamespaceHandler namespaceHandler = new DefaultNamespaceHandler();
+    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
     
     /** The coding scheme uri. */
     private String codingSchemeUri;
