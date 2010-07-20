@@ -21,10 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
@@ -32,17 +34,62 @@ import org.LexGrid.relations.AssociationEntity;
 
 
 public interface CodeSystemQueryOperation {
-
+	
+	/**
+	 * List the coding systems that are available in cts 2 system
+	 * @param queryByExample. Query by example. 
+	 * @return CodingSchemeRenderingList
+	 * @throws LBInvocationException
+	 */
 	public CodingSchemeRenderingList listCodeSystems(CodingSchemeSummary queryByExample);
 	
+	/**
+	 * Return a detailed codingScheme according to provided codingName and versionOrTag
+	 * @param codingSchemeName
+	 * @param versionOrTag
+	 * @return codingScheme
+	 * @throws LBInvocationException
+	 * @throws LBParameterException
+	 */
 	public CodingScheme getCodeSystemDetails(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag);
+
+	/**
+	 * List the concepts in a specific codingSystem
+	 * @param codingSchemeName
+	 * @param versionOrTag
+	 * @param entityTypes
+	 * @return ResolvedConceptReferencesIterator
+	 * @throws LBException
+	 */
+	public ResolvedConceptReferencesIterator listCodeSystemConcepts(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, LocalNameList entityTypes);
 	
-	public Iterator<ResolvedConceptReference> listCodeSystemConcepts(CodedNodeSet cns);
+	/**
+	 * 	Return an instance of Entity according the requests 
+	 * @param codingSchemeName
+	 * @param versionOrTag
+	 * @param code
+	 * @param namespace
+	 * @return Entity
+	 * @throws LBException
+	 */
+	public Entity getConceptDetails(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, String code, String namespace);
 	
-	public Entity getConceptDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String code, String namespace);
-	
+	/**
+	 * List all the associationTypes in a specific codingSystem 
+	 * @param codingSchemeName
+	 * @param versionOrTag
+	 * @return a list of SupportedAssociation
+	 */
 	public List<SupportedAssociation> listAssociationTypes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag);
 	
-	public AssociationEntity getAssociationTypeDetails(String codingSchemeUri, CodingSchemeVersionOrTag versionOrTag, String associationName);
+	/**
+	 * Return detailed information for a certain associationType
+	 * @param codingSchemeName
+	 * @param versionOrTag
+	 * @param associationName
+	 * @return associationEntity
+	 * @throws LBException
+	 */
+	public AssociationEntity getAssociationTypeDetails(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, String associationName);
 
 }

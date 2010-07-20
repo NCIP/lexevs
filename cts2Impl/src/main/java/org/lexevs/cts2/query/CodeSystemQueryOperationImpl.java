@@ -104,8 +104,6 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 				if (StringUtils.equals(code, conceptRef.getCode()) && StringUtils.equals(namespace, conceptRef.getCodeNamespace()))
 					return conceptRef.getEntity();
 			}
-			
-			
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
