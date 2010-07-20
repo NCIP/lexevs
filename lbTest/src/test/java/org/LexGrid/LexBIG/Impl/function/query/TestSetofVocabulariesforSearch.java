@@ -41,12 +41,14 @@ public class TestSetofVocabulariesforSearch extends LexBIGServiceTestCase {
 
         CodedNodeSet cns2 = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(PARTS_SCHEME, null);
 
-        cns.union(cns2);
+        CodedNodeSet union = cns.union(cns2);
 
-        cns.restrictToMatchingDesignations("t", SearchDesignationOption.ALL, "startsWith", null);
+        union.restrictToMatchingDesignations("t", SearchDesignationOption.ALL, "startsWith", null);
 
-        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
+        ResolvedConceptReference[] rcr = union.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
+        assertEquals(4,rcr.length);
+        
         // coincidence that both codes are the same - they are different concept
         // codes
         // one if for Truck and one is for tires.
