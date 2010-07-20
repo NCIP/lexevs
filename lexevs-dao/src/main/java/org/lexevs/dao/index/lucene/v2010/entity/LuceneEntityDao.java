@@ -242,7 +242,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 				return i;
 			}
 		}
-		throw new RuntimeException("Didn't find previous set bit.");
+		return 0;
 	}
 		
 
