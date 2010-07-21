@@ -67,7 +67,7 @@
 			<tasklet ref="mrdocMetadataLoadingTasklet" />
 		</step>
 
-		<step id="loadEntities" parent="listenerStep" next="loadDefinitions">
+		<step id="loadEntities" parent="listenerStep" next="loadRelationsAndProperties">
 			<tasklet>
 				<chunk reader="metaMrconsoGroupReader" processor="entityListProcessor"
 					writer="entityWriter" commit-interval="500">
@@ -78,43 +78,68 @@
 			</tasklet>
 		</step>
 
-		<step id="loadDefinitions" parent="listenerStep" next="loadMrstyProperties">
-			<tasklet>
-				<chunk reader="mrdefReader" processor="qualifierAddingMetaDefinitionProcessor"
-					writer="entityPropertyWriter" commit-interval="500">
-					<streams>
-						<stream ref="mrdefReader" />
-					</streams>
-				</chunk>
-			</tasklet>
-		</step>
+		<split id="loadRelationsAndProperties" task-executor="taskExecutor">
 
-		<step id="loadMrstyProperties" next="loadMrsatProperties">
-			<tasklet>
-				<chunk reader="mrstyReader" processor="metaMrstyPropertyProcessor"
-					writer="entityPropertyWriter" commit-interval="500">
-				</chunk>
-			</tasklet>
-		</step>
+			<flow>
+				<split id="loadPropertiesAndIndex">
+					<flow>
 
-		<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartioned"
-			next="loadEntityToEntityRelations" />
+					<split id="loadProperties" task-executor="taskExecutor">
 
-		<step id="loadEntityToEntityRelations" next="index">
-			<tasklet>
-				<chunk reader="metaMrrelSkippingReader" processor="metaEntityAssocToEntityProcessor"
-					writer="associationSourceWriter" commit-interval="500">
-					<streams>
-						<stream ref="mrrelReader" />
-					</streams>
-				</chunk>
-			</tasklet>
-		</step>
+						<flow>
+							<step id="loadDefinitions" parent="listenerStep">
+								<tasklet>
+									<chunk reader="mrdefReader" processor="qualifierAddingMetaDefinitionProcessor"
+										writer="entityPropertyWriter" commit-interval="500">
+										<streams>
+											<stream ref="mrdefReader" />
+										</streams>
+									</chunk>
+								</tasklet>
+							</step>
+						</flow>
 
+						<flow>
+							<step id="loadMrstyProperties">
+								<tasklet>
+									<chunk reader="mrstyReader" processor="metaMrstyPropertyProcessor"
+										writer="entityPropertyWriter" commit-interval="500">
+									</chunk>
+								</tasklet>
+							</step>
+						</flow>
 
-		<step id="index">
-			<tasklet ref="indexingTasklet" />
-		</step>
+						<flow>
+							<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartioned"/>
+						</flow>
+					</split>
+					
+					</flow>
+
+					<flow>
+					<step id="index">
+						<tasklet ref="indexingTasklet" />
+					</step>
+					</flow>
+
+				</split>
+
+			</flow>
+
+			<flow>
+				<step id="loadEntityToEntityRelations">
+					<tasklet>
+						<chunk reader="metaMrrelSkippingReader" processor="metaEntityAssocToEntityProcessor"
+							writer="associationSourceWriter" commit-interval="500">
+							<streams>
+								<stream ref="mrrelReader" />
+							</streams>
+						</chunk>
+					</tasklet>
+				</step>
+			</flow>
+
+		</split>
 	</job>
 
 	<beans:bean id="codingSchemeNameSettingProcessor" abstract="true">
