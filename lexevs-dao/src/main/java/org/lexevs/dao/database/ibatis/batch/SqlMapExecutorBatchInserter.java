@@ -69,7 +69,7 @@ public class SqlMapExecutorBatchInserter implements BatchInserter {
 				//Some db drivers won't report batch statistics -- so only report if
 				//something is there.
 				if( totalInserts > 0 && batches > 0) {
-					LoggerFactory.getLogger().info("\nBatch Insert Results:\n" + 
+					LoggerFactory.getLogger().debug("\nBatch Insert Results:\n" + 
 							" -Batches: " + batches + "\n" +
 							" -Inserts: " + totalInserts + "\n" +
 							" " + (1 - (batches/totalInserts) + " Batch Efficiency (1.0 is best)" ));
