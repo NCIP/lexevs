@@ -1379,7 +1379,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     }
 
     public boolean supportedAssociationExists(CodingScheme scheme, String associationName) {
-        // Check for supported association and qualifiers.
         SupportedAssociation[] associations = scheme.getMappings().getSupportedAssociation();
 
         for (SupportedAssociation sa : associations) {
@@ -1389,7 +1388,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return false;
     }
 
-    // probably don't want to get this fine grained. Something to discuss.
     public boolean supportedAssociationQualifiersExists(CodingScheme scheme, AssociationQualification[] assocQualifiers) {
         SupportedAssociationQualifier[] qualifiers = scheme.getMappings().getSupportedAssociationQualifier();
         for (SupportedAssociationQualifier saq : qualifiers) {
