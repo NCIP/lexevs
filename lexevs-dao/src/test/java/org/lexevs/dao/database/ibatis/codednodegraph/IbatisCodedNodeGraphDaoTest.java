@@ -1334,7 +1334,48 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testGetRootsWithNoAssociationRestriction() throws SQLException{
+	public void testGetRootsWithNoAssociationRestrictionIndividually() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('rel-guid', 'cs-guid', 'c-name')");
+
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('ap-guid', 'rel-guid', 'apname')");
+
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid1'," +
+				" 'ap-guid'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+
+		template.execute("insert into entityassnstoentity" +
+				" values ('eae-guid2'," +
+				" 'ap-guid'," +
+				" 't-code1', " +
+				" 't-ns1'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+
+
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null, TraverseAssociations.INDIVIDUALLY);
+
+		assertEquals(1, uids.size());
+
+		assertEquals("s-code", uids.get(0).getCode());
+	}
+	
+	public void testGetRootsWithNoAssociationRestrictionTogether() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
@@ -1368,10 +1409,10 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null, TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null, TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
-
+		
 		assertEquals("s-code", uids.get(0).getCode());
 	}
 	
@@ -1398,7 +1439,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 's-ns'," +
 				" 't-code1'," +
 				" 't-ns1'," +
-		" 'ai-id', null, null, null, null, null, null, null, null)");
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
 				" values ('eae-guid2'," +
@@ -1407,10 +1448,10 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 				" 't-code2'," +
 				" 't-ns2'," +
-		" 'ai-id', null, null, null, null, null, null, null, null)");
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"), TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"), TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
 
@@ -1495,7 +1536,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 
 		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", 
-				DaoUtility.createNonTypedList("INVALID", "ap-guid"), TraverseAssociations.INDIVIDUALLY);
+				DaoUtility.createNonTypedList("INVALID", "ap-guid"), TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
 

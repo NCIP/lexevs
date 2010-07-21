@@ -965,7 +965,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('eguid', 'csguid', 'ecode', 'ens')");
 		
-		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId,  subRef, role, entryStateGuid) " +
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeValue,  subRef, role, entryStateGuid) " +
 			"values ('pmaguid1', 'pguid', 'source', 'aValue', 'aSubRef', 'aRole', 'esguid')");
 	
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
