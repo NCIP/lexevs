@@ -113,10 +113,14 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
 	
-	private static String DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByCodingSchemeUId";
+	private static String DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteEntityAssocQualsByCodingSchemeUId";
 	
-	private static String DELETE_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL = ASSOCIATION_NAMESPACE + "deleteAssocQualsByRelationUId";
+	private static String DELETE_DATA_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteDataAssocQualsByCodingSchemeUId";
 	
+	private static String DELETE_DATA_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL = ASSOCIATION_NAMESPACE + "deleteDataAssocQualsByRelationUId";
+	
+	private static String DELETE_ENTITY_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL = ASSOCIATION_NAMESPACE + "deleteEntityAssocQualsByRelationUId";
+
 	private static String GET_ASSOCIATION_PREDICATE_FOR_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateForId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidForDirectionalName";
@@ -289,9 +293,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public List<String> getRelationsUIdsForCodingSchemeUId(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		List<String> returnList = this.getSqlMapClientTemplate().queryForList(
 				GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL,
 				new PrefixedParameter(prefix, codingSchemeId));
+		
+		return returnList;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -311,7 +317,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		this.getSqlMapClientTemplate().delete(
-				DELETE_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL,
+				DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL,
+				new PrefixedParameter(prefix, codingSchemeUId));
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_DATA_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL,
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
 	
@@ -880,7 +890,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		this.getSqlMapClientTemplate().delete(
-				DELETE_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL,
+				DELETE_DATA_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL,
+				new PrefixedParameterTuple(prefix, codingSchemeUId, relationUId));
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ENTITY_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUId, relationUId));
 	}
 
