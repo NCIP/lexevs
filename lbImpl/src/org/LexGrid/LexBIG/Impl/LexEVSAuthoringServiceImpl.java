@@ -393,7 +393,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
       relations.setEffectiveDate(effectiveDate);
       relations.setIsMapping(isMapping);
       relations.setSourceCodingScheme(getCodingSchemeNameForMininumReference(sourceCodeSystemIdentifier));
-      relations.setSourceCodingSchemeVersion(targetCodeSystemIdentifier.getCodingSchemeVersion());
+      relations.setSourceCodingSchemeVersion(sourceCodeSystemIdentifier.getCodingSchemeVersion());
       relations.setTargetCodingScheme(getCodingSchemeNameForMininumReference(targetCodeSystemIdentifier));
       relations.setTargetCodingSchemeVersion(targetCodeSystemIdentifier.getCodingSchemeVersion());
       if(relationProperties != null){
@@ -401,6 +401,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
       }
       if(associationType != null){
           AssociationPredicate predicate = new AssociationPredicate();
+          predicate.setAssociationName(associationType);
           AssociationPredicate[] predicates = new AssociationPredicate[]{predicate};
           relations.setAssociationPredicate(predicates);
       }
@@ -738,7 +739,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     }
     
     //TODO create properties param and function for coding scheme and relations
-    protected CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
+    public CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
             String associationName, Entity entity, AssociationEntity assocEntity) throws LBException {
 
         Relations relation = new Relations();
