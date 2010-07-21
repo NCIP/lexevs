@@ -904,7 +904,7 @@
 	
 	<beans:bean id="mrsabXmlWriter"
 		class="org.lexgrid.loader.writer.NoClosingRootTagStaxEventItemWriter">
-		<beans:property name="resource" value="file:/${java.io.tmpdir}/NciMetadata.xml" />
+		<beans:property name="resource" value="file:/${user.home}/NciMetadata.xml" />
 		<beans:property name="marshaller" ref="mrsabXmlMarshaller" />
 		<beans:property name="overwriteOutput" value="true" />
 	</beans:bean>
@@ -920,7 +920,7 @@
 	
 		<beans:bean id="mrdocXmlWriter"
 		class="org.lexgrid.loader.writer.NoClosingRootTagStaxEventItemWriter">
-		<beans:property name="resource" value="file:/${java.io.tmpdir}/NciMrdocMetadata.xml" />
+		<beans:property name="resource" value="file:/${user.home}/NciMrdocMetadata.xml" />
 		<beans:property name="marshaller" ref="mrsabXmlMarshaller" />
 		<beans:property name="overwriteOutput" value="true" />
 	</beans:bean>
