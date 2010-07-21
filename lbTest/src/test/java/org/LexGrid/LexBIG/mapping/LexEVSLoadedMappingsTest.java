@@ -1,10 +1,12 @@
 package org.LexGrid.LexBIG.mapping;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -18,6 +20,11 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
 
 import junit.framework.TestCase;
 
