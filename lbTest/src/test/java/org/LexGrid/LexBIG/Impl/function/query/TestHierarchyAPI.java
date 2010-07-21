@@ -74,6 +74,8 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
 
         ResolvedConceptReferenceList rcrl = lbscm.getHierarchyRoots(CELL_URN, csvt, hierarchyId);
         ResolvedConceptReference rcr[] = rcrl.getResolvedConceptReference();
+        
+        assertEquals(1,rcr.length);
         assertTrue(rcr[0].getConceptCode().equals("CL:0000000"));
 
     }
