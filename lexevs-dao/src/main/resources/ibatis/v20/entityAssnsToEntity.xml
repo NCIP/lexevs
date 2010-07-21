@@ -648,7 +648,7 @@
 			eate1.sourceEntityCode = eate2.targetEntityCode
 	
 			AND
-			eate2.sourceEntityCodeNamespace = eate2.TargetEntityCodeNamespace
+			eate1.sourceEntityCodeNamespace = eate2.TargetEntityCodeNamespace
 
 			<isEqual property="param1" compareValue="INDIVIDUALLY">
 			AND
@@ -656,13 +656,15 @@
 			</isEqual>
 			
 			<isEqual property="param1" compareValue="TOGETHER">
-	
-				<isNotEmpty property="param2" prepend="AND">
-					eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
-				</isNotEmpty>	
 			
 				<isNotEmpty property="param2" prepend="AND">
-					eate2.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+				(
+					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[]#</iterate>
+				)
+				AND
+				(
+					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[]#</iterate>
+				)
 				</isNotEmpty>		
 			
 			</isEqual>
@@ -670,7 +672,7 @@
 			)
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
-	
+
 			<isNotEmpty property="param2" prepend="AND">
 				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
 			</isNotEmpty>	
@@ -703,11 +705,13 @@
 			<isEqual property="param1" compareValue="TOGETHER">
 		
 				<isNotEmpty property="param2" prepend="AND">
-					eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
-				</isNotEmpty>	
-			
-				<isNotEmpty property="param2" prepend="AND">
-					eate2.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
+				(
+					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[]#</iterate>
+				)
+				AND
+				(
+					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[]#</iterate>
+				)
 				</isNotEmpty>		
 			
 			</isEqual>
