@@ -11,10 +11,12 @@ public class MappingTestConstants {
 	public static String NEW_RELATIONS_CONTAINER = "newRelation";
 	
 	public static String SOURCE_SCHEME = "GermanMadeParts";
+	public static String SOURCE_URN = "urn:oid:11.11.0.2";
 	public static String SOURCE_VERSION = "2.0";
 	public static String MAPPING_SCHEME = "http://default.mapping.container";
 	public static String MAPPING_VERSION = "1.0";
 	public static String TARGET_SCHEME =  "Automobiles";
+	public static String TARGET_URN = "urn:oid:11.11.0.1";
 	public static String TARGET_VERSION = "1.0";
 	
 }
