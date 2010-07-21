@@ -557,7 +557,7 @@ public class LexBIGServiceImpl implements LexBIGService {
                         MetaBatchLoader metaLoader = (MetaBatchLoader) getServiceManager(null).getLoader(MetaBatchLoader.NAME);
                         metaLoader.removeLoad(uri, version);
                     } catch (Exception e) {
-                        //if its not there, just skip it.
+                        getLogger().info(e.getMessage());
                     }
                 }
             });
@@ -583,7 +583,7 @@ public class LexBIGServiceImpl implements LexBIGService {
                         UmlsBatchLoader umlsLoader = (UmlsBatchLoader) getServiceManager(null).getLoader(UmlsBatchLoader.NAME);
                         umlsLoader.removeLoad(uri, version);
                     } catch (Exception e) {
-                        //if its not there, just skip it.
+                        getLogger().info(e.getMessage());
                     }
                 }
             });
