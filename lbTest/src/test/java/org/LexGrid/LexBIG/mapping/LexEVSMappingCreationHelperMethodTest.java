@@ -1,9 +1,11 @@
 package org.LexGrid.LexBIG.mapping;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
@@ -13,8 +15,10 @@ import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.concepts.Entities;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationTarget;
@@ -248,8 +252,81 @@ public class LexEVSMappingCreationHelperMethodTest extends TestCase {
 		assertTrue(relation.getAssociationPredicate(0).getAssociationName().equals(associationType));
 	}
 	
-    public void testGetCodingSchemeNameForNamespace(){
-    	
+    public void testGetCodingSchemeNameForNamespace() throws LBException{
+    	AbsoluteCodingSchemeVersionReference schemeref = new AbsoluteCodingSchemeVersionReference();
+    	schemeref.setCodingSchemeURN(MappingTestConstants.SOURCE_URN);
+    	schemeref.setCodingSchemeVersion(MappingTestConstants.SOURCE_VERSION);
+    	CodingScheme scheme = authoring.getCodingSchemeMetaData(schemeref);
+    	 authoring.getCodingSchemeNameForNamespace("GermanMadePartsNamespace", scheme.getMappings());	 
     }
+    
+	public void testPopulateCodingSchemeNull() throws LBException {
 
+		List<String> list1 = new ArrayList<String>();
+		List<Source> list2 = new ArrayList<Source>();
+		List<Relations> list3 = new ArrayList<Relations>();
+		try {
+			CodingScheme scheme = authoring.populateCodingScheme(null, "URN",
+					"name", "lang", 0L, "version", list1, list2, new Text(),
+					new Mappings(), new Properties(), new Entities(), list3);
+			fail("Exception should be thrown when Coding Scheme name missing");
+		} catch (LBException e) {
+			assertTrue(true);
+		}
+
+		try {
+			scheme = authoring.populateCodingScheme("test_name", null, "name",
+					"lang", 0L, "version", list1, list2, new Text(),
+					new Mappings(), new Properties(), new Entities(), list3);
+			fail("Exception should be thrown when Coding Scheme uri missing");
+		} catch (LBException e) {
+			assertTrue(true);
+		}
+
+		try {
+			scheme = authoring.populateCodingScheme("test_name", "URN", "name",
+					"lang", 0L, null, list1, list2, new Text(), new Mappings(),
+					new Properties(), new Entities(), list3);
+			fail("Exception should be thrown when Coding Scheme version missing");
+		} catch (LBException e) {
+			assertTrue(true);
+		}
+		
+		try {
+			scheme = authoring.populateCodingScheme("test_name", "URN", "name",
+					"lang", 0L, "version", list1, list2, new Text(), null,
+					new Properties(), new Entities(), list3);
+			fail("Exception should be thrown when Coding Scheme mappings not initialized");
+		} catch (LBException e) {
+			assertTrue(true);
+		}
+	}
+	
+	
+    public void testPopulateCodingScheme() throws LBException{
+
+    	CodingScheme scheme = lbs.resolveCodingScheme("Automobiles", csvt);
+    	
+    	CodingScheme populatedScheme = authoring.populateCodingScheme(
+    			scheme.getCodingSchemeName(), scheme.getCodingSchemeURI(), scheme.getFormalName(), scheme.getDefaultLanguage(), 
+    			scheme.getApproxNumConcepts(), scheme.getRepresentsVersion(), scheme.getLocalNameAsReference(), scheme.getSourceAsReference(), 
+    			scheme.getCopyright(), scheme.getMappings(), scheme.getProperties(), null, scheme.getRelationsAsReference());
+    	
+
+		assertTrue(scheme.getCodingSchemeName().equals(populatedScheme.getCodingSchemeName()));
+		assertTrue(scheme.getCodingSchemeURI().equals(populatedScheme.getCodingSchemeURI()));
+		assertTrue(scheme.getFormalName().equals(populatedScheme.getFormalName()));
+		assertTrue(scheme.getDefaultLanguage().equals(populatedScheme.getDefaultLanguage())); 
+		assertTrue(scheme.getApproxNumConcepts().equals(populatedScheme.getApproxNumConcepts()));
+		assertTrue(scheme.getRepresentsVersion().equals(populatedScheme.getRepresentsVersion()));
+		assertTrue(scheme.getLocalNameAsReference().equals(populatedScheme.getLocalNameAsReference()));
+		assertTrue(scheme.getSourceAsReference().equals(populatedScheme.getSourceAsReference()));
+		assertTrue(scheme.getCopyright().equals(populatedScheme.getCopyright()));
+		assertTrue(scheme.getMappings().equals(populatedScheme.getMappings()));
+		assertTrue(scheme.getProperties().equals(populatedScheme.getProperties()));
+		assertNull(populatedScheme.getEntities());
+		assertTrue(scheme.getRelationsAsReference().equals(populatedScheme.getRelationsAsReference()));
+    	
+ 
+    }
 }
