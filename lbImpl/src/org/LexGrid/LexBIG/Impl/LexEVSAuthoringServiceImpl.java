@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *      http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.LexGrid.LexBIG.Impl;
 
 
@@ -52,11 +70,12 @@ import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
-
-
+/**
+ * @author  <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     
-
     CodingSchemeRendering[] codingSchemes;
     LexBIGService lbs;
     AuthoringService service;
@@ -92,52 +111,11 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         service = dbManager.getAuthoringService();
         indexService = locator.getIndexServiceManager();
         setCodingSchemes();
-    }
-    
- 
-    @Override
-    public CodingScheme createCodingScheme(Revision revision, String codingSchemeName, String codingSchemeURI, String formalName,
-            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-            List<Relations>  relationsList, EntryState entryState) throws LBException {
-        if(codingSchemeName == null){
-            throw new LBException("Coding scheme name cannot be null");
-        }
-        if(codingSchemeURI == null){
-            throw new LBException("Coding scheme URI cannot be null");
-        }
-        if(representsVersion == null){
-            throw new LBException("Coding scheme version cannot be null");
-        }
-        if(mappings == null){
-            throw new LBException("Coding scheme mappings cannot be null");
-        }
-        CodingScheme scheme = new CodingScheme();
-        scheme.setCodingSchemeName(codingSchemeName);
-        scheme.setCodingSchemeURI(codingSchemeURI);
- 
-        scheme.setFormalName(formalName);
+    } 
 
-        scheme.setDefaultLanguage(defaultLanguage);
-        scheme.setApproxNumConcepts(approxNumConcepts);
-        scheme.setRepresentsVersion(representsVersion);
-
-        scheme.setLocalName(localNameList);
-
-        scheme.setSource(sourceList);
-
-        scheme.setCopyright(copyright);
-
-        scheme.setMappings(mappings);
-
-        scheme.setProperties(properties);
-        scheme.setEntities(entities);
-        
-        return scheme;
-    }
-    
-    
-    //Creating a mapping to persist to an existing set of maps in a specified coding scheme
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService#createAssociationMapping(org.LexGrid.versions.EntryState, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.relations.AssociationSource[], java.lang.String, java.lang.String, java.util.Date, org.LexGrid.relations.AssociationQualification[], org.LexGrid.versions.Revision, boolean)
+     */
     @Override
     public void createAssociationMapping(
             EntryState entryState, 
@@ -149,7 +127,8 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
             String relationsContainerName,
             Date effectiveDate,
             AssociationQualification[] associationQualifiers,
-            Revision revision 
+            Revision revision, 
+            boolean loadEntities 
             )
             throws LBException {
 
@@ -183,7 +162,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
                     revisedScheme, relationsContainerName, 
                     effectiveDate, sourceCodingScheme, 
                     targetCodingScheme, 
-                    true, relationsContainerName, null);
+                    true, null, null);
             relation.setEntryState(newEntryState);
             relation.addAssociationPredicate(predicate);
             relations = new Relations[]{relation};
@@ -230,14 +209,17 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
           revisedScheme.setRelations(relations);
         
         //process the entities for the mappings coding scheme.
-//        Entities entities = processEntitiesForExistingMappingScheme(revisedScheme,
-//                associationSources, 
-//                sourceCodingScheme.getCodingSchemeURN(),
-//        sourceCodingScheme.getCodingSchemeVersion(), 
-//        targetCodingScheme.getCodingSchemeURN(), 
-//        targetCodingScheme.getCodingSchemeVersion(), 
-//        newEntryState);
-//        revisedScheme.setEntities(entities);
+          Entities entities = null;
+          if(loadEntities){
+        entities = processEntitiesForExistingMappingScheme(revisedScheme,
+                associationSources, 
+                sourceCodingScheme.getCodingSchemeURN(),
+        sourceCodingScheme.getCodingSchemeVersion(), 
+        targetCodingScheme.getCodingSchemeURN(), 
+        targetCodingScheme.getCodingSchemeVersion(), 
+        newEntryState);
+        revisedScheme.setEntities(entities);
+          }
         String sourceSchemeName = getCodingSchemeNameForMininumReference(sourceCodingScheme);
         String targetSchemeName = getCodingSchemeNameForMininumReference(targetCodingScheme);
         
@@ -267,6 +249,9 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
     }
     
     
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService#createMappingWithDefaultValues(org.LexGrid.relations.AssociationSource[], java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+     */
     @Override
     public void createMappingWithDefaultValues(AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
             String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
@@ -324,6 +309,9 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         indexService.getEntityIndexService().createIndex(reference);
     }
     
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService#createMappingScheme(org.LexGrid.codingSchemes.CodingScheme, org.LexGrid.relations.AssociationSource[], java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)
+     */
     @Override
     public void createMappingScheme(CodingScheme mappingSchemeMetadata, AssociationSource[] sourcesAndTargets, String sourceCodingScheme,
             String sourceCodingSchemeVersion, String targetCodingScheme, String targetCodingSchemeVersion,
@@ -385,20 +373,10 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         indexService.getEntityIndexService().createIndex(reference);
     }
     
-    @Override
-    public Entities createEntities(CodingScheme scheme) throws LBException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Entity createEntity(Entities entities) throws LBException {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
-    //TODO Create a method that creates a revision of a coding scheme before 
-    //returning this version-able element.
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService#createRelationsContainer(org.LexGrid.versions.EntryState, org.LexGrid.codingSchemes.CodingScheme, java.lang.String, java.util.Date, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, boolean, java.lang.String, org.LexGrid.commonTypes.Properties)
+     */
     @Override
     public Relations createRelationsContainer(
             EntryState entryState,
@@ -413,12 +391,28 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
       Relations relations = new Relations();
       relations.setContainerName(containerName);
       relations.setEffectiveDate(effectiveDate);
+      relations.setIsMapping(isMapping);
+      relations.setSourceCodingScheme(getCodingSchemeNameForMininumReference(sourceCodeSystemIdentifier));
+      relations.setSourceCodingSchemeVersion(targetCodeSystemIdentifier.getCodingSchemeVersion());
+      relations.setTargetCodingScheme(getCodingSchemeNameForMininumReference(targetCodeSystemIdentifier));
+      relations.setTargetCodingSchemeVersion(targetCodeSystemIdentifier.getCodingSchemeVersion());
+      if(relationProperties != null){
+          relations.setProperties(relationProperties);
+      }
+      if(associationType != null){
+          AssociationPredicate predicate = new AssociationPredicate();
+          AssociationPredicate[] predicates = new AssociationPredicate[]{predicate};
+          relations.setAssociationPredicate(predicates);
+      }
       return relations;
     }
     
     
-    //TODO Create a method that persists the predicate that adds a modification of the
-    // relations container and persists a revision
+
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService#createAssociationPredicate(java.lang.String, org.LexGrid.relations.AssociationSource[])
+     */
     @Override
     public AssociationPredicate createAssociationPredicate(  
             String associationName, 
@@ -428,14 +422,12 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
        predicate.setSource(Arrays.asList(assocSources));
         return predicate;
     }
+
     
-    @Override
-    public Properties createCodingSchemeProperties(CodingScheme scheme) throws LBException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    //creates an association on an existing coding scheme
+  
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService#createAssociationSource(org.LexGrid.versions.Revision, org.LexGrid.versions.EntryState, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationTarget[])
+     */
     @Override
     public AssociationSource createAssociationSource(Revision revision, EntryState entryState,
             AbsoluteCodingSchemeVersionReference sourceCodeSystemIdentifier, String sourceConceptCodeIdentifier,
@@ -519,8 +511,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         return source;
     }
     
-    //Nothing persisted here.  Must be created with a source --
-    //Used as a method for creating targets when creating the source..
+
     @Override
     public AssociationTarget createAssociationTarget(
             EntryState entryState,
@@ -592,12 +583,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
                     "CodingScheme " + scheme.getCodingSchemeURN() + " version " + scheme.getCodingSchemeVersion()
                             + " does not exist");
             return false;
-        }
-        //Relations baseRelations = getRelations(baseScheme, relationsContainer);
-        //String relationsRevisionId = baseRelations.getEntryState().getContainingRevision();
-        // enforcing continuity in this entry state for a previous revision id
-       // enforcePreviousRevisionId(baseScheme, entryState);
-        
+        }        
         //Creating a version of this scheme with a smaller footprint.
         CodingScheme newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainer, associationName, null, null);
         
@@ -645,6 +631,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         entryState.setRelativeOrder(RELATIVE_ORDER);
         return entryState;
     }
+    
     @Override
     public AssociationSource mapTargetsToSource(
             EntryState entryState,
@@ -703,7 +690,6 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         EntryState newState = cloneEntryState(entryState, ChangeType.NEW);
         
         //method will check for existence of scheme.
-   
         newScheme = createMinimalSchemeForRevision(baseScheme, relationsContainerName, associationName, null, null);
         newScheme.setEntryState(dependentState);
         
@@ -750,6 +736,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         }
         return scheme.getCodingSchemeName();
     }
+    
     //TODO create properties param and function for coding scheme and relations
     protected CodingScheme createMinimalSchemeForRevision(CodingScheme revisedScheme, String relationsContainer,
             String associationName, Entity entity, AssociationEntity assocEntity) throws LBException {
