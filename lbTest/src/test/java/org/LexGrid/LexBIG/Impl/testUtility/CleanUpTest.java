@@ -22,6 +22,9 @@ import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceManagerImpl;
 import org.LexGrid.LexBIG.Impl.function.query.TestPostLoadManifest;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -218,6 +221,38 @@ public class CleanUpTest extends TestCase {
     	}catch(Throwable e){
     		//don't fail -- some OS's/Test runners will remove this before it gets here
     	}
+
     }
 
+	public void testRemoveDefaultMappingsScheme() throws LBException {
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
+		scheme.setCodingSchemeURN("http://default.mapping.container");
+		scheme.setCodingSchemeVersion("1.0");
+		lbsm.deactivateCodingSchemeVersion(scheme, null);
+		lbsm.removeCodingSchemeVersion(scheme);
+
+	}
+
+	public void testRemoveFullMappingsScheme() throws LBException,
+			LBInvocationException {
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
+		scheme.setCodingSchemeURN("Tested_URI");
+		scheme.setCodingSchemeVersion("0.0");
+		lbsm.deactivateCodingSchemeVersion(scheme, null);
+		lbsm.removeCodingSchemeVersion(scheme);
+	}
+	
+	public void testRemoveAuthoringShell() throws LBException {
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
+		scheme.setCodingSchemeURN("http://authoring.test.shell");
+		scheme.setCodingSchemeVersion("1.1");
+		lbsm.deactivateCodingSchemeVersion(scheme, null);
+		lbsm.removeCodingSchemeVersion(scheme);
+	}
 }

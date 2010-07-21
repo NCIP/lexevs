@@ -372,6 +372,9 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(GForge24191.class);
         mainSuite.addTest(featureRequestTests);
       
+        //Association Authoring Mapping tests
+        mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
+        
         mainSuite.addTestSuite(CleanUpTest.class);
        
         //ValueDomain tests
