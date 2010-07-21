@@ -125,7 +125,7 @@
   			
   			usageContext.attributeId AS usageContextAttributeId,
   			
-  			source.attributeId AS sourceAttributeId,
+  			source.attributeValue AS sourceAttributeValue,
   			source.subRef AS sourceSubRef,
   			source.role AS sourceRole,
   			

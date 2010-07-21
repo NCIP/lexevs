@@ -16,7 +16,7 @@
 	</resultMap>
 	
 	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source" groupBy="content,subRef,role">
-		<result property="content" column="sourceAttributeId"/>
+		<result property="content" column="sourceAttributeValue"/>
 		<result property="subRef" column="sourceSubRef" />
 		<result property="role" column="sourceRole" />
 	</resultMap>
