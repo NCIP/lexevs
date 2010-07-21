@@ -52,19 +52,19 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="2" prevRevision="1" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="2" relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="2" prevRevision="1"
+                            <lgCommon:entryState containingRevision="2"
                                 relativeOrder="0" changeType="DEPENDENT"/>
                             	<lgCon:property propertyName="test-prop1" propertyId="1">
                                 	<lgCommon:entryState 
                                 	changeType="MODIFY" 
                                 	relativeOrder="0" 
                                 	containingRevision="2"
-                                	prevRevision="1"/>
+                                	/>
                                 	<lgCommon:value>revision2Value</lgCommon:value>
                                 </lgCon:property>
                         </lgCon:entity>
@@ -77,12 +77,12 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="3" prevRevision="2" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="3" relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="3" prevRevision="2"
+                            <lgCommon:entryState containingRevision="3"
                                 relativeOrder="0" changeType="DEPENDENT"/>    
                                 <lgCon:property propertyName="test-prop2" propertyId="2">
                                 	<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="3"/>
@@ -98,18 +98,18 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="4" prevRevision="3" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="4"  relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="4" prevRevision="3"
+                            <lgCommon:entryState containingRevision="4" 
                                 relativeOrder="0" changeType="DEPENDENT"/>    
                                 <lgCon:property propertyName="test-prop1" propertyId="1" isActive="false">
                                 	<lgCommon:entryState changeType="VERSIONABLE" 
                                 	relativeOrder="0" 
                                 	containingRevision="4"
-                                	prevRevision="2"/>
+                                	 />
                                 </lgCon:property> 
                         </lgCon:entity>
                     </lgCS:entities>
@@ -121,12 +121,12 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="5" prevRevision="4" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="5" relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="5" prevRevision="4"
+                            <lgCommon:entryState containingRevision="5" 
                                 relativeOrder="0" changeType="DEPENDENT"/>    
                                 <lgCon:property propertyName="test-prop5" propertyId="5">
                                 	<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="5"/>
@@ -142,16 +142,16 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="6" prevRevision="5" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="6"   relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="6" prevRevision="5"
+                            <lgCommon:entryState containingRevision="6" 
                                 relativeOrder="0" changeType="DEPENDENT"/>    
                                 <lgCon:property propertyName="test-prop2" propertyId="2">
                                 	<lgCommon:entryState changeType="MODIFY"
-										prevRevision="3" 
+										
 										relativeOrder="0" 
 										containingRevision="6"/>
                                 	<lgCommon:propertyQualifier propertyQualifierName="TestQual">
@@ -168,16 +168,16 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="7" prevRevision="6" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="7"  relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="7" prevRevision="6"
+                            <lgCommon:entryState containingRevision="7" 
                                 relativeOrder="0" changeType="DEPENDENT"/>    
                                 <lgCon:property propertyName="test-prop2" propertyId="2">
                                 	<lgCommon:entryState changeType="MODIFY"
-										prevRevision="6" 
+										
 										relativeOrder="0" 
 										containingRevision="7"/>
                                 	<lgCommon:propertyQualifier propertyQualifierName="TestQual">
@@ -197,16 +197,15 @@
             <changedEntry>
                 <changedCodingSchemeEntry codingSchemeName="test"
                     codingSchemeURI="testUri" representsVersion="1.0">
-                    <lgCommon:entryState containingRevision="8" prevRevision="7" relativeOrder="0"
+                    <lgCommon:entryState containingRevision="8"  relativeOrder="0"
                         changeType="DEPENDENT"/>
                     <lgCS:mappings/>
                     <lgCS:entities>
                         <lgCon:entity entityCode="testEntity" entityCodeNamespace="test">
-                            <lgCommon:entryState containingRevision="8" prevRevision="7"
+                            <lgCommon:entryState containingRevision="8"  
                                 relativeOrder="0" changeType="DEPENDENT"/>    
                                 <lgCon:property propertyName="test-prop2" propertyId="2">
                                 	<lgCommon:entryState changeType="MODIFY"
-										prevRevision="7" 
 										relativeOrder="0" 
 										containingRevision="8"/>
                                 	<lgCommon:propertyQualifier propertyQualifierName="TestQual">

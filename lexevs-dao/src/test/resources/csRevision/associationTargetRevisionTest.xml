@@ -77,7 +77,7 @@
 									targetEntityCode="rev2TargetCode" targetEntityCodeNamespace="rev2TargetCodeNamespace">
 									<lgCommon:entryState 
 										changeType="MODIFY" relativeOrder="0" 
-										prevRevision="1"
+
 										containingRevision="2"/>
 								</lgRel:target>
 							</lgRel:source>
