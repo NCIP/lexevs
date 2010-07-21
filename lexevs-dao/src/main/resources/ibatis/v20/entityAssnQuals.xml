@@ -19,80 +19,79 @@
 		)
   </insert>
   
-  <delete id="deleteAssocQualsByCodingSchemeUId" 
+  <delete id="deleteEntityAssocQualsByCodingSchemeUId" 
   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
-  		DELETE FROM
+  		DELETE 
+  			$prefix$entityAssnQuals
+  		FROM
   			$prefix$entityAssnQuals
   			
-  		WHERE 
-  			referenceGuid IN
-  		( 
-  		SELECT
-  			eate.entityAssnsGuid
-  			
-  		FROM
+  		INNER JOIN
   			$prefix$entityAssnsToEntity eate
+  		ON
+  			$prefix$entityAssnQuals.referenceGuid = eate.entityAssnsGuid
 	
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eate.associationPredicateGuid
-  			
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$relation rel
-  		ON
+ 		ON
   			ap.relationGuid =
   			rel.relationGuid
-  			
+ 	
   		WHERE
   			rel.codingSchemeGuid = #param1#
+  </delete>
   
-  		UNION
-  		
-  		SELECT
-  			eatd.entityAssnsDataGuid
-  			
+  
+  <delete id="deleteDataAssocQualsByCodingSchemeUId" 
+  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+  		DELETE 
+  			$prefix$entityAssnQuals
   		FROM
+  			$prefix$entityAssnQuals
+  			
+  		INNER JOIN
   			$prefix$entityAssnsToData eatd
+  		ON
+  			$prefix$entityAssnQuals.referenceGuid = eatd.entityAssnsDataGuid
 	
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eatd.associationPredicateGuid
-  			
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$relation rel
-  		ON
+ 		ON
   			ap.relationGuid =
   			rel.relationGuid
-  			
+ 	
   		WHERE
   			rel.codingSchemeGuid = #param1#
-  		)
   </delete>
   
-  <delete id="deleteAssocQualsByRelationUId" 
+  <delete id="deleteEntityAssocQualsByRelationUId" 
   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-  		DELETE FROM
+  		DELETE 
+  			$prefix$entityAssnQuals
+  		FROM
   			$prefix$entityAssnQuals
   			
-  		WHERE 
-  			referenceGuid IN
-  		( 
-  		SELECT
-  			eate.entityAssnsGuid
-  			
-  		FROM
+  		INNER JOIN
   			$prefix$entityAssnsToEntity eate
+  		ON
+  			$prefix$entityAssnQuals.referenceGuid = eate.entityAssnsGuid
 	
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eate.associationPredicateGuid
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$relation rel
  		ON
   			ap.relationGuid =
@@ -102,32 +101,35 @@
   			rel.codingSchemeGuid = #param1#
   			AND
   			rel.relationGuid = #param2#
+  </delete>
   
-  		UNION
-  		
-  		SELECT
-  			eatd.entityAssnsDataGuid
-  			
+  <delete id="deleteDataAssocQualsByRelationUId" 
+  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  		DELETE
+  			$prefix$entityAssnQuals
   		FROM
+  			$prefix$entityAssnQuals
+  			
+  		INNER JOIN
   			$prefix$entityAssnsToData eatd
+  		ON
+  			$prefix$entityAssnQuals.referenceGuid = eatd.entityAssnsDataGuid
 	
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eatd.associationPredicateGuid
-  			
-  		LEFT JOIN
+  		INNER JOIN
   			$prefix$relation rel
-  		ON
+ 		ON
   			ap.relationGuid =
   			rel.relationGuid
-  			
+ 	
   		WHERE
   			rel.codingSchemeGuid = #param1#
   			AND
   			rel.relationGuid = #param2#
-  		)
   </delete>
 
 	<delete id="deleteAllAssocMultiAttribByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
