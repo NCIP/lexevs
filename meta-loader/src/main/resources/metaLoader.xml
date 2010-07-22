@@ -224,7 +224,7 @@
 			<listeners>
 				<listener ref="stepCompletionListener" />
 			</listeners>
-			<chunk reader="partitionedMrsatReader" processor="metaMrsatPropertyProcessor"
+			<chunk reader="partitionedMrsatReader" processor="qualifierAddingMetaMrsatProcessor"
 				writer="entityPropertyWriter" commit-interval="500">
 					<streams>
 					<stream ref="mrsatReader" />
@@ -457,6 +457,24 @@
 		</beans:property>
 	</beans:bean>
 	
+	<beans:bean id="qualifierAddingMetaMrsatProcessor"
+		class="org.lexgrid.loader.processor.decorator.EntityPropertyQualifierAndSourceAddingDecorator">
+		<beans:constructor-arg ref="metaMrsatPropertyProcessor"/>
+		<beans:property name="sourceResolvers">
+			<beans:list>
+				<beans:ref bean="metaMrsatSourceResolver"/>
+			</beans:list>
+		</beans:property>
+		<beans:property name="qualifierResolvers">
+			<beans:list>
+				<beans:ref bean="metaMrsatMetaAuiResolver" />
+				<beans:ref bean="mrsatMultiAttribStypeResolver" />
+				<beans:ref bean="mrsatMultiAttribSuppressResolver" />
+			</beans:list>
+		</beans:property>	
+	
+	</beans:bean>
+	
     <beans:bean id="qualifierAddingMetaDefinitionProcessor"
 		class="org.lexgrid.loader.processor.decorator.EntityPropertyQualifierAndSourceAddingDecorator">
 		<beans:constructor-arg ref="metaDefinitionProcessor"/>
@@ -483,28 +501,6 @@
 		</beans:property>
 		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
 	</beans:bean>
-
-<!-- 
-	<beans:bean id="metaPresentationProcessor"
-		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
-		<beans:property name="propertyResolver">
-			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MetaPresentationPropertyResolver">
-				<beans:property name="entityCodeResolver">
-					<beans:bean
-						class="org.lexgrid.loader.meta.processor.support.MetaMrconsoEntityCodeResolver" />
-				</beans:property>
-				<beans:property name="entityNamespaceResolver">
-					<beans:ref bean="metaEntityNamespaceResolver" />
-				</beans:property>
-				<beans:property name="individualIdSetter">
-					<beans:bean
-						class="org.lexgrid.loader.meta.data.property.MetaMrconsoIndividualIdSetter" />
-				</beans:property>
-			</beans:bean>
-		</beans:property>
-	</beans:bean>
-	-->
 	
 	<beans:bean id="metaMrsatPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
@@ -817,11 +813,12 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="mrsatSourceResolver"
+    <!--  Start MRSAT qualifiers -->
+	<beans:bean id="metaMrsatSourceResolver"
 		class="org.lexgrid.loader.meta.processor.support.MetaMrsatSourceResolver">
 	</beans:bean>
 			
-	<beans:bean id="mrsatMultiAttribAuiResolver"
+	<beans:bean id="metaMrsatMetaAuiResolver"
 		class="org.lexgrid.loader.meta.processor.support.MetaMrsatMetauiPropertyQualifierResolver">
 	</beans:bean>
 			
@@ -832,6 +829,7 @@
 	<beans:bean id="mrsatMultiAttribSuppressResolver"
 		class="org.lexgrid.loader.meta.processor.support.MetaMrsatSuppressPropertyQualifierResolver">
 	</beans:bean>
+	<!--  End MRSAT qualifiers -->
 
 	<beans:bean id="metaEntityResolver"
 		class="org.lexgrid.loader.meta.processor.support.MetaEntityResolver">
