@@ -9,9 +9,13 @@ import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 
 public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable implements LoaderPostProcessor {
 
@@ -38,21 +42,30 @@ public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable impleme
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference) {
         EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+        DaoCallbackService daoCallbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
         
-        String uri = reference.getCodingSchemeURN();
-        String version = reference.getCodingSchemeVersion();
+        final String uri = reference.getCodingSchemeURN();
+        final String version = reference.getCodingSchemeVersion();
         
         long entities = entityService.getEntityCount(uri, version);
         
-        CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(uri, version);
+        final CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(uri, version);
         
         codingScheme.setApproxNumConcepts(entities);
         
         try {
-            codingSchemeService.updateCodingScheme(codingScheme);
-        } catch (LBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            daoCallbackService.executeInDaoLayer(new DaoCallback<Void>() {
+
+                @Override
+                public Void execute(DaoManager daoManager) {
+                   String codingSchemeUid = daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+                   daoManager.getCodingSchemeDao(uri, version).updateCodingScheme(codingSchemeUid, codingScheme);
+                   
+                   return null;
+                }
+            });
+        } catch (Exception e) {
+           LoggerFactory.getLogger().warn("Post Process failed -- Load will not be rolled back.", e);
         }  
     }
 }

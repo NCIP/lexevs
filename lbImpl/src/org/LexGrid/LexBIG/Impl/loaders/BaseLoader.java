@@ -20,13 +20,16 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.Core.types.LogLevel;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -47,6 +50,8 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
+import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -56,6 +61,7 @@ import org.lexevs.logging.LoggerFactory;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.registry.WriteLockManager;
 import org.lexevs.system.service.SystemResourceService;
+import org.lexevs.system.utility.MyClassLoader;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
@@ -64,8 +70,10 @@ import edu.mayo.informatics.lexgrid.convert.inserter.DefaultPagingCodingSchemeIn
 import edu.mayo.informatics.lexgrid.convert.inserter.PreValidatingInserterDecorator;
 import edu.mayo.informatics.lexgrid.convert.inserter.resolution.EntityBatchInsertResolver;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.CodingSchemeReferencesStringArrayPickListOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringArrayOption;
+import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -91,10 +99,12 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     // TODO - It would be nice if the loader would set the the approximate
     // concept count value when
     // they finish loading something
-    
+    private static final long serialVersionUID = -1360861293147077920L;
+
     private ManifestUtil manifestUtil = new ManifestUtil();
     
     public static String LOADER_POST_PROCESSOR_OPTION = "Loader Post Processor (Extension Name)";
+    public static String SUPPLEMENT_OPTION = "Supplement Coding Scheme";
     public static String MANIFEST_FILE_OPTION = "Manifest File";
     public static String LOADER_PREFERENCE_FILE_OPTION = "Loader Preferences File";
     public static String ASYNC_OPTION = "Async Load";
@@ -134,11 +144,22 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         
         StringArrayOption loaderPostProcessorOption = new StringArrayOption(LOADER_POST_PROCESSOR_OPTION);
         
+        StringOption supplementOption;
+        try {
+            supplementOption = new CodingSchemeReferencesStringArrayPickListOption(
+                    SUPPLEMENT_OPTION, 
+                    LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes());
+        } catch (LBInvocationException e) {
+            throw new RuntimeException(e);
+        }
+        
         //TODO: Do we want to enable these by default?
         //loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
         loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+        loaderPostProcessorOption.getPickList().addAll(this.getPostProcessorExtensionNames());
         
         holder.getStringArrayOptions().add(loaderPostProcessorOption);
+        holder.getStringOptions().add(supplementOption);
         
         BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
         holder.getBooleanOptions().add(asyncOption);
@@ -211,7 +232,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         return refs;
     }
 
-    private class DoConversion implements Runnable {
+    protected class DoConversion implements Runnable {
 
         public void run() {
             URNVersionPair[] locks = null;
@@ -219,6 +240,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 
                 // Actually do the load
                 URNVersionPair[] loadedCodingSchemes = doLoad();
+                if(loadedCodingSchemes == null || loadedCodingSchemes.length == 0) {
+                    return;
+                }
                 codingSchemeReferences = urnVersionPairToAbsoluteCodingSchemeVersionReference(loadedCodingSchemes);
 
                 String[] codingSchemeNames = new String[loadedCodingSchemes.length];
@@ -261,6 +285,25 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                         register(loadedCodingSchemes);
                     }
                     
+                    String parentSupplementString = getOptions().getStringOption(SUPPLEMENT_OPTION).getOptionValue();
+                    if(StringUtils.isNotBlank(parentSupplementString)) {
+                        try {
+                            AbsoluteCodingSchemeVersionReference parent = 
+                                getAbsoluteCodingSchemeVersionReferenceFromOptionString(parentSupplementString);
+                            
+                            md_.info("Registering as a supplement to URI: " + 
+                                    parent.getCodingSchemeURN() + ", Version: " + parent.getCodingSchemeVersion());
+                            
+                            for(AbsoluteCodingSchemeVersionReference supplement : getCodingSchemeReferences()) {
+                                LexEvsServiceLocator.getInstance().getSystemResourceService().
+                                    registerCodingSchemeSupplement(parent, supplement);
+                            }
+                        } catch (Exception e) {
+                            md_.warn("Error registring supplements, none will be registered.", e);
+                        }
+                    } else {
+                        md_.info("Not registering as a supplement.");
+                    }
                 }
             } catch (CodingSchemeAlreadyLoadedException e) {
                 status_.setState(ProcessState.FAILED);
@@ -303,6 +346,13 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
 
     
+    }
+    
+    private AbsoluteCodingSchemeVersionReference getAbsoluteCodingSchemeVersionReferenceFromOptionString(String optionString) throws LBParameterException, LBInvocationException {
+        return CodingSchemeReferencesStringArrayPickListOption.getAbsoluteCodingSchemeVersionReference(
+                optionString,
+                LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes()
+                );
     }
     
     private void doApplyManifest(AbsoluteCodingSchemeVersionReference[] codingSchemeReferences) throws LgConvertException {
@@ -648,6 +698,21 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         // proper interface.
         ExtensionRegistryImpl.instance().registerLoadExtension(
                 super.getExtensionDescription());
+    }
+    
+    private List<String> getPostProcessorExtensionNames(){
+        List<String> returnList = new ArrayList<String>();
+        for(ExtensionDescription extension : ExtensionRegistryImpl.instance().getGenericExtensions().getExtensionDescription()) {
+            try {
+                if(ClassUtils.isAssignable(Class.forName(
+                        extension.getExtensionClass(), false, MyClassLoader.instance()), LoaderPostProcessor.class)){
+                    returnList.add(extension.getName());
+                }
+            } catch (ClassNotFoundException e) {
+               //don't show invalid extensions
+            }
+        }
+        return returnList;
     }
     
     protected URNVersionPair[] constructVersionPairsFromCodingSchemes(CodingScheme... codingSchemes) {

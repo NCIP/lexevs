@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -14,12 +13,8 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.util.SimpleMemUsageReporter;
-import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
-import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.StreamingXMLToSQL;
 import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.LexGridXMLProcessor;
@@ -104,7 +99,14 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                 this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue(),
                 this.getCodingSchemeManifest());
    
-        return this.constructVersionPairsFromCodingSchemes(codingScheme);
+        URNVersionPair[] loadedCodingSchemes = this.constructVersionPairsFromCodingSchemes(codingScheme);
+        
+        if(loadedCodingSchemes[0].getUrn().equals(LexGridXMLProcessor.NO_SCHEME_URL)
+                &&  loadedCodingSchemes[0].getVersion().equals(LexGridXMLProcessor.NO_SCHEME_VERSION)) {
+            return null;
+        } else {
+            return loadedCodingSchemes;
+        }
     }
 
     /* (non-Javadoc)
@@ -121,113 +123,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         return temp;
     }
     
-    private class DoConversion implements Runnable {
-        
-       
-        public void run() {
-            URNVersionPair[] locks = null;
-            try {          
-                
-                // Actually do the load
-                URNVersionPair[] loadedCodingSchemes = doLoad();
-                
-                //Must be loading a value domain or picklist if this condition is true ... exit
-                if(loadedCodingSchemes[0].getUrn()== LexGridXMLProcessor.NO_SCHEME_URL 
-                        &&  loadedCodingSchemes[0].getVersion()== LexGridXMLProcessor.NO_SCHEME_VERSION){
-                    
-                    if (getStatus().getErrorsLogged() != null && !getStatus().getErrorsLogged().booleanValue()) {
-
-                        getMd_().info("Finished loading the DB");
-                        Snapshot snap = SimpleMemUsageReporter.snapshot();
-                        getMd_().info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
-                                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
-                                + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
-
-                        getStatus().setState(ProcessState.COMPLETED);
-                        getMd_().info("Load process completed without error");
-                    }
-                    return;
-                }
-                
-                setCodingSchemeReferences(urnVersionPairToAbsoluteCodingSchemeVersionReference(loadedCodingSchemes));
-
-                String[] codingSchemeNames = new String[loadedCodingSchemes.length];
-                for (int i = 0; i < loadedCodingSchemes.length; i++) {
-                    codingSchemeNames[i] = loadedCodingSchemes[i].getUrn();
-                }
-
-                if (getStatus().getErrorsLogged() != null && !getStatus().getErrorsLogged().booleanValue()) {
-
-                    getMd_().info("Finished loading the DB");
-                    Snapshot snap = SimpleMemUsageReporter.snapshot();
-                    getMd_().info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
-                            + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
-                            + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
-
-                    //Pre-register to make this available before indexing.
-                    if(isDoRegister()) {
-                        register(loadedCodingSchemes);
-                    }
-                    
-                    doPostProcessing(getOptions(), getCodingSchemeReferences());
-                    
-                    doTransitiveAndIndex(getCodingSchemeReferences());
-
-                    getMd_().info("After Indexing");
-                    snap = SimpleMemUsageReporter.snapshot();
-                    getMd_().info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
-                            + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage())
-                            + " Heap Delta:" + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
-
-                    getStatus().setState(ProcessState.COMPLETED);
-                    getMd_().info("Load process completed without error");
-                    
-                    //Register again (to set as INACTIVE)
-                    if(isDoRegister()) {
-                        register(loadedCodingSchemes);
-                    }
-                    
-                }
-                
-            } catch (CodingSchemeAlreadyLoadedException e) {
-                getStatus().setState(ProcessState.FAILED);
-                getMd_().fatal(e.getMessage());
-            } catch (Exception e) {
-                getStatus().setState(ProcessState.FAILED);
-                getMd_().fatal("Failed while running the conversion", e);
-            } finally {
-                if (getStatus().getState() == null || !getStatus().getState().equals(ProcessState.COMPLETED)) {
-                    getStatus().setState(ProcessState.FAILED);
-
-                    try {
-                        if (locks != null) {
-                            for (int i = 0; i < locks.length; i++) {
-                                unlock(locks[i]);
-                            }
-                        }
-
-                        getLogger().warn("Load failed.  Removing temporary resources...");
-                        SystemResourceService service = 
-                               LexEvsServiceLocator.getInstance().getSystemResourceService();
-                        
-                        for(AbsoluteCodingSchemeVersionReference ref : getCodingSchemeReferences()) {
-                            service.removeCodingSchemeResourceFromSystem(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
-                        }
-
-                    } catch (LBParameterException e) {
-                        // do nothing - means that the requested delete item
-                        // didn't exist.
-                    } catch (Exception e) {
-                        getLogger().warn("Problem removing temporary resources", e);
-                    }
-
-                }
-                getStatus().setEndTime(new Date(System.currentTimeMillis()));
-                inUse = false;
-            }
-
-        }
-    }
+   
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader#getSchemaURL()
      */
