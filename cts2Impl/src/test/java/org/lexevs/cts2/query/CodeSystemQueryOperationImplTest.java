@@ -42,29 +42,26 @@ public class CodeSystemQueryOperationImplTest {
 		
 		// search by version
 		queryByExample = new CodingSchemeSummary();
-		queryByExample.setRepresentsVersion("1.1");
+		queryByExample.setRepresentsVersion("1.0");
 		results  = query.listCodeSystems(queryByExample);
-		assertEquals(1, results.getCodingSchemeRenderingCount());
 		assertEquals("Automobiles", results.getCodingSchemeRendering(0).getCodingSchemeSummary().getLocalName());
 		
 		// search by formalName
 		queryByExample = new CodingSchemeSummary();
-		queryByExample.setFormalName("test2");
+		queryByExample.setFormalName("autos");
 		results  = query.listCodeSystems(queryByExample);
-		assertEquals(1, results.getCodingSchemeRenderingCount());
 		assertEquals("Automobiles", results.getCodingSchemeRendering(0).getCodingSchemeSummary().getLocalName());
 
 		// search by localName
 		queryByExample = new CodingSchemeSummary();
 		queryByExample.setLocalName("Automobiles");
 		results  = query.listCodeSystems(queryByExample);
-		assertEquals(1, results.getCodingSchemeRenderingCount());
 		assertEquals("Automobiles", results.getCodingSchemeRendering(0).getCodingSchemeSummary().getLocalName());
 		
 		// search by localName & version
 		queryByExample = new CodingSchemeSummary();
 		queryByExample.setLocalName("Automobiles");
-		queryByExample.setCodingSchemeURI("1.0");
+		queryByExample.setCodingSchemeURI("8.0");
 		results  = query.listCodeSystems(queryByExample);
 		assertEquals(0, results.getCodingSchemeRenderingCount());
 		
@@ -78,12 +75,12 @@ public class CodeSystemQueryOperationImplTest {
 	@Test
 	public void testGetCodeSystemDetailsTest() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.1");
+		versionOrTag.setVersion("1.0");
 		CodingScheme result = query.getCodeSystemDetails("Automobiles", versionOrTag);
 		assertEquals("Automobiles", result.getCodingSchemeName());
 		
 		//null codingschemeName
-		versionOrTag.setVersion("1.1");
+		versionOrTag.setVersion("1.0");
 		result = query.getCodeSystemDetails(null, versionOrTag);
 		assertEquals(null, result);
 		
@@ -91,7 +88,7 @@ public class CodeSystemQueryOperationImplTest {
 	@Test
 	public void testListCodeSystemConcepts() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.1");
+		versionOrTag.setVersion("1.0");
 		ResolvedConceptReferencesIterator conceptIterator = query.listCodeSystemConcepts("Automobiles", versionOrTag, Constructors.createLocalNameList(EntityTypes.CONCEPT.toString()));
 		try {
 			assertEquals(true, conceptIterator.hasNext());
@@ -102,7 +99,7 @@ public class CodeSystemQueryOperationImplTest {
 	@Test
 	public void testGetConceptDetails() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.1");
+		versionOrTag.setVersion("1.0");
 		Entity entity = query.getConceptDetails("Automobiles", versionOrTag, "C0001", "Automobiles");
 		assertEquals("C0001",entity.getEntityCode());
 		
@@ -110,7 +107,7 @@ public class CodeSystemQueryOperationImplTest {
 	@Test
 	public void testListAssociationTypes() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.1");
+		versionOrTag.setVersion("1.0");
 		List<SupportedAssociation> associationList = query.listAssociationTypes("Automobiles", versionOrTag);
 		assertEquals(false, associationList.isEmpty());
 		
@@ -118,7 +115,7 @@ public class CodeSystemQueryOperationImplTest {
 	@Test
 	public void testGetAssociationTypeDetails() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.1");
+		versionOrTag.setVersion("1.0");
 		AssociationEntity associationEntity = query.getAssociationTypeDetails("Automobiles", versionOrTag, "uses");
 		assertEquals("uses", associationEntity.getEntityCode());
 		
