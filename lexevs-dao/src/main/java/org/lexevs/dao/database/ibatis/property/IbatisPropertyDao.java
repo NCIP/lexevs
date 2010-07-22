@@ -820,7 +820,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setPrefix(prefix);
 		bean.setUId(qualifierId);
 		bean.setPropertyUId(propertyId);
-		bean.setAttributeId(usageContext);
 		bean.setAttributeValue(usageContext);
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 		bean.setEntryStateUId(entryStateId);
@@ -844,7 +843,6 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setPrefix(prefix);
 		bean.setUId(sourceId);
 		bean.setPropertyUId(propertyId);
-		bean.setAttributeId(source.getContent());
 		bean.setAttributeValue(source.getContent());
 		bean.setAttributeType(SQLTableConstants.TBLCOLVAL_SOURCE);
 		bean.setRole(source.getRole());
