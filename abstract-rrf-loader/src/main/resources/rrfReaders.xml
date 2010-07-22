@@ -242,6 +242,13 @@
 			<beans:ref local="mrconsoReader"/>
 		</beans:property>	
 	</beans:bean>
+	
+	<beans:bean id="partitionedMrconsoGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
+	 	abstract="true">
+		<beans:property name="delegate">
+			<beans:ref local="partitionedMrconsoReader"/>
+		</beans:property>	
+	</beans:bean>
 
     <beans:bean id="pipeTokenizer" class="org.lexgrid.loader.rrf.reader.linetokenizer.NoQuotesDelimitedLineTokenizer">
     	<beans:property name="delimiter" value="|"/>
