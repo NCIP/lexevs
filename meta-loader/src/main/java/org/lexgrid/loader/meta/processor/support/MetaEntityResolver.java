@@ -47,7 +47,7 @@ public class MetaEntityResolver extends AbstractBasicEntityResolver<Mrconso>{
 	 * @see org.lexgrid.loader.processor.support.EntityResolver#getIsDefined(java.lang.Object)
 	 */
 	public boolean getIsDefined(Mrconso item) {
-		return true;
+		return false;
 	}
 
 	public String[] getEntityTypes(Mrconso item) {
