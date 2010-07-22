@@ -21,11 +21,11 @@ package org.LexGrid.LexBIG.Extensions.Load.options;
 import java.util.List;
 
 /**
- * The Interface Option.
+ * The Interface MultiValueOption.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface Option<T> extends BaseOption<T> {
+public interface MultiValueOption<T> extends BaseOption<List<T>>{
 
     public List<T> getPickList();
 }

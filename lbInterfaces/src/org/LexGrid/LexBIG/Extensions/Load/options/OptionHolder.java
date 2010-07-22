@@ -107,7 +107,7 @@ public interface OptionHolder {
      */
     public List<Option<String>> getStringOptions();
     
-    public List<Option<List<String>>> getStringArrayOptions();
+    public List<MultiValueOption<String>> getStringArrayOptions();
     
     /**
      * Gets the uRI options.

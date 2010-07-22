@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -18,14 +18,31 @@
  */
 package org.LexGrid.LexBIG.Extensions.Load.options;
 
-import java.util.List;
-
 /**
- * The Interface Option.
+ * The Interface BaseOption.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface Option<T> extends BaseOption<T> {
-
-    public List<T> getPickList();
+public interface BaseOption<T> {
+	 
+ 	/**
+ 	 * Gets the option value.
+ 	 * 
+ 	 * @return the option value
+ 	 */
+    public T getOptionValue();
+    
+    /**
+     * Sets the option value.
+     * 
+     * @param optionValue the new option value
+     */
+    public void setOptionValue(T optionValue);
+    
+    /**
+     * Gets the option name.
+     * 
+     * @return the option name
+     */
+    public String getOptionName();
 }
