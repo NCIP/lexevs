@@ -60,7 +60,8 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
     
     private RegistryEntry getProductionEntry(List<RegistryEntry> entries) {
         for(RegistryEntry entry : entries) {
-            if(entry.getTag().equals(KnownTags.PRODUCTION.toString())) {
+            if(entry.getTag() != null && 
+                    entry.getTag().equals(KnownTags.PRODUCTION.toString())) {
                 return entry;
             }
         }
