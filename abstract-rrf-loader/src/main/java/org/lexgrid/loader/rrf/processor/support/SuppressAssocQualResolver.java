@@ -30,6 +30,8 @@ import org.lexgrid.loader.rrf.model.Mrrel;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class SuppressAssocQualResolver extends AbstractAssociationQualifierResolver<Mrrel>{
+	
+	private String YES = "Y";
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierName()
@@ -44,4 +46,11 @@ public class SuppressAssocQualResolver extends AbstractAssociationQualifierResol
 	public Text getQualifierValue(Mrrel item) {
 		return DaoUtility.createText(item.getSuppress());
 	}
+
+	@Override
+	protected boolean isProcessableValue(String value) {
+		return value.equals(YES);
+	}
+	
+	
 }

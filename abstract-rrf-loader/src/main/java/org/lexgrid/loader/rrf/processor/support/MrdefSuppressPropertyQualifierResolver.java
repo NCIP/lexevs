@@ -20,8 +20,6 @@ package org.lexgrid.loader.rrf.processor.support;
 
 import org.LexGrid.commonTypes.Text;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
-import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrdef;
 
 /**
@@ -29,18 +27,7 @@ import org.lexgrid.loader.rrf.model.Mrdef;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrdefSuppressPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrdef>{
-
-	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.processor.support.MultiAttribResolver#getVal2(java.lang.Object)
-	 */
-	public String getVal2(Mrdef item) {
-		return null;
-	}
-
-	public String getQualifierName() {
-		return RrfLoaderConstants.SUPPRESS_QUALIFIER;
-	}
+public class MrdefSuppressPropertyQualifierResolver extends AbstractSuppressPropertyQualifierResolver<Mrdef>{
 
 	public Text getQualifierValue(Mrdef item) {
 		return DaoUtility.createText(item.getSuppress());

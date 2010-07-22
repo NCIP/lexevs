@@ -18,19 +18,24 @@
  */
 package org.lexgrid.loader.rrf.processor.support;
 
-import org.LexGrid.commonTypes.Text;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexgrid.loader.rrf.model.Mrconso;
+import org.lexgrid.loader.processor.support.AbstractPropertyQualifierResolver;
+import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 
 /**
- * The Class MrconsoSuppressPropertyQualifierResolver.
+ * The Class AbstractSuppressPropertyQualifierResolver.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrconsoSuppressPropertyQualifierResolver extends AbstractSuppressPropertyQualifierResolver<Mrconso>{
+public abstract class AbstractSuppressPropertyQualifierResolver<T> extends AbstractPropertyQualifierResolver<T>{
+	
+	private String YES = "Y";
 
-	public Text getQualifierValue(Mrconso item) {
-		return DaoUtility.createText(item.getSuppress());
+	public String getQualifierName() {
+		return RrfLoaderConstants.SUPPRESS_QUALIFIER;
 	}
 
+	@Override
+	protected boolean isProcessableValue(String value) {
+		return value.equals(YES);
+	}
 }
