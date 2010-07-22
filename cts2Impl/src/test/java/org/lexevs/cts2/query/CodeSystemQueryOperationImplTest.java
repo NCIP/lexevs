@@ -31,14 +31,14 @@ public class CodeSystemQueryOperationImplTest {
 		// an empty query example, fetch all codingschemes.
 		CodingSchemeSummary queryByExample = new CodingSchemeSummary();
 		CodingSchemeRenderingList results  = query.listCodeSystems(queryByExample);
-		assertEquals(2, results.getCodingSchemeRenderingCount());
+		assertEquals(true, results.getCodingSchemeRenderingCount() > 1);
 		
 		// search by uri
 		queryByExample = new CodingSchemeSummary();
-		queryByExample.setCodingSchemeURI("1.2.3");
+		queryByExample.setCodingSchemeURI("urn:oid:11.11.0.2");
 		results  = query.listCodeSystems(queryByExample);
 		assertEquals(1, results.getCodingSchemeRenderingCount());
-		assertEquals("colors coding scheme", results.getCodingSchemeRendering(0).getCodingSchemeSummary().getFormalName());
+		assertEquals("GMP", results.getCodingSchemeRendering(0).getCodingSchemeSummary().getFormalName());
 		
 		// search by version
 		queryByExample = new CodingSchemeSummary();
