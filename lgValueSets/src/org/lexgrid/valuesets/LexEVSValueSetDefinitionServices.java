@@ -216,7 +216,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 
 	 * @param valueSetDefinitionURI
 	 * 			value set definition URI
-	 * @param xmlFolderLocation
+	 * @param xmlFullPathName
 	 * 			Location to save the definition
 	 * @param overwrite
 	 * 			True: to override the existing file.
@@ -224,7 +224,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 			True: stops exporting if any error.
 	 * @throws LBException
 	 */
-	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Return the URI's for the value set definition(s) for the supplied

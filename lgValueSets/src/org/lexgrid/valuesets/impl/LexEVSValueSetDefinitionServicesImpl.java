@@ -670,12 +670,12 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * @see org.lexgrid.valuedomain.LexEVSValueDomainServices#exportValueSetDefinition(java.net.URI, java.lang.String, boolean, boolean)
 	 */
 	public void exportValueSetDefinition(URI valueDomainURI,
-			String xmlFolderLocation, boolean overwrite, boolean failOnAllErrors)
+			String xmlFullPathName, boolean overwrite, boolean failOnAllErrors)
 			throws LBException {
 		md_.info("Starting to export value domain definition : " + valueDomainURI);
-		if (StringUtils.isNotEmpty(xmlFolderLocation))
+		if (StringUtils.isNotEmpty(xmlFullPathName))
 		{
-			File f = new File(xmlFolderLocation.trim());
+			File f = new File(xmlFullPathName.trim());
 			LexGrid_Exporter exporter = (LexGrid_Exporter)getLexBIGService().getServiceManager(null).getExporter(org.LexGrid.LexBIG.Impl.exporters.LexGridExport.name);			
 			exporter.exportValueSetDefinition(valueDomainURI, f.toURI(), overwrite, failOnAllErrors, true);
 			
@@ -687,7 +687,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 					e.printStackTrace();
 				}
 	        }
-			md_.info("Done exporting value domain definition : " + valueDomainURI + " to location : " + xmlFolderLocation);
+			md_.info("Done exporting value domain definition : " + valueDomainURI + " to location : " + xmlFullPathName);
 		}
 		else
 		{
