@@ -1,10 +1,10 @@
 package org.lexevs.cts2.author;
 
-import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
@@ -17,6 +17,7 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cts2.LexEvsCTS2;
+import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -134,8 +135,6 @@ public class CodeSystemAuthoringOperationImpl implements
 		
 	        return scheme;
 	}
-	
-	
 
 	@Override
 	public Revision createCodeSystemChangeSet(String agent,
@@ -145,51 +144,61 @@ public class CodeSystemAuthoringOperationImpl implements
 	}
 
 	@Override
-	public void createCodeSystemSuppliment() {
-		// TODO Auto-generated method stub
-
+	public void createCodeSystemSuppliment(
+			AbsoluteCodingSchemeVersionReference parent,
+			AbsoluteCodingSchemeVersionReference supplement) throws InvalidCodeSystemSupplementException {
+		try {
+			LexBIGServiceImpl.defaultInstance().getServiceManager(null).
+				registerCodingSchemeAsSupplement(parent, supplement);
+		} catch (LBException e) {
+			throw new InvalidCodeSystemSupplementException(
+					parent, 
+					supplement, 
+					e);
+		} 
 	}
 
 	@Override
 	public void createConcept() {
-		// TODO Auto-generated method stub
-
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void updateAssociationType() {
-		// TODO Auto-generated method stub
-
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void updateCodeSystemSuppliment() {
-		// TODO Auto-generated method stub
-
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void updateCodeSystemVersion() {
-		// TODO Auto-generated method stub
-
+	public void updateCodeSystemVersion(String codingSchemeUri,
+			String codeSystemVersion) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void updateCodeSystemVersionStatus() {
-		// TODO Auto-generated method stub
-
+	public void updateCodeSystemVersionStatus(String codingSchemeUri,
+			String codeSystemVersion) {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void updateConcept() {
-		// TODO Auto-generated method stub
-
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void updateConceptStatus() {
-		// TODO Auto-generated method stub
-
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
 	}
-
 }

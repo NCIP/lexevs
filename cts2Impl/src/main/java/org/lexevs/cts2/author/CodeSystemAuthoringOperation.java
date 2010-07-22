@@ -17,7 +17,6 @@
  */
 package org.lexevs.cts2.author;
 
-import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -31,6 +30,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
+import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
 
 public interface CodeSystemAuthoringOperation {
 	/**
@@ -51,10 +51,10 @@ public interface CodeSystemAuthoringOperation {
 	
 	public int commitChangeSet(Revision changeSet);
 	
-	public void updateCodeSystemVersion();
-	public void updateCodeSystemVersionStatus();
-	public void createCodeSystemSuppliment();
-	public void updateCodeSystemSuppliment();
+	public void updateCodeSystemVersion(String codingSchemeUri, String codeSystemVersion);
+	public void updateCodeSystemVersionStatus(String codingSchemeUri, String codeSystemVersion);
+	public void createCodeSystemSuppliment(AbsoluteCodingSchemeVersionReference parent, AbsoluteCodingSchemeVersionReference supplement) throws InvalidCodeSystemSupplementException;
+	public void updateCodeSystemSuppliment() throws InvalidCodeSystemSupplementException;
 	public void createConcept();
 	public void updateConcept();
 	public void updateConceptStatus();

@@ -21,6 +21,8 @@ package org.lexevs.cts2.exception;
 import java.util.Date;
 import java.util.UUID;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+
 /**
  * The Class AbstractCTS2CheckedException.
  * 
@@ -44,6 +46,13 @@ public abstract class AbstractCTS2CheckedException extends Exception {
 	 */
 	protected AbstractCTS2CheckedException(String message) {
 		super(message);
+		this.exceptionIdentifier = UUID.randomUUID().toString();
+		this.exceptionDate = new Date();
+	}
+	
+	protected AbstractCTS2CheckedException(String message, LBException exception) {
+		super(message + "\n\n" +
+				"  -- LexEVS Exception: " + exception.getMessage());
 		this.exceptionIdentifier = UUID.randomUUID().toString();
 		this.exceptionDate = new Date();
 	}
