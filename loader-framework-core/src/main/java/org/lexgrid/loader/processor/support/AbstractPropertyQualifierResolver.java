@@ -1,5 +1,6 @@
 package org.lexgrid.loader.processor.support;
 
+
 public abstract class AbstractPropertyQualifierResolver<I> extends AbstractNullValueSkippingResolver<I> implements OptionalPropertyQualifierResolver<I>{
 
 	@Override
@@ -10,5 +11,14 @@ public abstract class AbstractPropertyQualifierResolver<I> extends AbstractNullV
 	@Override
 	public String getPropertyQualifierType(I item) {
 		return null;
+	}
+
+	@Override
+	public boolean toProcess(I item) {
+		return super.toProcess(item) &&  isProcessableValue(this.getQualifierValue(item).getContent());
+	}
+	
+	protected boolean isProcessableValue(String value) {
+		return true;
 	}
 }
