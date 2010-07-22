@@ -67,16 +67,7 @@
 			<tasklet ref="mrdocMetadataLoadingTasklet" />
 		</step>
 
-		<step id="loadEntities" parent="listenerStep" next="loadRelationsAndProperties">
-			<tasklet>
-				<chunk reader="metaMrconsoGroupReader" processor="entityListProcessor"
-					writer="entityWriter" commit-interval="500">
-					<streams>
-						<stream ref="mrconsoReader" />
-					</streams>
-				</chunk>
-			</tasklet>
-		</step>
+		<step id="loadEntities" parent="metaLoadEntitiesPartitioned" next="loadRelationsAndProperties"/>
 
 		<split id="loadRelationsAndProperties" task-executor="taskExecutor">
 
@@ -110,7 +101,7 @@
 						</flow>
 
 						<flow>
-							<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartioned"/>
+							<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartitioned"/>
 						</flow>
 					</split>
 					
@@ -156,7 +147,51 @@
 	
 	<!-- start partitioning -->
 	
-	<beans:bean id="metaLoadMrsatPropertiesPartioned"
+	<!--  EntityProcessing below -->
+	<beans:bean id="metaLoadEntitiesPartitioned"
+		class="org.springframework.batch.core.partition.support.PartitionStep">
+		<beans:property name="partitionHandler"
+			ref="metaLoadEntitiesPartitionHandler" />
+		<beans:property name="stepExecutionSplitter"
+			ref="metaLoadEntitiesExecutionSplitter" />
+		<beans:property name="jobRepository" ref="jobRepository" />
+	</beans:bean>
+
+	<beans:bean id="metaLoadEntitiesExecutionSplitter"
+		class="org.springframework.batch.core.partition.support.SimpleStepExecutionSplitter">
+		<beans:constructor-arg index="0" ref="jobRepository" />
+		<beans:constructor-arg index="1"
+			ref="metaPartitionedLoadEntities" />
+		<beans:constructor-arg index="2">
+			<beans:bean class="org.lexgrid.loader.rrf.partition.RrfFilePartitioner" />
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="metaLoadEntitiesPartitionHandler"
+		class="org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler">
+		<beans:property name="taskExecutor" ref="taskExecutor" />
+		<beans:property name="step"
+			ref="metaPartitionedLoadEntities" />
+		<beans:property name="gridSize" value="10" />
+	</beans:bean>
+
+	<step id="metaPartitionedLoadEntities" parent="listenerStep">
+		<tasklet>
+			<listeners>
+				<listener ref="stepCompletionListener" />
+			</listeners>
+			<chunk reader="partitionedMetaMrconsoGroupReader" processor="entityListProcessor"
+				writer="entityWriter" commit-interval="500">
+					<streams>
+						<stream ref="mrconsoReader" />
+					</streams>
+			</chunk>
+		</tasklet>
+	</step>
+	
+	<!-- Mrsat processing below -->
+	
+	<beans:bean id="metaLoadMrsatPropertiesPartitioned"
 		class="org.springframework.batch.core.partition.support.PartitionStep">
 		<beans:property name="partitionHandler"
 			ref="metaLoadMrsatPropertiesPartitionHandler" />
@@ -404,8 +439,8 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean id="metaMrconsoGroupReader"
-		class="org.lexgrid.loader.reader.BufferedGroupItemReader" parent="mrconsoGroupReader"
+	<beans:bean id="partitionedMetaMrconsoGroupReader"
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader" parent="partitionedMrconsoGroupReader"
 		scope="step">
 		<beans:property name="groupDiscriminator">
 			<beans:bean
