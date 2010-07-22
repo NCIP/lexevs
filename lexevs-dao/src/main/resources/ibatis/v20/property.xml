@@ -123,7 +123,7 @@
   			currentRevision.revisionId AS currentRevisionId,
   			previousRevision.revisionId AS previousRevisionId,
   			
-  			usageContext.attributeId AS usageContextAttributeId,
+  			usageContext.attributeValue AS usageContextAttributeValue,
   			
   			source.attributeValue AS sourceAttributeValue,
   			source.subRef AS sourceSubRef,

@@ -12,7 +12,7 @@
 <!--	</resultMap>-->
 	
 	<resultMap id="usageContextResult" class="string">
-		<result property="java.lang.String" column="usageContextAttributeId" />
+		<result property="java.lang.String" column="usageContextAttributeValue" />
 	</resultMap>
 	
 	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source" groupBy="content,subRef,role">
