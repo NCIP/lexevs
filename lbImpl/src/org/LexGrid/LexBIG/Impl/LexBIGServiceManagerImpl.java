@@ -244,4 +244,24 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
             throw new LBInvocationException("Unexpected error removing metadata", id);
         }
     }
+
+    @Override
+    @LgAdminFunction
+    public void registerCodingSchemeAsSupplement(AbsoluteCodingSchemeVersionReference parentCodingScheme,
+            AbsoluteCodingSchemeVersionReference supplementCodingScheme) throws LBException {
+        LexEvsServiceLocator.getInstance().getSystemResourceService().
+            registerCodingSchemeSupplement(
+                    parentCodingScheme, 
+                    supplementCodingScheme);
+    }
+
+    @Override
+    @LgAdminFunction
+    public void unRegisterCodingSchemeAsSupplement(AbsoluteCodingSchemeVersionReference parentCodingScheme,
+            AbsoluteCodingSchemeVersionReference supplementCodingScheme) throws LBException {
+        LexEvsServiceLocator.getInstance().getSystemResourceService().
+        unRegisterCodingSchemeSupplement(
+                parentCodingScheme, 
+                supplementCodingScheme);
+    }
 }

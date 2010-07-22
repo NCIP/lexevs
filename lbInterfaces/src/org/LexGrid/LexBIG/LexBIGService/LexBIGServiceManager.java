@@ -187,5 +187,32 @@ public interface LexBIGServiceManager extends Serializable {
 	void setVersionTag(
 			AbsoluteCodingSchemeVersionReference codingSchemeVersion, String tag)
 			throws LBException;
-
+	
+	/**
+	 * Register a coding scheme as a supplement to a specified coding scheme.
+	 * 
+	 * @param parentCodingScheme
+	 *            The coding scheme to which the supplement will be applied
+	 * @param supplementCodingScheme
+	 *            The coding scheme to use as a supplement
+	 * @throws LBException
+	 */
+	void registerCodingSchemeAsSupplement(
+			AbsoluteCodingSchemeVersionReference parentCodingScheme,
+			AbsoluteCodingSchemeVersionReference supplementCodingScheme
+		) throws LBException;
+	
+	/**
+	 * Unregister a coding scheme as a supplement to a specified coding scheme.
+	 * 
+	 * @param parentCodingScheme
+	 *            The coding scheme to which the supplement was registered
+	 * @param supplementCodingScheme
+	 *            The coding scheme supplement to be unregistered
+	 * @throws LBException
+	 */
+	void unRegisterCodingSchemeAsSupplement(
+			AbsoluteCodingSchemeVersionReference parentCodingScheme,
+			AbsoluteCodingSchemeVersionReference supplementCodingScheme
+		) throws LBException;
 }

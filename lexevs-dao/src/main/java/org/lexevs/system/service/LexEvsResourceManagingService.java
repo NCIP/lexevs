@@ -35,6 +35,7 @@ import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.exceptions.CodingSchemeParameterException;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.KnownTags;
@@ -520,9 +521,41 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			AbsoluteCodingSchemeVersionReference parentScheme,
 			AbsoluteCodingSchemeVersionReference supplement)
 			throws LBParameterException {
+		
+		if(parentScheme == null) {
+			throw new CodingSchemeParameterException(parentScheme, "is not available and cannot be Supplemented.");
+		}
+		
+		if(supplement == null) {
+			throw new CodingSchemeParameterException(supplement, "is not available and cannot be used as a Coding Scheme Supplement.");
+		}
+		
 		RegistryEntry entry = this.registry.getCodingSchemeEntry(supplement);
+		
+		if(StringUtils.isNotBlank(entry.getSupplementsUri()) || StringUtils.isNotBlank(entry.getSupplementsVersion())) {
+			throw new CodingSchemeParameterException(supplement, "already supplements a Coding Scheme -- it cannot Supplement multiple Coding Schemes.");
+		}
 		entry.setSupplementsUri(parentScheme.getCodingSchemeURN());
 		entry.setSupplementsVersion(parentScheme.getCodingSchemeVersion());
+		
+		this.registry.updateEntry(entry);
+	}
+	
+	@Override
+	public void unRegisterCodingSchemeSupplement(
+			AbsoluteCodingSchemeVersionReference parentScheme,
+			AbsoluteCodingSchemeVersionReference supplement)
+			throws LBParameterException {
+
+		RegistryEntry entry = this.registry.getCodingSchemeEntry(supplement);
+		
+		if(! StringUtils.equals(entry.getSupplementsUri(),parentScheme.getCodingSchemeURN()) ||
+				! StringUtils.equals(entry.getSupplementsVersion(),parentScheme.getCodingSchemeVersion())){
+			throw new CodingSchemeParameterException(supplement, "does not supplement the specified Coding Scheme.");
+		}
+		
+		entry.setSupplementsUri(null);
+		entry.setSupplementsVersion(null);
 		
 		this.registry.updateEntry(entry);
 	}

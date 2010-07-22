@@ -1662,21 +1662,18 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	@Override
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 			throws LBParameterException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void addValueSetDefinitionResourceToSystem(String uri, String version)
 			throws LBParameterException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void addPickListDefinitionResourceToSystem(String uri, String version)
 			throws LBParameterException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
@@ -1685,14 +1682,12 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	 */
 	public void addCodingSchemeResourceToSystem(CodingScheme codingScheme)
 			throws LBParameterException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addNciHistoryResourceToSystem(String uri)
 			throws LBParameterException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
@@ -1707,7 +1702,6 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 
 	@Override
 	public void addSystemEventListeners(SystemEventListener listener) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
@@ -1716,7 +1710,15 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 			AbsoluteCodingSchemeVersionReference parentScheme,
 			AbsoluteCodingSchemeVersionReference supplement)
 			throws LBParameterException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void unRegisterCodingSchemeSupplement(
+			AbsoluteCodingSchemeVersionReference parentScheme,
+			AbsoluteCodingSchemeVersionReference supplement)
+			throws LBParameterException {
+		throw new UnsupportedOperationException();
+	}
+
 }
