@@ -19,6 +19,7 @@ import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
+import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -38,35 +39,20 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, EntryState entryState) throws LBException {
+	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision) throws LBException {
         
-        EntryState newEntryState = new EntryState();
-        
-        newEntryState.setChangeType(ChangeType.NEW);
-        
-        if(entryState.getContainingRevision()!= null)
-        	newEntryState.setContainingRevision(entryState.getContainingRevision());
-        if(entryState.getPrevRevision()!= null)
-        	newEntryState.setPrevRevision(entryState.getPrevRevision());
-        if(entryState.getRelativeOrder()!= null)
-        	newEntryState.setRelativeOrder(entryState.getRelativeOrder());
-                
-        newEntryState.setPrevRevision(null);
-        
-       // codeSystem.setEntryState(newEntryState);
-        //Set some entry states
-
+        // Create the changed entry for code system
        ChangedEntry changedEntry = new ChangedEntry();
        changedEntry.setChangedCodingSchemeEntry(codeSystem);
        
+       // Create revision object
        Revision lgRevision = getLexGridRevisionObject(revision);
        
+       // Add code system changed entry to revision
        lgRevision.addChangedEntry(changedEntry);
        
-       // Set Entry State NEW
+       // Since this is a new code system, Set Entry State NEW
        codeSystem.setEntryState(populateEntryState(ChangeType.NEW, lgRevision.getRevisionId(), null, 0L));
-       
-       //revision.addChangedEntry(changedEntry);
        
        //load as revision
        authServ_.loadRevision(lgRevision, null);
@@ -74,9 +60,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        reference.setCodingSchemeURN(codeSystem.getCodingSchemeURI());
        reference.setCodingSchemeVersion(codeSystem.getRepresentsVersion());
        
-       //index the loaded mapping coding scheme
+       //index the loaded coding scheme
        indexService_.getEntityIndexService().createIndex(reference); 
-       
 		
 		return 0;
 	}
@@ -91,8 +76,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	public CodingScheme createCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-            List<Relations>  relationsList, EntryState entryState) throws LBException {
-		// TODO Auto-generated method stub
+            List<Relations>  relationsList) throws LBException {
 
 	      if(codingSchemeName == null){
 	            throw new LBException("Coding scheme name cannot be null");
@@ -108,13 +92,17 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        }
 	        
 	        CodingScheme scheme = new CodingScheme();
+	        
 	        scheme.setCodingSchemeName(codingSchemeName);
+	        
 	        scheme.setCodingSchemeURI(codingSchemeURI);
 	 
 	        scheme.setFormalName(formalName);
 
 	        scheme.setDefaultLanguage(defaultLanguage);
+	        
 	        scheme.setApproxNumConcepts(approxNumConcepts);
+	        
 	        scheme.setRepresentsVersion(representsVersion);
 
 	        scheme.setLocalName(localNameList);
@@ -126,13 +114,14 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        scheme.setMappings(mappings);
 
 	        scheme.setProperties(properties);
+	        
 	        scheme.setEntities(entities);
 	        
 		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(scheme, revision, entryState);
+	        commitCodeSystem(scheme, revision);
 	        
 	        return scheme;
 	}
