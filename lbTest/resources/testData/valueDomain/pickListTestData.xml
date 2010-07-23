@@ -228,6 +228,72 @@
         <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomasticLeafOnly" representsValueSetDefinition="SRITEST:AUTO:DomasticLeafOnly" completeSet="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" isActive="true">
             <lgCommon:entityDescription>Leaf Only Nodes of Domastic AutoMakers</lgCommon:entityDescription>
         </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:DomasticLeafOnlyPlusGM" representsValueSetDefinition="SRITEST:AUTO:DomasticLeafOnly" completeSet="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" isActive="true">
+            <lgCommon:entityDescription>Leaf Only Nodes of Domastic AutoMakers PLUS GM</lgCommon:entityDescription>
+            <lgVD:pickListEntryNode pickListEntryId="PLGMp1" isActive="true">
+                <lgCommon:owner>Owner for PLGMp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>General Motors</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner>General Motors</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">General Motors</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for General Motors</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLGMp2" isActive="true">
+                <lgCommon:owner>Owner for PLGMp2</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p2">
+                    <lgVD:pickText>GM</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner >GM</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">GM</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for GM</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+        </lgVD:pickListDefinition>
+        <lgVD:pickListDefinition pickListId="SRITEST:AUTO:RefToDummyVSD" representsValueSetDefinition="SRITEST:AUTO:DUMMY" completeSet="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" isActive="true">
+            <lgCommon:entityDescription>Reference to non existing vsd</lgCommon:entityDescription>
+            <lgVD:pickListEntryNode pickListEntryId="PLGMp1" isActive="true">
+                <lgCommon:owner>Owner for PLGMp1</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p1">
+                    <lgVD:pickText>General Motors</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner>General Motors</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">General Motors</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for General Motors</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+            <lgVD:pickListEntryNode pickListEntryId="PLGMp2" isActive="true">
+                <lgCommon:owner>Owner for PLGMp2</lgCommon:owner>
+                <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                <lgVD:inclusionEntry entityCode="GM" entityCodeNamespace="Automobiles" propertyId="p2">
+                    <lgVD:pickText>GM</lgVD:pickText>
+                </lgVD:inclusionEntry>
+                <lgVD:properties>
+                    <lgCommon:property propertyName="textualPresentation" isActive="true" language="en" propertyId="p1" propertyType="presentation" status="active" effectiveDate="2001-12-17T09:30:47Z" expirationDate="2011-12-17T09:30:47Z">
+                        <lgCommon:owner >GM</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+                        <lgCommon:source subRef="subref1" role="role1">GM</lgCommon:source>
+                        <lgCommon:value dataType="textplain">Property for GM</lgCommon:value>
+                    </lgCommon:property>
+                </lgVD:properties>
+            </lgVD:pickListEntryNode>
+        </lgVD:pickListDefinition>
         <lgVD:pickListDefinition pickListId="SRITEST:FA:MSOntologyLeafOnly" representsValueSetDefinition="SRITEST:FA:MicrobialStructureOntologyLeafOnly" isActive="true" completeSet="true">
             <lgCommon:entityDescription>Leaf Only nodes ofMicrobial Structure Ontology</lgCommon:entityDescription>
         </lgVD:pickListDefinition>
