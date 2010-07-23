@@ -30,6 +30,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
+import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
 
 public interface CodeSystemAuthoringOperation {
@@ -40,12 +41,12 @@ public interface CodeSystemAuthoringOperation {
 	 * @return
 	 * @throws LBException
 	 */
-	public CodingScheme createCodeSystem(Revision revision, String codingSchemeName, String codingSchemeURI, String formalName,
+	public CodingScheme createCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
             List<Relations>  relationsList, EntryState entryState) throws LBException;
 	
-	public int commitCodeSystem(CodingScheme codeSystem, Revision revision, EntryState entryState) throws LBException;
+	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, EntryState entryState) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
 	
