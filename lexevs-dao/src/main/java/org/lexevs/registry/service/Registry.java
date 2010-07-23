@@ -46,7 +46,9 @@ public interface Registry {
 		/** The PICKLIST. */
 		PICKLIST_DEFINITION, 
 		/** The NC i_ history. */
-		NCI_HISTORY
+		NCI_HISTORY,
+		CONCEPT_DOMAAIN,
+		USAGE_CONTEXT
 	}
 	
 	/**
