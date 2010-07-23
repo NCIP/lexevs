@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Extensions.Load.options.MultiValueOption;
-import org.LexGrid.LexBIG.Extensions.Load.options.Option;
 
 /**
  * The Class AbstractOption.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractMultiValueOption<T> extends AbstractBaseOption<List<T>> implements MultiValueOption<T>, Option<List<T>>{
+public abstract class AbstractMultiValueOption<T> extends AbstractBaseOption<List<T>> implements MultiValueOption<T> {
 
     private boolean multipleSelectionsAllowed = false;
     
