@@ -28,6 +28,7 @@ import org.lexevs.cts2.LexEvsCTS2;
 public class AuthoringOperationImpl extends BaseService implements AuthoringOperation {
 
 	private ValueSetAuthoringOperation valueSetAuthop_;
+	private CodeSystemAuthoringOperation codeSystemAuthop_;
 
 	
 	/* (non-Javadoc)
@@ -45,7 +46,9 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	@Override
 	public CodeSystemAuthoringOperation getCodeSystemAuthoringOperation() {
 		// TODO Auto-generated method stub
-		return null;
+		if (codeSystemAuthop_ == null)
+			codeSystemAuthop_  = new CodeSystemAuthoringOperationImpl();
+		return codeSystemAuthop_ ;
 	}
 
 	/* (non-Javadoc)
