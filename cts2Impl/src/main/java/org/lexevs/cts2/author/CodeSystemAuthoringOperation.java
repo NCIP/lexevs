@@ -46,7 +46,7 @@ public interface CodeSystemAuthoringOperation {
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
             List<Relations>  relationsList, EntryState entryState) throws LBException;
 	
-	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, EntryState entryState) throws LBException;
+	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
 	
