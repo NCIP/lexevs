@@ -42,7 +42,7 @@ public class CodeSystemAuthoringOperationImplTest {
 		
 		String codingSchemeName = "New Coding Scheme";
         String codingSchemeURI = "urn:oid:11.11.0.99";
-        String formalName = "";
+        String formalName = "CTS 2 API Created Code System";
         String defaultLanguage = "";
         Long approxNumConcepts = new Long(1);
         String representsVersion = "1.0";
@@ -61,13 +61,12 @@ public class CodeSystemAuthoringOperationImplTest {
         Relations relations = new Relations();
         List<Relations> relationsList = Arrays.asList(relations);
         
-        EntryState entryState = new EntryState();
         
         CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
         
 
 		
-		CodingScheme codeScheme = codeSystemAuthOp.createCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings, properties, entities, relationsList, entryState);
+		CodingScheme codeScheme = codeSystemAuthOp.createCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings, properties, entities, relationsList);
 		
 		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
 		
