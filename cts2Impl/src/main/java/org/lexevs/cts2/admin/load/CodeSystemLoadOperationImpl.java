@@ -19,6 +19,7 @@ package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -27,19 +28,11 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.relations.Relations;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.cts2.LexEvsCTS2;
-import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
-import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
-import org.springframework.util.Assert;
+import org.lexevs.cts2.BaseService;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -47,79 +40,9 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author m004181
  *
  */
-public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSystemLoadOperation {
+public class CodeSystemLoadOperationImpl extends BaseService implements CodeSystemLoadOperation {
 	
 	private static final long serialVersionUID = 1L;
-	public static final String name = "LexEVSCTS2CodeSystemLoader";
-    public static final String description = "This loader loads Code System into the LexGrid database.";
-    
-//    private CodingSchemeService csServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-    private CodingScheme codeSystem_;
-    private URI metadata_;
-    private URI manifest_;
-    private String versionTag_;
-    private Boolean activate_;
-    private Boolean overwriteMetadata_;
-    private Boolean stopOnErrors_;
-    private Boolean async_;
-    private LexBIGServiceManager lbsm_ = null;
-    private LexBIGService lbs_ = null;
-    private LexEvsCTS2 lexEvsCts2_;
-    
-    public CodeSystemLoadOperationImpl(LexEvsCTS2 lexEvsCts2){
-    	this.lexEvsCts2_ = lexEvsCts2;
-    }
-    
-	/* (non-Javadoc)
-	 * @see org.LexGrid.LexBIG.Impl.loaders.BaseLoader#declareAllowedOptions(org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder)
-	 */
-	@Override
-	protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-		return holder;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.LexGrid.LexBIG.Impl.loaders.BaseLoader#doLoad()
-	 */
-	@Override
-	protected URNVersionPair[] doLoad() throws Exception {
-		if (manifest_ != null)
-			this.setCodingSchemeManifestURI(manifest_);
-		this.persistCodingSchemeToDatabase(codeSystem_);
-        
-		URNVersionPair urnVersion = new URNVersionPair(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion());
-        
-        this.buildRootNode(
-                Constructors.createAbsoluteCodingSchemeVersionReference(
-                		codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion()), 
-                null, 
-                getRelationsContainerName(codeSystem_), 
-                RootOrTail.TAIL,
-                TraverseAssociations.TOGETHER);
-        
-        return new URNVersionPair[]{urnVersion};
-	}
-	
-	private String getRelationsContainerName(CodingScheme codingScheme) {
-        Relations[] relations = codingScheme.getRelations();
-        Assert.state(relations.length == 1);
-        
-        return relations[0].getContainerName();
-    }
-	
-	/* (non-Javadoc)
-	 * @see org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable#buildExtensionDescription()
-	 */
-	@Override
-	protected ExtensionDescription buildExtensionDescription() {
-		ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(CodeSystemLoadOperationImpl.class.getInterfaces()[0].getName());
-        temp.setExtensionClass(CodeSystemLoadOperationImpl.class.getName());
-        temp.setDescription(description);
-        temp.setName(name);
-
-        return temp;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -137,46 +60,37 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#load(org.LexGrid.codingSchemes.CodingScheme, java.net.URI, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public URNVersionPair[] load(CodingScheme codeSystem, URI metadata, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException {
+	public URNVersionPair[] load(
+			CodingScheme codeSystem, 
+			URI metadata, 
+			Boolean stopOnErrors, 
+			Boolean async, 
+			Boolean overwriteMetadata, 
+			String versionTag, 
+			Boolean activate) throws LBException {
 		if (codeSystem == null)
 			throw new LBException("Code System can not be empty");
 		
-		this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
-        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
-        codeSystem_ = codeSystem;
-		metadata_ = metadata;
-		versionTag_ = versionTag;
-		activate_ = activate;
-		overwriteMetadata_ = overwriteMetadata;
-		async_ = async;
-		stopOnErrors_ = stopOnErrors;
-		
-		this.load(null);		
-		
-		while (this.getStatus().getEndTime() == null) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {				
-			}
-		}
-		
+		CodingSchemeLoader codingSchemeLoader = new CodingSchemeLoader(codeSystem);
+		codingSchemeLoader.load(stopOnErrors, async);
+
 		// load code system meta data if provided
-		if (metadata_ != null)
+		if (metadata != null)
 		{
 			
-			loadCSMetaData(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion(), metadata_, overwriteMetadata_, stopOnErrors_, async_);
+			loadCSMetaData(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion(), metadata, overwriteMetadata, stopOnErrors, async);
 		}
 		
 		// apply version tag if provided		
-		if (StringUtils.isNotEmpty(versionTag_))
+		if (StringUtils.isNotEmpty(versionTag))
 		{
-			applyCSTag(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion(), versionTag_);
+			applyCSTag(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion(), versionTag);
 		}
 		
 		// activate loaded code system if specified
-		if (activate_)
+		if (activate)
 		{
-			activateCodeSystem(codeSystem_.getCodingSchemeURI(), codeSystem_.getRepresentsVersion());
+			activateCodeSystem(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion());
 		}		
         
 		URNVersionPair urnVersionPair = new URNVersionPair(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion());
@@ -212,7 +126,7 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 		if (loaderName == null)
 			throw new LBException("Code System loader must be specified. Use LexEVSCTS2.getSupportedCodeSystemLoaders for supported list of loaders in the service.");
 		
-		if (!lexEvsCts2_.getSupportedLoaderNames().contains(loaderName))
+		if (!this.getLexEvsCTS2().getSupportedLoaderNames().contains(loaderName))
 		{
 			throw new LBException("Provided Code System loader not supported. Use LexEVSCTS2.getSupportedCodeSystemLoaders/LoaderNames for supported list of loaders in the service.");
 		}
@@ -237,8 +151,8 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
 	}
 	private URNVersionPair[] loadSource(URI source, String loaderName, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		Loader loader = getLexBIGServiceManager().getLoader(loaderName);
-        loader.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
-        loader.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        loader.getOptions().getBooleanOption(BaseLoader.FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        loader.getOptions().getBooleanOption(BaseLoader.ASYNC_OPTION).setOptionValue(async);
         loader.setCodingSchemeManifestURI(manifest);
         loader.load(source);
         
@@ -313,19 +227,45 @@ public class CodeSystemLoadOperationImpl extends BaseLoader implements CodeSyste
             getLexBIGServiceManager().setVersionTag(ref, versionTag);
         }
 	}
-	
-	private LexBIGServiceManager getLexBIGServiceManager() throws LBException{
-		if (lbsm_ == null)
-			lbsm_ = getLexBIGService().getServiceManager(null);
-		
-		return lbsm_;
+
+	@Override
+	public List<String> getSupportedLoaderNames() throws LBException {
+		return this.getLexEvsCTS2().getSupportedLoaderNames();
 	}
-	
-	private LexBIGService getLexBIGService(){
-		if (lbs_ == null)
-			lbs_ = LexBIGServiceImpl.defaultInstance();
+
+	private class CodingSchemeLoader extends BaseLoader {
+
+		private static final long serialVersionUID = 2623487391846644470L;
 		
-		return lbs_;
+		private CodingScheme codingScheme;
+		
+		private CodingSchemeLoader(CodingScheme codingScheme){
+			this.codingScheme = codingScheme;
+			this.setDoApplyPostLoadManifest(false);
+		}
+		
+		public void load(boolean stopOnErrors, boolean async) {
+			this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+	        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+			this.load(null);
+		}
+		
+		@Override
+		protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+			return holder;
+		}
+
+		@Override
+		protected URNVersionPair[] doLoad() throws Exception {
+			this.persistCodingSchemeToDatabase(this.codingScheme);
+			
+			return this.constructVersionPairsFromCodingSchemes(codingScheme);
+		}
+
+		@Override
+		protected ExtensionDescription buildExtensionDescription() {
+			return null;
+		}
 	}
 	
 	public static void main(String[] args){
