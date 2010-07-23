@@ -42,7 +42,7 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 
 	
 	/** The max cache size. */
-	private int maxCacheSize = 1000;
+	private int maxCacheSize = 5000;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
@@ -52,29 +52,17 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 		String key = this.buildCacheKey(uriMap);
 
 		if(! attributeCache.containsKey(key)){
-			this.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Void>() {
 
-				@Override
-				public Void execute(DaoManager daoManager) {
-					CodingSchemeDao codingSchemeDao = daoManager.getCodingSchemeDao(
-							codingSchemeUri, 
-							codingSchemeVersion);
-							
-					String codingSchemeUid = 
-						codingSchemeDao.getCodingSchemeUIdByUriAndVersion(
-								codingSchemeUri, 
-								codingSchemeVersion);
-					
-					codingSchemeDao.insertOrUpdateURIMap(
-									codingSchemeUid, uriMap);
-					
-					return null;
-				}
-			});
-			
+			try {
+				this.getDatabaseServiceManager().getCodingSchemeService().
+					insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
+			} catch (Exception e) {
+				this.getLogger().warn("Error registering Supported Attribute.", e);
+			}
+
 			attributeCache.put(key, uriMap);
 		}
-		
+
 		if(attributeCache.size() >= maxCacheSize) {
 			attributeCache.clear();
 		}	
