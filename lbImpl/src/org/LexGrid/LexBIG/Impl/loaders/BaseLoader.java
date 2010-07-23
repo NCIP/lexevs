@@ -469,6 +469,11 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     }
     
     protected void persistCodingSchemeToDatabase(CodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
+        if(this.getCodingSchemeManifest() != null) {
+            md_.info("Applying Pre-Load Manifest.");
+            this.getManifestUtil().applyManifest(this.getCodingSchemeManifest(), codingScheme);
+        }
+
         List<ResolvedLoadValidationError> errors = inserter.insertCodingScheme(codingScheme);
        
         for(ResolvedLoadValidationError error : errors) {
@@ -787,6 +792,14 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         this.doRegister = doRegister;
     }
     
+    public boolean isDoApplyPostLoadManifest() {
+        return doApplyPostLoadManifest;
+    }
+
+    public void setDoApplyPostLoadManifest(boolean doApplyPostLoadManifest) {
+        this.doApplyPostLoadManifest = doApplyPostLoadManifest;
+    }
+
     public CachingMessageDirectorIF getMessageDirector() {
         return md_;
     }

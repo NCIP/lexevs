@@ -58,6 +58,7 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
 
     public OBOLoaderImpl() {
         super();
+        this.setDoApplyPostLoadManifest(false);
     }
 
     public String getOBOVersion() {
@@ -138,15 +139,11 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
       
         OBO2LGMain mainTxfm = new OBO2LGMain();
         CodingScheme codingScheme = mainTxfm.map(this.getResourceUri(), null, this.getMessageDirector());
-        // Apply manifest changes
-        ManifestUtil manifestUtil = this.getManifestUtil();
-        manifestUtil.applyManifest(this.getCodingSchemeManifest(), codingScheme);
   
         this.persistCodingSchemeToDatabase(codingScheme);
         
         URNVersionPair urnVersion = new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
      
-        
         this.buildRootNode(
                 Constructors.createAbsoluteCodingSchemeVersionReference(
                 codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion()), 
