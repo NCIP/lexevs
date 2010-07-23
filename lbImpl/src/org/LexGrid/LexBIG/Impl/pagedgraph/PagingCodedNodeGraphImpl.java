@@ -32,7 +32,6 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
-import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
@@ -65,8 +64,6 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
-    
-    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
     
     public PagingCodedNodeGraphImpl() {
         super();
@@ -139,7 +136,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 if(graphFocus.getCodeNamespace() != null) {
                     AbsoluteCodingSchemeVersionReference ref = null;
                     try {
-                        ref = namespaceHandler.getCodingSchemeForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
+                        ref = this.getNamespaceHandler().getCodingSchemeForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
                     } catch (LBParameterException e) {
                        LoggerFactory.getLogger().warn(e.getMessage());
                     }
@@ -403,5 +400,9 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
      */
     private boolean shouldResolveNextLevel(int depth) {
         return ! (depth == 0);
+    }
+    
+    private NamespaceHandler getNamespaceHandler() {
+        return NamespaceHandlerFactory.getNamespaceHandler();
     }
 }

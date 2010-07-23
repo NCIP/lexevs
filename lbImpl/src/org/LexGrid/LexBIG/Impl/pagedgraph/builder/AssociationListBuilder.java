@@ -31,7 +31,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
-import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
@@ -56,8 +55,7 @@ public class AssociationListBuilder implements Serializable{
     
     /** The associated concept page size. */
     private int associatedConceptPageSize = 100;
-    
-    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
+
     /**
      * The Enum AssociationDirection.
      * 
@@ -295,7 +293,7 @@ public class AssociationListBuilder implements Serializable{
             String adjustedCodingSchemeVersion;
 
             try {
-                AbsoluteCodingSchemeVersionReference ref = this.namespaceHandler.getCodingSchemeForNamespace(
+                AbsoluteCodingSchemeVersionReference ref = this.getNamespaceHandler().getCodingSchemeForNamespace(
                         codingSchemeUri, 
                         version, 
                         entityCodeNamespace);
@@ -383,5 +381,9 @@ public class AssociationListBuilder implements Serializable{
                 codingSchemeUri,
                 codingSchemeVersion,
                 relationsContainerName);
+    }
+    
+    private NamespaceHandler getNamespaceHandler() {
+        return NamespaceHandlerFactory.getNamespaceHandler();
     }
 }

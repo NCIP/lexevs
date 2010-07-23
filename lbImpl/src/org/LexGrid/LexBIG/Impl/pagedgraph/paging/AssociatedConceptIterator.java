@@ -57,8 +57,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     
     /** The association list builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
-    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
-
+  
 	/** The triple uid iterator. */
 	private Iterator<String> tripleUidIterator;
 	
@@ -190,7 +189,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
         String adjustedRelationsContainer;
         
 	    try {
-	        AbsoluteCodingSchemeVersionReference ref = this.namespaceHandler.getCodingSchemeForNamespace(
+	        AbsoluteCodingSchemeVersionReference ref = this.getNamespaceHandler().getCodingSchemeForNamespace(
                     this.codingSchemeUri, 
                     this.codingSchemeVersion, 
                     associatedConcept.getCodeNamespace());
@@ -429,4 +428,8 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
         
         throw new RuntimeException("Could not assign Triple Node.");
     }
+	
+	private NamespaceHandler getNamespaceHandler() {
+	    return NamespaceHandlerFactory.getNamespaceHandler();
+	}
 }

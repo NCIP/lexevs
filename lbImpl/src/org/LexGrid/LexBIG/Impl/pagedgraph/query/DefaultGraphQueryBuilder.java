@@ -33,7 +33,6 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -63,8 +62,6 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
 
-    private NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
-    
     /** The coding scheme uri. */
     private String codingSchemeUri;
     
@@ -140,7 +137,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
      */
     @Override
     public void restrictToCodeSystem(String codingScheme) throws LBInvocationException, LBParameterException {
-        List<String> namespaces = this.namespaceHandler.
+        List<String> namespaces = this.getNamespaceHandler().
         getNamespacesForCodingScheme(
                 this.codingSchemeUri, 
                 this.version, 
@@ -227,7 +224,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     @Override
     public void restrictToSourceCodeSystem(String codingScheme) throws LBInvocationException,
             LBParameterException {
-        List<String> namespaces = this.namespaceHandler.
+        List<String> namespaces = this.getNamespaceHandler().
         getNamespacesForCodingScheme(
                 this.codingSchemeUri, 
                 this.version, 
@@ -253,7 +250,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     @Override
     public void restrictToTargetCodeSystem(String codingScheme) throws LBInvocationException,
             LBParameterException {
-        List<String> namespaces = this.namespaceHandler.
+        List<String> namespaces = this.getNamespaceHandler().
         getNamespacesForCodingScheme(
                 this.codingSchemeUri, 
                 this.version, 
@@ -294,5 +291,9 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             this.setCode(INVALID_CODE);
             this.setCodeNamespace(INVALID_NAMESPACE);
         }
+    }
+    
+    private NamespaceHandler getNamespaceHandler() {
+        return NamespaceHandlerFactory.getNamespaceHandler();
     }
 }
