@@ -33,13 +33,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 	
 	private ValueSetDefinitionService vsdServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-	@SuppressWarnings("unused")
-	private LexEvsCTS2 lexEvsCts2_;
-	
-	public ValueSetAuthoringOperationImpl(LexEvsCTS2 lexEvsCts2){
-    	this.lexEvsCts2_ = lexEvsCts2;
-    }
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#addDefinitionEntry(java.net.URI, org.LexGrid.valueSets.DefinitionEntry, org.lexevs.cts2.core.update.RevisionInfo)

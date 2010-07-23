@@ -17,10 +17,14 @@
  */
 package org.lexevs.cts2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.lexevs.cts2.admin.AdminOperation;
 import org.lexevs.cts2.admin.AdminOperationImpl;
@@ -34,14 +38,15 @@ import org.lexevs.cts2.query.QueryOperationImpl;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
-public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
+public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private AdminOperation adminOp_;
-	private AuthoringOperation authOp_;
-	private QueryOperation queryOp_;
+	private static transient LexEvsCTS2 lexevsCTS2_;
+	private transient AdminOperation adminOp_;
+	private transient AuthoringOperation authOp_;
+	private transient QueryOperation queryOp_;
 	
 	public static LexEvsCTS2 defaultInstance(){
 		if (lexevsCTS2_ == null)
@@ -49,12 +54,8 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 			lexevsCTS2_ = new LexEvsCTS2Impl();
 			try {
 				LexEvsCTS2Impl.register();
-			} catch (LBParameterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (LBException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -67,7 +68,7 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 	@Override
 	public AdminOperation getAdminOperation() {
 		if (adminOp_ == null)
-			adminOp_ = new AdminOperationImpl(lexevsCTS2_);
+			adminOp_ = new AdminOperationImpl();
 		return adminOp_;
 	}
 
@@ -77,7 +78,7 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 	@Override
 	public AuthoringOperation getAuthoringOperation() {
 		if (authOp_ == null)
-			authOp_ = new AuthoringOperationImpl(lexevsCTS2_);
+			authOp_ = new AuthoringOperationImpl();
 		return authOp_;
 	}
 
@@ -87,15 +88,91 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 	@Override
 	public QueryOperation getQueryOperation() {
 		if (queryOp_ == null)
-			queryOp_ = new QueryOperationImpl(lexevsCTS2_);
+			queryOp_ = new QueryOperationImpl();
 		return queryOp_;
 	}
-	
+
+	public ExtensionDescriptionList getSupportedSearchAlgorithms() throws LBException{
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null)
+			return extensionRegistry.getGenericExtensions();
+
+		return null;
+	}
+
+	public List<String> getSupportedSearchAlgorithmNames() throws LBException{
+		List<String> searchAlgNames = new ArrayList<String>();
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null && extensionRegistry.getSearchExtensions() != null)
+		{
+			for (ExtensionDescription ed : extensionRegistry.getSearchExtensions().getExtensionDescription())
+				searchAlgNames.add(ed.getName());
+		}
+		return searchAlgNames;
+	}
+
+	public ExtensionDescriptionList getSupportedLoaders() throws LBException{
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null)
+			return extensionRegistry.getLoadExtensions();
+
+		return null;
+	}
+
+	public List<String> getSupportedLoaderNames() throws LBException{
+		List<String> loaderNames = new ArrayList<String>();
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null && extensionRegistry.getLoadExtensions() != null)
+		{
+			for (ExtensionDescription ed : extensionRegistry.getLoadExtensions().getExtensionDescription())
+				loaderNames.add(ed.getName());
+		}
+		return loaderNames;
+	}
+
+	public ExtensionDescriptionList getSupportedExporters() throws LBException{
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null)
+			return extensionRegistry.getExportExtensions();
+
+		return null;
+	}
+
+	public List<String> getSupportedExporterNames() throws LBException{
+		List<String> exporterNames = new ArrayList<String>();
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null && extensionRegistry.getExportExtensions() != null)
+		{
+			for (ExtensionDescription ed : extensionRegistry.getExportExtensions().getExtensionDescription())
+				exporterNames.add(ed.getName());
+		}
+		return exporterNames;
+	}
+
+	public ExtensionDescriptionList getSupportedFilters() throws LBException{
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null)
+			return extensionRegistry.getFilterExtensions();
+
+		return null;
+	}
+
+	public List<String> getSupportedFilterNames() throws LBException{
+		List<String> filterNames = new ArrayList<String>();
+		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
+		if (extensionRegistry != null && extensionRegistry.getFilterExtensions() != null)
+		{
+			for (ExtensionDescription ed : extensionRegistry.getFilterExtensions().getExtensionDescription())
+				filterNames.add(ed.getName());
+		}
+		return filterNames;
+	}
+
 	@Override
 	public ServiceInfo getServiceInfo() {
 		return new ServiceInfo();
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return getServiceInfo().getServiceDescription();
@@ -115,29 +192,29 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 	public String getVersion() {
 		return getServiceInfo().getServiceVersion();
 	}
-	
-	public static void register() throws LBParameterException, LBException {
-        ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(LexEvsCTS2Impl.class.getInterfaces()[0].getName());
-        temp.setExtensionClass(LexEvsCTS2Impl.class.getName());
-        ServiceInfo serviceInfo = new ServiceInfo();
-        temp.setDescription(serviceInfo.getServiceDescription());
-        temp.setName(serviceInfo.getServiceName());
-        temp.setVersion(serviceInfo.getServiceVersion());
 
-        // Registered here as part of the impl to avoid the LexBig service
-        // manager API. If writing an add-on extension, registration should be
-        // performed through the proper interface.
-        ExtensionRegistryImpl.instance().registerGenericExtension(temp);
-    }
-	
+	public static void register() throws LBParameterException, LBException {
+		ExtensionDescription temp = new ExtensionDescription();
+		temp.setExtensionBaseClass(LexEvsCTS2Impl.class.getInterfaces()[0].getName());
+		temp.setExtensionClass(LexEvsCTS2Impl.class.getName());
+		ServiceInfo serviceInfo = new ServiceInfo();
+		temp.setDescription(serviceInfo.getServiceDescription());
+		temp.setName(serviceInfo.getServiceName());
+		temp.setVersion(serviceInfo.getServiceVersion());
+
+		// Registered here as part of the impl to avoid the LexBig service
+		// manager API. If writing an add-on extension, registration should be
+		// performed through the proper interface.
+		ExtensionRegistryImpl.instance().registerGenericExtension(temp);
+	}
+
 	public static void main(String[] args){
 		LexEvsCTS2Impl cts2 = new LexEvsCTS2Impl();
 		System.out.println(cts2.getServiceInfo().getServiceName());
 		System.out.println(cts2.getServiceInfo().getServiceProvider());
 		System.out.println(cts2.getServiceInfo().getServiceDescription());
 		System.out.println(cts2.getServiceInfo().getServiceVersion());
-		
+
 		try {
 			ExtensionDescriptionList loaders = cts2.getSupportedLoaders();
 			if (loaders != null)
@@ -154,7 +231,7 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			ExtensionDescriptionList exporters = cts2.getSupportedExporters();
 			if (exporters != null)
@@ -171,7 +248,7 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			ExtensionDescriptionList exporters = cts2.getLexBIGServiceManager().getExtensionRegistry().getGenericExtensions();
 			if (exporters != null)
@@ -188,6 +265,6 @@ public class LexEvsCTS2Impl extends BaseService implements LexEvsCTS2 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}	
 }

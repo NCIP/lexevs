@@ -18,6 +18,7 @@
 package org.lexevs.cts2.admin.export;
 
 import java.net.URI;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
@@ -27,21 +28,12 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
-import org.lexevs.cts2.LexEvsCTS2;
-
 
 /**
  * @author m004181
  *
  */
 public class CodeSystemExportOperationImpl extends BaseService implements CodeSystemExportOperation {
-
-	@SuppressWarnings("unused")
-	private LexEvsCTS2 lexevsCts2_;
-	
-	public CodeSystemExportOperationImpl(LexEvsCTS2 lexevsCts2){
-		this.lexevsCts2_ = lexevsCts2;
-	}
 	
 	@Override
 	public URI exportCodeSystemContent(String codeSystemNameOrURI,
@@ -143,6 +135,9 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 			String codeSystemVersion) throws LBException {
 		return getLexBIGService().getNodeSet(codeSystemNameOrURI, Constructors.createCodingSchemeVersionOrTag(null, codeSystemVersion), null);
 	}
-	
 
+	@Override
+	public List<String> getSupportedExporterNames() throws LBException {
+		return this.getLexEvsCTS2().getSupportedExporterNames();
+	}
 }

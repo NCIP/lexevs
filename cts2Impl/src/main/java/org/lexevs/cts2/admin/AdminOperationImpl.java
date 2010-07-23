@@ -41,10 +41,6 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	private ValueSetLoadOperation vsLoadOp_;
 	private NotificationAdminOperation notificationAdminOp_;
 	
-	public AdminOperationImpl(LexEvsCTS2 lexEvsCts2) {
-		lexevsCTS2_ = lexEvsCts2;
-	}
-	
 	@Override
 	public AssociationExportOperation getAssociationExportOperation() {
 		// TODO Auto-generated method stub
@@ -60,7 +56,7 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	@Override
 	public CodeSystemExportOperation getCodeSystemExportOperation() {
 		if (csExportOp_ == null)
-			csExportOp_ = new CodeSystemExportOperationImpl(lexevsCTS2_);
+			csExportOp_ = new CodeSystemExportOperationImpl();
 		
 		return csExportOp_;
 	}
@@ -68,7 +64,7 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	@Override
 	public CodeSystemLoadOperation getCodeSystemLoadOperation() {
 		if (csLoadOp_ == null)
-			csLoadOp_ = new CodeSystemLoadOperationImpl(lexevsCTS2_);
+			csLoadOp_ = new CodeSystemLoadOperationImpl();
 		
 		return csLoadOp_;
 	}
@@ -90,7 +86,7 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	@Override
 	public ValueSetLoadOperation getValueSetLoadOperation() {
 		if (vsLoadOp_ == null)
-			vsLoadOp_ = new ValueSetLoadOperationImpl(lexevsCTS2_);
+			vsLoadOp_ = new ValueSetLoadOperationImpl();
 		
 		return vsLoadOp_;
 	}

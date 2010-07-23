@@ -48,14 +48,7 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 	private LexEVSValueSetDefinitionServices lexEVSValueSetService_;
 	private ValueSetDefinitionService vsdDBService_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	private DatabaseServiceManager databaseServiceManager_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-	@SuppressWarnings("unused")
-	private LexEvsCTS2 lexEvsCts2_;
-	
-	public ValueSetQueryOperationImpl(LexEvsCTS2 lexEvsCts2) {
-		this.lexEvsCts2_ = lexEvsCts2;
-	}
-	
-	
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.query.ValueSetQueryOperation#checkConceptValueSetMembership(java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String, java.lang.String, java.lang.String)
 	 */

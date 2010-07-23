@@ -18,7 +18,6 @@
 package org.lexevs.cts2.query;
 
 import org.lexevs.cts2.BaseService;
-import org.lexevs.cts2.LexEvsCTS2;
 
 /**
  * Class returns individual CTS 2 Query Operation interfaces.
@@ -26,11 +25,7 @@ import org.lexevs.cts2.LexEvsCTS2;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class QueryOperationImpl extends BaseService implements QueryOperation {
-	private ValueSetQueryOperation valueSetQueryOp_;
-	
-	public QueryOperationImpl(LexEvsCTS2 lexEvsCts2) {
-		lexevsCTS2_ = lexEvsCts2;
-	}
+	private transient ValueSetQueryOperation valueSetQueryOp_;
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.query.QueryOperation#getAssociationQueryOperation()
@@ -74,8 +69,7 @@ public class QueryOperationImpl extends BaseService implements QueryOperation {
 	@Override
 	public ValueSetQueryOperation getValueSetQueryOperation() {
 		if (valueSetQueryOp_ == null)
-			valueSetQueryOp_ = new ValueSetQueryOperationImpl(lexevsCTS2_);
+			valueSetQueryOp_ = new ValueSetQueryOperationImpl();
 		return valueSetQueryOp_;
 	}
-
 }

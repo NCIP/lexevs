@@ -28,10 +28,7 @@ import org.lexevs.cts2.LexEvsCTS2;
 public class AuthoringOperationImpl extends BaseService implements AuthoringOperation {
 
 	private ValueSetAuthoringOperation valueSetAuthop_;
-	
-	public AuthoringOperationImpl(LexEvsCTS2 lexEvsCts2) {
-		lexevsCTS2_ = lexEvsCts2;
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.author.AuthoringOperation#getAssociationAuthoringOperation()
@@ -75,7 +72,7 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	@Override
 	public ValueSetAuthoringOperation getValueSetAuthoringOperation() {
 		if (valueSetAuthop_ == null)
-			valueSetAuthop_ = new ValueSetAuthoringOperationImpl(lexevsCTS2_);
+			valueSetAuthop_ = new ValueSetAuthoringOperationImpl();
 		return valueSetAuthop_;
 	}
 
