@@ -75,6 +75,26 @@ public class RegistryUtility {
 		return entry;
 	}
 	
+	/**
+	 * Non Coding scheme entries like Concept Domain, Usage Context etc. to registry entry.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * @param resourceType entry type
+	 * @return the registry entry
+	 */
+	public static RegistryEntry nonCodingSchemeToRegistryEntry(String uri, String version, ResourceType resourceType){
+		RegistryEntry entry = new RegistryEntry();
+		entry.setResourceType(resourceType);
+		entry.setDbSchemaDescription(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_DESCRIPTION);
+		entry.setDbSchemaVersion(DatabaseConstants.CURRENT_LEXGRID_SCHEMA_VERSION);
+		entry.setResourceUri(uri);
+		entry.setResourceVersion(version);
+		entry.setLastUpdateDate(new Timestamp(new Date().getTime()));
+		
+		return entry;
+	}
+	
 	public static RegistryEntry nciHistoryToRegistryEntry(String uri){
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceType(ResourceType.NCI_HISTORY);
