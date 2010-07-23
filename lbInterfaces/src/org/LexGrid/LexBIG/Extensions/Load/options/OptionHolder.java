@@ -66,7 +66,7 @@ public interface OptionHolder {
      */
     public Option<String> getStringOption(String optionName);
     
-    public Option<List<String>> getStringArrayOption(String optionName);
+    public MultiValueOption<String> getStringArrayOption(String optionName);
 
     /**
      * Gets the integer option.

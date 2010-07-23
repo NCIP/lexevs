@@ -6,6 +6,7 @@ package edu.mayo.informatics.lexgrid.convert.options;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Extensions.Load.options.MultiValueOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.Option;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Extensions.Load.options.URIOption;
@@ -27,7 +28,7 @@ public class DefaultOptionHolder implements OptionHolder {
     private List<Option<String>> stringOptions = new ArrayList<Option<String>>();
     
     /** The string options. */
-    private List<Option<List<String>>> stringArrayOptions = new ArrayList<Option<List<String>>>();
+    private List<MultiValueOption<String>> stringArrayOptions = new ArrayList<MultiValueOption<String>>();
     
     /** The uri options. */
     private List<URIOption> uriOptions = new ArrayList<URIOption>();
@@ -39,8 +40,8 @@ public class DefaultOptionHolder implements OptionHolder {
     /** The is resource uri folder. */
     private boolean isResourceUriFolder = false;
     
-    public Option<List<String>> getStringArrayOption(String optionName){
-        return this.findOption(optionName, this.stringArrayOptions); 
+    public MultiValueOption<String> getStringArrayOption(String optionName){
+        return this.findMultiValueOption(optionName, this.stringArrayOptions); 
      }
     
     /* (non-Javadoc)
@@ -85,6 +86,15 @@ public class DefaultOptionHolder implements OptionHolder {
      */
     public <T> Option<T> findOption(String optionName, List<Option<T>> optionList){
         for(Option<T> option : optionList){
+            if(option.getOptionName().equals(optionName)){
+                return option;
+            }
+        }
+        throw new RuntimeException("Option:" + optionName + " not found.");
+    }
+    
+    public <T> MultiValueOption<T> findMultiValueOption(String optionName, List<MultiValueOption<T>> optionList){
+        for(MultiValueOption<T> option : optionList){
             if(option.getOptionName().equals(optionName)){
                 return option;
             }
@@ -176,11 +186,11 @@ public class DefaultOptionHolder implements OptionHolder {
         return uriOptions;
     }
     
-    public List<Option<List<String>>> getStringArrayOptions() {
+    public List<MultiValueOption<String>> getStringArrayOptions() {
         return stringArrayOptions;
     }
 
-    public void setStringArrayOptions(List<Option<List<String>>> stringArrayOptions) {
+    public void setStringArrayOptions(List<MultiValueOption<String>> stringArrayOptions) {
         this.stringArrayOptions = stringArrayOptions;
     }
 
