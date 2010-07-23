@@ -23,7 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.LexGrid.naming.URIMap;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 
 /**
  * The Class CachingSupportedAttribuiteTemplate.
@@ -45,12 +48,29 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected synchronized void insert(String codingSchemeUri, String codingSchemeVersion, URIMap uriMap){
+	protected synchronized void insert(final String codingSchemeUri, final String codingSchemeVersion, final URIMap uriMap){
 		String key = this.buildCacheKey(uriMap);
 
 		if(! attributeCache.containsKey(key)){
-			this.getDatabaseServiceManager().getCodingSchemeService().
-				insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
+			this.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Void>() {
+
+				@Override
+				public Void execute(DaoManager daoManager) {
+					CodingSchemeDao codingSchemeDao = daoManager.getCodingSchemeDao(
+							codingSchemeUri, 
+							codingSchemeVersion);
+							
+					String codingSchemeUid = 
+						codingSchemeDao.getCodingSchemeUIdByUriAndVersion(
+								codingSchemeUri, 
+								codingSchemeVersion);
+					
+					codingSchemeDao.insertOrUpdateURIMap(
+									codingSchemeUid, uriMap);
+					
+					return null;
+				}
+			});
 			
 			attributeCache.put(key, uriMap);
 		}
