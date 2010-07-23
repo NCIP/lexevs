@@ -44,7 +44,7 @@ public interface CodeSystemAuthoringOperation {
 	public CodingScheme createCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-            List<Relations>  relationsList, EntryState entryState) throws LBException;
+            List<Relations>  relationsList) throws LBException;
 	
 	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision) throws LBException;
 	
