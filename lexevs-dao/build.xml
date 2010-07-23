@@ -35,7 +35,7 @@
 			   		<mapping conf="*" scope="compile"/>
 			   	</ivy:makepom>
 			<ivy:publish resolver="nci-chain" overwrite="true">
-				<artifacts pattern="ddlutils/lib/DdlUtils-1.0-PATCHED.jar" />
+				<artifacts pattern="ddlutils/lib/ddlUtils-1.0-PATCHED.jar" />
 				<artifacts pattern="target/[artifact].[ext]" />
 			</ivy:publish>
 			</target>
