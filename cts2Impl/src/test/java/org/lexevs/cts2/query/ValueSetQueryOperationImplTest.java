@@ -73,7 +73,7 @@ public class ValueSetQueryOperationImplTest {
 	public void testGetValueSetDetails() {
 		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
 		try {
-			ValueSetDefinition vsd = vsQueryop.getValueSetDetails("SRITEST:AUTO:GMTEST", "R206");
+			ValueSetDefinition vsd = vsQueryop.getValueSetDetails("SRITEST:AUTO:GMTEST", "R403");
 			
 			System.out.println(vsd.getValueSetDefinitionURI());
 		} catch (LBException e) {
@@ -90,8 +90,15 @@ public class ValueSetQueryOperationImplTest {
 		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
 		SortOption sortOption = new SortOption();
 		sortOption.setAscending(true);
+		AbsoluteCodingSchemeVersionReference acsvr1 = new AbsoluteCodingSchemeVersionReference();
+		acsvr1.setCodingSchemeURN("urn:oid:11.11.0.1");
+		acsvr1.setCodingSchemeVersion("1.0");
+		AbsoluteCodingSchemeVersionReferenceList csList1 = new AbsoluteCodingSchemeVersionReferenceList();
+		csList1.addAbsoluteCodingSchemeVersionReference(acsvr1);
+		
 		try {
-			ResolvedValueSetDefinition vsdResolved = vsQueryop.listValueSetContents("SRITEST:AUTO:GM", null, null, null, sortOption);
+			ResolvedValueSetDefinition vsdResolved = vsQueryop.listValueSetContents("SRITEST:AUTO:GMTEST", "R402", csList1, null, sortOption);
+			System.out.println();
 			if (vsdResolved != null)
 			{
 				AbsoluteCodingSchemeVersionReferenceList csList = vsdResolved.getCodingSchemeVersionRefList();
