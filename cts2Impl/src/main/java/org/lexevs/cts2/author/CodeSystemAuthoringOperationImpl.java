@@ -30,11 +30,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	private IndexServiceManager indexService_ = LexEvsServiceLocator.getInstance().getIndexServiceManager();
 	
 	@SuppressWarnings("unused")
-//	private LexEvsCTS2 lexEvsCts2_;
-//	
-//	public CodeSystemAuthoringOperationImpl(LexEvsCTS2 lexEvsCts2){
-//    	this.lexEvsCts2_ = lexEvsCts2;
-//    }
 
 	@Override
 	public int commitChangeSet(Revision changeSet) {
@@ -44,14 +39,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 
 	@Override
 	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, EntryState entryState) throws LBException {
-		// TODO Auto-generated method stub
-	      
-		//Ensure RevisionId consistency
-        //revision.setRevisionId(entryState.getContainingRevision());
-        
-        //Ensure Previous revision id is correct in the entry state. 
-       // enforcePreviousRevisionId(scheme, entryState); 
-        
         
         EntryState newEntryState = new EntryState();
         
@@ -82,7 +69,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        //revision.addChangedEntry(changedEntry);
        
        //load as revision
-       //authServ_.loadRevision(revision, null);
        authServ_.loadRevision(lgRevision, null);
        AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
        reference.setCodingSchemeURN(codeSystem.getCodingSchemeURI());
