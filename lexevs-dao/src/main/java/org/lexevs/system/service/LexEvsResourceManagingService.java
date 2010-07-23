@@ -491,6 +491,19 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		}
 	}
 	
+	public void addNonCodingSchemeResourceToSystem(String uri, String version, ResourceType resourceType)
+        throws LBParameterException {
+        RegistryEntry entry = RegistryUtility.nonCodingSchemeToRegistryEntry(uri, version, resourceType);
+        entry.setStatus(CodingSchemeVersionStatus.PENDING.toString());
+        
+        entry.setPrefix(null);
+        try {
+            this.getRegistry().addNewItem(entry);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
 	public void addNciHistoryResourceToSystem(String uri)
 	throws LBParameterException {
 		RegistryEntry entry = RegistryUtility.nciHistoryToRegistryEntry(uri);
