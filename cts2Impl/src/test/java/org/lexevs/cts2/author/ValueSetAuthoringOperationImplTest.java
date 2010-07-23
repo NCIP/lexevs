@@ -3,8 +3,6 @@
  */
 package org.lexevs.cts2.author;
 
-import static org.junit.Assert.fail;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -19,11 +17,9 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Presentation;
-import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.valueSets.ValueSetDefinitionReference;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
@@ -43,7 +39,7 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testAddDefinitionEntry() throws LBException, URISyntaxException {
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R201");
+		revInfo.setRevisionId("R402");
 		revInfo.setChangeAgent("testChangeAgent");
 		revInfo.setChangeInstruction("Adding new definition entry");
 		revInfo.setEditOrder(0L);
@@ -71,7 +67,7 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testAddDefinitionEntry2() throws LBException, URISyntaxException {
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R102");
+		revInfo.setRevisionId("R403");
 		revInfo.setChangeAgent("testChangeAgent");
 		revInfo.setChangeInstruction("Adding new definition entry");
 		revInfo.setEditOrder(0L);
@@ -80,7 +76,7 @@ public class ValueSetAuthoringOperationImplTest {
 		
 		DefinitionEntry newDefEntry = new DefinitionEntry();
 		newDefEntry.setOperator(DefinitionOperator.OR);
-		newDefEntry.setRuleOrder(3L);
+		newDefEntry.setRuleOrder(1L);
 		
 		EntityReference er = new EntityReference();
 		er.setEntityCode("Ford");
@@ -93,7 +89,7 @@ public class ValueSetAuthoringOperationImplTest {
 		newDefEntry.setEntityReference(er);
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		
-		valueSetAuthOp.addDefinitionEntry(new URI("SRITEST:AUTO:GM"), newDefEntry, revInfo);
+		valueSetAuthOp.addDefinitionEntry(new URI("SRITEST:AUTO:GMTEST"), newDefEntry, revInfo);
 	}
 	
 	@Test
@@ -176,7 +172,7 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R202");
+		revInfo.setRevisionId("R401");
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		valueSetAuthOp.addValueSetProperty(new URI("SRITEST:AUTO:GMTEST"), 
@@ -210,7 +206,7 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R101");
+		revInfo.setRevisionId("R300");
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		URI vsdURI = valueSetAuthOp.createValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), 
@@ -232,7 +228,7 @@ public class ValueSetAuthoringOperationImplTest {
 		vsd.setConceptDomain("Autos CD");
 		
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R200");
+		revInfo.setRevisionId("R400");
 		revInfo.setChangeAgent("testChangeAgent");
 		revInfo.setChangeInstruction("testChangeInstruction");
 		revInfo.setEditOrder(0L);
@@ -288,7 +284,7 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testUpdateValueSetMetaData() throws LBException, URISyntaxException {
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R205");
+		revInfo.setRevisionId("R404");
 		revInfo.setChangeAgent("testUpdateChangeAgent");
 		revInfo.setChangeInstruction("testUpdateChangeInstruction");
 		revInfo.setEditOrder(0L);
@@ -309,7 +305,7 @@ public class ValueSetAuthoringOperationImplTest {
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		boolean success = valueSetAuthOp.updateValueSetMetaData(new URI("SRITEST:AUTO:GMTEST"), 
-				"Gm after metatdate update 205",
+				"Gm after metatdate update 404",
 				null, null, srcList, contextList, 
 				revInfo);
 		System.out.println("success : " + success);
