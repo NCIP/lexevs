@@ -18,15 +18,15 @@
 package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
-public interface CodeSystemLoadOperation extends Loader{
+public interface CodeSystemLoadOperation {
 	
 	/**
 	 * Installs a code system (aka terminology) into the terminology service 
@@ -190,4 +190,6 @@ public interface CodeSystemLoadOperation extends Loader{
 	 * @throws LBException
 	 */
 	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
+	
+	public List<String> getSupportedLoaderNames() throws LBException;
 }

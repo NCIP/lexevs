@@ -23,7 +23,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.cts2.LexEvsCTS2;
+import org.lexevs.cts2.BaseService;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
@@ -35,23 +35,18 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author m004181
  *
  */
-public class ValueSetLoadOperationImpl implements ValueSetLoadOperation {
+public class ValueSetLoadOperationImpl extends BaseService implements ValueSetLoadOperation {
 	
-	private LexEvsCTS2 lexEvsCts2_;
     private LexEVSValueSetDefinitionServices vsdService_;
     private LexEVSPickListDefinitionServices pldService_;
-    
-    public ValueSetLoadOperationImpl(LexEvsCTS2 lexEvsCts2){
-    	this.lexEvsCts2_ = lexEvsCts2;
-    }
-    
+  
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.admin.load.ValueSetLoadOperation#load(java.net.URI, java.net.URI, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
 	public URNVersionPair[] load(URI source, URI releaseURI, String loaderName,
 			Boolean stopOnErrors) throws LBException {
-		return lexEvsCts2_.getAdminOperation().getCodeSystemLoadOperation().load(source, null, null, loaderName, stopOnErrors, true, false, null, null);
+		return this.getLexEvsCTS2().getAdminOperation().getCodeSystemLoadOperation().load(source, null, null, loaderName, stopOnErrors, true, false, null, null);
 	}
 
 	@Override
