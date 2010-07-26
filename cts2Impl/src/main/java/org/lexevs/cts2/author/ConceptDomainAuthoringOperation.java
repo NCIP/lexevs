@@ -17,7 +17,21 @@
  */
 package org.lexevs.cts2.author;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.commonTypes.Properties;
+
 public interface ConceptDomainAuthoringOperation {
-	public void createConceptDomain();
+	
+	public void createConceptDomain(
+			String conceptDomainId,
+			String conceptDomainName, 
+			String revisionId, 
+			String description, 
+			String status,
+			Properties properties, 
+			CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	
 	public void updateConceptDomain();
+	
 }
