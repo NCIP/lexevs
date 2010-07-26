@@ -255,7 +255,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String entryStateUid) {
 		SequentialMappedParameterBean bean = 
 			new SequentialMappedParameterBean(entityUid, entryStateUid);
-		bean.setPrefix(this.getPrefixResolver().resolveHistoryPrefix());
+		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid));
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
 				bean);
@@ -290,16 +290,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	@Override
 	public Entity getHistoryEntityByRevision(String codingSchemeUid, String entityUid, String revisionId) {
 		String REVISION_ID_PARAMETER = "revisionId";
-		
-		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
-		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+
+		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUid);
 		
 		SequentialMappedParameterBean bean = 
 			new SequentialMappedParameterBean(entityUid);
 		bean.put(REVISION_ID_PARAMETER, revisionId);
 
 		bean.setPrefix(prefix);
-		bean.setActualTableSetPrefix(actualTableSetPrefix);
 		
 		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
 				bean);
@@ -506,12 +504,13 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			boolean cascade) {
 		Assert.notNull(entityUId);
 
-		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix();
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
 		InsertOrUpdateEntityBean entityData = (InsertOrUpdateEntityBean) this.getSqlMapClientTemplate()
 				.queryForObject(GET_ENTITY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, entityUId));
+		
+		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		
 		Assert.notNull(entityData);
 		
