@@ -16,7 +16,6 @@ import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
@@ -115,12 +114,12 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	@Override
 	public AssociationSource getHistoryTripleByRevision(String codingSchemeUId,
 			String tripleUid, String revisionId) {
-		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
-		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
+		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		PrefixedParameterTuple bean = new PrefixedParameterTuple();
 		bean.setPrefix(prefix);
-		bean.setActualTableSetPrefix(actualTablePrefix);
+		bean.setActualTableSetPrefix(actualTableSetPrefix);
 		bean.setParam1(tripleUid);
 		bean.setParam2(revisionId);
 		

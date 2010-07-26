@@ -244,11 +244,13 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 			String associationDataUid, 
 			String revisionId) {
 		
+		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(
+				codingSchemeUId);
 		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 		
 		PrefixedParameterTuple bean = new PrefixedParameterTuple();
-		bean.setPrefix(this.getPrefixResolver().resolveHistoryPrefix());
+		bean.setPrefix(prefix);
 		bean.setActualTableSetPrefix(actualTableSetPrefix);
 		bean.setParam1(associationDataUid);
 		bean.setParam2(revisionId);

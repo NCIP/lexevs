@@ -124,7 +124,7 @@
 	
 	<sql id="getHistoryCodingSchemeMultiAttribsFragment">
 		LEFT JOIN
-			${defaultPrefix}h_csMultiAttrib csmaSource
+			$prefix$csMultiAttrib csmaSource
 		ON (
 			csmaSource.codingSchemeGuid = cs.codingSchemeGuid
 		AND
@@ -134,7 +134,7 @@
 			)
 			
 		LEFT JOIN
-			${defaultPrefix}h_csMultiAttrib csmaLocalName
+			$prefix$csMultiAttrib csmaLocalName
 		ON (
 			csmaLocalName.codingSchemeGuid = cs.codingSchemeGuid
 		AND

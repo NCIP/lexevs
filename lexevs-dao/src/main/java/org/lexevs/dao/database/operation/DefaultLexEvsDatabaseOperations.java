@@ -144,6 +144,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		this.createNciHistoryTables();
 		this.createValueSetsTables();
 		this.createValueSetHistoryTables();
+
 		if(this.systemVariables.isSingleTableMode()) {
 			this.createCodingSchemeTables();
 			this.createCodingSchemeHistoryTables();
@@ -243,7 +244,11 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 * @see org.lexevs.dao.database.operation.LexEvsDatabaseOperations#createCodingSchemeTables(java.lang.String)
 	 */
 	public void createCodingSchemeTables(String prefix) {
-		this.doExecuteSql(this.codingSchemeXmlDdl, new CreateSchemaPlatformActor(), prefix);
+		this.doExecuteSql(this.codingSchemeXmlDdl, new CreateSchemaPlatformActor(), prefix);	
+		
+		if(! this.getSystemVariables().isSingleTableMode()) {
+			this.createCodingSchemeHistoryTables(prefix);
+		}
 	}
 	
 	protected void doExecuteSql(Resource xmlSchema, PlatformActor actor) {

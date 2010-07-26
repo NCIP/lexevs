@@ -279,12 +279,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByRevision(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeUId, String revisionId) {
-		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
-		
-		PrefixedParameterTuple param = new PrefixedParameterTuple(prefix, codingSchemeUId, revisionId);
-		
+		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
+		PrefixedParameterTuple param = new PrefixedParameterTuple(prefix, codingSchemeUId, revisionId);
 		param.setActualTableSetPrefix(actualTableSetPrefix);
 		
 		return (CodingScheme)
@@ -1041,7 +1039,8 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				.getSqlMapClientTemplate().queryForObject(GET_CODINGSCHEME_METADATA_BY_UID,
 						new PrefixedParameter(prefix, codingSchemeUId));
 
-		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix();
+		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix() + prefix;
+		
 		codingSchemeData.setPrefix(historyPrefix);
 		
 		this.getSqlMapClientTemplate().insert(

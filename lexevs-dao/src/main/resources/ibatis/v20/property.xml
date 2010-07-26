@@ -315,7 +315,7 @@
 			SELECT DISTINCT
 				propertyGuid
 			FROM
-				${defaultPrefix}h_property
+				$prefix$h_property
 			WHERE
 				referenceGuid = #param1#	
 	</select>

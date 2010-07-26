@@ -159,12 +159,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@Override
 	public Relations getHistoryRelationByRevisionId(String codingSchemeUid,
 			String relationUid, String revisionId) {
-		String prefix = this.getPrefixResolver().resolveHistoryPrefix();
-		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUid);
 		
 		PrefixedParameterTriple bean = new PrefixedParameterTriple();
 		bean.setPrefix(prefix);
-		bean.setActualTableSetPrefix(actualTablePrefix);
+		bean.setActualTableSetPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid));
 		bean.setParam1(codingSchemeUid);
 		bean.setParam2(relationUid);
 		bean.setParam3(revisionId);

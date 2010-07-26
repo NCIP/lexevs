@@ -284,12 +284,12 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	@SuppressWarnings("unchecked")
 	public List<String> getAllHistoryPropertyUidsOfParentByRevisionId(
-			String codingSchemeId,
+			String codingSchemeUid,
 			String parentId, 
 			String revisionId) {
 		
 		PrefixedParameterTuple param = new PrefixedParameterTuple(
-				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
+				this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid),
 				parentId,
 				revisionId);
 		
@@ -299,18 +299,16 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	
 	@Override
 	public Property getHistoryPropertyByRevisionId(
-			String codingSchemeId,
+			String codingSchemeUid,
 			String propertyUid, 
 			String revisionId) {
 		
 		PrefixedParameterTuple param = new PrefixedParameterTuple(
-				this.getPrefixResolver().resolveHistoryPrefix(),
+				this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUid),
 				propertyUid,
 				revisionId);
 		
-		String actualTablePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		
-		param.setActualTableSetPrefix(actualTablePrefix);
+		param.setActualTableSetPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid));
 		
 		return (Property)this.getSqlMapClientTemplate().
 			queryForObject(
