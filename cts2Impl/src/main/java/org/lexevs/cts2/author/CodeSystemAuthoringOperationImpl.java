@@ -10,6 +10,7 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.ChangedEntry;
@@ -153,9 +154,35 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public void createConcept() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	public void createConcept(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace, 
+			RevisionInfo revisionInfo) throws LBException {
+		
+		if(! this.getSystemResourceService().containsCodingSchemeResource(codingSchemeUri, codeSystemVersion)) {
+			throw new LBException("The Coding Scheme URI: " +  codingSchemeUri +
+					" Version: " + codeSystemVersion + " does not exist. Before creating a Concept, "
+					+ " the Coding Scheme must exist.");
+		}
+		
+		Revision revision = super.getLexGridRevisionObject(revisionInfo);
+		
+		EntryState entryState = 
+			this.populateEntryState(ChangeType.NEW, revision.getRevisionId(), null, 0l);
+		
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptCode);
+		entity.setEntityCodeNamespace(namespace);
+		entity.setEntryState(entryState);
+		
+		CodingScheme cs = new CodingScheme();
+		cs.setEntryState(this.populateEntryState(ChangeType.DEPENDENT, revision.getRevisionId(), null, 0l));
+		
+		cs.getEntities().addEntity(entity);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
 	}
 
 	@Override

@@ -56,7 +56,15 @@ public interface CodeSystemAuthoringOperation {
 	public void updateCodeSystemVersionStatus(String codingSchemeUri, String codeSystemVersion);
 	public void createCodeSystemSuppliment(AbsoluteCodingSchemeVersionReference parent, AbsoluteCodingSchemeVersionReference supplement) throws InvalidCodeSystemSupplementException;
 	public void updateCodeSystemSuppliment() throws InvalidCodeSystemSupplementException;
-	public void createConcept();
+	
+	
+	public void createConcept(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace, 
+			RevisionInfo revision) throws LBException;
+	
 	public void updateConcept();
 	public void updateConceptStatus();
 	public void createAssociationType();
