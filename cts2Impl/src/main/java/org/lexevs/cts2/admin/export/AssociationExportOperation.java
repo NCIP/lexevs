@@ -17,6 +17,19 @@
  */
 package org.lexevs.cts2.admin.export;
 
+import java.net.URI;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+
 public interface AssociationExportOperation {
-	public void exportAssociation();
+
+	public void exportAssociation(
+			String codeSystemNameOrURI,
+			String codeSystemVersion, 
+			CodedNodeGraph cng, 
+			URI exportDestination, 
+			boolean overwrite, 
+			boolean stopOnErrors, 
+			boolean async) throws LBException;
 }
