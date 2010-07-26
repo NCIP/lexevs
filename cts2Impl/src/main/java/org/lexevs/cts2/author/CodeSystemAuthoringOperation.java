@@ -26,9 +26,9 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
@@ -65,7 +65,12 @@ public interface CodeSystemAuthoringOperation {
 			String namespace, 
 			RevisionInfo revision) throws LBException;
 	
-	public void updateConcept();
+	public void updateConcept(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			Entity entity,
+			RevisionInfo revision) throws LBException;
+	
 	public void updateConceptStatus();
 	public void createAssociationType();
 	public void updateAssociationType();

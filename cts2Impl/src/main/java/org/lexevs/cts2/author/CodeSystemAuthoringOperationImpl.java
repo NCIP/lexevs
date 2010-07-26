@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
@@ -160,29 +161,16 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 			String conceptCode, 
 			String namespace, 
 			RevisionInfo revisionInfo) throws LBException {
-		
-		if(! this.getSystemResourceService().containsCodingSchemeResource(codingSchemeUri, codeSystemVersion)) {
-			throw new LBException("The Coding Scheme URI: " +  codingSchemeUri +
-					" Version: " + codeSystemVersion + " does not exist. Before creating a Concept, "
-					+ " the Coding Scheme must exist.");
-		}
-		
-		Revision revision = super.getLexGridRevisionObject(revisionInfo);
-		
+
 		EntryState entryState = 
-			this.populateEntryState(ChangeType.NEW, revision.getRevisionId(), null, 0l);
+			this.populateEntryState(ChangeType.NEW, revisionInfo.getRevisionId(), null, 0l);
 		
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptCode);
 		entity.setEntityCodeNamespace(namespace);
 		entity.setEntryState(entryState);
 		
-		CodingScheme cs = new CodingScheme();
-		cs.setEntryState(this.populateEntryState(ChangeType.DEPENDENT, revision.getRevisionId(), null, 0l));
-		
-		cs.getEntities().addEntity(entity);
-		
-		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
+		this.doReviseConcept(codingSchemeUri, codeSystemVersion, entity, revisionInfo);
 	}
 
 	@Override
@@ -211,10 +199,36 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void updateConcept() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	public void updateConcept(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			Entity entity,
+			RevisionInfo revisionInfo) throws LBException {	
+		this.doReviseConcept(codingSchemeUri, codeSystemVersion, entity, revisionInfo);
+	}
+	
+	protected void doReviseConcept(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			Entity entity, 
+			RevisionInfo revisionInfo) throws LBException {
+		
+		if(! this.getSystemResourceService().containsCodingSchemeResource(codingSchemeUri, codingSchemeVersion)) {
+			throw new LBException("The Coding Scheme URI: " +  codingSchemeUri +
+					" Version: " + codingSchemeVersion + " does not exist. Before creating a Concept, "
+					+ " the Coding Scheme must exist.");
+		}
+		
+		Revision revision = super.getLexGridRevisionObject(revisionInfo);
+		
+		CodingScheme cs = new CodingScheme();
+		cs.setCodingSchemeURI(codingSchemeUri);
+		cs.setRepresentsVersion(codingSchemeVersion);
+		cs.setEntryState(this.populateEntryState(ChangeType.DEPENDENT, revision.getRevisionId(), null, 0l));
+		
+		cs.getEntities().addEntity(entity);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
 	}
 
 	@Override
