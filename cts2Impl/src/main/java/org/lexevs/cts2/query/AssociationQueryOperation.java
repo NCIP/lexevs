@@ -17,9 +17,25 @@
  */
 package org.lexevs.cts2.query;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.concepts.Entity;
+
 public interface AssociationQueryOperation {
-	public void listAssociations();
-	public void determineTransitiveConceptRelationship();
-	public void computeSubsumptionRelationship();
+	public ResolvedConceptReferenceList listAssociations(
+			String codingSystemName, CodingSchemeVersionOrTag versionOrTag,
+			String namespace, String code, String associationName,
+			boolean isBackward, int depth, int maxToReturn);
+
+	public boolean determineTransitiveConceptRelationship(
+			String codingSystemName, CodingSchemeVersionOrTag versionOrTag,
+			String namespace, String parentCode, String childCode,
+			String associationName);
+
+	public boolean computeSubsumptionRelationship(String codingSystemName,
+			CodingSchemeVersionOrTag versionOrTag, String associationtype,
+			ConceptReference parentCode, ConceptReference childCode);
+
 	public void getAssociationDetails();
 }
