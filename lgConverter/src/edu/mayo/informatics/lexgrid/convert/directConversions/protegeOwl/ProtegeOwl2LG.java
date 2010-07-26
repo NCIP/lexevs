@@ -2877,6 +2877,8 @@ public class ProtegeOwl2LG {
 
     protected void relateAssociationSourceTarget(AssociationWrapper aw, AssociationSource source,
             AssociationTarget target) {
+        //clear the AssociationSource of left-over targets.
+        source.setTarget(new AssociationTarget[0]);
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             source = addAssocSrc2Assoc(aw, source);
             if (target != null) {
