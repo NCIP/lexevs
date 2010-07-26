@@ -23,6 +23,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.cts2.core.update.RevisionInfo;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -163,7 +164,7 @@ public interface CodeSystemLoadOperation {
 	 * @return
 	 * @throws LBException
 	 */
-	public URNVersionPair loadCodeSystemRevsion() throws LBException;
+	public void loadCodeSystemRevsion(CodingScheme codingScheme, RevisionInfo revisionInfo) throws LBException;
 	
 	/**
 	 * Activates the loaded code system version. Only activated code system version will be available

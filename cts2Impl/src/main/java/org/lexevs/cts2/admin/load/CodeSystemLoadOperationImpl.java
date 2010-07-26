@@ -30,9 +30,12 @@ import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.versions.ChangedEntry;
+import org.LexGrid.versions.Revision;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.cts2.BaseService;
+import org.lexevs.cts2.author.AuthoringCore;
+import org.lexevs.cts2.core.update.RevisionInfo;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -40,7 +43,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author m004181
  *
  */
-public class CodeSystemLoadOperationImpl extends BaseService implements CodeSystemLoadOperation {
+public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSystemLoadOperation {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -49,10 +52,20 @@ public class CodeSystemLoadOperationImpl extends BaseService implements CodeSyst
 	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#loadCodeSystemRevsion()
 	 */
 	@Override
-	public URNVersionPair loadCodeSystemRevsion()
+	public void loadCodeSystemRevsion(
+			CodingScheme codingScheme, 
+			RevisionInfo revisionInfo)
 			throws LBException {
-		// TODO Auto-generated method stub
-		return null;
+		Revision revision = this.getLexGridRevisionObject(revisionInfo);
+		
+		ChangedEntry entry = new ChangedEntry();
+		entry.setChangedCodingSchemeEntry(codingScheme);
+		
+		revision.addChangedEntry(entry);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(
+				revision, 
+				revisionInfo.getSystemReleaseURI());
 	}
 
 	/*
