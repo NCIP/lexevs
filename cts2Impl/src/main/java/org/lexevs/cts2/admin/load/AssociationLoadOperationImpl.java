@@ -21,9 +21,30 @@ import java.net.URI;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.cts2.BaseService;
 
-public interface AssociationLoadOperation {
-	
+public class AssociationLoadOperationImpl extends BaseService implements AssociationLoadOperation {
+
+	@Override
+	public void importAssociationVersion(
+			CodingScheme codeSystem, 
+			URI metadata,
+			Boolean stopOnErrors, 
+			Boolean async, 
+			Boolean overwriteMetadata,
+			String versionTag, 
+			Boolean activate) throws LBException {
+		this.getCodeSystemLoadOperation().load(
+				codeSystem, 
+				metadata, 
+				stopOnErrors, 
+				async, 
+				overwriteMetadata, 
+				versionTag, 
+				activate);
+	}
+
+	@Override
 	public void importAssociationVersion(
 			URI source, 
 			URI metadata,
@@ -33,14 +54,20 @@ public interface AssociationLoadOperation {
 			Boolean async, 
 			Boolean overwriteMetadata,
 			String versionTag, 
-			Boolean activate) throws LBException;
-	
-	public void importAssociationVersion(
-			CodingScheme codeSystem, 
-			URI metadata, 
-			Boolean stopOnErrors, 
-			Boolean async, 
-			Boolean overwriteMetadata, 
-			String versionTag, 
-			Boolean activate) throws LBException;
+			Boolean activate) throws LBException {
+		this.getCodeSystemLoadOperation().load(
+				source, 
+				metadata, 
+				manifest,
+				loaderName, 
+				stopOnErrors, 
+				async, 
+				overwriteMetadata, 
+				versionTag, 
+				activate);
+	}
+
+	protected CodeSystemLoadOperation getCodeSystemLoadOperation() {
+		return this.getLexEvsCTS2().getAdminOperation().getCodeSystemLoadOperation();
+	}
 }
