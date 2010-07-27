@@ -47,10 +47,7 @@ public interface CodeSystemAuthoringOperation {
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
             List<Relations>  relationsList) throws LBException;
 	
-	public CodingScheme removeCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
-	String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-	List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-	List<Relations>  relationsList) throws LBException;
+	public boolean removeCodeSystem(RevisionInfo revision, String codingSchemeURI, String representsVersion) throws LBException;
 
 	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
 	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
