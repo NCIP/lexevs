@@ -3,8 +3,14 @@ package org.lexevs.cts2.author;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
+import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
@@ -106,6 +112,94 @@ public class AuthoringCore extends BaseService{
 		return lgRevision;
 	}
 	
+	protected <T extends Versionable> T addEntryState(
+			T versionable, 
+			ChangeType changeType, 
+			String revisionId, String prevRevisionId, 
+			Long relativeOrder){
+		EntryState entryState = this.populateEntryState(
+				changeType,
+				revisionId, 
+				prevRevisionId, 
+				relativeOrder);
+		
+		versionable.setEntryState(entryState);
+		
+		return versionable;
+	}
+
+	protected Revision populateRevisionShell(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			String entityCode,
+			String entityCodeNamespace,
+			Property property,
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) {
+		Property revisableProperty = 
+			this.addEntryState(property, changeType, revisionInfo.getRevisionId(), prevRevisionId, relativeOrder);
+		
+		Entity entity = new Entity();
+		entity.setEntityCode(entityCode);
+		entity.setEntityCodeNamespace(entityCodeNamespace);
+		entity.addAnyProperty(revisableProperty);
+		
+		return this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entity, 
+				ChangeType.DEPENDENT, 
+				null, 
+				0l, 
+				revisionInfo);
+	}
+
+	protected Revision populateRevisionShell(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			Entity entity, 
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) {
+		Entity revisableEntity = 
+			this.addEntryState(entity, changeType, revisionInfo.getRevisionId(), prevRevisionId, relativeOrder);
+		
+		CodingScheme codingScheme = new CodingScheme();
+		codingScheme.setCodingSchemeURI(codingSchemeUri);
+		codingScheme.setRepresentsVersion(codingSchemeVersion);
+		
+		codingScheme.setEntities(new Entities());
+		codingScheme.getEntities().addEntity(revisableEntity);
+		
+		return this.populateRevisionShell(
+				codingScheme, 
+				ChangeType.DEPENDENT, 
+				null, 
+				0l, 
+				revisionInfo);
+	}
+	
+	protected Revision populateRevisionShell(
+			CodingScheme codingScheme,
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) {
+		CodingScheme revisableCodingScheme = 
+			this.addEntryState(codingScheme, changeType, revisionInfo.getRevisionId(), prevRevisionId, relativeOrder);
+		
+		ChangedEntry changeEntry = new ChangedEntry();
+		changeEntry.setChangedCodingSchemeEntry(revisableCodingScheme);
+		
+		Revision revision = this.getLexGridRevisionObject(revisionInfo);
+		revision.addChangedEntry(changeEntry);
+		
+		return revision;
+	}
+	
 	public EntryState populateEntryState(ChangeType changeType, String revisionId, String prevRevisionId, Long relativeOrder){
 		EntryState entryState = new EntryState();
 		entryState.setChangeType(changeType);
@@ -113,5 +207,13 @@ public class AuthoringCore extends BaseService{
 		entryState.setPrevRevision(prevRevisionId);
 		entryState.setRelativeOrder(0L);
 		return entryState;
+	}
+	
+	protected void validatedCodingScheme(String codingSchemeUri, String codingSchemeVersion) throws LBException {
+		if(! this.getSystemResourceService().containsCodingSchemeResource(codingSchemeUri, codingSchemeVersion)) {
+			throw new LBException("The Coding Scheme URI: " +  codingSchemeUri +
+					" Version: " + codingSchemeVersion + " does not exist. Before creating a Concept, "
+					+ " the Coding Scheme must exist.");
+		}
 	}
 }
