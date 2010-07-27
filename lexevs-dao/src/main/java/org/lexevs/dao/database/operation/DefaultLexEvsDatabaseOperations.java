@@ -188,6 +188,11 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	@Override
 	public void dropCodingSchemeTables(String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
+		
+		if(! this.getSystemVariables().isSingleTableMode()) {
+			this.dropCodingSchemeHistoryTables(codingSchemeUri, version);
+		}
+		
 		this.doExecuteSql(this.codingSchemeXmlDdl, new DropSchemaPlatformActor(), prefix);	
 	}
 	
