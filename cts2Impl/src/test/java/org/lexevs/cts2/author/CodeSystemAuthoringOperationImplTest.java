@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -30,7 +31,8 @@ public class CodeSystemAuthoringOperationImplTest {
 
 	@Test
 	public void testCreateCodeSystem()   throws LBException, URISyntaxException{
-		//fail("Not yet implemented");
+		
+		String randomID = UUID.randomUUID().toString();
 		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
@@ -38,7 +40,7 @@ public class CodeSystemAuthoringOperationImplTest {
 		revInfo.setDescription("description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R101");
+		revInfo.setRevisionId(randomID);
 		
 		String codingSchemeName = "New Coding Scheme";
 	    String codingSchemeURI = "urn:oid:11.11.0.99";
@@ -55,18 +57,11 @@ public class CodeSystemAuthoringOperationImplTest {
 	    Text copyright = new Text();
 	    Mappings mappings = new Mappings();
 	    Properties properties = new Properties();
-	    Entities entities = new Entities();
-	    
-	    
-	    Relations relations = new Relations();
-	    List<Relations> relationsList = Arrays.asList(relations);
 	    
 	    
 	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
-	    
-	
 		
-		CodingScheme codeScheme = codeSystemAuthOp.createCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings, properties, entities, relationsList);
+		CodingScheme codeScheme = codeSystemAuthOp.createCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings, properties);
 		
 		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
 		
@@ -76,13 +71,15 @@ public class CodeSystemAuthoringOperationImplTest {
 	public void testRemoveCodeSystem()   throws LBException, URISyntaxException{
 		//fail("Not yet implemented");
 		
+		String randomID = UUID.randomUUID().toString();
+		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
 		revInfo.setChangeInstruction("changeInstruction");
 		revInfo.setDescription("description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R201");
+		revInfo.setRevisionId(randomID);
 		
 	    String codingSchemeURI = "urn:oid:11.11.0.99";
 	    String representsVersion = "1.0";
@@ -111,34 +108,53 @@ public class CodeSystemAuthoringOperationImplTest {
 		revInfo.setRevisionDate(new Date());
 		revInfo.setRevisionId("R301");
 		
-		String codingSchemeName = "New Coding Scheme - Updated";
+//		String codingSchemeName = "New Coding Scheme - Updated";
+//        String codingSchemeURI = "urn:oid:11.11.0.99";
+//        String formalName = "CTS 2 API Created Code System";
+//        String defaultLanguage = "";
+//        Long approxNumConcepts = new Long(1);
+//        String representsVersion = "1.0";
+//        List<String> localNameList = Arrays.asList(""); 
+//        
+//        Source source = new Source();
+//        source.setContent("source");
+//        List<Source> sourceList = Arrays.asList(source);
+//        
+//        Text copyright = new Text();
+//        Mappings mappings = new Mappings();
+//        Properties properties = new Properties();
+        
         String codingSchemeURI = "urn:oid:11.11.0.99";
-        String formalName = "CTS 2 API Created Code System";
-        String defaultLanguage = "";
-        Long approxNumConcepts = new Long(1);
         String representsVersion = "1.0";
-        List<String> localNameList = Arrays.asList(""); 
         
-        Source source = new Source();
-        source.setContent("source");
-        List<Source> sourceList = Arrays.asList(source);
-        
-        Text copyright = new Text();
-        Mappings mappings = new Mappings();
-        Properties properties = new Properties();
-        Entities entities = new Entities();
-        
-        
-        Relations relations = new Relations();
-        List<Relations> relationsList = Arrays.asList(relations);
+		String codingSchemeName = "New Coding Scheme - Updated";
+        String formalName = null;
+        String defaultLanguage = null;
+        Long approxNumConcepts = 0L;
+        List<String> localNameList = null; 
+        List<Source> sourceList = null;
+        Text copyright = null;
+        Mappings mappings = null;
+        Properties properties = null;
         
         
         CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+               
+        CodingScheme codeScheme = codeSystemAuthOp.updateCodeSystem(revInfo, 
+        															codingSchemeName, 
+        															codingSchemeURI, 
+        															formalName, 
+        															defaultLanguage, 
+        															approxNumConcepts, 
+        															representsVersion, 
+        															localNameList, 
+        															sourceList, 
+        															copyright, 
+        															mappings, 
+        															properties);
         
 
-		
-		CodingScheme codeScheme = codeSystemAuthOp.updateCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings, properties, entities, relationsList);
-		
+			
 		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
 		
 	}
