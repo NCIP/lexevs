@@ -9,6 +9,7 @@ import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
@@ -239,15 +240,18 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 			String namespace, 
 			RevisionInfo revisionInfo) throws LBException {
 
-		EntryState entryState = 
-			this.populateEntryState(ChangeType.NEW, revisionInfo.getRevisionId(), null, 0l);
-		
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptCode);
 		entity.setEntityCodeNamespace(namespace);
-		entity.setEntryState(entryState);
 		
-		this.doReviseConcept(codingSchemeUri, codeSystemVersion, entity, revisionInfo);
+		this.doReviseConcept(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				entity, 
+				ChangeType.NEW, 
+				null, 
+				0l, 
+				revisionInfo);
 	}
 
 	@Override
@@ -257,14 +261,13 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public void updateCodeSystemSuppliment() {
+	public void updateCodeSystemSuppliment(CodingScheme codingScheme, RevisionInfo revisionInfo) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void updateCodeSystemVersion(String codingSchemeUri,
-			String codeSystemVersion) {
+	public void updateCodeSystemVersion(String codingScheme, RevisionInfo revisionInfo) {
 		// TODO Auto-generated method stub (IMPLEMENT!)
 		throw new UnsupportedOperationException();
 	}
@@ -281,29 +284,126 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 			String codeSystemVersion, 
 			Entity entity,
 			RevisionInfo revisionInfo) throws LBException {	
-		this.doReviseConcept(codingSchemeUri, codeSystemVersion, entity, revisionInfo);
+		this.doReviseConcept(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				entity, 
+				ChangeType.MODIFY, 
+				null,
+				0l, 
+				revisionInfo);
 	}
-	
+
+	@Override
+	public void addNewConceptProperty(
+			String codingSchemeUri,
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace,
+			Property property, 
+			RevisionInfo revisionInfo) throws LBException {
+		this.doReviseEntityProperty(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				conceptCode, 
+				namespace, 
+				property, 
+				ChangeType.NEW, 
+				null, 
+				0l, 
+				revisionInfo);
+	}
+
+	@Override
+	public void deleteConcept(String codingSchemeUri, String codeSystemVersion,
+			String conceptCode, String namespace, RevisionInfo revision)
+			throws LBException {
+		// TODO Auto-generated method stub (IMPLEMENT!)
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deleteConceptProperty(String codingSchemeUri,
+			String codeSystemVersion, String conceptCode, String namespace,
+			Property property, RevisionInfo revisionInfo) throws LBException {
+		this.doReviseEntityProperty(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				conceptCode, 
+				namespace, 
+				property, 
+				ChangeType.REMOVE, 
+				null, 
+				0l, 
+				revisionInfo);
+	}
+
+	@Override
+	public void updateConceptProperty(
+			String codingSchemeUri,
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace,
+			Property property, 
+			RevisionInfo revisionInfo) throws LBException {
+		this.doReviseEntityProperty(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				conceptCode, 
+				namespace, 
+				property, 
+				ChangeType.MODIFY, 
+				null, 
+				0l, 
+				revisionInfo);
+	}
+
 	protected void doReviseConcept(
 			String codingSchemeUri, 
 			String codingSchemeVersion, 
 			Entity entity, 
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
 			RevisionInfo revisionInfo) throws LBException {
 		
-		if(! this.getSystemResourceService().containsCodingSchemeResource(codingSchemeUri, codingSchemeVersion)) {
-			throw new LBException("The Coding Scheme URI: " +  codingSchemeUri +
-					" Version: " + codingSchemeVersion + " does not exist. Before creating a Concept, "
-					+ " the Coding Scheme must exist.");
-		}
+		this.validatedCodingScheme(codingSchemeUri, codingSchemeVersion);
 		
-		Revision revision = super.getLexGridRevisionObject(revisionInfo);
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entity, 
+				changeType, 
+				prevRevisionId, 
+				relativeOrder, 
+				revisionInfo);
 		
-		CodingScheme cs = new CodingScheme();
-		cs.setCodingSchemeURI(codingSchemeUri);
-		cs.setRepresentsVersion(codingSchemeVersion);
-		cs.setEntryState(this.populateEntryState(ChangeType.DEPENDENT, revision.getRevisionId(), null, 0l));
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
+	}
+	
+	protected void doReviseEntityProperty(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			String entityCode, 
+			String entityCodeNamespace, 
+			Property property,
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) throws LBException {
 		
-		cs.getEntities().addEntity(entity);
+		this.validatedCodingScheme(codingSchemeUri, codingSchemeVersion);
+		
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entityCode, 
+				entityCodeNamespace,
+				property,
+				changeType, 
+				prevRevisionId, 
+				relativeOrder, 
+				revisionInfo);
 		
 		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
 	}

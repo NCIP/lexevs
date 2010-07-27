@@ -23,6 +23,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
@@ -59,12 +60,17 @@ public interface CodeSystemAuthoringOperation {
 	
 	public int commitChangeSet(Revision changeSet);
 	
-	public void updateCodeSystemVersion(String codingSchemeUri, String codeSystemVersion);
+	public void updateCodeSystemVersion(String codingScheme, RevisionInfo revisionInfo);
+	
 	public void updateCodeSystemVersionStatus(String codingSchemeUri, String codeSystemVersion);
-	public void createCodeSystemSuppliment(AbsoluteCodingSchemeVersionReference parent, AbsoluteCodingSchemeVersionReference supplement) throws InvalidCodeSystemSupplementException;
-	public void updateCodeSystemSuppliment() throws InvalidCodeSystemSupplementException;
 	
+	public void createCodeSystemSuppliment(
+			AbsoluteCodingSchemeVersionReference parent, 
+			AbsoluteCodingSchemeVersionReference supplement) throws InvalidCodeSystemSupplementException;
 	
+	public void updateCodeSystemSuppliment(
+			CodingScheme codingScheme, RevisionInfo revisionInfo) throws InvalidCodeSystemSupplementException;
+
 	public void createConcept(
 			String codingSchemeUri, 
 			String codeSystemVersion, 
@@ -76,6 +82,37 @@ public interface CodeSystemAuthoringOperation {
 			String codingSchemeUri, 
 			String codeSystemVersion, 
 			Entity entity,
+			RevisionInfo revision) throws LBException;
+	
+	public void deleteConcept(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace, 
+			RevisionInfo revision) throws LBException;
+	
+	public void addNewConceptProperty(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace, 
+			Property property,
+			RevisionInfo revision) throws LBException;
+	
+	public  void updateConceptProperty(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace, 
+			Property property,
+			RevisionInfo revision) throws LBException;
+	
+	public void deleteConceptProperty(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace, 
+			Property property,
 			RevisionInfo revision) throws LBException;
 	
 	public void updateConceptStatus();
