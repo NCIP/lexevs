@@ -1039,7 +1039,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				.getSqlMapClientTemplate().queryForObject(GET_CODINGSCHEME_METADATA_BY_UID,
 						new PrefixedParameter(prefix, codingSchemeUId));
 
-		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix() + prefix;
+		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		
 		codingSchemeData.setPrefix(historyPrefix);
 		
