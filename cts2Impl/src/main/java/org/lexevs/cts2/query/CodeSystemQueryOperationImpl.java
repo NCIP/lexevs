@@ -7,6 +7,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -119,10 +120,10 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 
 	@Override
 	public ResolvedConceptReferencesIterator listCodeSystemConcepts(
-			String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, LocalNameList entityTypes) {
+			String codingSchemeName, CodingSchemeVersionOrTag versionOrTag, LocalNameList entityTypes, SortOptionList sortOptionList) {
 		try {
 			CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getNodeSet(codingSchemeName, versionOrTag, entityTypes);
-			return cns.resolve(null, null, null, null);
+			return cns.resolve(sortOptionList, null, null, null);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
