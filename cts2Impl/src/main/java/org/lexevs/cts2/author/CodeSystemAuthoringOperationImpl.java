@@ -114,10 +114,11 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(scheme, revision, ChangeType.NEW);
+	        commitCodeSystem(scheme, revision, null, ChangeType.NEW);
 	        
 	        return scheme;
 	}
+
 
 	@Override
 	public boolean removeCodeSystem(RevisionInfo revision, String codingSchemeURI, String representsVersion) throws LBException {
