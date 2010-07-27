@@ -122,27 +122,28 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 
 	@Override
 	public boolean removeCodeSystem(RevisionInfo revision, String codingSchemeURI, String representsVersion) throws LBException {
-	
-	        if(codingSchemeURI == null){
-	            throw new LBException("Coding scheme URI cannot be null");
-	        }
-	        
-	        CodingScheme codingScheme = 
-	        	this.getDatabaseServiceManager().
-	        		getCodingSchemeService().
-	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
-	        
-	        if (codingScheme == null)
-				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
-	        		
-	        // Ensure RevisionInfo is provided
-	        validateRevisionInfo(revision);
-	        
-	        commitCodeSystem(codingScheme, revision, ChangeType.REMOVE);
-	        
-	        return true;
-	}
+		
+        if(codingSchemeURI == null){
+            throw new LBException("Coding scheme URI cannot be null");
+        }
+        
+        CodingScheme codingScheme = 
+        	this.getDatabaseServiceManager().
+        		getCodingSchemeService().
+        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+        
+        if (codingScheme == null)
+			throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
+        		
+        // Ensure RevisionInfo is provided
+        validateRevisionInfo(revision);
+        
+        commitCodeSystem(codingScheme, revision, null, ChangeType.REMOVE);
+        
+        return true;
+}
 
+	
 	@Override
 	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
