@@ -191,6 +191,8 @@ public class LexBIGServiceImpl implements LexBIGService {
         getLogger().logMethod();
         try {
             CodingSchemeRenderingList temp = new CodingSchemeRenderingList();
+            
+            systemResourceService.refresh();
 
             List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
             
