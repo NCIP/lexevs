@@ -133,10 +133,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public CodingScheme removeCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
-	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-	        List<Relations>  relationsList) throws LBException {
+	public boolean removeCodeSystem(RevisionInfo revision, String codingSchemeURI, String representsVersion) throws LBException {
 	
 	        if(codingSchemeURI == null){
 	            throw new LBException("Coding scheme URI cannot be null");
@@ -146,40 +143,13 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        if (codingScheme == null)
 				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
-	        
-//	        CodingScheme scheme = new CodingScheme();
-//	        
-//	        scheme.setCodingSchemeName(codingSchemeName);
-//	        
-//	        scheme.setCodingSchemeURI(codingSchemeURI);
-//	
-//	        scheme.setFormalName(formalName);
-//	
-//	        scheme.setDefaultLanguage(defaultLanguage);
-//	        
-//	        scheme.setApproxNumConcepts(approxNumConcepts);
-//	        
-//	        scheme.setRepresentsVersion(representsVersion);
-//	
-//	        scheme.setLocalName(localNameList);
-//	
-//	        scheme.setSource(sourceList);
-//	
-//	        scheme.setCopyright(copyright);
-//	
-//	        scheme.setMappings(mappings);
-//	
-//	        scheme.setProperties(properties);
-//	        
-//	        scheme.setEntities(entities);
-	        
-		
+	        		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
 	        commitCodeSystem(codingScheme, revision, ChangeType.REMOVE);
 	        
-	        return codingScheme;
+	        return true;
 	}
 
 	@Override
