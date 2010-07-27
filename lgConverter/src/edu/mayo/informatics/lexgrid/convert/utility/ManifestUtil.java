@@ -44,11 +44,15 @@ import org.LexGrid.LexOnt.CsmfText;
 import org.LexGrid.LexOnt.CsmfVersion;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.EntityTypes;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
@@ -526,6 +530,10 @@ public class ManifestUtil {
             AssociationEntity originalAssocEntity = 
                 findAssociationEntityInDatabase(
                         uri, version, code, namespace);
+            originalAssocEntity.setComment(new Comment[0]);
+            originalAssocEntity.setPresentation(new Presentation[0]);
+            originalAssocEntity.setProperty(new Property[0]);
+            originalAssocEntity.setDefinition(new Definition[0]);
 
             if(originalAssocEntity == null) {
                 manifestEntity.addEntityType(EntityTypes.ASSOCIATION.toString());
@@ -565,8 +573,7 @@ public class ManifestUtil {
         if(entities == null) {return null;}
         
         for(Entity entity : entities.getEntity()) {
-            if(entity.getEntityCode().equals(code) && 
-                    entity.getEntityCodeNamespace().equals(namespace)){
+            if(entitiesAreEquals(entity, code, namespace)){
                 if(entity instanceof AssociationEntity) {
                     return (AssociationEntity)entity;
                 }
@@ -575,7 +582,21 @@ public class ManifestUtil {
         
         return null;
     }
+        
+        
     
+    private boolean entitiesAreEquals(Entity entity, String code, String namespace) {
+        if(! entity.getEntityCode().equals(code)){
+            return false;
+        }
+        if(namespace !=null && entity.getEntityCodeNamespace() != null){
+            if(! entity.getEntityCodeNamespace().equals(namespace)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected void preLoadAddSources(CodingScheme codingScheme, CsmfSource[] sources) {
 
         if (sources != null) {
