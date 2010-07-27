@@ -232,6 +232,7 @@
       <column name="sourceEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="targetEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="targetEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
+      <column name="path" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false" />
       <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToEntTr_assnGuid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
