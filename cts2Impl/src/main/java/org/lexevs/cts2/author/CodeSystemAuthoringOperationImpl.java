@@ -14,6 +14,7 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
@@ -21,7 +22,9 @@ import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -31,6 +34,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 	private IndexServiceManager indexService_ = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+	private CodingSchemeService codeschemeServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
 	
 	@SuppressWarnings("unused")
 
@@ -134,52 +138,48 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
 	        List<Relations>  relationsList) throws LBException {
 	
-	      if(codingSchemeName == null){
-	            throw new LBException("Coding scheme name cannot be null");
-	        }
 	        if(codingSchemeURI == null){
 	            throw new LBException("Coding scheme URI cannot be null");
 	        }
-	        if(representsVersion == null){
-	            throw new LBException("Coding scheme version cannot be null");
-	        }
-	        if(mappings == null){
-	            throw new LBException("Coding scheme mappings cannot be null");
-	        }
 	        
-	        CodingScheme scheme = new CodingScheme();
+	        CodingScheme codingScheme = codeschemeServ_.getCompleteCodingScheme(codingSchemeURI, representsVersion);
 	        
-	        scheme.setCodingSchemeName(codingSchemeName);
+	        if (codingScheme == null)
+				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
 	        
-	        scheme.setCodingSchemeURI(codingSchemeURI);
-	
-	        scheme.setFormalName(formalName);
-	
-	        scheme.setDefaultLanguage(defaultLanguage);
-	        
-	        scheme.setApproxNumConcepts(approxNumConcepts);
-	        
-	        scheme.setRepresentsVersion(representsVersion);
-	
-	        scheme.setLocalName(localNameList);
-	
-	        scheme.setSource(sourceList);
-	
-	        scheme.setCopyright(copyright);
-	
-	        scheme.setMappings(mappings);
-	
-	        scheme.setProperties(properties);
-	        
-	        scheme.setEntities(entities);
+//	        CodingScheme scheme = new CodingScheme();
+//	        
+//	        scheme.setCodingSchemeName(codingSchemeName);
+//	        
+//	        scheme.setCodingSchemeURI(codingSchemeURI);
+//	
+//	        scheme.setFormalName(formalName);
+//	
+//	        scheme.setDefaultLanguage(defaultLanguage);
+//	        
+//	        scheme.setApproxNumConcepts(approxNumConcepts);
+//	        
+//	        scheme.setRepresentsVersion(representsVersion);
+//	
+//	        scheme.setLocalName(localNameList);
+//	
+//	        scheme.setSource(sourceList);
+//	
+//	        scheme.setCopyright(copyright);
+//	
+//	        scheme.setMappings(mappings);
+//	
+//	        scheme.setProperties(properties);
+//	        
+//	        scheme.setEntities(entities);
 	        
 		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(scheme, revision, ChangeType.REMOVE);
+	        commitCodeSystem(codingScheme, revision, ChangeType.REMOVE);
 	        
-	        return scheme;
+	        return codingScheme;
 	}
 
 	@Override
