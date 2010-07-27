@@ -370,7 +370,7 @@
         <index-column name="attributeType"/>
         <index-column name="attributeId"/>
       </index>
-      <index name="i@PREFIX@dx_pma_pGuid">
+      <index name="@PREFIX@idx_pma_pGuid">
         <index-column name="propertyGuid"/>
       </index>
     </table>
