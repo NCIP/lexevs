@@ -1,5 +1,6 @@
 package org.lexevs.cts2.author;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -97,6 +98,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	            throw new LBException("Coding scheme mappings cannot be null");
 	        }
 	        
+	        
 	        CodingScheme scheme = new CodingScheme();
 	        
 	        scheme.setCodingSchemeName(codingSchemeName);
@@ -121,7 +123,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	
 	        scheme.setProperties(properties);
 	        
-	        scheme.setEntities(entities);
+	       // scheme.setEntities(entities);
 	        
 		
 	        // Ensure RevisionInfo is provided
