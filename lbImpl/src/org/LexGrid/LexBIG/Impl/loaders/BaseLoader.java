@@ -471,6 +471,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     protected void persistCodingSchemeToDatabase(CodingSchemeInserter inserter, CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException {
         if(this.getCodingSchemeManifest() != null) {
             md_.info("Applying Pre-Load Manifest.");
+            this.setDoApplyPostLoadManifest(false);
             this.getManifestUtil().applyManifest(this.getCodingSchemeManifest(), codingScheme);
         }
 

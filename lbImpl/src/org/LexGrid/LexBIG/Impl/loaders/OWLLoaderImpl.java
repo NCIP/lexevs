@@ -62,6 +62,7 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
 
     public OWLLoaderImpl() {
         super();
+        this.setDoComputeTransitiveClosure(true);
     }
 
     protected ExtensionDescription buildExtensionDescription(){
