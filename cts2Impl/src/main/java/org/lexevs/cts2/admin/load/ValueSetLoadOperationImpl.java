@@ -18,27 +18,25 @@
 package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
-import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
- * @author m004181
- *
+ * Implementation of LexEVS CTS 2 Value Set Load Operation.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class ValueSetLoadOperationImpl extends BaseService implements ValueSetLoadOperation {
 	
     private LexEVSValueSetDefinitionServices vsdService_;
-    private LexEVSPickListDefinitionServices pldService_;
   
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.admin.load.ValueSetLoadOperation#load(java.net.URI, java.net.URI, java.lang.String, java.lang.Boolean)
@@ -49,6 +47,10 @@ public class ValueSetLoadOperationImpl extends BaseService implements ValueSetLo
 		return this.getLexEvsCTS2().getAdminOperation().getCodeSystemLoadOperation().load(source, null, null, loaderName, stopOnErrors, true, false, null, null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.ValueSetLoadOperation#load(org.LexGrid.valueSets.ValueSetDefinition, java.net.URI, java.lang.Boolean)
+	 */
 	@Override
 	public String load(ValueSetDefinition valueSetDefinition, URI releaseURI, Boolean stopOnErrors) throws LBException {
 		if (valueSetDefinition == null)
@@ -62,17 +64,12 @@ public class ValueSetLoadOperationImpl extends BaseService implements ValueSetLo
 		return valueSetDefinition.getValueSetDefinitionURI();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.ValueSetLoadOperation#getSupportedLoaderNames()
+	 */
 	@Override
-	public String load(PickListDefinition pickListDefinition, URI releaseURI, Boolean stopOnErrors) throws LBException {
-		if (pickListDefinition == null)
-			throw new LBException("Pick List Definition object can not be empty");
-		
-		if (pickListDefinition.getPickListId() == null)
-			throw new LBException("Pick List Definition ID can not be empty");
-		
-		pldService_ = LexEVSPickListDefinitionServicesImpl.defaultInstance();
-		pldService_.loadPickList(pickListDefinition, releaseURI == null ? null : releaseURI.toString(), null);
-		return pickListDefinition.getPickListId();
+	public List<String> getSupportedLoaderNames() throws LBException {
+		return this.getLexEvsCTS2().getSupportedLoaderNames();
 	}
-
 }

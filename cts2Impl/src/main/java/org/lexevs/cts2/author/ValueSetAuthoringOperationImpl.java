@@ -18,15 +18,15 @@ import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
- * @author m004181
- *
+ * Implementation LexEVS CTS 2 Value Set Authoring Operation.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ValueSetAuthoringOperation {
@@ -462,6 +462,10 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#removeDefinitionEntry(java.net.URI, java.lang.Long, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
 	@Override
 	public boolean removeDefinitionEntry(URI valueSetURI, Long ruleOrder,
 			RevisionInfo revision) throws LBException {
@@ -516,6 +520,10 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#removeValueSet(java.net.URI, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
 	@Override
 	public boolean removeValueSet(URI valueSetURI, RevisionInfo revision)
 			throws LBException {
@@ -548,6 +556,10 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ValueSetAuthoringOperation#removeValueSetProperty(java.net.URI, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
 	@Override
 	public boolean removeValueSetProperty(URI valueSetURI, String propertyId,
 			RevisionInfo revision) throws LBException {

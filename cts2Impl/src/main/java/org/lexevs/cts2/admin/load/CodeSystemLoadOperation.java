@@ -27,6 +27,11 @@ import org.lexevs.cts2.core.update.RevisionInfo;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
+/**
+ * LexEVS CTS 2 Code System Load Operation.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
+ */
 public interface CodeSystemLoadOperation {
 	
 	/**
@@ -192,5 +197,11 @@ public interface CodeSystemLoadOperation {
 	 */
 	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException;
 	
+	/**
+	 * Returns list of Loader names supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Loader names
+	 * @throws LBException
+	 */
 	public List<String> getSupportedLoaderNames() throws LBException;
 }

@@ -19,41 +19,49 @@
 package org.lexevs.cts2.admin.load;
 
 import java.net.URI;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
+/**
+ * LexEVS CTS 2 Value Set Load Operation.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
+ */
 public interface ValueSetLoadOperation {
 	
 	/**
-	 * Load the value set definition or pick list definition.
+	 * Load the value set definition.
 	 * 
-	 * @param source
-	 * @param releaseURI
-	 * @param loaderName
-	 * @param stopOnErrors
+	 * @param source location of the source file
+	 * @param releaseURI Release URI the loaded contents belong to 
+	 * @param loaderName Name of the loader to be used. Call getSupportedLoaderNames() 
+	 * 			  to get list of loaders supported by this instance of LexEVS.
+	 * @param stopOnErrors True means stop if any load error is detected. False means
+	 *            attempt to load what can be loaded if recoverable errors are
+	 *            encountered.
 	 */
 	public abstract URNVersionPair[] load(URI source, URI releaseURI, String loaderName, Boolean stopOnErrors) throws LBException;
 	
 	/**
 	 * Load value set definition.
 	 * 
-	 * @param valueSetDefinition
-	 * @param releaseURI
-	 * @param stopOnErrors
+	 * @param valueSetDefinition Value Set Definition object to be loaded
+	 * @param releaseURI Release URI the loaded contents belong to
+	 * @param stopOnErrors True means stop if any load error is detected. False means
+	 *            attempt to load what can be loaded if recoverable errors are
+	 *            encountered.
 	 */
 	public abstract String load(ValueSetDefinition valueSetDefinition, URI releaseURI, Boolean stopOnErrors) throws LBException;
 
 	/**
-	 * Load pick list definition.
-	 * 
-	 * @param pickListDefinition
-	 * @param releaseURI
-	 * @param stopOnErrors
+	 * Returns list of Loader names supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Loader names
+	 * @throws LBException
 	 */
-	public abstract String load(PickListDefinition pickListDefinition, URI releaseURI, Boolean stopOnErrors) throws LBException;
-	
+    public List<String> getSupportedLoaderNames() throws LBException;
 }

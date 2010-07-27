@@ -40,8 +40,9 @@ import org.lexevs.cts2.core.update.RevisionInfo;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
- * @author m004181
- *
+ * Implementation of LexEVS CTS 2 Code System Load Operation.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSystemLoadOperation {
 	
@@ -147,6 +148,10 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 		return loadSource(source, loaderName, metadata, manifest, stopOnErrors, async, overwriteMetadata, versionTag, activate);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#activateCodeSystem(java.lang.String, java.lang.String)
+	 */
 	public boolean activateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException{
 		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
 		acsvr.setCodingSchemeURN(codeSystemURI);
@@ -155,6 +160,10 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 		return true;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#deactivateCodeSystem(java.lang.String, java.lang.String)
+	 */
 	public boolean deactivateCodeSystem(String codeSystemURI, String codeSyatemVersion) throws LBException{
 		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
 		acsvr.setCodingSchemeURN(codeSystemURI);
@@ -162,6 +171,8 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 		getLexBIGServiceManager().deactivateCodingSchemeVersion(acsvr, new Date());
 		return true;
 	}
+	
+	
 	private URNVersionPair[] loadSource(URI source, String loaderName, URI metadata, URI manifest, Boolean stopOnErrors, Boolean async, Boolean overwriteMetadata, String versionTag, Boolean activate) throws LBException{
 		Loader loader = getLexBIGServiceManager().getLoader(loaderName);
         loader.getOptions().getBooleanOption(BaseLoader.FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
@@ -240,7 +251,11 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
             getLexBIGServiceManager().setVersionTag(ref, versionTag);
         }
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.load.CodeSystemLoadOperation#getSupportedLoaderNames()
+	 */
 	@Override
 	public List<String> getSupportedLoaderNames() throws LBException {
 		return this.getLexEvsCTS2().getSupportedLoaderNames();

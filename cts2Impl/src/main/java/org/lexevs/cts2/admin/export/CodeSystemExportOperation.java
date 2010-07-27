@@ -25,7 +25,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
 /**
- * CTS 2 Code System Export Operation.
+ * LexEVS CTS 2 Code System Export Operation.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */

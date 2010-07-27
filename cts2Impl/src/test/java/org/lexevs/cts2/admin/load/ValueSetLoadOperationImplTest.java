@@ -11,10 +11,6 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.valueSets.CodingSchemeReference;
 import org.LexGrid.valueSets.DefinitionEntry;
-import org.LexGrid.valueSets.PickListDefinition;
-import org.LexGrid.valueSets.PickListEntryExclusion;
-import org.LexGrid.valueSets.PickListEntryNode;
-import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Test;
@@ -87,36 +83,6 @@ public class ValueSetLoadOperationImplTest {
 		ValueSetLoadOperation vsLoadOp = cts2.getAdminOperation().getValueSetLoadOperation();
 		String vsdURI = vsLoadOp.load(vsd, null, true);
 		System.out.println("vsdURI : " + vsdURI);
-	}
-
-	/**
-	 * Test method for {@link org.lexevs.cts2.admin.load.ValueSetLoadOperationImpl#load(org.LexGrid.valueSets.PickListDefinition, java.net.URI, java.lang.Boolean)}.
-	 * @throws LBException 
-	 */
-	@Test
-	public void testLoadPickListDefinitionURIBoolean() throws LBException {
-		PickListDefinition pld = new PickListDefinition();
-		pld.setPickListId("JUNIT PickListID 1");
-		pld.setCompleteSet(true);
-		pld.setRepresentsValueSetDefinition("JUNIT:TEST:VSD1");
-		
-		PickListEntryExclusion plExclusion = new PickListEntryExclusion();
-		plExclusion.setEntityCode("005");
-		plExclusion.setEntityCodeNamespace("Automobiles");
-		
-		PickListEntryNode entryNode = new PickListEntryNode();
-		entryNode.setPickListEntryId("Junit PLENTRYNODE 1");
-		PickListEntryNodeChoice choice = new PickListEntryNodeChoice();
-		choice.setExclusionEntry(plExclusion);
-		entryNode.setPickListEntryNodeChoice(choice);
-		
-		pld.addPickListEntryNode(entryNode);
-		
-		LexEvsCTS2 cts2 = LexEvsCTS2Impl.defaultInstance();
-		ValueSetLoadOperation vsLoadOp = cts2.getAdminOperation().getValueSetLoadOperation();
-		String plId = vsLoadOp.load(pld, null, true);
-		System.out.println("plid loaded : " + plId);
-		
 	}
 
 }
