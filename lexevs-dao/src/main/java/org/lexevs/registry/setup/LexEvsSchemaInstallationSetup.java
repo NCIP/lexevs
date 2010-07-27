@@ -22,7 +22,6 @@ import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.constants.SystemVariables;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class LexEvsSchemaInstallationSetup.
@@ -46,7 +45,6 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
-	@Transactional
 	public void setUpLexEvsDbSchema() throws Exception {
 		this.getLogger().info("Checking for installed LexEVS Database Schema.");
 

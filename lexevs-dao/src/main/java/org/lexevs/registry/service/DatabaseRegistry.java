@@ -27,6 +27,8 @@ import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.collections.CollectionUtils;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.dao.database.prefix.NextDatabasePrefixGenerator;
@@ -39,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName="ResourceCache")
 public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	
 	/** The registry dao. */
@@ -71,6 +74,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
 	 */
 	@Transactional
+	@ClearCache
 	public void addNewItem(RegistryEntry entry)
 			throws Exception {
 		
@@ -173,6 +177,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	@Transactional
+	@ClearCache
 	public void updateEntry(
 			RegistryEntry entry){
 		this.registryDao.updateRegistryEntry(entry);
@@ -212,6 +217,7 @@ public class DatabaseRegistry extends RegistryEventSupport implements Registry {
 	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	@Transactional
+	@ClearCache
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		registryDao.deleteRegistryEntry(entry);	
 	}
