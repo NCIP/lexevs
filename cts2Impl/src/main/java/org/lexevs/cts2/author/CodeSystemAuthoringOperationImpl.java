@@ -76,6 +76,114 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	
 	@Override
 	public CodingScheme createCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
+	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
+	        List<Relations>  relationsList) throws LBException {
+	
+	      if(codingSchemeName == null){
+	            throw new LBException("Coding scheme name cannot be null");
+	        }
+	        if(codingSchemeURI == null){
+	            throw new LBException("Coding scheme URI cannot be null");
+	        }
+	        if(representsVersion == null){
+	            throw new LBException("Coding scheme version cannot be null");
+	        }
+	        if(mappings == null){
+	            throw new LBException("Coding scheme mappings cannot be null");
+	        }
+	        
+	        CodingScheme scheme = new CodingScheme();
+	        
+	        scheme.setCodingSchemeName(codingSchemeName);
+	        
+	        scheme.setCodingSchemeURI(codingSchemeURI);
+	
+	        scheme.setFormalName(formalName);
+	
+	        scheme.setDefaultLanguage(defaultLanguage);
+	        
+	        scheme.setApproxNumConcepts(approxNumConcepts);
+	        
+	        scheme.setRepresentsVersion(representsVersion);
+	
+	        scheme.setLocalName(localNameList);
+	
+	        scheme.setSource(sourceList);
+	
+	        scheme.setCopyright(copyright);
+	
+	        scheme.setMappings(mappings);
+	
+	        scheme.setProperties(properties);
+	        
+	        scheme.setEntities(entities);
+	        
+		
+	        // Ensure RevisionInfo is provided
+	        validateRevisionInfo(revision);
+	        
+	        commitCodeSystem(scheme, revision, ChangeType.NEW);
+	        
+	        return scheme;
+	}
+
+	@Override
+	public CodingScheme removeCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
+	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
+	        List<Relations>  relationsList) throws LBException {
+	
+	      if(codingSchemeName == null){
+	            throw new LBException("Coding scheme name cannot be null");
+	        }
+	        if(codingSchemeURI == null){
+	            throw new LBException("Coding scheme URI cannot be null");
+	        }
+	        if(representsVersion == null){
+	            throw new LBException("Coding scheme version cannot be null");
+	        }
+	        if(mappings == null){
+	            throw new LBException("Coding scheme mappings cannot be null");
+	        }
+	        
+	        CodingScheme scheme = new CodingScheme();
+	        
+	        scheme.setCodingSchemeName(codingSchemeName);
+	        
+	        scheme.setCodingSchemeURI(codingSchemeURI);
+	
+	        scheme.setFormalName(formalName);
+	
+	        scheme.setDefaultLanguage(defaultLanguage);
+	        
+	        scheme.setApproxNumConcepts(approxNumConcepts);
+	        
+	        scheme.setRepresentsVersion(representsVersion);
+	
+	        scheme.setLocalName(localNameList);
+	
+	        scheme.setSource(sourceList);
+	
+	        scheme.setCopyright(copyright);
+	
+	        scheme.setMappings(mappings);
+	
+	        scheme.setProperties(properties);
+	        
+	        scheme.setEntities(entities);
+	        
+		
+	        // Ensure RevisionInfo is provided
+	        validateRevisionInfo(revision);
+	        
+	        commitCodeSystem(scheme, revision, ChangeType.REMOVE);
+	        
+	        return scheme;
+	}
+
+	@Override
+	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
             List<Relations>  relationsList) throws LBException {
@@ -123,7 +231,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(scheme, revision, ChangeType.NEW);
+	        commitCodeSystem(scheme, revision, ChangeType.MODIFY);
 	        
 	        return scheme;
 	}
