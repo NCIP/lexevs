@@ -1,11 +1,9 @@
 package org.lexevs.cts2.author;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
@@ -16,30 +14,16 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
-import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
-import org.lexevs.cts2.LexEvsCTS2;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
-import org.lexevs.dao.database.service.version.AuthoringService;
-import org.lexevs.dao.index.service.IndexServiceManager;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		CodeSystemAuthoringOperation {
 	
-	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-	private IndexServiceManager indexService_ = LexEvsServiceLocator.getInstance().getIndexServiceManager();
-	private CodingSchemeService codeschemeServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-	
-	@SuppressWarnings("unused")
-
 	@Override
 	public int commitChangeSet(Revision changeSet) {
 		// TODO Auto-generated method stub
@@ -63,13 +47,13 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        codeSystem.setEntryState(populateEntryState(changeType, lgRevision.getRevisionId(), null, 0L));
        
        //load as revision
-       authServ_.loadRevision(lgRevision, null);
+       this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null);
        AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
        reference.setCodingSchemeURN(codeSystem.getCodingSchemeURI());
        reference.setCodingSchemeVersion(codeSystem.getRepresentsVersion());
        
        //index the loaded coding scheme
-       indexService_.getEntityIndexService().createIndex(reference); 
+       this.getIndexServiceManager().getEntityIndexService().createIndex(reference); 
 		
 		return 0;
 	}
@@ -139,7 +123,10 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	            throw new LBException("Coding scheme URI cannot be null");
 	        }
 	        
-	        CodingScheme codingScheme = codeschemeServ_.getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        CodingScheme codingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
 	        
 	        if (codingScheme == null)
 				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
@@ -409,8 +396,37 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public void updateConceptStatus() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	public void updateConceptStatus(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace,
+			String status,
+			Boolean isActive,
+			RevisionInfo revisionInfo) throws LBException {
+		this.validatedCodingScheme(codingSchemeUri, codeSystemVersion);
+		
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptCode);
+		entity.setEntityCodeNamespace(namespace);
+		
+		if(StringUtils.isNotBlank(status)) {
+			entity.setStatus(status);
+		}
+		
+		if(isActive != null) {
+			entity.setIsActive(isActive);
+		}
+		
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				entity, 
+				ChangeType.VERSIONABLE, 
+				null, 
+				0l, 
+				revisionInfo);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
 	}
 }

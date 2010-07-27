@@ -115,7 +115,15 @@ public interface CodeSystemAuthoringOperation {
 			Property property,
 			RevisionInfo revision) throws LBException;
 	
-	public void updateConceptStatus();
+	public void updateConceptStatus(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			String conceptCode, 
+			String namespace,
+			String status,
+			Boolean isActive,
+			RevisionInfo revisionInfo) throws LBException;
+	
 	public void createAssociationType();
 	public void updateAssociationType();
 
