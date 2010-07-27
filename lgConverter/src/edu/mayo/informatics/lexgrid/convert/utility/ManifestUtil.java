@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -341,7 +342,8 @@ public class ManifestUtil {
             List<SupportedCodingScheme> suppCodingSchemeList = null;
             
             if (codingScheme.getMappings() != null)
-                suppCodingSchemeList = Arrays.asList(codingScheme.getMappings().getSupportedCodingScheme());
+                suppCodingSchemeList = new ArrayList<SupportedCodingScheme>(
+                        Arrays.asList(codingScheme.getMappings().getSupportedCodingScheme()));
             
             boolean urnPresent = false;
             for (int i = 0; i < suppCodingSchemeList.size(); i++) {
@@ -377,7 +379,8 @@ public class ManifestUtil {
             List<SupportedLanguage> suppLanguageList = null;
             
             if (codingScheme.getMappings() != null)
-                suppLanguageList = Arrays.asList(codingScheme.getMappings().getSupportedLanguage());
+                suppLanguageList = new ArrayList<SupportedLanguage>(
+                        Arrays.asList(codingScheme.getMappings().getSupportedLanguage()));
             
             boolean urnPresent = false;
 
