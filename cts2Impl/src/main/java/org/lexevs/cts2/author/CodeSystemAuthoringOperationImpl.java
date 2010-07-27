@@ -31,7 +31,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, ChangeType changeType) throws LBException {
+	
+	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException {
         
         // Create the changed entry for code system
        ChangedEntry changedEntry = new ChangedEntry();
@@ -43,8 +44,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        // Add code system changed entry to revision
        lgRevision.addChangedEntry(changedEntry);
        
-       // Since this is a new code system, Set Entry State NEW
-       codeSystem.setEntryState(populateEntryState(changeType, lgRevision.getRevisionId(), null, 0L));
+       // Assign the entry state
+       codeSystem.setEntryState(populateEntryState(changeType, lgRevision.getRevisionId(), previousRevisionID, 0L));
        
        //load as revision
        this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null);
@@ -57,6 +58,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		
 		return 0;
 	}
+
+	
 
 	@Override
 	public void createAssociationType() {
