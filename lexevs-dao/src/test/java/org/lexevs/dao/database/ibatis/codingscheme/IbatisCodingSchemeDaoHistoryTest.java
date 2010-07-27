@@ -59,12 +59,11 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
 			"values ('esguid1', 'csguid', 'cs', 'NEW', 'rguid1', '0')");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
+		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid,  relativeorder) " +
 			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rguid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
 		
-		assertEquals("rid2", cs.getEntryState().getContainingRevision());	
 		assertEquals("csversion2", cs.getRepresentsVersion());	
 	}
 	
@@ -98,9 +97,8 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
 			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rguid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
 		
-		assertEquals(1, cs.getLocalNameCount());
 		assertEquals("local name", cs.getLocalName(0));
 	}
 	
@@ -134,9 +132,8 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
 			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rguid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
 		
-		assertEquals(1, cs.getSourceCount());
 		assertEquals("a source", cs.getSource(0).getContent());
 	}
 	
@@ -161,9 +158,9 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
 			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rguid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
 		
-		assertEquals("rid2", cs.getEntryState().getContainingRevision());
+		assertNotNull(cs);
 		
 	}
 }
