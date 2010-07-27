@@ -1,5 +1,10 @@
 package org.lexevs.cts2;
 
+/**
+ * The Class BaseService.
+ * 
+ * @author <a href="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</a>
+ */
 public abstract class BaseService extends LexEvsBasedService {
 
     private transient LexEvsCTS2 lexEvsCTS2;

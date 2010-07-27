@@ -1,5 +1,10 @@
 package org.lexevs.cts2;
 
+/**
+ * Class ServiceInfo provides information about the service provider.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
+ */
 public class ServiceInfo {
 
 	private String serviceName = "LexEVSCTS2Impl";

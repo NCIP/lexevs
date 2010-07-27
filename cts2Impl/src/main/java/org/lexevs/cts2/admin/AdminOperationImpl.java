@@ -18,7 +18,6 @@
 package org.lexevs.cts2.admin;
 
 import org.lexevs.cts2.BaseService;
-import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.admin.export.AssociationExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperationImpl;
@@ -41,18 +40,30 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	private ValueSetLoadOperation vsLoadOp_;
 	private NotificationAdminOperation notificationAdminOp_;
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getAssociationExportOperation()
+	 */
 	@Override
 	public AssociationExportOperation getAssociationExportOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getAssociationLoadOperation()
+	 */
 	@Override
 	public AssociationLoadOperation getAssociationLoadOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getCodeSystemExportOperation()
+	 */
 	@Override
 	public CodeSystemExportOperation getCodeSystemExportOperation() {
 		if (csExportOp_ == null)
@@ -61,6 +72,10 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 		return csExportOp_;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getCodeSystemLoadOperation()
+	 */
 	@Override
 	public CodeSystemLoadOperation getCodeSystemLoadOperation() {
 		if (csLoadOp_ == null)
@@ -69,6 +84,10 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 		return csLoadOp_;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getNotificationAdminOperation()
+	 */
 	@Override
 	public NotificationAdminOperation getNotificationAdminOperation() {
 		if(this.notificationAdminOp_ == null) {
@@ -77,12 +96,20 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 		return this.notificationAdminOp_;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getValueSetExportOperation()
+	 */
 	@Override
 	public ValueSetExportOperation getValueSetExportOperation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.AdminOperation#getValueSetLoadOperation()
+	 */
 	@Override
 	public ValueSetLoadOperation getValueSetLoadOperation() {
 		if (vsLoadOp_ == null)

@@ -92,6 +92,10 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return queryOp_;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getSupportedSearchAlgorithms()
+	 */
 	public ExtensionDescriptionList getSupportedSearchAlgorithms() throws LBException{
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
 		if (extensionRegistry != null)
@@ -100,6 +104,10 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getSupportedSearchAlgorithmNames()
+	 */
 	public List<String> getSupportedSearchAlgorithmNames() throws LBException{
 		List<String> searchAlgNames = new ArrayList<String>();
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
@@ -111,6 +119,10 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return searchAlgNames;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getSupportedLoaders()
+	 */
 	public ExtensionDescriptionList getSupportedLoaders() throws LBException{
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
 		if (extensionRegistry != null)
@@ -119,6 +131,10 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getSupportedLoaderNames()
+	 */
 	public List<String> getSupportedLoaderNames() throws LBException{
 		List<String> loaderNames = new ArrayList<String>();
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
@@ -130,6 +146,10 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return loaderNames;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getSupportedExporters()
+	 */
 	public ExtensionDescriptionList getSupportedExporters() throws LBException{
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
 		if (extensionRegistry != null)
@@ -138,6 +158,10 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getSupportedExporterNames()
+	 */
 	public List<String> getSupportedExporterNames() throws LBException{
 		List<String> exporterNames = new ArrayList<String>();
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
@@ -149,6 +173,9 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return exporterNames;
 	}
 
+	/*
+	 * 
+	 */
 	public ExtensionDescriptionList getSupportedFilters() throws LBException{
 		ExtensionRegistry extensionRegistry = getLexBIGServiceManager().getExtensionRegistry();
 		if (extensionRegistry != null)
@@ -168,31 +195,54 @@ public class LexEvsCTS2Impl extends LexEvsBasedService implements LexEvsCTS2 {
 		return filterNames;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.LexEvsCTS2#getServiceInfo()
+	 */
 	@Override
 	public ServiceInfo getServiceInfo() {
 		return new ServiceInfo();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.LexGrid.LexBIG.Extensions.Extendable#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return getServiceInfo().getServiceDescription();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.LexGrid.LexBIG.Extensions.Extendable#getName()
+	 */
 	@Override
 	public String getName() {
 		return getServiceInfo().getServiceName();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.LexGrid.LexBIG.Extensions.Extendable#getProvider()
+	 */
 	@Override
 	public String getProvider() {
 		return getServiceInfo().getServiceProvider();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.LexGrid.LexBIG.Extensions.Extendable#getVersion()
+	 */
 	@Override
 	public String getVersion() {
 		return getServiceInfo().getServiceVersion();
 	}
 
+	/*
+	 * 
+	 */
 	public static void register() throws LBParameterException, LBException {
 		ExtensionDescription temp = new ExtensionDescription();
 		temp.setExtensionBaseClass(LexEvsCTS2Impl.class.getInterfaces()[0].getName());

@@ -54,20 +54,57 @@ public interface LexEvsCTS2 extends GenericExtension{
 	public QueryOperation getQueryOperation();
 	
 	/**
+	 * Returns service provider information.
 	 * 
-	 * @return
+	 * @return serviceInfo
 	 */
 	public ServiceInfo getServiceInfo();
 	
+	/**
+	 * Returns list of Search Algorithms supported by this LexEVS instance.
+	 * 
+	 * @return List of Supported Search Algorithms
+	 * @throws LBException
+	 */
 	public ExtensionDescriptionList getSupportedSearchAlgorithms() throws LBException;
     
+	/**
+	 * Returns list of Loaders supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Loaders
+	 * @throws LBException
+	 */
     public ExtensionDescriptionList getSupportedLoaders() throws LBException;
     
+    /**
+	 * Returns list of Exporters supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Exporters
+	 * @throws LBException
+	 */
     public ExtensionDescriptionList getSupportedExporters() throws LBException;
     
+    /**
+	 * Returns list of Search Algorithm names supported by this LexEVS instance.
+	 * 
+	 * @return List of Supported Search Algorithm names
+	 * @throws LBException
+	 */
     public List<String> getSupportedSearchAlgorithmNames() throws LBException;
     
+    /**
+	 * Returns list of Loader names supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Loader names
+	 * @throws LBException
+	 */
     public List<String> getSupportedLoaderNames() throws LBException;
     
+    /**
+	 * Returns list of Exporter names supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Exporter names
+	 * @throws LBException
+	 */
     public List<String> getSupportedExporterNames() throws LBException;
 }
