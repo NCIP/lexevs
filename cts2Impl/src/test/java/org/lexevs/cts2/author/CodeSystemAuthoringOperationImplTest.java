@@ -84,35 +84,18 @@ public class CodeSystemAuthoringOperationImplTest {
 		revInfo.setRevisionDate(new Date());
 		revInfo.setRevisionId("R201");
 		
-		String codingSchemeName = "New Coding Scheme";
 	    String codingSchemeURI = "urn:oid:11.11.0.99";
-	    String formalName = "CTS 2 API Created Code System";
-	    String defaultLanguage = "";
-	    Long approxNumConcepts = new Long(1);
 	    String representsVersion = "1.0";
-	    List<String> localNameList = Arrays.asList(""); 
-	    
-	    Source source = new Source();
-	    source.setContent("source");
-	    List<Source> sourceList = Arrays.asList(source);
-	    
-	    Text copyright = new Text();
-	    Mappings mappings = new Mappings();
-	    Properties properties = new Properties();
-	    Entities entities = new Entities();
-	    
-	    
-	    Relations relations = new Relations();
-	    List<Relations> relationsList = Arrays.asList(relations);
 	    
 	    
 	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 	    
-	
-		
-		CodingScheme codeScheme = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings, properties, entities, relationsList);
-		
-		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+		try {
+			codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		
 	}
 
