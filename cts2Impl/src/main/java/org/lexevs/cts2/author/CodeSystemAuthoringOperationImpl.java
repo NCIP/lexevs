@@ -147,60 +147,64 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	@Override
 	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-            List<Relations>  relationsList) throws LBException {
+            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException {
 
-	      if(codingSchemeName == null){
-	            throw new LBException("Coding scheme name cannot be null");
-	        }
-	        if(codingSchemeURI == null){
-	            throw new LBException("Coding scheme URI cannot be null");
-	        }
-	        if(representsVersion == null){
-	            throw new LBException("Coding scheme version cannot be null");
-	        }
-	        if(mappings == null){
-	            throw new LBException("Coding scheme mappings cannot be null");
-	        }
+			if(codingSchemeURI == null){
+				throw new LBException("Coding scheme URI cannot be null");
+			}	
+	     
+	        CodingScheme codingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
 	        
-	        CodingScheme scheme = new CodingScheme();
+	        String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
+	         
+	        if (codingScheme == null)
+				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
 	        
-	        scheme.setCodingSchemeName(codingSchemeName);
+
+	        if (StringUtils.isNotEmpty(codingSchemeName))
+	        	codingScheme.setCodingSchemeName(codingSchemeName);
 	        
-	        scheme.setCodingSchemeURI(codingSchemeURI);
+	        if (StringUtils.isNotEmpty(codingSchemeURI))
+	        	codingScheme.setCodingSchemeURI(codingSchemeURI);
 	 
-	        scheme.setFormalName(formalName);
+	        if (StringUtils.isNotEmpty(formalName))
+	        	codingScheme.setFormalName(formalName);
 
-	        scheme.setDefaultLanguage(defaultLanguage);
+	        if (StringUtils.isNotEmpty(defaultLanguage))
+	        	codingScheme.setDefaultLanguage(defaultLanguage);
 	        
-	        scheme.setApproxNumConcepts(approxNumConcepts);
+	        if (approxNumConcepts !=0L)
+	        	codingScheme.setApproxNumConcepts(approxNumConcepts);
 	        
-	        scheme.setRepresentsVersion(representsVersion);
+	        if (representsVersion !=null)
+	        	codingScheme.setRepresentsVersion(representsVersion);
 
-	        scheme.setLocalName(localNameList);
+	        if (localNameList != null)
+	        	codingScheme.setLocalName(localNameList);
 
-	        scheme.setSource(sourceList);
-
-	        scheme.setCopyright(copyright);
-
-	        scheme.setMappings(mappings);
-
-	        scheme.setProperties(properties);
+	        if (sourceList != null)
+	        	codingScheme.setSource(sourceList);
 	        
-	        scheme.setEntities(entities);
+	        if (copyright !=null)
+	        	codingScheme.setCopyright(copyright);
 	        
+	        if (mappings !=null)
+	        	codingScheme.setMappings(mappings);
+
+	        if (properties !=null)
+	        	codingScheme.setProperties(properties);
 		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(scheme, revision, ChangeType.MODIFY);
+	        commitCodeSystem(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
 	        
-	        return scheme;
+	        return codingScheme;
 	}
 	
-	
-
-
 
 	@Override
 	public Revision createCodeSystemChangeSet(String agent,
