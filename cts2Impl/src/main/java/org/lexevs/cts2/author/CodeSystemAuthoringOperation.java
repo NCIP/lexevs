@@ -47,6 +47,16 @@ public interface CodeSystemAuthoringOperation {
             List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
             List<Relations>  relationsList) throws LBException;
 	
+	public CodingScheme removeCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
+	String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+	List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
+	List<Relations>  relationsList) throws LBException;
+
+	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
+	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
+	        List<Relations>  relationsList) throws LBException;
+	
 	public int commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, ChangeType changeType) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
@@ -75,4 +85,6 @@ public interface CodeSystemAuthoringOperation {
 	public void updateConceptStatus();
 	public void createAssociationType();
 	public void updateAssociationType();
+
+
 }
