@@ -82,8 +82,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	@Override
 	public CodingScheme createCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
 	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties, Entities entities,
-	        List<Relations>  relationsList) throws LBException {
+	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException {
 	
 	      if(codingSchemeName == null){
 	            throw new LBException("Coding scheme name cannot be null");
@@ -122,8 +121,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        scheme.setMappings(mappings);
 	
 	        scheme.setProperties(properties);
-	        
-	       // scheme.setEntities(entities);
 	        
 		
 	        // Ensure RevisionInfo is provided
