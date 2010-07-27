@@ -30,11 +30,16 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
 
 /**
- * @author m004181
- *
+ * Implementation CTS 2 Code System Export Operation.
+ * 
+ * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public class CodeSystemExportOperationImpl extends BaseService implements CodeSystemExportOperation {
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#exportCodeSystemContent(java.lang.String, java.lang.String, java.net.URI, java.lang.String)
+	 */
 	@Override
 	public URI exportCodeSystemContent(String codeSystemNameOrURI,
 			String codeSystemVersion, URI exportDestination, String exporterName) throws LBException {
@@ -63,6 +68,10 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#exportCodedNodeGraph(java.lang.String, java.lang.String, org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph, java.net.URI, boolean, boolean, boolean)
+	 */
 	@Override
 	public URI exportCodedNodeGraph(String codeSystemNameOrURI,
 			String codeSystemVersion, CodedNodeGraph cng,
@@ -93,6 +102,10 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 		return exporter.getResourceUri();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#exportCodedNodeSet(java.lang.String, java.lang.String, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet, java.net.URI, boolean, boolean, boolean)
+	 */
 	@Override
 	public URI exportCodedNodeSet(String codeSystemNameOrURI,
 			String codeSystemVersion, CodedNodeSet cns, URI exportDestination,
@@ -122,6 +135,10 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 		return exporter.getResourceUri();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#getCodeSystemCodedNodeGraph(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public CodedNodeGraph getCodeSystemCodedNodeGraph(
 			String codeSystemNameOrURI, String codeSystemVersion)
@@ -130,12 +147,20 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 				Constructors.createCodingSchemeVersionOrTag(null, codeSystemVersion), null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#getCodeSystemCodedNodeSet(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public CodedNodeSet getCodeSystemCodedNodeSet(String codeSystemNameOrURI,
 			String codeSystemVersion) throws LBException {
 		return getLexBIGService().getNodeSet(codeSystemNameOrURI, Constructors.createCodingSchemeVersionOrTag(null, codeSystemVersion), null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#getSupportedExporterNames()
+	 */
 	@Override
 	public List<String> getSupportedExporterNames() throws LBException {
 		return this.getLexEvsCTS2().getSupportedExporterNames();
