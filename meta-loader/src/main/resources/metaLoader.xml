@@ -425,6 +425,11 @@
 		parent="baseMrconsoPropertyQualifierResolver">
 	</beans:bean>
 	
+	<beans:bean id="mrconsoSourceCodePropertyQualifierResolver" 
+		class="org.lexgrid.loader.meta.processor.support.MetaSourceCodePropertyQualifierResolver"
+		parent="baseMrconsoPropertyQualifierResolver">
+	</beans:bean>
+	
 	<beans:bean id="mrconsoLuiPropertyQualifierResolver" 
 		class="org.lexgrid.loader.rrf.processor.support.MrconsoLuiPropertyQualifierResolver"
 		parent="baseMrconsoPropertyQualifierResolver">
@@ -553,6 +558,7 @@
 		
 		<beans:property name="qualifierResolvers">
 			<beans:list>
+					<beans:ref bean="mrconsoSourceCodePropertyQualifierResolver"/>
 					<beans:ref bean="mrconsoLuiPropertyQualifierResolver"/>
 					<beans:ref bean="mrconsoSuiPropertyQualifierResolver"/>
 					<beans:ref bean="mrconsoSauiPropertyQualifierResolver"/>
