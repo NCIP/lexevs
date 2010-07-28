@@ -20,7 +20,6 @@ package org.lexevs.cts2.query;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.concepts.Entity;
 
 public interface AssociationQueryOperation {
 	public ResolvedConceptReferenceList listAssociations(
