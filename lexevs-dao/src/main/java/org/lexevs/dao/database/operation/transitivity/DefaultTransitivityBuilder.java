@@ -267,9 +267,6 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					targetTargets.remove(j);
 					j--;
 				}
-				else {
-					System.out.println("path: " + targetPath + targetTargets.get(j).code + this.CODE_NAMESPACE_DELIMITER+targetTargets.get(j).namespace);
-				}
 			}
 
 			// Now, need to recurse.
