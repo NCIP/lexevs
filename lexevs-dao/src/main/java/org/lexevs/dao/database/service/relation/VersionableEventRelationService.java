@@ -11,6 +11,7 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -24,7 +25,6 @@ import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationTargetService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.property.PropertyService;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
 public class VersionableEventRelationService extends RevisableAbstractDatabaseService<Relations,CodingSchemeUriVersionBasedEntryId> implements RelationService {
@@ -59,6 +59,23 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 			CodingSchemeUriVersionBasedEntryId id, Relations revisedEntry)
 		throws LBException {
 		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(
+				id.getCodingSchemeUri(), id.getCodingSchemeVersion());
+
+		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
+				id.getCodingSchemeUri(), id.getCodingSchemeVersion());
+
+		String codingSchemeUId = codingSchemeDao
+				.getCodingSchemeUIdByUriAndVersion(id.getCodingSchemeUri(), id
+						.getCodingSchemeVersion());
+
+		String relationUId = associationDao.getRelationUId(codingSchemeUId,
+				revisedEntry.getContainerName());
+		
+		if (revisedEntry.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
+			doAddRelationDependentEntry(id, revisedEntry);
+		}
+		
 		if(revisedEntry.getProperties() != null && revisedEntry.getProperties().getProperty() != null) {
 			for(Property property : revisedEntry.getProperties().getProperty()) {
 				propertyService.reviseRelationProperty(
@@ -68,30 +85,55 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 						property);
 			}
 		}
+		
+		AssociationPredicate[] assocPredicateList = revisedEntry.getAssociationPredicate();
+		
+		for (int i = 0; i < assocPredicateList.length; i++) {
 
-		for(AssociationPredicate predicate : DaoUtility.emptyIterableIfNull(revisedEntry.getAssociationPredicate())) {
-			for(AssociationSource source : DaoUtility.emptyIterableIfNull(predicate.getSource())) {
-				for(AssociationData data : DaoUtility.emptyIterableIfNull(source.getTargetData())) {
-					assocDataService.revise(
-							id.getCodingSchemeUri(), 
-							id.getCodingSchemeVersion(), 
-							revisedEntry.getContainerName(), 
-							predicate.getAssociationName(), 
-							source.getSourceEntityCode(),
-							source.getSourceEntityCodeNamespace(),
-							data);
+			AssociationSource[] assocSourceList = assocPredicateList[i]
+					.getSource();
+
+			for (int j = 0; j < assocSourceList.length; j++) {
+
+				AssociationTarget[] assocTarget = assocSourceList[j]
+						.getTarget();
+
+				for (int k = 0; k < assocTarget.length; k++) {
+
+					if (associationDao
+							.getAssociationPredicateUIdByContainerUId(
+									codingSchemeUId, relationUId,
+									assocPredicateList[i].getAssociationName()) == null) {
+						
+						associationDao.insertAssociationPredicate(
+								codingSchemeUId, relationUId,
+								assocPredicateList[i], false);
+					}
+					
+					assocTargetService.revise(id.getCodingSchemeUri(), id.getCodingSchemeVersion(),
+							revisedEntry.getContainerName(), assocPredicateList[i]
+									.getAssociationName(), assocSourceList[j],
+							assocTarget[k]);
 				}
-				
-				for(AssociationTarget target : DaoUtility.emptyIterableIfNull(source.getTarget())) {
-					assocTargetService.
-					revise(
-							id.getCodingSchemeUri(), 
-							id.getCodingSchemeVersion(), 
-							revisedEntry.getContainerName(), 
-							predicate.getAssociationName(), 
-							source.getSourceEntityCode(),
-							source.getSourceEntityCodeNamespace(),
-							target);
+
+				AssociationData[] assocData = assocSourceList[j]
+						.getTargetData();
+
+				for (int k = 0; k < assocData.length; k++) {
+
+					if (associationDao
+							.getAssociationPredicateUIdByContainerUId(
+									codingSchemeUId, relationUId,
+									assocPredicateList[i].getAssociationName()) == null) {
+
+						associationDao.insertAssociationPredicate(codingSchemeUId,
+								relationUId, assocPredicateList[i], false);
+					}
+					
+					assocDataService.revise(id.getCodingSchemeUri(), id.getCodingSchemeVersion(), revisedEntry
+							.getContainerName(), assocPredicateList[i]
+							.getAssociationName(), assocSourceList[j],
+							assocData[k]);
 				}
 			}
 		}
@@ -347,5 +389,47 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	
 	private AssociationDao getAssociationDao(CodingSchemeUriVersionBasedEntryId id) {
 		return this.getDaoManager().getAssociationDao(id.getCodingSchemeUri(), id.getCodingSchemeVersion());
+	}
+
+	private boolean doAddRelationDependentEntry(CodingSchemeUriVersionBasedEntryId id, Relations revisedEntry) {
+		
+		String codingSchemeUri = id.getCodingSchemeUri();
+		String version = id.getCodingSchemeVersion();
+		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		AssociationDao associationDao = this.getDaoManager().getAssociationDao(
+				codingSchemeUri, version);
+		
+		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
+	
+		String codingSchemeUId = codingSchemeDao
+				.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+	
+		String relationUId = associationDao.getRelationUId(codingSchemeUId,
+				revisedEntry.getContainerName());
+		
+		String prevEntryStateUId = associationDao.getRelationEntryStateUId(
+				codingSchemeUId, relationUId);
+	
+		if (!associationDao
+				.entryStateExists(codingSchemeUId, prevEntryStateUId)) {
+			EntryState entryState = new EntryState();
+	
+			entryState.setChangeType(ChangeType.NEW);
+			entryState.setRelativeOrder(0L);
+	
+			versionsDao.insertEntryState(codingSchemeUId, prevEntryStateUId,
+					relationUId, EntryStateType.RELATION, null, entryState);
+		}
+	
+		String entryStateUId = versionsDao.insertEntryState(codingSchemeUId,
+				relationUId, EntryStateType.RELATION, prevEntryStateUId,
+				revisedEntry.getEntryState());
+	
+		associationDao.updateRelationEntryStateUId(codingSchemeUId,
+				relationUId, entryStateUId);
+	
+		return true;
 	}
 }

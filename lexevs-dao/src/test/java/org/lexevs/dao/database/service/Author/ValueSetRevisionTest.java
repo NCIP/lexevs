@@ -33,7 +33,7 @@ public class ValueSetRevisionTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, null);
 
 		ValueSetDefinition valueSetDef = valueSetDefinitionService
 				.getValueSetDefinitionByRevision(

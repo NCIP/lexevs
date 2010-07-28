@@ -43,7 +43,7 @@ public class DirectCodingSchemeInserter extends AbstractCodingSchemeInserter {
         try {
             super.getDatabaseServiceManager().
             getAuthoringService().
-            loadRevision(codingScheme, null);
+            loadRevision(codingScheme, null, null);
             
             return new ArrayList<ResolvedLoadValidationError>();
             

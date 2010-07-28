@@ -68,8 +68,12 @@ public interface DatabaseServiceEventListener {
 	public boolean onPostCodingSchemeInsert(PostCodingSchemeInsertEvent event);
 	
 	public boolean onEntityUpdate(EntityUpdateEvent event);
+
+	public boolean onPostPropertyInsert(PropertyUpdateEvent event);
 	
 	public boolean onPropertyUpdate(PropertyUpdateEvent event);
+	
+	public boolean onPostPropertyRemove(PropertyUpdateEvent event);
 	
 	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent event);
 	

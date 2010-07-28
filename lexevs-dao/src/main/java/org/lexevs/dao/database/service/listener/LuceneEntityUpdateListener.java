@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.service.listener;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
@@ -14,18 +15,22 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
 		EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
 		
-		EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-		
-		Entity updatedEntity = entityService.getEntity(
-				event.getCodingSchemeUri(),
-				event.getCodingSchemeVersion(),
-				event.getOriginalEntity().getEntityCode(),
-				event.getOriginalEntity().getEntityCodeNamespace());
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(event.getCodingSchemeUri());
+		ref.setCodingSchemeVersion(event.getCodingSchemeVersion());
 
-		/*entityIndexService.updateIndexForEntity(
-				event.getCodingSchemeUri(), 
-				event.getCodingSchemeVersion(), 
-				updatedEntity);*/
+		if (entityIndexService.doesIndexExist(ref)) {
+			EntityService entityService = LexEvsServiceLocator.getInstance()
+					.getDatabaseServiceManager().getEntityService();
+			
+			Entity updatedEntity = entityService.getEntity(event
+					.getCodingSchemeUri(), event.getCodingSchemeVersion(),
+					event.getOriginalEntity().getEntityCode(), event
+							.getOriginalEntity().getEntityCodeNamespace());
+
+			entityIndexService.updateIndexForEntity(event.getCodingSchemeUri(),
+					event.getCodingSchemeVersion(), updatedEntity);
+		}
 		
 		return true;
 	}

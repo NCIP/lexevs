@@ -284,7 +284,7 @@ public class ManifestUtil {
             this.doApplyCommonManifestElements(manifest, codingScheme, true);
             this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
        
-            codingSchemeService.revise(codingScheme, null);
+            codingSchemeService.revise(codingScheme, null, null);
         } catch (LBException e) {
            throw new RuntimeException(e);
         }

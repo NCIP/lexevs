@@ -305,7 +305,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setRepresentsVersion("version");
         cs.setFormalName("original formal name");
         
-        authoringService.loadRevision(cs, null);
+        authoringService.loadRevision(cs, null, null);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         CsmfFormalName formalName = new CsmfFormalName();
@@ -335,7 +335,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setMappings(new Mappings());
         cs.getMappings().addSupportedCodingScheme(scs);
         
-        authoringService.loadRevision(cs, null);
+        authoringService.loadRevision(cs, null, null);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         csManifest.setMappings(new CsmfMappings());
@@ -368,7 +368,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setMappings(new Mappings());
         cs.getMappings().addSupportedCodingScheme(scs);
         
-        authoringService.loadRevision(cs, null);
+        authoringService.loadRevision(cs, null, null);
         
         CodingSchemeManifest csManifest = new CodingSchemeManifest();
         csManifest.setMappings(new CsmfMappings());
@@ -504,7 +504,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         cs.setRepresentsVersion("version");
         cs.setFormalName("original formal name");
         
-        this.authoringService.loadRevision(cs, null);
+        this.authoringService.loadRevision(cs, null, null);
         
         ManifestUtil util = new ManifestUtil();
         
@@ -547,7 +547,7 @@ public class ManifestUtilTest extends LexEvsDbUnitTestBase {
         assoc1.setIsTransitive(true);
         cs.getEntities().addEntity(assoc1);
         
-        this.authoringService.loadRevision(cs, null);
+        this.authoringService.loadRevision(cs, null, null);
         //this.entityService.insertEntity("uri", "version", assoc1);
         
         ManifestUtil util = new ManifestUtil();

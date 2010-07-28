@@ -41,7 +41,7 @@ public class SequentialAssociationTargetRevisionTest extends LexEvsDbUnitTestBas
 		.unmarshal(new InputStreamReader(sourceURI.toURL()
 				.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 	@Test

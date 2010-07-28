@@ -86,7 +86,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 		
-		authoringService.loadRevision(scheme, null);
+		authoringService.loadRevision(scheme, null, null);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		scheme.addLocalName("localName");
 		
-		authoringService.loadRevision(scheme, null);
+		authoringService.loadRevision(scheme, null, null);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		
 		scheme.getEntities().addEntity(entity);
 		
-		authoringService.loadRevision(scheme, null);
+		authoringService.loadRevision(scheme, null, null);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
@@ -222,7 +222,7 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		rel.addAssociationPredicate(pred);
 		pred.addSource(source);
 		
-		authoringService.loadRevision(scheme, null);
+		authoringService.loadRevision(scheme, null, null);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));

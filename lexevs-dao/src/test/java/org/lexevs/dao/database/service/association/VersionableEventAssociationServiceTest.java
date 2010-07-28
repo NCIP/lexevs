@@ -77,7 +77,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 
-		this.authoringService.loadRevision(scheme, null);
+		this.authoringService.loadRevision(scheme, null, null);
 		
 		Relations relations = new Relations();
 		relations.setContainerName("containerName");
@@ -123,7 +123,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 
-		this.authoringService.loadRevision(scheme, null);
+		this.authoringService.loadRevision(scheme, null, null);
 		
 		Relations relations = new Relations();
 		relations.setContainerName("containerName");
@@ -169,7 +169,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		scheme.setCodingSchemeURI("uri");
 		scheme.setRepresentsVersion("v1");
 
-		this.authoringService.loadRevision(scheme, null);
+		this.authoringService.loadRevision(scheme, null, null);
 		
 		Relations relations = new Relations();
 		relations.setContainerName("containerName");

@@ -111,10 +111,10 @@ public class XMLDaoServiceAdaptor {
      * @throws LBRevisionException 
      */
     public void storeCodingScheme(CodingScheme scheme) throws CodingSchemeAlreadyLoadedException, LBRevisionException {
-        authoringService.loadRevision(scheme, null);
+        authoringService.loadRevision(scheme, null, null);
     }
     public void storeCodingSchemeSystemReleaseRevision(Revision revision, String releaseId) throws CodingSchemeAlreadyLoadedException, LBRevisionException {
-        authoringService.loadRevision(revision, releaseId);
+        authoringService.loadRevision(revision, releaseId, null);
     }
     /**
      * Store an Entity using the DAO service
@@ -192,11 +192,11 @@ public class XMLDaoServiceAdaptor {
     }
     public void storeRevision(String codingSchemeUri, String revsionId,
             Revision revision) throws LBRevisionException {
-        authoringService.loadRevision(revision, codingSchemeUri);
+        authoringService.loadRevision(revision, codingSchemeUri, null);
     }
     
     public void storeSystemRelease( SystemRelease release) throws LBRevisionException {
-        authoringService.loadSystemRelease(release);
+        authoringService.loadSystemRelease(release, null);
     }
     
     public void storeValueSet(ValueSetDefinition valueSet, String systemReleaseURI, Mappings mappings) throws LBException {
@@ -246,7 +246,7 @@ public class XMLDaoServiceAdaptor {
 
     public void storeCodingSchemeRevision(CodingScheme scheme) {
         try {
-            codingSchemeService.revise(scheme ,null);
+            codingSchemeService.revise(scheme ,null, null);
         } catch (LBException e) {
             throw new RuntimeException(e);
         }

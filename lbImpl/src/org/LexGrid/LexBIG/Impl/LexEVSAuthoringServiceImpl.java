@@ -239,7 +239,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         changedEntry.setChangedCodingSchemeEntry(revisedScheme);
         revision.addChangedEntry(changedEntry);
         //load as revision
-        service.loadRevision(revision, null);
+        service.loadRevision(revision, null, null);
         AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
         reference.setCodingSchemeURN(revisedScheme.getCodingSchemeURI());
         reference.setCodingSchemeVersion(revisedScheme.getRepresentsVersion());
@@ -300,7 +300,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         changedEntry.setChangedCodingSchemeEntry(newScheme);
         revision.addChangedEntry(changedEntry);
         //load as revision
-        service.loadRevision(revision, "MappingRelease");
+        service.loadRevision(revision, "MappingRelease", null);
         AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
         reference.setCodingSchemeURN(newScheme.getCodingSchemeURI());
         reference.setCodingSchemeVersion(newScheme.getRepresentsVersion());
@@ -364,7 +364,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         changedEntry.setChangedCodingSchemeEntry(mappingSchemeMetadata);
         revision.addChangedEntry(changedEntry);
         //load as revision
-        service.loadRevision(revision, null);
+        service.loadRevision(revision, null, null);
         AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
         reference.setCodingSchemeURN(mappingSchemeMetadata.getCodingSchemeURI());
         reference.setCodingSchemeVersion(mappingSchemeMetadata.getRepresentsVersion());
@@ -508,7 +508,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         ChangedEntry[] changes = new ChangedEntry[] { entry };
 
         revision.setChangedEntry(changes);
-        service.loadRevision(revision, null);
+        service.loadRevision(revision, null, null);
         return source;
     }
     
@@ -619,7 +619,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         ChangedEntry changedEntry = new ChangedEntry();
         changedEntry.setChangedCodingSchemeEntry(newScheme);
         revision.setChangedEntry(Arrays.asList(changedEntry));
-        service.loadRevision(revision, null);
+        service.loadRevision(revision, null, null);
         return true;
     }
     
@@ -707,7 +707,7 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         ChangedEntry[] changes = new ChangedEntry[] { entry };
 
         revision.setChangedEntry(changes);
-        service.loadRevision(revision, null);
+        service.loadRevision(revision, null, null);
         return associationName;
     }
 

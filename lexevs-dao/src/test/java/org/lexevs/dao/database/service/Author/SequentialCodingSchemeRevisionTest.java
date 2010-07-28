@@ -40,7 +40,7 @@ public class SequentialCodingSchemeRevisionTest extends LexEvsDbUnitTestBase {
 		.unmarshal(new InputStreamReader(sourceURI.toURL()
 				.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 		
 		System.out.println();
 	}

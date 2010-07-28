@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.codingscheme;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
@@ -47,6 +48,7 @@ import org.lexevs.dao.database.service.error.ErrorHandlingService;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
+import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -322,7 +324,7 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public void revise(CodingScheme revisedCodingScheme, String releaseURI) throws LBException {
+	public void revise(CodingScheme revisedCodingScheme, String releaseURI, Boolean indexNewCodingScheme) throws LBException {
 		String uri = revisedCodingScheme.getCodingSchemeURI();
 		String version = revisedCodingScheme.getRepresentsVersion();
 		
@@ -334,6 +336,20 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			if (changeType == ChangeType.NEW) {
 
 				this.insertCodingScheme(revisedCodingScheme, releaseURI);
+				
+				if (indexNewCodingScheme != null && indexNewCodingScheme) {
+					EntityIndexService indexService = LexEvsServiceLocator
+							.getInstance().getIndexServiceManager()
+							.getEntityIndexService();
+
+					AbsoluteCodingSchemeVersionReference csVersionRef = new AbsoluteCodingSchemeVersionReference();
+					csVersionRef.setCodingSchemeURN(revisedCodingScheme
+							.getCodingSchemeURI());
+					csVersionRef.setCodingSchemeVersion(revisedCodingScheme
+							.getRepresentsVersion());
+
+					indexService.createIndex(csVersionRef);
+				}
 			} else if (changeType == ChangeType.REMOVE) {
 
 				LexEvsServiceLocator.getInstance().getSystemResourceService()
@@ -376,14 +392,15 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return (List<SupportedProperty>) codingSchemeDao.getPropertyUriMapForPropertyType(codingSchemeId, propertyType);
 	}
 
-	
-
-	
-
 	@Override
 	protected void doInsertDependentChanges(CodingSchemeUriVersionBasedEntryId id, CodingScheme revisedEntry) throws LBException {
 		String codingSchemeUri = id.getCodingSchemeUri();
 		String version = id.getCodingSchemeVersion();
+		
+		/* 1. Add entrystate entry.*/
+		if (revisedEntry.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
+			doAddCSDependentEntry(revisedEntry);
+		}
 		
 		/* 2. Revise coding scheme properties.*/
 		if (revisedEntry.getProperties() != null) {
@@ -408,7 +425,7 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			Entity[] assocEntityList = revisedEntry.getEntities().getAssociationEntity();
 
 			for (int i = 0; i < assocEntityList.length; i++) {
-				//entityService.revise(codingSchemeUri, version, assocEntityList[i]);
+				entityService.revise(codingSchemeUri, version, assocEntityList[i]);
 			}
 		}
 
@@ -465,6 +482,28 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 
 		return this.getCodingSchemeDao(codingSchemeUri, version).
 			updateCodingSchemeVersionableAttrib(codingSchemeUId, revisedEntity);	
+	}
+	
+	private void doAddCSDependentEntry(CodingScheme codingScheme) {
+		
+		String codingSchemeUri = codingScheme.getCodingSchemeURI();
+		String version = codingScheme.getRepresentsVersion();
+		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
+		
+		String codingSchemeUId = codingSchemeDao
+				.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+	
+		String prevEntryStateUId = codingSchemeDao
+				.getEntryStateUId(codingSchemeUId);
+	
+		String entryStateUId = versionsDao.insertEntryState(
+				codingSchemeUId, codingSchemeUId, EntryStateType.CODINGSCHEME,
+				prevEntryStateUId, codingScheme.getEntryState());
+	
+		codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
 	}
 	
 	private CodingSchemeDao getCodingSchemeDao(CodingSchemeUriVersionBasedEntryId id) {

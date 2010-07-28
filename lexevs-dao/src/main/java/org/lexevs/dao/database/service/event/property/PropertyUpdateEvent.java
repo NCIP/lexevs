@@ -1,24 +1,22 @@
 package org.lexevs.dao.database.service.event.property;
 
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Entity;
 
 public class PropertyUpdateEvent {
 
 	private String codingSchemeUri;
 	private String codingSchemeVersion;
-	private String entityCode;
-	private String entityCodeNamespace;
+	private Entity entity;
 	private Property propertyUpdates;
 	
 	public PropertyUpdateEvent(String codingSchemeUri,
-			String codingSchemeVersion, String entityCode,
-			String entityCodeNamespace,
+			String codingSchemeVersion, Entity entity,
 			Property propertyUpdates) {
 		super();
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
-		this.entityCode = entityCode;
-		this.entityCodeNamespace = entityCodeNamespace;
+		this.entity = entity;
 		this.propertyUpdates = propertyUpdates;
 	}
 
@@ -42,20 +40,12 @@ public class PropertyUpdateEvent {
 		this.codingSchemeVersion = codingSchemeVersion;
 	}
 
-	public String getEntityCode() {
-		return entityCode;
+	public Entity getEntity() {
+		return entity;
 	}
 
-	public void setEntityCode(String entityCode) {
-		this.entityCode = entityCode;
-	}
-
-	public String getEntityCodeNamespace() {
-		return entityCodeNamespace;
-	}
-
-	public void setEntityCodeNamespace(String entityCodeNamespace) {
-		this.entityCodeNamespace = entityCodeNamespace;
+	public void setEntity(Entity entity) {
+		this.entity = entity;
 	}
 
 	public Property getPropertyUpdates() {

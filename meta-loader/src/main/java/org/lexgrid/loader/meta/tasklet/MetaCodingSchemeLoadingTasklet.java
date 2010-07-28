@@ -50,7 +50,7 @@ public class MetaCodingSchemeLoadingTasklet extends SupportedAttributeSupport im
 		LexEvsServiceLocator.getInstance().
 			getDatabaseServiceManager().
 			getAuthoringService().
-			loadRevision(process(), null);
+			loadRevision(process(), null, null);
 		
 		return RepeatStatus.FINISHED;
 	}

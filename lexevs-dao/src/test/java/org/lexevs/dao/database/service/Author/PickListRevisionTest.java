@@ -34,7 +34,7 @@ public class PickListRevisionTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, null);
 
 		PickListDefinition plDefinition = pickListDefinitionService
 				.resolvePickListDefinitionByRevision(

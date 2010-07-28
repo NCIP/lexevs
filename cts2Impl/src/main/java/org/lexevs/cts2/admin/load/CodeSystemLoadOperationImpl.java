@@ -66,7 +66,7 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 		
 		this.getDatabaseServiceManager().getAuthoringService().loadRevision(
 				revision, 
-				revisionInfo.getSystemReleaseURI());
+				revisionInfo.getSystemReleaseURI(), null);
 	}
 
 	/*

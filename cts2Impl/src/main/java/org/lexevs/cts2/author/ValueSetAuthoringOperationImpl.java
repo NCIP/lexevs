@@ -78,7 +78,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		
 		return true;
 	}
@@ -126,7 +126,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -190,7 +190,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(valueSetDefininition);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		URI vsdURI = null;
 		try {
 			vsdURI = new URI(valueSetDefininition.getValueSetDefinitionURI());
@@ -256,7 +256,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -307,7 +307,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -374,7 +374,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -458,7 +458,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -516,7 +516,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -552,7 +552,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 
@@ -616,7 +616,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
 		
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI());
+		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
 		return true;
 	}
 }

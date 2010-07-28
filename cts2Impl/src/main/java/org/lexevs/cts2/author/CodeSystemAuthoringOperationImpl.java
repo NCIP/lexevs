@@ -48,7 +48,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        codeSystem.setEntryState(populateEntryState(changeType, lgRevision.getRevisionId(), previousRevisionID, 0L));
        
        //load as revision
-       this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null);
+       this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null, null);
        AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
        reference.setCodingSchemeURN(codeSystem.getCodingSchemeURI());
        reference.setCodingSchemeVersion(codeSystem.getRepresentsVersion());
@@ -374,7 +374,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 				relativeOrder, 
 				revisionInfo);
 		
-		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
 	}
 	
 	protected void doReviseEntityProperty(
@@ -401,7 +401,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 				relativeOrder, 
 				revisionInfo);
 		
-		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
 	}
 
 	@Override
@@ -436,6 +436,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 				0l, 
 				revisionInfo);
 		
-		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI());
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
 	}
 }

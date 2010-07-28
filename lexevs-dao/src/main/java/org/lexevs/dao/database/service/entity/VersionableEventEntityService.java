@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
@@ -67,6 +66,45 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 		String version = id.getCodingSchemeVersion();
 		
 		Property[] entityProperties = revisedEntry.getAllProperties();
+		
+		CodingSchemeDao codingSchemeDao = getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		VersionsDao versionsDao = getDaoManager().getVersionsDao(codingSchemeUri, version);
+		
+		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeUri, version);
+		
+		if (revisedEntry.getEntryState().getChangeType() == ChangeType.DEPENDENT) {
+			
+			String codingSchemeUId = codingSchemeDao
+					.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+
+			String entityUId = entityDao.getEntityUId(codingSchemeUId,
+					revisedEntry.getEntityCode(), revisedEntry
+							.getEntityCodeNamespace());
+
+			String prevEntryStateUId = entityDao.getEntryStateUId(
+					codingSchemeUId, entityUId);
+
+			if (!entityDao.entryStateExists(codingSchemeUId, prevEntryStateUId)) {
+				EntryState entryState = new EntryState();
+
+				entryState.setChangeType(ChangeType.NEW);
+				entryState.setRelativeOrder(0L);
+
+				versionsDao.insertEntryState(prevEntryStateUId, entityUId,
+						EntryStateType.ENTITY, null,
+						entryState);
+			}
+
+			String entryStateUId = versionsDao.insertEntryState(
+					codingSchemeUId, entityUId, EntryStateType.ENTITY,
+					prevEntryStateUId, revisedEntry.getEntryState());
+
+			entityDao.updateEntryStateUId(codingSchemeUId, entityUId,
+					entryStateUId);
+
+		}
+		
 		for (int i = 0; i < entityProperties.length; i++) {
 			propertyService.reviseEntityProperty(codingSchemeUri, version,
 					revisedEntry.getEntityCode(), revisedEntry
@@ -272,12 +310,8 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 			@Override
 			public String update() {
 				
-				entityDao.updateEntity(codingSchemeUId, entityUid, entity);
-				String codingSchemeUid = codingSchemeDao.
-					getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-				
 				return entityDao.updateEntity(
-						codingSchemeUid, entityUid, entity);
+						codingSchemeUId, entityUid, entity);
 			}
 		});
 
@@ -467,7 +501,7 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 				this.insertEntity(codingSchemeUri, version, entity);
 			} else if (changeType == ChangeType.REMOVE) {
 
-				//this.removeEntity(codingSchemeUri, version, entity);
+				this.removeEntity(codingSchemeUri, version, entity);
 			} else if (changeType == ChangeType.MODIFY) {
 
 				this.updateEntity(codingSchemeUri, version, entity);

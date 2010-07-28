@@ -95,7 +95,7 @@ public class DefaultPagingCodingSchemeInserter extends AbstractPagingCodingSchem
         onlyNonPagedItems.setRelationsAsReference(new ArrayList<Relations>());
         
         try {
-            super.getDatabaseServiceManager().getAuthoringService().loadRevision(onlyNonPagedItems, null);
+            super.getDatabaseServiceManager().getAuthoringService().loadRevision(onlyNonPagedItems, null, null);
         } catch (LBRevisionException e) {
            throw new RuntimeException(e);
         }

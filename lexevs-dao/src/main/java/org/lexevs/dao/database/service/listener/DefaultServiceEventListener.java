@@ -72,10 +72,20 @@ public class DefaultServiceEventListener implements DatabaseServiceEventListener
 	}
 
 	@Override
+	public boolean onPostPropertyInsert(PropertyUpdateEvent event) {
+		return true;
+	}
+
+	@Override
 	public boolean onPropertyUpdate(PropertyUpdateEvent event) {
 		return true;
 	}
 
+	@Override
+	public boolean onPostPropertyRemove(PropertyUpdateEvent event) {
+		return true;
+	}
+	
 	@Override
 	public boolean onPreEntityInsert(EntityInsertOrRemoveEvent entityInsertEvent) {
 		return true;

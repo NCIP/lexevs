@@ -36,7 +36,7 @@ public interface AuthoringService {
 	 * @param systemRelease the system release
 	 * @throws LBRevisionException 
 	 */
-	public void loadSystemRelease(SystemRelease systemRelease) throws LBRevisionException;
+	public void loadSystemRelease(SystemRelease systemRelease, Boolean indexNewCodingScheme) throws LBRevisionException;
 	
 	/**
 	 * Revise.
@@ -45,9 +45,9 @@ public interface AuthoringService {
 	 * @param systemReleaseURI
 	 * @throws LBRevisionException 
 	 */
-	public void loadRevision(Revision revision, String systemReleaseURI) throws LBRevisionException;
+	public void loadRevision(Revision revision, String systemReleaseURI, Boolean indexNewCodingScheme) throws LBRevisionException;
 	
-	public void loadRevision(Versionable versionable, String releaseURI) throws LBRevisionException;
+	public void loadRevision(Versionable versionable, String releaseURI, Boolean indexNewCodingScheme) throws LBRevisionException;
 	
 	/**
 	 * insert system release entry.

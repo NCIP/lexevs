@@ -38,7 +38,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 	@Test
@@ -53,7 +53,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 		
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 		@Test
@@ -68,7 +68,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, null);
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, null);
 	}
 	
 	@Test
@@ -143,6 +143,6 @@ public class VersionableEventAuthoringServiceTest extends LexEvsDbUnitTestBase {
 				.unmarshal(new InputStreamReader(sourceURI.toURL()
 						.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, null);
 	}
 }

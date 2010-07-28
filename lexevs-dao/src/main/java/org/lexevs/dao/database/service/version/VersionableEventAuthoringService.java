@@ -66,7 +66,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public void loadSystemRelease(SystemRelease systemRelease) throws LBRevisionException {
+	public void loadSystemRelease(SystemRelease systemRelease, Boolean indexNewCodingScheme) throws LBRevisionException {
 
 		if (systemRelease == null) {
 			return;
@@ -104,7 +104,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 				codingSchemeList[i].setEntryState(getEntryState(revisionId));
 
 				try {
-					codingSchemeService.revise(codingSchemeList[i], releaseURI);
+					codingSchemeService.revise(codingSchemeList[i], releaseURI, indexNewCodingScheme);
 				} catch (LBException e) {
 					super.getLogger().error(
 							"Error occured while revising the codingScheme: "
@@ -164,7 +164,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 			if (revisionList != null && revisionList.length != 0) {
 				for (int i = 0; i < revisionList.length; i++) {
 
-					loadRevision(revisionList[i], systemRelease.getReleaseURI());
+					loadRevision(revisionList[i], systemRelease.getReleaseURI(), indexNewCodingScheme);
 				}
 			}
 		}
@@ -179,7 +179,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public void loadRevision(Revision revision, String releaseURI) throws LBRevisionException {
+	public void loadRevision(Revision revision, String releaseURI, Boolean indexNewCodingScheme) throws LBRevisionException {
 
 		if (revision == null)
 			return;
@@ -203,7 +203,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 								.getChangedCodingSchemeEntry();
 						if (codingScheme != null) {
 							codingSchemeService
-									.revise(codingScheme, releaseURI);
+									.revise(codingScheme, releaseURI, indexNewCodingScheme);
 							continue;
 						}
 					} catch (LBException e) {
@@ -214,7 +214,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 										+ e.getMessage());
 					}
 
-					// Process ValueDomain Definition revisions
+					// Process ValueSet Definition revisions
 					try {
 						ValueSetDefinition valueSetDefinition = cEntry
 								.getChangedValueSetDefinitionEntry();
@@ -254,7 +254,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	}
 
 	@Transactional(rollbackFor=Exception.class)
-	public void loadRevision(Versionable versionable, String releaseURI)
+	public void loadRevision(Versionable versionable, String releaseURI, Boolean indexNewCodingScheme)
 			throws LBRevisionException {
 
 		RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
@@ -287,7 +287,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 
 		revision.addChangedEntry(changeEntry);
 
-		loadRevision(revision, releaseURI);
+		loadRevision(revision, releaseURI, indexNewCodingScheme);
 	}
 	
 	/**

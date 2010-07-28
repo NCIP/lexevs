@@ -257,16 +257,14 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 				revisedEntry, 
 				type);
 
-		/* 3. register entrystate details for the entity.*/
-		versionsDao.insertEntryState(
-				codingSchemeUId,
-				entryStateUId, 
-				entryUId,
-				type,
-				currentEntryStateUid, 
-				revisedEntry.getEntryState());
+		/* register entrystate details for the entry.*/
+		if (!this.isChangeTypeDependent(revisedEntry)) {
+			versionsDao.insertEntryState(codingSchemeUId, entryStateUId,
+					entryUId, type, currentEntryStateUid, revisedEntry
+							.getEntryState());
+		}
 		
-		/* 4. apply dependent changes for the entity.*/
+		/* apply dependent changes for the entry.*/
 		this.doInsertDependentChanges(id, revisedEntry);
 	}
 	
@@ -344,7 +342,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 
 			@Override
 			public String doChange(I id, String entryUid, T revisedEntry, EntryStateType type) {
-				return updateEntryVersionableAttributes(id, entryUid, revisedEntry);	
+				return null;	
 			}
 		});
 	}
@@ -437,14 +435,25 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		}
 
 		ChangeType changeType = entryState.getChangeType();
-
+		String entryUid = null;
+		
+		try {
+			entryUid = this.getEntryUid(id, entry);
+		} catch (Exception e) {
+			//Do nothing.
+		} 
+		
 		if (changeType == ChangeType.NEW) {
 			if (entryState.getPrevRevision() != null) {
 				throw new LBRevisionException(
 						invalid + "Changes of type NEW are not allowed to have previous revisions.");
 			}
+			
+			if (entryUid != null) {
+				throw new LBRevisionException(invalid
+						+ "The entry being added already exist.");
+			}
 		} else {
-			String entryUid = this.getEntryUid(id, entry);
 			
 			if (entryUid == null) {
 				throw new LBRevisionException(invalid +
@@ -454,20 +463,15 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 			String latestRevId = this.getLatestRevisionId(id, entryUid);
 			
 			String currentRevision = entryState.getContainingRevision();
-			String prevRevision = entryState.getPrevRevision();
 			
-			if (prevRevision != null
-					&& latestRevId != null
-					&& !latestRevId.equals(currentRevision)
-					&& !latestRevId.equals(prevRevision)
-					&& !latestRevId
-							.startsWith(VersionableEventAuthoringService.LEXGRID_GENERATED_REVISION)) {
-				throw new LBRevisionException(
-						invalid
-								+ "\n -- The Entry passed in is expecting the current Revision state to be Revsion Id: " + prevRevision
-								+ "\n -- The current Revsions state of this Entry is Revision Id: " + latestRevId
-								+ "\n -- For this revision to be placed in the authoring instance, you must update the current state to " + prevRevision);
-			} else if (latestRevId != null
+			if (entryState.getPrevRevision() == null && latestRevId != null
+					&& !latestRevId.equals(currentRevision)) {
+				entryState.setPrevRevision(latestRevId);
+			}
+			
+			String prevRevision = entryState.getPrevRevision();
+
+			if (latestRevId != null
 					&& prevRevision != null
 					&& !latestRevId.equals(currentRevision)
 					&& !latestRevId.equals(prevRevision)

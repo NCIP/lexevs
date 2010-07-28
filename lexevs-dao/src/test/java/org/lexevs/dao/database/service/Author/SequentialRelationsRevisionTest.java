@@ -43,7 +43,7 @@ public class SequentialRelationsRevisionTest extends LexEvsDbUnitTestBase {
 		.unmarshal(new InputStreamReader(sourceURI.toURL()
 				.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 	@Test

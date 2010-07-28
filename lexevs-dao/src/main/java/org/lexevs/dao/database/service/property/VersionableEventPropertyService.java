@@ -24,6 +24,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -232,13 +233,6 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 				entityCodeNamespace);
 
 		this.doInsertProperty(codingSchemeUri, version, entityUId, property, PropertyType.ENTITY);
-		
-		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
-				codingSchemeUri,
-				version, 
-				entityCode,
-				entityCodeNamespace, 
-				property));
 	}
 
 	/*
@@ -302,13 +296,6 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 				entityCodeNamespace);
 
 		this.doRemoveProperty(codingSchemeUri, version, entityUId, property, PropertyType.ENTITY);
-
-		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
-				codingSchemeUri,
-				version, 
-				entityCode,
-				entityCodeNamespace, 
-				property));
 	}
 
 	/*
@@ -346,6 +333,21 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		this.getDaoManager().getPropertyDao(codingSchemeUri, version)
 			.insertProperty(codingSchemeUId, parentUid,
 					propertyType, property);
+		
+		if( propertyType == PropertyType.ENTITY) {
+			Entity entity = this.getDaoManager().getEntityDao(codingSchemeUri,
+					version).getEntityByUId(codingSchemeUId, parentUid);
+			
+			if (entity != null) {
+				
+				this.firePostPropertyInsertEvent(new PropertyUpdateEvent(
+						codingSchemeUri,
+						version, 
+						entity, 
+						property));
+			}
+		}
+		
 	}
 	
 	protected void doRemoveProperty(
@@ -374,6 +376,21 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 
 		/* 2. Remove property. */
 		propertyDao.removePropertyByUId(codingSchemeUId, propertyUId);
+		
+		/* 3. If propertyType is 'ENTITY', then update lucene indexes.*/
+		if( propertyType == PropertyType.ENTITY) {
+			Entity entity = this.getDaoManager().getEntityDao(codingSchemeUri,
+					version).getEntityByUId(codingSchemeUId, parentUid);
+			
+			if (entity != null) {
+				
+				this.firePostPropertyRemoveEvent(new PropertyUpdateEvent(
+						codingSchemeUri,
+						version, 
+						entity, 
+						property));
+			}
+		}
 	}
 
 	protected void doReviseProperty(
@@ -397,8 +414,10 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 
 				this.doUpdateProperty(codingSchemeUri, version, parentUid, property, propertyType);
 			} else if (changeType == ChangeType.VERSIONABLE) {
-				this.doInsertDependentChanges(
-						new ParentUidReferencingId(codingSchemeUri, version, parentUid), property);
+				
+				ParentUidReferencingId id = new ParentUidReferencingId(codingSchemeUri, version, parentUid);
+				
+				this.insertVersionableChanges(id, property, EntryStateType.PROPERTY);
 			}
 		}
 	}
@@ -577,13 +596,6 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		} catch (LBException e) {
 			throw new RuntimeException(e);
 		}
-
-		this.firePropertyUpdateEvent(new PropertyUpdateEvent(
-				codingSchemeUri,
-				version, 
-				entityCode,
-				entityCodeNamespace, 
-				property));
 	}
 
 	/*
@@ -637,6 +649,20 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 				
 			}
 		});
+		
+		if( propertyType == PropertyType.ENTITY) {
+			Entity entity = this.getDaoManager().getEntityDao(codingSchemeUri,
+					version).getEntityByUId(codingSchemeUId, parentUid);
+			
+			if (entity != null) {
+				
+				this.firePropertyUpdateEvent(new PropertyUpdateEvent(
+						codingSchemeUri,
+						version, 
+						entity, 
+						property));
+			}
+		}
 	}
 
 	/**

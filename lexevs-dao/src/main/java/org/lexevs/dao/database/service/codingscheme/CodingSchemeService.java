@@ -144,7 +144,7 @@ public interface CodingSchemeService {
 	 * @param revisedCodingScheme
 	 * @throws LBException
 	 */
-	public void revise(CodingScheme revisedCodingScheme, String releaseURI) throws LBException;
+	public void revise(CodingScheme revisedCodingScheme, String releaseURI, Boolean indexNewCodingScheme) throws LBException;
 
 	public void removeCodingScheme(CodingScheme revisedCodingScheme);
 	

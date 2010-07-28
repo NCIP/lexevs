@@ -11,7 +11,6 @@ import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
@@ -82,8 +81,6 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 	private static String GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "getEntryStateUidByAssociationTarget";
 
-	private EntryStateTypeClassifier entryStateClassifier = new EntryStateTypeClassifier();
-	
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 			.parseStringToVersion("2.0");
@@ -479,10 +476,16 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
+		
+		String histPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 
 		this.getSqlMapClientTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
+		
+		this.getSqlMapClientTemplate().delete(
+				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
+				new PrefixedParameter(histPrefix, associationTargetUId));
 	}
 	
 	@Override

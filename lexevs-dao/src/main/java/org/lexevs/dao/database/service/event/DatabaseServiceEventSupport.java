@@ -111,6 +111,12 @@ public class DatabaseServiceEventSupport {
 			}
 	}
 	
+	protected void firePostPropertyInsertEvent(PropertyUpdateEvent propertyInsertEvent){
+		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
+			listener.onPostPropertyInsert(propertyInsertEvent);
+		}
+	}
+	
 	protected void firePropertyUpdateEvent(
 			PropertyUpdateEvent event) {
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
@@ -118,6 +124,12 @@ public class DatabaseServiceEventSupport {
 			}
 	}
 	
+	protected void firePostPropertyRemoveEvent(PropertyUpdateEvent propertyRemoveEvent){
+		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
+			listener.onPostPropertyRemove(propertyRemoveEvent);
+		}
+	}
+
 	protected void fireEntityUpdateEvent(EntityUpdateEvent entityUpdateEvent) {
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onEntityUpdate(entityUpdateEvent);

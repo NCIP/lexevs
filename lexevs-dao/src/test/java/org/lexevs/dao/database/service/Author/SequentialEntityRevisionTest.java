@@ -40,7 +40,7 @@ public class SequentialEntityRevisionTest extends LexEvsDbUnitTestBase {
 		.unmarshal(new InputStreamReader(sourceURI.toURL()
 				.openConnection().getInputStream()));
 
-		service.loadSystemRelease(systemRelease);
+		service.loadSystemRelease(systemRelease, true);
 	}
 	
 	@Test
