@@ -1,8 +1,5 @@
 package org.lexevs.cts2.author;
 
-import static org.junit.Assert.*;
-
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,15 +11,13 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Entities;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.relations.Relations;
-import org.LexGrid.versions.EntryState;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class CodeSystemAuthoringOperationImplTest {
+public class CodeSystemAuthoringOperationImplTest extends LexEvsDbUnitTestBase {
 
 	@Test
 	public void testCommitCodeSystem() {
