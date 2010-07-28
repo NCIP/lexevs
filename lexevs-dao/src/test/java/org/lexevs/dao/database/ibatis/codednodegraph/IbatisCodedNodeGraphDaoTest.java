@@ -411,7 +411,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
-				" 't-ns1')");
+				" 't-ns1'," +
+				" null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
 			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, null, true);

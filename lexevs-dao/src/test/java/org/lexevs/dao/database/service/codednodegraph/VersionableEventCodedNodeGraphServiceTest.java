@@ -84,7 +84,8 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
-				" 't-ns1')");
+				" 't-ns1', " +
+				" null)");
 		
 		List<String> rels = service.
 			listCodeRelationships("csuri", "csversion", null, "s-code", "s-ns", "t-code1", "t-ns1", new GraphQuery(), true);
@@ -132,7 +133,8 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
-				" 't-ns1')");
+				" 't-ns1', " +
+				" null)");
 		
 		List<String> rels = service.
 			listCodeRelationships("csuri", "csversion", "c-name", "s-code", "s-ns", "t-code1", "t-ns1", new GraphQuery(), true);
@@ -180,7 +182,8 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
-				" 't-ns1')");
+				" 't-ns1', " +
+				" null");
 		
 		List<String> rels = service.
 			listCodeRelationships("csuri", "csversion", "INVALID_CONTAINER_NAME", "s-code", "s-ns", "t-code1", "t-ns1", new GraphQuery(), true);

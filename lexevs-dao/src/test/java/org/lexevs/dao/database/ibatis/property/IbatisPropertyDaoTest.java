@@ -612,7 +612,6 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SOURCE);
-				assertEquals("test source", rs.getString(4));
 				assertEquals("test source", rs.getString(5));
 				assertEquals(rs.getString(6), "test subref");
 				assertEquals(rs.getString(7), "test role");
@@ -649,7 +648,6 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertNotNull(rs.getString(1));
 				assertEquals(rs.getString(2), "pguid");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
-				assertEquals("test usageContext", rs.getString(4));
 				assertEquals(rs.getString(5), "test usageContext");
 				assertNull(rs.getString(6));
 				assertNull(rs.getString(7));
