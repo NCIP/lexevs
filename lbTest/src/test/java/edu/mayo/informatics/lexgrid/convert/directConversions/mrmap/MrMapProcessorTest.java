@@ -16,7 +16,7 @@ public class MrMapProcessorTest extends TestCase {
   }
   MRMAP2LexGrid mrmap = new MRMAP2LexGrid(false, null, null, null);
   
-  MrMap map = mrmap.processMrMap(rawData);
+  MrMap map = mrmap.processMrMapRow(rawData);
   //Should be MAPSETCUI	MAPSAB	MAPSUBSETID	MAPRANK	MAPID	
   //  MAPSID	FROMID	FROMSID	FROMEXPR	FROMTYPE	FROMRULE	
   //  FROMRES	REL	RELA	TOID	TOSID	TOEXPR	TOTYPE	TORULE	
