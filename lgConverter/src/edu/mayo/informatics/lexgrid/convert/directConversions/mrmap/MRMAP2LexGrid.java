@@ -47,23 +47,21 @@ public class MRMAP2LexGrid {
         // TODO Auto-generated method stub
         
     }
-    private MrSat processMrSatRow(String[] mrSatRow) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    protected Relations processMrMapBean(Relations rel) throws Exception {
+
+    
+    protected AssociationPredicate processMrMapBean() throws Exception {
         String[] mrMapRow;
         AssociationPredicate predicate  = createAssociationPredicate();
 
             try {
                 while((mrMapRow = mapReader.readRRFLine()) != null){
                     
-                    MrMap map = processMrMap(mrMapRow);
+                    MrMap map = processMrMapRow(mrMapRow);
                     currentMapping = map.getMapsetcui();
                     if (currentMapping != null && !map.getMapsetcui().equals(currentMapping)){
                         break;
                     }
-                 processAndMergeIntoSource(map, predicate);
+               processAndMergeIntoSource(map, predicate);
 
                 }
                 mapReader.close();
@@ -84,7 +82,7 @@ public class MRMAP2LexGrid {
                 e.printStackTrace();
             }   
      
-            return rel;
+            return predicate;
     }
     
     private AssociationPredicate processAndMergeIntoSource(MrMap map, AssociationPredicate predicate) throws Exception {
@@ -153,15 +151,34 @@ public class MRMAP2LexGrid {
         return qualifiers;
     }
 
-    private AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate) throws IndexOutOfBoundsException, Exception {
+    protected AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate) throws IndexOutOfBoundsException, Exception {
      AssociationSource[] sources = predicate.getSource();
      for(AssociationSource s: sources){
+         //DEBUG code
+         //System.out.println(s.getSourceEntityCode());
         if(s.getSourceEntityCode().equals(map.getFromid())){
+            AssociationTarget[] targets = s.getTarget();
+            for(AssociationTarget t : targets){
+                //only testing for unique code.  name spaces should be equal
+                if( t.getTargetEntityCode().equals(map.getToid())){
+                messages_.warn("source: " + s.getSourceEntityCode() + " and Target: " + t.getTargetEntityCode() 
+                        + "appear to be duplicates, skipping load of this mapping");
+                return predicate;
+                }
+            }
             s.addTarget(createAssociationTarget(map));
+            AssociationData[] data = s.getTargetData();
+            for(AssociationData d: data){
+               if(d.getAssociationInstanceId().equals(map.getMapid())){
+                       messages_.warn("source: " + s.getSourceEntityCode() + " and Target Data: " + d.getAssociationInstanceId() 
+                               + "appear to be duplicates, skipping load of this mapping");
+                       return predicate;
+               }
+            }
             s.addTargetData(createTargetData(map));
         }
      }
-        return null;
+        return predicate;
     }
     
     
@@ -169,9 +186,8 @@ public class MRMAP2LexGrid {
         // TODO Auto-generated method stub
         return null;
     }
-    private Relations createMrSatRelation(AssociationSource targetsAndSources) {
-
-  
+    
+    private Relations createMrSatRelation(AssociationSource targetsAndSources) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
             String[] mrSatRow;
             try {
                 while((mrSatRow = satReader.readRRFLine()) != null){
@@ -183,17 +199,12 @@ public class MRMAP2LexGrid {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
-
-        
+            
         return null;
 
     }
-    private AssociationSource[] createMrMapAssociations(MrMap map) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    protected MrMap processMrMap(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+
+    protected MrMap processMrMapRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrMap mrMap = new MrMap();
         Class<?> mapClass = mrMap.getClass();
         Field[] columns = mapClass.getDeclaredFields();
@@ -202,6 +213,14 @@ public class MRMAP2LexGrid {
         }
         return mrMap;
     }
-    
+    protected MrSat processMrSatRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+        MrSat mrSat = new MrSat();
+        Class<?> mapClass = mrSat.getClass();
+        Field[] columns = mapClass.getDeclaredFields();
+        for(int i = 0; i < mapRow.length; i++){
+            columns[i].set(mrSat, mapRow[i]);
+        }
+        return mrSat;
+    }
 
 }
