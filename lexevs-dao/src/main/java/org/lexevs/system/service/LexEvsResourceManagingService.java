@@ -106,11 +106,18 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		for(RegistryEntry entry : entries){
 
-			CodingScheme codingScheme = databaseServiceManager.getCodingSchemeService().getCodingSchemeByUriAndVersion(
-					entry.getResourceUri(), 
-					entry.getResourceVersion());
-			aliasHolder.add(
-					this.codingSchemeToAliasHolder(codingScheme));
+			try {
+				CodingScheme codingScheme = databaseServiceManager.getCodingSchemeService().getCodingSchemeByUriAndVersion(
+						entry.getResourceUri(), 
+						entry.getResourceVersion());
+				aliasHolder.add(
+						this.codingSchemeToAliasHolder(codingScheme));
+			} catch (Exception e) {
+				this.getLogger().warn("There was a problem locating Coding Scheme Resource URI: " +
+						entry.getResourceUri() +
+						" Version: " + entry.getResourceVersion() + ". This resource will" +
+						" not be available in the service.", e);
+			}
 		}
 	}
 	
