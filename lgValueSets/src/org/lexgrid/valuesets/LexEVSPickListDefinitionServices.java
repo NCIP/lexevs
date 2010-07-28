@@ -139,6 +139,24 @@ public interface LexEVSPickListDefinitionServices extends Serializable {
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 	
 	/**
+	 * Resolves pick list definition object supplied against supplied coding scheme version list.
+	 * 
+	 * @param pickList
+	 * 			pickListDefinition object.
+	 * @param sortByText
+	 * 			If True; the resolved pickListEntries will be sorted by text in ascending order.
+	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+     * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
+	 * @return
+	 * 			Resolved PickListEntries.
+	 * @throws LBException
+	 */
+	public ResolvedPickListEntryList resolvePickList(PickListDefinition pickList, boolean sortByText,
+	AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
+
+	/**
 	 * Resolves pickList definition for supplied arguments.
 	 * 
 	 * @param pickListId 

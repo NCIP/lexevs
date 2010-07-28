@@ -379,86 +379,13 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 */
 	public ResolvedPickListEntryList resolvePickList(String pickListId, boolean sortByText,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
-		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
-        
-        List<String> excludeEntityCodes = new ArrayList<String>();
-        Set<String> includedEntityCodes = new HashSet<String>();
         
         PickListDefinition pickList = this.getDatabaseServiceManager().getPickListDefinitionService().getPickListDefinitionByPickListId(pickListId);
-
-        if (pickList != null)
-        {
-        	String defaultCS = null;
-			// Always add the default coding scheme, even if it isn't used
-		    if(!StringUtils.isEmpty(pickList.getDefaultEntityCodeNamespace()))
-		    	defaultCS = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), pickList.getDefaultEntityCodeNamespace());
-		    
-            boolean completeDomain = pickList.isCompleteSet();
-            
-            // get all static pickListEntryNodes to get any exclude entries.
-            List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNodeAsReference();
-            
-            // Get all exclude list
-            for (int i = 0; i < plEntryNodeList.size(); i++)
-            {
-                PickListEntryNode plEntryNode = plEntryNodeList.get(i);
-                
-                PickListEntryExclusion plEntryExclusion = plEntryNode.getPickListEntryNodeChoice().getExclusionEntry();
-                if (plEntryExclusion != null)
-                    excludeEntityCodes.add(plEntryExclusion.getEntityCode());
-            }
-            
-            
-            for (int i = 0; i < plEntryNodeList.size(); i++)
-            {
-                PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
-                
-                if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
-                {
-                	String cs = null;
-					if (plEntry.getEntityCodeNamespace() != null)
-						cs = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), plEntry.getEntityCodeNamespace());
-					
-                    if (StringUtils.isEmpty(cs))
-                        cs = defaultCS;
-                    
-                    includedEntityCodes.add(plEntry.getEntityCode());
-                    
-                    ResolvedPickListEntry rpl = new ResolvedPickListEntry();
-                    rpl.setDefault(plEntry.isIsDefault());
-                    rpl.setEntityCode(plEntry.getEntityCode());
-                    rpl.setEntityCodeNamespace(StringUtils.isEmpty(plEntry.getEntityCodeNamespace()) ? cs : plEntry.getEntityCodeNamespace());
-                    rpl.setEntryOrder(Integer.valueOf(plEntry.getEntryOrder().toString()));
-                    rpl.setPickText(plEntry.getPickText());
-                    rpl.setPropertyId(plEntry.getPropertyId());
-                    plList.addResolvedPickListEntry(rpl);
-                }
-            }
-            
-            //if completeDomain is true, resolve value domain and add any missing entities to the list
-            if (completeDomain)
-            {
-            	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), 
-            			sortByText, csVersionList, versionTag);
-            	if (vdPLList.getResolvedPickListEntryCount() > 0 )
-            	{
-            		for (int i = 0; i < vdPLList.getResolvedPickListEntryCount(); i++)
-            		{
-            			ResolvedPickListEntry vdple = vdPLList.getResolvedPickListEntry(i);
-            			if (!includedEntityCodes.contains(vdple.getEntityCode()) && !excludeEntityCodes.contains(vdple.getEntityCode()))
-            				plList.addResolvedPickListEntry(vdple);
-            		}
-            	}
-            	else
-            	{
-            		return vdPLList;
-            	}
-            }
-            
-            
-        }
         
-        return plList;
+        if (pickList == null)
+        	throw new LBException("No pick list definition found with id : " + pickListId);
+        
+        return resolvePickList(pickList, sortByText, csVersionList, versionTag);
     }
     
 	/*
@@ -483,6 +410,91 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 		return resolvedPLEntry;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#resolvePickList(org.LexGrid.valueSets.PickListDefinition, boolean, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
+	public ResolvedPickListEntryList resolvePickList(PickListDefinition pickList, boolean sortByText,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
+		
+		if (pickList == null)
+        	throw new LBException("Pick List Definition can not be empty");
+		
+		ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
+        
+        List<String> excludeEntityCodes = new ArrayList<String>();
+        Set<String> includedEntityCodes = new HashSet<String>();
+        
+    	String defaultCS = null;
+		// Always add the default coding scheme, even if it isn't used
+	    if(!StringUtils.isEmpty(pickList.getDefaultEntityCodeNamespace()))
+	    	defaultCS = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), pickList.getDefaultEntityCodeNamespace());
+	    
+        boolean completeDomain = pickList.isCompleteSet();
+        
+        // get all static pickListEntryNodes to get any exclude entries.
+        List<PickListEntryNode> plEntryNodeList = pickList.getPickListEntryNodeAsReference();
+        
+        // Get all exclude list
+        for (int i = 0; i < plEntryNodeList.size(); i++)
+        {
+            PickListEntryNode plEntryNode = plEntryNodeList.get(i);
+            
+            PickListEntryExclusion plEntryExclusion = plEntryNode.getPickListEntryNodeChoice().getExclusionEntry();
+            if (plEntryExclusion != null)
+                excludeEntityCodes.add(plEntryExclusion.getEntityCode());
+        }
+        
+        for (int i = 0; i < plEntryNodeList.size(); i++)
+        {
+            PickListEntry plEntry = plEntryNodeList.get(i).getPickListEntryNodeChoice().getInclusionEntry();
+            
+            if (plEntry != null && !excludeEntityCodes.contains(plEntry.getEntityCode()))
+            {
+            	String cs = null;
+				if (plEntry.getEntityCodeNamespace() != null)
+					cs = VSDServiceHelper.getCodingSchemeURIForEntityCodeNamespace(pickList.getMappings(), plEntry.getEntityCodeNamespace());
+				
+                if (StringUtils.isEmpty(cs))
+                    cs = defaultCS;
+                
+                includedEntityCodes.add(plEntry.getEntityCode());
+                
+                ResolvedPickListEntry rpl = new ResolvedPickListEntry();
+                if (plEntry.getIsDefault() != null)
+                	rpl.setDefault(Boolean.valueOf(plEntry.getIsDefault()));
+                rpl.setEntityCode(plEntry.getEntityCode());
+                rpl.setEntityCodeNamespace(StringUtils.isEmpty(plEntry.getEntityCodeNamespace()) ? cs : plEntry.getEntityCodeNamespace());
+                rpl.setEntryOrder(Integer.valueOf(plEntry.getEntryOrder().toString()));
+                rpl.setPickText(plEntry.getPickText());
+                rpl.setPropertyId(plEntry.getPropertyId());
+                plList.addResolvedPickListEntry(rpl);
+            }
+        }
+        
+        //if completeDomain is true, resolve value domain and add any missing entities to the list
+        if (completeDomain)
+        {
+        	ResolvedPickListEntryList vdPLList = internalResolvePickListForTerm(pickList.getRepresentsValueSetDefinition(), 
+        			sortByText, csVersionList, versionTag);
+        	if (vdPLList.getResolvedPickListEntryCount() > 0 )
+        	{
+        		for (int i = 0; i < vdPLList.getResolvedPickListEntryCount(); i++)
+        		{
+        			ResolvedPickListEntry vdple = vdPLList.getResolvedPickListEntry(i);
+        			if (!includedEntityCodes.contains(vdple.getEntityCode()) && !excludeEntityCodes.contains(vdple.getEntityCode()))
+        				plList.addResolvedPickListEntry(vdple);
+        		}
+        	}
+        	else
+        	{
+        		return vdPLList;
+        	}
+        }
+        
+        return plList;
+    }
+
     private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI, boolean sortByText,
     		AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
         
