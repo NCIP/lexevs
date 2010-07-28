@@ -106,6 +106,7 @@ public class MRMAP2LexGrid {
         predicate.setAssociationName(ASSOC_NAME);
         return predicate;
     }
+    
     protected AssociationSource createNewAssociationSourceWithTarget(MrMap map) throws Exception {
     AssociationSource source = new AssociationSource();
     source.setSourceEntityCode(map.getFromid());
@@ -114,7 +115,7 @@ public class MRMAP2LexGrid {
     return source;
     }
     
-    private AssociationTarget createAssociationTarget(MrMap map) throws Exception {
+   protected AssociationTarget createAssociationTarget(MrMap map) throws Exception {
         AssociationTarget target = new AssociationTarget();
         target.setAssociationInstanceId(map.getMapid());
         target.setTargetEntityCode(map.getToid());
@@ -162,6 +163,8 @@ public class MRMAP2LexGrid {
      }
         return null;
     }
+    
+    
     private CodingScheme createMrMapScheme(MrMap map) {
         // TODO Auto-generated method stub
         return null;
@@ -190,7 +193,7 @@ public class MRMAP2LexGrid {
         // TODO Auto-generated method stub
         return null;
     }
-    public MrMap processMrMap(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+    protected MrMap processMrMap(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrMap mrMap = new MrMap();
         Class<?> mapClass = mrMap.getClass();
         Field[] columns = mapClass.getDeclaredFields();
