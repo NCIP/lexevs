@@ -198,7 +198,7 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public String insertIntoTransitiveClosure(String codingSchemeUId,
 			String associationPredicateUId, String sourceEntityCode,
 			String sourceEntityCodeNamesapce, String targetEntityCode,
-			String targetEntityCodeNamespace);
+			String targetEntityCodeNamespace, String path);
 
 	public String insertHistoryRelation(String codingSchemeUId,
 			String relationUId, Relations relation);

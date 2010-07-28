@@ -268,14 +268,16 @@
 			sourceEntityCode,
 			sourceEntityCodeNamespace,
 			targetEntityCode,
-			targetEntityCodeNamespace
+			targetEntityCodeNamespace,
+			path
 		) VALUES (
 			#uid#, 
 			#associationPredicateUId#,
 			#sourceEntityCode#, 
 			#sourceEntityCodeNamespace#, 
 			#targetEntityCode#, 
-			#targetEntityCodeNamespace#
+			#targetEntityCodeNamespace#,
+			#path#
 		)
   </insert>
 

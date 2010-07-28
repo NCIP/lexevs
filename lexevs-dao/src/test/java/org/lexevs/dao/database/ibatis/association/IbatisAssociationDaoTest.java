@@ -505,7 +505,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"relationGuid, associationName) values " +
 				"('ap-guid', 'rel-guid', 'apname')");
 
-		ibatisAssociationDao.insertIntoTransitiveClosure("cs-guid", "ap-guid", "sc", "sns", "tc", "tns");
+		ibatisAssociationDao.insertIntoTransitiveClosure("cs-guid", "ap-guid", "sc", "sns", "tc", "tns", "path|,path->path|,path");
 		
 		template.queryForObject("Select * from entityassnstoentitytr", new RowMapper(){
 
@@ -517,7 +517,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals("sns", rs.getString(4));
 				assertEquals("tc", rs.getString(5));
 				assertEquals("tns", rs.getString(6));
-					
+				assertEquals("path|,path->path|,path", rs.getString(7));
 				return true;
 			}
 		});

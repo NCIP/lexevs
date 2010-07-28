@@ -39,6 +39,9 @@ public class TransitiveClosureBatchInsertItem {
 	
 	/** The target entity code namespace. */
 	private String targetEntityCodeNamespace;
+	
+	/** the transitive path from source to target entity **/
+	private String path;
 
 	/**
 	 * Gets the association predicate id.
@@ -120,6 +123,14 @@ public class TransitiveClosureBatchInsertItem {
 	public String getTargetEntityCodeNamespace() {
 		return targetEntityCodeNamespace;
 	}
+	
+	/**
+	 * Gets the path
+	 * @return
+	 */
+	public String getPath() {
+		return path;
+	}
 
 	/**
 	 * Sets the target entity code namespace.
@@ -128,5 +139,13 @@ public class TransitiveClosureBatchInsertItem {
 	 */
 	public void setTargetEntityCodeNamespace(String targetEntityCodeNamespace) {
 		this.targetEntityCodeNamespace = targetEntityCodeNamespace;
+	}
+	
+	/**
+	 * Sets path
+	 * @param p
+	 */
+	public void setPath(String p) {
+		path = p;
 	}
 }

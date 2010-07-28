@@ -40,6 +40,10 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 	private LgLoggerIF logger;
 	
+	public final static String CODE_NAMESPACE_DELIMITER = "|,";
+	
+	public final static String PATH_DELIMITER = "->";
+	
 	public static void main(String[] args) {
 		DefaultTransitivityBuilder builder = new DefaultTransitivityBuilder();
 		builder.setLogger(LoggerFactory.getLogger());
@@ -47,7 +51,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		builder.setDatabaseServiceManager(LexEvsServiceLocator.getInstance().getDatabaseServiceManager());
 		builder.setSystemResourceService(LexEvsServiceLocator.getInstance().getSystemResourceService());
 		
-		builder.computeTransitivityTable("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl", "10.05d");
+		builder.computeTransitivityTable("urn:oid:11.11.0.1", "1.0");
 		
 	}
 
@@ -90,6 +94,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 							sourceCode,
 							targetCode,
 							insertedCache,
+							sourceCode.code + this.CODE_NAMESPACE_DELIMITER + sourceCode.namespace + this.PATH_DELIMITER + targetCode.code + this.CODE_NAMESPACE_DELIMITER + targetCode.namespace, 
 							batchController);
 				}
 			}  
@@ -148,9 +153,9 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 						targetCodes.add(temp);
 					}
 				}
-
+				String path = sourceCodes.get(j).code + this.CODE_NAMESPACE_DELIMITER + sourceCodes.get(j).namespace + this.PATH_DELIMITER;
 				processTransitive(codingSchemeUri, version, associationPredicateId,
-						sourceCodes.get(j), targetCodes, insertedCache, batchController);
+						sourceCodes.get(j), targetCodes, insertedCache, batchController, path);
 			}
 		}
 
@@ -202,7 +207,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			StringTuple sourceCode,
 			ArrayList<StringTuple> targetCodes, 
 			LRUMap insertedCache,
-			BatchInsertController batchInsertController) {
+			BatchInsertController batchInsertController, 
+			String path) {
 		// The next target of each of the passed in targetCodes needs to be
 		// added to the transitive table.
 
@@ -211,6 +217,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			ArrayList<StringTuple> targetTargets = new ArrayList<StringTuple>();
 			String targetECNS = null;
 			String targetEC = null;
+			String targetPath = path + targetCodes.get(i).code + this.CODE_NAMESPACE_DELIMITER + targetCodes.get(i).namespace + this.PATH_DELIMITER;
 
 			List<Node> targetNodes = getTargetTriples(
 					codingSchemeUri, 
@@ -244,12 +251,13 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 					continue;
 				}
-
+				
 				boolean iInserted = insertIntoTransitiveClosure(
 						associationPredicateUid, 
 						sourceCode, 
 						targetTargets.get(j), 
 						insertedCache,
+						targetPath + targetTargets.get(j).code + this.CODE_NAMESPACE_DELIMITER+targetTargets.get(j).namespace,
 						batchInsertController);               
 				if (!iInserted) {
 					// If I didn't insert it into the transitive table, it was
@@ -258,6 +266,9 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					// remove it.
 					targetTargets.remove(j);
 					j--;
+				}
+				else {
+					System.out.println("path: " + targetPath + targetTargets.get(j).code + this.CODE_NAMESPACE_DELIMITER+targetTargets.get(j).namespace);
 				}
 			}
 
@@ -279,7 +290,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				temp.add(targetTargets.get(0));
 				// remove it, since we will be done with it after this.
 				targetTargets.remove(0);
-				processTransitive(codingSchemeUri, codingSchemeVersion, associationPredicateUid, sourceCode, temp, insertedCache, batchInsertController);
+				processTransitive(codingSchemeUri, codingSchemeVersion, associationPredicateUid, sourceCode, temp, insertedCache, batchInsertController, targetPath);
 			}
 		}
 	}
@@ -289,6 +300,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			StringTuple sourceCode, 
 			StringTuple targetCode, 
 			LRUMap insertedCache,
+			String path,
 			BatchInsertController batchInsertController) {
 		String key = sourceCode.code + ":" + sourceCode.namespace + ":" + targetCode.code + ":" + targetCode.namespace;
 
@@ -306,7 +318,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 					sourceCode.namespace,
 					targetCode.code, 
 					targetCode.namespace, 
-					associationPredicateId);
+					associationPredicateId,
+					path);
 
 		}
 		return iInserted;
@@ -526,7 +539,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			final String sourceNamespace,
 			final String targetCode, 
 			final String targetNamespace, 
-			final String associationPredicateId) {
+			final String associationPredicateId,
+			final String path) {
 			
 			TransitiveClosureBatchInsertItem item = new TransitiveClosureBatchInsertItem();
 			item.setSourceEntityCode(sourceCode);
@@ -534,6 +548,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			item.setTargetEntityCode(targetCode);
 			item.setTargetEntityCodeNamespace(targetNamespace);
 			item.setAssociationPredicateId(associationPredicateId);
+			item.setPath(path);
 			
 			batch.add(item);
 			
@@ -570,7 +585,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 										item.getSourceEntityCode(), 
 										item.getSourceEntityCodeNamespace(), 
 										item.getTargetEntityCode(), 
-										item.getTargetEntityCodeNamespace());
+										item.getTargetEntityCodeNamespace(),
+										item.getPath());
 								return null;
 							}
 						});

@@ -553,6 +553,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String sourceEntityCodeNamespace, 
 			String targetEntityCode,
 			String targetEntityCodeNamespace, 
+			String path,
 			Inserter executor) {
 		
 		String id = this.createUniqueId();
@@ -565,6 +566,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
 		bean.setTargetEntityCode(targetEntityCode);
 		bean.setTargetEntityCodeNamespace(targetEntityCodeNamespace);
+		bean.setPath(path);
 		
 		executor.insert(INSERT_TRANSITIVE_CLOSURE_SQL, bean);
 		
@@ -579,7 +581,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public String insertIntoTransitiveClosure(String codingSchemeId,
 			String associationPredicateId, String sourceEntityCode,
 			String sourceEntityCodeNamespace, String targetEntityCode,
-			String targetEntityCodeNamespace) {
+			String targetEntityCodeNamespace, String path) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -589,6 +591,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				sourceEntityCodeNamespace, 
 				targetEntityCode,
 				targetEntityCodeNamespace,
+				path,
 				this.getNonBatchTemplateInserter());
 	}
 	
@@ -619,6 +622,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 							item.getSourceEntityCodeNamespace(), 
 							item.getTargetEntityCode(),
 							item.getTargetEntityCodeNamespace(),
+							item.getPath(),
 							batchInserter);
 				}
 
@@ -958,5 +962,4 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		else
 			return false;
 	}
-
 }

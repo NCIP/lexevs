@@ -41,6 +41,9 @@ public class InsertTransitiveClosureBean extends IdableParameterBean {
 	
 	/** The target entity code namespace. */
 	private String targetEntityCodeNamespace;
+	
+	/** The transitive path from source to target **/
+	private String path;
 
 	/**
 	 * Instantiates a new insert transitive closure bean.
@@ -129,6 +132,14 @@ public class InsertTransitiveClosureBean extends IdableParameterBean {
 	public String getTargetEntityCodeNamespace() {
 		return targetEntityCodeNamespace;
 	}
+	
+	/**
+	 * Gets the transitive path from source to target
+	 * @return
+	 */
+	public String getPath() {
+		return path;
+	}
 
 	/**
 	 * Sets the target entity code namespace.
@@ -137,5 +148,12 @@ public class InsertTransitiveClosureBean extends IdableParameterBean {
 	 */
 	public void setTargetEntityCodeNamespace(String targetEntityCodeNamespace) {
 		this.targetEntityCodeNamespace = targetEntityCodeNamespace;
+	}
+	
+	/**
+	 * Sets the transitive path
+	 */
+	public void setPath(String p){
+		path = p;
 	}
 }
