@@ -79,9 +79,6 @@
       <column name="qualifierName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="qualifierValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@entityAssnQuals" name="@PREFIX@FK_h_entityAssnQ_entityAssnQua">
-        <reference local="entityAssnQualsGuid" foreign="entityAssnQualsGuid"/>
-      </foreign-key>
     </table>
     <table name="@PREFIX@h_entityAssnsToData">
       <column name="entityAssnsDataGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
