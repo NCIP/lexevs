@@ -43,6 +43,7 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListEntry;
 import org.LexGrid.valueSets.PickListEntryExclusion;
 import org.LexGrid.valueSets.PickListEntryNode;
+import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedPickListEntry;
@@ -396,6 +397,64 @@ public class LexEVSPickListServicesImplTest extends TestCase{
 			{
 				assertTrue(plen.getPickText().equals("hypha") && plen.getPropertyId().equals("p1"));
 			}
+		}
+	}
+	
+	@Test
+	public void testResolvePickListByObject() throws LBException {
+		PickListDefinition pickList = new PickListDefinition();
+		
+		pickList.setCompleteSet(Boolean.TRUE);
+		pickList.setDefaultEntityCodeNamespace("Automobiles");
+		pickList.setDefaultLanguage("en");
+		pickList.setRepresentsValueSetDefinition("SRITEST:AUTO:GM");
+		pickList.setPickListId("PLObject");
+		pickList.setStatus("active");
+		
+		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
+	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1"));
+		
+		ResolvedPickListEntryList pls = getPickListService().resolvePickList(pickList, true, incsvrl, null);
+		
+		assertTrue(pls.getResolvedPickListEntryCount() == 3);
+		
+		Iterator<ResolvedPickListEntry> plItr = pls.iterateResolvedPickListEntry();
+	    
+	    while(plItr.hasNext())
+		{
+			ResolvedPickListEntry pl = plItr.next();
+			assertTrue(pl.getEntityCode().equalsIgnoreCase("Chevy")
+					|| pl.getEntityCode().equalsIgnoreCase("GMC")
+					|| pl.getEntityCode().equalsIgnoreCase("GM"));
+		}
+	    PickListEntry inclusionEntry = new PickListEntry();
+	    inclusionEntry.setEntityCode("Ford");
+	    inclusionEntry.setEntryOrder(0L);
+	    inclusionEntry.setEntityCodeNamespace("Automobiles");
+	    inclusionEntry.setPickText("Ford");
+	    		
+	    PickListEntryNodeChoice pickListEntryNodeChoice = new PickListEntryNodeChoice();
+	    pickListEntryNodeChoice.setInclusionEntry(inclusionEntry);
+
+	    PickListEntryNode pleNode = new PickListEntryNode();
+	    pleNode.setPickListEntryId("pleNodeId1");
+	    pleNode.setPickListEntryNodeChoice(pickListEntryNodeChoice);
+	    
+	    pickList.addPickListEntryNode(pleNode);
+	    
+	    pls = getPickListService().resolvePickList(pickList, true, incsvrl, null);
+		
+		assertTrue(pls.getResolvedPickListEntryCount() == 4);
+		
+		plItr = pls.iterateResolvedPickListEntry();
+	    
+	    while(plItr.hasNext())
+		{
+			ResolvedPickListEntry pl = plItr.next();
+			assertTrue(pl.getEntityCode().equalsIgnoreCase("Chevy")
+					|| pl.getEntityCode().equalsIgnoreCase("GMC")
+					|| pl.getEntityCode().equalsIgnoreCase("GM")
+					|| pl.getEntityCode().equalsIgnoreCase("Ford"));
 		}
 	}
 	
