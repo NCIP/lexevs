@@ -279,9 +279,13 @@
 		<property name="databaseServiceEventListeners">
 			<list>
 				<ref bean="codingSchemeRegisteringListener"/>
-				<bean class="org.lexevs.dao.database.service.listener.LucenePropertyUpdateListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityPropertyInsertListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityPropertyUpdateListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityPropertyRemoveListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.SystemResourceRefreshingListener"/>	
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityInsertListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityUpdateListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityRemoveListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.NullEntityNamespaceListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener"/>
