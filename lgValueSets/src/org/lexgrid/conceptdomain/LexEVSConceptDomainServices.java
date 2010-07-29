@@ -57,7 +57,7 @@ public interface LexEVSConceptDomainServices extends Serializable {
 	 * 
 	 * @param versionOrTag 
 	 * 			  concept domain coding scheme version or tag
-	 * @return concept domain of concept domain entities
+	 * @return codedNodeSet of concept domain entities
 	 * @throws LBException
 	 */
 	public CodedNodeSet getConceptDomainCodedNodeSet(CodingSchemeVersionOrTag versionOrTag) throws LBException;
@@ -148,7 +148,7 @@ public interface LexEVSConceptDomainServices extends Serializable {
 		throws LBException;
 	
 	/**
-	 * Removed concept domain from the concept domain coding scheme.
+	 * Remove concept domain from the concept domain coding scheme.
 	 * 
 	 * @param conceptDomainId - 
 	 * 				Identifier of the concept domain that will be removed
