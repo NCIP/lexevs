@@ -4,14 +4,21 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.versions.Revision;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.system.service.SystemResourceService;
 
 public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao {
 
@@ -21,8 +28,14 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 	private String INSERT_INTO_REVISION = VERSIONS_NAMESPACE + "insertRevision"; 
 	
 	private String SELECT_REVISION_GUID_BY_ID = VERSIONS_NAMESPACE + "getRevisionGuidFromId";
-
+	
 	private String GET_REVISION_ID_BY_DATE = VERSIONS_NAMESPACE + "getRevisionIdByDate";
+	
+	private String CHECK_REVISION_EXISTS_IN_VS_ENTRYSTATE = VERSIONS_NAMESPACE + "checkRevisionExistsInVSEntryState";
+	
+	private String CHECK_REVISION_EXISTS_IN_ENTRYSTATE = VERSIONS_NAMESPACE + "checkRevisionExistsInEntryState";
+	
+	private String DELETE_REVISION_BY_ID = VERSIONS_NAMESPACE + "deleteRevisionById";
 	
 	/** system release dao*/
 	private SystemReleaseDao systemReleaseDao = null;
@@ -57,7 +70,7 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		
 		return revisionGuid;
 	}
-
+	
 	@Override
 	public String insertRevisionEntry(Revision revision, String releaseURI) throws LBRevisionException {
 
@@ -141,5 +154,63 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 
 		return this.createUniqueId();
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.revision.RevisionDao#removeRevisionById(java.lang.String)
+	 */
+	@Override
+	public boolean removeRevisionById(String revisionId) throws LBException{
+		if (StringUtils.isEmpty(revisionId))
+			throw new LBException("Revision ID can not be empty");
+		
+		String revisionGuid = this.getRevisionUIdById(revisionId);
+		if (StringUtils.isEmpty(revisionGuid))
+			throw new LBException("Revision ID " + revisionId + " does not exists in the system");
+		
+		SystemResourceService sysSrv = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		// before removing a revision, check if it is used in cs entry state table		
+		String count = null;
+		if (sysSrv.getSystemVariables().isSingleTableMode())
+		{
+			count = (String) this.getSqlMapClientTemplate()
+				.queryForObject(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
+					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionGuid));
+	
+			if (!count.equals("0"))
+				throw new LBException("Revision ID " + revisionId + " can not be removed as it is being referenced by other loaded entries.");
+		}
+		else
+		{
+			Registry reg = LexEvsServiceLocator.getInstance().getRegistry();
+			List<RegistryEntry> reList = reg.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+						
+			for (RegistryEntry re : reList)
+			{				
+				count = (String) this.getSqlMapClientTemplate()
+					.queryForObject(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
+							new PrefixedParameter(re.getPrefix(), revisionGuid));
+			
+				if (!count.equals("0"))
+					throw new LBException("Revision ID " + revisionId + " can not be removed as it is being referenced by other loaded entries.");
+			
+			}
+		}
+		
+		// now check vs entry state table
+		count = (String) this.getSqlMapClientTemplate()
+			.queryForObject(CHECK_REVISION_EXISTS_IN_VS_ENTRYSTATE, 
+					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionId));
+		
+		if (!count.equals("0"))
+			throw new LBException("Revision ID " + revisionId + " can not be removed as it is being referenced by other loaded entries.");
+		
+		// if not used, delete it
+		this.getSqlMapClientTemplate().delete(
+				DELETE_REVISION_BY_ID,
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionId));
+		
+		return true;
+	}	
 }

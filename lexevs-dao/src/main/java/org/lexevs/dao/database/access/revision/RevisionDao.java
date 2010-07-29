@@ -21,6 +21,7 @@ package org.lexevs.dao.database.access.revision;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
@@ -76,4 +77,12 @@ public interface RevisionDao extends LexGridSchemaVersionAwareDao {
 	
 	public String getRevisionIdForDate(Timestamp dateTime);
 
+	/**
+	 * remove revision record from the revision table if not used by any entry.
+	 * 
+	 * @param revisionId 
+	 * @return true; if successful
+	 * @throws LBException
+	 */
+	public boolean removeRevisionById(String revisionId) throws LBException;
 }

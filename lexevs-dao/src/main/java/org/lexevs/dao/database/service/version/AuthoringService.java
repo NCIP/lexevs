@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.service.version;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.versions.Revision;
@@ -69,5 +70,14 @@ public interface AuthoringService {
 	 * @return
 	 */
 	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId);
+	
+	/**
+	 * removes revision record if not referenced by any existing entries.
+	 * 
+	 * @param revisionId to be removed
+	 * @return true if removed successfully
+	 * @throws LBException
+	 */
+	public boolean removeRevisionRecordbyId(String revisionId) throws LBException;
 }
 

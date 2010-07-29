@@ -362,4 +362,14 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();
 		return sysReleaseDao.insertSystemReleaseEntry(systemRelease);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.version.AuthoringService#removeRevisionRecordbyId(java.lang.String)
+	 */
+	@Override
+	public boolean removeRevisionRecordbyId(String revisionId) throws LBException {
+		RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
+		return revisionDao.removeRevisionById(revisionId);
+	}
 }
