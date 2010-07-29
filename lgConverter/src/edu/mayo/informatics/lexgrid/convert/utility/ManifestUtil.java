@@ -44,6 +44,7 @@ import org.LexGrid.LexOnt.CsmfText;
 import org.LexGrid.LexOnt.CsmfVersion;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
@@ -273,9 +274,10 @@ public class ManifestUtil {
         String uri = versionPair.getUrn();
         String version = versionPair.getVersion();
 
-        CodingScheme codingScheme = codingSchemeService.getCodingSchemeByUriAndVersion(uri, version);
+        CodingScheme codingScheme = DaoUtility.deepClone(codingSchemeService.getCodingSchemeByUriAndVersion(uri, version));
         
         codingScheme.setRelations(new Relations[0]);
+        codingScheme.setProperties(new Properties());
         
         codingScheme.getEntryState().setChangeType(ChangeType.MODIFY);
 
