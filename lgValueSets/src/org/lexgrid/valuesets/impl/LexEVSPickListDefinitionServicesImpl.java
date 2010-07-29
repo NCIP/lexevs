@@ -58,6 +58,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
@@ -163,6 +164,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(org.LexGrid.valueSets.PickListDefinition, java.lang.String)
 	 */
+	@LgAdminFunction
 	public void loadPickList(PickListDefinition pldef, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { pldef, systemReleaseURI});
@@ -179,6 +181,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#loadPickList(java.lang.String, boolean)
 	 */
+	@LgAdminFunction
 	public void loadPickList(String xmlFileLocation, boolean failOnAllErrors)
 			throws LBException {
 		getLogger().logMethod(new Object[] { xmlFileLocation });
@@ -543,6 +546,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	/* (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#removePickList(java.lang.String)
 	 */
+    @LgAdminFunction
 	public void removePickList(String pickListId) throws LBException{
 		getLogger().logMethod(new Object[] { pickListId });
 		if (pickListId != null)

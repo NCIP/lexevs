@@ -54,6 +54,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -152,6 +153,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#loadValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, java.lang.String, org.LexGrid.naming.Mappings)
 	 */
+	@LgAdminFunction
 	public void loadValueSetDefinition(ValueSetDefinition definition, String systemReleaseURI, Mappings mappings)
 			throws LBException {
 		getLogger().logMethod(new Object[] { definition });
@@ -169,6 +171,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#loadValueSetDefinition(java.lang.String, boolean)
 	 */
 	@Override
+	@LgAdminFunction
 	public void loadValueSetDefinition(String xmlFileLocation,
 			boolean failOnAllErrors) throws LBException {
 		md_.info("Loading value set definitions from file : " + xmlFileLocation);
@@ -568,6 +571,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#removeValueSetDefinition(java.net.URI)
 	 */
 	@Override
+	@LgAdminFunction
 	public void removeValueSetDefinition(URI valueSetDefinitionURI)
 			throws LBException {
 		if (valueSetDefinitionURI != null)
