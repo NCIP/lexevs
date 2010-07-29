@@ -20,6 +20,7 @@ package org.lexgrid.valuesets.dto;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.annotations.LgClientSideSafe;
 
 /**
  * A resolved Value Domain definition containing the coding scheme version reference list
@@ -29,6 +30,7 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("serial")
+@LgClientSideSafe
 public class ResolvedValueSetDefinition extends VSDSummary implements java.io.Serializable
 {
 
