@@ -1,5 +1,7 @@
 package org.lexevs.cts2;
 
+import org.lexevs.dao.database.key.Java5UUIDKeyGenerator;
+
 /**
  * The Class BaseService.
  * 
@@ -30,5 +32,14 @@ public abstract class BaseService extends LexEvsBasedService {
 			this.lexEvsCTS2 = LexEvsCTS2Impl.defaultInstance();
 		}
 		return this.lexEvsCTS2;
+	}
+	
+	/**
+	 * Creates the unique id.
+	 * 
+	 * @return the string
+	 */
+	protected String createUniqueId(){
+		return Java5UUIDKeyGenerator.getRandomUUID().toString();
 	}
 }
