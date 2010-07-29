@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
@@ -263,12 +262,30 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                         register(loadedCodingSchemes);
                     }
                     
-                    doPostProcessing(options_, codingSchemeReferences);
+                    try {
+                        doPostProcessing(options_, codingSchemeReferences);
+                    } catch (Exception e) {
+                        getLogger().warn("There was an error running the Post Processing Operations."+
+                                " Please see the log for more information. The load process will continue.", 
+                                e);
+                    }
                     
-                    doTransitiveAndIndex(codingSchemeReferences);
+                    try {
+                        doTransitiveAndIndex(codingSchemeReferences);
+                    } catch (Exception e) {
+                        getLogger().warn("There was an error running Computing the Transitivity Table or during Lucene Indexing."+
+                                " Please see the log for more information. The load process will continue.", 
+                                e);
+                    }
                     
-                    if(doApplyPostLoadManifest) {
-                        doApplyManifest(codingSchemeReferences);
+                    try {
+                        if(doApplyPostLoadManifest) {
+                            doApplyManifest(codingSchemeReferences);
+                        }
+                    } catch (Exception e) {
+                        getLogger().warn("There was an error applying the Post Load Manifest."+
+                                " Please see the log for more information. The load process will continue.", 
+                                e);
                     }
 
                     md_.info("After Indexing");
@@ -379,10 +396,23 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     protected void doTransitiveAndIndex(AbsoluteCodingSchemeVersionReference[] references) throws Exception {
         if(doComputeTransitiveClosure) {
-          doTransitiveTable(references);
+            try {
+                doTransitiveTable(references);
+            } catch (Exception e) {
+                getLogger().warn("There was an error running Computing the Transitivity Table."+
+                        " Please see the log for more information. The load process will continue.", 
+                        e);
+            }
         }
         if(doIndexing) {
-            doIndex(references);
+            try {
+                doIndex(references);
+            } catch (Exception e) {
+                getLogger().warn("There was an error during Lucene Indexing."+
+                        " Please see the log for more information. The load process will continue." +
+                        " A Re-index may be necessary.", 
+                        e);
+            }
         }
     }
 
