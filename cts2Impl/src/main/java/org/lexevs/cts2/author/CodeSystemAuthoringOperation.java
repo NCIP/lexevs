@@ -53,7 +53,6 @@ public interface CodeSystemAuthoringOperation {
 	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
 	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException;
 	
-	public void commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
 	
