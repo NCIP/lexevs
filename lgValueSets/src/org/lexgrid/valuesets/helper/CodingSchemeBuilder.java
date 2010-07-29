@@ -1,4 +1,4 @@
-package org.lexgrid.conceptdomain.util;
+package org.lexgrid.valuesets.helper;
 
 import java.util.List;
 

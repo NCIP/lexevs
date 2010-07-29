@@ -51,9 +51,9 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.conceptdomain.LexEVSConceptDomainServices;
-import org.lexgrid.conceptdomain.util.CodingSchemeBuilder;
 import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.helper.CodingSchemeBuilder;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
@@ -120,7 +120,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		
 		if (cns != null)
 		{
-			ResolvedConceptReferencesIterator rcrIter = cns.resolve(null, null, null);
+			ResolvedConceptReferencesIterator rcrIter = cns.resolve(null, null, null, null, true);
 			while (rcrIter.hasNext())
 			{
 				ResolvedConceptReference rcr = rcrIter.next();
@@ -210,7 +210,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		
 		if (!validateType(conceptDomain))
 		{
-			throw new LBException("Invalid entity type found in entity object. Only valid entity type for conecot domain entity is 'conceptDomain'");
+			throw new LBException("Invalid entity type found in entity object. Only valid entity type for concept domain entity is 'conceptDomain'");
 		}
 		
 		CodingSchemeVersionOrTag csVT = versionOrTag;
