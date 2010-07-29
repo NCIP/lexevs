@@ -63,7 +63,22 @@ public class ValueSetQueryOperationImplTest {
 	 */
 	@Test
 	public void testCheckValueSetSubsumption() {
-		fail("Not yet implemented");
+		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
+		
+		AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+		acsvr.setCodingSchemeURN("urn:oid:11.11.0.1");
+		acsvr.setCodingSchemeVersion("1.1");
+		
+		AbsoluteCodingSchemeVersionReferenceList csList = new AbsoluteCodingSchemeVersionReferenceList();
+		csList.addAbsoluteCodingSchemeVersionReference(acsvr);
+		
+		try {
+			boolean subsume = vsQueryop.checkValueSetSubsumption("SRITEST:AUTO:DomasticLeafOnly", null, "SRITEST:AUTO:EveryThing", null, csList, null);
+			System.out.println("subsumption ? : " + subsume);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	/**
