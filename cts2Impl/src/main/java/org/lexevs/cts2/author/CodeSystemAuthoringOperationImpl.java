@@ -269,11 +269,39 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public void updateCodeSystemVersionStatus(String codingSchemeUri,
-			String codeSystemVersion) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+	public void updateCodeSystemVersionStatus(
+			String codingSchemeURI, 
+			String codeSystemVersion, 
+			String status,
+			Boolean isActive,
+			RevisionInfo revision) throws LBException {
+		
+		this.validatedCodingScheme(codingSchemeURI, codeSystemVersion);
+		
+		
+		CodingScheme codingScheme = 
+        	this.getDatabaseServiceManager().
+        		getCodingSchemeService().
+        		getCompleteCodingScheme(codingSchemeURI, codeSystemVersion);
+		
+		String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
+		
+		if(StringUtils.isNotBlank(status)) {
+			codingScheme.setStatus(status);
+		}
+		
+		if(isActive != null) {
+			codingScheme.setIsActive(isActive);
+		}
+		
+		
+        // Ensure RevisionInfo is provided
+        validateRevisionInfo(revision);
+        
+        commitCodeSystem(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE);
+        
 	}
+	
 
 	public void updateConcept(
 			String codingSchemeUri, 
