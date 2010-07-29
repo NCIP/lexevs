@@ -61,7 +61,8 @@ public interface CodeSystemAuthoringOperation {
 	
 	public void updateCodeSystemVersion(String codingScheme, RevisionInfo revisionInfo);
 	
-	public void updateCodeSystemVersionStatus(String codingSchemeUri, String codeSystemVersion);
+	public void updateCodeSystemVersionStatus(String codingSchemeURI, String codeSystemVersion, String status, Boolean isActive,
+			RevisionInfo revision) throws LBException; 
 	
 	public void createCodeSystemSuppliment(
 			AbsoluteCodingSchemeVersionReference parent, 
