@@ -24,6 +24,8 @@ import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.dao.database.service.version.AuthoringService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * @author m004181
@@ -206,10 +208,10 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R300");
+		revInfo.setRevisionId("R400");
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
-		URI vsdURI = valueSetAuthOp.createValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), 
+		URI vsdURI = valueSetAuthOp.createValueSet(new URI("VSD:AUTHORING:JUNIT:TEST4"), 
 				"Authoring create vsd junit test2",
 				"Automobiles", "Autos", null, null, 
 				props, null, null, revInfo);
@@ -429,7 +431,7 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testRemoveValueSet(){
 		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setRevisionId("R212");
+		revInfo.setRevisionId("R412");
 		revInfo.setChangeAgent("testDeleteVSDChangeAgent");
 		revInfo.setChangeInstruction("testDeleteVSDChangeInstruction");
 		revInfo.setEditOrder(0L);
@@ -438,7 +440,7 @@ public class ValueSetAuthoringOperationImplTest {
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		try {
-			valueSetAuthOp.removeValueSet(new URI("VSD:AUTHORING:JUNIT:TEST2"), revInfo);
+			valueSetAuthOp.removeValueSet(new URI("VSD:AUTHORING:JUNIT:TEST4"), revInfo);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -470,4 +472,11 @@ public class ValueSetAuthoringOperationImplTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testRemoveRevisionRecordById() throws LBException {
+		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+		System.out.println(authServ.removeRevisionRecordbyId("R400"));
+	}
+
 }
