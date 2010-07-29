@@ -18,13 +18,10 @@ import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.test.Cts2BaseTest;
+import org.lexevs.dao.database.service.version.AuthoringService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
-
-	@Test
-	public void testCommitCodeSystem() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testCreateCodeSystem()   throws LBException, URISyntaxException{
@@ -192,8 +189,10 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	}
 
 	@Test
-	public void testCreateCodeSystemChangeSet() {
-		fail("Not yet implemented");
+	public void testRemoveRevisionRecordById() throws LBException {
+		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+		System.out.println(authServ.removeRevisionRecordbyId("R_CS_401"));
+	
 	}
 
 }
