@@ -9,12 +9,15 @@ import java.util.HashSet;
 import java.util.List;
 
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
@@ -22,23 +25,44 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.ObjectToString;
+import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.version.AuthoringService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class MRMAP2LexGrid {
-    List<String> PropertyNames;
-   //RRFLineReader mapReader;
-   //RRFLineReader satReader;
+    //services
+    AuthoringService service;
+    DatabaseServiceManager dbManager;
+    
+    private List<String> PropertyNames;
+    private String mapPath;
+    private String satPath;
     private LgMessageDirectorIF messages_;
     boolean mapMrSat;
     boolean isNewMapping = false;
-    String currentMapping = null;
-    HashSet<String> sources;
-    AssociationSource[] sourcesAndTargets;
+    private String currentMapping = null;
+    private HashSet<String> sources;
+    private AssociationSource[] sourcesAndTargets;
+    
+    //Supported Attribute Values
+    private String nameForMappingScheme;
+    private String nameForMappingVersion;
+    private String nameforMappingURI;
+    private String sourceScheme;
+    private String sourceVersion;
+    private String sourceURI;
+    private String targetScheme;
+    private String targetVersion;
+    private String targetURI;
     
     //constants
     public static final String ASSOC_NAME = "mapped_to";
     public static final String APROX_ASSOC_NAME = "approximately_mapped_to";
     public static final boolean ISMAP = true;
+    
+    //relations constants
     public static final String TORSAB = "TORSAB";
     public static final String TOVSAB = "TOVSAB";
     public static final String FROMRSAB =  "FROMRSAB";
@@ -47,13 +71,44 @@ public class MRMAP2LexGrid {
     public static final String SOS = "SOS";
     public static final String MAPSETNAME = "MAPSETNAME";
 
+    //coding scheme constants
+    public static final String CODING_SCHEME_NAME = "MappingCodingScheme";
+    public static final String CODING_SCHEME_URI = "http://does.not.resolve";
+    public static final String REPRESENTS_VERSION = "1.0";
     
-    public MRMAP2LexGrid(boolean mapMrSat, String sourceIdentifier, 
-        String targetIdentifier, 
-        LgMessageDirectorIF messages){
+    public MRMAP2LexGrid(boolean mapMrSat,
+            LgMessageDirectorIF messages,
+            String mrSatPath, String mrMapPath){
+        this(mapMrSat,
+                messages,
+                 mrSatPath,mrMapPath,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+    public MRMAP2LexGrid(boolean mapMrSat,
+        LgMessageDirectorIF messages,
+        String mrSatPath, String mrMapPath,
+        String nameForMappingScheme,
+        String nameForMappingVersion,
+        String nameforMappingURI,
+        String sourceScheme,
+        String sourceVersion,
+        String sourceURI,
+        String targetScheme,
+        String targetVersion,
+        String targetURI){
+        this.mapMrSat = mapMrSat;
         messages_ = messages;
         sources = new HashSet<String>();
-        PropertyNames = Arrays.asList(new String[]{ "MAPSETGRAMMER",
+        PropertyNames = Arrays.asList(new String[]{
+        	"MAPSETGRAMMER",
             "MAPSETRSAB",
             "MAPSETTYPE",
             "MAPSETVSAB",
@@ -63,15 +118,68 @@ public class MRMAP2LexGrid {
             "MTH_MAPFROMCOMPLEXITY", 
             "MTH_MAPTOCOMPLEXITY",
             "MR","DA","ST"});
-       // satReader = new RRFLineReader(satPath);
-      //  mapReader = new RRFLineReader(mapPath);
-        
+        mapPath = mrMapPath;
+        satPath = mrSatPath;
+        this.nameForMappingScheme = nameForMappingScheme;
+        this.nameForMappingVersion = nameForMappingVersion;
+        this.nameforMappingURI = nameforMappingURI;
+        this.sourceScheme = sourceScheme;
+        this.sourceVersion = sourceVersion;
+        this.sourceURI = sourceURI;
+        this.targetScheme = targetScheme;
+        this.targetVersion = targetVersion ;
+        this.targetURI = targetURI;
+        LexEvsServiceLocator locator = LexEvsServiceLocator.getInstance();
+        dbManager = locator.getDatabaseServiceManager();
+        service = dbManager.getAuthoringService();
     }
 
-    
+    public void loadToRevision() throws LBRevisionException{
+        service.loadRevision(processMrMapToLexGrid(), null);
+    }
     public Revision processMrMapToLexGrid() {
+        Revision revision = new Revision();
+        Relations rel = null;
         
-        return null;
+        try {
+        rel = processMrSatBean(satPath);
+        rel.addAssociationPredicate(processMrMapBean(mapPath));
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IndexOutOfBoundsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        CodingScheme scheme = createMrMapScheme(rel,
+        nameForMappingScheme,
+        nameForMappingVersion,
+        nameforMappingURI,
+        sourceScheme,
+        sourceVersion,
+        sourceURI,
+        targetScheme,
+        targetVersion,
+        targetURI);
+        ChangedEntry entry = new ChangedEntry();
+        entry.setChangedCodingSchemeEntry(scheme);
+        revision.addChangedEntry(entry);
+        return revision;
     }
     
     
@@ -273,9 +381,57 @@ public class MRMAP2LexGrid {
     }
     
     
-    private CodingScheme createMrMapScheme(MrMap map) {
-        // TODO Auto-generated method stub
-        return null;
+    protected CodingScheme createMrMapScheme(Relations rel, String codingSchemeName, String codingSchemeVersion,
+            String codingSchemeURI, String sourceSchemeName, String sourceSchemeVersion, String sourceSchemeURI,
+            String targetSchemeName, String targetSchemeVersion, String targetSchemeURI) {
+        CodingScheme scheme = new CodingScheme();
+        if (codingSchemeName == null) {
+            scheme.setCodingSchemeName(CODING_SCHEME_NAME);
+        }
+        if (codingSchemeVersion == null) {
+            scheme.setCodingSchemeURI(CODING_SCHEME_URI);
+        }
+        if (codingSchemeURI == null) {
+            scheme.setRepresentsVersion(REPRESENTS_VERSION);
+        }
+
+        // Supported source scheme namespace mapping
+        SupportedCodingScheme supportedSourceScheme = new SupportedCodingScheme();
+        if (sourceSchemeName == null) {
+            supportedSourceScheme.setLocalId(rel.getSourceCodingScheme());
+            supportedSourceScheme.setContent(rel.getSourceCodingScheme());
+        } else {
+            supportedSourceScheme.setLocalId(sourceSchemeName);
+            supportedSourceScheme.setUri(sourceSchemeURI);
+            supportedSourceScheme.setContent(sourceSchemeName);
+        }
+
+        SupportedNamespace supportedSourceNamespace = new SupportedNamespace();
+        supportedSourceNamespace.setLocalId(rel.getSourceCodingScheme());
+        if(sourceSchemeURI != null)
+            supportedSourceNamespace.setUri(sourceSchemeURI);
+        supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
+        
+        // supported target scheme namespace mapping
+        SupportedCodingScheme supportedTargetScheme = new SupportedCodingScheme();
+        if (targetSchemeName == null) {
+            supportedTargetScheme.setLocalId(rel.getTargetCodingScheme());
+            supportedTargetScheme.setContent(rel.getTargetCodingScheme());
+        }
+
+        else {
+            supportedTargetScheme.setLocalId(targetSchemeName);
+            supportedTargetScheme.setUri(targetSchemeURI);
+            supportedTargetScheme.setContent(targetSchemeName);
+        }
+        SupportedNamespace supportedTargetNamespace = new SupportedNamespace();
+        supportedTargetNamespace.setLocalId(rel.getTargetCodingScheme());
+        if (targetSchemeURI != null) {
+            supportedTargetNamespace.setUri(targetSchemeURI);
+        }
+        supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
+        scheme.addRelations(rel);
+        return scheme;
     }
 
 
