@@ -44,6 +44,6 @@ public class ProcessMrSatRowTest extends TestCase {
 			  assertTrue(sat.getAtv().equals(rawData[10]));
 			  assertTrue(sat.getSuppress().equals(rawData[11]));
 			  assertTrue(sat.getCvf().equals(rawData[12]));
-
+			  
 	}
 }
