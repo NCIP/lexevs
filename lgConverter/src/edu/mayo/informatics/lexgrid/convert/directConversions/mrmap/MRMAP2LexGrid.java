@@ -1,14 +1,19 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
@@ -16,12 +21,13 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.util.ObjectToString;
 import org.LexGrid.versions.Revision;
 
 public class MRMAP2LexGrid {
-    
-   RRFLineReader mapReader;
-   RRFLineReader satReader;
+    List<String> PropertyNames;
+   //RRFLineReader mapReader;
+   //RRFLineReader satReader;
     private LgMessageDirectorIF messages_;
     boolean mapMrSat;
     boolean isNewMapping = false;
@@ -32,25 +38,110 @@ public class MRMAP2LexGrid {
     //constants
     public static final String ASSOC_NAME = "mapped_to";
     public static final String APROX_ASSOC_NAME = "approximately_mapped_to";
+    public static final boolean ISMAP = true;
+    public static final String TORSAB = "TORSAB";
+    public static final String TOVSAB = "TOVSAB";
+    public static final String FROMRSAB =  "FROMRSAB";
+    public static final String FROMVSAB = "TOVSAB";
+    public static final String MAPSETVERSION =  "MAPSETVERSION";
+    public static final String SOS = "SOS";
+    public static final String MAPSETNAME = "MAPSETNAME";
+
     
     public MRMAP2LexGrid(boolean mapMrSat, String sourceIdentifier, 
-        String targetIdentifier, LgMessageDirectorIF messages){
+        String targetIdentifier, 
+        LgMessageDirectorIF messages){
         messages_ = messages;
-        sources = new HashSet();
+        sources = new HashSet<String>();
+        PropertyNames = Arrays.asList(new String[]{ "MAPSETGRAMMER",
+            "MAPSETRSAB",
+            "MAPSETTYPE",
+            "MAPSETVSAB",
+            "MTH_MAPFROMEXHAUSTIVE",
+            "MTH_MAPSETCOMPLEXITY",
+            "MTH_MAPTOEXHAUSTIVE",
+            "MTH_MAPFROMCOMPLEXITY", 
+            "MTH_MAPTOCOMPLEXITY",
+            "MR","DA","ST"});
+       // satReader = new RRFLineReader(satPath);
+      //  mapReader = new RRFLineReader(mapPath);
+        
     }
+
+    
     public Revision processMrMapToLexGrid() {
         
         return null;
     }
     
-    private void processMrSatBean(MrSat metaData) {
-        // TODO Auto-generated method stub
-        
+    
+    protected Relations processMrSatBean(String path) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException {
+        RRFLineReader satReader = new RRFLineReader(path);
+        String[] mrSatRow;
+        Relations relation = new Relations();
+        try {
+            while((mrSatRow = satReader.readRRFLine()) != null){
+                MrSat metaData = processMrSatRow(mrSatRow);
+               processMrSatToRelation(metaData, relation);
+            }
+            satReader.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+        ObjectToString.toString(relation);
+        return relation;
     }
 
+    protected void processMrSatToRelation(MrSat metaData, Relations relation) {
+        
+        if(relation.getProperties() == null){
+            Properties properties = new Properties();
+            relation.setProperties(properties);
+        }
+        if(relation.getContainerName() == null){
+            relation.setContainerName(metaData.getCui());
+        }
+        if(relation.getOwner() == null){
+            relation.setOwner(metaData.getSab());
+        }
+        if(relation.getIsMapping() == null){
+        relation.setIsMapping(ISMAP);}
+        String atnValue = metaData.getAtn();
+        if(PropertyNames.contains(atnValue)){
+            Property prop = new Property();
+            prop.setPropertyName(metaData.getAtn());
+            Text value = new Text();
+            value.setContent(metaData.getAtv());
+            prop.setValue(value);
+            relation.getProperties().addProperty(prop);
+        }
+        if(atnValue.equals(TORSAB)){
+            relation.setTargetCodingScheme(metaData.getAtv());
+        }
+        if(atnValue.equals(TOVSAB)){
+            relation.setTargetCodingSchemeVersion(metaData.getAtv());
+        }
+        if(atnValue.equals(FROMRSAB)){
+            relation.setSourceCodingScheme(metaData.getAtv());
+        }
+        if(atnValue.equals(FROMVSAB)){
+            relation.setSourceCodingSchemeVersion(metaData.getAtv());
+        }
+        if(atnValue.equals(MAPSETVERSION)){
+            relation.setRepresentsVersion(metaData.getAtv());
+        }
+        if(atnValue.equals(SOS) || atnValue.equals(MAPSETNAME)){
+            EntityDescription entityDescription = new EntityDescription();
+            entityDescription.setContent(metaData.getAtv());
+            relation.setEntityDescription(entityDescription);
+        }
+    }
     
-    protected AssociationPredicate processMrMapBean() throws Exception {
+    //TODO create JUnit
+    protected AssociationPredicate processMrMapBean(String path) throws Exception {
         String[] mrMapRow;
+        RRFLineReader mapReader = new RRFLineReader(path);
         AssociationPredicate predicate  = createAssociationPredicate();
 
             try {
@@ -186,23 +277,7 @@ public class MRMAP2LexGrid {
         // TODO Auto-generated method stub
         return null;
     }
-    
-    private Relations createMrSatRelation(AssociationSource targetsAndSources) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
-            String[] mrSatRow;
-            try {
-                while((mrSatRow = satReader.readRRFLine()) != null){
-                    MrSat metaData = processMrSatRow(mrSatRow);
-                   processMrSatBean(metaData);
-                }
-                satReader.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
-        return null;
 
-    }
 
     protected MrMap processMrMapRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrMap mrMap = new MrMap();
@@ -222,5 +297,40 @@ public class MRMAP2LexGrid {
         }
         return mrSat;
     }
-
+//    public static void main(String[] args){
+//        try {
+//           Relations relation = new MRMAP2LexGrid(true, null, null, null).processMrSatBean("../lbTest/resources/testData/mrmap_mapping/MRSAT.RRF");
+//           System.out.println(relation.getContainerName());
+//           System.out.println(relation.getSourceCodingScheme());
+//           System.out.println(relation.getSourceCodingSchemeVersion());
+//           System.out.println(relation.getTargetCodingScheme());
+//           System.out.println(relation.getTargetCodingSchemeVersion());
+//           System.out.println(relation.getRepresentsVersion());
+//           System.out.println(relation.getOwner());
+//           Properties properties = relation.getProperties();
+//           Property[] property = properties.getProperty();
+//           for(Property p: property){
+//               System.out.println("propertyName:  " + p.getPropertyName());
+//               System.out.println("propertyValue:  " + p.getValue().getContent());
+//           }
+//          
+//        } catch (SecurityException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IllegalArgumentException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (NoSuchFieldException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//        
+//    }
 }

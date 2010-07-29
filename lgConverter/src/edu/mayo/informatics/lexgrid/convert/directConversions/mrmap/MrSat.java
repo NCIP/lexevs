@@ -80,6 +80,7 @@ public class MrSat {
     public void setCvf(String cvf) {
         this.cvf = cvf;
     }
+    
     public String cui;
     public String lui;
     public String sui;

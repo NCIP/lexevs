@@ -19,10 +19,12 @@ public class RRFLineReader {
 
     public String[] readRRFLine() throws IOException{
         String string = reader.readLine();
-        String[] rowArray = string.split("\\|");
+        String[] rowArray = null;
+        if(string != null){
+        rowArray = string.split("\\|");
         for(String s: rowArray){
            s=s.trim(); 
-        }
+        }}
        return rowArray;
     }
     
