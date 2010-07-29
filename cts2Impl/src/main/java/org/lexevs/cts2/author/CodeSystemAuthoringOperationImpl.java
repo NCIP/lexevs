@@ -29,10 +29,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	@Override
 	
-	public void commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException {
+	protected void commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException {
         
         // Create the changed entry for code system
        ChangedEntry changedEntry = new ChangedEntry();
@@ -50,14 +48,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        //load as revision
        this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null, null);
        
-       AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
-       reference.setCodingSchemeURN(codeSystem.getCodingSchemeURI());
-       reference.setCodingSchemeVersion(codeSystem.getRepresentsVersion());
-       
-       //index the loaded coding scheme
-       //this.getIndexServiceManager().getEntityIndexService().createIndex(reference); 
-		
-		//return 0;
 	}
 
 	
