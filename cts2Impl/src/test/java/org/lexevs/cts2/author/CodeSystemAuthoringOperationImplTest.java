@@ -1,6 +1,7 @@
 package org.lexevs.cts2.author;
 
-import java.net.URI;
+import static org.junit.Assert.*;
+
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,9 +17,9 @@ import org.LexGrid.naming.Mappings;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
-import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.cts2.test.Cts2BaseTest;
 
-public class CodeSystemAuthoringOperationImplTest extends LexEvsDbUnitTestBase {
+public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 
 	@Test
 	public void testCommitCodeSystem() {
