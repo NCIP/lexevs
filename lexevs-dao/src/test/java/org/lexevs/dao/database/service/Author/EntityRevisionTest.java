@@ -3,6 +3,8 @@ package org.lexevs.dao.database.service.Author;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.annotation.Resource;
 
@@ -136,5 +138,65 @@ public class EntityRevisionTest extends LexEvsDbUnitTestBase {
 		assertEquals(0, preProperyAdded.getDefinitionCount() );
 		assertEquals(1, postProperyAdded.getDefinitionCount() );
 
+	}
+	
+	@Test
+	public void testDependentAndModifyEntity() throws Exception {
+		Entity julyEntity = entityService.resolveEntityByRevision(
+				"urn:oid:22.22.0.2", "2.0", "midas002", "Automobiles",
+				"testRelease2010July_testEntity");
+		
+		assertNotNull(julyEntity);
+		
+		assertFalse(julyEntity.getIsAnonymous());
+		assertFalse(julyEntity.getIsDefined());
+		assertEquals(julyEntity.getDefinitionCount(), 2);
+
+		Entity septEntity = entityService.resolveEntityByRevision(
+				"urn:oid:22.22.0.2", "2.0", "midas002", "Automobiles",
+				"testRelease2010Sep_testEntity");
+		
+		assertNotNull(septEntity);
+		
+		assertTrue(septEntity.getIsAnonymous());
+		assertTrue(septEntity.getIsDefined());
+		
+		assertEquals(septEntity.getDefinitionCount(), 3);
+	}
+
+	@Test
+	public void testRemoveEntity() throws Exception {
+		
+		try {
+			entityService.resolveEntityByRevision("urn:oid:22.22.0.2", "2.0",
+					"midas001", "Automobiles", "testRelease2010Mar_testEntity");
+			
+			fail("Exception expected, didn't occur.");
+		} catch (Exception e) {
+			assertTrue(e.getMessage().contains(
+					"has been REMOVEd from the lexEVS system in the past."));
+		}
+	}
+	
+	@Test
+	public void testNullEntity() throws Exception {
+		Entity olderEntity = entityService.resolveEntityByDate(
+				"urn:oid:22.22.0.2", "2.0", "midas002", "Automobiles",
+				new Date(Timestamp.valueOf("2010-07-29 00:00:00").getTime()));
+
+		assertNull(olderEntity);
+	}
+	
+	@Test
+	public void testInvalidEntity() throws Exception {
+		try {
+			entityService.resolveEntityByRevision("urn:oid:22.22.0.2", "2.0",
+					"aaaa", "bbbb", "testRelease2010Mar_testEntity");
+			
+			fail("Exception expected, didn't occur.");
+		} catch (Exception e) {
+			assertTrue(e.getMessage().contains(
+					"doesn't exist in lexEVS."));
+		}
 	}
 }

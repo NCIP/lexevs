@@ -455,5 +455,79 @@
                 </changedCodingSchemeEntry>
             </changedEntry>
         </revision>
+        
+        <!-- Test:ADD another Definition-->
+        <revision revisionId="testRelease2010July_testEntity">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010July_testEntity"
+                        prevRevision="testRelease2010June_testEntity" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="midas002" entityCodeNamespace="Automobiles">
+                            <lgCommon:entryState 
+                                containingRevision="testRelease2010July_testEntity" 
+                                prevRevision="testRelease2010June_testEntity"
+                                relativeOrder="0" changeType="DEPENDENT"/>     
+                            <lgCon:definition propertyName="test-def1" propertyId="testDef1">
+                                <lgCommon:entryState changeType="NEW" relativeOrder="0" 
+                                    containingRevision="testRelease2010July_testEntity"/>
+                                <lgCommon:value>Test Definition1</lgCommon:value>
+                            </lgCon:definition>                      
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+        <!-- Test:ADD another Definition-->
+        <revision revisionId="testRelease2010Aug_testEntity">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010Aug_testEntity"
+                        prevRevision="testRelease2010July_testEntity" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="midas002" entityCodeNamespace="Automobiles">
+                            <lgCommon:entryState 
+                                containingRevision="testRelease2010Aug_testEntity"
+                                prevRevision="testRelease2010July_testEntity"
+                                relativeOrder="0" changeType="DEPENDENT"/>     
+                            <lgCon:definition propertyName="test-def2" propertyId="testDef2">
+                                <lgCommon:entryState changeType="NEW" relativeOrder="0" 
+                                    containingRevision="testRelease2010Aug_testEntity"/>
+                                <lgCommon:value>Test Definition2</lgCommon:value>
+                            </lgCon:definition>                      
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+        <!-- Test:MODIFY entity-->
+        <revision revisionId="testRelease2010Sep_testEntity">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="Automobiles"
+                    codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+                    <lgCommon:entryState containingRevision="testRelease2010Sep_testEntity"
+                        prevRevision="testRelease2010Aug_testEntity" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgCS:mappings/>
+                    <lgCS:entities>
+                        <lgCon:entity entityCode="midas002" entityCodeNamespace="Automobiles" isAnonymous="true" isDefined="true">                            
+                            <lgCommon:entryState 
+                                containingRevision="testRelease2010Sep_testEntity"
+                                prevRevision="testRelease2010Aug_testEntity"
+                                relativeOrder="0" changeType="MODIFY"/>                       
+                            <lgCommon:entityDescription>midas002 : September release modifications.</lgCommon:entityDescription>
+                        </lgCon:entity>
+                    </lgCS:entities>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
     </editHistory>
 </systemRelease>

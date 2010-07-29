@@ -78,12 +78,12 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 	@Override
 	protected CodingScheme addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, String entryUid,
-			CodingScheme entry) {
+			CodingScheme entry, String revisionId) {
 		String uri = id.getCodingSchemeUri();
 		String version = id.getCodingSchemeVersion();
 	
 		List<Property> properties = 
-			propertyService.resolvePropertiesOfCodingSchemeByRevision(uri, version, entry.getEntryState().getContainingRevision());
+			propertyService.resolvePropertiesOfCodingSchemeByRevision(uri, version, revisionId);
 		
 		entry.setProperties(new Properties());
 		entry.getProperties().setProperty(properties);

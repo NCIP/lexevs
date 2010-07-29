@@ -404,12 +404,12 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 							getEntryStateByEntryUidAndRevisionId(
 									codingSchemeUId, 
 									entryUid, 
-									revisionId));
+									adjustedRevisionId));
 				}
 			}
 			
 			if(entry != null) {
-				return addDependentAttributesByRevisionId(id, entryUid, entry);
+				return addDependentAttributesByRevisionId(id, entryUid, entry, revisionId);
 			} else {
 				return null;
 			}
@@ -488,7 +488,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		return true;
 	}
 	
-	protected abstract T addDependentAttributesByRevisionId(I id, String entryUid, T entry);
+	protected abstract T addDependentAttributesByRevisionId(I id, String entryUid, T entry, String revisionId);
 
 	/**
 	 * Insert into history.

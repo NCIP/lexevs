@@ -308,15 +308,6 @@
 			FROM
 				$prefix$property
 			WHERE
-				referenceGuid = #param1#
-			
-			UNION
-			
-			SELECT DISTINCT
-				propertyGuid
-			FROM
-				$prefix$h_property
-			WHERE
 				referenceGuid = #param1#	
 	</select>
   	

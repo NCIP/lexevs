@@ -20,7 +20,7 @@ public class VersionableEventAssociationDataService extends
 	@Override
 	protected AssociationData addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, String entryUid,
-			AssociationData entry) {
+			AssociationData entry, String revisionId) {
 		return entry;
 	}
 

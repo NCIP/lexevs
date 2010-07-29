@@ -36,7 +36,7 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 	@Override
 	protected Relations addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, String entryUid,
-			Relations entry) {
+			Relations entry, String revisionId) {
 		entry.setProperties(new Properties());
 		
 		List<Property> properties = 
@@ -44,7 +44,7 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 					id.getCodingSchemeUri(), 
 					id.getCodingSchemeVersion(), 
 					entry.getContainerName(), 
-					entry.getEntryState().getContainingRevision());
+					revisionId);
 		
 		//TODO: Get dependent association source/targets
 		

@@ -132,7 +132,7 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 	
 	@Override
 	protected Property addDependentAttributesByRevisionId(
-			ParentUidReferencingId id, String entryUid, Property entry) {
+			ParentUidReferencingId id, String entryUid, Property entry, String revisionId) {
 		//no dependent attributes on a Property
 		return entry;
 	}

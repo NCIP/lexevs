@@ -546,7 +546,7 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 	
 	@Override
 	protected Entity addDependentAttributesByRevisionId(
-			CodingSchemeUriVersionBasedEntryId id, String entryUid, Entity entry) {
+			CodingSchemeUriVersionBasedEntryId id, String entryUid, Entity entry, String revisionId) {
 		String codingSchemeUri = id.getCodingSchemeUri();
 		String version = id.getCodingSchemeVersion();
 
@@ -555,7 +555,7 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 				version, 
 				entry.getEntityCode(), 
 				entry.getEntityCodeNamespace(), 
-				entry.getEntryState().getContainingRevision());
+				revisionId);
 		
 		entry.addAnyProperties(properties);
 		

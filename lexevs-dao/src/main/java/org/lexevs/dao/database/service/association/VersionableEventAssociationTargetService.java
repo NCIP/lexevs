@@ -22,7 +22,7 @@ public class VersionableEventAssociationTargetService
 	protected AssociationTarget addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, 
 			String entryUid,
-			AssociationTarget entry) {
+			AssociationTarget entry, String revisionId) {
 		return entry;
 	}
 
