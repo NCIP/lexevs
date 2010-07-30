@@ -37,7 +37,7 @@ public class LexEVSUsageContextServicesTest extends TestCase {
 	public void testInsertUsageContextStringStringStringStringProperties() throws LBException {
 		CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTag("TEST", 
 				UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_VERSION);
-		getUsageContextService().insertUsageContext("uc001", "uc1 name", null, "uc1 desc", "uc1 status", null, csvt);
+		getUsageContextService().insertUsageContext("uc001", "uc1 name", null, "uc1 desc", "uc1 status", true, null, csvt);
 	}
 
 	
