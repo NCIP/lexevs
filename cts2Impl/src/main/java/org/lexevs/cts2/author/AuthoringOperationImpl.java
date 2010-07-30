@@ -18,7 +18,6 @@
 package org.lexevs.cts2.author;
 
 import org.lexevs.cts2.BaseService;
-import org.lexevs.cts2.LexEvsCTS2;
 
 /**
  * Class returns individual CTS 2 Authoring Operation interfaces.
@@ -30,6 +29,7 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	private transient ValueSetAuthoringOperation valueSetAuthop_;
 	private transient CodeSystemAuthoringOperation codeSystemAuthop_;
 	private transient ConceptDomainAuthoringOperation conceptDomainAuthOp_;
+	private transient UsageContextAuthoringOperation usageContextAuthOp_;
 
 	
 	/* (non-Javadoc)
@@ -66,8 +66,9 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	 */
 	@Override
 	public UsageContextAuthoringOperation getUsageContextAuthoringOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (usageContextAuthOp_ == null)
+			usageContextAuthOp_ = new UsageContextAuthoringOperationImpl();
+		return usageContextAuthOp_;
 	}
 
 	/* (non-Javadoc)
