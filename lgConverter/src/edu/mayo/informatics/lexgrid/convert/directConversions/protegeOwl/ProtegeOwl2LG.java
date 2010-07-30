@@ -297,21 +297,6 @@ public class ProtegeOwl2LG {
         }
     }
 
-    private void procesAnnotationProperties() {
-        for (Iterator props = owlModel_.getUserDefinedOWLDatatypeProperties().iterator(); props.hasNext();) {
-            OWLDatatypeProperty prop = (OWLDatatypeProperty) props.next();
-            
-            // Check if the data type property is an annotation property. We do
-            // not treat annotation properties as associations.
-            if (prop.isAnnotationProperty()) {
-                System.out.println(); 
-                for (Iterator iterator = prop.getLabels().iterator(); iterator.hasNext();) {
-                    System.out.println(); 
-                }
-            }
-        }
-    }
-    
     // ////////////////////////////////////////////////
     // //////////// CORE METHODS /////////////////////
     // //////////////////////////////////////////////
@@ -1547,7 +1532,6 @@ public class ProtegeOwl2LG {
                     lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("comment", comment, lgSupportedMappings_));
                 }
             }
-            
         }
 
         // Handle imbedded XML if present ...
