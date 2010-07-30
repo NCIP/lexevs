@@ -18,7 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.exporters;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -29,12 +33,19 @@ import org.LexGrid.LexBIG.Extensions.Export.OwlRdf_Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.lexevs.logging.LoggerFactory;
 
+import edu.mayo.informatics.lexgrid.convert.exporters.owlrdf.LexGridToOwlRdfConverter;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters.XmlContentWriter;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 
 /**
@@ -46,6 +57,18 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
     public final static String name = "OwlRdfExport";
     private final static String description = "This loader exports LexGrid to OWL RDF";
 
+    private CodedNodeGraph cng;
+    private CodedNodeSet cns;
+
+    public void setCns(CodedNodeSet cns) {
+        this.cns = cns;
+    }
+    
+    public void setCng(CodedNodeGraph cng) {
+        this.cng = cng;
+    }
+    
+    
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
@@ -131,7 +154,7 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
         String codingSchemeVersion = source.getCodingSchemeVersion();
         String codingSchemeName = this.getCodingSchemeName(codingSchemeUri, codingSchemeVersion);
         String outFileName = outDirWithEndingPathSeparator + codingSchemeName + 
-                    "_" + codingSchemeVersion + ".xml";  
+                    "_" + codingSchemeVersion + ".owl";  
         
         File outFile = new File(outFileName);
         
@@ -150,13 +173,32 @@ public class OwlRdfExport extends BaseExporter implements OwlRdf_Exporter {
         }
         
         // enter exporter code here
+        Writer w = null;
+        BufferedWriter out = null;
+        LexBIGService lbsvc = null;
+        CodingScheme codingScheme = null;
+        try {
+            w = new FileWriter(outFile, false);
+            out = new BufferedWriter(w);
+
+            lbsvc = LexBIGServiceImpl.defaultInstance();
+            codingScheme = lbsvc.resolveCodingScheme(codingSchemeUri, 
+                                        Constructors.createCodingSchemeVersionOrTagFromVersion(codingSchemeVersion)); 
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LBException e) {
+            e.printStackTrace();
+        }
         
+        // cng and cns MUST be set by setter methods
+        // call code in lgConverter
+        LexGridToOwlRdfConverter.convert(codingScheme, cng, cns, out, this.getMessageDirector());
     }
     
     
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-       holder.getResourceUriAllowedFileTypes().add("xml");
        holder.setIsResourceUriFolder(true);
        holder.getBooleanOptions().add(new BooleanOption(LexGridConstants.OPTION_FORCE, (new Boolean(false))));
        return holder;
