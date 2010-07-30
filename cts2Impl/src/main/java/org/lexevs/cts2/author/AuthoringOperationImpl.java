@@ -27,8 +27,9 @@ import org.lexevs.cts2.LexEvsCTS2;
  */
 public class AuthoringOperationImpl extends BaseService implements AuthoringOperation {
 
-	private ValueSetAuthoringOperation valueSetAuthop_;
-	private CodeSystemAuthoringOperation codeSystemAuthop_;
+	private transient ValueSetAuthoringOperation valueSetAuthop_;
+	private transient CodeSystemAuthoringOperation codeSystemAuthop_;
+	private transient ConceptDomainAuthoringOperation conceptDomainAuthOp_;
 
 	
 	/* (non-Javadoc)
@@ -45,7 +46,6 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	 */
 	@Override
 	public CodeSystemAuthoringOperation getCodeSystemAuthoringOperation() {
-		// TODO Auto-generated method stub
 		if (codeSystemAuthop_ == null)
 			codeSystemAuthop_  = new CodeSystemAuthoringOperationImpl();
 		return codeSystemAuthop_ ;
@@ -56,8 +56,9 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	 */
 	@Override
 	public ConceptDomainAuthoringOperation getConceptDomainAuthoringOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (conceptDomainAuthOp_ == null)
+			conceptDomainAuthOp_ = new ConceptDomainAuthoringOperationImpl();
+		return conceptDomainAuthOp_;
 	}
 
 	/* (non-Javadoc)
