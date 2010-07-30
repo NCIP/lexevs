@@ -99,6 +99,8 @@ public interface LexEVSUsageContextServices extends Serializable {
 	 * 				UsageContext description
 	 * @param status - 
 	 * 				UsageContext status
+	 * @param isActive -
+	 * 				is usage context active
 	 * @param properties -
 	 * 				UsageContext properties
 	 * @param versionOrTag -
@@ -107,7 +109,7 @@ public interface LexEVSUsageContextServices extends Serializable {
 	 * @throws LBException
 	 */
 	public void insertUsageContext(String usageContextId, String usageContextName, 
-			String revisionId, String description, String status, Properties properties, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+			String revisionId, String description, String status, boolean isActive, Properties properties, CodingSchemeVersionOrTag versionOrTag) throws LBException;
 	
 	/**
 	 * Inserts UsageContext entity into UsageContext coding scheme.

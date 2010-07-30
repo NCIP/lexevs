@@ -138,14 +138,21 @@ public class LexEVSUsageContextServicesImpl implements LexEVSUsageContextService
 				UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_FORMAL_NAME);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.usagecontext.LexEVSUsageContextServices#insertUsageContext(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.usagecontext.LexEVSUsageContextServices#insertUsageContext(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
 	public void insertUsageContext(String usageContextId,
 			String usageContextName, String revisionId, String description,
-			String status, Properties properties,
+			String status, boolean isActive, Properties properties,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		if (StringUtils.isEmpty(usageContextName))
+			throw new LBException("Usage Context name can not be empty");
+		
+		if (StringUtils.isEmpty(usageContextId))
+			throw new LBException("Usage Context id can not be empty");
+		
 		// create an entity object for concept domain
 		Entity entity = new Entity();
 		entity.setEntityCode(usageContextId);
@@ -154,6 +161,7 @@ public class LexEVSUsageContextServicesImpl implements LexEVSUsageContextService
 		ed.setContent(description);
 		entity.setEntityDescription(ed);
 		entity.setStatus(status);
+		entity.setIsActive(isActive);
 		entity.addEntityType(UsageContextConstants.USAGE_CONTEXT_ENTITY_TYPE);
 		
 		if (StringUtils.isNotEmpty(revisionId))
