@@ -155,5 +155,16 @@ public interface ConceptDomainAuthoringOperation {
 	 * @return
 	 * @throws LBException
 	 */
-	public boolean bindConceptDomainToValueSets(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException;
+	public boolean addConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException;
+	
+	/**
+	 * Remove concept domain to value set binding.
+	 * 
+	 * @param conceptDomainId
+	 * @param valueSetURIS
+	 * @param revisionInfo
+	 * @return
+	 * @throws LBException
+	 */
+	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException;
 }

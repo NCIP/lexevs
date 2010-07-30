@@ -290,7 +290,7 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		if (StringUtils.isNotEmpty(defaultCodeSystem))
 			vsd.setDefaultCodingScheme(defaultCodeSystem);
 		
-		if (StringUtils.isNotEmpty(conceptDomainId))
+		if (conceptDomainId != null)
 			vsd.setConceptDomain(conceptDomainId);
 		
 		if (sourceList != null)

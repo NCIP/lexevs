@@ -29,12 +29,14 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.cts2.query.ValueSetQueryOperation;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.conceptdomain.LexEVSConceptDomainServices;
@@ -458,7 +460,12 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		return true;
 	}
 	
-	public boolean bindConceptDomainToValueSets(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean addConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
 		if (valueSetURIS == null)
@@ -469,6 +476,33 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		for (URI vsURI : valueSetURIS)
 		{
 			vsAuthOp.updateValueSetMetaData(vsURI, null, null, conceptDomainId, null, null, revisionInfo);
+		}
+		
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
+		if (StringUtils.isEmpty(conceptDomainId))
+			throw new LBException("Concept Domain Id can not be empty");
+		if (valueSetURIS == null)
+			throw new LBException("Value Set URI list can not be empty");
+		
+		ValueSetAuthoringOperation vsAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
+		ValueSetQueryOperation vsQueryOp = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
+		
+		for (URI vsURI : valueSetURIS)
+		{
+			ValueSetDefinition vsd = vsQueryOp.getValueSetDetails(vsURI.toString(), null);
+			if (vsd != null)
+			{
+				if (vsd.getConceptDomain().equalsIgnoreCase(conceptDomainId))
+					vsAuthOp.updateValueSetMetaData(vsURI, null, null, " ", null, null, revisionInfo);
+			}
 		}
 		
 		return true;
