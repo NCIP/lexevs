@@ -26,6 +26,7 @@ import org.lexevs.cts2.BaseService;
  */
 public class QueryOperationImpl extends BaseService implements QueryOperation {
 	private transient ValueSetQueryOperation valueSetQueryOp_;
+	private transient ConceptDomainQueryOperation conceptDomainQueryOp_;
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.query.QueryOperation#getAssociationQueryOperation()
@@ -50,8 +51,10 @@ public class QueryOperationImpl extends BaseService implements QueryOperation {
 	 */
 	@Override
 	public ConceptDomainQueryOperation getConceptDomainQueryOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (conceptDomainQueryOp_ == null)
+			conceptDomainQueryOp_ = new ConceptDomainQueryOperationImpl();
+		
+		return conceptDomainQueryOp_;
 	}
 
 	/* (non-Javadoc)
