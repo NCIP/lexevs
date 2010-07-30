@@ -41,7 +41,7 @@ public class LexEVSConceptDomainServicesTest extends TestCase {
 	public void testInsertConceptDomainStringStringStringStringProperties() throws LBException {
 		CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTag("TEST", 
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		getConceptDomainService().insertConceptDomain("cd001", "cd1 name", null, "cd1 desc", "cd1 status", null, csvt);
+		getConceptDomainService().insertConceptDomain("cd001", "cd1 name", null, "cd1 desc", "cd1 status", true, null, csvt);
 	}
 
 	
