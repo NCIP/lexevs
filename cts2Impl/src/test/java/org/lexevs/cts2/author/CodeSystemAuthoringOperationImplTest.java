@@ -63,7 +63,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 
 	@Test
 	public void testRemoveCodeSystem()   throws LBException, URISyntaxException{
-		//fail("Not yet implemented");
+		
 		
 		String randomID = UUID.randomUUID().toString();
 		
@@ -87,6 +87,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+		
 		
 	}
 
@@ -155,7 +156,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 
 	@Test
 	public void testUpdateCodeSystemVersionStatus()   throws LBException, URISyntaxException{
-		//fail("Not yet implemented");
+		
 		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
@@ -188,10 +189,10 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		
 	}
 
-	@Test
-	public void testRemoveRevisionRecordById() throws LBException {
+
+	protected void testRemoveRevisionRecordById(String revisionID) throws LBException {
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-		System.out.println(authServ.removeRevisionRecordbyId("R_CS_401"));
+		System.out.println(authServ.removeRevisionRecordbyId(revisionID));
 	
 	}
 
