@@ -157,12 +157,19 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#insertConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#insertConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
 	public void insertConceptDomain(String conceptDomainId,
-			String conceptDomainName, String revisionId, String description, String status,
+			String conceptDomainName, String revisionId, String description, String status, boolean isActive, 
 			Properties properties, CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		
+		if (StringUtils.isEmpty(conceptDomainName))
+			throw new LBException("concept domain name can not be empty");
+		
+		if (StringUtils.isEmpty(conceptDomainId))
+			throw new LBException("concept domain id can not be empty");
+		
 		// create an entity object for concept domain
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptDomainId);
@@ -171,6 +178,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		ed.setContent(description);
 		entity.setEntityDescription(ed);
 		entity.setStatus(status);
+		entity.setIsActive(isActive);
 		entity.addEntityType(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE);
 		
 		if (StringUtils.isNotEmpty(revisionId))
@@ -181,17 +189,14 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			entity.setEntryState(es);
 		}
 		
-		if (StringUtils.isNotEmpty(conceptDomainName))
-		{
-			Presentation pres = new Presentation();
-			pres.setPropertyName(SQLTableConstants.TBLCOLVAL_TEXTUALPRESENTATION);
-			Text text = new Text();
-			text.setContent(conceptDomainName);
-			pres.setValue(text);
-			pres.setIsPreferred(true);
-			
-			entity.addPresentation(pres);
-		}
+		Presentation pres = new Presentation();
+		pres.setPropertyName(SQLTableConstants.TBLCOLVAL_TEXTUALPRESENTATION);
+		Text text = new Text();
+		text.setContent(conceptDomainName);
+		pres.setValue(text);
+		pres.setIsPreferred(true);
+		
+		entity.addPresentation(pres);
 		
 		if (properties != null)
 			entity.addAnyProperties(properties.getPropertyAsReference());

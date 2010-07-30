@@ -95,6 +95,8 @@ public interface LexEVSConceptDomainServices extends Serializable {
 	 * 				concept domain description
 	 * @param status - 
 	 * 				concept domain status
+	 * @param isActive -
+	 * 				is concept domain active
 	 * @param properties -
 	 * 				concept domain properties
 	 * @param versionOrTag -
@@ -103,7 +105,7 @@ public interface LexEVSConceptDomainServices extends Serializable {
 	 * @throws LBException
 	 */
 	public void insertConceptDomain(String conceptDomainId, String conceptDomainName, 
-			String revisionId, String description, String status, Properties properties, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+			String revisionId, String description, String status, boolean isActive, Properties properties, CodingSchemeVersionOrTag versionOrTag) throws LBException;
 	
 	/**
 	 * Inserts concept domain entity into concept domain coding scheme.
