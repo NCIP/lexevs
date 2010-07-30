@@ -23,10 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.LexGrid.naming.URIMap;
-import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 
 /**
  * The Class CachingSupportedAttribuiteTemplate.
@@ -48,24 +45,24 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected synchronized void insert(final String codingSchemeUri, final String codingSchemeVersion, final URIMap uriMap){
+	protected void insert(final String codingSchemeUri, final String codingSchemeVersion, final URIMap uriMap){
+	
 		String key = this.buildCacheKey(uriMap);
 
 		if(! attributeCache.containsKey(key)){
-
+			attributeCache.put(key, uriMap);
 			try {
 				this.getDatabaseServiceManager().getCodingSchemeService().
 					insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
 			} catch (Exception e) {
 				this.getLogger().warn("Error registering Supported Attribute.", e);
 			}
-
-			attributeCache.put(key, uriMap);
 		}
 
 		if(attributeCache.size() >= maxCacheSize) {
 			attributeCache.clear();
 		}	
+	
 	}
 	
 	protected String buildCacheKey(URIMap map){

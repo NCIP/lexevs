@@ -41,10 +41,10 @@ public class CompositeGroupItemReader<I1,I2> implements ItemReader<CompositeRead
 	private static final Log log = LogFactory.getLog(CompositeGroupItemReader.class);
 	
 	/** The master group item reader. */
-	private BufferedGroupItemReader<I1> masterGroupItemReader;
+	private ItemReader<List<I1>> masterGroupItemReader;
 	
 	/** The slave group item reader. */
-	private BufferedGroupItemReader<I2> slaveGroupItemReader;
+	private ItemReader<List<I2>> slaveGroupItemReader;
 	
 	/** The composite group comparator. */
 	private CompositeGroupComparator<I1,I2> compositeGroupComparator;
@@ -67,14 +67,16 @@ public class CompositeGroupItemReader<I1,I2> implements ItemReader<CompositeRead
 		List<I2> slaveGroup = null;
 		if(!slaveCache.isEmpty()){
 			slaveGroup = slaveCache.poll();
-			log.warn("Getting Group from queue.");
+			log.debug("Getting Group from queue.");
 		} else {
 			slaveGroup = slaveGroupItemReader.read();
 		}
 		
 		if(!compositeGroupComparator.doGroupsMatch(masterGroup, slaveGroup)){
-			slaveCache.add(slaveGroup);
-			log.warn("Group mismatch -- queueing...");
+			if(slaveGroup != null) {
+				slaveCache.add(slaveGroup);
+			}
+			log.debug("Group mismatch -- queueing...");
 		} else {
 			compositeReaderChunk.setItem2List(slaveGroup);
 		}
@@ -82,13 +84,20 @@ public class CompositeGroupItemReader<I1,I2> implements ItemReader<CompositeRead
 		return compositeReaderChunk;
 	}
 
-	/**
-	 * Gets the master group item reader.
-	 * 
-	 * @return the master group item reader
-	 */
-	public BufferedGroupItemReader<I1> getMasterGroupItemReader() {
+	public ItemReader<List<I1>> getMasterGroupItemReader() {
 		return masterGroupItemReader;
+	}
+
+	public void setMasterGroupItemReader(ItemReader<List<I1>> masterGroupItemReader) {
+		this.masterGroupItemReader = masterGroupItemReader;
+	}
+
+	public ItemReader<List<I2>> getSlaveGroupItemReader() {
+		return slaveGroupItemReader;
+	}
+
+	public void setSlaveGroupItemReader(ItemReader<List<I2>> slaveGroupItemReader) {
+		this.slaveGroupItemReader = slaveGroupItemReader;
 	}
 
 	/**
@@ -101,14 +110,6 @@ public class CompositeGroupItemReader<I1,I2> implements ItemReader<CompositeRead
 		this.masterGroupItemReader = masterGroupItemReader;
 	}
 
-	/**
-	 * Gets the slave group item reader.
-	 * 
-	 * @return the slave group item reader
-	 */
-	public BufferedGroupItemReader<I2> getSlaveGroupItemReader() {
-		return slaveGroupItemReader;
-	}
 
 	/**
 	 * Sets the slave group item reader.
