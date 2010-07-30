@@ -22,8 +22,9 @@ import org.lexgrid.usagecontext.LexEVSUsageContextServices;
 import org.lexgrid.usagecontext.impl.LexEVSUsageContextServicesImpl;
 
 /**
- * @author m004181
- *
+ * Implementation of LexEVS CTS2 Usage Context Authoring Operation.
+ * 
+ * @author <a href="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</a>
  */
 public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		UsageContextAuthoringOperation {
