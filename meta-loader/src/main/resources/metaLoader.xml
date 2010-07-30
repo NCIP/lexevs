@@ -22,8 +22,8 @@
 			<listener ref="cleanupListener" />
 		</listeners>
 
-		<step id="populateStagingTable" parent="stagingTablePopulatorStepFactory"
-			next="loadCodingScheme" />
+<!--		<step id="populateStagingTable" parent="stagingTablePopulatorStepFactory"-->
+<!--			next="loadCodingScheme" />-->
 
 		<step id="loadCodingScheme" next="registerCodingScheme">
 			<tasklet ref="metaCodingSchemeLoadingTasklet" />
@@ -63,74 +63,26 @@
 			</tasklet>
 		</step>
 
-		<step id="loadMrdocMetadata" next="loadEntities">
+		<step id="loadMrdocMetadata" next="loadEntitiesAndRelationships">
 			<tasklet ref="mrdocMetadataLoadingTasklet" />
 		</step>
 
-		<step id="loadEntities" parent="metaLoadEntitiesPartitioned" next="loadRelationsAndProperties"/>
-
-		<split id="loadRelationsAndProperties" task-executor="taskExecutor">
-
+		<split id="loadEntitiesAndRelationships" task-executor="taskExecutor">
+	
 			<flow>
-				<split id="loadPropertiesAndIndex">
-					<flow>
-
-					<split id="loadProperties" task-executor="taskExecutor">
-
-						<flow>
-							<step id="loadDefinitions" parent="listenerStep">
-								<tasklet>
-									<chunk reader="mrdefReader" processor="qualifierAddingMetaDefinitionProcessor"
-										writer="entityPropertyWriter" commit-interval="500">
-										<streams>
-											<stream ref="mrdefReader" />
-										</streams>
-									</chunk>
-								</tasklet>
-							</step>
-						</flow>
-
-						<flow>
-							<step id="loadMrstyProperties">
-								<tasklet>
-									<chunk reader="mrstyReader" processor="metaMrstyPropertyProcessor"
-										writer="entityPropertyWriter" commit-interval="500">
-									</chunk>
-								</tasklet>
-							</step>
-						</flow>
-
-						<flow>
-							<step id="loadMrsatProperties" parent="metaLoadMrsatPropertiesPartitioned"/>
-						</flow>
-					</split>
-					
-					</flow>
-
-					<flow>
-					<step id="index">
-						<tasklet ref="indexingTasklet" />
-					</step>
-					</flow>
-
-				</split>
-
-			</flow>
-
-			<flow>
-				<step id="loadEntityToEntityRelations">
-					<tasklet>
-						<chunk reader="metaMrrelSkippingReader" processor="metaEntityAssocToEntityProcessor"
-							writer="associationSourceWriter" commit-interval="500">
-							<streams>
-								<stream ref="mrrelReader" />
-							</streams>
-						</chunk>
-					</tasklet>
+				<step id="loadEntities" parent="metaLoadEntitiesPartitioned" next="index" />
+	
+				<step id="index">
+					<tasklet ref="indexingTasklet" />
 				</step>
 			</flow>
-
+	
+			<flow>
+				<step id="loadEntityToEntityRelations" parent="metaLoadAssocsPartioned"/>
+			</flow>
+		
 		</split>
+		
 	</job>
 
 	<beans:bean id="codingSchemeNameSettingProcessor" abstract="true">
@@ -180,10 +132,13 @@
 			<listeners>
 				<listener ref="stepCompletionListener" />
 			</listeners>
-			<chunk reader="partitionedMetaMrconsoGroupReader" processor="entityListProcessor"
+			<chunk reader="metaTotalEntityCompositeReader" processor="metaTotalEntityProcessor"
 				writer="entityWriter" commit-interval="500">
 					<streams>
 						<stream ref="mrconsoReader" />
+						<stream ref="mrsatReader" />
+						<stream ref="mrdefReader" />
+						<stream ref="mrstyReader" />
 					</streams>
 			</chunk>
 		</tasklet>
@@ -263,7 +218,7 @@
 	</beans:bean>
 
 
-	<step id="metaPartitionedLoadAssociations">
+	<step id="metaPartitionedLoadAssociations" parent="listenerStep">
 		<tasklet>
 			<listeners>
 				<listener ref="stepCompletionListener" />
@@ -294,12 +249,61 @@
 
 	<!-- end partitioning -->
 
+	<beans:bean id="metaTotalEntityProcessor" 
+		class="org.lexgrid.loader.meta.processor.MetaTotalEntityProcessor">
+		<beans:property name="mrconsoGroupEntityProcessor" ref="entityListProcessor"/>
+		<beans:property name="mrdefItemProcessor" ref="qualifierAddingMetaDefinitionProcessor"/>
+		<beans:property name="mrstyItemProcessor" ref="metaMrstyPropertyProcessor"/>
+		<beans:property name="mrsatItemProcessor" ref="qualifierAddingMetaMrsatProcessor"/>
+	</beans:bean>
+	
+	<beans:bean id="metaTotalEntityCompositeReader"
+		class="org.lexgrid.loader.reader.CompositeGroupItemReader" scope="step">
+		<beans:property name="masterGroupItemReader" ref="decoratedMetaMrconsoMrsatCompositeReader"/>
+		<beans:property name="slaveGroupItemReader" ref="decoratedMetaMrstyMrdefCompositeReader"/>
+		<beans:property name="compositeGroupComparator">
+			<beans:bean
+				class="org.lexgrid.loader.meta.reader.support.TotalEntityCompositeGroupComparator" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="decoratedMetaMrconsoMrsatCompositeReader"
+		class="org.lexgrid.loader.reader.decorator.SingleItemToListReaderDecorator" scope="step">
+		<beans:constructor-arg ref="metaMrconsoMrsatCompositeReader"/>
+	</beans:bean>
+	
+	<beans:bean id="decoratedMetaMrstyMrdefCompositeReader"
+		class="org.lexgrid.loader.reader.decorator.SingleItemToListReaderDecorator" scope="step">
+		<beans:constructor-arg ref="metaMrstyMrdefCompositeReader"/>
+	</beans:bean>
+	
+	<beans:bean id="metaMrconsoMrsatCompositeReader"
+		class="org.lexgrid.loader.reader.CompositeGroupItemReader" scope="step">
+		<beans:property name="masterGroupItemReader" ref="partitionedMetaMrconsoGroupReader"/>
+		<beans:property name="slaveGroupItemReader" ref="partitionedMetaMrsatGroupReader"/>
+		<beans:property name="compositeGroupComparator">
+			<beans:bean
+				class="org.lexgrid.loader.meta.reader.support.MrconsoMrsatCompositeGroupComparator" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="metaMrstyMrdefCompositeReader"
+		class="org.lexgrid.loader.reader.CompositeGroupItemReader" scope="step">
+		<beans:property name="masterGroupItemReader" ref="partitionedMetaMrstyGroupReader"/>
+		<beans:property name="slaveGroupItemReader" ref="partitionedMetaMrdefGroupReader"/>
+		<beans:property name="compositeGroupComparator">
+			<beans:bean
+				class="org.lexgrid.loader.meta.reader.support.MrstyMrdefCompositeGroupComparator" />
+		</beans:property>
+	</beans:bean>
+	
+
 	<beans:bean id="metaMrrelGroupReader"
 		class="org.lexgrid.loader.reader.BufferedGroupItemReader" parent="mrrelGroupReader"
 		scope="step">
 		<beans:property name="groupDiscriminator">
 			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MrrelMetaEntityGroupDiscriminator" />
+				class="org.lexgrid.loader.meta.reader.support.MrrelMetaEntityGroupDiscriminator" />
 		</beans:property>
 	</beans:bean>
 
@@ -308,7 +312,34 @@
 		scope="step">
 		<beans:property name="groupDiscriminator">
 			<beans:bean
-				class="org.lexgrid.loader.meta.processor.support.MrconsoMetaEntityGroupDiscriminator" />
+				class="org.lexgrid.loader.meta.reader.support.MrconsoMetaEntityGroupDiscriminator" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="partitionedMetaMrstyGroupReader" 
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader" parent="partitionedMrstyGroupReader"
+			scope="step">
+			<beans:property name="groupDiscriminator">
+				<beans:bean
+					class="org.lexgrid.loader.meta.reader.support.MrstyMetaEntityGroupDiscriminator" />
+			</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="partitionedMetaMrsatGroupReader" 
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader" parent="partitionedMrsatGroupReader"
+			scope="step">
+			<beans:property name="groupDiscriminator">
+				<beans:bean
+					class="org.lexgrid.loader.meta.reader.support.MrsatMetaEntityGroupDiscriminator" />
+			</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="partitionedMetaMrdefGroupReader"
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader" parent="partitionedMrdefGroupReader"
+		scope="step">
+		<beans:property name="groupDiscriminator">
+			<beans:bean
+				class="org.lexgrid.loader.meta.reader.support.MrdefMetaEntityGroupDiscriminator" />
 		</beans:property>
 	</beans:bean>
 
@@ -363,12 +394,16 @@
 		<beans:property name="propertyResolver">
 			<beans:ref bean="metaDefinitionPropertyResolver"/>
 		</beans:property>
-		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="metaMrsatPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
-		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+		</beans:property>
 		<beans:property name="propertyResolver">
 			<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaMrsatPropertyResolver">
@@ -389,7 +424,9 @@
 	
 	<beans:bean id="metaMrstyPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor" parent="metaDefaultPropertyProcessor">
-		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+		</beans:property>
 		<beans:property name="propertyResolver">
 			<beans:bean
 				class="org.lexgrid.loader.meta.processor.support.MetaMrstySemanticTypePropertyResolver">

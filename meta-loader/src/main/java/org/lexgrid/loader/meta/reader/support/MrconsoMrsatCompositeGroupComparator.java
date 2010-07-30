@@ -16,22 +16,32 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.lexgrid.loader.meta.processor.support;
+package org.lexgrid.loader.meta.reader.support;
 
-import org.lexgrid.loader.reader.support.GroupDiscriminator;
-import org.lexgrid.loader.rrf.model.Mrrel;
+import java.util.List;
+
+import org.lexgrid.loader.reader.support.CompositeGroupComparator;
+import org.lexgrid.loader.rrf.model.Mrconso;
+import org.lexgrid.loader.rrf.model.Mrsat;
+import org.lexgrid.loader.rrf.model.Mrsty;
 
 /**
- * The Class MrrelMetaEntityGroupDiscriminator.
+ * The Class MrrelMrhierCompositeGroupComparator.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrrelMetaEntityGroupDiscriminator implements GroupDiscriminator<Mrrel>{
+public class MrconsoMrsatCompositeGroupComparator implements CompositeGroupComparator<Mrconso,Mrsat>{
 
 	/* (non-Javadoc)
-	 * @see org.lexgrid.loader.reader.support.GroupDiscriminator#getDiscriminatingValue(java.lang.Object)
+	 * @see org.lexgrid.loader.reader.support.CompositeGroupComparator#doGroupsMatch(java.util.List, java.util.List)
 	 */
-	public String getDiscriminatingValue(Mrrel item) {
-		return item.getCui1();
+	public boolean doGroupsMatch(List<Mrconso> list1, List<Mrsat> list2) {
+		if(list1 == null || list2 == null){
+			return false;
+		}
+		if(list1.size() == 0 || list2.size() == 0){
+			return false;
+		}
+		return list1.get(0).getCui().equals(list2.get(0).getCui());
 	}
 }
