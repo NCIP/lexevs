@@ -30,7 +30,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		return 0;
 	}
 	
-	protected void commitCodeSystem(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException {
+	protected void commitCodeSystemChangeSet(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException {
         
         // Create the changed entry for code system
        ChangedEntry changedEntry = new ChangedEntry();
@@ -105,7 +105,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(scheme, revision, null, ChangeType.NEW);
+	        commitCodeSystemChangeSet(scheme, revision, null, ChangeType.NEW);
 	        
 	        return scheme;
 	}
@@ -129,7 +129,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         // Ensure RevisionInfo is provided
         validateRevisionInfo(revision);
         
-        commitCodeSystem(codingScheme, revision, null, ChangeType.REMOVE);
+        commitCodeSystemChangeSet(codingScheme, revision, null, ChangeType.REMOVE);
         
         return true;
 }
@@ -191,7 +191,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystem(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
 	        
 	        return codingScheme;
 	}
@@ -289,7 +289,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         // Ensure RevisionInfo is provided
         validateRevisionInfo(revision);
         
-        commitCodeSystem(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE);
+        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE);
         
 	}
 	
