@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -24,7 +23,6 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.util.ObjectToString;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -135,7 +133,7 @@ public class MRMAP2LexGrid {
     }
 
     public void loadToRevision() throws LBRevisionException{
-        service.loadRevision(processMrMapToLexGrid(), null);
+        service.loadRevision(processMrMapToLexGrid(), null, false);
     }
     public Revision processMrMapToLexGrid() {
         Revision revision = new Revision();
@@ -197,7 +195,6 @@ public class MRMAP2LexGrid {
 
             e.printStackTrace();
         }
-        ObjectToString.toString(relation);
         return relation;
     }
 
