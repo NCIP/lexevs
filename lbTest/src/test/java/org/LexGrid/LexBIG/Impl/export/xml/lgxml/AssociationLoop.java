@@ -4,15 +4,16 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CngFactory;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CnsFactory;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CodingSchemeChecker;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ExportDataVerifier;
+import org.LexGrid.LexBIG.Impl.export.common.util.AbstractOutputDir;
+import org.LexGrid.LexBIG.Impl.export.common.util.CngFactory;
+import org.LexGrid.LexBIG.Impl.export.common.util.CnsFactory;
+import org.LexGrid.LexBIG.Impl.export.common.util.CodingSchemeChecker;
+import org.LexGrid.LexBIG.Impl.export.common.util.ExportDataVerifier;
+import org.LexGrid.LexBIG.Impl.export.common.util.Logger;
+import org.LexGrid.LexBIG.Impl.export.common.util.TestCleaner;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ExportHelper;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ImportHelper;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.Logger;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.OutputDir;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.TestCleaner;
+import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.XmlExporterTestOutputDir;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
@@ -23,7 +24,7 @@ public class AssociationLoop extends TestCase {
     private final String CS_URI = "1.2.3";
     private final String CS_VERSION = "1.0";
     
-    private OutputDir outputDir;
+    private AbstractOutputDir outputDir;
     
     private final String[] assoc1 = {
     		"<lgRel:source",
@@ -140,10 +141,9 @@ public class AssociationLoop extends TestCase {
     
     public void init() {
     	Logger.log("AssociationLoop: init: entry");
-    	
+    	outputDir = new XmlExporterTestOutputDir();
 		// cleanup 
     	Logger.log("AssociationLoop: init: clean up any failed test artifacts");
-    	this.outputDir = new OutputDir();
 		TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_URI, this.CS_VERSION);
     	
     	Logger.log("AssociationLoop: init: exit");

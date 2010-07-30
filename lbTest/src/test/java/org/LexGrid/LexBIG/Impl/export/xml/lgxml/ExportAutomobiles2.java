@@ -4,26 +4,26 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CngFactory;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CnsFactory;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.CodingSchemeChecker;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ExportDataVerifier;
+import org.LexGrid.LexBIG.Impl.export.common.util.AbstractOutputDir;
+import org.LexGrid.LexBIG.Impl.export.common.util.CngFactory;
+import org.LexGrid.LexBIG.Impl.export.common.util.CnsFactory;
+import org.LexGrid.LexBIG.Impl.export.common.util.CodingSchemeChecker;
+import org.LexGrid.LexBIG.Impl.export.common.util.ExportDataVerifier;
+import org.LexGrid.LexBIG.Impl.export.common.util.Logger;
+import org.LexGrid.LexBIG.Impl.export.common.util.TestCleaner;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ExportHelper;
 import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.ImportHelper;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.Logger;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.OutputDir;
-import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.TestCleaner;
+import org.LexGrid.LexBIG.Impl.export.xml.lgxml.util.XmlExporterTestOutputDir;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
 public class ExportAutomobiles2 extends TestCase {
 
-    private final String INPUT_FILE_NAME_AUTO2 = "resources/testData/lgXmlExport/Automobiles2.xml";
-    
+    private final String INPUT_FILE_NAME_AUTO2 = "resources/testData/lgXmlExport/Automobiles2.xml";    
     private final String CS_AUTO2_URI = "urn:oid:11.11.0.1";
     private final String CS_AUTO2_VERSION = "1.1";
     
-    private OutputDir outputDir;
+    private AbstractOutputDir outputDir;
     
     private final String[] assoc1 = {"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
@@ -125,10 +125,9 @@ public class ExportAutomobiles2 extends TestCase {
         
     public void init() {
     	Logger.log("ExportAutomobiles2: init: entry");
-    	
+    	outputDir = new XmlExporterTestOutputDir();
 		// cleanup 
     	Logger.log("ExportAutomobiles2: init: clean up any failed test artifacts");
-    	this.outputDir = new OutputDir();
 		TestCleaner.cleanUp(this.outputDir.getOutputDirAsString(), this.CS_AUTO2_URI, this.CS_AUTO2_VERSION);
     	
     	Logger.log("ExportAutomobiles2: init: exit");
