@@ -46,7 +46,7 @@
 	</beans:bean>
 	
 	
-	<beans:bean id="mrstyReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+	<beans:bean id="mrstyReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
 		<beans:property name="resource" value="${rrfDir}/MRSTY.RRF"/>
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
@@ -175,6 +175,28 @@
 			<beans:ref bean="mrsatReader"/>
 		</beans:property>
 	</beans:bean>
+	
+	<beans:bean id="partitionedMrdefReader" class="org.lexgrid.loader.reader.SkippingItemReader" scope="step">
+		<beans:property name="skipPolicy">
+				<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrdefCuiNumberBasedSkipPolicy">
+					<beans:property name="cuiNumber" value="#{stepExecutionContext[rrfPartitionNumber]}"/>
+				</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrdefReader"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="partitionedMrstyReader" class="org.lexgrid.loader.reader.SkippingItemReader" scope="step">
+		<beans:property name="skipPolicy">
+				<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrstyCuiNumberBasedSkipPolicy">
+					<beans:property name="cuiNumber" value="#{stepExecutionContext[rrfPartitionNumber]}"/>
+				</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrstyReader"/>
+		</beans:property>
+	</beans:bean>
 
 	<beans:bean id="mrrelReader" class="org.springframework.batch.item.file.FlatFileItemReader" init-method="doOpen" scope="step">
 		<beans:property name="resource" value="${rrfDir}/MRREL.RRF"/>
@@ -247,6 +269,27 @@
 	 	abstract="true">
 		<beans:property name="delegate">
 			<beans:ref local="partitionedMrconsoReader"/>
+		</beans:property>	
+	</beans:bean>
+	
+	<beans:bean id="partitionedMrsatGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
+	 	abstract="true">
+		<beans:property name="delegate">
+			<beans:ref local="partitionedMrsatReader"/>
+		</beans:property>	
+	</beans:bean>
+	
+	<beans:bean id="partitionedMrstyGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
+	 	abstract="true">
+		<beans:property name="delegate">
+			<beans:ref local="partitionedMrstyReader"/>
+		</beans:property>	
+	</beans:bean>
+	
+	<beans:bean id="partitionedMrdefGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
+	 	abstract="true">
+		<beans:property name="delegate">
+			<beans:ref local="partitionedMrdefReader"/>
 		</beans:property>	
 	</beans:bean>
 
