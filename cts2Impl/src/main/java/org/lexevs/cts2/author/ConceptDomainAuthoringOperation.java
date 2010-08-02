@@ -167,4 +167,16 @@ public interface ConceptDomainAuthoringOperation {
 	 * @throws LBException
 	 */
 	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException;
+	
+	/**
+	 * Remove concept domain.
+	 * 
+	 * @param conceptDomainId
+	 * @param versionOrTag
+	 * @param revision
+	 * @return
+	 * @throws LBException
+	 */
+	public boolean removeConceptDomain(String conceptDomainId, CodingSchemeVersionOrTag versionOrTag, 
+			RevisionInfo revision) throws LBException;
 }
