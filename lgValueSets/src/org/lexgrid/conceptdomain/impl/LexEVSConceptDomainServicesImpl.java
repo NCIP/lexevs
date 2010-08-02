@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -46,6 +47,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
@@ -69,6 +71,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	private LexEVSValueSetDefinitionServices vsd_;
 	
 	private static LexEVSConceptDomainServices cdServ_;
+	private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
 	
 	public static LexEVSConceptDomainServices defaultInstance(){
 		if (cdServ_ == null)
@@ -84,13 +87,28 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	@Override
 	public CodingScheme getConceptDomainCodingScheme(CodingSchemeVersionOrTag versionOrTag) throws LBException {
 		CodingSchemeVersionOrTag csVT = versionOrTag;
+		
 		if (csVT == null || StringUtils.isEmpty(csVT.getVersion()))
 		{
 			csVT = Constructors.createCodingSchemeVersionOrTag(null, 
 					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 		}
+		
 		return getLexBIGService().resolveCodingScheme(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
 				csVT);
+	}
+	
+	public CodingSchemeSummary getConceptDomainCodingSchemeSummary(CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		String version = null;
+		
+		if (versionOrTag == null || StringUtils.isEmpty(versionOrTag.getVersion()))
+		{
+			version = ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION;
+		}
+		
+		return databaseServiceManager.getCodingSchemeService().
+        	getCodingSchemeSummaryByUriAndVersion(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
+        		version);
 	}
 	
 	/*
@@ -351,39 +369,6 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			vsdURIs = null;
 		
 		return vsdURIs;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#removeConceptDomain(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
-	 */
-	@Override
-	public void removeConceptDomain(String conceptDomainId, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		if (StringUtils.isEmpty(conceptDomainId))
-			throw new LBException("concept domain id can not be empty");
-		
-		if (versionOrTag == null || StringUtils.isEmpty(versionOrTag.getVersion()))
-			throw new LBException("Version can not be empty");
-		
-		Entity entity = getConceptDomainEntity(conceptDomainId, versionOrTag);
-		
-		if (entity != null)
-		{
-			// remove from database
-			getDatabaseEntityService().
-					removeEntity(
-							ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
-							versionOrTag.getVersion(),
-							entity);
-			// remove from lucene index
-			getEntityIndexService().deleteEntityFromIndex(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
-				versionOrTag.getVersion(),
-				entity);
-		}
-		else
-		{
-			throw new LBException("No concept domain entity found with id : " + conceptDomainId);
-		}
 	}
 	
 	private boolean validateType(Entity conceptDomain){

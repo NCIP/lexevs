@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -21,6 +22,15 @@ public interface LexEVSConceptDomainServices extends Serializable {
 	 * @throws LBException
 	 */
 	public CodingScheme getConceptDomainCodingScheme(CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	
+	/**
+	 * Gets the concept domain coding scheme summary.
+	 * 
+	 * @param versionOrTag concept domain coding scheme version or tag
+	 * @return the concept domain coding scheme summary
+	 * @throws LBException
+	 */
+	public CodingSchemeSummary getConceptDomainCodingSchemeSummary(CodingSchemeVersionOrTag versionOrTag) throws LBException;
 	
 	/**
 	 * Returns concept domain entity object of the concept domain id.
@@ -148,16 +158,5 @@ public interface LexEVSConceptDomainServices extends Serializable {
 	 */
 	public List<String> isEntityInConceptDomain(String conceptDomainId, String entityCode, AbsoluteCodingSchemeVersionReferenceList codingSchemeVersionList, List<String> usageContext) 
 		throws LBException;
-	
-	/**
-	 * Remove concept domain from the concept domain coding scheme.
-	 * 
-	 * @param conceptDomainId - 
-	 * 				Identifier of the concept domain that will be removed
-	 * @param versionOrTag -
-	 * 			  concept domain coding scheme version or tag
-	 * @throws LBException
-	 */
-	public void removeConceptDomain(String conceptDomainId, CodingSchemeVersionOrTag versionOrTag) throws LBException;
 	
 }
