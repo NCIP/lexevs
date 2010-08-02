@@ -24,9 +24,6 @@
       <index name="idx_vsdName">
         <index-column name="valueSetDefName"/>
       </index>
-      <index name="idx_vsdURI">
-        <index-column name="valueSetDefURI"/>
-      </index>
     </table>
     <table name="@PREFIX@vsdEntry">
       <column name="vsdEntryGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
