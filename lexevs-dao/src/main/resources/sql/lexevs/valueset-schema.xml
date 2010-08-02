@@ -124,9 +124,6 @@
       <index name="@PREFIX@idx_pl_releaseGuid">
         <index-column name="releaseGuid"/>
       </index>
-      <index name="@PREFIX@idx_pickListId">
-        <index-column name="pickListId"/>
-      </index>
       <index name="@PREFIX@idx_representsVSD">
         <index-column name="representsValueSetDefinition"/>
       </index>
