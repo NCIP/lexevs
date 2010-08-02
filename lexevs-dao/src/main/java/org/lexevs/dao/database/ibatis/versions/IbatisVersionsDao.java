@@ -285,7 +285,10 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			EntryStateType entryType, 
 			String previousEntryStateUId,
 			EntryState entryState) {
-
+		
+		if (entryState.getRelativeOrder() == null)
+			entryState.setRelativeOrder(0L);
+		
 		this.insertEntryState(
 				codingSchemeUId, 
 				entryStateUId, 
