@@ -784,6 +784,8 @@
 
 	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
+		<beans:property name="retry" value="${retry}"/>
+		<beans:property name="prefix" value="${prefix}"/>
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="metaCodingSchemeIdSetter" />
 		</beans:property>
