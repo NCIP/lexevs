@@ -186,7 +186,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        	codingScheme.setMappings(mappings);
 
 	        if (properties !=null)
-	        	codingScheme.setProperties(properties);
+	        	
+	        	codingScheme.setProperties(processProperties(revision, properties));
 		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
@@ -196,6 +197,26 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        return codingScheme;
 	}
 	
+
+	private Properties processProperties(RevisionInfo revision, Properties properties) {
+		// TODO Auto-generated method stub
+		Property currentProperty = null;
+		Properties updatedProps = new Properties();
+		
+		for (Property prop : properties.getPropertyAsReference())
+		{
+				currentProperty = prop;
+
+				// setup entry state for property to be changed
+				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+				currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+						revision.getRevisionId(), propPrevRevId, 0L));
+				updatedProps.addProperty(currentProperty);
+		}
+		
+		return updatedProps;
+		
+	}
 
 	@Override
 	public Revision createCodeSystemChangeSet(String agent,
