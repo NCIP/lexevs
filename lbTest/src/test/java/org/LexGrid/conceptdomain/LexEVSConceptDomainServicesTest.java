@@ -122,31 +122,6 @@ public class LexEVSConceptDomainServicesTest extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link org.lexgrid.conceptdomain.impl.LexEVSConceptDomainServicesImpl#removeConceptDomain(java.lang.String)}.
-	 * @throws LBException 
-	 */
-	@Test
-	public void testRemoveConceptDomain() throws LBException {
-		CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTag("TEST", 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		
-		List<String> cdIds = getConceptDomainService().listAllConceptDomainIds(csvt);
-		assertTrue(cdIds.size() == 2);
-		for (String id : cdIds)
-		{
-			assertTrue(id.equals("cd001") || id.equals("Autos"));
-		}
-		
-		getConceptDomainService().removeConceptDomain("cd001", csvt);	
-		cdIds = getConceptDomainService().listAllConceptDomainIds(csvt);
-		assertTrue(cdIds.size() == 1);
-		for (String id : cdIds)
-		{
-			assertTrue(id.equals("Autos"));
-		}
-	}
-	
 	@Test
 	public void testRemoveConceptDomainCodingSceheme() throws LBException{		
 		LexBIGServiceManager lbsm = getLexBIGService().getServiceManager(null);
