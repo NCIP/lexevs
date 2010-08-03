@@ -137,8 +137,129 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	
 	@Override
 	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
-            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-            List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException {
+	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException {
+	
+			if(codingSchemeURI == null){
+				throw new LBException("Coding scheme URI cannot be null");
+			}	
+	     
+	        CodingScheme codingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
+	         
+	        if (codingScheme == null)
+				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
+	        
+	
+	        if (StringUtils.isNotEmpty(codingSchemeName))
+	        	codingScheme.setCodingSchemeName(codingSchemeName);
+	        
+	        if (StringUtils.isNotEmpty(codingSchemeURI))
+	        	codingScheme.setCodingSchemeURI(codingSchemeURI);
+	
+	        if (StringUtils.isNotEmpty(formalName))
+	        	codingScheme.setFormalName(formalName);
+	
+	        if (StringUtils.isNotEmpty(defaultLanguage))
+	        	codingScheme.setDefaultLanguage(defaultLanguage);
+	        
+	        if (approxNumConcepts !=0L)
+	        	codingScheme.setApproxNumConcepts(approxNumConcepts);
+	        
+	        if (representsVersion !=null)
+	        	codingScheme.setRepresentsVersion(representsVersion);
+	
+	        if (localNameList != null)
+	        	codingScheme.setLocalName(localNameList);
+	
+	        if (sourceList != null)
+	        	codingScheme.setSource(sourceList);
+	        
+	        if (copyright !=null)
+	        	codingScheme.setCopyright(copyright);
+	        
+	        if (mappings !=null)
+	        	codingScheme.setMappings(mappings);
+	
+	        if (properties !=null)
+	        	
+	        	codingScheme.setProperties(processAddProperties(revision, properties));
+		
+	        // Ensure RevisionInfo is provided
+	        validateRevisionInfo(revision);
+	        
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        
+	        return codingScheme;
+	}
+
+	@Override
+	public CodingScheme addCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
+	        Properties properties) throws LBException {
+	
+			if(codingSchemeURI == null){
+				throw new LBException("Coding scheme URI cannot be null");
+			}	
+	     
+	        CodingScheme codingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
+	         
+	        if (codingScheme == null)
+				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
+	        
+	        if (properties !=null)
+	        	
+	        	codingScheme.setProperties(processAddProperties(revision, properties));
+		
+	        // Ensure RevisionInfo is provided
+	        validateRevisionInfo(revision);
+	        
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        
+	        return codingScheme;
+	}
+
+	@Override
+	public CodingScheme updateCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
+	        Properties properties) throws LBException {
+	
+			if(codingSchemeURI == null){
+				throw new LBException("Coding scheme URI cannot be null");
+			}	
+	     
+	        CodingScheme codingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
+	         
+	        if (codingScheme == null)
+				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
+	        
+	        if (properties !=null)
+	        	
+	        	codingScheme.setProperties(processUpdateProperties(revision, properties));
+		
+	        // Ensure RevisionInfo is provided
+	        validateRevisionInfo(revision);
+	        
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        
+	        return codingScheme;
+	}
+
+	@Override
+	public CodingScheme removeCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
+            Properties properties) throws LBException {
 
 			if(codingSchemeURI == null){
 				throw new LBException("Coding scheme URI cannot be null");
@@ -154,40 +275,9 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        if (codingScheme == null)
 				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
 	        
-
-	        if (StringUtils.isNotEmpty(codingSchemeName))
-	        	codingScheme.setCodingSchemeName(codingSchemeName);
-	        
-	        if (StringUtils.isNotEmpty(codingSchemeURI))
-	        	codingScheme.setCodingSchemeURI(codingSchemeURI);
-	 
-	        if (StringUtils.isNotEmpty(formalName))
-	        	codingScheme.setFormalName(formalName);
-
-	        if (StringUtils.isNotEmpty(defaultLanguage))
-	        	codingScheme.setDefaultLanguage(defaultLanguage);
-	        
-	        if (approxNumConcepts !=0L)
-	        	codingScheme.setApproxNumConcepts(approxNumConcepts);
-	        
-	        if (representsVersion !=null)
-	        	codingScheme.setRepresentsVersion(representsVersion);
-
-	        if (localNameList != null)
-	        	codingScheme.setLocalName(localNameList);
-
-	        if (sourceList != null)
-	        	codingScheme.setSource(sourceList);
-	        
-	        if (copyright !=null)
-	        	codingScheme.setCopyright(copyright);
-	        
-	        if (mappings !=null)
-	        	codingScheme.setMappings(mappings);
-
 	        if (properties !=null)
 	        	
-	        	codingScheme.setProperties(processProperties(revision, properties));
+	        	codingScheme.setProperties(processRemoveProperties(revision, properties));
 		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
@@ -198,7 +288,47 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 	
 
-	private Properties processProperties(RevisionInfo revision, Properties properties) {
+	private Properties processAddProperties(RevisionInfo revision, Properties properties) {
+		// TODO Auto-generated method stub
+		Property currentProperty = null;
+		Properties updatedProps = new Properties();
+		
+		for (Property prop : properties.getPropertyAsReference())
+		{
+				currentProperty = prop;
+	
+				// setup entry state for property to be changed
+				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+				currentProperty.setEntryState(populateEntryState(ChangeType.NEW, 
+						revision.getRevisionId(), propPrevRevId, 0L));
+				updatedProps.addProperty(currentProperty);
+		}
+		
+		return updatedProps;
+		
+	}
+
+	private Properties processUpdateProperties(RevisionInfo revision, Properties properties) {
+		// TODO Auto-generated method stub
+		Property currentProperty = null;
+		Properties updatedProps = new Properties();
+		
+		for (Property prop : properties.getPropertyAsReference())
+		{
+				currentProperty = prop;
+	
+				// setup entry state for property to be changed
+				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+				currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+						revision.getRevisionId(), propPrevRevId, 0L));
+				updatedProps.addProperty(currentProperty);
+		}
+		
+		return updatedProps;
+		
+	}
+
+	private Properties processRemoveProperties(RevisionInfo revision, Properties properties) {
 		// TODO Auto-generated method stub
 		Property currentProperty = null;
 		Properties updatedProps = new Properties();
@@ -209,7 +339,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 
 				// setup entry state for property to be changed
 				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
-				currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+				currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
 						revision.getRevisionId(), propPrevRevId, 0L));
 				updatedProps.addProperty(currentProperty);
 		}
