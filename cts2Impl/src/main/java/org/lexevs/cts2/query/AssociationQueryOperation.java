@@ -21,6 +21,8 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.AssociationTarget;
 
 public interface AssociationQueryOperation {
 	public ResolvedConceptReferenceList listAssociations(
@@ -31,11 +33,49 @@ public interface AssociationQueryOperation {
 	public ResolvedConceptReference determineTransitiveConceptRelationship(
 			String codingSystemUri, CodingSchemeVersionOrTag versionOrTag,
 			String relationContainerName, String associationName,
-			String sourceCode, String sourceNS, String targetCode, String targetNS);
+			String sourceCode, String sourceNS, String targetCode,
+			String targetNS);
 
 	public boolean computeSubsumptionRelationship(String codingSystemName,
 			CodingSchemeVersionOrTag versionOrTag, String associationtype,
 			ConceptReference parentCode, ConceptReference childCode);
 
-	public void getAssociationDetails();
+	public AssociationInformation getAssociationDetails(String codingSchemeUri,
+			CodingSchemeVersionOrTag versionOrTag,
+			String relationContainerName, String associationPredicateName,
+			String associationInstanceId);
+	
+	public class AssociationInformation {
+		private String codingSchemeUri;
+		private CodingSchemeVersionOrTag versionOrTag;
+		private AssociationSource associationSource;
+		private AssociationTarget associationTarget;
+		
+		public AssociationInformation () {}
+		
+		public String getCodingSchemeUri() {
+			return codingSchemeUri;
+		}
+		public void setCodingSchemeUri(String codingSchemeUri) {
+			this.codingSchemeUri = codingSchemeUri;
+		}
+		public CodingSchemeVersionOrTag getVersionOrTag() {
+			return versionOrTag;
+		}
+		public void setVersionOrTag(CodingSchemeVersionOrTag versionOrTag) {
+			this.versionOrTag = versionOrTag;
+		}
+		public AssociationSource getAssociationSource() {
+			return associationSource;
+		}
+		public void setAssociationSource(AssociationSource associationSource) {
+			this.associationSource = associationSource;
+		}
+		public AssociationTarget getAssociationTarget() {
+			return associationTarget;
+		}
+		public void setAssociationTarget(AssociationTarget associationTarget) {
+			this.associationTarget = associationTarget;
+		}
+	};
 }
