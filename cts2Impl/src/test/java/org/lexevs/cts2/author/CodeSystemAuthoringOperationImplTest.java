@@ -1,6 +1,6 @@
 package org.lexevs.cts2.author;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -8,18 +8,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.test.Cts2BaseTest;
+import org.lexevs.cts2.test.Cts2TestConstants;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -255,7 +261,37 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		
 	}
 
-
+	@Test
+	public void testUpdateConcept() throws LBException {
+		CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+        RevisionInfo info = new RevisionInfo();
+        info.setRevisionId("testId");
+        
+		Entity entityToUpdate = new Entity();
+		entityToUpdate.setEntityCode("005");
+		entityToUpdate.setEntityCodeNamespace(Cts2TestConstants.CTS2_AUTOMOBILES_NAME);
+		entityToUpdate.setEntityDescription(Constructors.createEntityDescription("Modified ED"));
+		
+		codeSystemAuthOp.updateConcept(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI, 
+				Cts2TestConstants.CTS2_AUTOMOBILES_VERSION, 
+				entityToUpdate, 
+				info);
+		
+		CodedNodeSet cns = super.getLexBIGService().getNodeSet(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI,
+				null, 
+				null);
+		
+		ResolvedConceptReferenceList refList = cns.restrictToCodes(Constructors.createConceptReferenceList("005")).resolveToList(null, null, null, -1);
+	
+		assertEquals(1,refList.getResolvedConceptReferenceCount());
+		
+		ResolvedConceptReference ref = refList.getResolvedConceptReference(0);
+		
+		assertEquals("Modified ED",ref.getEntityDescription().getContent());
+	}
+	
 	protected void testRemoveRevisionRecordById(String revisionID) throws LBException {
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 		System.out.println(authServ.removeRevisionRecordbyId(revisionID));
