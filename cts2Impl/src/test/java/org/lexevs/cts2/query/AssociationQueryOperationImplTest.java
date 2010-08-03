@@ -2,9 +2,18 @@ package org.lexevs.cts2.query;
 
 import static org.junit.Assert.*;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Test;
 
@@ -61,7 +70,77 @@ public class AssociationQueryOperationImplTest {
 
 	@Test
 	public void testDetermineTransitiveConceptRelationship() {
-		fail("Not yet implemented");
+		String codingSchemeUri = "urn:oid:11.11.0.1";
+    	CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+    	versionOrTag.setVersion("1.0");
+    	String containerName ="relations";
+    	String associationName = "hasSubtype";
+    	String sourceCode = "005", sourceNS = "Automobiles", targetCode = "C", targetNS = "Automobiles";
+		
+		ResolvedConceptReference path = query.determineTransitiveConceptRelationship(codingSchemeUri, versionOrTag, containerName, associationName, sourceCode, sourceNS, targetCode, targetNS);
+    	// the path string should be 
+    	//005|,Automobiles->A|,Automobiles->B|,Automobiles->C|,Automobiles
+    	// now let is traverse the graph to see if it is correct
+    	
+    	// for root
+    	assertEquals("005", path.getCode());
+    	assertEquals("Automobiles", path.getCodeNamespace());
+    	assertEquals("urn:oid:11.11.0.1", path.getCodingSchemeURI());
+    	assertEquals("1.0", path.getCodingSchemeVersion());
+    	
+    	AssociationList assnList = path.getSourceOf();
+    	assertEquals(1, assnList.getAssociationCount());
+    	
+    	Association assn = assnList.getAssociation(0); 
+    	if (assn == null)
+    		fail("associaton is null");
+    	assertEquals("hasSubtype", assn.getAssociationName());
+    	
+    	AssociatedConceptList assnConList = assn.getAssociatedConcepts();
+    	assertEquals(1, assnConList.getAssociatedConceptCount());
+    	
+    	// 2nd node
+    	ResolvedConceptReference assnCon = assnConList.getAssociatedConcept(0);
+    	assertEquals("A", assnCon.getCode());
+    	assertEquals("Automobiles", assnCon.getCodeNamespace());
+    	assertEquals("urn:oid:11.11.0.1", assnCon.getCodingSchemeURI());
+    	assertEquals("1.0", assnCon.getCodingSchemeVersion());
+    	
+    	assnList = assnCon.getSourceOf();
+    	assertEquals(1, assnList.getAssociationCount());
+    	
+    	assn = assnList.getAssociation(0); 
+    	if (assn == null)
+    		fail("associaton is null");
+    	assertEquals("hasSubtype", assn.getAssociationName());
+    	
+    	assnConList = assn.getAssociatedConcepts();
+    	assertEquals(1, assnConList.getAssociatedConceptCount());
+    	
+    	// 3rd node
+    	assnCon = assnConList.getAssociatedConcept(0);
+    	assertEquals("B", assnCon.getCode());
+    	assertEquals("Automobiles", assnCon.getCodeNamespace());
+    	assertEquals("urn:oid:11.11.0.1", assnCon.getCodingSchemeURI());
+    	assertEquals("1.0", assnCon.getCodingSchemeVersion());
+    	
+    	assnList = assnCon.getSourceOf();
+    	assertEquals(1, assnList.getAssociationCount());
+    	
+    	 assn = assnList.getAssociation(0); 
+    	if (assn == null)
+    		fail("associaton is null");
+    	assertEquals("hasSubtype", assn.getAssociationName());
+    	
+    	assnConList = assn.getAssociatedConcepts();
+    	assertEquals(1, assnConList.getAssociatedConceptCount());
+    	
+    	// 4th node
+    	assnCon = assnConList.getAssociatedConcept(0);
+    	assertEquals("C", assnCon.getCode());
+    	assertEquals("Automobiles", assnCon.getCodeNamespace());
+    	assertEquals("urn:oid:11.11.0.1", assnCon.getCodingSchemeURI());
+    	assertEquals("1.0", assnCon.getCodingSchemeVersion());
 	}
 
 	@Test

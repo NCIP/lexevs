@@ -20,6 +20,7 @@ package org.lexevs.cts2.query;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 
 public interface AssociationQueryOperation {
 	public ResolvedConceptReferenceList listAssociations(
@@ -27,10 +28,10 @@ public interface AssociationQueryOperation {
 			String namespace, String code, String associationName,
 			boolean isBackward, int depth, int maxToReturn);
 
-	public boolean determineTransitiveConceptRelationship(
-			String codingSystemName, CodingSchemeVersionOrTag versionOrTag,
-			String namespace, String parentCode, String childCode,
-			String associationName);
+	public ResolvedConceptReference determineTransitiveConceptRelationship(
+			String codingSystemUri, CodingSchemeVersionOrTag versionOrTag,
+			String relationContainerName, String associationName,
+			String sourceCode, String sourceNS, String targetCode, String targetNS);
 
 	public boolean computeSubsumptionRelationship(String codingSystemName,
 			CodingSchemeVersionOrTag versionOrTag, String associationtype,
