@@ -40,7 +40,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 	private LgLoggerIF logger;
 	
-	public final static String CODE_NAMESPACE_DELIMITER = "|,";
+	public final static String CODE_NAMESPACE_DELIMITER = "!,";
 	
 	public final static String PATH_DELIMITER = "->";
 	
