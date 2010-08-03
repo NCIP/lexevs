@@ -53,6 +53,14 @@ public interface CodeSystemAuthoringOperation {
 	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
 	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException;
 	
+	public CodingScheme addCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
+	        Properties properties) throws LBException;
+	
+	public CodingScheme updateCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
+	        Properties properties) throws LBException;
+	
+	public CodingScheme removeCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
+            Properties properties) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
 	
