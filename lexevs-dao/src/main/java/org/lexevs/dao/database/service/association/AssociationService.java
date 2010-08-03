@@ -50,4 +50,47 @@ public interface AssociationService {
 	
 	public void insertAssociationPredicate(
 			String codingSchemeUri, String version, String relationsName, AssociationPredicate predicate);
+
+	public AssociationTriple getAssociationTripleByAssociationInstanceId(
+			String codingSchemeUri, 
+			String version,
+			String associationInstanceId);
+	
+	public static class AssociationTriple {
+		private AssociationSource associationSource;
+		private String relationContainerName;
+		private String associationPredicateName;
+
+		public AssociationTriple(AssociationSource associationSource,
+				String relationContainerName, String associationPredicateName) {
+			super();
+			this.associationSource = associationSource;
+			this.relationContainerName = relationContainerName;
+			this.associationPredicateName = associationPredicateName;
+		}
+
+		public AssociationSource getAssociationSource() {
+			return associationSource;
+		}
+		
+		public void setAssociationSource(AssociationSource associationSource) {
+			this.associationSource = associationSource;
+		}
+		
+		public String getRelationContainerName() {
+			return relationContainerName;
+		}
+		
+		public void setRelationContainerName(String relationContainerName) {
+			this.relationContainerName = relationContainerName;
+		}
+		
+		public String getAssociationPredicateName() {
+			return associationPredicateName;
+		}
+		
+		public void setAssociationPredicateName(String associationPredicateName) {
+			this.associationPredicateName = associationPredicateName;
+		}
+	}
 }
