@@ -13,6 +13,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
@@ -132,6 +134,70 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	        Mappings mappings = null;
 	        Properties properties = null;
 	        
+	        
+	        CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+	               
+	        CodingScheme codeScheme = codeSystemAuthOp.updateCodeSystem(revInfo, 
+	        															codingSchemeName, 
+	        															codingSchemeURI, 
+	        															formalName, 
+	        															defaultLanguage, 
+	        															approxNumConcepts, 
+	        															representsVersion, 
+	        															localNameList, 
+	        															sourceList, 
+	        															copyright, 
+	        															mappings, 
+	        															properties);
+	        
+	
+				
+			System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+			
+		}
+
+	@Test
+		public void testUpdateCodeSystemProperty()   throws LBException, URISyntaxException{
+			
+			RevisionInfo revInfo = new RevisionInfo();
+			revInfo.setChangeAgent("changeAgent");
+			revInfo.setChangeInstruction("changeInstruction");
+			revInfo.setDescription("new description");
+			revInfo.setEditOrder(1L);
+			revInfo.setRevisionDate(new Date());
+			revInfo.setRevisionId("R502");
+	        
+	        String codingSchemeURI = "urn:oid:11.11.0.99";
+	        String representsVersion = "1.0";
+	        
+			String codingSchemeName = null;
+	        String formalName = null;
+	        String defaultLanguage = null;
+	        Long approxNumConcepts = 0L;
+	        List<String> localNameList = null; 
+	        List<Source> sourceList = null;
+	        Text copyright = null;
+	        Mappings mappings = null;
+	        
+	        Properties properties = new Properties();
+	        
+	        Presentation prop = new Presentation();
+			prop.setPropertyId("propertyId1");
+			prop.setPropertyName("propertyName");
+			prop.setIsActive(false);
+			prop.setLanguage("english updated 206");
+			prop.setOwner("owner updated 206");
+			prop.setPropertyType(PropertyTypes.PROPERTY.name());
+			Text text = new Text();
+			text.setContent("content updated 206");
+			text.setDataType("Text datatype");
+			prop.setValue(text);
+			prop.setDegreeOfFidelity("degreeOfFidelity");
+			prop.setMatchIfNoContext(true);
+			prop.setRepresentationalForm("representationalForm");
+			
+			properties.addProperty(prop);
+			
 	        
 	        CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 	               
