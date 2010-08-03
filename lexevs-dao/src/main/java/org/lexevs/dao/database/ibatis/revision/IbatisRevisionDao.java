@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.ibatis.revision;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.service.SystemResourceService;
 
 public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao {
+	
+	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
 	/** The VERSION s_ namespace. */
 	public static String VERSIONS_NAMESPACE = "Versions.";
@@ -122,23 +125,10 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		
 		return revisionId;
 	}
-	
-	@Override
-	public <T> T executeInTransaction(IndividualDaoCallback<T> callback) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean supportsLgSchemaVersion(LexGridSchemaVersion version) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(supportedDatebaseVersion);
 	}
 
 	public SystemReleaseDao getSystemReleaseDao() {
@@ -188,9 +178,10 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 						
 			for (RegistryEntry re : reList)
 			{				
+				String prefix = this.getPrefixResolver().resolveDefaultPrefix() + re.getPrefix();
 				count = (String) this.getSqlMapClientTemplate()
 					.queryForObject(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
-							new PrefixedParameter(re.getPrefix(), revisionGuid));
+							new PrefixedParameter(prefix, revisionGuid));
 			
 				if (!count.equals("0"))
 					throw new LBException("Revision ID " + revisionId + " can not be removed as it is being referenced by other loaded entries.");

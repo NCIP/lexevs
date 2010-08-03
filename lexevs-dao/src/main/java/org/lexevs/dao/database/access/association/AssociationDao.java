@@ -178,6 +178,12 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public List<Triple> getAllTriplesOfCodingScheme(String codingSchemeUId,
 			String associationPredicateUId, int start, int pageSize);
 
+	public String getRelationsContainerNameForAssociationInstanceId(String codingSchemeUId,
+			String associationInstanceId);
+	
+	public String getAssociationPredicateNameForAssociationInstanceId(String codingSchemeUId,
+			String associationInstanceId);
+	
 	/**
 	 * Insert into transitive closure.
 	 * 

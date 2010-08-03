@@ -144,7 +144,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	private static String UPDATE_RELATION_ENTRYSTATE_UID_SQL = ASSOCIATION_NAMESPACE + "updateRelationEntryStateUId";
 	
-	private static String ASSOCIATION_PREDICATE_EXISTS_SQL = ASSOCIATION_NAMESPACE + "checkIfAssociationPredicateExists";
+	private static String GET_RELATIONS_CONTAINER_NAME_FOR_ASSOC_INSTANCE_ID = ASSOCIATION_NAMESPACE + "getRelationContainerNameForAssociationInstanceId";
+	
+	private static String GET_ASSOCIATION_PREDICATE_NAME_FOR_ASSOC_INSTANCE_ID = ASSOCIATION_NAMESPACE + "getAssociationPredicateNameForAssociationInstanceId";
 	
 	private static String GET_RELATION_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE + "getRelationLatestRevisionIdByUId";
 	
@@ -158,6 +160,28 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private AssociationDataDao associationDataDao = null;
 	
 	private PropertyDao propertyDao = null;
+
+	@Override
+	public String getAssociationPredicateNameForAssociationInstanceId(
+			String codingSchemeUId, String associationInstanceId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		PrefixedParameter bean = new PrefixedParameter(prefix, associationInstanceId);
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ASSOCIATION_PREDICATE_NAME_FOR_ASSOC_INSTANCE_ID, bean);
+	}
+
+	@Override
+	public String getRelationsContainerNameForAssociationInstanceId(
+			String codingSchemeUId, String associationInstanceId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		PrefixedParameter bean = new PrefixedParameter(prefix, associationInstanceId);
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_RELATIONS_CONTAINER_NAME_FOR_ASSOC_INSTANCE_ID, bean);
+	}
 
 	@Override
 	public Relations getHistoryRelationByRevisionId(String codingSchemeUid,

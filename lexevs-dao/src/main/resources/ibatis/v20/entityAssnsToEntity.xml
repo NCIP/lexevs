@@ -655,6 +655,72 @@
 		</isEqual>
 	</select>
 	
+	<select id="getAssociationPredicateNameForAssociationInstanceId"
+				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+				remapResults="true"
+				resultClass="string">
+			SELECT 
+				ap.associationName
+			FROM
+				$prefix$entityAssnsToEntity eate
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON
+				eate.associationPredicateGuid = ap.associationPredicateGuid
+			WHERE
+				eate.associationInstanceId = #param1#
+				
+			UNION 
+			
+			SELECT 
+				ap.associationName
+			FROM
+				$prefix$entityAssnsToData eatd
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON
+				eatd.associationPredicateGuid = ap.associationPredicateGuid
+			WHERE
+				eatd.associationInstanceId = #param1#
+	</select>
+	
+	<select id="getRelationContainerNameForAssociationInstanceId"
+				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+				remapResults="true"
+				resultClass="string">
+			SELECT 
+				rel.containerName
+			FROM
+				$prefix$entityAssnsToEntity eate
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON
+				eate.associationPredicateGuid = ap.associationPredicateGuid
+			INNER JOIN 
+				$prefix$relation rel
+			ON
+				ap.relationGuid = rel.relationGuid
+			WHERE
+				eate.associationInstanceId = #param1#
+				
+			UNION 
+			
+			SELECT 
+				rel.containerName
+			FROM
+				$prefix$entityAssnsToData eatd
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON
+				eatd.associationPredicateGuid = ap.associationPredicateGuid
+			INNER JOIN 
+				$prefix$relation rel
+			ON
+				ap.relationGuid = rel.relationGuid
+			WHERE
+				eatd.associationInstanceId = #param1#
+	</select>
+	
 	<select id="getRootEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
 				remapResults="true"

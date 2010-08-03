@@ -79,6 +79,9 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 	
 	private static String GET_ENTRYSTATE_UID_BY_ASSOCIATION_DATA_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "getEntryStateUidByAssociationData";
+	
+	private static String GET_TRIPLE_BY_UID = ASSOCIATION_NAMESPACE
+			+ "getAssociationDataTripleByUid";
 
 	/*
 	 * (non-Javadoc)
@@ -149,6 +152,16 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 						data.getEntryState());
 
 		return associationDataUId;
+	}
+	
+	@Override
+	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		return 
+			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+					GET_TRIPLE_BY_UID, 
+					new PrefixedParameter(prefix, tripleUid));
 	}
 
 	protected String doInsertAssociationData(String prefix, String associationPredicateUId,

@@ -4,8 +4,15 @@
 <sqlMap namespace="Association">
 
 	<typeAlias alias="associationData" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean"/>
+	
+	<resultMap id="associationSourceDataTripleResult" class="org.LexGrid.relations.AssociationSource" 
+		groupBy="sourceEntityCode,sourceEntityCodeNamespace">
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
+		<result property="_targetDataList" resultMap="Association.associationDataResult"/>
+	</resultMap>
 
-	<resultMap id="associationDataEntry" class="associationData" groupBy="uid">
+	<resultMap id="associationDataEntryResult" class="associationData" groupBy="uid">
 		<result property="uid" column="entityAssnsDataGuid" />
 		<result property="associationPredicateUId" column="associationPredicateGuid" />
 		<result property="associationSource.sourceEntityCode" column="sourceEntityCode" />
@@ -96,6 +103,8 @@
 	
 	<sql id="getEntityAssnDataFragment">
 		SELECT 
+			data.sourceEntityCode,
+			data.sourceEntityCodeNamespace,
 			data.associationInstanceId,
 			data.isDefining,
 			data.isInferred,
@@ -142,6 +151,15 @@
 			data.entityAssnsDataGuid = #param1#	
 	</select>
 	
+	<select id="getAssociationDataTripleByUid"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" resultMap="associationSourceDataTripleResult">		
+		<include refid="getEntityAssnDataFragment"/>
+		
+		WHERE
+			data.entityAssnsDataGuid = #param1#	
+	</select>
+	
 	<select id="getEntityAssnDataByUidAndRevisionId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
 		remapResults="true" resultMap="associationDataResult">		
@@ -155,7 +173,7 @@
 
 	<select id="getAssnDataAttributesByUId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultMap="associationDataEntry">		
+		remapResults="true" resultMap="associationDataEntryResult">		
 		SELECT 
 			data.entityAssnsDataGuid,
 			data.associationPredicateGuid,

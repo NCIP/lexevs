@@ -58,4 +58,6 @@ public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 			String sourceEntityCodeNamespace, 
 			AssociationData data);
 
+	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid);
+
 }

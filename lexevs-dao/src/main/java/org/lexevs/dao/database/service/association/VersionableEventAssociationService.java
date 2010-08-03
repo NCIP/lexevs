@@ -22,7 +22,10 @@ import java.util.List;
 
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.association.AssociationDataDao;
+import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
@@ -38,7 +41,50 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionableEventAssociationService extends AbstractDatabaseService implements AssociationService{
 	
 	private PropertyService propertyService = null;
-	
+
+	@Override
+	public AssociationTriple getAssociationTripleByAssociationInstanceId(
+			String codingSchemeUri, 
+			String version, 
+			String associationInstanceId) {
+		CodingSchemeDao codingSchemeDao = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		String codingSchemeUId = codingSchemeDao.
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		
+		AssociationTargetDao associationTargetDao = 
+			this.getDaoManager().getAssociationTargetDao(codingSchemeUri, version);
+		
+		AssociationDataDao associationDataDao = 
+			this.getDaoManager().getAssociationDataDao(codingSchemeUri, version);
+		
+		AssociationDao associationDao = 
+			this.getDaoManager().getAssociationDao(codingSchemeUri, version);
+		
+		String associationTargetUid = 
+			associationTargetDao.getAssociationTargetUId(codingSchemeUId, associationInstanceId);
+		
+		AssociationSource associationSource;
+		if(StringUtils.isNotBlank(associationTargetUid)) {
+			associationSource = associationTargetDao.getTripleByUid(codingSchemeUId, associationTargetUid);
+		} else {
+			String associationDataUid = associationDataDao.getAssociationDataUId(codingSchemeUId, associationInstanceId);
+			associationSource = associationDataDao.getTripleByUid(codingSchemeUId, associationDataUid);
+		}
+		
+		String relationsContainerName = associationDao.
+			getRelationsContainerNameForAssociationInstanceId(
+					codingSchemeUId, 
+					associationInstanceId);
+		
+		String associationPredicateName = associationDao.
+			getAssociationPredicateNameForAssociationInstanceId(
+				codingSchemeUId, 
+				associationInstanceId);
+		
+		return new AssociationTriple(associationSource, relationsContainerName, associationPredicateName);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.association.AssociationService#insertAssociationSource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
 	 */
