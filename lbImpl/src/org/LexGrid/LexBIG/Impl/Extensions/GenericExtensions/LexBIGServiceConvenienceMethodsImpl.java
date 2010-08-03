@@ -81,9 +81,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
@@ -109,7 +111,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private final static String description_ = "Useful methods that are implemented by calling a combination of base service methods.";
     private final static String version_ = "1.0";
     private final static String provider_ = "MAYO";
-    
+
     public LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
@@ -124,8 +126,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private Map cache_hRoots_ = null;
     private Map cache_hRootCodes_ = null;
     private Map cache_hPathToRootExists_ = null;
-    
-    private enum DirectionalName {FORWARD,REVERSE}
+
+    private enum DirectionalName {
+        FORWARD, REVERSE
+    }
 
     public static void register() throws LBParameterException, LBException {
         ExtensionDescription temp = new ExtensionDescription();
@@ -216,11 +220,13 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         cns = cns.restrictToStatus(ActiveOption.ACTIVE_ONLY, null);
 
         if (cns.isCodeInSet(ConvenienceMethods.createConceptReference(code, codingSchemeName))) {
-            // if we found the concept when we were doing a activeOnly search, then
+            // if we found the concept when we were doing a activeOnly search,
+            // then
             // it is not retired.
             return false;
         } else {
-            // didn't find the concept. See if it exists when we allow retired concepts.
+            // didn't find the concept. See if it exists when we allow retired
+            // concepts.
             cns = getLexBIGService().getCodingSchemeConcepts(codingSchemeName, versionOrTag).restrictToCodes(
                     ConvenienceMethods.createConceptReferenceList(new String[] { code }, codingSchemeName));
 
@@ -297,8 +303,11 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                     cs = getCodingScheme(csRendering.getCodingSchemeSummary().getCodingSchemeURI(), null);
                 } catch (UndeclaredThrowableException e) {
                     // GForge #15437 - skip over any Secured Coding Schemes that
-                    // the client does not have access to, instead of throwing an Exception.
-                    getLogger().info("Skipping a Coding Scheme due to an 'UndeclaredThrowableException'. If"
+                    // the client does not have access to, instead of throwing
+                    // an Exception.
+                    getLogger()
+                            .info(
+                                    "Skipping a Coding Scheme due to an 'UndeclaredThrowableException'. If"
                                             + " this is being run remotely, this means that a Secured Coding Scheme was skipped.");
                     continue;
                 }
@@ -318,20 +327,20 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         String id = getLogger().error("Did not match up a found coding scheme with the supported association");
         throw new LBInvocationException("Unexpected internal error", id);
     }
-    
+
     @LgClientSideSafe
     public String getAssociationCodeFromAssociationName(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String associationName) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, associationName });
         CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
 
-        for(SupportedAssociation foundSupportedAssociation :
-            resolvedCodingScheme.getMappings().getSupportedAssociation()) {
-            if(foundSupportedAssociation.getLocalId().equals(associationName)) {
-               return foundSupportedAssociation.getEntityCode();
+        for (SupportedAssociation foundSupportedAssociation : resolvedCodingScheme.getMappings()
+                .getSupportedAssociation()) {
+            if (foundSupportedAssociation.getLocalId().equals(associationName)) {
+                return foundSupportedAssociation.getEntityCode();
             }
         }
-        
+
         throw new LBParameterException("Cound not find an EntityCode for AssociationName: " + associationName);
     }
 
@@ -340,47 +349,40 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             String entityCode) throws LBException {
         CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
 
-        for(SupportedAssociation foundSupportedAssociation :
-            resolvedCodingScheme.getMappings().getSupportedAssociation()) {
-            
+        for (SupportedAssociation foundSupportedAssociation : resolvedCodingScheme.getMappings()
+                .getSupportedAssociation()) {
+
             String foundEntityCode = foundSupportedAssociation.getEntityCode();
-            if(foundEntityCode != null && foundEntityCode.equals(entityCode)) {
-               return foundSupportedAssociation.getLocalId();
+            if (foundEntityCode != null && foundEntityCode.equals(entityCode)) {
+                return foundSupportedAssociation.getLocalId();
             }
         }
-        
+
         throw new LBParameterException("Cound not find an AssociationName for EntityCode: " + entityCode);
     }
-    
+
     @LgClientSideSafe
-    public String[] getAssociationNameForDirectionalName(String codingScheme,
-            CodingSchemeVersionOrTag versionOrTag, String directionalName) throws LBException {
+    public String[] getAssociationNameForDirectionalName(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
+            String directionalName) throws LBException {
         List<String> returnList = new ArrayList<String>();
-        
+
         CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
-        
-        for(SupportedAssociation supportedAssociation :
-            resolvedCodingScheme.getMappings().getSupportedAssociation()) {
-            
-            String forwardName = this.doGetAssociationDirectionalName(
-                    codingScheme, 
-                    versionOrTag, 
-                    supportedAssociation.getLocalId(), 
-                    DirectionalName.FORWARD);
-            
-            //check the forward name
-            if(directionalName.equals(forwardName)) {
+
+        for (SupportedAssociation supportedAssociation : resolvedCodingScheme.getMappings().getSupportedAssociation()) {
+
+            String forwardName = this.doGetAssociationDirectionalName(codingScheme, versionOrTag, supportedAssociation
+                    .getLocalId(), DirectionalName.FORWARD);
+
+            // check the forward name
+            if (directionalName.equals(forwardName)) {
                 returnList.add(supportedAssociation.getLocalId());
             } else {
-                //if not, check the reverse name
-                String reverseName = this.doGetAssociationDirectionalName(
-                        codingScheme, 
-                        versionOrTag, 
-                        supportedAssociation.getLocalId(), 
-                        DirectionalName.REVERSE);
-                if(directionalName.equals(reverseName)) {
+                // if not, check the reverse name
+                String reverseName = this.doGetAssociationDirectionalName(codingScheme, versionOrTag,
+                        supportedAssociation.getLocalId(), DirectionalName.REVERSE);
+                if (directionalName.equals(reverseName)) {
                     returnList.add(supportedAssociation.getLocalId());
-                } 
+                }
             }
         }
         return returnList.toArray(new String[returnList.size()]);
@@ -389,95 +391,86 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgClientSideSafe
     public String getAssociationForwardName(String associationName, String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
-       
+
         return doGetAssociationDirectionalName(codingScheme, versionOrTag, associationName, DirectionalName.FORWARD);
     }
-    
-    protected String doGetAssociationDirectionalName(String codingScheme, 
-            CodingSchemeVersionOrTag versionOrTag, String associationName, DirectionalName direction) 
-        throws LBException {
+
+    protected String doGetAssociationDirectionalName(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
+            String associationName, DirectionalName direction) throws LBException {
 
         CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
 
         SupportedAssociation supportedAssociation = null;
 
-        for(SupportedAssociation foundSupportedAssociation :
-            resolvedCodingScheme.getMappings().getSupportedAssociation()) {
-            if(foundSupportedAssociation.getLocalId().equals(associationName)) {
+        for (SupportedAssociation foundSupportedAssociation : resolvedCodingScheme.getMappings()
+                .getSupportedAssociation()) {
+            if (foundSupportedAssociation.getLocalId().equals(associationName)) {
                 supportedAssociation = foundSupportedAssociation;
                 break;
             }
         }
 
-        if(supportedAssociation == null) {
-            throw new LBParameterException("No SupportedAssociation with name: " + associationName
-                    + " was found.");
+        if (supportedAssociation == null) {
+            throw new LBParameterException("No SupportedAssociation with name: " + associationName + " was found.");
         }
 
         String containingCodingScheme = supportedAssociation.getCodingScheme();
         String containingEntityCode = supportedAssociation.getEntityCode();
         String containingEntityCodeNamespace = supportedAssociation.getEntityCodeNamespace();
 
-        //if there's no entityCode, assume the AssociationName
-        if(StringUtils.isBlank(containingEntityCode)){
+        // if there's no entityCode, assume the AssociationName
+        if (StringUtils.isBlank(containingEntityCode)) {
             containingEntityCode = supportedAssociation.getLocalId();
         }
 
-        //if there's no codingSchemeName, assume local
-        if(StringUtils.isBlank(containingCodingScheme)){
+        // if there's no codingSchemeName, assume local
+        if (StringUtils.isBlank(containingCodingScheme)) {
             containingCodingScheme = resolvedCodingScheme.getCodingSchemeName();
         }
 
-        //if there's no entityCodeNamespace, assume default
-        if(StringUtils.isBlank(containingEntityCodeNamespace)){
+        // if there's no entityCodeNamespace, assume default
+        if (StringUtils.isBlank(containingEntityCodeNamespace)) {
             containingEntityCodeNamespace = resolvedCodingScheme.getCodingSchemeName();
         }
-        
+
         CodingSchemeVersionOrTag versionOrTagToUse = null;
-        if(containingCodingScheme.equals(resolvedCodingScheme.getCodingSchemeName())) {
+        if (containingCodingScheme.equals(resolvedCodingScheme.getCodingSchemeName())) {
             versionOrTagToUse = versionOrTag;
         }
 
-        CodedNodeSet cns = this.getLexBIGService().getNodeSet(
-                containingCodingScheme, 
-                versionOrTagToUse, 
+        CodedNodeSet cns = this.getLexBIGService().getNodeSet(containingCodingScheme, versionOrTagToUse,
                 Constructors.createLocalNameList(EntityTypes.ASSOCIATION.toString()));
 
-        cns = cns.restrictToCodes(
-                Constructors.createConceptReferenceList(
-                        containingEntityCode, 
-                        containingEntityCodeNamespace, 
-                        containingCodingScheme));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(containingEntityCode,
+                containingEntityCodeNamespace, containingCodingScheme));
 
         ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
-        
-        if(list.getResolvedConceptReferenceCount() == 0) {
+
+        if (list.getResolvedConceptReferenceCount() == 0) {
             return null;
         }
 
-        AssociationEntity associationEntity = 
-            (AssociationEntity)list.getResolvedConceptReference(0).getEntity();
+        AssociationEntity associationEntity = (AssociationEntity) list.getResolvedConceptReference(0).getEntity();
 
-        if(direction.equals(DirectionalName.FORWARD)) {
+        if (direction.equals(DirectionalName.FORWARD)) {
             return associationEntity.getForwardName();
         } else {
             return associationEntity.getReverseName();
         }
     }
-    
+
     @LgClientSideSafe
-    protected String[] doGetAssociationNames(String codingScheme, 
-            CodingSchemeVersionOrTag versionOrTag, DirectionalName direction)
-        throws LBException {
-        
+    protected String[] doGetAssociationNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
+            DirectionalName direction) throws LBException {
+
         List<String> names = new ArrayList<String>();
-        
+
         CodingScheme cs = this.getCodingScheme(codingScheme, versionOrTag);
-        
-        for(SupportedAssociation assoc : cs.getMappings().getSupportedAssociation()) {
-            String name = this.doGetAssociationDirectionalName(
-                    codingScheme, versionOrTag, assoc.getLocalId(), direction);
-            if(StringUtils.isNotBlank(name)) {
+
+        for (SupportedAssociation assoc : cs.getMappings().getSupportedAssociation()) {
+            String name = this.doGetAssociationDirectionalName(codingScheme, versionOrTag, assoc.getLocalId(),
+                    direction);
+            if (StringUtils.isNotBlank(name)) {
                 names.add(name);
             }
         }
@@ -486,8 +479,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     @LgClientSideSafe
     public String[] getAssociationForwardNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
-        throws LBException {
-        return this.doGetAssociationNames(codingScheme, versionOrTag, DirectionalName.FORWARD);  
+            throws LBException {
+        return this.doGetAssociationNames(codingScheme, versionOrTag, DirectionalName.FORWARD);
     }
 
     @LgClientSideSafe
@@ -499,7 +492,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgClientSideSafe
     public String[] getAssociationReverseNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
-        return this.doGetAssociationNames(codingScheme, versionOrTag, DirectionalName.REVERSE);    
+        return this.doGetAssociationNames(codingScheme, versionOrTag, DirectionalName.REVERSE);
     }
 
     @LgClientSideSafe
@@ -514,7 +507,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         forward_and_reverse_names.addAll(Arrays.asList(reverse_names));
         return (String[]) forward_and_reverse_names.toArray(new String[forward_and_reverse_names.size()]);
     }
-    
+
     /**
      * Return true if directionalName is the forwardName of an association for
      * the coding scheme
@@ -624,7 +617,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         ConceptReferenceList crl = new ConceptReferenceList();
         crl.addConceptReference(conceptRef);
         ConceptReferenceList countRefList = getHierarchyLevelNextCount(codingSchemeName, versionOrTag, hierarchyID, crl);
-               
+
         if (countRefList != null && countRefList.getConceptReferenceCount() > 0) {
             ConceptReference cr = (countRefList.getConceptReference())[0];
             if (cr instanceof CountConceptReference)
@@ -652,12 +645,12 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             CodingSchemeVersionOrTag versionOrTag, String hierarchyID, final ConceptReferenceList conceptCodes,
             boolean forward) throws LBException {
         SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
- 
+
         final String version = ServiceUtility.getVersion(codingSchemeName, versionOrTag);
 
         String internalCodingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingSchemeName, version);
-        
+
         SupportedHierarchy[] shs = getSupportedHierarchies(codingSchemeName, versionOrTag, hierarchyID);
         SupportedHierarchy sh = shs[0];
         final String assocs[] = sh.getAssociationNames();
@@ -665,7 +658,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         RestrictToAssociations rta = new RestrictToAssociations(ConvenienceMethods.createNameAndValueList(assocs), null);
         pendingOperations.add(rta);
-        
+
         // If we want to get the prev level, we need to flip the resolve
         // direction
         final boolean resolveFwd = !sh.isIsForwardNavigable() ? !forward : forward;
@@ -677,84 +670,68 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             RestrictToTargetCodes rtc = new RestrictToTargetCodes(conceptCodes);
             pendingOperations.add(rtc);
         }
-        
-            final String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodingSchemeName);
-            
-            DaoCallbackService daoCallbackService = 
-                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
-            
-            GraphQueryBuilder queryBuilder = new DefaultGraphQueryBuilder(uri, version);
-            queryBuilder.restrictToAssociations(
-                    ConvenienceMethods.createNameAndValueList(assocs), null);
-            
-            if (resolveFwd) {
-                queryBuilder.getQuery().setRestrictToSourceCodes(
-                        Arrays.asList(conceptCodes.getConceptReference()));
- 
-            } else {
-                queryBuilder.getQuery().setRestrictToTargetCodes(
-                        Arrays.asList(conceptCodes.getConceptReference()));
-            }
-            
-            List<CountConceptReference> conceptCountList = daoCallbackService.executeInDaoLayer(
-                    new DaoCallback<List<CountConceptReference>>(){
 
-                        @Override
-                        public List<CountConceptReference> execute(DaoManager daoManager) {
-                            CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
-                            CodedNodeGraphDao cngDao = daoManager.getCodedNodeGraphDao(uri, version);
-                            
-                            String codingSchemeUid = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
-                            
-                            if(resolveFwd) {
-                            return cngDao.getCountConceptReferencesContainingSubject(
-                                    codingSchemeUid, 
-                                    null, 
-                                    Arrays.asList(conceptCodes.getConceptReference()), 
-                                    Arrays.asList(assocs), 
-                                    null, 
-                                    null, 
-                                    null, 
-                                    null, 
-                                    null);
-                            } else {
-                                return cngDao.getCountConceptReferencesContainingObject(
-                                        codingSchemeUid, 
-                                        null, 
-                                        Arrays.asList(conceptCodes.getConceptReference()), 
-                                        Arrays.asList(assocs), 
-                                        null, 
-                                        null, 
-                                        null, 
-                                        null, 
-                                        null);
-                            }
+        final String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodingSchemeName);
+
+        DaoCallbackService daoCallbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                .getDaoCallbackService();
+
+        GraphQueryBuilder queryBuilder = new DefaultGraphQueryBuilder(uri, version);
+        queryBuilder.restrictToAssociations(ConvenienceMethods.createNameAndValueList(assocs), null);
+
+        if (resolveFwd) {
+            queryBuilder.getQuery().setRestrictToSourceCodes(Arrays.asList(conceptCodes.getConceptReference()));
+
+        } else {
+            queryBuilder.getQuery().setRestrictToTargetCodes(Arrays.asList(conceptCodes.getConceptReference()));
+        }
+
+        List<CountConceptReference> conceptCountList = daoCallbackService
+                .executeInDaoLayer(new DaoCallback<List<CountConceptReference>>() {
+
+                    @Override
+                    public List<CountConceptReference> execute(DaoManager daoManager) {
+                        CodingSchemeDao csDao = daoManager.getCodingSchemeDao(uri, version);
+                        CodedNodeGraphDao cngDao = daoManager.getCodedNodeGraphDao(uri, version);
+
+                        String codingSchemeUid = csDao.getCodingSchemeUIdByUriAndVersion(uri, version);
+
+                        if (resolveFwd) {
+                            return cngDao.getCountConceptReferencesContainingSubject(codingSchemeUid, null, Arrays
+                                    .asList(conceptCodes.getConceptReference()), Arrays.asList(assocs), null, null,
+                                    null, null, null);
+                        } else {
+                            return cngDao.getCountConceptReferencesContainingObject(codingSchemeUid, null, Arrays
+                                    .asList(conceptCodes.getConceptReference()), Arrays.asList(assocs), null, null,
+                                    null, null, null);
                         }
-                
-                    });
-        
+                    }
+
+                });
+
         ConceptReferenceList crl = new ConceptReferenceList();
         crl.setConceptReference(conceptCountList.toArray(new ConceptReference[conceptCountList.size()]));
-            
-            
-        //If we are searching for the child count of concept C1 and C1 has no children, 
-        //it would not be in the list. Add C1 to the list with count 0, indicating we couldn't find
-        //a match in the database.
+
+        // If we are searching for the child count of concept C1 and C1 has no
+        // children,
+        // it would not be in the list. Add C1 to the list with count 0,
+        // indicating we couldn't find
+        // a match in the database.
         HashMap<String, ConceptReference> lookup = new HashMap<String, ConceptReference>();
-        for (ConceptReference cr: crl.getConceptReference()) {
+        for (ConceptReference cr : crl.getConceptReference()) {
             lookup.put(cr.getConceptCode(), cr);
         }
-        
-        
-        
-        //If we do not find the concept in the list, we assume it is because it has no children. 
-        for (ConceptReference cr: conceptCodes.getConceptReference()) {
+
+        // If we do not find the concept in the list, we assume it is because it
+        // has no children.
+        for (ConceptReference cr : conceptCodes.getConceptReference()) {
             if (!lookup.containsKey(cr.getConceptCode())) {
-                CountConceptReference ccr= new CountConceptReference(cr, 0);
+                CountConceptReference ccr = new CountConceptReference(cr, 0);
                 crl.addConceptReference(ccr);
             }
         }
-        //getLogger().debug("Time to execute getHierarchyLevelNextCount=" + (System.currentTimeMillis() - startTime));
+        // getLogger().debug("Time to execute getHierarchyLevelNextCount=" +
+        // (System.currentTimeMillis() - startTime));
         return crl;
 
     }
@@ -789,7 +766,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             String[] assocNames = sh.getAssociationNames();
             String[] rootCodes = getHierarchyRootCodes(codingScheme, versionOrTag, hierarchyID);
             for (String rootCode : rootCodes) {
-                if (hierarchyID == null  || !checkForHasHierarchyPathToRoot
+                if (hierarchyID == null
+                        || !checkForHasHierarchyPathToRoot
                         || hasHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, !fwd, conceptCode, rootCode,
                                 assocQuals)) {
                     if (fwd)
@@ -863,7 +841,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             String[] assocNames = sh.getAssociationNames();
             String[] rootCodes = getHierarchyRootCodes(codingScheme, versionOrTag, hierarchyID);
             for (String rootCode : rootCodes) {
-                if (hierarchyID == null || !checkForHasHierarchyPathToRoot
+                if (hierarchyID == null
+                        || !checkForHasHierarchyPathToRoot
                         || hasHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, !fwd, conceptCode, rootCode,
                                 assocQuals)) {
                     if (fwd)
@@ -1025,12 +1004,13 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         if ((val = getCache_HRoots().get(key)) != null)
             return (ResolvedConceptReferenceList) val;
 
-        // Cache and return the new value ...       
-        val = getHierarchyRootSet(codingScheme, versionOrTag, hierarchyID).resolveToList(null, null, null, null, resolveConcepts, -1);       
+        // Cache and return the new value ...
+        val = getHierarchyRootSet(codingScheme, versionOrTag, hierarchyID).resolveToList(null, null, null, null,
+                resolveConcepts, -1);
         getCache_HRoots().put(key, val);
         return (ResolvedConceptReferenceList) val;
-    }    
-    
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -1313,19 +1293,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     protected AssociationList getHierarchyPathToRootPrim(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String[] assocNames, boolean fwd, String conceptCode, String rootCode, boolean resolveConcepts,
             NameAndValueList assocQuals, int maxToReturn) throws LBException {
-        return this.getHierarchyPathToRootPrim(
-                codingScheme, 
-                versionOrTag, 
-                assocNames, 
-                fwd, 
-                conceptCode, 
-                rootCode, 
-                resolveConcepts, 
-                assocQuals, 
-                maxToReturn,
-                new ArrayList<String>());
+        return this.getHierarchyPathToRootPrim(codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode,
+                resolveConcepts, assocQuals, maxToReturn, new ArrayList<String>());
     }
-    
+
     @LgClientSideSafe
     protected AssociationList getHierarchyPathToRootPrim(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String[] assocNames, boolean fwd, String conceptCode, String rootCode, boolean resolveConcepts,
@@ -1370,14 +1341,15 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                                 && leftToReturn > 0; k++) {
                             AssociatedConcept leafConcept = candidate.getAssociatedConcepts().getAssociatedConcept(k);
                             String leafCode = leafConcept.getConceptCode();
-                            
-                            if(codeChain.contains(leafCode)){
-                               continue;
-                            } 
-                            
+
+                            if (codeChain.contains(leafCode)) {
+                                continue;
+                            }
+
                             AssociatedConcept tempConcept = null;
                             if (rootCode.equals(leafCode)) {
-                                // We have a direct match; add to the chain to be returned.
+                                // We have a direct match; add to the chain to
+                                // be returned.
                                 tempConcept = leafConcept;
                                 leftToReturn--;
 
@@ -1385,9 +1357,12 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                                 List<String> clonedList = deepCloneStringList(codeChain);
                                 clonedList.add(leafCode);
                                 // Not the stop node, but recurse to see if the
-                                // leaf is the start of a sub-branch that eventually ends in the
-                                // root. We keep navigation moving in the requested direction. This could
-                                // be forward or reverse, but is always narrowing.
+                                // leaf is the start of a sub-branch that
+                                // eventually ends in the
+                                // root. We keep navigation moving in the
+                                // requested direction. This could
+                                // be forward or reverse, but is always
+                                // narrowing.
                                 AssociationList subbranchAtLeaf = getHierarchyPathToRootPrim(codingScheme,
                                         versionOrTag, assocNames, fwd, leafCode, rootCode, resolveConcepts, assocQuals,
                                         maxToReturn, clonedList);
@@ -1395,14 +1370,16 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                                 // If empty, recursion showed this chain is not
                                 // terminated by the requested root code.
                                 // Stop processing and continue in the loop.
-                                if (subbranchAtLeaf.getAssociationCount() == 0){
+                                if (subbranchAtLeaf.getAssociationCount() == 0) {
                                     continue;
-                                }   
+                                }
 
                                 // Yes, this is an intermediate node. Create a
                                 // new associated concept so we can represent
-                                // everything moving broader  to narrower ("to root") in forward direction,
-                                // and include the result of the recursive call as branch content.
+                                // everything moving broader to narrower
+                                // ("to root") in forward direction,
+                                // and include the result of the recursive call
+                                // as branch content.
                                 tempConcept = leafConcept;
                                 tempConcept.setSourceOf(subbranchAtLeaf);
                                 leftToReturn--;
@@ -1443,16 +1420,16 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
         return assocList;
     }
-    
+
     /**
      * Deep Clone a String List
      * 
      * @param list
      * @return the cloned list
      */
-    private List<String> deepCloneStringList(List<String> list){
+    private List<String> deepCloneStringList(List<String> list) {
         List<String> clonedList = new ArrayList<String>();
-        for(String string : list){
+        for (String string : list) {
             clonedList.add(new String(string));
         }
         return clonedList;
@@ -1552,7 +1529,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     /**
      * Returns an indication of whether a path exists between the given concept
-     * and the set of root concepts for the given associations in the given direction.
+     * and the set of root concepts for the given associations in the given
+     * direction.
      * <p>
      * Note: For purposes of this method, hierarchical associations are assumed
      * to be transitive. When possible, transitive closure is used as a shortcut
@@ -1573,21 +1551,22 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             String[] assocNames, boolean fwd, String conceptCode, String[] rootCodes, NameAndValueList assocQuals)
             throws LBException {
 
-        Object[] params = new Object[] { codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCodes, assocQuals };
+        Object[] params = new Object[] { codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCodes,
+                assocQuals };
         getLogger().logMethod(params);
         for (String rootCode : rootCodes) {
             // Do we have a path for this root?
-            if (assocNames.length >= 1  
+            if (assocNames.length >= 1
                     && hasHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode,
                             assocQuals)) {
-        
+
                 return true;
             }
         }
         return false;
 
-    }    
-    
+    }
+
     /**
      * Returns an indication of whether a path exists between the given concept
      * and root for the given associations in the given direction.
@@ -1718,7 +1697,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      */
     @LgClientSideSafe
     public void setLexBIGService(LexBIGService lbs) {
-       lbs_ = lbs;
+        lbs_ = lbs;
     }
 
     /**
@@ -1878,8 +1857,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgAdminFunction
     public void addEntityLuceneIndexes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
             List<String> entityCodes) throws LBException {
-        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part" +
-            " of the Entity Service itself, or as a Listener.");
+        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part"
+                + " of the Entity Service itself, or as a Listener.");
     }
 
     /**
@@ -1892,8 +1871,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgAdminFunction
     public void removeEntityLuceneIndexes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
             List<String> entityCodes) throws LBException {
-        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part" +
-            " of the Entity Service itself, or as a Listener.");
+        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part"
+                + " of the Entity Service itself, or as a Listener.");
     }
 
     /**
@@ -1906,11 +1885,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     @LgAdminFunction
     public void modifyEntityLuceneIndexes(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
             List<String> entityCodes) throws LBException {
-        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part" +
-            " of the Entity Service itself, or as a Listener.");
+        throw new UnsupportedOperationException("This is handled in the Dao Layer, either as part"
+                + " of the Entity Service itself, or as a Listener.");
     }
 
-    
     /*
      * (non-Javadoc)
      * 
@@ -1970,7 +1948,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                     rcrl.removeResolvedConceptReference(rcr);
                 }
             }
-            
 
             // If we have more than one association in the hierarchy. Check if
             // there are paths to root when we follow multiple associations
@@ -2006,8 +1983,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         internalCodingSchemeName = getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
-        
-        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.COMMENT);
+
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(
+                internalCodingSchemeName, version, PropertyTypes.COMMENT);
     }
 
     @SuppressWarnings("unchecked")
@@ -2023,8 +2001,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         internalCodingSchemeName = getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
-        
-        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.DEFINITION);
+
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(
+                internalCodingSchemeName, version, PropertyTypes.DEFINITION);
     }
 
     @SuppressWarnings("unchecked")
@@ -2039,8 +2018,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
 
         internalCodingSchemeName = getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
-        
-        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PRESENTATION);
+
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(
+                internalCodingSchemeName, version, PropertyTypes.PRESENTATION);
     }
 
     @SuppressWarnings("unchecked")
@@ -2056,17 +2036,78 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         internalCodingSchemeName = getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
                 codingScheme, version);
-        
-        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(internalCodingSchemeName, version, PropertyTypes.PROPERTY);
+
+        return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(
+                internalCodingSchemeName, version, PropertyTypes.PROPERTY);
     }
-    
+
     private CodingSchemeService getCodingSchemeService() {
         return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
     }
-    
+
     private SystemResourceService getSystemResourceService() {
         return LexEvsServiceLocator.getInstance().getSystemResourceService();
     }
-    
-    
+
+    @Override
+    public ResolvedConceptReference getNodesPath(final String codingSchemeUri, final CodingSchemeVersionOrTag versionOrTag, final String containerName,
+            final String associationName, final String sourceCode, final String sourceNS, final String targetCode, final String targetNS) throws LBParameterException {
+
+        final String version = ServiceUtility.getVersion(codingSchemeUri, versionOrTag);
+
+        DaoCallbackService callbackService = 
+            LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().getDaoCallbackService();
+
+        String path = callbackService.executeInDaoLayer(new DaoCallback<String>(){
+            @Override
+            public String execute(DaoManager daoManager) {
+                String csUid;
+                String apUid;
+                csUid = daoManager.getCodingSchemeDao(codingSchemeUri, version).getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+                apUid = daoManager.getAssociationDao(codingSchemeUri, version).getAssociationPredicateUIdByContainerName(csUid, containerName, associationName);
+                return daoManager.getAssociationDao(codingSchemeUri, version).getNodesPath(csUid, sourceCode, sourceNS, targetCode, targetNS, apUid);    
+            }
+        });
+        
+        if (StringUtils.isEmpty(path))
+            return null;
+        else {
+
+            String[] nodes = path.split(DefaultTransitivityBuilder.PATH_DELIMITER);
+            
+            // root node
+            String[] rootNode = nodes[0].split(DefaultTransitivityBuilder.CODE_NAMESPACE_DELIMITER);
+            ResolvedConceptReference rootConRef = this.createConRef(rootNode, codingSchemeUri, version);
+
+            // move on to the list
+            ResolvedConceptReference previousConRef = rootConRef;
+            for (int i = 1 ; i < nodes.length; i++) {
+                String[] aNode = nodes[i].split(DefaultTransitivityBuilder.CODE_NAMESPACE_DELIMITER);
+                AssociatedConcept curConRef = this.createConRef(aNode, codingSchemeUri, version);
+                AssociationList assnList = new AssociationList();
+                Association assn = new Association();
+                assn.setAssociationName(associationName);
+                AssociatedConceptList associatedConcepts = new AssociatedConceptList();
+                associatedConcepts.addAssociatedConcept(curConRef);
+                assn.setAssociatedConcepts(associatedConcepts);
+                assnList.addAssociation(assn);
+                previousConRef.setSourceOf(assnList);
+
+                previousConRef = curConRef;
+            }
+            
+            return rootConRef;
+        }
+
+    }
+
+    private AssociatedConcept createConRef(String[] node, String uri, String version) {
+        AssociatedConcept conRef = new AssociatedConcept();
+        conRef.setCode(node[0]);
+        conRef.setCodeNamespace(node[1]);
+        conRef.setCodingSchemeURI(uri);
+        conRef.setCodingSchemeVersion(version);
+        return conRef;
+    }
 }
