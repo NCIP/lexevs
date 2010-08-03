@@ -112,6 +112,27 @@
 			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
 	</select>
 	
+	<select id="getNodesPath"
+		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean"
+		remapResults="true" resultClass="string">
+		SELECT 
+			tr.path
+		FROM 
+			$prefix$entityAssnsToEntityTr tr
+		WHERE
+			tr.sourceEntityCode = #sourceEntityCode# 
+			AND 
+			tr.sourceEntityCodeNamespace = #sourceEntityCodeNamespace# 
+			AND
+			tr.targetEntityCode = #targetEntityCode# 
+			AND
+			tr.targetEntityCodeNamespace = #targetEntityCodeNamespace#
+			<isNotNull property="associationPredicateUId">
+			AND
+			tr.associationPredicateGuid = #associationPredicateUId# 
+			</isNotNull>
+	</select>
+	
 	
 	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
