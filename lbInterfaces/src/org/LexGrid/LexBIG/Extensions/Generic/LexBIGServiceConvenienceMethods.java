@@ -28,8 +28,10 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.annotations.LgClientSideSafe;
@@ -144,8 +146,7 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	ResolvedConceptReferenceList getHierarchyRoots(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String hierarchyID)
 			throws LBException;
-	
-	
+
 	/**
 	 * Returns all root nodes for the given hierarchy and coding scheme. Each
 	 * root concept represents the conceptual start or narrowest point of a tree
@@ -167,18 +168,18 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 *            references (e.g. code, coding scheme, and description). If
 	 *            false, additional properties for referenced concepts can be
 	 *            resolved on an item-by-item basis as controlled by the
-	 *            application.           
+	 *            application.
 	 * @return The collection of references to root nodes; empty if the given
 	 *         hierarchy is not recognized or is unfulfilled by the given coding
 	 *         scheme and version.
 	 * @throws LBException
-	 */	
-	 public ResolvedConceptReferenceList getHierarchyRoots(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
-	            String hierarchyID, boolean resolveConcepts) throws LBException;
-	
+	 */
+	public ResolvedConceptReferenceList getHierarchyRoots(String codingScheme,
+			CodingSchemeVersionOrTag versionOrTag, String hierarchyID,
+			boolean resolveConcepts) throws LBException;
 
 	/**
-	 * Returns all concepts that can not be reached by traversing the hierarchy 
+	 * Returns all concepts that can not be reached by traversing the hierarchy
 	 * specified by the hierarchyId from the root.
 	 * 
 	 * @param codingScheme
@@ -191,14 +192,15 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 *            values for the coding scheme are retrievable through the
 	 *            getHierarchyIDs() method. If null, roots for all registered
 	 *            hierarchies are returned.
-	 * @return The collection orphaned concepts; empty if the given
-	 *         hierarchy is not recognized or is unfulfilled by the given coding
-	 *         scheme and version.
+	 * @return The collection orphaned concepts; empty if the given hierarchy is
+	 *         not recognized or is unfulfilled by the given coding scheme and
+	 *         version.
 	 * @throws LBException
 	 */
-	ResolvedConceptReferenceList getHierarchyOrphanedConcepts(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag, String hierarchyID)
-			throws LBException;	
+	ResolvedConceptReferenceList getHierarchyOrphanedConcepts(
+			String codingScheme, CodingSchemeVersionOrTag versionOrTag,
+			String hierarchyID) throws LBException;
+
 	/**
 	 * Returns all root nodes for the given hierarchy as a CodeNodeSet, which
 	 * can be further restricted. Each root concept represents the conceptual
@@ -450,8 +452,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 			ConceptReference conceptRef) throws LBException;
 
 	/**
-	 * Returns a ConceptReferenceList of CountConceptReference  that holds the count of concepts at the next level in the
-	 * hierarchy.
+	 * Returns a ConceptReferenceList of CountConceptReference that holds the
+	 * count of concepts at the next level in the hierarchy.
 	 * 
 	 * @param codingScheme
 	 *            The local name or URN of the coding scheme.
@@ -466,7 +468,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 *            improves performance).
 	 * @param ConceptReferenceList
 	 *            The list of concepts for which we want to find counts
-	 * @return  ConceptReferenceList of CountConceptReference  that holds the count
+	 * @return ConceptReferenceList of CountConceptReference that holds the
+	 *         count
 	 * @throws LBException
 	 */
 	public ConceptReferenceList getHierarchyLevelNextCount(
@@ -475,8 +478,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 			throws LBException;
 
 	/**
-	 * Returns a ConceptReferenceList of CountConceptReference  that holds the count of concepts at the
-	 * previous level in the hierarchy.
+	 * Returns a ConceptReferenceList of CountConceptReference that holds the
+	 * count of concepts at the previous level in the hierarchy.
 	 * 
 	 * @param codingScheme
 	 *            The local name or URN of the coding scheme.
@@ -491,7 +494,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 *            improves performance).
 	 * @param ConceptReferenceList
 	 *            The list of concepts for which we want to find counts
-	 * @return  ConceptReferenceList of CountConceptReference  that holds the count
+	 * @return ConceptReferenceList of CountConceptReference that holds the
+	 *         count
 	 * @throws LBException
 	 */
 	public ConceptReferenceList getHierarchyLevelPrevCount(
@@ -545,6 +549,24 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 			String conceptCode, boolean resolveConcepts,
 			HierarchyPathResolveOption pathResolveOption,
 			NameAndValueList associationQualifiers) throws LBException;
+
+	/**
+	 * Return the path/transitive closure path between two nodes.
+	 * @param codingSchemeUri
+	 * @param versionOrTag
+	 * @param containerName
+	 * @param associationName
+	 * @param sourceCode
+	 * @param sourceNS
+	 * @param targetCode
+	 * @param targetNS
+	 * @return ResolvedConceptReference, which contains the path
+	 * @throws LBParameterException
+	 */
+	ResolvedConceptReference getNodesPath(String codingSchemeUri,
+			CodingSchemeVersionOrTag versionOrTag, String containerName,
+			String associationName, String sourceCode, String sourceNS,
+			String targetCode, String targetNS) throws LBParameterException;
 
 	/**
 	 * Return detailed rendering information (including coding scheme summary,
@@ -605,41 +627,40 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	public String getCodingSchemeCopyright(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException;
 
-	
 	/**
 	 * Return the Association Name given an Association Entity Code.
 	 * 
 	 * @param codingScheme
-	 * 			  The local name or URN of the coding scheme.
+	 *            The local name or URN of the coding scheme.
 	 * @param versionOrTag
-	 * 			  The assigned tag/label or absolute version identifier of the
+	 *            The assigned tag/label or absolute version identifier of the
 	 *            coding scheme.
-	 * @param entityCode 
-	 * 			  The Association Entity Code.
-	 * @return
-	 * 			  The Association Name.
+	 * @param entityCode
+	 *            The Association Entity Code.
+	 * @return The Association Name.
 	 * @throws LBException
 	 */
 	public String getAssociationNameFromAssociationCode(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag, String entityCode) throws LBException;
-	
+			CodingSchemeVersionOrTag versionOrTag, String entityCode)
+			throws LBException;
+
 	/**
 	 * Return the Association Entity Code given an Association Name.
 	 * 
 	 * @param codingScheme
-	 * 			  The local name or URN of the coding scheme.
+	 *            The local name or URN of the coding scheme.
 	 * @param versionOrTag
-	 * 			  The assigned tag/label or absolute version identifier of the
+	 *            The assigned tag/label or absolute version identifier of the
 	 *            coding scheme.
-	 * @param associationName 
-	 * 			  The Association Name.
-	 * @return
-	 * 			  The Association Entity Code.
+	 * @param associationName
+	 *            The Association Name.
+	 * @return The Association Entity Code.
 	 * @throws LBException
 	 */
 	public String getAssociationCodeFromAssociationName(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag, String associationName) throws LBException;
-	
+			CodingSchemeVersionOrTag versionOrTag, String associationName)
+			throws LBException;
+
 	/**
 	 * Return all the association forward name and reverse name for the coding
 	 * scheme.
@@ -745,7 +766,7 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	public boolean isReverseName(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String directionalName)
 			throws LBException;
-	
+
 	/**
 	 * Gets the association names that contain a directional name.
 	 * 
@@ -759,7 +780,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 * @throws LBException
 	 */
 	public String[] getAssociationNameForDirectionalName(String codingScheme,
-	            CodingSchemeVersionOrTag versionOrTag, String directionalName) throws LBException;
+			CodingSchemeVersionOrTag versionOrTag, String directionalName)
+			throws LBException;
 
 	/**
 	 * Return a representation of the association between the concepts with the
@@ -838,9 +860,10 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	public SupportedHierarchy[] getSupportedHierarchies(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String hierarchyId)
 			throws LBException;
-	
+
 	/**
-	 * Returns an list of properties supported with propertyType of 'presentation'.
+	 * Returns an list of properties supported with propertyType of
+	 * 'presentation'.
 	 * 
 	 * @param codingScheme
 	 * @param versionOrTag
@@ -848,10 +871,10 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 * @throws LBException
 	 */
 
-	public List<SupportedProperty> getSupportedPropertiesOfTypePresentation(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag)
+	public List<SupportedProperty> getSupportedPropertiesOfTypePresentation(
+			String codingScheme, CodingSchemeVersionOrTag versionOrTag)
 			throws LBException;
-	
+
 	/**
 	 * Returns an list of properties supported with propertyType of 'comment'.
 	 * 
@@ -861,12 +884,13 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 * @throws LBException
 	 */
 
-	public List<SupportedProperty> getSupportedPropertiesOfTypeComment(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag)
+	public List<SupportedProperty> getSupportedPropertiesOfTypeComment(
+			String codingScheme, CodingSchemeVersionOrTag versionOrTag)
 			throws LBException;
-	
+
 	/**
-	 * Returns an list of properties supported with propertyType of 'definition'.
+	 * Returns an list of properties supported with propertyType of
+	 * 'definition'.
 	 * 
 	 * @param codingScheme
 	 * @param versionOrTag
@@ -874,10 +898,10 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 * @throws LBException
 	 */
 
-	public List<SupportedProperty> getSupportedPropertiesOfTypeDefinition(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag)
+	public List<SupportedProperty> getSupportedPropertiesOfTypeDefinition(
+			String codingScheme, CodingSchemeVersionOrTag versionOrTag)
 			throws LBException;
-	
+
 	/**
 	 * Returns an list of properties supported with propertyType of 'property'.
 	 * 
@@ -887,8 +911,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 * @throws LBException
 	 */
 
-	public List<SupportedProperty> getSupportedPropertiesOfTypeProperty(String codingScheme,
-			CodingSchemeVersionOrTag versionOrTag)
+	public List<SupportedProperty> getSupportedPropertiesOfTypeProperty(
+			String codingScheme, CodingSchemeVersionOrTag versionOrTag)
 			throws LBException;
 
 	/**
