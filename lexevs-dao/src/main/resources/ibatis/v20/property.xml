@@ -339,6 +339,15 @@
   	</select>
 
 	<delete id="deleteCodingSchemePropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid = #param2#
+	</delete>
+	
+	<delete id="deleteCodingSchemePropertiesByCodingSchemeUIdUseInnerJoin" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE 
 			$prefix$property
 		FROM 
@@ -352,8 +361,25 @@
 		AND 
 			codingSchemeGuid = #param2#
 	</delete>
-		
+	
 	<delete id="deleteEntityPropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid
+		IN	(
+			SELECT 
+				entityGuid
+			FROM
+				$prefix$entity
+			WHERE
+				codingSchemeGuid = #param2#
+			)
+	</delete>
+	
+	<delete id="deleteEntityPropertiesByCodingSchemeUIdUseInnerJoin" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE 
 			$prefix$property
 		FROM
@@ -370,9 +396,26 @@
 			referenceType = #param1#
 		AND 
 			cs.codingSchemeGuid = #param2#
-	</delete>
-	
+	</delete>	
+
 	<delete id="deleteRelationPropertiesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$property
+		WHERE
+			referenceType = #param1#
+		AND 
+			referenceGuid
+		IN	(
+			SELECT 
+				relationGuid
+			FROM
+				$prefix$relation
+			WHERE
+				codingSchemeGuid = #param2#
+			)
+	</delete>	
+	
+	<delete id="deleteRelationPropertiesByCodingSchemeUIdUseInnerJoin" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE 
 			$prefix$property
 		FROM
