@@ -44,6 +44,7 @@ import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean;
@@ -130,6 +131,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_RELATIONS_FOR_UID_SQL = ASSOCIATION_NAMESPACE + "getRelationsForUid";
 	
 	private static String GET_RELATION_ATTRIBUTES_BY_UID_SQL = ASSOCIATION_NAMESPACE + "getRelationAttributeForRelationUId";
+	
+	private static String GET_NODES_PATH = ASSOCIATION_NAMESPACE + "getNodesPath"; 
 	
 	private static String UPDATE_RELATION_BY_UID_SQL = ASSOCIATION_NAMESPACE + "updateRelationByUId";
 	
@@ -297,6 +300,28 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameter(prefix, codingSchemeId));
 		
 		return returnList;
+	}
+	
+	@Override
+	public String getNodesPath(
+			String codingSchemeUid,
+			String sourceCode, 
+			String sourceNS,
+			String targetCode, 
+			String targetNS, 
+			String associationUid) {
+		
+		String prefix = this.getPrefixResolver().
+			resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		GetNodesPathBean bean = new GetNodesPathBean();
+		bean.setPrefix(prefix);
+		bean.setSourceEntityCode(sourceCode);
+		bean.setSourceEntityCodeNamespace(sourceNS);
+		bean.setTargetEntityCode(targetCode);
+		bean.setTargetEntityCodeNamespace(targetNS);
+		bean.setAssociationPredicateUId(associationUid);
+		return (String) this.getSqlMapClientTemplate().queryForObject(GET_NODES_PATH, bean);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -594,6 +619,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				path,
 				this.getNonBatchTemplateInserter());
 	}
+	
+
 	
 	/**
 	 * Insert batch transitive closure.
@@ -962,4 +989,5 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		else
 			return false;
 	}
+
 }
