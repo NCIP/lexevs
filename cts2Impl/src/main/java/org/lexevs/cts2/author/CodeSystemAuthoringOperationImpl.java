@@ -252,6 +252,26 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
+	        // start
+	        Property currentProperty = null;
+			Properties updatedProps = new Properties();
+			
+			Properties existingProps = codingScheme.getProperties();
+			
+			
+			for (Property prop : properties.getPropertyAsReference())
+			{
+					currentProperty = prop;
+		
+					// setup entry state for property to be changed
+					String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+					currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+							revision.getRevisionId(), propPrevRevId, 0L));
+					updatedProps.addProperty(currentProperty);
+			}
+			
+	        // end
+	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
 	        
 	        return codingScheme;
@@ -288,7 +308,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 	
 
-	private Properties processAddProperties(RevisionInfo revision, Properties properties) {
+	protected Properties processAddProperties(RevisionInfo revision, Properties properties) {
 		// TODO Auto-generated method stub
 		Property currentProperty = null;
 		Properties updatedProps = new Properties();
@@ -308,10 +328,11 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		
 	}
 
-	private Properties processUpdateProperties(RevisionInfo revision, Properties properties) {
+	protected Properties processUpdateProperties(RevisionInfo revision, Properties properties) {
 		// TODO Auto-generated method stub
 		Property currentProperty = null;
 		Properties updatedProps = new Properties();
+		
 		
 		for (Property prop : properties.getPropertyAsReference())
 		{
@@ -328,7 +349,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		
 	}
 
-	private Properties processRemoveProperties(RevisionInfo revision, Properties properties) {
+	protected Properties processRemoveProperties(RevisionInfo revision, Properties properties) {
 		// TODO Auto-generated method stub
 		Property currentProperty = null;
 		Properties updatedProps = new Properties();
