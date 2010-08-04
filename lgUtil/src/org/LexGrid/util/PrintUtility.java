@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -181,12 +182,16 @@ public class PrintUtility {
 	 * @param entity the entity
 	 */
 	public static void print(Entity entity){
-		System.out.println("Code: " + entity.getEntityCode());
-		
-		if(entity.getEntityDescription() != null) {
-			System.out.println(" - Description: " + entity.getEntityDescription().getContent());
-		}
+		print(entity, 0);
 	}
+	
+	private static void print(Entity entity, int depth){
+        System.out.println(buildPrefix(depth) + "Code: " + entity.getEntityCode());
+        
+        if(entity.getEntityDescription() != null) {
+            System.out.println(buildPrefix(depth) + " - Description: " + entity.getEntityDescription().getContent());
+        }
+    }
 	
 	/**
 	 * Prints the.
@@ -196,6 +201,8 @@ public class PrintUtility {
 	public static void print(Object obj){
 		System.out.println("Result is: " + obj.toString());
 	}
+	
+	
 	
 	/**
 	 * Prints the.
@@ -214,19 +221,23 @@ public class PrintUtility {
 		}
 	}
 	
+	public static void print(CodedNodeGraph cng) {
+        print(cng, null);
+    }
+	
 	/**
 	 * Prints the.
 	 * 
 	 * @param cng the cng
 	 */
-	public static void print(CodedNodeGraph cng) {
+	public static void print(CodedNodeGraph cng, ConceptReference focus) {
 
 		ResolvedConceptReferenceList rcrl;
 		System.out.println("-----------------");
 		System.out.println("Resolving Forward");
 		System.out.println("-----------------");
 		try {
-			rcrl = cng.resolveAsList(null, true, false, 0, -1, null, null, null,
+			rcrl = cng.resolveAsList(focus, true, false, -1, -1, null, null, null,
 					-1);
 			ResolvedConceptReference[] rcrArray = rcrl
 			.getResolvedConceptReference();
@@ -237,7 +248,7 @@ public class PrintUtility {
 			System.out.println("------------------");
 			System.out.println("Resolving Backward");
 			System.out.println("------------------");
-				rcrl = cng.resolveAsList(null, false, true, 0, -1, null, null, null,
+				rcrl = cng.resolveAsList(focus, false, true, -1, -1, null, null, null,
 						-1);
 				rcrArray = rcrl
 				.getResolvedConceptReference();
@@ -247,6 +258,7 @@ public class PrintUtility {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			} 
+			
 		}
 	
 	/**
