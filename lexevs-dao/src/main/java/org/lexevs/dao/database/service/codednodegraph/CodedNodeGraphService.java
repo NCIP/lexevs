@@ -10,6 +10,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
 public interface CodedNodeGraphService {
 	
@@ -50,6 +51,7 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion,
 			String relationsContainerName,
 			List<String> associationPredicateNames, 
+			List<QualifierNameValuePair> qualifiers,
 			TraverseAssociations traverse);
 	
 	public List<ConceptReference> getTailConceptReferences(
@@ -57,6 +59,7 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion,
 			String relationsContainerName,
 			List<String> associationPredicateNames,
+			List<QualifierNameValuePair> qualifiers,
 			TraverseAssociations traverse);
 	
 	public List<String> getTripleUidsContainingSubject(

@@ -159,7 +159,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeCodingSchemeResourceFromSystem(java.lang.String, java.lang.String)
 	 */
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void removeCodingSchemeResourceFromSystem(String uri, String version)
 			throws LBParameterException {
 		if(primarySystemResourceService.containsCodingSchemeResource(uri, version)){

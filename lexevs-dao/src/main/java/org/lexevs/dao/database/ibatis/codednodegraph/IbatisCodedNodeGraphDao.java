@@ -18,6 +18,7 @@ import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCou
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollectionTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
@@ -374,15 +375,16 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	@Override
 	@CacheMethod
-	public List<ConceptReference> getRootNodes(String codingSchemeUid,
-			List<String> associationPredicateUids, TraverseAssociations traverse) {
+	public List<ConceptReference> getRootNodes(
+			String codingSchemeUid,
+			List<String> associationPredicateUids,
+			List<QualifierNameValuePair> qualifiers, 
+			TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(traverse.toString(), associationPredicateUids, qualifiers);
 		bean.setPrefix(prefix);
-		bean.setParam1(traverse.toString());
-		bean.setParam2(associationPredicateUids);
-		
+	
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
 	}
@@ -390,14 +392,15 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	@SuppressWarnings("unchecked")
 	@Override
 	@CacheMethod
-	public List<ConceptReference> getTailNodes(String codingSchemeUid,
-			List<String> associationPredicateUids, TraverseAssociations traverse) {
+	public List<ConceptReference> getTailNodes(
+			String codingSchemeUid,
+			List<String> associationPredicateUids, 
+			List<QualifierNameValuePair> qualifiers, 
+			TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		PrefixedParameterCollection bean = new PrefixedParameterCollection();
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(traverse.toString(), associationPredicateUids, qualifiers);
 		bean.setPrefix(prefix);
-		bean.setParam1(traverse.toString());
-		bean.setParam2(associationPredicateUids);
 		
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean);

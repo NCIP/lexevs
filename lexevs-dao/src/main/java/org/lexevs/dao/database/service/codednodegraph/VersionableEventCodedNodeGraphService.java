@@ -35,6 +35,7 @@ import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAsso
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -467,9 +468,13 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 
 	@Override
 	@Transactional
-	public List<ConceptReference> getRootConceptReferences(String codingSchemeUri,
-			String codingSchemeVersion, String relationsContainerName,
-			List<String> associationPredicateNames, TraverseAssociations traverse) {
+	public List<ConceptReference> getRootConceptReferences(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			List<String> associationPredicateNames, 
+			List<QualifierNameValuePair> qualifiers, 
+			TraverseAssociations traverse) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
@@ -482,7 +487,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateNames);
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getRootNodes(codingSchemeUid, associationPredicateUids, traverse);
+			getRootNodes(codingSchemeUid, associationPredicateUids, qualifiers, traverse);
 	}
 
 	private List<String> getAssociationPredicateUids(
@@ -515,6 +520,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeVersion, 
 			String relationsContainerName,
 			List<String> associationPredicateNames,
+			List<QualifierNameValuePair> qualifiers,
 			TraverseAssociations traverse) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
@@ -528,7 +534,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateNames);
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getTailNodes(codingSchemeUid, associationPredicateUids, traverse);
+			getTailNodes(codingSchemeUid, associationPredicateUids, qualifiers, traverse);
 	}
 
 	@Override
