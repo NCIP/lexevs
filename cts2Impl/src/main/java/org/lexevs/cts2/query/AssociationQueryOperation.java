@@ -21,61 +21,65 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.AssociationTarget;
+import org.lexevs.dao.database.service.association.AssociationService.AssociationTriple;
 
 public interface AssociationQueryOperation {
+	/**
+	 * Returns the resolved concept reference (which contains the associations) according to given node.
+	 * @param codingSystemName
+	 * @param versionOrTag
+	 * @param namespace
+	 * @param code
+	 * @param associationName
+	 * @param isBackward
+	 * @param depth
+	 * @param maxToReturn
+	 * @return ResolvedConceptReferenceList
+	 */
 	public ResolvedConceptReferenceList listAssociations(
 			String codingSystemName, CodingSchemeVersionOrTag versionOrTag,
 			String namespace, String code, String associationName,
 			boolean isBackward, int depth, int maxToReturn);
 
+	/**
+	 * Returns the path according to given two nodes.
+	 * @param codingSystemUri
+	 * @param versionOrTag
+	 * @param relationContainerName
+	 * @param associationName
+	 * @param sourceCode
+	 * @param sourceNS
+	 * @param targetCode
+	 * @param targetNS
+	 * @return ResolvedConceptReference
+	 */
 	public ResolvedConceptReference determineTransitiveConceptRelationship(
 			String codingSystemUri, CodingSchemeVersionOrTag versionOrTag,
 			String relationContainerName, String associationName,
 			String sourceCode, String sourceNS, String targetCode,
 			String targetNS);
 
+	/**
+	 * Return whether the two nodes has a transitive closure path
+	 * @param codingSystemName
+	 * @param versionOrTag
+	 * @param associationtype
+	 * @param parentCode
+	 * @param childCode
+	 * @return boolean
+	 */
 	public boolean computeSubsumptionRelationship(String codingSystemName,
 			CodingSchemeVersionOrTag versionOrTag, String associationtype,
-			ConceptReference parentCode, ConceptReference childCode);
+			ConceptReference sourceCode, ConceptReference targetCode);
 
-	public AssociationInformation getAssociationDetails(String codingSchemeUri,
+	/**
+	 * Return association triple according to association instance id
+	 * @param codingSchemeUri
+	 * @param versionOrTag
+	 * @param associationInstanceId
+	 * @return AssociationTriple
+	 */
+	public AssociationTriple getAssociationDetails(String codingSchemeUri,
 			CodingSchemeVersionOrTag versionOrTag,
-			String relationContainerName, String associationPredicateName,
 			String associationInstanceId);
-	
-	public class AssociationInformation {
-		private String codingSchemeUri;
-		private CodingSchemeVersionOrTag versionOrTag;
-		private AssociationSource associationSource;
-		private AssociationTarget associationTarget;
-		
-		public AssociationInformation () {}
-		
-		public String getCodingSchemeUri() {
-			return codingSchemeUri;
-		}
-		public void setCodingSchemeUri(String codingSchemeUri) {
-			this.codingSchemeUri = codingSchemeUri;
-		}
-		public CodingSchemeVersionOrTag getVersionOrTag() {
-			return versionOrTag;
-		}
-		public void setVersionOrTag(CodingSchemeVersionOrTag versionOrTag) {
-			this.versionOrTag = versionOrTag;
-		}
-		public AssociationSource getAssociationSource() {
-			return associationSource;
-		}
-		public void setAssociationSource(AssociationSource associationSource) {
-			this.associationSource = associationSource;
-		}
-		public AssociationTarget getAssociationTarget() {
-			return associationTarget;
-		}
-		public void setAssociationTarget(AssociationTarget associationTarget) {
-			this.associationTarget = associationTarget;
-		}
-	};
 }

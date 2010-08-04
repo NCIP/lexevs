@@ -1,12 +1,9 @@
 package org.lexevs.cts2.query;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -17,18 +14,14 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.types.EntityTypes;
-import org.LexGrid.commonTypes.types.descriptors.EntityTypesDescriptor;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.relations.AssociationEntity;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.type.EntityType;
-import org.lexevs.cts2.BaseService;
 
 public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 	public CodeSystemQueryOperationImpl() {
@@ -71,7 +64,6 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 					throw new LBException("Now valid Association Entity found");
 			}
 		} catch (LBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -83,10 +75,8 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 		try {
 			return LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingSchemeName, versionOrTag);
 		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -106,7 +96,6 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 					return conceptRef.getEntity();
 			}
 		} catch (LBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -125,7 +114,6 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 			CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getNodeSet(codingSchemeName, versionOrTag, entityTypes);
 			return cns.resolve(sortOptionList, null, null, null);
 		} catch (LBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -164,7 +152,6 @@ public class CodeSystemQueryOperationImpl implements CodeSystemQueryOperation {
 			}
 
 		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return csList;

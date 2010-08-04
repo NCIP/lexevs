@@ -11,36 +11,35 @@ import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
+import org.lexevs.dao.database.service.association.AssociationService.AssociationTriple;
 
 public class AssociationQueryOperationImpl extends BaseService implements AssociationQueryOperation {
 
 	@Override
 	public boolean computeSubsumptionRelationship(String codingSystemName,
 			CodingSchemeVersionOrTag versionOrTag, String associationtype,
-			ConceptReference parentCode, ConceptReference childCode) {
+			ConceptReference sourceCode, ConceptReference targetCode) {
 		try {
-			if (StringUtils.equals(parentCode.getCodeNamespace(), childCode
+			if (StringUtils.equals(sourceCode.getCodeNamespace(), targetCode
 					.getCodeNamespace()) == false
-					|| StringUtils.equals(parentCode.getCodingSchemeName(),
-							childCode.getCodingSchemeName()) == false) {
+					|| StringUtils.equals(sourceCode.getCodingSchemeName(),
+							targetCode.getCodingSchemeName()) == false) {
 				throw new LBParameterException(
 						"Does not support different coding systems subsumes");
 			} else {
 				CodedNodeGraph cng = LexBIGServiceImpl.defaultInstance()
 						.getNodeGraph(codingSystemName, versionOrTag, null);
 				return cng.areCodesRelated(Constructors.createNameAndValue(
-						associationtype, null), parentCode, childCode, false);
+						associationtype, null), sourceCode, targetCode, false);
 			}
 		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LBResourceUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -62,10 +61,8 @@ public class AssociationQueryOperationImpl extends BaseService implements Associ
 					relationContainerName, associationName, sourceCode,
 					sourceNS, targetCode, targetNS);
 		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -95,33 +92,29 @@ public class AssociationQueryOperationImpl extends BaseService implements Associ
 			return cng.resolveAsList(conRef, !(isBackward), isBackward, -1,
 					depth, null, null, null, null, maxToReturn);
 		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (LBResourceUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
 	}
 
 	@Override
-	public AssociationInformation getAssociationDetails(String codingSchemeUri,
+	public AssociationTriple getAssociationDetails(String codingSchemeUri,
 			CodingSchemeVersionOrTag versionOrTag,
 			String associationInstanceId) {
 
-		AssociationInformation associationInformation = new AssociationInformation();
-		associationInformation.setCodingSchemeUri(codingSchemeUri);
-		associationInformation.setVersionOrTag(versionOrTag);
-
-		AssociationSource source = this.getDatabaseServiceManager().getAssociationService().getTriple()
-		//source will either have 1 AssociationTarget or 1 AssociationData
+		String version;
+		try {
+			version = ServiceUtility.getVersion(codingSchemeUri, versionOrTag);
+			return this.getDatabaseServiceManager().getAssociationService().getAssociationTripleByAssociationInstanceId(codingSchemeUri, version, associationInstanceId);
 		
-		
-		return associationInformation;
-
+		} catch (LBParameterException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-
 }
+

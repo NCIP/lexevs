@@ -17,7 +17,6 @@
  */
 package org.lexevs.cts2.query;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
@@ -25,8 +24,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
