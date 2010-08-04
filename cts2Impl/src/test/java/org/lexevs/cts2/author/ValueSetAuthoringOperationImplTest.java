@@ -319,20 +319,20 @@ public class ValueSetAuthoringOperationImplTest {
 	@Test
 	public void testUpdateValueSetProperty() {
 		Presentation prop = new Presentation();
-		prop.setPropertyId("propertyId1");
-		prop.setPropertyName("propertyName");
-		prop.setIsActive(false);
-		prop.setLanguage("english updated 206");
-		prop.setOwner("owner updated 206");
+		prop.setPropertyId("p1");
+		prop.setPropertyName("propertyName updated 402");
+//		prop.setIsActive(false);
+//		prop.setLanguage("english updated 206");
+		prop.setOwner("owner updated 402");
 		prop.setPropertyType(PropertyTypes.PROPERTY.name());
 //		prop.setStatus("status 3");
-		Text text = new Text();
-		text.setContent("content updated 206");
-		text.setDataType("Text datatype");
-		prop.setValue(text);
-		prop.setDegreeOfFidelity("degreeOfFidelity");
-		prop.setMatchIfNoContext(true);
-		prop.setRepresentationalForm("representationalForm");
+//		Text text = new Text();
+//		text.setContent("content updated 206");
+//		text.setDataType("Text datatype");
+//		prop.setValue(text);
+//		prop.setDegreeOfFidelity("degreeOfFidelity");
+//		prop.setMatchIfNoContext(true);
+//		prop.setRepresentationalForm("representationalForm");
 		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
@@ -340,11 +340,11 @@ public class ValueSetAuthoringOperationImplTest {
 		revInfo.setDescription("description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R206");
+		revInfo.setRevisionId("R402");
 		
 		ValueSetAuthoringOperation valueSetAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		try {
-			valueSetAuthOp.updateValueSetProperty(new URI("SRITEST:AUTO:GMTEST"), prop, revInfo);
+			valueSetAuthOp.updateValueSetProperty(new URI("VSD:AUTHORING:JUNIT:TEST4"), prop, revInfo);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
