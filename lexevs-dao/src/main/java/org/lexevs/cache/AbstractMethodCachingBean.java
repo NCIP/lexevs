@@ -74,11 +74,18 @@ public abstract class AbstractMethodCachingBean<T> {
 		Object target = this.getTarget(joinPoint);
 		
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(target.getClass(), Cacheable.class);
-		Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
+		
+		ClearCache clearCacheAnnotation = method.getAnnotation(ClearCache.class);
 		
 		Object returnObj = this.proceed(joinPoint);
 		
-		cache.clear();
+		if(clearCacheAnnotation.clearAll()) {
+			this.cacheRegistry.clearAll();
+		} else {
+			Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
+	
+			cache.clear();
+		}
 		
 		return returnObj;
 	}
