@@ -286,10 +286,6 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		// insert concept domain
 		getDatabaseEntityService().insertEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
 				csVT.getVersion(), conceptDomain);
-		
-		// create lucene index for newly create concept domain
-		getEntityIndexService().addEntityToIndex(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
-				csVT.getVersion(), conceptDomain);
 	}
 
 	/*
