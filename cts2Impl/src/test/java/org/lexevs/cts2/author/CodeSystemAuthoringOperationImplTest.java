@@ -163,68 +163,104 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		}
 
 	@Test
-		public void testUpdateCodeSystemProperty()   throws LBException, URISyntaxException{
-			
-			RevisionInfo revInfo = new RevisionInfo();
-			revInfo.setChangeAgent("changeAgent");
-			revInfo.setChangeInstruction("changeInstruction");
-			revInfo.setDescription("new description");
-			revInfo.setEditOrder(1L);
-			revInfo.setRevisionDate(new Date());
-			revInfo.setRevisionId("R502");
-	        
-	        String codingSchemeURI = "urn:oid:11.11.0.99";
-	        String representsVersion = "1.0";
-	        
-			String codingSchemeName = null;
-	        String formalName = null;
-	        String defaultLanguage = null;
-	        Long approxNumConcepts = 0L;
-	        List<String> localNameList = null; 
-	        List<Source> sourceList = null;
-	        Text copyright = null;
-	        Mappings mappings = null;
-	        
-	        Properties properties = new Properties();
-	        
-	        Presentation prop = new Presentation();
-			prop.setPropertyId("propertyId1");
-			prop.setPropertyName("propertyName");
-			prop.setIsActive(false);
-			prop.setLanguage("english updated 206");
-			prop.setOwner("owner updated 206");
-			prop.setPropertyType(PropertyTypes.PROPERTY.name());
-			Text text = new Text();
-			text.setContent("content updated 206");
-			text.setDataType("Text datatype");
-			prop.setValue(text);
-			prop.setDegreeOfFidelity("degreeOfFidelity");
-			prop.setMatchIfNoContext(true);
-			prop.setRepresentationalForm("representationalForm");
-			
-			properties.addProperty(prop);
-			
-	        
-	        CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
-	               
-	        CodingScheme codeScheme = codeSystemAuthOp.updateCodeSystem(revInfo, 
-	        															codingSchemeName, 
-	        															codingSchemeURI, 
-	        															formalName, 
-	        															defaultLanguage, 
-	        															approxNumConcepts, 
-	        															representsVersion, 
-	        															localNameList, 
-	        															sourceList, 
-	        															copyright, 
-	        															mappings, 
-	        															properties);
-	        
+	public void testAddCodeSystemProperty()   throws LBException, URISyntaxException{
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("new description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId("R502");
+	    
+	    String codingSchemeURI = "urn:oid:11.11.0.99";
+	    String representsVersion = "1.0";
+	    
+		String codingSchemeName = null;
 	
-				
-			System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+	    
+	    Properties properties = new Properties();
+	    
+	    Presentation prop = new Presentation();
+		prop.setPropertyId("propertyId1");
+		prop.setPropertyName("propertyName");
+		prop.setIsActive(false);
+		prop.setLanguage("english updated 206");
+		prop.setOwner("owner updated 206");
+		prop.setPropertyType(PropertyTypes.PROPERTY.name());
+		Text text = new Text();
+		text.setContent("content updated 206");
+		text.setDataType("Text datatype");
+		prop.setValue(text);
+		prop.setDegreeOfFidelity("degreeOfFidelity");
+		prop.setMatchIfNoContext(true);
+		prop.setRepresentationalForm("representationalForm");
+		
+		properties.addProperty(prop);
+		
+	    
+	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+	           
+	    CodingScheme codeScheme = codeSystemAuthOp.addCodeSystemProperties (revInfo, 
+	    															codingSchemeName, 
+	    															codingSchemeURI,  
+	    															representsVersion, 
+	    															properties);
+	    
 			
-		}
+		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+		
+	}
+	
+	@Test
+	public void testUpdateCodeSystemProperty()   throws LBException, URISyntaxException{
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("new description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId("R503");
+        
+        String codingSchemeURI = "urn:oid:11.11.0.99";
+        String representsVersion = "1.0";
+        
+		String codingSchemeName = null;
+
+        
+        Properties properties = new Properties();
+        
+        Presentation prop = new Presentation();
+		prop.setPropertyId("propertyId1");
+		prop.setPropertyName("propertyName");
+		prop.setIsActive(false);
+		prop.setLanguage("english updated 503");
+		prop.setOwner("owner updated 503");
+		prop.setPropertyType(PropertyTypes.PROPERTY.name());
+		Text text = new Text();
+		text.setContent("content updated 503");
+		text.setDataType("Text datatype");
+		prop.setValue(text);
+		prop.setDegreeOfFidelity("degreeOfFidelity");
+		prop.setMatchIfNoContext(true);
+		prop.setRepresentationalForm("representationalForm");
+		
+		properties.addProperty(prop);
+		
+        
+        CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+               
+        CodingScheme codeScheme = codeSystemAuthOp.updateCodeSystemProperties (revInfo, 
+        															codingSchemeName, 
+        															codingSchemeURI,  
+        															representsVersion, 
+        															properties);
+        
+			
+		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+		
+	}
 
 	@Test
 	public void testUpdateCodeSystemVersionStatus()   throws LBException, URISyntaxException{
