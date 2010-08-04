@@ -255,11 +255,6 @@ public class LexEVSUsageContextServicesImpl implements LexEVSUsageContextService
 		// insert concept domain
 		getDatabaseEntityService().insertEntity(UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_URI, 
 				csVT.getVersion(), usageContext);
-		
-		// create lucene index for newly create usage context
-		getEntityIndexService().addEntityToIndex(UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_URI,
-				csVT.getVersion(), usageContext);
-
 	}
 
 	/* (non-Javadoc)
