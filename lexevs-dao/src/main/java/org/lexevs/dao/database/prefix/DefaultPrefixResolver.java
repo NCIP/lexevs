@@ -37,7 +37,7 @@ import org.lexevs.system.constants.SystemVariables;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName="ResourceCache")
+@Cacheable(cacheName="DefaultPrefixResolverCache")
 public class DefaultPrefixResolver implements PrefixResolver {
 
 	/** The system variables. */
