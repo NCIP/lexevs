@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.pagedgraph.utility;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodedNodeReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.apache.commons.lang.ArrayUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 
@@ -52,5 +53,21 @@ public class PagedGraphUtils {
         ref.setCode(pair.getCode());
         ref.setCodeNamespace(pair.getNamespace());
         return ref;
+    }
+    
+    public static ResolveDirection getDirection(boolean resolveForward, boolean resolveBackward) {
+        if(resolveForward && resolveBackward) {
+            throw new RuntimeException();
+        }
+        
+        if(!resolveForward && !resolveBackward) {
+            throw new RuntimeException();
+        }
+        
+        if(resolveForward) {
+            return ResolveDirection.FORWARD;
+        } else {
+            return ResolveDirection.BACKWARD;
+        }
     }
 }

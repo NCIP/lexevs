@@ -18,5 +18,14 @@ public interface RootsResolver extends Serializable {
             GraphQuery query);
     
     public boolean isRootOrTail(ConceptReference ref);
+
+    public List<ConceptReference> resolveRoots(
+            String codingSchemeUri, 
+            String version, 
+            String containerName,
+            ResolveDirection direction, 
+            GraphQuery graphQuery, 
+            int currentPosition, 
+            int pageSize);
     
 }

@@ -35,13 +35,14 @@ import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
-import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
+import org.LexGrid.LexBIG.Impl.pagedgraph.utility.ValidatedParameterResolvingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
@@ -177,41 +178,25 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             }
             
         } else {
-            List<ConceptReference> codes = 
-                rootsResolver.resolveRoots(
-                        codingSchemeUri, 
-                        version,
-                        this.getRelationsContainerName(),
-                        this.getDirection(resolveForward, resolveBackward), 
-                        graphQueryBuilder.getQuery());
 
-                ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
+            return new LazyLoadableResolvedConceptReferenceList(
+                    new ValidatedParameterResolvingCallback(this), 
+                    this.getCodingSchemeUri(),
+                    this.getVersion(),
+                    this.getRelationsContainerName(),
+                    resolveForward, 
+                    resolveBackward, 
+                    resolveAssociationDepth, 
+                    resolveCodedEntryDepth, 
+                    keepLastAssociationLevelUnresolved,
+                    this.getGraphQueryBuilder().getQuery(),
+                    propertyNames, 
+                    propertyTypes,
+                    sortOptions, 
+                    filterOptions, 
+                    cycleDetectingCallback,
+                    maxToReturn);
 
-                for(ConceptReference root : codes) {
-                    
-                    ResolvedConceptReferenceList list = this.doResolveAsValidatedParameterList(
-                            root, 
-                            resolveForward, 
-                            resolveBackward, 
-                            resolveCodedEntryDepth, 
-                            resolveAssociationDepth, 
-                            propertyNames, 
-                            propertyTypes,
-                            sortOptions, 
-                            filterOptions, 
-                            maxToReturn, 
-                            keepLastAssociationLevelUnresolved,
-                            cycleDetectingCallback);
-                    
-                    if(list != null) {
-
-                        for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
-
-                            returnList.addResolvedConceptReference(ref);    
-                        }
-                    }
-                }
-                return returnList;
         }
         
         if(this.rootsResolver.isRootOrTail(focus) && resolveAssociationDepth >= 0) {
@@ -375,21 +360,6 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         return false;
     }
     
-    private ResolveDirection getDirection(boolean resolveForward, boolean resolveBackward) {
-        if(resolveForward && resolveBackward) {
-            throw new RuntimeException();
-        }
-        
-        if(!resolveForward && !resolveBackward) {
-            throw new RuntimeException();
-        }
-        
-        if(resolveForward) {
-            return ResolveDirection.FORWARD;
-        } else {
-            return ResolveDirection.BACKWARD;
-        }
-    }
     
     /**
      * Should resolve next level.

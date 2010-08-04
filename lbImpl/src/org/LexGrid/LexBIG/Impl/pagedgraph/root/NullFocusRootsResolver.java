@@ -8,19 +8,34 @@ import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class NullFocusRootsResolver implements RootsResolver {
 
     private static final long serialVersionUID = 9219617549685434658L;
 
+
+    @Override
+    public List<ConceptReference> resolveRoots(
+            String codingSchemeUri, 
+            String version, 
+            String containerName,
+            ResolveDirection direction, 
+            GraphQuery graphQuery) {
+        return this.resolveRoots(codingSchemeUri, version, containerName, direction, graphQuery, 0, -1);
+    }
+    
+    
     @Override
     public List<ConceptReference> resolveRoots(
             String codingSchemeUri, 
             String codingSchemeVersion, 
             String relationsContainerName,
             ResolveDirection direction,
-            GraphQuery query) {
+            GraphQuery query,
+            int currentPosition, 
+            int pageSize) {
         List<ConceptReference> returnList = new ArrayList<ConceptReference>();
         
         if(direction.equals(ResolveDirection.FORWARD)) {
@@ -29,10 +44,20 @@ public class NullFocusRootsResolver implements RootsResolver {
             }
             
             if(CollectionUtils.isNotEmpty(query.getRestrictToTargetCodes())) {
-                return this.getRelatedSourceCodes(codingSchemeUri, codingSchemeVersion, query);
+                return this.getRelatedSourceCodes(
+                        codingSchemeUri, 
+                        codingSchemeVersion, 
+                        query, 
+                        currentPosition,
+                        pageSize);
             }
             
-           return this.getRoots(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
+           return this.getRoots(
+                   codingSchemeUri, 
+                   codingSchemeVersion, 
+                   relationsContainerName, 
+                   query.getRestrictToAssociations(),
+                   query.getRestrictToAssociationsQualifiers());
         }
         
         if(direction.equals(ResolveDirection.BACKWARD)) {
@@ -41,10 +66,20 @@ public class NullFocusRootsResolver implements RootsResolver {
             }
             
             if(CollectionUtils.isNotEmpty(query.getRestrictToSourceCodes())) {
-                return this.getRelatedTargetCodes(codingSchemeUri, codingSchemeVersion, query);
+                return this.getRelatedTargetCodes(
+                        codingSchemeUri, 
+                        codingSchemeVersion, 
+                        query,
+                        currentPosition,
+                        pageSize);
             }
             
-            return this.getTails(codingSchemeUri, codingSchemeVersion, relationsContainerName, query.getRestrictToAssociations());
+            return this.getTails(
+                    codingSchemeUri, 
+                    codingSchemeVersion, 
+                    relationsContainerName, 
+                    query.getRestrictToAssociations(),
+                    query.getRestrictToAssociationsQualifiers());
         }
         
         return returnList;
@@ -64,7 +99,9 @@ public class NullFocusRootsResolver implements RootsResolver {
     protected List<ConceptReference> getRelatedTargetCodes(
             String  codingSchemeUri, 
             String codingSchemeVersion,
-            GraphQuery query){
+            GraphQuery query,
+            int currentPosition,
+            int pageSize){
          
         List<String> uids = new ArrayList<String>();
         
@@ -83,8 +120,8 @@ public class NullFocusRootsResolver implements RootsResolver {
                     ref.getCodeNamespace(), 
                     query, 
                     null,
-                    0, 
-                    -1));
+                    currentPosition, 
+                    pageSize));
         }
         
         return service.getConceptReferencesFromUidTarget(codingSchemeUri, codingSchemeVersion, uids);
@@ -93,7 +130,9 @@ public class NullFocusRootsResolver implements RootsResolver {
     protected List<ConceptReference> getRelatedSourceCodes(
             String  codingSchemeUri, 
             String codingSchemeVersion,
-            GraphQuery query){
+            GraphQuery query, 
+            int currentPosition,
+            int pageSize){
          
         List<String> uids = new ArrayList<String>();
         
@@ -112,8 +151,8 @@ public class NullFocusRootsResolver implements RootsResolver {
                     ref.getCodeNamespace(), 
                     query, 
                     null,
-                    0, 
-                    -1));
+                    currentPosition, 
+                    pageSize));
         }
         
         return service.getConceptReferencesFromUidSource(codingSchemeUri, codingSchemeVersion, uids);
@@ -123,7 +162,8 @@ public class NullFocusRootsResolver implements RootsResolver {
             String  codingSchemeUri, 
             String codingSchemeVersion,
             String relationsContainerName,
-            List<String> associationNames){
+            List<String> associationNames,
+            List<QualifierNameValuePair> qualifiers){
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
@@ -144,6 +184,7 @@ public class NullFocusRootsResolver implements RootsResolver {
             		codingSchemeVersion, 
             		relationsContainerName, 
             		associationNames, 
+            		qualifiers,
             		traverseAssociations);
         
         return roots;
@@ -153,7 +194,8 @@ public class NullFocusRootsResolver implements RootsResolver {
             String  codingSchemeUri, 
             String codingSchemeVersion,
             String relationsContainerName,
-            List<String> associationNames){
+            List<String> associationNames,
+            List<QualifierNameValuePair> qualifiers){
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
@@ -174,6 +216,7 @@ public class NullFocusRootsResolver implements RootsResolver {
             		codingSchemeVersion, 
             		relationsContainerName, 
             		associationNames, 
+            		qualifiers,
             		traverseAssociations);
     }
 }
