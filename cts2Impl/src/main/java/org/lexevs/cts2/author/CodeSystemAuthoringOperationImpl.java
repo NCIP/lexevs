@@ -83,11 +83,13 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        scheme.setCodingSchemeURI(codingSchemeURI);
 	
-	        scheme.setFormalName(formalName);
-	
-	        scheme.setDefaultLanguage(defaultLanguage);
+	        if (formalName != null)
+	        	scheme.setFormalName(formalName);
 	        
-	        scheme.setApproxNumConcepts(approxNumConcepts);
+	        if (defaultLanguage != null)
+	        	scheme.setDefaultLanguage(defaultLanguage);
+	       
+	       scheme.setApproxNumConcepts(approxNumConcepts);
 	        
 	        scheme.setRepresentsVersion(representsVersion);
 	
@@ -97,7 +99,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        if (sourceList != null)
 	        	scheme.setSource(sourceList);
 	
-	        scheme.setCopyright(copyright);
+	        if (copyright != null)
+	        	scheme.setCopyright(copyright);
 	
 	        scheme.setMappings(mappings);
 	
