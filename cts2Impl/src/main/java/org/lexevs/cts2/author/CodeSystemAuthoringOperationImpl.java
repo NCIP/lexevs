@@ -103,8 +103,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        	scheme.setCopyright(copyright);
 	
 	        scheme.setMappings(mappings);
-	
-	       // scheme.setProperties(properties);
 	        
 		
 	        // Ensure RevisionInfo is provided
@@ -257,24 +255,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        // start
-//	        Property currentProperty = null;
-//			Properties updatedProps = new Properties();
-//			
-//			Properties existingProps = codingScheme.getProperties();
-//			
-//			for (Property prop : properties.getPropertyAsReference())
-//			{
-//					currentProperty = prop;
-//		
-//					// setup entry state for property to be changed
-//					String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
-//					currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
-//							revision.getRevisionId(), propPrevRevId, 0L));
-//					updatedProps.addProperty(currentProperty);
-//			}
-//			
-	        // end
 	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
@@ -337,7 +317,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	
 
 	protected Properties processAddProperties(RevisionInfo revision, Properties properties) {
-		// TODO Auto-generated method stub
+
 		Property currentProperty = null;
 		Properties updatedProps = new Properties();
 		
@@ -357,7 +337,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	protected Properties processUpdateProperties(RevisionInfo revision, Properties properties) {
-		// TODO Auto-generated method stub
+
 		Property currentProperty = null;
 		Properties updatedProps = new Properties();
 		
@@ -377,27 +357,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		
 	}
 
-//	protected Properties processRemoveProperties(RevisionInfo revision, String propertyId) {
-//		// TODO Auto-generated method stub
-//		
-//		Property currentProperty = null;
-//		
-//		Properties updatedProps = new Properties();
-//		
-//		for (Property prop : properties.getPropertyAsReference())
-//		{
-//				currentProperty = prop;
-//
-//				// setup entry state for property to be changed
-//				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
-//				currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
-//						revision.getRevisionId(), propPrevRevId, 0L));
-//				updatedProps.addProperty(currentProperty);
-//		}
-//		
-//		return updatedProps;
-//		
-//	}
+
 
 	@Override
 	public Revision createCodeSystemChangeSet(String agent,
