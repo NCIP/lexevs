@@ -701,41 +701,46 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsForSupportedTagAndValue(java.lang.String, java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsForSupportedTagAndValue(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(
-			String supportedTag, String value) {
+			String supportedTag, String value, String uri) {
 		getLogger().logMethod(new Object[]{supportedTag, value});
-		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
+		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value, uri);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithCodingScheme(java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithCodingScheme(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsWithCodingScheme(
-			String codingSchemename) {
+			String codingSchemename, String codingSchemeURI) {
 		getLogger().logMethod(new Object[]{codingSchemename});
-		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, codingSchemename);
+		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CODINGSCHEME, codingSchemename, codingSchemeURI);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithConceptDomain(java.lang.String)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithConceptDomain(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsWithConceptDomain(
-			String conceptDomain) {
+			String conceptDomain, String codingSchemeURI) {
 		getLogger().logMethod(new Object[]{conceptDomain});
 		
-		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain);
+		return this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(
+				SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN, conceptDomain, codingSchemeURI);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithUsageContext(java.util.List, java.lang.String)
+	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsWithUsageContext(
-			List<String> usageContexts) {
+			List<String> usageContexts, String codingSchemeURI) {
 		getLogger().logMethod(new Object[]{usageContexts});
 		
 		Set<String> ucList = new HashSet<String>();
@@ -743,23 +748,23 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			for (String uc : usageContexts)
 			{
 				ucList.addAll(this.getValueSetDefinitionService().getValueSetDefinitionURIForSupportedTagAndValue(
-											SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT, uc));
+											SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT, uc, codingSchemeURI));
 			}
 		return new ArrayList<String>(ucList);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithConceptDomainAndUsageContext(java.lang.String, java.util.List)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsWithConceptDomainAndUsageContext(java.lang.String, java.util.List, java.lang.String)
 	 */
 	@Override
 	public List<String> getValueSetDefinitionURIsWithConceptDomainAndUsageContext(
-			String conceptDomain, List<String> usageContexts) {
+			String conceptDomain, List<String> usageContexts, String codingSchemeURI) {
 		getLogger().logMethod(new Object[]{conceptDomain, usageContexts});
 		
 		List<String> vsdURIs = new ArrayList<String>();		
-		List<String> cdList = getValueSetDefinitionURIsWithConceptDomain(conceptDomain);		
-		List<String> ucList = getValueSetDefinitionURIsWithUsageContext(usageContexts);
+		List<String> cdList = getValueSetDefinitionURIsWithConceptDomain(conceptDomain, codingSchemeURI);		
+		List<String> ucList = getValueSetDefinitionURIsWithUsageContext(usageContexts, codingSchemeURI);
 		
 		if (cdList == null)
 			return ucList;

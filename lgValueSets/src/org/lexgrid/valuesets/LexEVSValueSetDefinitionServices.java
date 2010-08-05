@@ -310,37 +310,39 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 
 	 * @param supportedTag SupportedAttribute tag like SupportedCodingScheme, SupportedConceptDomain etc.
 	 * @param value value of the supportedAttribute
-	 * 
+	 * @param uri
 	 * @return list of URIs
 	 */
-	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(String supportedTag, String value);
+	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(String supportedTag, String value, String uri);
 	
 	/**
 	 * Returns list of Value Set Definition URIs that references supplied coding scheme.
 	 * 
 	 * @param codingSchemename name of the coding scheme
-	 * 
+	 * @parma codingschemeuri uri of coding scheme
 	 * @return list of URIs
 	 */
-	public List<String> getValueSetDefinitionURIsWithCodingScheme(String codingSchemename);
+	public List<String> getValueSetDefinitionURIsWithCodingScheme(String codingSchemename, String codingSchemeURI);
 	
 	/**
 	 * Returns list of Value Set Definition URIs that are bound to supplied concept domain.
 	 * 
 	 * @param conceptDomain name/id of the conceptDomain
+	 * @param codingSchemeURI coding scheme URI to which the concept domain belongs to
 	 * 
 	 * @return list of URIs
 	 */
-	public List<String> getValueSetDefinitionURIsWithConceptDomain(String conceptDomain);
+	public List<String> getValueSetDefinitionURIsWithConceptDomain(String conceptDomain, String codingSchemeURI);
 	
 	/**
 	 * Returns list of Value Set Definition URIs that can be used with in the supplied list of usage context.
 	 * 
 	 * @param usageContexts list of usage context
+	 * @param codingSchemeURI coding scheme URI to which the concept domain belongs to
 	 * 
 	 * @return list of URIs
 	 */
-	public List<String> getValueSetDefinitionURIsWithUsageContext(List<String> usageContexts);
+	public List<String> getValueSetDefinitionURIsWithUsageContext(List<String> usageContexts, String codingSchemeURI);
 	
 	/**
 	 * Returns list of Value Set Definition URIs that are bound to supplied concept domain 
@@ -348,8 +350,9 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 
 	 * @param conceptDomain name/id of the conceptDomain
 	 * @param usageContexts list of usage context names/IDs
+	 * @param codingSchemeURI coding scheme URI to which the concept domain belongs to
 	 * 
 	 * @return list of URIs
 	 */
-	public List<String> getValueSetDefinitionURIsWithConceptDomainAndUsageContext(String conceptDomain, List<String> usageContexts);
+	public List<String> getValueSetDefinitionURIsWithConceptDomainAndUsageContext(String conceptDomain, List<String> usageContexts, String codingSchemeURI);
 }

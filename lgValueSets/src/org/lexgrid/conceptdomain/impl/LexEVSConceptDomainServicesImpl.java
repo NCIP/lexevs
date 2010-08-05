@@ -38,24 +38,14 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.commonTypes.Properties;
-import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Presentation;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.dao.database.service.entity.EntityService;
-import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.conceptdomain.LexEVSConceptDomainServices;
 import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.helper.CodingSchemeBuilder;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
@@ -82,59 +72,43 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainCodingScheme(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainCodingScheme(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public CodingScheme getConceptDomainCodingScheme(CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		CodingSchemeVersionOrTag csVT = versionOrTag;
-		
-		if (csVT == null || StringUtils.isEmpty(csVT.getVersion()))
-		{
-			csVT = Constructors.createCodingSchemeVersionOrTag(null, 
-					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		}
-		
-		return getLexBIGService().resolveCodingScheme(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
-				csVT);
-	}
-	
-	public CodingSchemeSummary getConceptDomainCodingSchemeSummary(CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		String version = null;
-		
-		if (versionOrTag == null || StringUtils.isEmpty(versionOrTag.getVersion()))
-		{
-			version = ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION;
-		}
-		
-		return databaseServiceManager.getCodingSchemeService().
-        	getCodingSchemeSummaryByUriAndVersion(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
-        		version);
+	public CodingScheme getConceptDomainCodingScheme(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		return getLexBIGService().resolveCodingScheme(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainCodedNodeSet(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainCodingSchemeSummary(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public CodedNodeSet getConceptDomainCodedNodeSet(CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		CodingSchemeVersionOrTag csVT = versionOrTag;
-		if (csVT == null || StringUtils.isEmpty(csVT.getVersion()))
-		{
-			csVT = Constructors.createCodingSchemeVersionOrTag(null, 
-					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		}
-		return getLexBIGService().getNodeSet(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
-				csVT, Constructors.createLocalNameList(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE));
+	public CodingSchemeSummary getConceptDomainCodingSchemeSummary(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		String version = versionOrTag == null ? null : versionOrTag.getVersion();
+		
+		return databaseServiceManager.getCodingSchemeService().
+        	getCodingSchemeSummaryByUriAndVersion(getCodeSystemURI(codingSchemeNameOrURI), version);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainCodedNodeSet(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 */
+	@Override
+	public CodedNodeSet getConceptDomainCodedNodeSet(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		return getLexBIGService().getNodeSet(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag, 
+				Constructors.createLocalNameList(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#listAllConceptDomainEntities(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#listAllConceptDomainEntities(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public List<Entity> listAllConceptDomainEntities(CodingSchemeVersionOrTag versionOrTag) throws LBException {
+	public List<Entity> listAllConceptDomainEntities(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
 		List<Entity> entityList = new ArrayList<Entity>();
-		CodedNodeSet cns = getConceptDomainCodedNodeSet(versionOrTag);
+		CodedNodeSet cns = getConceptDomainCodedNodeSet(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag);
 		
 		if (cns != null)
 		{
@@ -150,12 +124,12 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#listAllConceptDomainIds(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#listAllConceptDomainIds(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public List<String> listAllConceptDomainIds(CodingSchemeVersionOrTag versionOrTag) throws LBException {
+	public List<String> listAllConceptDomainIds(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
 		List<String> idsList = new ArrayList<String>();
-		List<Entity> entityList = listAllConceptDomainEntities(versionOrTag);
+		List<Entity> entityList = listAllConceptDomainEntities(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag);
 		for (Entity entity : entityList)
 		{
 			idsList.add(entity.getEntityCode());
@@ -165,155 +139,21 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getValueSetDefinitionURIsForConceptDomain(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainBindings(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<String> getConceptDomainBindings(String conceptDomainId, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		//TODO how do we get conceptDomain binding based on Concept Domain Coding Scheme Version OR Tag ?
-		return getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain(conceptDomainId);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#insertConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
-	 */
-	@Override
-	public void insertConceptDomain(String conceptDomainId,
-			String conceptDomainName, String revisionId, String description, String status, boolean isActive, 
-			Properties properties, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		
-		if (StringUtils.isEmpty(conceptDomainName))
-			throw new LBException("concept domain name can not be empty");
-		
-		if (StringUtils.isEmpty(conceptDomainId))
-			throw new LBException("concept domain id can not be empty");
-		
-		// create an entity object for concept domain
-		Entity entity = new Entity();
-		entity.setEntityCode(conceptDomainId);
-		entity.setEntityCodeNamespace(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME);
-		EntityDescription ed = new EntityDescription();
-		ed.setContent(description);
-		entity.setEntityDescription(ed);
-		entity.setStatus(status);
-		entity.setIsActive(isActive);
-		entity.addEntityType(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE);
-		
-		if (StringUtils.isNotEmpty(revisionId))
-		{
-			EntryState es = new EntryState();
-			es.setContainingRevision(revisionId);
-			es.setChangeType(ChangeType.NEW);
-			entity.setEntryState(es);
-		}
-		
-		Presentation pres = new Presentation();
-		pres.setPropertyName(SQLTableConstants.TBLCOLVAL_TEXTUALPRESENTATION);
-		Text text = new Text();
-		text.setContent(conceptDomainName);
-		pres.setValue(text);
-		pres.setIsPreferred(true);
-		
-		entity.addPresentation(pres);
-		
-		if (properties != null)
-			entity.addAnyProperties(properties.getPropertyAsReference());
-		
-		insertConceptDomain(entity, versionOrTag);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#insertConceptDomain(org.LexGrid.concepts.Entity, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
-	 */
-	@Override
-	public void insertConceptDomain(Entity conceptDomain, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		if (conceptDomain == null)
-			return;
-		
-		if (!validateType(conceptDomain))
-		{
-			throw new LBException("Invalid entity type found in entity object. Only valid entity type for concept domain entity is 'conceptDomain'");
-		}
-		
-		CodingSchemeVersionOrTag csVT = versionOrTag;
-		if (csVT == null || StringUtils.isEmpty(csVT.getVersion()))
-		{
-			csVT = Constructors.createCodingSchemeVersionOrTag(null, 
-					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		}
-		
-		CodingScheme cs = null;
-		
-		try {
-				cs = getLexBIGService().resolveCodingScheme(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
-				csVT);
-		} catch (LBParameterException e){ // if concept domain coding scheme does not exists in the system, create it.
-			if (e.getMessage().indexOf("No URI found") != -1)
-			{
-				CodingSchemeBuilder csBuilder = new CodingSchemeBuilder();
-				cs = csBuilder.build(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI,
-					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME,
-					csVT.getVersion(),
-					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME,
-					null, 
-					null, 
-					null, 
-					null);
-				
-				// insert concept domain coding scheme into system
-				getCodingSchemeService().insertCodingScheme(cs, null);
-				
-				AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference(
-						ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
-						csVT.getVersion());
-				
-				// activate concept domain coding scheme
-				getLexBIGService().getServiceManager(null).activateCodingSchemeVersion(acsvr);
-				
-				if (StringUtils.isNotEmpty(csVT.getTag()))
-					getLexBIGService().getServiceManager(null).setVersionTag(acsvr, csVT.getTag());
-				
-				// create empty Lucene entry for concept domain coding scheme
-				getEntityIndexService().createIndex(acsvr);				
-			}
-			else
-			{
-				throw new LBException("Problem inserting concept domain", e);
-			}
-		}
-		
-		// insert concept domain
-		getDatabaseEntityService().insertEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
-				csVT.getVersion(), conceptDomain);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainEntity(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
-	 */
-	@Override
-	public Entity getConceptDomainEntity(String conceptDomainId, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		CodingSchemeVersionOrTag csVT = versionOrTag;
-		if (csVT == null || StringUtils.isEmpty(csVT.getVersion()))
-		{
-			csVT = Constructors.createCodingSchemeVersionOrTag(null, 
-					ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		}
-		return getDatabaseEntityService().getEntity(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
-				csVT.getVersion(),
-				conceptDomainId, 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME);
+	public List<String> getConceptDomainBindings(String conceptDomainId, String codingSchemeURI) throws LBException {
+		return getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain(conceptDomainId, codingSchemeURI);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainEntitisWithName(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption, java.lang.String, java.lang.String)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainEntitisWithName(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<Entity> getConceptDomainEntitisWithName(String conceptDomainName, CodingSchemeVersionOrTag versionOrTag, SearchDesignationOption option, String matchAlgorithm, String language) throws LBException {		
+	public List<Entity> getConceptDomainEntitisWithName(String conceptDomainName, String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag, SearchDesignationOption option, String matchAlgorithm, String language) throws LBException {		
 		List<Entity> entityList = new ArrayList<Entity>();		
-		CodedNodeSet cns = getConceptDomainCodedNodeSet(versionOrTag);
+		CodedNodeSet cns = getConceptDomainCodedNodeSet(codingSchemeNameOrURI, versionOrTag);
 		
 		if (cns != null)
 		{
@@ -321,7 +161,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			
 			if (cns != null)
 			{
-				ResolvedConceptReferencesIterator rcrIter = cns.resolve(null, null, null);
+				ResolvedConceptReferencesIterator rcrIter = cns.resolve(null, null, null, null, true);
 				while (rcrIter.hasNext())
 				{
 					ResolvedConceptReference rcr = rcrIter.next();
@@ -335,9 +175,31 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#isEntityInConceptDomain(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.util.List)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#getConceptDomainEntity(java.lang.String, java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
-	public List<String> isEntityInConceptDomain(String conceptDomainId, String entityCode, 
+	@Override
+	public Entity getConceptDomainEntity(String conceptDomainId, String namespace, String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
+		Entity cdEntity = null;
+		CodedNodeSet cns = this.getConceptDomainCodedNodeSet(codingSchemeNameOrURI, versionOrTag);
+		if (cns != null)
+		{
+			cns.restrictToCodes(Constructors.createConceptReferenceList(conceptDomainId));
+			ResolvedConceptReferencesIterator rcrItr = cns.resolve(null, null, null, null, true);
+			if (rcrItr != null && rcrItr.hasNext())
+			{
+				ResolvedConceptReference rcr = rcrItr.next();
+				cdEntity = rcr.getEntity();
+			}
+		}
+		return cdEntity;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.conceptdomain.LexEVSConceptDomainServices#isEntityInConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.util.List)
+	 */
+	@Override
+	public List<String> isEntityInConceptDomain(String conceptDomainId, String namespace, String codingSchemeURI, String entityCode, 
 			AbsoluteCodingSchemeVersionReferenceList codingSchemeVersionList, List<String> usageContext) 
 		throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId) || StringUtils.isEmpty(entityCode))
@@ -345,13 +207,13 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		
 		List<String> vsdURIs = new ArrayList<String>();
 		
-		List<String> allVSD = getConceptDomainBindings(conceptDomainId, null);
+		List<String> allVSD = getConceptDomainBindings(conceptDomainId, codingSchemeURI);
 		
 		for (String vsdURI : allVSD)
 		{
 			try {
 				AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet(entityCode, 
-						new URI(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME), 
+						namespace == null ? null : new URI(namespace), 
 						new URI(vsdURI), null, codingSchemeVersionList, null);
 				
 				if (csvr != null)
@@ -365,19 +227,6 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 			vsdURIs = null;
 		
 		return vsdURIs;
-	}
-	
-	private boolean validateType(Entity conceptDomain){
-		if (conceptDomain.getEntityTypeCount() == 0)
-			return false;
-		
-		for (String type : conceptDomain.getEntityTypeAsReference())
-		{
-			if (type.equalsIgnoreCase(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE))
-				return true;
-		}
-		
-		return false;
 	}
 	
 	private LexBIGService getLexBIGService(){
@@ -394,15 +243,9 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		return vsd_;
 	}
 	
-	private EntityService getDatabaseEntityService() {
-		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
-	}
-	
-	private CodingSchemeService getCodingSchemeService() {
-		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-	}
-	
-	private EntityIndexService getEntityIndexService() {
-		return LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
+	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
 	}
 }
