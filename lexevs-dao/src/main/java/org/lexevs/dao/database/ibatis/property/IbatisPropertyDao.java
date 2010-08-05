@@ -461,6 +461,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						property),
 						1);	
 		
+		this.updatePropertyVersionableAttrib(codingSchemeUId, propertyUId, property);
+		
 		if(property.getSourceCount() > 0) {
 			String multiAttributeType = this.propertyMultiAttributeClassifier.classify(Source.class);
 			this.deleteMultiAttribOfProperty(codingSchemeUId, propertyUId, multiAttributeType);
