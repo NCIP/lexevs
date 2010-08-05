@@ -204,6 +204,24 @@
 			(vss.id = #param2# OR vss.uri = #param2# OR vss.idValue = #param2#)
 	 </select>
 	 
+	 <select id="getValueSetDefinitionURIForSupportedTagAndValueAndURI" 
+		resultClass="string" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		SELECT 
+			vsd.valueSetDefURI
+		FROM 
+			$prefix$valueSetDefinition vsd, 
+			$prefix$vsSupportedAttrib vss
+		WHERE 
+			vss.supportedAttributeTag = #param1#
+		AND 
+			vsd.valueSetDefGuid = vss.referenceGuid
+		AND 
+			(vss.id = #param2# OR vss.uri = #param2# OR vss.idValue = #param2#)
+		AND 
+			vss.uri = #param3#	
+	 </select>
+	 
 	 <select id="getPickListIdForSupportedTagAndValue" 
 		resultClass="string" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">

@@ -59,9 +59,10 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * 
 	 * @param supportedTag like SupportedCodingScheme, SupportedAssociation etc.
 	 * @param value value to look for
+	 * @parma uri
 	 * @return list of value set definition URIs that contains supportedTag with value.
 	 */
-	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(String supportedTag, String value);
+	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(String supportedTag, String value, String uri);
 	
 	/**
 	 * Insert value set definition.

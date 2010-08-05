@@ -124,10 +124,14 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		this.getDaoManager().getCurrentValueSetDefinitionDao().removeValueSetDefinitionByValueSetDefinitionURI(valueSetDefinitionURI);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionURIForSupportedTagAndValue(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
-			String supportedTag, String value) {
-		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value);
+			String supportedTag, String value, String uri) {
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value, uri);
 	}
 
 	@Override

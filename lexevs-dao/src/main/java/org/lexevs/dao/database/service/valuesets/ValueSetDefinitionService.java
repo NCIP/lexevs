@@ -85,10 +85,11 @@ public interface ValueSetDefinitionService {
 	 * 
 	 * @param supportedTag SupportedAttribute tag like SupportedCodingScheme, SupportedConceptDomain etc.
 	 * @param value value of the supportedAttribute
+	 * @param uri
 	 * 
 	 * @return list of URIs
 	 */
-	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(String supportedTag, String value);
+	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(String supportedTag, String value, String uri);
 	
 	/**
 	 * Lists all the value set definition URIs that are loaded in the system.

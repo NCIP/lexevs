@@ -127,6 +127,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL = VS_MAPPING_NAMESPACE + "getValueSetDefinitionURIForSupportedTagAndValue";
 	
+	public static String GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_AND_URI_SQL = VS_MAPPING_NAMESPACE + "getValueSetDefinitionURIForSupportedTagAndValueAndURI";
+	
 	public static String INSERT_URIMAPS_SQL = VS_MAPPING_NAMESPACE + "insertURIMap";
 	
 	public static String UPDATE_URIMAPS_BY_LOCALID_SQL = VS_MAPPING_NAMESPACE + "updateUriMapByLocalId";
@@ -794,8 +796,12 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@Override
 	@CacheMethod
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
-			String supportedTag, String value) {
-		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
+			String supportedTag, String value, String uri) {
+		if (StringUtils.isNotEmpty(uri))
+			return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_AND_URI_SQL,
+					new PrefixedParameterTriple(this.getPrefixResolver().resolveDefaultPrefix(), supportedTag, value, uri));
+		else
+			return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALUESETDEFINITIONURI_FOR_SUPPORTED_TAG_AND_VALUE_SQL,
 				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), supportedTag, value));
 	}
 
