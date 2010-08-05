@@ -156,27 +156,27 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.query.ValueSetQueryOperation#listValueSets(java.lang.String, java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption)
+	 * @see org.lexevs.cts2.query.ValueSetQueryOperation#listValueSets(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption)
 	 */
 	@Override
 	public List<String> listValueSets(String codeSystemId,
-			String conceptDomainId, String usageContextId, SortOption sortOption)
+			String conceptDomainId, String usageContextId, String codeSystemURI, SortOption sortOption)
 			throws LBException {
 		List<String> finalList = getValueSetService().listValueSetDefinitionURIs();
 		
 		if (StringUtils.isNotEmpty(codeSystemId))
 		{
-			finalList.retainAll(getValueSetService().getValueSetDefinitionURIsWithCodingScheme(codeSystemId));
+			finalList.retainAll(getValueSetService().getValueSetDefinitionURIsWithCodingScheme(codeSystemId, codeSystemURI));
 		}
 		
 		if (StringUtils.isNotEmpty(conceptDomainId))
 		{
-			finalList.retainAll(getValueSetService().getValueSetDefinitionURIsWithConceptDomain(conceptDomainId));
+			finalList.retainAll(getValueSetService().getValueSetDefinitionURIsWithConceptDomain(conceptDomainId, codeSystemURI));
 		}
 		
 		if (StringUtils.isNotEmpty(usageContextId))
 		{
-			finalList.retainAll(getValueSetService().getValueSetDefinitionURIsWithConceptDomain(usageContextId));
+			finalList.retainAll(getValueSetService().getValueSetDefinitionURIsWithConceptDomain(usageContextId, codeSystemURI));
 		}
 		
 		if (sortOption != null && finalList != null)

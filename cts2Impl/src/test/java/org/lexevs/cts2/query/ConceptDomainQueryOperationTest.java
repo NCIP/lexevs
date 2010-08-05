@@ -10,6 +10,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
 
 /**
  * @author m004181
@@ -65,7 +66,7 @@ public class ConceptDomainQueryOperationTest {
 	public void testListAllConceptDomainIds() throws LBException {
 		ConceptDomainQueryOperation cdqueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getConceptDomainQueryOperation();
 		
-		List<String> cdIds = cdqueryop.listAllConceptDomainIds(null);
+		List<String> cdIds = cdqueryop.listAllConceptDomainIds(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 		for(String cdId : cdIds)
 		{
 			System.out.println(cdId);

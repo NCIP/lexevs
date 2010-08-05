@@ -3,7 +3,7 @@
  */
 package org.lexevs.cts2.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,7 +14,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.junit.Test;
@@ -154,7 +153,7 @@ public class ValueSetQueryOperationImplTest {
 		SortOption sortOption = new SortOption();
 		sortOption.setAscending(true);
 		try {
-			List<String> vsdURIs = vsQueryop.listValueSets("Automobiles", "Autos", null, sortOption);
+			List<String> vsdURIs = vsQueryop.listValueSets("Automobiles", "Autos", null, null, sortOption);
 			for (String vsdURI : vsdURIs)
 			{
 				System.out.println(vsdURI);

@@ -21,14 +21,21 @@ package org.lexevs.cts2.author;
 import java.net.URI;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
@@ -39,8 +46,8 @@ import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.query.ValueSetQueryOperation;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexgrid.conceptdomain.LexEVSConceptDomainServices;
-import org.lexgrid.conceptdomain.impl.LexEVSConceptDomainServicesImpl;
+import org.lexevs.system.service.SystemResourceService;
+import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
 
 /**
  * Implementation of LexEVS CTS2 Concept Domain Authoring Operation.
@@ -53,37 +60,91 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#createConceptDomain(java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#createConceptDomainCodeSystem(org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.lang.String, java.util.List, java.util.List, org.LexGrid.commonTypes.Text, org.LexGrid.naming.Mappings, org.LexGrid.commonTypes.Properties)
 	 */
+	public CodingScheme createConceptDomainCodeSystem(RevisionInfo revision, String codeSystemName, String codeSystemURI, String formalName,
+            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+            List<Source> sourceList, Text copyright, Mappings mappings) throws LBException{
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		
+		return csAuthOp.createCodeSystem(revision, codeSystemName, codeSystemURI, formalName, defaultLanguage, 0, 
+				representsVersion, localNameList, sourceList, copyright, mappings);
+    }
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#createConceptDomain(java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public String createConceptDomain(
 			String conceptDomainId,
 			String conceptDomainName, 
+			String namespace,
 			RevisionInfo revisionInfo, 
 			String description, 
 			String status,
 			boolean isActive,
 			Properties properties, 
-			CodingSchemeVersionOrTag versionOrTag) throws LBException{
-		String revisionId = revisionInfo == null ? null : revisionInfo.getRevisionId();
+			String codeSystemNameOrURI,
+			String codeSystemVersion) throws LBException{
 		
 		if (StringUtils.isEmpty(conceptDomainId))
 			conceptDomainId = createUniqueId();
 		
-		this.getLexEVSConceptDomainServices().insertConceptDomain(
-				conceptDomainId, 
-				conceptDomainName, 
-				revisionId, 
-				description, 
-				status,
-				isActive,
-				properties, 
-				versionOrTag);
+		if (StringUtils.isEmpty(conceptDomainName))
+			throw new LBException("concept domain name can not be empty");
+		
+		if (StringUtils.isEmpty(conceptDomainId))
+			throw new LBException("concept domain id can not be empty");
+		
+		// create an entity object for concept domain
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptDomainId);
+		entity.setEntityCodeNamespace(namespace);
+		EntityDescription ed = new EntityDescription();
+		ed.setContent(conceptDomainName);
+		entity.setEntityDescription(ed);
+		entity.setStatus(status);
+		entity.setIsActive(isActive);
+		entity.addEntityType(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE);
+		
+		Presentation pres = new Presentation();
+		pres.setPropertyName(SQLTableConstants.TBLCOLVAL_TEXTUALPRESENTATION);
+		Text text = new Text();
+		text.setContent(conceptDomainName);
+		pres.setValue(text);
+		pres.setIsPreferred(true);
+		
+		entity.addPresentation(pres);
+		
+		if (StringUtils.isNotEmpty(description))
+		{
+			Definition def = new Definition();
+			def.setPropertyName("Description");
+			text = new Text();
+			text.setContent(description);
+			def.setValue(text);
+			entity.addDefinition(def);
+		}
+		
+		if (properties != null)
+			entity.addAnyProperties(properties.getPropertyAsReference());
+			
+		//insert
+		this.doReviseEntity(getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, entity, ChangeType.NEW, null, 0L, revisionInfo);
 		
 		return conceptDomainId;
 	}
 	
-	public boolean updateConceptDomainStatus(String conceptDomainId,
-			String newStatus, CodingSchemeVersionOrTag versionOrTag, RevisionInfo revisionInfo) throws LBException
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#updateConceptDomainStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean updateConceptDomainStatus(String conceptDomainId, String namespace,
+			String newStatus, String codeSystemNameOrURI,
+			String codeSystemVersion, RevisionInfo revisionInfo) throws LBException
 	{
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
@@ -91,11 +152,16 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Versionable ver = new Versionable();
 		ver.setStatus(newStatus);
 		
-		return updateConceptDomainVersionable(conceptDomainId, ver, versionOrTag, revisionInfo);
+		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, revisionInfo);
 	}
 	
-	public boolean activateConceptDomain(String conceptDomainId,
-			CodingSchemeVersionOrTag versionOrTag, RevisionInfo revisionInfo) throws LBException
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#activateConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean activateConceptDomain(String conceptDomainId, String namespace, 
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revisionInfo) throws LBException
 	{
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
@@ -103,11 +169,16 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Versionable ver = new Versionable();
 		ver.setIsActive(true);
 		
-		return updateConceptDomainVersionable(conceptDomainId, ver, versionOrTag, revisionInfo);
+		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, revisionInfo);
 	}
 	
-	public boolean deactivateConceptDomain(String conceptDomainId,
-			CodingSchemeVersionOrTag versionOrTag, RevisionInfo revisionInfo) throws LBException
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#deactivateConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean deactivateConceptDomain(String conceptDomainId, String namespace,
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revisionInfo) throws LBException
 	{
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
@@ -115,11 +186,17 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Versionable ver = new Versionable();
 		ver.setIsActive(false);
 		
-		return updateConceptDomainVersionable(conceptDomainId, ver, versionOrTag, revisionInfo);
+		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, revisionInfo);
 	}
 	
-	public boolean updateConceptDomainVersionable(String conceptDomainId,
-			Versionable changedVersionable, CodingSchemeVersionOrTag versionOrTag, RevisionInfo revision) throws LBException {
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#updateConceptDomainVersionable(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Versionable, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean updateConceptDomainVersionable(String conceptDomainId, String namespace,
+			Versionable changedVersionable, String codeSystemNameOrURI,
+			String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (conceptDomainId == null)
 			throw new LBException("conceptDomainId can not be empty");
 		
@@ -128,17 +205,9 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		
 		validateRevisionInfo(revision);
 		
-		Entity conceptDomain = this.getLexEVSConceptDomainServices().getConceptDomainEntity(conceptDomainId, versionOrTag);
-
-		if (conceptDomain == null)
-			throw new LBException("No concept domain found with id : " + conceptDomainId);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		conceptDomain.removeAllComment();
-		conceptDomain.removeAllDefinition();
-		conceptDomain.removeAllEntityType();
-		conceptDomain.removeAllPresentation();
-		conceptDomain.removeAllProperty();
-		conceptDomain.removeAllPropertyLink();
+		Entity conceptDomain = this.getEntityShell(conceptDomainId, namespace, csURI, codeSystemVersion, revision.getRevisionId(), ChangeType.VERSIONABLE);
 		
 		if (StringUtils.isNotEmpty(changedVersionable.getOwner()))
 		{
@@ -168,27 +237,12 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
 		
-		String prevRevisionId = conceptDomain.getEntryState() != null? conceptDomain.getEntryState().getContainingRevision():null;
-		
-		conceptDomain.setEntryState(populateEntryState(ChangeType.VERSIONABLE, 
-				lgRevision.getRevisionId(), prevRevisionId, 0L));
-		
-		CodingScheme conceptDomainCS = this.getLexEVSConceptDomainServices().getConceptDomainCodingScheme(versionOrTag);
-		
-		String csPrevRevisionId = conceptDomainCS.getEntryState() != null? conceptDomainCS.getEntryState().getContainingRevision():null;
-		
-		conceptDomainCS.removeAllLocalName();
-		conceptDomainCS.removeAllRelations();
-		conceptDomainCS.removeAllSource();
-		conceptDomainCS.setEntities(null);
+		CodingScheme conceptDomainCS = this.getCodeSystemShell(csURI, codeSystemVersion, lgRevision.getRevisionId(), ChangeType.DEPENDENT);
 		
 		Entities entities = new Entities();
 		entities.addEntity(conceptDomain);
 		
 		conceptDomainCS.setEntities(entities);
-		
-		conceptDomainCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
 		
 		ce.setChangedCodingSchemeEntry(conceptDomainCS);
 		
@@ -201,271 +255,81 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainProperty(java.lang.String, org.LexGrid.commonTypes.Property, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean addConceptDomainProperty(String conceptDomainId, Property newProperty, CodingSchemeVersionOrTag versionOrTag, 
+	public boolean addConceptDomainProperty(String conceptDomainId, String namespace, Property newProperty, String codeSystemNameOrURI,
+			String codeSystemVersion, 
 			RevisionInfo revision)
 			throws LBException {
 		if (conceptDomainId == null)
 			throw new LBException("Concept Domain Id can not be empty");
 		if (newProperty == null)
 			throw new LBException("New property can not be empty");
+		
 		validateRevisionInfo(revision);
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get concept domain entity
-		Entity conceptDomain = this.getLexEVSConceptDomainServices().getConceptDomainEntity(conceptDomainId, versionOrTag);
-
-		if (conceptDomain == null)
-			throw new LBException("No concept domain found with id : " + conceptDomainId);
-		
-		// remove all other properties
-		conceptDomain.removeAllComment();
-		conceptDomain.removeAllDefinition();
-		conceptDomain.removeAllEntityType();
-		conceptDomain.removeAllPresentation();
-		conceptDomain.removeAllProperty();
-		conceptDomain.removeAllPropertyLink();
-		
-		// setup entry state for new property
-		newProperty.setEntryState(populateEntryState(ChangeType.NEW, 
-				lgRevision.getRevisionId(), null, 0L));
-		
-		// add the new property to the concept domain entity
-		conceptDomain.addProperty(newProperty);
-		
-		// get current revision id from the concept domain entity
-		String cdPrevRevisionId = conceptDomain.getEntryState() != null? conceptDomain.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for concept domain entity as dependent change type
-		conceptDomain.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), cdPrevRevisionId, 0L));
-		
-		// get the concept domain coding scheme
-		CodingScheme conceptDomainCS = this.getLexEVSConceptDomainServices().getConceptDomainCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = conceptDomainCS.getEntryState() != null? conceptDomainCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		conceptDomainCS.removeAllLocalName();
-		conceptDomainCS.removeAllRelations();
-		conceptDomainCS.removeAllSource();
-		conceptDomainCS.setEntities(null);
-		
-		// add only the entity that has new property added
-		Entities entities = new Entities();
-		entities.addEntity(conceptDomain);
-		
-		conceptDomainCS.setEntities(entities);
-		
-		// populate entry state for concept domain coding scheme with dependent change type
-		conceptDomainCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add concept domain coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(conceptDomainCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.addNewConceptProperty(csURI, codeSystemVersion, conceptDomainId, namespace, newProperty, revision);
 		
 		return true;
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#updateConceptDomainProperty(java.lang.String, org.LexGrid.commonTypes.Property, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#updateConceptDomainProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean updateConceptDomainProperty(String conceptDomainId, Property changedProperty, CodingSchemeVersionOrTag versionOrTag, 
+	public boolean updateConceptDomainProperty(String conceptDomainId, String namespace, Property changedProperty, String codeSystemNameOrURI,
+			String codeSystemVersion, 
 			RevisionInfo revision)
 			throws LBException {
 		if (conceptDomainId == null)
 			throw new LBException("Concept Domain Id can not be empty");
 		if (changedProperty == null)
 			throw new LBException("Changed property can not be empty");
+		
 		validateRevisionInfo(revision);
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get concept domain entity
-		Entity conceptDomain = this.getLexEVSConceptDomainServices().getConceptDomainEntity(conceptDomainId, versionOrTag);
-
-		if (conceptDomain == null)
-			throw new LBException("No concept domain found with id : " + conceptDomainId);
-		
-		Property currentProperty = null;
-		
-		// get the property that needs to be modified
-		for (Property prop : conceptDomain.getAllProperties())
-		{
-			if (prop.getPropertyId().equalsIgnoreCase(changedProperty.getPropertyId()))
-				currentProperty = prop;
-		}
-		
-		if (currentProperty == null)
-			throw new LBException("No property found with id : " + changedProperty.getPropertyId());
-		
-		// remove all other properties
-		conceptDomain.removeAllComment();
-		conceptDomain.removeAllDefinition();
-		conceptDomain.removeAllEntityType();
-		conceptDomain.removeAllPresentation();
-		conceptDomain.removeAllProperty();
-		conceptDomain.removeAllPropertyLink();
-		
-		// setup entry state for changed property
-		changedProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
-				lgRevision.getRevisionId(), null, 0L));
-		
-		// add the changed property to the concept domain entity
-		conceptDomain.addProperty(changedProperty);
-		
-		// get current revision id from the concept domain entity
-		String cdPrevRevisionId = conceptDomain.getEntryState() != null? conceptDomain.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for concept domain entity as dependent change type
-		conceptDomain.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), cdPrevRevisionId, 0L));
-		
-		// get the concept domain coding scheme
-		CodingScheme conceptDomainCS = this.getLexEVSConceptDomainServices().getConceptDomainCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = conceptDomainCS.getEntryState() != null? conceptDomainCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		conceptDomainCS.removeAllLocalName();
-		conceptDomainCS.removeAllRelations();
-		conceptDomainCS.removeAllSource();
-		conceptDomainCS.setEntities(null);
-		
-		// add only the entity that has modified property
-		Entities entities = new Entities();
-		entities.addEntity(conceptDomain);
-		
-		conceptDomainCS.setEntities(entities);
-		
-		// populate entry state for concept domain coding scheme with dependent change type
-		conceptDomainCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add concept domain coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(conceptDomainCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.updateConceptProperty(csURI, codeSystemVersion, conceptDomainId, namespace, changedProperty, revision);
 		
 		return true;
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainProperty(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean removeConceptDomainProperty(String conceptDomainId, String propertyId, CodingSchemeVersionOrTag versionOrTag, 
-			RevisionInfo revision)
-			throws LBException {
+	public boolean removeConceptDomainProperty(String conceptDomainId, String namespace, Property property, String codeSystemNameOrURI,
+			String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (conceptDomainId == null)
 			throw new LBException("Concept Domain Id can not be empty");
-		if (StringUtils.isEmpty(propertyId))
-			throw new LBException("propertyId can not be empty");
-		validateRevisionInfo(revision);
+		if (property == null)
+			throw new LBException("property can not be empty");
+			
+		validateRevisionInfo(revision);		
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get concept domain entity
-		Entity conceptDomain = this.getLexEVSConceptDomainServices().getConceptDomainEntity(conceptDomainId, versionOrTag);
-
-		if (conceptDomain == null)
-			throw new LBException("No concept domain found with id : " + conceptDomainId);
-		
-		Property currentProperty = null;
-		
-		// get the property that needs to be modified
-		for (Property prop : conceptDomain.getAllProperties())
-		{
-			if (prop.getPropertyId().equalsIgnoreCase(propertyId))
-				currentProperty = prop;
-		}
-		
-		if (currentProperty == null)
-			throw new LBException("No property found with id : " + propertyId);
-		
-		// remove all other properties
-		conceptDomain.removeAllComment();
-		conceptDomain.removeAllDefinition();
-		conceptDomain.removeAllEntityType();
-		conceptDomain.removeAllPresentation();
-		conceptDomain.removeAllProperty();
-		conceptDomain.removeAllPropertyLink();
-		
-		// setup entry state for property that needs to be removed
-		currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
-				lgRevision.getRevisionId(), null, 0L));
-		
-		// add the property that needs to be removed to the concept domain entity
-		conceptDomain.addProperty(currentProperty);
-		
-		// get current revision id from the concept domain entity
-		String cdPrevRevisionId = conceptDomain.getEntryState() != null? conceptDomain.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for concept domain entity as dependent change type
-		conceptDomain.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), cdPrevRevisionId, 0L));
-		
-		// get the concept domain coding scheme
-		CodingScheme conceptDomainCS = this.getLexEVSConceptDomainServices().getConceptDomainCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = conceptDomainCS.getEntryState() != null? conceptDomainCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		conceptDomainCS.removeAllLocalName();
-		conceptDomainCS.removeAllRelations();
-		conceptDomainCS.removeAllSource();
-		conceptDomainCS.setEntities(null);
-		
-		// add only the entity that has property to be removed
-		Entities entities = new Entities();
-		entities.addEntity(conceptDomain);
-		
-		conceptDomainCS.setEntities(entities);
-		
-		// populate entry state for concept domain coding scheme with dependent change type
-		conceptDomainCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add concept domain coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(conceptDomainCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.deleteConceptProperty(csURI, codeSystemVersion, conceptDomainId, namespace, property, revision);
 		
 		return true;
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainToValueSetBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean addConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
+	public boolean addConceptDomainToValueSetBinding(String conceptDomainId, String namespace, String codeSystemNameOrURI,
+			String codeSystemVersion, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
 		if (valueSetURIS == null)
@@ -483,80 +347,31 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomain(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean removeConceptDomain(String conceptDomainId, CodingSchemeVersionOrTag versionOrTag, 
-			RevisionInfo revision) throws LBException {
+	public boolean removeConceptDomain(String conceptDomainId, String namespace, String codeSystemNameOrURI,
+			String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (conceptDomainId == null)
 			throw new LBException("Concept Domain Id can not be empty");
 		
 		validateRevisionInfo(revision);
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get concept domain entity
-		Entity conceptDomain = this.getLexEVSConceptDomainServices().getConceptDomainEntity(conceptDomainId, versionOrTag);
-
-		if (conceptDomain == null)
-			throw new LBException("No concept domain found with id : " + conceptDomainId);
-		
-		// remove all other properties
-		conceptDomain.removeAllComment();
-		conceptDomain.removeAllDefinition();
-		conceptDomain.removeAllEntityType();
-		conceptDomain.removeAllPresentation();
-		conceptDomain.removeAllProperty();
-		conceptDomain.removeAllPropertyLink();
-		
-		// get current revision id from the concept domain entity
-		String cdPrevRevisionId = conceptDomain.getEntryState() != null? conceptDomain.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for concept domain entity as remove change type
-		conceptDomain.setEntryState(populateEntryState(ChangeType.REMOVE, 
-				lgRevision.getRevisionId(), cdPrevRevisionId, 0L));
-		
-		// get the concept domain coding scheme
-		CodingScheme conceptDomainCS = this.getLexEVSConceptDomainServices().getConceptDomainCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = conceptDomainCS.getEntryState() != null? conceptDomainCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		conceptDomainCS.removeAllLocalName();
-		conceptDomainCS.removeAllRelations();
-		conceptDomainCS.removeAllSource();
-		conceptDomainCS.setEntities(null);
-		
-		// add only the entity that needs to be removed
-		Entities entities = new Entities();
-		entities.addEntity(conceptDomain);
-		
-		conceptDomainCS.setEntities(entities);
-		
-		// populate entry state for concept domain coding scheme with dependent change type
-		conceptDomainCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add concept domain coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(conceptDomainCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.deleteConcept(csURI, codeSystemVersion, conceptDomainId, namespace, revision);
 		
 		return true;
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainToValueSetBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
+	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, String namespace, String codeSystemNameOrURI,
+			String codeSystemVersion, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
 		if (valueSetURIS == null)
@@ -578,12 +393,80 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		return true;
 	}
 	
-	/**
-	 * Gets the lex evs concept domain services.
-	 * 
-	 * @return the lex evs concept domain services
-	 */
-	private LexEVSConceptDomainServices getLexEVSConceptDomainServices() {
-		return LexEVSConceptDomainServicesImpl.defaultInstance();
+	protected void doReviseEntity(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			Entity entity, 
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) throws LBException {
+		
+		this.validatedCodingScheme(codingSchemeUri, codingSchemeVersion);
+		
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entity, 
+				changeType, 
+				prevRevisionId, 
+				relativeOrder, 
+				revisionInfo);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
+	}
+	
+	protected void doReviseEntityProperty(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			String entityCode, 
+			String entityCodeNamespace, 
+			Property property,
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) throws LBException {
+		
+		this.validatedCodingScheme(codingSchemeUri, codingSchemeVersion);
+		
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entityCode, 
+				entityCodeNamespace,
+				property,
+				changeType, 
+				prevRevisionId, 
+				relativeOrder, 
+				revisionInfo);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
+	}
+	
+	private CodingScheme getCodeSystemShell(String codeSystemURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
+		CodingScheme conceptDomainCS = new CodingScheme();
+		conceptDomainCS.setCodingSchemeURI(codeSystemURI);
+		conceptDomainCS.setRepresentsVersion(codeSystemVersion);
+		
+		conceptDomainCS.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
+		
+		return conceptDomainCS;
+	}
+	
+	private Entity getEntityShell(String entityId, String namespace, String codeSystemNameOrURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
+		
+		Entity conceptDomain = new Entity();
+		conceptDomain.setEntityCode(entityId);
+		conceptDomain.setEntityCodeNamespace(namespace);
+		
+		conceptDomain.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
+		
+		return conceptDomain;
+	}
+	
+	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
 	}
 }

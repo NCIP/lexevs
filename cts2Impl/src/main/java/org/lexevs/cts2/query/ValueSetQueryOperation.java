@@ -39,11 +39,12 @@ public interface ValueSetQueryOperation {
 	 * @param codeSystemId (Optional) code system id the value set should reference
 	 * @param conceptDomainId (Optional) conceptDomain the value set should be bound to
 	 * @param usageContextId (Optional) usage context, the value set can be used
+	 * @param codeSystemURI URI of code system the codeSystemId or conceptDomainId or usageContextId belongs to
 	 * @param sortOption Ascending or Descending the return list of value set identifiers
 	 * @return List of value set identifiers
 	 * @throws LBException
 	 */
-	public List<String> listValueSets(String codeSystemId, String conceptDomainId, String usageContextId, SortOption sortOption) throws LBException;
+	public List<String> listValueSets(String codeSystemId, String conceptDomainId, String usageContextId, String codeSystemURI, SortOption sortOption) throws LBException;
 	
 	/**
 	 * Lists all the value sets that are available to the CTS 2 service.
