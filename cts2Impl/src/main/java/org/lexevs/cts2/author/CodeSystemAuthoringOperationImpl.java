@@ -30,7 +30,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		return 0;
 	}
 	
-	protected void commitCodeSystemChangeSet(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType) throws LBException {
+	protected void commitCodeSystemChangeSet(CodingScheme codeSystem, RevisionInfo revision, String previousRevisionID, ChangeType changeType, Boolean indexCodeSystem) throws LBException {
         
         // Create the changed entry for code system
        ChangedEntry changedEntry = new ChangedEntry();
@@ -46,7 +46,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        codeSystem.setEntryState(populateEntryState(changeType, lgRevision.getRevisionId(), previousRevisionID, 0L));
        
        //load as revision
-       this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null, null);
+       this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null, indexCodeSystem);
        
 	}
 
@@ -91,9 +91,11 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        scheme.setRepresentsVersion(representsVersion);
 	
-	        scheme.setLocalName(localNameList);
+	        if (localNameList != null)
+	        	scheme.setLocalName(localNameList);
 	
-	        scheme.setSource(sourceList);
+	        if (sourceList != null)
+	        	scheme.setSource(sourceList);
 	
 	        scheme.setCopyright(copyright);
 	
@@ -105,7 +107,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystemChangeSet(scheme, revision, null, ChangeType.NEW);
+	        commitCodeSystemChangeSet(scheme, revision, null, ChangeType.NEW, true);
 	        
 	        return scheme;
 	}
@@ -129,7 +131,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         // Ensure RevisionInfo is provided
         validateRevisionInfo(revision);
         
-        commitCodeSystemChangeSet(codingScheme, revision, null, ChangeType.REMOVE);
+        commitCodeSystemChangeSet(codingScheme, revision, null, ChangeType.REMOVE, null);
         
         return true;
 }
@@ -192,7 +194,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
 	        return codingScheme;
 	}
@@ -222,7 +224,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
 	        return codingScheme;
 	}
@@ -272,7 +274,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 			
 	        // end
 	        
-	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
 	        return codingScheme;
 	}
@@ -302,7 +304,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY);
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
 	        return codingScheme;
 	}
@@ -461,7 +463,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         // Ensure RevisionInfo is provided
         validateRevisionInfo(revision);
         
-        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE);
+        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE, null);
         
 	}
 	
