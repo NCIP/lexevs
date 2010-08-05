@@ -21,6 +21,7 @@ import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
@@ -138,6 +139,60 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	        List<Source> sourceList = null;
 	        Text copyright = null;
 	        Mappings mappings = null;
+	        
+	        
+	        
+	        CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+	               
+	        CodingScheme codeScheme = codeSystemAuthOp.updateCodeSystem(revInfo, 
+	        															codingSchemeName, 
+	        															codingSchemeURI, 
+	        															formalName, 
+	        															defaultLanguage, 
+	        															approxNumConcepts, 
+	        															representsVersion, 
+	        															localNameList, 
+	        															sourceList, 
+	        															copyright, 
+	        															mappings 
+	        															);
+	        
+	
+				
+			System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+			
+		}
+
+	@Test
+		public void testUpdateCodeSystemMappings()   throws LBException, URISyntaxException{
+
+			
+			RevisionInfo revInfo = new RevisionInfo();
+			revInfo.setChangeAgent("changeAgent");
+			revInfo.setChangeInstruction("changeInstruction - update mappings");
+			revInfo.setDescription("new description");
+			revInfo.setEditOrder(1L);
+			revInfo.setRevisionDate(new Date());
+			revInfo.setRevisionId("R901");
+			
+
+	        Mappings mappings = new Mappings();
+	        SupportedCodingScheme scScheme = new SupportedCodingScheme();
+	        scScheme.setLocalId("localId");
+	        mappings.addSupportedCodingScheme(scScheme);
+	        
+	        
+	        String codingSchemeURI = "urn:oid:11.11.0.99";
+	        String representsVersion = "1.0";
+	        
+			String codingSchemeName = null;
+	        String formalName = null;
+	        String defaultLanguage = null;
+	        Long approxNumConcepts = 0L;
+	        List<String> localNameList = null; 
+	        List<Source> sourceList = null;
+	        Text copyright = null;
+
 	        
 	        
 	        
