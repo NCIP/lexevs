@@ -187,10 +187,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        if (mappings !=null)
 	        	codingScheme.setMappings(mappings);
-	
-//	        if (properties !=null)
-//	        	
-//	        	codingScheme.setProperties(processAddProperties(revision, properties));
+
 		
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
