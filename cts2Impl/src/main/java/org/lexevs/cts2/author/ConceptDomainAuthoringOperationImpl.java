@@ -95,9 +95,6 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		if (StringUtils.isEmpty(conceptDomainName))
 			throw new LBException("concept domain name can not be empty");
 		
-		if (StringUtils.isEmpty(conceptDomainId))
-			throw new LBException("concept domain id can not be empty");
-		
 		// create an entity object for concept domain
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptDomainId);

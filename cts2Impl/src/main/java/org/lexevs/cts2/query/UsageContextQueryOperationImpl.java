@@ -22,60 +22,66 @@ import org.lexgrid.usagecontext.impl.LexEVSUsageContextServicesImpl;
 public class UsageContextQueryOperationImpl implements
 		UsageContextQueryOperation {
 	private transient LexEVSUsageContextServices ucServ_;
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextCodedNodeSet(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextCodedNodeSet(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public CodedNodeSet getUsageContextCodedNodeSet(
+	public CodedNodeSet getUsageContextCodedNodeSet(String codeSystemNameOrURI,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexEVSUsageContextServices().getUsageContextCodedNodeSet(versionOrTag);
+		return getLexEVSUsageContextServices().getUsageContextCodedNodeSet(codeSystemNameOrURI, versionOrTag);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextCodingScheme(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextCodingScheme(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public CodingScheme getUsageContextCodingScheme(
+	public CodingScheme getUsageContextCodingScheme(String codeSystemNameOrURI,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexEVSUsageContextServices().getUsageContextCodingScheme(versionOrTag);
+		return getLexEVSUsageContextServices().getUsageContextCodingScheme(codeSystemNameOrURI, versionOrTag);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextEntitisWithName(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextEntitisWithName(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<Entity> getUsageContextEntitisWithName(String usageContextName,
+	public List<Entity> getUsageContextEntitisWithName(String usageContextName, String codeSystemNameOrURI,
 			CodingSchemeVersionOrTag versionOrTag,
 			SearchDesignationOption option, String matchAlgorithm,
 			String language) throws LBException {
-		return getLexEVSUsageContextServices().getUsageContextEntitisWithName(usageContextName, versionOrTag, option, matchAlgorithm, language);
+		return getLexEVSUsageContextServices().getUsageContextEntitisWithName(usageContextName, codeSystemNameOrURI, versionOrTag, option, matchAlgorithm, language);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextEntity(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#getUsageContextEntity(java.lang.String, java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public Entity getUsageContextEntity(String usageContextId,
+	public Entity getUsageContextEntity(String usageContextId, String namespace, String codeSystemNameOrURI,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexEVSUsageContextServices().getUsageContextEntity(usageContextId, versionOrTag);
+		return getLexEVSUsageContextServices().getUsageContextEntity(usageContextId, namespace, codeSystemNameOrURI, versionOrTag);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#listAllUsageContextEntities(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#listAllUsageContextEntities(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public List<Entity> listAllUsageContextEntities(
+	public List<Entity> listAllUsageContextEntities(String codeSystemNameOrURI,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexEVSUsageContextServices().listAllUsageContextEntities(versionOrTag);
+		return getLexEVSUsageContextServices().listAllUsageContextEntities(codeSystemNameOrURI,versionOrTag);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#listAllUsageContextIds(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.UsageContextQueryOperation#listAllUsageContextIds(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
 	 */
 	@Override
-	public List<String> listAllUsageContextIds(
+	public List<String> listAllUsageContextIds(String codeSystemNameOrURI,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexEVSUsageContextServices().listAllUsageContextIds(versionOrTag);
+		return getLexEVSUsageContextServices().listAllUsageContextIds(codeSystemNameOrURI, versionOrTag);
 	}
 	
 	/**

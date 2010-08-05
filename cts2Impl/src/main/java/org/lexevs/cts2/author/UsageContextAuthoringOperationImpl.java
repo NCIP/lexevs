@@ -3,23 +3,33 @@
  */
 package org.lexevs.cts2.author;
 
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import java.util.List;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexgrid.usagecontext.LexEVSUsageContextServices;
-import org.lexgrid.usagecontext.impl.LexEVSUsageContextServicesImpl;
+import org.lexevs.system.service.SystemResourceService;
+import org.lexgrid.usagecontext.util.UsageContextConstants;
 
 /**
  * Implementation of LexEVS CTS2 Usage Context Authoring Operation.
@@ -31,13 +41,13 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 	
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#activateUsageContext(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#activateUsageContext(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean activateUsageContext(String usageContextId,
-			CodingSchemeVersionOrTag versionOrTag, RevisionInfo revisionInfo)
-			throws LBException 
+	public boolean activateUsageContext(String usageContextId, String namespace, String codeSystemNameOrURI, 
+			String codeSystemVersion, RevisionInfo revisionInfo) throws LBException
 	{
 		if (StringUtils.isEmpty(usageContextId))
 			throw new LBException("Usage COntext Id can not be empty");
@@ -45,335 +55,201 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		Versionable ver = new Versionable();
 		ver.setIsActive(true);
 		
-		return updateUsageContextVersionable(usageContextId, ver, versionOrTag, revisionInfo);
+		return updateUsageContextVersionable(usageContextId, namespace, ver, codeSystemNameOrURI, codeSystemVersion, revisionInfo);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#addUsageContextProperty(java.lang.String, org.LexGrid.commonTypes.Property, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#addUsageContextProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean addUsageContextProperty(String usageContextId,
-			Property newProperty, CodingSchemeVersionOrTag versionOrTag,
-			RevisionInfo revision) throws LBException {
+	public boolean addUsageContextProperty(String usageContextId, String namespace, Property newProperty, 
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (usageContextId == null)
 			throw new LBException("Concept Domain Id can not be empty");
 		if (newProperty == null)
 			throw new LBException("New property can not be empty");
 		validateRevisionInfo(revision);
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get usage context entity
-		Entity usageContext = this.getLexEVSUsageContextServices().getUsageContextEntity(usageContextId, versionOrTag);
-
-		if (usageContext == null)
-			throw new LBException("No concept domain found with id : " + usageContextId);
-		
-		// remove all other properties
-		usageContext.removeAllComment();
-		usageContext.removeAllDefinition();
-		usageContext.removeAllEntityType();
-		usageContext.removeAllPresentation();
-		usageContext.removeAllProperty();
-		usageContext.removeAllPropertyLink();
-		
-		// setup entry state for new property
-		newProperty.setEntryState(populateEntryState(ChangeType.NEW, 
-				lgRevision.getRevisionId(), null, 0L));
-		
-		// add the new property to the usage context entity
-		usageContext.addProperty(newProperty);
-		
-		// get current revision id from the usage context entity
-		String ucPrevRevisionId = usageContext.getEntryState() != null? usageContext.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for usage context entity as dependent change type
-		usageContext.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), ucPrevRevisionId, 0L));
-		
-		// get the usage context coding scheme
-		CodingScheme usageContextCS = this.getLexEVSUsageContextServices().getUsageContextCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = usageContextCS.getEntryState() != null? usageContextCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		usageContextCS.removeAllLocalName();
-		usageContextCS.removeAllRelations();
-		usageContextCS.removeAllSource();
-		usageContextCS.setEntities(null);
-		
-		// add only the entity that has new property added
-		Entities entities = new Entities();
-		entities.addEntity(usageContext);
-		
-		usageContextCS.setEntities(entities);
-		
-		// populate entry state for usage context coding scheme with dependent change type
-		usageContextCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add usage context coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(usageContextCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.addNewConceptProperty(csURI, codeSystemVersion, usageContextId, namespace, newProperty, revision);
 		
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#createUsageContext(java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#createUsageContext(java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String createUsageContext(String usageContextId,
-			String usageContextName, RevisionInfo revisionInfo,
-			String description, String status, boolean isActive,
-			Properties properties, CodingSchemeVersionOrTag versionOrTag)
-			throws LBException {
-		
-		String revisionId = revisionInfo == null ? null : revisionInfo.getRevisionId();
+	public String createUsageContext(String usageContextId, String usageContextName, String namespace,
+			RevisionInfo revisionInfo, String description, String status, boolean isActive,
+			Properties properties, String codeSystemNameOrURI, String codeSystemVersion) throws LBException {
 		
 		if (StringUtils.isEmpty(usageContextId))
 			usageContextId = createUniqueId();
 		
-		this.getLexEVSUsageContextServices().insertUsageContext(
-				usageContextId, 
-				usageContextName, 
-				revisionId, 
-				description, 
-				status,
-				isActive,
-				properties, 
-				versionOrTag);
+		if (StringUtils.isEmpty(usageContextName))
+			throw new LBException("usage context name can not be empty");
+		
+		// create an entity object for usageContext
+		Entity entity = new Entity();
+		entity.setEntityCode(usageContextId);
+		entity.setEntityCodeNamespace(namespace);
+		EntityDescription ed = new EntityDescription();
+		ed.setContent(usageContextId);
+		entity.setEntityDescription(ed);
+		entity.setStatus(status);
+		entity.setIsActive(isActive);
+		entity.addEntityType(UsageContextConstants.USAGE_CONTEXT_ENTITY_TYPE);
+		
+		Presentation pres = new Presentation();
+		pres.setPropertyName(SQLTableConstants.TBLCOLVAL_TEXTUALPRESENTATION);
+		Text text = new Text();
+		text.setContent(usageContextName);
+		pres.setValue(text);
+		pres.setIsPreferred(true);
+		
+		entity.addPresentation(pres);
+		
+		if (StringUtils.isNotEmpty(description))
+		{
+			Definition def = new Definition();
+			def.setPropertyName("Description");
+			text = new Text();
+			text.setContent(description);
+			def.setValue(text);
+			entity.addDefinition(def);
+		}
+		
+		if (properties != null)
+			entity.addAnyProperties(properties.getPropertyAsReference());
+			
+		//insert
+		this.doReviseEntity(getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, entity, ChangeType.NEW, null, 0L, revisionInfo);
 		
 		return usageContextId;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#deactivateUsageContext(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#createUsageContextCodeSystem(org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.lang.String, java.util.List, java.util.List, org.LexGrid.commonTypes.Text, org.LexGrid.naming.Mappings)
 	 */
 	@Override
-	public boolean deactivateUsageContext(String usageContextId,
-			CodingSchemeVersionOrTag versionOrTag, RevisionInfo revisionInfo)
-			throws LBException {
+	public CodingScheme createUsageContextCodeSystem(RevisionInfo revision, String codeSystemName, String codeSystemURI, String formalName,
+            String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
+            List<Source> sourceList, Text copyright, Mappings mappings) throws LBException{
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		
+		return csAuthOp.createCodeSystem(revision, codeSystemName, codeSystemURI, formalName, defaultLanguage, 0, 
+				representsVersion, localNameList, sourceList, copyright, mappings);
+    }
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#deactivateUsageContext(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean deactivateUsageContext(String usageContextId, String namespace, String codeSystemNameOrURI,
+			String codeSystemVersion, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(usageContextId))
 			throw new LBException("Usage Context Id can not be empty");
 		
 		Versionable ver = new Versionable();
 		ver.setIsActive(false);
 		
-		return updateUsageContextVersionable(usageContextId, ver, versionOrTag, revisionInfo);
+		return updateUsageContextVersionable(usageContextId, namespace, ver, codeSystemNameOrURI, codeSystemVersion, revisionInfo);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#removeUsageContextProperty(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#removeUsageContext(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean removeUsageContextProperty(String usageContextId,
-			String propertyId, CodingSchemeVersionOrTag versionOrTag,
-			RevisionInfo revision) throws LBException {
+	public boolean removeUsageContext(String usageContextId, String namespace, String codeSystemNameOrURI,
+			String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (usageContextId == null)
 			throw new LBException("Usage Context Id can not be empty");
-		if (StringUtils.isEmpty(propertyId))
-			throw new LBException("propertyId can not be empty");
+		
 		validateRevisionInfo(revision);
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get usage context entity
-		Entity usageContext = this.getLexEVSUsageContextServices().getUsageContextEntity(usageContextId, versionOrTag);
-
-		if (usageContext == null)
-			throw new LBException("No usage context found with id : " + usageContextId);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.deleteConcept(csURI, codeSystemVersion, usageContextId, namespace, revision);
 		
-		Property currentProperty = null;
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#removeUsageContextProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
+	 */
+	@Override
+	public boolean removeUsageContextProperty(String usageContextId, String namespace, Property property, 
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revision) throws LBException {
+		if (usageContextId == null)
+			throw new LBException("Usage Context Id can not be empty");
+		if (property == null)
+			throw new LBException("property can not be empty");
 		
-		// get the property that needs to be modified
-		for (Property prop : usageContext.getAllProperties())
-		{
-			if (prop.getPropertyId().equalsIgnoreCase(propertyId))
-				currentProperty = prop;
-		}
+		validateRevisionInfo(revision);		
 		
-		if (currentProperty == null)
-			throw new LBException("No property found with id : " + propertyId);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// remove all other properties
-		usageContext.removeAllComment();
-		usageContext.removeAllDefinition();
-		usageContext.removeAllEntityType();
-		usageContext.removeAllPresentation();
-		usageContext.removeAllProperty();
-		usageContext.removeAllPropertyLink();
-		
-		// setup entry state for property that needs to be removed
-		currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
-				lgRevision.getRevisionId(), null, 0L));
-		
-		// add the property that needs to be removed to the usage context entity
-		usageContext.addProperty(currentProperty);
-		
-		// get current revision id from the usage context entity
-		String ucPrevRevisionId = usageContext.getEntryState() != null? usageContext.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for usage context entity as dependent change type
-		usageContext.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), ucPrevRevisionId, 0L));
-		
-		// get the usage context coding scheme
-		CodingScheme usageContextCS = this.getLexEVSUsageContextServices().getUsageContextCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = usageContextCS.getEntryState() != null? usageContextCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		usageContextCS.removeAllLocalName();
-		usageContextCS.removeAllRelations();
-		usageContextCS.removeAllSource();
-		usageContextCS.setEntities(null);
-		
-		// add only the entity that has property to be removed
-		Entities entities = new Entities();
-		entities.addEntity(usageContext);
-		
-		usageContextCS.setEntities(entities);
-		
-		// populate entry state for usage context coding scheme with dependent change type
-		usageContextCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add usage context coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(usageContextCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.deleteConceptProperty(csURI, codeSystemVersion, usageContextId, namespace, property, revision);
 		
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#updateUsageContextProperty(java.lang.String, org.LexGrid.commonTypes.Property, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#updateUsageContextProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean updateUsageContextProperty(String usageContextId,
-			Property changedProperty, CodingSchemeVersionOrTag versionOrTag,
-			RevisionInfo revision) throws LBException {
+	public boolean updateUsageContextProperty(String usageContextId, String namespace, Property changedProperty, 
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (usageContextId == null)
 			throw new LBException("Usage Context Id can not be empty");
 		if (changedProperty == null)
 			throw new LBException("Changed property can not be empty");
+		
 		validateRevisionInfo(revision);
 		
-		Revision lgRevision = getLexGridRevisionObject(revision);
-		ChangedEntry ce = new ChangedEntry();		
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		// get UsageContext entity
-		Entity usageContext = this.getLexEVSUsageContextServices().getUsageContextEntity(usageContextId, versionOrTag);
-
-		if (usageContext == null)
-			throw new LBException("No UsageContext found with id : " + usageContextId);
-		
-		Property currentProperty = null;
-		
-		// get the property that needs to be modified
-		for (Property prop : usageContext.getAllProperties())
-		{
-			if (prop.getPropertyId().equalsIgnoreCase(changedProperty.getPropertyId()))
-				currentProperty = prop;
-		}
-		
-		if (currentProperty == null)
-			throw new LBException("No property found with id : " + changedProperty.getPropertyId());
-		
-		// remove all other properties
-		usageContext.removeAllComment();
-		usageContext.removeAllDefinition();
-		usageContext.removeAllEntityType();
-		usageContext.removeAllPresentation();
-		usageContext.removeAllProperty();
-		usageContext.removeAllPropertyLink();
-		
-		// setup entry state for changed property
-		changedProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
-				lgRevision.getRevisionId(), null, 0L));
-		
-		// add the changed property to the UsageContext entity
-		usageContext.addProperty(changedProperty);
-		
-		// get current revision id from the UsageContext entity
-		String ucPrevRevisionId = usageContext.getEntryState() != null? usageContext.getEntryState().getContainingRevision():null;
-		
-		// populate entry state for UsageContext entity as dependent change type
-		usageContext.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), ucPrevRevisionId, 0L));
-		
-		// get the UsageContext coding scheme
-		CodingScheme usageContextCS = this.getLexEVSUsageContextServices().getUsageContextCodingScheme(versionOrTag);
-		
-		// get the current revision id of the coding scheme
-		String csPrevRevisionId = usageContextCS.getEntryState() != null? usageContextCS.getEntryState().getContainingRevision():null;
-		
-		// remove all other attributes
-		usageContextCS.removeAllLocalName();
-		usageContextCS.removeAllRelations();
-		usageContextCS.removeAllSource();
-		usageContextCS.setEntities(null);
-		
-		// add only the entity that has modified property
-		Entities entities = new Entities();
-		entities.addEntity(usageContext);
-		
-		usageContextCS.setEntities(entities);
-		
-		// populate entry state for UsageContext coding scheme with dependent change type
-		usageContextCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		// add UsageContext coding scheme to the changed entry object
-		ce.setChangedCodingSchemeEntry(usageContextCS);
-		
-		// add the changed entry object to the revision object
-		lgRevision.addChangedEntry(ce);
-		
-		// submit the revision with the change set to the authoring service
-		authServ_.loadRevision(lgRevision, revision.getSystemReleaseURI(), null);
+		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+		csAuthOp.updateConceptProperty(csURI, codeSystemVersion, usageContextId, namespace, changedProperty, revision);
 		
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#updateUsageContextStatus(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#updateUsageContextStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean updateUsageContextStatus(String usageContextId,
-			String newStatus, CodingSchemeVersionOrTag versionOrTag,
-			RevisionInfo revisionInfo) throws LBException {
+	public boolean updateUsageContextStatus(String usageContextId, String namespace, String newStatus, 
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(usageContextId))
 			throw new LBException("Usage Context Id can not be empty");
 		
 		Versionable ver = new Versionable();
 		ver.setStatus(newStatus);
 		
-		return updateUsageContextVersionable(usageContextId, ver, versionOrTag, revisionInfo);
+		return updateUsageContextVersionable(usageContextId, namespace, ver, codeSystemNameOrURI, codeSystemVersion, revisionInfo);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#updateUsageContextVersionable(java.lang.String, org.LexGrid.commonTypes.Versionable, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.UsageContextAuthoringOperation#updateUsageContextVersionable(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Versionable, java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
-	public boolean updateUsageContextVersionable(String usageContextId,
-			Versionable changedVersionable,
-			CodingSchemeVersionOrTag versionOrTag, RevisionInfo revision)
-			throws LBException {
+	public boolean updateUsageContextVersionable(String usageContextId, String namespace, Versionable changedVersionable, 
+			String codeSystemNameOrURI, String codeSystemVersion, RevisionInfo revision) throws LBException {
 		if (usageContextId == null)
 			throw new LBException("usageContextId can not be empty");
 		
@@ -382,69 +258,46 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		
 		validateRevisionInfo(revision);
 		
-		Entity usageContext = this.getLexEVSUsageContextServices().getUsageContextEntity(usageContextId, versionOrTag);
-
-		if (usageContext == null)
-			throw new LBException("No Usage Context found with id : " + usageContextId);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
-		usageContext.removeAllComment();
-		usageContext.removeAllDefinition();
-		usageContext.removeAllEntityType();
-		usageContext.removeAllPresentation();
-		usageContext.removeAllProperty();
-		usageContext.removeAllPropertyLink();
+		Entity conceptDomain = this.getEntityShell(usageContextId, namespace, csURI, codeSystemVersion, revision.getRevisionId(), ChangeType.VERSIONABLE);
 		
 		if (StringUtils.isNotEmpty(changedVersionable.getOwner()))
 		{
-			usageContext.setOwner(changedVersionable.getOwner());
+			conceptDomain.setOwner(changedVersionable.getOwner());
 		}
 		
 		if (StringUtils.isNotEmpty(changedVersionable.getStatus()))
 		{
-			usageContext.setStatus(changedVersionable.getStatus());
+			conceptDomain.setStatus(changedVersionable.getStatus());
 		}
 		
 		if (changedVersionable.getEffectiveDate() != null)
 		{
-			usageContext.setEffectiveDate(changedVersionable.getEffectiveDate());
+			conceptDomain.setEffectiveDate(changedVersionable.getEffectiveDate());
 		}
 		
 		if (changedVersionable.getExpirationDate() != null)
 		{
-			usageContext.setExpirationDate(changedVersionable.getExpirationDate());
+			conceptDomain.setExpirationDate(changedVersionable.getExpirationDate());
 		}
 		
 		if (changedVersionable.getIsActive() != null)
 		{
-			usageContext.setIsActive(changedVersionable.getIsActive());
+			conceptDomain.setIsActive(changedVersionable.getIsActive());
 		}
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
 		
-		String prevRevisionId = usageContext.getEntryState() != null? usageContext.getEntryState().getContainingRevision():null;
-		
-		usageContext.setEntryState(populateEntryState(ChangeType.VERSIONABLE, 
-				lgRevision.getRevisionId(), prevRevisionId, 0L));
-		
-		CodingScheme usageContextCS = this.getLexEVSUsageContextServices().getUsageContextCodingScheme(versionOrTag);
-		
-		String csPrevRevisionId = usageContextCS.getEntryState() != null? usageContextCS.getEntryState().getContainingRevision():null;
-		
-		usageContextCS.removeAllLocalName();
-		usageContextCS.removeAllRelations();
-		usageContextCS.removeAllSource();
-		usageContextCS.setEntities(null);
+		CodingScheme conceptDomainCS = this.getCodeSystemShell(csURI, codeSystemVersion, lgRevision.getRevisionId(), ChangeType.DEPENDENT);
 		
 		Entities entities = new Entities();
-		entities.addEntity(usageContext);
+		entities.addEntity(conceptDomain);
 		
-		usageContextCS.setEntities(entities);
+		conceptDomainCS.setEntities(entities);
 		
-		usageContextCS.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
-				lgRevision.getRevisionId(), csPrevRevisionId, 0L));
-		
-		ce.setChangedCodingSchemeEntry(usageContextCS);
+		ce.setChangedCodingSchemeEntry(conceptDomainCS);
 		
 		lgRevision.addChangedEntry(ce);
 		
@@ -453,12 +306,80 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		return true;
 	}
 	
-	/**
-	 * Gets the LexEVS Usage Context services.
-	 * 
-	 * @return the LexEVS Usage Context services
-	 */
-	private LexEVSUsageContextServices getLexEVSUsageContextServices() {
-		return LexEVSUsageContextServicesImpl.defaultInstance();
+	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
+	}
+	
+	protected void doReviseEntity(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			Entity entity, 
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) throws LBException {
+		
+		this.validatedCodingScheme(codingSchemeUri, codingSchemeVersion);
+		
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entity, 
+				changeType, 
+				prevRevisionId, 
+				relativeOrder, 
+				revisionInfo);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
+	}
+	
+	protected void doReviseEntityProperty(
+			String codingSchemeUri, 
+			String codingSchemeVersion, 
+			String entityCode, 
+			String entityCodeNamespace, 
+			Property property,
+			ChangeType changeType,
+			String prevRevisionId,
+			Long relativeOrder,
+			RevisionInfo revisionInfo) throws LBException {
+		
+		this.validatedCodingScheme(codingSchemeUri, codingSchemeVersion);
+		
+		Revision revision = this.populateRevisionShell(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				entityCode, 
+				entityCodeNamespace,
+				property,
+				changeType, 
+				prevRevisionId, 
+				relativeOrder, 
+				revisionInfo);
+		
+		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
+	}
+	
+	private CodingScheme getCodeSystemShell(String codeSystemURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
+		CodingScheme conceptDomainCS = new CodingScheme();
+		conceptDomainCS.setCodingSchemeURI(codeSystemURI);
+		conceptDomainCS.setRepresentsVersion(codeSystemVersion);
+		
+		conceptDomainCS.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
+		
+		return conceptDomainCS;
+	}
+	
+	private Entity getEntityShell(String entityId, String namespace, String codeSystemNameOrURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
+		
+		Entity conceptDomain = new Entity();
+		conceptDomain.setEntityCode(entityId);
+		conceptDomain.setEntityCodeNamespace(namespace);
+		
+		conceptDomain.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
+		
+		return conceptDomain;
 	}
 }
