@@ -138,7 +138,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	        List<Source> sourceList = null;
 	        Text copyright = null;
 	        Mappings mappings = null;
-	        Properties properties = null;
+	        
 	        
 	        
 	        CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
@@ -153,8 +153,8 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	        															localNameList, 
 	        															sourceList, 
 	        															copyright, 
-	        															mappings, 
-	        															properties);
+	        															mappings 
+	        															);
 	        
 	
 				
