@@ -59,8 +59,8 @@ public interface CodeSystemAuthoringOperation {
 	public CodingScheme updateCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
 	        Properties properties) throws LBException;
 	
-	public CodingScheme removeCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
-            Properties properties) throws LBException;
+	public CodingScheme removeCodeSystemProperty(RevisionInfo revision, String codingSchemeURI, String representsVersion,
+           String propertyId) throws LBException;
 	
 	public Revision createCodeSystemChangeSet(String agent, String changeInstruction);
 	
