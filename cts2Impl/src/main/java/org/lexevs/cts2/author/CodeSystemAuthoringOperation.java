@@ -51,7 +51,7 @@ public interface CodeSystemAuthoringOperation {
 
 	public CodingScheme updateCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
 	        String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
-	        List<Source> sourceList, Text copyright, Mappings mappings, Properties properties) throws LBException;
+	        List<Source> sourceList, Text copyright, Mappings mappings) throws LBException;
 	
 	public CodingScheme addCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
 	        Properties properties) throws LBException;
