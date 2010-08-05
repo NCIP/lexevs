@@ -258,23 +258,22 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        validateRevisionInfo(revision);
 	        
 	        // start
-	        Property currentProperty = null;
-			Properties updatedProps = new Properties();
-			
-			Properties existingProps = codingScheme.getProperties();
-			
-			
-			for (Property prop : properties.getPropertyAsReference())
-			{
-					currentProperty = prop;
-		
-					// setup entry state for property to be changed
-					String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
-					currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
-							revision.getRevisionId(), propPrevRevId, 0L));
-					updatedProps.addProperty(currentProperty);
-			}
-			
+//	        Property currentProperty = null;
+//			Properties updatedProps = new Properties();
+//			
+//			Properties existingProps = codingScheme.getProperties();
+//			
+//			for (Property prop : properties.getPropertyAsReference())
+//			{
+//					currentProperty = prop;
+//		
+//					// setup entry state for property to be changed
+//					String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+//					currentProperty.setEntryState(populateEntryState(ChangeType.MODIFY, 
+//							revision.getRevisionId(), propPrevRevId, 0L));
+//					updatedProps.addProperty(currentProperty);
+//			}
+//			
 	        // end
 	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
@@ -283,8 +282,8 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public CodingScheme removeCodeSystemProperties(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String representsVersion,
-            Properties properties) throws LBException {
+	public CodingScheme removeCodeSystemProperty(RevisionInfo revision, String codingSchemeURI, String representsVersion,
+            String propertyId) throws LBException {
 
 			if(codingSchemeURI == null){
 				throw new LBException("Coding scheme URI cannot be null");
@@ -300,14 +299,38 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        if (codingScheme == null)
 				throw new LBException("No Coding Scheme found with URI : " + codingSchemeURI.toString());
 	        
-	        if (properties !=null)
-	        	
-	        	codingScheme.setProperties(processRemoveProperties(revision, properties));
-		
+			
+			Property currentProperty = null;
+			
+			for (Property prop : codingScheme.getProperties().getPropertyAsReference())
+			{
+				if (prop.getPropertyId().equalsIgnoreCase(propertyId))
+					currentProperty = prop;
+			}
+			
+			if (currentProperty == null)
+				throw new LBException("No property found with id : " + propertyId);
+			
+			// remove all other properties but the one that needs to be removed
+			codingScheme.setProperties(null);		
+			Properties props = new Properties();
+			props.addProperty(currentProperty);
+			codingScheme.setProperties(props);
+			
+			// setup entry state for coding scheme
+			codingScheme.setEntryState(populateEntryState(ChangeType.DEPENDENT, 
+					revision.getRevisionId(), prevRevisionId, 0L));
+			
+			// setup entry state for property to be removed
+			String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+			currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
+					revision.getRevisionId(), propPrevRevId, 0L));
+			
+	
 	        // Ensure RevisionInfo is provided
 	        validateRevisionInfo(revision);
 	        
-	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
+	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.DEPENDENT, null);
 	        
 	        return codingScheme;
 	}
@@ -354,25 +377,27 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		
 	}
 
-	protected Properties processRemoveProperties(RevisionInfo revision, Properties properties) {
-		// TODO Auto-generated method stub
-		Property currentProperty = null;
-		Properties updatedProps = new Properties();
-		
-		for (Property prop : properties.getPropertyAsReference())
-		{
-				currentProperty = prop;
-
-				// setup entry state for property to be changed
-				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
-				currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
-						revision.getRevisionId(), propPrevRevId, 0L));
-				updatedProps.addProperty(currentProperty);
-		}
-		
-		return updatedProps;
-		
-	}
+//	protected Properties processRemoveProperties(RevisionInfo revision, String propertyId) {
+//		// TODO Auto-generated method stub
+//		
+//		Property currentProperty = null;
+//		
+//		Properties updatedProps = new Properties();
+//		
+//		for (Property prop : properties.getPropertyAsReference())
+//		{
+//				currentProperty = prop;
+//
+//				// setup entry state for property to be changed
+//				String propPrevRevId = currentProperty.getEntryState() != null?currentProperty.getEntryState().getContainingRevision():null;
+//				currentProperty.setEntryState(populateEntryState(ChangeType.REMOVE, 
+//						revision.getRevisionId(), propPrevRevId, 0L));
+//				updatedProps.addProperty(currentProperty);
+//		}
+//		
+//		return updatedProps;
+//		
+//	}
 
 	@Override
 	public Revision createCodeSystemChangeSet(String agent,
