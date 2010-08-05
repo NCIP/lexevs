@@ -448,9 +448,10 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	@Test
 	public void testGetValueSetURIsForSupportedTagAndValue(){
-		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos");
+		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos", null);
 		
-		assertTrue(uris.size() == 3);
+		assertTrue("vsdURIs.size() : " + uris.size(), uris.size() >= 3);
+	
 		for (String uri : uris)
 		{
 			assertTrue(uri.equalsIgnoreCase("SRITEST:AUTO:Automobiles") || 
@@ -458,7 +459,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 					uri.equalsIgnoreCase("SRITEST:AUTO:EveryThing"));
 		}
 		
-		uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos1231231");
+		uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos1231231", null);
 		assertTrue(uris.size() == 0);
 	}
 	
@@ -615,8 +616,8 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	@Test
 	public void testGetVSDURIForConceptDomain(){
-		List<String> vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain("Autos");
-		assertTrue(vsdURIs.size() == 3);
+		List<String> vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain("Autos", null);
+		assertTrue("vsdURIs.size() : " + vsdURIs.size(), vsdURIs.size() >= 3);
 		
 		for (String uri : vsdURIs)
 		{
@@ -625,10 +626,10 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 					|| uri.equalsIgnoreCase("SRITEST:AUTO:EveryThing"));			
 		}
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain("something");
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain("something", null);
 		assertTrue(vsdURIs.size() == 0);
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain(null);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomain(null, null);
 		assertTrue(vsdURIs.size() == 0);
 	}
 	
@@ -637,7 +638,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		usageContexts.add("GM");
 		usageContexts.add("Automobiles");
 		usageContexts.add("Ford");
-		List<String> vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithUsageContext(usageContexts);
+		List<String> vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithUsageContext(usageContexts, null);
 		assertTrue(vsdURIs.size() == 3);
 		
 		for (String uri : vsdURIs)
@@ -650,7 +651,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		usageContexts = new ArrayList<String>();
 		usageContexts.add("Ford");
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithUsageContext(usageContexts);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithUsageContext(usageContexts, null);
 		assertTrue(vsdURIs.size() == 2);
 		
 		for (String uri : vsdURIs)
@@ -659,7 +660,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 					|| uri.equalsIgnoreCase("SRITEST:AUTO:PropertyRefTest1"));			
 		}
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithUsageContext(null);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithUsageContext(null, null);
 		assertTrue(vsdURIs.size() == 0);
 	}
 	
@@ -668,7 +669,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		usageContexts.add("GM");
 		usageContexts.add("Automobiles");
 		usageContexts.add("Ford");
-		List<String> vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos", usageContexts);
+		List<String> vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos", usageContexts, null);
 		
 		assertTrue(vsdURIs.size() == 2);
 		
@@ -678,16 +679,16 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 					|| uri.equalsIgnoreCase("SRITEST:AUTO:EveryThing"));			
 		}
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos", null);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos", null, null);
 		assertTrue(vsdURIs.size() == 0);
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext(null, usageContexts);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext(null, usageContexts, null);
 		assertTrue(vsdURIs.size() == 0);
 		
 		usageContexts = new ArrayList<String>();
 		usageContexts.add("Ford");
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos", usageContexts);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos", usageContexts, null);
 		assertTrue(vsdURIs.size() == 1);
 		
 		for (String uri : vsdURIs)
@@ -695,7 +696,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 			assertTrue(uri.equalsIgnoreCase("SRITEST:AUTO:EveryThing"));			
 		}
 		
-		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos-Nomatch", usageContexts);
+		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos-Nomatch", usageContexts, null);
 		assertTrue(vsdURIs.size() == 0);
 	}
 	

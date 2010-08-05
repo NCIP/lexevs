@@ -9,14 +9,11 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.junit.Test;
 import org.lexgrid.conceptdomain.LexEVSConceptDomainServices;
@@ -34,48 +31,15 @@ public class LexEVSConceptDomainServicesTest extends TestCase {
 	private LexBIGService lbServ_;
 	
 	/**
-	 * Test method for {@link org.lexgrid.conceptdomain.impl.LexEVSConceptDomainServicesImpl#insertConceptDomain(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.commonTypes.Properties)}.
-	 * @throws LBException 
-	 */
-	@Test
-	public void testInsertConceptDomainStringStringStringStringProperties() throws LBException {
-		CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTag("TEST", 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		getConceptDomainService().insertConceptDomain("cd001", "cd1 name", null, "cd1 desc", "cd1 status", true, null, csvt);
-	}
-
-	
-	/**
 	 * Test method for {@link org.lexgrid.conceptdomain.impl.LexEVSConceptDomainServicesImpl#getConceptDomainCodingScheme()}.
 	 * @throws LBException 
 	 */
 	@Test
 	public void testGetConceptDomainCodingScheme() throws LBException {
-		CodingScheme cs = getConceptDomainService().getConceptDomainCodingScheme(Constructors.createCodingSchemeVersionOrTag(null, 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION));
+		CodingScheme cs = getConceptDomainService().getConceptDomainCodingScheme("", null);
 		assertTrue(cs.getCodingSchemeURI().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI));
 		assertTrue(cs.getCodingSchemeName().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME));
 		assertTrue(cs.getRepresentsVersion().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION));		
-	}
-
-	/**
-	 * Test method for {@link org.lexgrid.conceptdomain.impl.LexEVSConceptDomainServicesImpl#insertConceptDomain(org.LexGrid.concepts.Entity)}.
-	 * @throws LBException 
-	 */
-	@Test
-	public void testInsertConceptDomainEntity() throws LBException {
-		Entity cd = new Entity();
-		cd.setEntityCode("Autos");
-		cd.setEntityCodeNamespace(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME);
-		cd.setEntityType(new String[] {ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE});
-		EntityDescription ed = new EntityDescription();
-		ed.setContent("Autos");
-		cd.setEntityDescription(ed);
-		
-		CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTag("TEST", 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		
-		getConceptDomainService().insertConceptDomain(cd, csvt);
 	}
 
 	/**
@@ -84,8 +48,7 @@ public class LexEVSConceptDomainServicesTest extends TestCase {
 	 */
 	@Test
 	public void testGetConceptDomainEntities() throws LBException {
-		List<Entity> entities = getConceptDomainService().listAllConceptDomainEntities(Constructors.createCodingSchemeVersionOrTag(null, 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION));
+		List<Entity> entities = getConceptDomainService().listAllConceptDomainEntities("", null);
 		
 		assertTrue(entities.size() == 2);
 		for (Entity entity : entities)
@@ -101,8 +64,7 @@ public class LexEVSConceptDomainServicesTest extends TestCase {
 	@Test
 	public void testGetConceptDomainIds() throws LBException {
 		
-		List<String> cdIds = getConceptDomainService().listAllConceptDomainIds(Constructors.createCodingSchemeVersionOrTag(null, 
-				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION));
+		List<String> cdIds = getConceptDomainService().listAllConceptDomainIds("", null);
 		for (String id : cdIds)
 		{
 			assertTrue(id.equals("cd001") || id.equals("Autos"));
