@@ -264,6 +264,15 @@ public class DaoUtility {
 		} 
 	}
 	
+	public static boolean containsNulls(Object... objectsToCheck) {
+		for(Object obj : objectsToCheck) {
+			if(obj == null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static void updateBean(final Object changes, Object beanToUpdate) {
 		final String asReferenceSuffix = "AsReference";
 		
