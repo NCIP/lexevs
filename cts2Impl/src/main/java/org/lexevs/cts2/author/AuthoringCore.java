@@ -1,12 +1,8 @@
 package org.lexevs.cts2.author;
 
 import java.net.URI;
-import java.util.Date;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
@@ -248,15 +244,5 @@ public class AuthoringCore extends BaseService{
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
 		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
-	}
-	
-	protected void activateCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
-    	throws LBInvocationException, LBParameterException {
-		this.getSystemResourceService().updateCodingSchemeResourceStatus(codingSchemeVersion, CodingSchemeVersionStatus.ACTIVE);
-	}
-
-	protected void deactivateCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersion, Date date)
-	    throws LBInvocationException, LBParameterException {
-		this.getSystemResourceService().updateCodingSchemeResourceStatus(codingSchemeVersion, CodingSchemeVersionStatus.INACTIVE);
-	}
+	}	
 }

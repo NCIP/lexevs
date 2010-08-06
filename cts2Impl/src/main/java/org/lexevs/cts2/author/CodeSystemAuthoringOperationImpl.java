@@ -1,12 +1,10 @@
 package org.lexevs.cts2.author;
 
-import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -111,28 +109,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        commitCodeSystemChangeSet(scheme, revision, null, ChangeType.NEW, true);
 	        
 	        return scheme;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.CodeSystemAuthoringOperation#activateCodeSystemVersion(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public boolean activateCodeSystemVersion(String codeSystemNameOrURI, String codeSystemVersion) throws LBException{
-		this.activateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(
-				this.getCodeSystemURI(codeSystemNameOrURI),codeSystemVersion));
-		return true;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.CodeSystemAuthoringOperation#deactivateCodeSystemVersion(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public boolean deactivateCodeSystemVersion(String codeSystemNameOrURI, String codeSystemVersion) throws LBException{
-		this.deactivateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(
-				this.getCodeSystemURI(codeSystemNameOrURI),codeSystemVersion), new Date());
-		return true;
 	}
 
 	@Override
