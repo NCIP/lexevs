@@ -23,12 +23,12 @@
 	<beans:bean id="syncTaskExecutor" 
 		class="org.springframework.core.task.SyncTaskExecutor"> 
 	</beans:bean>
-	<!--
-	<beans:bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" destroy-method="shutdown">
-		<beans:property name="maxPoolSize" value="100" />
-		<beans:property name="keepAliveSeconds" value="60" />
-	</beans:bean>
-	-->
+	
+<!--	<beans:bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" destroy-method="shutdown">-->
+<!--		<beans:property name="maxPoolSize" value="100" />-->
+<!--		<beans:property name="keepAliveSeconds" value="60" />-->
+<!--	</beans:bean>-->
+	
 
 	<beans:bean class="org.springframework.batch.core.scope.StepScope"/>
 	
@@ -166,7 +166,6 @@
 		<beans:property name="databaseServiceManager">
 			<beans:ref bean="databaseServiceManager" />
 		</beans:property>
-		<beans:property name="maxCacheSize" value="1000"/>
 	</beans:bean>		
 	
 	<beans:bean id="databaseServiceEntityKeyResolver" 
