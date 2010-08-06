@@ -67,8 +67,7 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
         // Always assign the basics...
         ResolvedConceptReference rcr = new ResolvedConceptReference();
         try {
-            rcr.setCodingSchemeName(
-                    resourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(codeToReturn.getUri(), codeToReturn.getVersion()));
+            
             rcr.setCodingSchemeURI(codeToReturn.getUri());
             rcr.setCodingSchemeVersion(codeToReturn.getVersion());
             rcr.setCode(codeToReturn.getCode());
@@ -77,6 +76,8 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
             ed.setContent(codeToReturn.getEntityDescription());
             rcr.setEntityDescription(ed);
             rcr.setEntityType(codeToReturn.getEntityTypes());
+            rcr.setCodingSchemeName(
+                    resourceManager.getInternalCodingSchemeNameForUserCodingSchemeName(codeToReturn.getUri(), codeToReturn.getVersion()));
 
         } catch (LBParameterException e) {
             // this should only happen when the codedNodeSet was constructed
@@ -261,6 +262,9 @@ public class DefaultCodeToReturnResolver implements CodeToReturnResolver {
 
     private Entity buildCodedEntry(String codingSchemeUri, String codingSchemeVersion, String code, String namespace,
             LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes) throws LBInvocationException {
+        if(DaoUtility.containsNulls(codingSchemeUri, codingSchemeVersion,code,namespace)){
+            return null;
+        }
         
         EntityService entityService = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();

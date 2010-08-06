@@ -20,10 +20,14 @@ package org.LexGrid.LexBIG.Impl.helpers;
 
 import java.io.Serializable;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
+import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * Class to hold the details for a code match.
@@ -35,7 +39,7 @@ import org.lexevs.system.ResourceManager;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CodeToReturn implements Serializable {
-
+    
     private static final long serialVersionUID = -6930464365388016514L;
     private String code_ = null;
     private String entityDescription_ = null;
@@ -48,6 +52,22 @@ public class CodeToReturn implements Serializable {
 
     public CodeToReturn() {
         super();
+    }
+    
+    public CodeToReturn(String uri, String version, ConceptReference conceptReference) throws LBParameterException {
+        NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
+          AbsoluteCodingSchemeVersionReference ref =
+                namespaceHandler.
+                    getCodingSchemeForNamespace(uri, version, conceptReference.getCodeNamespace());
+          
+          if(ref != null) {
+              this.uri_ = ref.getCodingSchemeURN();
+              this.version_ = ref.getCodingSchemeVersion();
+          } 
+          
+          this.code_ = conceptReference.getCode();
+          this.namespace_ = conceptReference.getCodeNamespace();
+          this.entityTypes_ = conceptReference.getEntityType();
     }
 
     public CodeToReturn(String code, String entityDescription, String uri, String version) {
@@ -68,7 +88,7 @@ public class CodeToReturn implements Serializable {
         
         if (version == null) {
             try {
-                version_ = ResourceManager.instance().getInternalVersionStringForTag(uri, null);
+                version_ = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(uri, null);
             } catch (LBParameterException e) {
                 // this can happen when resolving graphs - links to code systems
                 // that don't exist.

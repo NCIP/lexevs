@@ -32,11 +32,8 @@ import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
+import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
@@ -44,10 +41,13 @@ import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.compass.core.lucene.support.ChainedFilter;
+import org.lexevs.logging.LoggerFactory;
 
 public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNodeSetImpl {
     
     private static final long serialVersionUID = -5959522938971242708L;
+    
+    private CodeHolder toNodeListCodes;
     
     private CodedNodeSetImpl cns1;
     private CodedNodeSetImpl cns2;
@@ -184,6 +184,12 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
                 codeHolderFactory.buildCodeHolder(new ArrayList<AbsoluteCodingSchemeVersionReference>(
                         this.getCodingSchemeReferences()), combineQueriesAndFilters(this));
         }
+        
+        if(this.toNodeListCodes != null && this.toNodeListCodes.getNumberOfCodes() > 0) {
+            LoggerFactory.getLogger().info("Bypassing Paging to combine a 'toNodeList' operation.");
+            
+            this.codesToInclude_.union(toNodeListCodes);
+        }
     }
 
     protected abstract Query combineQueries(Query query1, Query query2);
@@ -230,5 +236,13 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     @Override
     protected String getInternalVersionString() {
         return null;
+    }
+
+    public void setToNodeListCodes(CodeHolder toNodeListCodes) {
+        this.toNodeListCodes = toNodeListCodes;
+    }
+
+    public CodeHolder getToNodeListCodes() {
+        return toNodeListCodes;
     }
 }
