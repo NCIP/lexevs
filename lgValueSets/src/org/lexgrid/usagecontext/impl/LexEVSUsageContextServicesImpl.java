@@ -17,7 +17,6 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -93,7 +92,7 @@ public class LexEVSUsageContextServicesImpl implements LexEVSUsageContextService
 		
 		if (cns != null)
 		{
-			cns.restrictToMatchingDesignations(usageContextName, option, MatchAlgorithms.valueOf(matchAlgorithm).name(), language);
+			cns.restrictToMatchingDesignations(usageContextName, option, matchAlgorithm, language);
 			
 			if (cns != null)
 			{

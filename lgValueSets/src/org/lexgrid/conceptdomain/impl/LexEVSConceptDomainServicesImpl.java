@@ -36,7 +36,6 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
@@ -157,7 +156,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		
 		if (cns != null)
 		{
-			cns.restrictToMatchingDesignations(conceptDomainName, option, MatchAlgorithms.valueOf(matchAlgorithm).name(), language);
+			cns.restrictToMatchingDesignations(conceptDomainName, option, matchAlgorithm, language);
 			
 			if (cns != null)
 			{
