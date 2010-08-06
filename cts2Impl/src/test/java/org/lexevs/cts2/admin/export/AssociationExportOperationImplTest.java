@@ -11,6 +11,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.util.PrintUtility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +55,8 @@ public class AssociationExportOperationImplTest extends Cts2BaseTest {
 		
 		assertEquals(1, cs.getRelationsCount());
 		assertEquals(3, cs.getRelations(0).getAssociationPredicateCount());	
+		assertTrue(this.getAssociationPredicate(cs.getRelations(0), "hasSubtype").getSourceCount() > 0);
+		assertTrue(this.getAssociationPredicate(cs.getRelations(0), "uses").getSourceCount() > 0);
 	}
 	
 	@Test
