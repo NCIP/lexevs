@@ -19,6 +19,7 @@
 package org.lexgrid.loader.dao.template;
 
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.LexGrid.naming.URIMap;
@@ -113,5 +114,9 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 
 	public DatabaseServiceManager getDatabaseServiceManager() {
 		return databaseServiceManager;
+	}
+
+	protected Map<String,CodingSchemeIdHolder<URIMap>> getAttributeCache() {
+		return this.attributeCache;
 	}	
 }
