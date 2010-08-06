@@ -128,6 +128,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     private boolean doRegister = true;
     private boolean doApplyPostLoadManifest = true;
     
+    private boolean hasSupplementOptionsBeenInitialized = false;
+    
  
     public BaseLoader(){
         OptionHolder holder = new DefaultOptionHolder();
@@ -141,34 +143,47 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         
         holder.getURIOptions().add(loaderPreferencesOption);
         
-        StringArrayOption loaderPostProcessorOption = new StringArrayOption(LOADER_POST_PROCESSOR_OPTION);
-        
-        StringOption supplementOption;
-        try {
-            supplementOption = new CodingSchemeReferencesStringArrayPickListOption(
-                    SUPPLEMENT_OPTION, 
-                    LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes());
-        } catch (LBInvocationException e) {
-            throw new RuntimeException(e);
-        }
-        
-        //TODO: Do we want to enable these by default?
-        //loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
-        loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
-        loaderPostProcessorOption.getPickList().addAll(this.getPostProcessorExtensionNames());
-        
-        holder.getStringArrayOptions().add(loaderPostProcessorOption);
-        holder.getStringOptions().add(supplementOption);
-        
         BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
         holder.getBooleanOptions().add(asyncOption);
         
         BooleanOption failOnErrorOption = new BooleanOption(FAIL_ON_ERROR_OPTION, false);
         holder.getBooleanOptions().add(failOnErrorOption);
         
-        this.options_= this.declareAllowedOptions(holder);
+        this.options_ = holder;
     }
+    
+    /**
+     * Inits the supplement options. These need to be Lazy-initialized because
+     * they may interfere with LexEVS startup of Extensions.
+     */
+    private void initLazyInitializedOptions() {
 
+        if(!hasSupplementOptionsBeenInitialized) {
+            StringOption supplementOption;
+            try {
+                supplementOption = new CodingSchemeReferencesStringArrayPickListOption(
+                        SUPPLEMENT_OPTION, 
+                        LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes());
+            } catch (LBInvocationException e) {
+                throw new RuntimeException(e);
+            }
+            
+            options_.getStringOptions().add(supplementOption);
+            
+            StringArrayOption loaderPostProcessorOption = new StringArrayOption(LOADER_POST_PROCESSOR_OPTION);
+
+            //TODO: Do we want to enable these by default?
+            //loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
+            loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+            loaderPostProcessorOption.getPickList().addAll(this.getPostProcessorExtensionNames());
+            
+            options_.getStringArrayOptions().add(loaderPostProcessorOption);
+ 
+            this.options_= this.declareAllowedOptions(options_);
+            
+            hasSupplementOptionsBeenInitialized = true;
+        }
+    }
     
     protected void baseLoad(boolean async) throws LBInvocationException {
        status_ = new LoadStatus();
@@ -712,6 +727,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     protected abstract URNVersionPair[] doLoad() throws Exception;
 
     public void load(URI resource){
+        //incase these haven't been initialized already.
+        initLazyInitializedOptions();
+        
         this.resourceUri = resource;
         try {
             boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
@@ -784,6 +802,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     }
 
     public OptionHolder getOptions() {
+        initLazyInitializedOptions();
         return options_;
     }
 
