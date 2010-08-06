@@ -18,6 +18,7 @@
 
 	<job id="metaJob" restartable="true">
 		<listeners>
+			<listener ref="cachingSupportedAttribuiteTemplate" />
 			<listener ref="jobSetupListener" />
 			<listener ref="cleanupListener" />
 		</listeners>
@@ -224,7 +225,7 @@
 				<listener ref="stepCompletionListener" />
 			</listeners>
 			<chunk reader="metaMrrelPartitionedSkippingReader" processor="metaEntityAssocToEntityProcessor"
-				writer="associationSourceWriter" commit-interval="500">
+				writer="associationSourceWriter" commit-interval="50">
 				<streams>
 					<stream ref="mrrelReader" />
 				</streams>
