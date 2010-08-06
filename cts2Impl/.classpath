@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgValueSets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
 	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbTest"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
