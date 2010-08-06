@@ -11,10 +11,12 @@ import java.util.UUID;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.PropertyTypes;
@@ -403,7 +405,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	public void testUpdateConcept() throws LBException {
 		CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
         RevisionInfo info = new RevisionInfo();
-        info.setRevisionId("testId");
+        info.setRevisionId(UUID.randomUUID().toString());
         
 		Entity entityToUpdate = new Entity();
 		entityToUpdate.setEntityCode("005");
@@ -428,6 +430,41 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		ResolvedConceptReference ref = refList.getResolvedConceptReference(0);
 		
 		assertEquals("Modified ED",ref.getEntityDescription().getContent());
+	}
+	
+	@Test
+	public void testUpdateProperty() throws LBException {
+		CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+        RevisionInfo info = new RevisionInfo();
+        info.setRevisionId(UUID.randomUUID().toString());
+        
+		Property propertyToUpdate = new Property();
+		propertyToUpdate.setPropertyName("textualPresentation");
+		propertyToUpdate.setPropertyId("p1");
+		propertyToUpdate.setValue(Constructors.createText("Modded text"));
+		
+		codeSystemAuthOp.updateConceptProperty(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI, 
+				Cts2TestConstants.CTS2_AUTOMOBILES_VERSION, 
+				"005",
+				Cts2TestConstants.CTS2_AUTOMOBILES_NAME,
+				propertyToUpdate, 
+				info);
+		
+		CodedNodeSet cns = super.getLexBIGService().getNodeSet(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI,
+				null, 
+				null);
+		
+		ResolvedConceptReferenceList refList = cns.restrictToCodes(Constructors.createConceptReferenceList("005")).resolveToList(null, null, null, -1);
+	
+		assertEquals(1,refList.getResolvedConceptReferenceCount());
+		
+		ResolvedConceptReference ref = refList.getResolvedConceptReference(0);
+		
+		Property foundProp = DataTestUtils.getPropertyWithId(ref.getEntity().getAllProperties(), "p1");
+		
+		assertEquals("Modded text",foundProp.getValue().getContent());
 	}
 	
 	protected void testRemoveRevisionRecordById(String revisionID) throws LBException {
