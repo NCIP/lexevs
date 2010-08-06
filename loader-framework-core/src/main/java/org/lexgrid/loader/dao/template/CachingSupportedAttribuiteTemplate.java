@@ -18,51 +18,86 @@
  */
 package org.lexgrid.loader.dao.template;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Enumeration;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.LexGrid.naming.URIMap;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
+import org.lexgrid.loader.data.codingScheme.SimpleCodingSchemeIdSetter;
+import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionListener;
 
 /**
  * The Class CachingSupportedAttribuiteTemplate.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttributeTemplate{
+public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttributeTemplate implements JobExecutionListener {
 	
 	private DatabaseServiceManager databaseServiceManager;
 
 	/** The attribute cache. */
-	private Map<String,URIMap> attributeCache = Collections.synchronizedMap(new HashMap<String,URIMap>());
+	private ConcurrentHashMap<String,CodingSchemeIdHolder<URIMap>> attributeCache = new ConcurrentHashMap<String,CodingSchemeIdHolder<URIMap>>();
 
 	
-	/** The max cache size. */
-	private int maxCacheSize = 5000;
-	
+	@Override
+	public void afterJob(JobExecution arg0) {
+		this.flushCache();
+	}
+
+	@Override
+	public void beforeJob(JobExecution arg0) {
+		//
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
 	 */
 	@Override
-	protected void insert(final String codingSchemeUri, final String codingSchemeVersion, final URIMap uriMap){
+	protected void insert(String codingSchemeUri, String codingSchemeVersion, final URIMap uriMap){
 	
 		String key = this.buildCacheKey(uriMap);
+		
+		CodingSchemeIdHolder<URIMap> holder = new CodingSchemeIdHolder<URIMap>(
+					createCodingSchemeIdSetter(codingSchemeUri, codingSchemeVersion), uriMap);
 
-		if(! attributeCache.containsKey(key)){
-			attributeCache.put(key, uriMap);
-			try {
-				this.getDatabaseServiceManager().getCodingSchemeService().
-					insertURIMap(codingSchemeUri, codingSchemeVersion, uriMap);
-			} catch (Exception e) {
-				this.getLogger().warn("Error registering Supported Attribute.", e);
-			}
-		}
-
-		if(attributeCache.size() >= maxCacheSize) {
-			attributeCache.clear();
-		}	
+		attributeCache.putIfAbsent(key, holder);
+	}
 	
+	protected CodingSchemeIdSetter createCodingSchemeIdSetter(String uri, String version) {
+		return new SimpleCodingSchemeIdSetter(uri,version);
+	}
+
+	public void flushCache() {
+		this.getLogger().info("Flushing SupportedAttribute Cache.");
+		
+		this.getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<Void>() {
+
+			@Override
+			public Void execute(DaoManager daoManager) {
+				Enumeration<CodingSchemeIdHolder<URIMap>> elements = attributeCache.elements();
+
+				while(elements.hasMoreElements()) {
+					CodingSchemeIdHolder<URIMap> element = elements.nextElement();
+					String codingSchemeUri = element.getCodingSchemeIdSetter().getCodingSchemeUri();
+					String codingSchemeVersion = element.getCodingSchemeIdSetter().getCodingSchemeVersion();
+
+					CodingSchemeDao dao = 
+						daoManager.getCodingSchemeDao(codingSchemeUri, codingSchemeVersion);
+
+					String codingSchemeUid = dao.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+
+					dao.insertOrUpdateURIMap(codingSchemeUid, element.getItem());
+				}
+				
+				return null;
+			}
+		});
 	}
 	
 	protected String buildCacheKey(URIMap map){
@@ -71,28 +106,6 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 			map.getLocalId() +
 			map.getUri();
 	}
-	
-	protected Map<String,URIMap> getAttributeCache(){
-		return this.attributeCache;
-	}
-
-	/**
-	 * Gets the max cache size.
-	 * 
-	 * @return the max cache size
-	 */
-	public int getMaxCacheSize() {
-		return maxCacheSize;
-	}
-
-	/**
-	 * Sets the max cache size.
-	 * 
-	 * @param maxCacheSize the new max cache size
-	 */
-	public void setMaxCacheSize(int maxCacheSize) {
-		this.maxCacheSize = maxCacheSize;
-	}
 
 	public void setDatabaseServiceManager(DatabaseServiceManager databaseServiceManager) {
 		this.databaseServiceManager = databaseServiceManager;
@@ -100,7 +113,5 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 
 	public DatabaseServiceManager getDatabaseServiceManager() {
 		return databaseServiceManager;
-	}
-	
-	
+	}	
 }

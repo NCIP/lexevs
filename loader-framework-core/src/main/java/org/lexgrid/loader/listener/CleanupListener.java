@@ -52,9 +52,6 @@ import org.springframework.batch.core.JobExecutionListener;
 public class CleanupListener extends LoggingBean implements JobExecutionListener {
 
 	/** The connection manager. */
-	private LexEvsDatabaseOperations connectionManager = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
-	
-	/** The connection manager. */
 	private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 	
 	/** The coding scheme name setter. */
