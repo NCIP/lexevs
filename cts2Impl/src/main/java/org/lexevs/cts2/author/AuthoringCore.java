@@ -1,8 +1,13 @@
 package org.lexevs.cts2.author;
 
 import java.net.URI;
+import java.util.Date;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -21,6 +26,7 @@ import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.core.update.SystemReleaseInfo;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.service.SystemResourceService;
 
 public class AuthoringCore extends BaseService{
 	private AuthoringService authServ_ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
@@ -215,5 +221,42 @@ public class AuthoringCore extends BaseService{
 					" Version: " + codingSchemeVersion + " does not exist. Before creating a Concept, "
 					+ " the Coding Scheme must exist.");
 		}
+	}
+	
+	protected CodingScheme getCodeSystemShell(String codeSystemURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
+		CodingScheme conceptDomainCS = new CodingScheme();
+		conceptDomainCS.setCodingSchemeURI(codeSystemURI);
+		conceptDomainCS.setRepresentsVersion(codeSystemVersion);
+		
+		conceptDomainCS.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
+		
+		return conceptDomainCS;
+	}
+	
+	protected Entity getEntityShell(String entityId, String namespace, String codeSystemNameOrURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
+		
+		Entity conceptDomain = new Entity();
+		conceptDomain.setEntityCode(entityId);
+		conceptDomain.setEntityCodeNamespace(namespace);
+		
+		conceptDomain.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
+		
+		return conceptDomain;
+	}
+	
+	protected String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
+	}
+	
+	protected void activateCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
+    	throws LBInvocationException, LBParameterException {
+		this.getSystemResourceService().updateCodingSchemeResourceStatus(codingSchemeVersion, CodingSchemeVersionStatus.ACTIVE);
+	}
+
+	protected void deactivateCodingSchemeVersion(AbsoluteCodingSchemeVersionReference codingSchemeVersion, Date date)
+	    throws LBInvocationException, LBParameterException {
+		this.getSystemResourceService().updateCodingSchemeResourceStatus(codingSchemeVersion, CodingSchemeVersionStatus.INACTIVE);
 	}
 }

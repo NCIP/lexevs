@@ -1,19 +1,19 @@
 package org.lexevs.cts2.author;
 
+import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
@@ -113,6 +113,27 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        return scheme;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.CodeSystemAuthoringOperation#activateCodeSystemVersion(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean activateCodeSystemVersion(String codeSystemNameOrURI, String codeSystemVersion) throws LBException{
+		this.activateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(
+				this.getCodeSystemURI(codeSystemNameOrURI),codeSystemVersion));
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.author.CodeSystemAuthoringOperation#deactivateCodeSystemVersion(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean deactivateCodeSystemVersion(String codeSystemNameOrURI, String codeSystemVersion) throws LBException{
+		this.deactivateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(
+				this.getCodeSystemURI(codeSystemNameOrURI),codeSystemVersion), new Date());
+		return true;
+	}
 
 	@Override
 	public boolean removeCodeSystem(RevisionInfo revision, String codingSchemeURI, String representsVersion) throws LBException {

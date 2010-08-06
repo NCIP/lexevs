@@ -26,12 +26,9 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.Revision;
-import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
 
@@ -46,6 +43,26 @@ public interface CodeSystemAuthoringOperation {
 	public CodingScheme createCodeSystem(RevisionInfo revision, String codingSchemeName, String codingSchemeURI, String formalName,
             String defaultLanguage, long approxNumConcepts, String representsVersion, List<String> localNameList,
             List<Source> sourceList, Text copyright, Mappings mappings) throws LBException;
+	
+	/**
+	 * Activates the code system version.
+	 * 
+	 * @param codeSystemNameOrURI - Name or URI of Code System
+	 * @param codeSystemVersion - Version of Code System,
+	 * @return True; if activation was success
+	 * @throws LBException
+	 */
+	public boolean activateCodeSystemVersion(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
+	
+	/**
+	 * De-Activates the code system version.
+	 * 
+	 * @param codeSystemNameOrURI - Name or URI of Code System
+	 * @param codeSystemVersion - Version of Code System,
+	 * @return True; if de-activation was success
+	 * @throws LBException
+	 */
+	public boolean deactivateCodeSystemVersion(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
 	
 	public boolean removeCodeSystem(RevisionInfo revision, String codingSchemeURI, String representsVersion) throws LBException;
 
