@@ -6,7 +6,6 @@ package org.lexevs.cts2.author;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
@@ -28,7 +27,6 @@ import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.usagecontext.util.UsageContextConstants;
 
 /**
@@ -306,12 +304,6 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		return true;
 	}
 	
-	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
-		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-		
-		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
-	}
-	
 	protected void doReviseEntity(
 			String codingSchemeUri, 
 			String codingSchemeVersion, 
@@ -362,24 +354,5 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
 	}
 	
-	private CodingScheme getCodeSystemShell(String codeSystemURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
-		CodingScheme conceptDomainCS = new CodingScheme();
-		conceptDomainCS.setCodingSchemeURI(codeSystemURI);
-		conceptDomainCS.setRepresentsVersion(codeSystemVersion);
-		
-		conceptDomainCS.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
-		
-		return conceptDomainCS;
-	}
 	
-	private Entity getEntityShell(String entityId, String namespace, String codeSystemNameOrURI, String codeSystemVersion, String revisionId, ChangeType changeType) throws LBException{
-		
-		Entity conceptDomain = new Entity();
-		conceptDomain.setEntityCode(entityId);
-		conceptDomain.setEntityCodeNamespace(namespace);
-		
-		conceptDomain.setEntryState(populateEntryState(changeType, revisionId, null, 0L));
-		
-		return conceptDomain;
-	}
 }
