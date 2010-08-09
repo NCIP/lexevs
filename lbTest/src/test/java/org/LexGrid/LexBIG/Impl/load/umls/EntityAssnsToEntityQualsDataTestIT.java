@@ -18,8 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.load.umls;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -60,13 +58,13 @@ public class EntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 	
 	@Test
 	public void testQualsNotNull() throws Exception {	
-		NameAndValueList quals = DataTestUtils.getAssociatedConcept(associatedConcept, "U000010").getAssociationQualifiers();
+		NameAndValueList quals = DataTestUtils.getConceptReference(associatedConcept, "U000010").getAssociationQualifiers();
 		assertNotNull(quals);
 	}
 	
 	@Test
 	public void testRelaQual() throws Exception {	
-		NameAndValueList quals = DataTestUtils.getAssociatedConcept(associatedConcept, "U000010").getAssociationQualifiers();
+		NameAndValueList quals = DataTestUtils.getConceptReference(associatedConcept, "U000010").getAssociationQualifiers();
 		assertTrue(DataTestUtils.isQualifierNameAndValuePresent(RrfLoaderConstants.RELA_QUALIFIER, "mapped_from", quals));
 	}
 	
