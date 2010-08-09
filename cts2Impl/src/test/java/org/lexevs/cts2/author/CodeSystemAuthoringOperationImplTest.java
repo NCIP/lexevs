@@ -521,6 +521,38 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		assertEquals("Modded text",foundProp.getValue().getContent());
 	}
 	
+	@Test
+	public void testRemoveProperty() throws LBException {
+		CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+        RevisionInfo info = new RevisionInfo();
+        info.setRevisionId(UUID.randomUUID().toString());
+        
+		Property propertyToUpdate = new Property();
+		propertyToUpdate.setPropertyName("textualPresentation");
+		propertyToUpdate.setPropertyId("p1");
+		
+		codeSystemAuthOp.deleteConceptProperty(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI, 
+				Cts2TestConstants.CTS2_AUTOMOBILES_VERSION, 
+				"005",
+				Cts2TestConstants.CTS2_AUTOMOBILES_NAME,
+				propertyToUpdate, 
+				info);
+		
+		CodedNodeSet cns = super.getLexBIGService().getNodeSet(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI,
+				null, 
+				null);
+		
+		ResolvedConceptReferenceList refList = cns.restrictToCodes(Constructors.createConceptReferenceList("005")).resolveToList(null, null, null, -1);
+	
+		assertEquals(1,refList.getResolvedConceptReferenceCount());
+		
+		Property foundProp = DataTestUtils.getPropertyWithId(refList.getResolvedConceptReference(0).getEntity().getAllProperties(), "p1");
+		
+		assertNull(foundProp);
+	}
+	
 	protected void testRemoveRevisionRecordById(String revisionID) throws LBException {
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 		System.out.println(authServ.removeRevisionRecordbyId(revisionID));
