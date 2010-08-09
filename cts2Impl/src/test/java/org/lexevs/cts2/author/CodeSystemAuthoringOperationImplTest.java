@@ -1,6 +1,8 @@
 package org.lexevs.cts2.author;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
@@ -28,6 +30,7 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
@@ -278,8 +281,8 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		prop2.setPropertyType(PropertyTypes.PROPERTY.name());
 		Text text2 = new Text();
 		text2.setContent("content-2");
-		text2.setDataType("Text-2");
-		prop2.setValue(text);
+		text2.setDataType("Text datatype-2");
+		prop2.setValue(text2);
 		prop2.setDegreeOfFidelity("degreeOfFidelity-2");
 		prop2.setMatchIfNoContext(true);
 		prop2.setRepresentationalForm("representationalForm-2");
@@ -302,13 +305,15 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	@Test
 	public void testUpdateCodeSystemProperty()   throws LBException, URISyntaxException{
 		
+		String randomID = UUID.randomUUID().toString();
+		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
 		revInfo.setChangeInstruction("changeInstruction");
 		revInfo.setDescription("new description");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R503");
+		revInfo.setRevisionId(randomID);
 	    
 	    
 	    String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
@@ -320,23 +325,23 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	    Properties properties = new Properties();
 	    
 	    Presentation prop = new Presentation();
+	
 		prop.setPropertyId("propertyId1");
 		prop.setPropertyName("propertyName");
+		
 		prop.setIsActive(false);
-		prop.setLanguage("english updated 503");
-		prop.setOwner("owner updated 503");
+		prop.setLanguage("english - update");
+		prop.setOwner("owner- update");
 		prop.setPropertyType(PropertyTypes.PROPERTY.name());
 		Text text = new Text();
-		text.setContent("content updated 503");
+		text.setContent("content - update");
 		text.setDataType("Text datatype");
 		prop.setValue(text);
-		prop.setDegreeOfFidelity("degreeOfFidelity");
+		prop.setDegreeOfFidelity("degreeOfFidelity - update");
 		prop.setMatchIfNoContext(true);
-		prop.setRepresentationalForm("representationalForm");
+		prop.setRepresentationalForm("representationalForm - update");
 		
 		properties.addProperty(prop);
-		
-		
 		
 	    
 	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
@@ -346,9 +351,24 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	    															codingSchemeURI,  
 	    															representsVersion, 
 	    															properties);
-	    
-			
-		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+	   
+				
+		// Check updated values for property
+		Property csCurrentProperty = null;
+				
+		for (Property csProp : codeScheme.getProperties().getPropertyAsReference())
+		{
+			if (csProp.getPropertyId().equalsIgnoreCase("propertyId1"))
+				csCurrentProperty = csProp;
+		}
+		
+		assertNotNull("Property Not found.", csCurrentProperty);
+		
+		assertEquals("propertyId1", csCurrentProperty.getPropertyId());
+		assertEquals("propertyName", csCurrentProperty.getPropertyName());
+		assertEquals("english - update", csCurrentProperty.getLanguage());
+		assertEquals("owner- update", csCurrentProperty.getOwner());
+
 		
 	}
 
@@ -369,7 +389,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
         String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
 		String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
         
-        String propertyId = "propertyId1";
+        String propertyId = "propertyId2";
         
         
         CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
@@ -380,7 +400,17 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
         															propertyId);
         
 		
-		assertEquals(1, codeScheme.getProperties().getPropertyCount());
+
+        
+		Property currentProperty = null;
+		
+		for (Property csProp : codeScheme.getProperties().getPropertyAsReference())
+		{
+			if (csProp.getPropertyId().equalsIgnoreCase("propertyId2"))
+				currentProperty = csProp;
+		}
+		
+		assertNull(currentProperty);
 		
 	}
 
@@ -388,21 +418,23 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	public void testUpdateCodeSystemVersionStatus()   throws LBException, URISyntaxException{
 		
 		
+		String randomID = UUID.randomUUID().toString();
+		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
 		revInfo.setChangeInstruction("changeInstruction");
 		revInfo.setDescription("Description - Update status.");
 		revInfo.setEditOrder(1L);
 		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId("R_CS_401");
+		revInfo.setRevisionId(randomID);
 		
-
         
-        String codingSchemeURI = "urn:oid:11.11.0.99";
-        String representsVersion = "1.0";
+        String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
+		String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
         
         String status = "test status";
         boolean isActive = true;
+        //boolean isActive = true;
      
         
         
@@ -415,8 +447,13 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 			e.printStackTrace();
 		} 
 
-	
-		
+
+//        CodingScheme updatedCodingScheme = 
+//        	LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().getCompleteCodingScheme(codingSchemeURI, representsVersion);
+//        		
+//		
+//        assertTrue(updatedCodingScheme.getIsActive());
+        
 	}
 
 	@Test
