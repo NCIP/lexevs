@@ -15,7 +15,10 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationPredicate;
@@ -34,7 +37,7 @@ public class MRMAP2LexGrid {
     AuthoringService service;
     DatabaseServiceManager dbManager;
     
-    private List<String> PropertyNames;
+    private List<String> propertyNames;
     private String mapPath;
     private String satPath;
     private LgMessageDirectorIF messages_;
@@ -42,7 +45,7 @@ public class MRMAP2LexGrid {
     boolean isNewMapping = false;
     private String currentMapping = null;
     private HashSet<String> sources;
-    private AssociationSource[] sourcesAndTargets;
+   // private AssociationSource[] sourcesAndTargets;
     
     //Supported Attribute Values
     private String nameForMappingScheme;
@@ -54,17 +57,19 @@ public class MRMAP2LexGrid {
     private String targetScheme;
     private String targetVersion;
     private String targetURI;
+
     
     //constants
     public static final String ASSOC_NAME = "mapped_to";
     public static final String APROX_ASSOC_NAME = "approximately_mapped_to";
     public static final boolean ISMAP = true;
+    public static final String URIPREFIX = "urn:oid";
     
     //relations constants
     public static final String TORSAB = "TORSAB";
     public static final String TOVSAB = "TOVSAB";
     public static final String FROMRSAB =  "FROMRSAB";
-    public static final String FROMVSAB = "TOVSAB";
+    public static final String FROMVSAB = "FROMVSAB";
     public static final String MAPSETVERSION =  "MAPSETVERSION";
     public static final String SOS = "SOS";
     public static final String MAPSETNAME = "MAPSETNAME";
@@ -79,7 +84,8 @@ public class MRMAP2LexGrid {
             String mrSatPath, String mrMapPath){
         this(mapMrSat,
                 messages,
-                 mrSatPath,mrMapPath,
+                 mrSatPath,
+                 mrMapPath,
                 null,
                 null,
                 null,
@@ -89,6 +95,26 @@ public class MRMAP2LexGrid {
                 null,
                 null,
                 null);
+    }
+    
+    public MRMAP2LexGrid(boolean mapMrSat,
+            LgMessageDirectorIF messages,
+            String mrSatPath, String mrMapPath,
+            String sourceCodingScheme, String sourceVersion, String sourceURI, 
+            String targetCodingScheme, String targetVersion, String targetURI){
+        this(mapMrSat,
+                messages,
+                 mrSatPath,
+                 mrMapPath,
+                null,
+                null,
+                null,
+                sourceCodingScheme,
+                sourceVersion,
+                sourceURI,
+                targetCodingScheme,
+                targetVersion,
+                targetURI);
     }
     public MRMAP2LexGrid(boolean mapMrSat,
         LgMessageDirectorIF messages,
@@ -105,7 +131,7 @@ public class MRMAP2LexGrid {
         this.mapMrSat = mapMrSat;
         messages_ = messages;
         sources = new HashSet<String>();
-        PropertyNames = Arrays.asList(new String[]{
+        propertyNames = Arrays.asList(new String[]{
         	"MAPSETGRAMMER",
             "MAPSETRSAB",
             "MAPSETTYPE",
@@ -133,15 +159,15 @@ public class MRMAP2LexGrid {
     }
 
     public void loadToRevision() throws LBRevisionException{
-        service.loadRevision(processMrMapToLexGrid(), null, false);
+        service.loadRevision(processMrMapToLexGrid(), null, true);
     }
-    public Revision processMrMapToLexGrid() {
-        Revision revision = new Revision();
+    public CodingScheme processMrMapToLexGrid() {
+
         Relations rel = null;
         
         try {
         rel = processMrSatBean(satPath);
-        rel.addAssociationPredicate(processMrMapBean(mapPath));
+        rel.addAssociationPredicate(processMrMapBean(mapPath, rel.getSourceCodingScheme(), rel.getTargetCodingScheme()));
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
@@ -174,10 +200,10 @@ public class MRMAP2LexGrid {
         targetScheme,
         targetVersion,
         targetURI);
-        ChangedEntry entry = new ChangedEntry();
-        entry.setChangedCodingSchemeEntry(scheme);
-        revision.addChangedEntry(entry);
-        return revision;
+        //ChangedEntry entry = new ChangedEntry();
+        //entry.setChangedCodingSchemeEntry(scheme);
+        //revision.addChangedEntry(entry);
+        return scheme;
     }
     
     
@@ -213,7 +239,7 @@ public class MRMAP2LexGrid {
         if(relation.getIsMapping() == null){
         relation.setIsMapping(ISMAP);}
         String atnValue = metaData.getAtn();
-        if(PropertyNames.contains(atnValue)){
+        if(propertyNames.contains(atnValue)){
             Property prop = new Property();
             prop.setPropertyName(metaData.getAtn());
             Text value = new Text();
@@ -244,7 +270,7 @@ public class MRMAP2LexGrid {
     }
     
     //TODO create JUnit
-    protected AssociationPredicate processMrMapBean(String path) throws Exception {
+    protected AssociationPredicate processMrMapBean(String path, String sourceSchemeNamespace, String targetSchemeNamespace) throws Exception {
         String[] mrMapRow;
         RRFLineReader mapReader = new RRFLineReader(path);
         AssociationPredicate predicate  = createAssociationPredicate();
@@ -257,7 +283,7 @@ public class MRMAP2LexGrid {
                     if (currentMapping != null && !map.getMapsetcui().equals(currentMapping)){
                         break;
                     }
-               processAndMergeIntoSource(map, predicate);
+               processAndMergeIntoSource(map, predicate, sourceSchemeNamespace, targetSchemeNamespace);
 
                 }
                 mapReader.close();
@@ -281,16 +307,17 @@ public class MRMAP2LexGrid {
             return predicate;
     }
     
-    private AssociationPredicate processAndMergeIntoSource(MrMap map, AssociationPredicate predicate) throws Exception {
+    private AssociationPredicate processAndMergeIntoSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws Exception {
 
         if(sources.add(map.getFromid())){
-           AssociationSource source = createNewAssociationSourceWithTarget(map);
+           AssociationSource source = createNewAssociationSourceWithTarget(map,targetEntityCodeNamespace);
+           source.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
            predicate.addSource(source);
            return predicate;
         }
         else{
     
-            return addTargetToExistingSource(map, predicate);
+            return addTargetToExistingSource(map, predicate, sourceEntityCodeNamespace,targetEntityCodeNamespace);
         }
        
     }
@@ -301,16 +328,17 @@ public class MRMAP2LexGrid {
         return predicate;
     }
     
-    protected AssociationSource createNewAssociationSourceWithTarget(MrMap map) throws Exception {
+    protected AssociationSource createNewAssociationSourceWithTarget(MrMap map, String targetEntityCodeNamespace) throws Exception {
     AssociationSource source = new AssociationSource();
     source.setSourceEntityCode(map.getFromid());
     source.addTargetData(createTargetData(map));
-    source.addTarget(createAssociationTarget(map));
+    source.addTarget(createAssociationTarget(map,targetEntityCodeNamespace));
     return source;
     }
     
-   protected AssociationTarget createAssociationTarget(MrMap map) throws Exception {
+   protected AssociationTarget createAssociationTarget(MrMap map, String targetEntityCodeNamespace) throws Exception {
         AssociationTarget target = new AssociationTarget();
+        target.setTargetEntityCodeNamespace(targetEntityCodeNamespace);
         target.setAssociationInstanceId(map.getMapid());
         target.setTargetEntityCode(map.getToid());
         target.setAssociationQualification(getAssociationQualifiers(map));
@@ -347,7 +375,7 @@ public class MRMAP2LexGrid {
         return qualifiers;
     }
 
-    protected AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate) throws IndexOutOfBoundsException, Exception {
+    protected AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws IndexOutOfBoundsException, Exception {
      AssociationSource[] sources = predicate.getSource();
      for(AssociationSource s: sources){
          //DEBUG code
@@ -362,7 +390,7 @@ public class MRMAP2LexGrid {
                 return predicate;
                 }
             }
-            s.addTarget(createAssociationTarget(map));
+            s.addTarget(createAssociationTarget(map, targetEntityCodeNamespace));
             AssociationData[] data = s.getTargetData();
             for(AssociationData d: data){
                if(d.getAssociationInstanceId().equals(map.getMapid())){
@@ -382,6 +410,7 @@ public class MRMAP2LexGrid {
             String codingSchemeURI, String sourceSchemeName, String sourceSchemeVersion, String sourceSchemeURI,
             String targetSchemeName, String targetSchemeVersion, String targetSchemeURI) {
         CodingScheme scheme = new CodingScheme();
+        //Create the basics of a mapping Coding Scheme.
         if (codingSchemeName == null) {
             scheme.setCodingSchemeName(CODING_SCHEME_NAME);
         }
@@ -391,12 +420,28 @@ public class MRMAP2LexGrid {
         if (codingSchemeURI == null) {
             scheme.setRepresentsVersion(REPRESENTS_VERSION);
         }
-
-        // Supported source scheme namespace mapping
+        //Create a supported version of it for the coding scheme
+        SupportedCodingScheme supportedScheme = new SupportedCodingScheme();
+        supportedScheme.setContent(scheme.getCodingSchemeName());
+        supportedScheme.setLocalId(scheme.getCodingSchemeName());
+        supportedScheme.setUri(scheme.getCodingSchemeURI());
+        
+        SupportedNamespace nameSpace = new SupportedNamespace();
+        nameSpace.setContent(scheme.getCodingSchemeName());
+        nameSpace.setLocalId(scheme.getCodingSchemeName());
+        nameSpace.setUri(scheme.getCodingSchemeURI());
+        
+        //create a supported relations container.
+        SupportedContainerName container = new SupportedContainerName();
+        container.setContent(rel.getContainerName());
+        container.setLocalId(rel.getContainerName());
+        
+        // Supported source scheme namespace to coding scheme mapping
         SupportedCodingScheme supportedSourceScheme = new SupportedCodingScheme();
         if (sourceSchemeName == null) {
             supportedSourceScheme.setLocalId(rel.getSourceCodingScheme());
             supportedSourceScheme.setContent(rel.getSourceCodingScheme());
+            supportedSourceScheme.setUri(URIPREFIX + ":" + rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion());
         } else {
             supportedSourceScheme.setLocalId(sourceSchemeName);
             supportedSourceScheme.setUri(sourceSchemeURI);
@@ -405,17 +450,21 @@ public class MRMAP2LexGrid {
 
         SupportedNamespace supportedSourceNamespace = new SupportedNamespace();
         supportedSourceNamespace.setLocalId(rel.getSourceCodingScheme());
-        if(sourceSchemeURI != null)
+        if(sourceSchemeURI != null){
             supportedSourceNamespace.setUri(sourceSchemeURI);
+        }
+        else{
+            supportedSourceNamespace.setUri(supportedSourceScheme.getUri());
+        }
         supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
         
-        // supported target scheme namespace mapping
+        // supported target scheme namespace to coding scheme mapping
         SupportedCodingScheme supportedTargetScheme = new SupportedCodingScheme();
         if (targetSchemeName == null) {
             supportedTargetScheme.setLocalId(rel.getTargetCodingScheme());
             supportedTargetScheme.setContent(rel.getTargetCodingScheme());
+            supportedTargetScheme.setUri(URIPREFIX + ":" + rel.getTargetCodingScheme() + ":" + rel.getTargetCodingSchemeVersion());
         }
-
         else {
             supportedTargetScheme.setLocalId(targetSchemeName);
             supportedTargetScheme.setUri(targetSchemeURI);
@@ -426,7 +475,24 @@ public class MRMAP2LexGrid {
         if (targetSchemeURI != null) {
             supportedTargetNamespace.setUri(targetSchemeURI);
         }
+        else{
+            supportedTargetNamespace.setUri(supportedTargetScheme.getUri());
+        }
         supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
+        
+        Mappings mappings = new Mappings();
+        mappings.addSupportedCodingScheme(supportedSourceScheme);
+        mappings.addSupportedCodingScheme(supportedTargetScheme);
+        mappings.addSupportedNamespace(supportedSourceNamespace);
+        mappings.addSupportedNamespace(supportedTargetNamespace);
+        mappings.addSupportedCodingScheme(supportedScheme);
+
+        SupportedAssociation supportedMapping = new SupportedAssociation();
+        supportedMapping.setContent(rel.getAssociationPredicate(0).getAssociationName());
+        supportedMapping.setLocalId(rel.getAssociationPredicate(0).getAssociationName());
+        mappings.addSupportedAssociation(supportedMapping);
+        mappings.addSupportedContainerName(container);
+        scheme.setMappings(mappings);
         scheme.addRelations(rel);
         return scheme;
     }
