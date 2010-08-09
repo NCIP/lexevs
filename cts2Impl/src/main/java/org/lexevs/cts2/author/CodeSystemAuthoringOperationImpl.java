@@ -108,7 +108,13 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        commitCodeSystemChangeSet(scheme, revision, null, ChangeType.NEW, true);
 	        
-	        return scheme;
+	        CodingScheme updatedCodingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        
+	        return updatedCodingScheme;
 	}
 
 	@Override
@@ -191,7 +197,12 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
-	        return codingScheme;
+	        CodingScheme updatedCodingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        return updatedCodingScheme;
 	}
 
 	@Override
@@ -221,7 +232,12 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
-	        return codingScheme;
+	        CodingScheme updatedCodingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        return updatedCodingScheme;
 	}
 
 	@Override
@@ -252,7 +268,12 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
 	        
-	        return codingScheme;
+	        CodingScheme updatedCodingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        return updatedCodingScheme;
 	}
 
 	@Override
@@ -306,7 +327,13 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	        
 	        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.DEPENDENT, null);
 	        
-	        return codingScheme;
+	        CodingScheme updatedCodingScheme = 
+	        	this.getDatabaseServiceManager().
+	        		getCodingSchemeService().
+	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        
+	        
+	        return updatedCodingScheme;
 	}
 	
 
