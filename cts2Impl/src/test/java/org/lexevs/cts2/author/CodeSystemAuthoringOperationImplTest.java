@@ -50,12 +50,13 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		revInfo.setRevisionDate(new Date());
 		revInfo.setRevisionId(randomID);
 		
+		String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
+		String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
+		
 		String codingSchemeName = "New Coding Scheme";
-	    String codingSchemeURI = "urn:oid:11.11.0.99";
 	    String formalName = "CTS 2 API Created Code System";
 	    String defaultLanguage = "";
 	    Long approxNumConcepts = new Long(1);
-	    String representsVersion = "1.0";
 	    List<String> localNameList = Arrays.asList(""); 
 	    
 	    Source source = new Source();
@@ -70,7 +71,7 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		
 		CodingScheme codeScheme = codeSystemAuthOp.createCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings);
 		
-		assertEquals("urn:oid:11.11.0.99",codeScheme.getCodingSchemeURI());
+		assertEquals(Cts2TestConstants.CTS2_CREATE_URI,codeScheme.getCodingSchemeURI());
 		
 		
 	}
@@ -89,21 +90,21 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		revInfo.setRevisionDate(new Date());
 		revInfo.setRevisionId(randomID);
 		
-	    String codingSchemeURI = "urn:oid:11.11.0.99";
-	    String representsVersion = "1.0";
 	    
+	    String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
+		String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
+		
+		Boolean removeStatus = false;
 	    
 	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
-	    
-	    Boolean removeStatus = false;
-		try {
+
+	    try {
 			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 
-		
 		assertTrue(removeStatus);
 
 		
@@ -111,15 +112,17 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 
 	@Test
 		public void testUpdateCodeSystem()   throws LBException, URISyntaxException{
-			//fail("Not yet implemented");
-			
+
+
+			String randomID = UUID.randomUUID().toString();
+		
 			RevisionInfo revInfo = new RevisionInfo();
 			revInfo.setChangeAgent("changeAgent");
 			revInfo.setChangeInstruction("changeInstruction");
 			revInfo.setDescription("new description");
 			revInfo.setEditOrder(1L);
 			revInfo.setRevisionDate(new Date());
-			revInfo.setRevisionId("R301");
+			revInfo.setRevisionId(randomID);
 			
 	//		String codingSchemeName = "New Coding Scheme - Updated";
 	//        String codingSchemeURI = "urn:oid:11.11.0.99";
@@ -137,8 +140,9 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	//        Mappings mappings = new Mappings();
 	//        Properties properties = new Properties();
 	        
-	        String codingSchemeURI = "urn:oid:11.11.0.99";
-	        String representsVersion = "1.0";
+	        
+	        String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
+			String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
 	        
 			String codingSchemeName = "New Coding Scheme - Updated";
 	        String formalName = null;
@@ -167,8 +171,8 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	        															);
 	        
 	
-				
-			System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+	        assertEquals("New Coding Scheme - Updated", codeScheme.getCodingSchemeName());
+	        
 			
 		}
 
