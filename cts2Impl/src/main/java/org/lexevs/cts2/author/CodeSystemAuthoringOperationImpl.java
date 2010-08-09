@@ -458,6 +458,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         		getCodingSchemeService().
         		getCompleteCodingScheme(codingSchemeURI, codeSystemVersion);
 		
+		
 		String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
 		
 		if(StringUtils.isNotBlank(status)) {
@@ -472,7 +473,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         // Ensure RevisionInfo is provided
         validateRevisionInfo(revision);
         
-        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE, null);
+        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
         
 	}
 	
