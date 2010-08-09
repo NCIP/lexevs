@@ -24,6 +24,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
@@ -130,8 +131,8 @@ public class DataTestUtils {
 	 * 
 	 * @return the associated concept
 	 */
-	public static AssociatedConcept getAssociatedConcept(AssociatedConcept[] assocConcepts, String code){
-		for(AssociatedConcept concept : assocConcepts){
+	public static <T extends ConceptReference> T getConceptReference(T[] concepts, String code){
+		for(T concept : concepts){
 			if(concept.getCode().equals(code)){
 				return concept;
 			}
