@@ -35,7 +35,7 @@ public class MethodCachingProxy extends AbstractMethodCachingBean<ProceedingJoin
 	
 	@Around("@within(org.lexevs.cache.annotation.Cacheable) && " +
 	"( @annotation(org.lexevs.cache.annotation.CacheMethod) || @annotation(org.lexevs.cache.annotation.ClearCache) )")
-	public synchronized Object cacheMethod(ProceedingJoinPoint pjp) throws Throwable {
+	public Object cacheMethod(ProceedingJoinPoint pjp) throws Throwable {
 		return super.doCacheMethod(pjp);
 	}
 

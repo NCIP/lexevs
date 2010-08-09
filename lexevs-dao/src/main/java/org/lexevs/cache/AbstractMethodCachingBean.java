@@ -23,22 +23,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.ClassUtils;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.cache.annotation.ParameterKey;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.system.constants.SystemVariables;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -103,13 +99,9 @@ public abstract class AbstractMethodCachingBean<T> {
 	 * 
 	 * @throws Throwable the throwable
 	 */
-	protected synchronized Object doCacheMethod(T joinPoint) throws Throwable {
+	protected Object doCacheMethod(T joinPoint) throws Throwable {
 		
 		Method method = this.getMethod(joinPoint);
-		
-		if(method.isAnnotationPresent(ClearCache.class)) {
-			return this.clearCache(joinPoint, method);
-		}
 
 		Object target = this.getTarget(joinPoint);
 		
@@ -127,16 +119,24 @@ public abstract class AbstractMethodCachingBean<T> {
 				cacheableAnnotation.cacheName(),
 				cacheableAnnotation.cacheSize());
 		
-		if(cache.containsKey(key)){
-			logger.debug("Cache hit on: " + key);
-			Object obj = cache.get(key);
-			return obj;
-		} else {
-			logger.debug("Caching miss on: " + key);
-		}
+		Object result;
+		
+		synchronized(cache) {
+			if(method.isAnnotationPresent(ClearCache.class)) {
+				return this.clearCache(joinPoint, method);
+			}
 
-		Object result = this.proceed(joinPoint);
-		cache.put(key, result);
+			if(cache.containsKey(key)){
+				logger.debug("Cache hit on: " + key);
+				Object obj = cache.get(key);
+				return obj;
+			} else {
+				logger.debug("Caching miss on: " + key);
+			}
+
+			result = this.proceed(joinPoint);
+			cache.put(key, result);
+		}
 
 		if(result != null && 
 				cacheMethodAnnotation.cloneResult() && 
@@ -166,7 +166,7 @@ public abstract class AbstractMethodCachingBean<T> {
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> getCacheFromName(String name, int cacheSize){
 		if(!cacheRegistry.getCaches().containsKey(name)){
-			cacheRegistry.getCaches().put(name, Collections.synchronizedMap(new LRUMap(cacheSize)));
+			cacheRegistry.getCaches().put(name, new LRUMap(cacheSize));
 		}
 		return cacheRegistry.getCaches().get(name);
 	}
