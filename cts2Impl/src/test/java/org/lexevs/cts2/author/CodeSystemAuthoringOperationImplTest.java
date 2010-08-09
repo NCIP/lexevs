@@ -1,12 +1,15 @@
 package org.lexevs.cts2.author;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import junit.framework.TestSuite;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -61,14 +64,14 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	    
 	    Text copyright = new Text();
 	    Mappings mappings = new Mappings();
-	    Properties properties = new Properties();
 	    
 	    
 	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		
 		CodingScheme codeScheme = codeSystemAuthOp.createCodeSystem(revInfo, codingSchemeName, codingSchemeURI, formalName, defaultLanguage, approxNumConcepts, representsVersion, localNameList, sourceList, copyright, mappings);
 		
-		System.out.println("Coding Scheme URI : " + codeScheme.getCodingSchemeURI());
+		assertEquals("urn:oid:11.11.0.99",codeScheme.getCodingSchemeURI());
+		
 		
 	}
 
@@ -92,13 +95,17 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	    
 	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 	    
+	    Boolean removeStatus = false;
 		try {
-			codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
+			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+
 		
+		assertTrue(removeStatus);
+
 		
 	}
 
@@ -472,5 +479,6 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		System.out.println(authServ.removeRevisionRecordbyId(revisionID));
 	
 	}
+	
 
 }
