@@ -79,7 +79,19 @@
 			</flow>
 	
 			<flow>
-				<step id="loadEntityToEntityRelations" parent="metaLoadAssocsPartioned"/>
+				<step id="loadAssociations" parent="listenerStep">
+					<tasklet>
+						<listeners>
+							<listener ref="stepCompletionListener" />
+						</listeners>
+						<chunk reader="metaMrrelSkippingReader" processor="metaEntityAssocToEntityProcessor"
+							writer="associationSourceWriter" commit-interval="50">
+							<streams>
+								<stream ref="mrrelReader" />
+							</streams>
+						</chunk>
+					</tasklet>
+				</step>
 			</flow>
 		
 		</split>
@@ -134,7 +146,7 @@
 				<listener ref="stepCompletionListener" />
 			</listeners>
 			<chunk reader="metaTotalEntityCompositeReader" processor="metaTotalEntityProcessor"
-				writer="entityWriter" commit-interval="500">
+				writer="entityWriter" commit-interval="50">
 					<streams>
 						<stream ref="mrconsoReader" />
 						<stream ref="mrsatReader" />
