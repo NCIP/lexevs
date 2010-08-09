@@ -434,7 +434,6 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
         
         String status = "test status";
         boolean isActive = true;
-        //boolean isActive = true;
      
         
         
