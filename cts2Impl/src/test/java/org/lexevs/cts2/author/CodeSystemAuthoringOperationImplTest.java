@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.TestSuite;
+
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -30,7 +30,7 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
-import org.LexGrid.versions.types.ChangeType;
+
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
@@ -413,11 +413,11 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		} 
 
 
-//        CodingScheme updatedCodingScheme = 
-//        	LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().getCompleteCodingScheme(codingSchemeURI, representsVersion);
-//        		
-//		
-//        assertTrue(updatedCodingScheme.getIsActive());
+        CodingScheme updatedCodingScheme = 
+        	LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().getCompleteCodingScheme(codingSchemeURI, representsVersion);
+        		
+		
+        assertTrue(updatedCodingScheme.getIsActive());
         
 	}
 
