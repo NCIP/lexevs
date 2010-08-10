@@ -49,6 +49,8 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
@@ -400,11 +402,14 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         List<String> postProcessors =
             options.getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue();
         
-        for(String postProcessor : postProcessors) {
-            md_.info("Running PostProcessor:" + postProcessor);
-            
-            for(AbsoluteCodingSchemeVersionReference ref : references) {
-                getPostProcessor(postProcessor).runPostProcess(ref);
+        if (postProcessors != null)
+        {
+            for(String postProcessor : postProcessors) {
+                md_.info("Running PostProcessor:" + postProcessor);
+                
+                for(AbsoluteCodingSchemeVersionReference ref : references) {
+                    getPostProcessor(postProcessor).runPostProcess(ref);
+                }
             }
         }
     }
@@ -769,12 +774,32 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         return returnList;
     }
     
-    protected URNVersionPair[] constructVersionPairsFromCodingSchemes(CodingScheme... codingSchemes) {
-        URNVersionPair[] pairs = new URNVersionPair[codingSchemes.length];
+    protected URNVersionPair[] constructVersionPairsFromCodingSchemes(Object... loadedObject) {
+        URNVersionPair[] pairs = new URNVersionPair[loadedObject.length];
         
-        for(int i=0;i<codingSchemes.length;i++) {
-            String uri = codingSchemes[i].getCodingSchemeURI();
-            String version = codingSchemes[i].getRepresentsVersion();
+        for(int i=0;i<loadedObject.length;i++) {
+            String uri = null;
+            String version = null;
+            if (loadedObject[i] instanceof CodingScheme)
+            {
+                CodingScheme cs = (CodingScheme) loadedObject[i];
+                uri = cs.getCodingSchemeURI();
+                version = cs.getRepresentsVersion();
+            }
+            else if (loadedObject[i] instanceof ValueSetDefinition)
+            {
+                ValueSetDefinition vsd = (ValueSetDefinition) loadedObject[i];
+                uri = vsd.getValueSetDefinitionURI();
+                if (vsd.getEntryState() != null)
+                    version = vsd.getEntryState().getContainingRevision();
+            }
+            else if (loadedObject[i] instanceof PickListDefinition)
+            {
+                PickListDefinition pld = (PickListDefinition) loadedObject[i];
+                uri = pld.getPickListId();
+                if (pld.getEntryState() != null)
+                    version = pld.getEntryState().getContainingRevision();
+            }
             
             pairs[i] = new URNVersionPair(uri, version);
         }
