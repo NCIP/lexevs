@@ -120,6 +120,21 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         ResolvedConceptReference focus = null;
         
         if(graphFocus != null) {
+            
+            if(StringUtils.isNotBlank(graphFocus.getCodeNamespace())
+                    &&
+                    StringUtils.isNotBlank(graphFocus.getCodingSchemeName())){
+                String codingSchemeName =
+                    this.getNamespaceHandler().getCodingSchemeNameForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
+                
+                if(! StringUtils.equals(graphFocus.getCodingSchemeName(), codingSchemeName)){
+                    throw new LBParameterException("Based on the namespace provided as a focus (" + graphFocus.getCodeNamespace() + ")" +
+                            " there is no match to the provided Coding Scheme Name (" + graphFocus.getCodingSchemeName() + ")." +
+                            " If " + graphFocus.getCodeNamespace() + " is meant to be equivalent to the CodingScheme " + graphFocus.getCodingSchemeName() + ", " +
+                            " this must be declared in the SupportedNamespaces."
+                       );
+                }
+            }
            
             focus =
                 LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
