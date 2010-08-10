@@ -685,7 +685,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			throws SQLException {
 				executor.startBatch();
 				for(URIMap uriMap : supportedProperties){
-					String uriMapId = UUID.randomUUID().toString();
+					String uriMapId = createUniqueId();
 					
 					executor.insert(INSERT_URIMAP_SQL, 
 							buildInsertOrUpdateURIMapBean(
