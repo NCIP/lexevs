@@ -23,7 +23,7 @@ public void testaddTargetToExistingSource() throws IndexOutOfBoundsException, Ex
 	predicate.addSource(source1);
 	predicate.addSource(source2);
 	predicate.setAssociationName("mapped_to");
-	predicate = mapping.addTargetToExistingSource(map, predicate);
+	predicate = mapping.addTargetToExistingSource(map, predicate, "fromSource", "toTarget");
 	assertNotNull(ObjectToString.toString(predicate), predicate);
 	AssociationSource[] sources = predicate.getSource();
 	for(AssociationSource s: sources){

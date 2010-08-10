@@ -40,7 +40,7 @@ public class CreateNewAssociationSourceWithTargetTest extends TestCase {
 		map.setRela("ew");
 		
 		MRMAP2LexGrid mapping = new MRMAP2LexGrid(false, null, null, null);
-		AssociationSource source = mapping.createNewAssociationSourceWithTarget(map);
+		AssociationSource source = mapping.createNewAssociationSourceWithTarget(map, "toNameSpace");
 		assertTrue(source.getSourceEntityCode().equals("jkl;;j"));
 		assertNull(source.getSourceEntityCodeNamespace());
 		AssociationTarget target = source.getTarget(0);
