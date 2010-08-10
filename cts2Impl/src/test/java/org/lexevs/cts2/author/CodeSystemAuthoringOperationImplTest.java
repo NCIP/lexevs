@@ -81,40 +81,6 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 	}
 
 	@Test
-	public void testRemoveCodeSystem()   throws LBException, URISyntaxException{
-		
-		
-		String randomID = UUID.randomUUID().toString();
-		
-		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setChangeAgent("changeAgent");
-		revInfo.setChangeInstruction("changeInstruction");
-		revInfo.setDescription("description");
-		revInfo.setEditOrder(1L);
-		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId(randomID);
-		
-	    
-	    String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
-		String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
-		
-		Boolean removeStatus = false;
-	    
-	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
-
-	    try {
-			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
-		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-
-		assertTrue(removeStatus);
-
-		
-	}
-
-	@Test
 		public void testUpdateCodeSystem()   throws LBException, URISyntaxException{
 
 
@@ -453,6 +419,40 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 //		
 //        assertTrue(updatedCodingScheme.getIsActive());
         
+	}
+
+	@Test
+	public void testRemoveCodeSystem()   throws LBException, URISyntaxException{
+		
+		
+		String randomID = UUID.randomUUID().toString();
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId(randomID);
+		
+	    
+	    String codingSchemeURI = Cts2TestConstants.CTS2_CREATE_URI;
+		String representsVersion = Cts2TestConstants.CTS2_CREATE_VERSION;
+		
+		Boolean removeStatus = false;
+	    
+	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+	
+	    try {
+			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	
+		assertTrue(removeStatus);
+	
+		
 	}
 
 	@Test
