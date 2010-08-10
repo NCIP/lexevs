@@ -203,13 +203,19 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
         }
 		
         URNVersionPair urnVersion = null;
-        AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-    	for (int i = 0; i < refs.length; i++) {
-    		AbsoluteCodingSchemeVersionReference ref = refs[i];
-    		urnVersion = new URNVersionPair(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());    		
-    	}
+        URNVersionPair[] urnVersionArray = null;
         
-    	return new URNVersionPair[]{urnVersion};
+        AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+        if (refs != null)
+        {
+            urnVersionArray = new URNVersionPair[refs.length];        
+        	for (int i = 0; i < refs.length; i++) {
+        		AbsoluteCodingSchemeVersionReference ref = refs[i];
+        		urnVersion = new URNVersionPair(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+        		urnVersionArray[i] = urnVersion;
+        	}
+        }
+    	return urnVersionArray;
 	}
 	
 	private void loadCSMetaData(String csURI, String csVersion, URI metadata, boolean overwriteMetadata, boolean stopOnErrors, boolean async) throws LBException{
