@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pickListDefinition pickListId="SRITEST:AUTO:DomesticAutoMakers" representsValueSetDefinition="SRITEST:AUTO:DomesticAutoMakers" isActive="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" completeSet="false">
+<pickListDefinition pickListId="SRITEST:AUTO:DomesticAutoMakers-PickListOnly" representsValueSetDefinition="SRITEST:AUTO:DomesticAutoMakers" isActive="true" defaultEntityCodeNamespace="Automobiles" defaultLanguage="en" completeSet="false">
     <owner>Owner for Domestic Auto Makers</owner>
     <entityDescription>DomesticAutoMakers</entityDescription>
     <mappings>
