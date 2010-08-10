@@ -166,6 +166,23 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("E0001",roots.getResolvedConceptReference(0).getCode());
     }
     
+    public void testFocusWithCodeAndCorrectNamespaceAndCorrectCodingSchemeWithUnionOtherCodingScheme() throws Exception {
+    	ConceptReference ref = new ConceptReference();
+    	ref.setCode("A0001");
+    	ref.setCodeNamespace("Automobiles");
+    	ref.setCodingSchemeName("Automobiles");
+
+    	CodedNodeGraph gmp = this.lbs.getNodeGraph(PARTS_SCHEME, null, null);
+    	
+    	CodedNodeGraph union = gmp.union(cng);
+  
+    	ResolvedConceptReferenceList roots = 
+    		union.resolveAsList(ref, true, false, 0, -1, null, null, null, -1);
+    	
+    	assertEquals(1,roots.getResolvedConceptReferenceCount());
+    	assertEquals("A0001",roots.getResolvedConceptReference(0).getCode());
+    }
+    
     public void testFocusWithCodeAndCorrectNamespaceAndWrongCodingSchemeWithUnion() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -175,12 +192,26 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	CodedNodeGraph gmp = this.lbs.getNodeGraph(PARTS_SCHEME, null, null);
     	
     	CodedNodeGraph union = gmp.union(cng);
-    	try {
+
     	ResolvedConceptReferenceList roots = 
     		union.resolveAsList(ref, true, false, 0, -1, null, null, null, -1);
-    	} catch (LBParameterException e) {
-			return;
-		}
-		fail();
+    	
+    	assertEquals(0,roots.getResolvedConceptReferenceCount());
+    }
+    
+    public void testFocusWithCodeAndCorrectNamespaceAndWrongCodingSchemeWithIntersection() throws Exception {
+    	ConceptReference ref = new ConceptReference();
+    	ref.setCode("005");
+    	ref.setCodeNamespace("Automobiles");
+    	ref.setCodingSchemeName("GermanMadeParts");
+
+    	CodedNodeGraph gmp = this.lbs.getNodeGraph(PARTS_SCHEME, null, null);
+    	
+    	CodedNodeGraph union = gmp.intersect(cng);
+
+    	ResolvedConceptReferenceList roots = 
+    		union.resolveAsList(ref, true, false, 0, -1, null, null, null, -1);
+    	
+    	assertEquals(0,roots.getResolvedConceptReferenceCount());
     }
 }
