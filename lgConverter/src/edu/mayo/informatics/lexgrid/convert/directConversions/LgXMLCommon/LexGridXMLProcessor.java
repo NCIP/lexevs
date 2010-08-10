@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -179,11 +181,14 @@ public class LexGridXMLProcessor {
      * @return Set of coding schemes loaded wiith this system release.
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public org.LexGrid.codingSchemes.CodingScheme[] loadSystemRelease(String path, LgMessageDirectorIF messages,
+    public Object[] loadSystemRelease(String path, LgMessageDirectorIF messages,
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
+        List<Object> loadedObjects = new ArrayList<Object>();
         CodingScheme[] cs = null;
+        ValueSetDefinition[] vsd = null;
+        PickListDefinition[] pld = null;
 
         try {
 
@@ -202,15 +207,10 @@ public class LexGridXMLProcessor {
             umr.setUnmarshalListener(listener);
             umr.setClass(SystemRelease.class);
             umr.unmarshal(in);
-            if(isCodingSchemePresent(path, messages)){
+            
             cs = listener.getCodingSchemes();
-            }
-            else{
-                CodingScheme scheme = new CodingScheme();
-                scheme.setCodingSchemeURI(NO_SCHEME_URL);
-                scheme.setRepresentsVersion(NO_SCHEME_VERSION);
-                cs = new CodingScheme[]{scheme};
-            }
+            vsd = listener.getValueSetDefinitions();
+            pld = listener.getPickListDefinitions();
             in.close();
 
         } catch (MarshalException e) {
@@ -223,15 +223,27 @@ public class LexGridXMLProcessor {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
             }
-        return cs;
+        if (cs != null)
+        {
+            loadedObjects.addAll(Arrays.asList(cs));
+        }
+        else if (vsd != null)
+        {
+            loadedObjects.addAll(Arrays.asList(vsd));            
+        }
+        else if (pld != null)
+        {
+            loadedObjects.addAll(Arrays.asList(pld));            
+        }
+        return loadedObjects.toArray();
 
     }
     
-    public org.LexGrid.codingSchemes.CodingScheme[] loadValueSetDefinition(String path, LgMessageDirectorIF messages,
+    public ValueSetDefinition[] loadValueSetDefinition(String path, LgMessageDirectorIF messages,
             boolean validateXML){
         BufferedReader in = null;
         Unmarshaller umr = null;
-        CodingScheme[] cs = null;
+        ValueSetDefinition[] vsd = null;
 
         try {
 
@@ -247,14 +259,8 @@ public class LexGridXMLProcessor {
             umr.setUnmarshalListener(listener);
             umr.setClass(ValueSetDefinition.class);
             umr.unmarshal(in);
-            if(isCodingSchemePresent(path, messages)){
-            cs = listener.getCodingSchemes();
-            }
-            else{
-                CodingScheme scheme = new CodingScheme();
-                scheme.setCodingSchemeURI(NO_SCHEME_URL);
-                scheme.setRepresentsVersion(NO_SCHEME_VERSION);
-                cs = new CodingScheme[]{scheme};
+            if(isValueSetDefinitionPresent(path, messages)){
+                vsd = listener.getValueSetDefinitions();
             }
             in.close();
 
@@ -268,16 +274,16 @@ public class LexGridXMLProcessor {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
             }
-        return cs;
+        return vsd;
 
     }
     
     
-    public org.LexGrid.codingSchemes.CodingScheme[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
+    public PickListDefinition[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
             boolean validateXML){
         BufferedReader in = null;
         Unmarshaller umr = null;
-        CodingScheme[] cs = null;
+        PickListDefinition[] pld = null;
 
         try {
 
@@ -293,19 +299,13 @@ public class LexGridXMLProcessor {
             umr.setUnmarshalListener(listener);
             umr.setClass(PickListDefinition.class);
             umr.unmarshal(in);
-            if(isCodingSchemePresent(path, messages)){
-            cs = listener.getCodingSchemes();
-            }
-            else{
-                CodingScheme scheme = new CodingScheme();
-                scheme.setCodingSchemeURI(NO_SCHEME_URL);
-                scheme.setRepresentsVersion(NO_SCHEME_VERSION);
-                cs = new CodingScheme[]{scheme};
+            if(isPickListDefinitionPresent(path, messages)){
+                pld = listener.getPickListDefinitions();
             }
             in.close();
 
         } catch (MarshalException e) {
-            messages.error("the Value Set Listener detected a reading or writing problem");
+            messages.error("the Pick List Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
             messages.error("Unmarshaller detected invalid xml at: " + path);
@@ -314,7 +314,7 @@ public class LexGridXMLProcessor {
             messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
             e.printStackTrace();
             }
-        return cs;
+        return pld;
     }
     
     
@@ -472,12 +472,12 @@ public class LexGridXMLProcessor {
         return relPropsPresent;
     }
     
-   /**
- * @param path represents a path to the xml file to load
- * @param messages
- * @return flag indicating there is a coding scheme element somewhere in this xml source
- */
-public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
+     /**
+     * @param path represents a path to the xml file to load
+     * @param messages
+     * @return flag indicating there is a coding scheme element somewhere in this xml source
+     */
+    public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         boolean entryStateRemove = false;
@@ -487,7 +487,6 @@ public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages)
             in = new BufferedReader(new FileReader(path));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
-
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
                     .next()) {
                 if (event == XMLStreamConstants.START_ELEMENT && 
@@ -526,6 +525,132 @@ public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages)
             e.printStackTrace();
         } catch (IOException e) {
             messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+        }
+        System.out.println("Scheme Present: " + schemePresent);
+        return schemePresent;
+    }
+    
+    /**
+     * @param path represents a path to the xml file to load
+     * @param messages
+     * @return flag indicating there is a value set definition element somewhere in this xml source
+     */
+    public boolean isValueSetDefinitionPresent(String path,  LgMessageDirectorIF messages) {
+        BufferedReader in = null;
+        boolean schemePresent = false;
+        boolean entryStateRemove = false;
+        XMLStreamReader xmlStreamReader;
+
+        try {
+            in = new BufferedReader(new FileReader(path));
+
+            xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+            for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                    .next()) {
+                if (event == XMLStreamConstants.START_ELEMENT && 
+                        (xmlStreamReader.getLocalName().equalsIgnoreCase("valueSetDefinition") || 
+                                xmlStreamReader.getLocalName().equalsIgnoreCase("changedValueSetDefinitionEntry"))) {
+       
+                    schemePresent = true;}
+                if(schemePresent && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("entryState")){
+                    for(int i = 0; i < xmlStreamReader.getAttributeCount(); i++){
+                        //System.out.println(xmlStreamReader.getAttributeLocalName(i) + ": " + xmlStreamReader.getAttributeValue(i));
+                        if(xmlStreamReader.getAttributeLocalName(i).equals("changeType")){
+                            if(xmlStreamReader.getAttributeValue(i).equals("REMOVE")){
+                                messages.info("This LexGrid XML contains a revision that will remove a value set definition");
+                                entryStateRemove = true;
+                            }
+                        }
+                    }
+                }
+                if(schemePresent && entryStateRemove && event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("mappings"))
+                { 
+                    schemePresent = false;
+                    break;}
+                if(event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("mappings"))        
+                { break;}               
+            }
+            xmlStreamReader.close();
+            in.close();
+        } catch (XMLStreamException e) {
+            messages.error("While streaming file at " + path + "an error occured");
+            e.printStackTrace();
+        } catch (FactoryConfigurationError e) {
+            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+        } catch (IOException e) {
+            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            e.printStackTrace();
+        }
+        System.out.println("Scheme Present: " + schemePresent);
+        return schemePresent;
+    }
+    
+    /**
+     * @param path represents a path to the xml file to load
+     * @param messages
+     * @return flag indicating there is a pick list definition element somewhere in this xml source
+     */
+    public boolean isPickListDefinitionPresent(String path,  LgMessageDirectorIF messages) {
+        BufferedReader in = null;
+        boolean schemePresent = false;
+        boolean entryStateRemove = false;
+        XMLStreamReader xmlStreamReader;
+
+        try {
+            in = new BufferedReader(new FileReader(path));
+
+            xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
+
+            for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
+                    .next()) {
+                if (event == XMLStreamConstants.START_ELEMENT
+                        && (xmlStreamReader.getLocalName().equalsIgnoreCase("pickListDefinition") || xmlStreamReader
+                                .getLocalName().equalsIgnoreCase("changedPickListDefinitionEntry"))) {
+
+                    schemePresent = true;
+                }
+                if (schemePresent && event == XMLStreamConstants.START_ELEMENT
+                        && xmlStreamReader.getLocalName().equals("entryState")) {
+                    for (int i = 0; i < xmlStreamReader.getAttributeCount(); i++) {
+                        // System.out.println(xmlStreamReader.getAttributeLocalName(i)
+                        // + ": " + xmlStreamReader.getAttributeValue(i));
+                        if (xmlStreamReader.getAttributeLocalName(i).equals("changeType")) {
+                            if (xmlStreamReader.getAttributeValue(i).equals("REMOVE")) {
+                                messages
+                                        .info("This LexGrid XML contains a revision that will remove a pick list definition");
+                                entryStateRemove = true;
+                            }
+                        }
+                    }
+                }
+                if (schemePresent && entryStateRemove && event == XMLStreamConstants.START_ELEMENT
+                        && xmlStreamReader.getLocalName().equals("mappings")) {
+                    schemePresent = false;
+                    break;
+                }
+                if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals("mappings")) {
+                    break;
+                }
+            }
+            xmlStreamReader.close();
+            in.close();
+        } catch (XMLStreamException e) {
+            messages.error("While streaming file at " + path + "an error occured");
+            e.printStackTrace();
+        } catch (FactoryConfigurationError e) {
+            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            messages.error("Problem reading file at: " + (path == null ? "path appears to be null" : path));
+            e.printStackTrace();
+        } catch (IOException e) {
+            messages.error("IO Problem reading file at: " + (path == null ? "path appears to be null" : path));
             e.printStackTrace();
         }
         System.out.println("Scheme Present: " + schemePresent);
