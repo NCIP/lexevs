@@ -81,6 +81,13 @@ public class ServiceUtility {
             validateParameter(codingSchemeNameOrUri,codingSchemeVersion, localName, supportedAttributeClass);
         }
     }
+    public static <T extends Throwable, O> O throwExceptionOrReturnDefault(T exception, O defaultReturnValue, boolean strict) throws T {
+        if(strict) {
+            throw exception;
+        } else {
+            return defaultReturnValue;
+        }
+    }
     
     public static void validateParameter(String codingSchemeNameOrUri, String codingSchemeVersion, String localId, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
         if(StringUtils.isBlank(localId)) {
