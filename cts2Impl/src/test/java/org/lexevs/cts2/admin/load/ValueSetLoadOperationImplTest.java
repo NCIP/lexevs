@@ -35,17 +35,22 @@ public class ValueSetLoadOperationImplTest {
 		ValueSetLoadOperation vsLoadOp = cts2.getAdminOperation().getValueSetLoadOperation();
 		URNVersionPair[] urns = vsLoadOp.load(new File(
 				"src/test/resources/testData/VSDTestData.xml").toURI(), null, "LexGrid_Loader", true);
+		
+		System.out.println("vsd loads " + urns.length);
+		
 		for(URNVersionPair urn : urns)
 		{
-			System.out.println("vsd loaded : " + urn);
+			System.out.println("vsd loaded : " + urn.getUrn() + " - " + urn.getVersion());
 		}
 		
 		urns = vsLoadOp.load(new File(
 				"../lbTest/resources/testData/valueDomain/pickListTestData.xml").toURI(), null, "LexGrid_Loader", true);
 		for(URNVersionPair urn : urns)
 		{
-			System.out.println("vsd loaded : " + urn);
+			System.out.println("vsd loaded : " + urn.getUrn() + " - " + urn.getVersion());
 		}
+		
+		System.out.println("pld loads " + urns.length);
 	}
 
 	/**
