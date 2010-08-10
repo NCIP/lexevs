@@ -12,7 +12,8 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
@@ -93,13 +94,22 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
         StreamingXMLToSQL loader = new StreamingXMLToSQL();
         
-        CodingScheme[] codingScheme = loader.load(
+        Object[] loadedObject = loader.load(
                 this.getResourceUri(),
                 this.getMd_(),
                 this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue(),
                 this.getCodingSchemeManifest());
    
-        URNVersionPair[] loadedCodingSchemes = this.constructVersionPairsFromCodingSchemes(codingScheme);
+        URNVersionPair[] loadedCodingSchemes = this.constructVersionPairsFromCodingSchemes(loadedObject);
+        
+        if (loadedObject[0] instanceof ValueSetDefinition || loadedObject[0] instanceof PickListDefinition)
+        {
+            setDoIndexing(false);
+            setDoApplyPostLoadManifest(false);
+            setDoComputeTransitiveClosure(false);
+            setDoRegister(false);
+            this.getOptions().getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).setOptionValue(null);
+        }
         
         if(loadedCodingSchemes[0].getUrn().equals(LexGridXMLProcessor.NO_SCHEME_URL)
                 &&  loadedCodingSchemes[0].getVersion().equals(LexGridXMLProcessor.NO_SCHEME_VERSION)) {
