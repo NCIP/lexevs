@@ -79,10 +79,10 @@ public class MRMAP2LexGrid {
     public static final String CODING_SCHEME_URI = "http://does.not.resolve";
     public static final String REPRESENTS_VERSION = "1.0";
     
-    public MRMAP2LexGrid(boolean mapMrSat,
+    public MRMAP2LexGrid(
             LgMessageDirectorIF messages,
             String mrSatPath, String mrMapPath){
-        this(mapMrSat,
+        this(
                 messages,
                  mrSatPath,
                  mrMapPath,
@@ -97,12 +97,12 @@ public class MRMAP2LexGrid {
                 null);
     }
     
-    public MRMAP2LexGrid(boolean mapMrSat,
+    public MRMAP2LexGrid(
             LgMessageDirectorIF messages,
             String mrSatPath, String mrMapPath,
             String sourceCodingScheme, String sourceVersion, String sourceURI, 
             String targetCodingScheme, String targetVersion, String targetURI){
-        this(mapMrSat,
+        this(
                 messages,
                  mrSatPath,
                  mrMapPath,
@@ -116,7 +116,7 @@ public class MRMAP2LexGrid {
                 targetVersion,
                 targetURI);
     }
-    public MRMAP2LexGrid(boolean mapMrSat,
+    public MRMAP2LexGrid(
         LgMessageDirectorIF messages,
         String mrSatPath, String mrMapPath,
         String nameForMappingScheme,
@@ -128,7 +128,6 @@ public class MRMAP2LexGrid {
         String targetScheme,
         String targetVersion,
         String targetURI){
-        this.mapMrSat = mapMrSat;
         messages_ = messages;
         sources = new HashSet<String>();
         propertyNames = Arrays.asList(new String[]{
@@ -158,8 +157,14 @@ public class MRMAP2LexGrid {
         service = dbManager.getAuthoringService();
     }
 
-    public void loadToRevision() throws LBRevisionException{
-        service.loadRevision(processMrMapToLexGrid(), null, true);
+    public CodingScheme loadToRevision() throws LBRevisionException{
+       CodingScheme scheme = processMrMapToLexGrid();
+       CodingScheme schemeToReturn = new CodingScheme();
+       schemeToReturn.setCodingSchemeName(scheme.getCodingSchemeName());
+       schemeToReturn.setRepresentsVersion(scheme.getRepresentsVersion());
+       schemeToReturn.setCodingSchemeURI(scheme.getCodingSchemeURI());
+        service.loadRevision(scheme, null, true);
+        return schemeToReturn;
     }
     public CodingScheme processMrMapToLexGrid() {
 
