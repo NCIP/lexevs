@@ -43,6 +43,8 @@ public class DefaultRootBuilder implements RootBuilder {
 					relationContainerName, 
 					associationNames,
 					null,
+					null,
+					null,
 					traverse);
 		} else {
 			refs = databaseServiceManager.getCodedNodeGraphService().
@@ -51,6 +53,8 @@ public class DefaultRootBuilder implements RootBuilder {
 					codingSchemeVersion, 
 					relationContainerName, 
 					associationNames,
+					null,
+					null,
 					null,
 					traverse);
 		}

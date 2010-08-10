@@ -473,7 +473,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeVersion, 
 			String relationsContainerName,
 			List<String> associationPredicateNames, 
-			List<QualifierNameValuePair> qualifiers, 
+			List<QualifierNameValuePair> qualifiers,
+			List<String> subjectEntityCodeNamespaces,  
+			List<String> objectEntityCodeNamespaces,  
 			TraverseAssociations traverse) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
@@ -486,8 +488,15 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					relationsContainerName, 
 					associationPredicateNames);
 		
+		//This means there was an AssociationPredicateName that was passed in
+		//that isn't part of this Coding Scheme -- there will be no roots for it.
+		if(CollectionUtils.isNotEmpty(associationPredicateNames) &&
+				CollectionUtils.isEmpty(associationPredicateUids)){
+			return null;
+		}
+		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getRootNodes(codingSchemeUid, associationPredicateUids, qualifiers, traverse);
+			getRootNodes(codingSchemeUid, associationPredicateUids, qualifiers, subjectEntityCodeNamespaces, objectEntityCodeNamespaces, traverse);
 	}
 
 	private List<String> getAssociationPredicateUids(
@@ -521,6 +530,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String relationsContainerName,
 			List<String> associationPredicateNames,
 			List<QualifierNameValuePair> qualifiers,
+			List<String> subjectEntityCodeNamespaces, 
+			List<String> objectEntityCodeNamespaces,  
 			TraverseAssociations traverse) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
@@ -533,8 +544,15 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					relationsContainerName, 
 					associationPredicateNames);
 		
+		//This means there was an AssociationPredicateName that was passed in
+		//that isn't part of this Coding Scheme -- there will be no roots for it.
+		if(CollectionUtils.isNotEmpty(associationPredicateNames) &&
+				CollectionUtils.isEmpty(associationPredicateUids)){
+			return null;
+		}
+		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getTailNodes(codingSchemeUid, associationPredicateUids, qualifiers, traverse);
+			getTailNodes(codingSchemeUid, associationPredicateUids, qualifiers, subjectEntityCodeNamespaces, objectEntityCodeNamespaces, traverse);
 	}
 
 	@Override

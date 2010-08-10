@@ -17,8 +17,6 @@ import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBea
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollectionTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
@@ -379,10 +377,17 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String codingSchemeUid,
 			List<String> associationPredicateUids,
 			List<QualifierNameValuePair> qualifiers, 
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveObjectNamespace,
 			TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(traverse.toString(), associationPredicateUids, qualifiers);
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				traverse.toString(), 
+				associationPredicateUids, 
+				qualifiers,
+				mustHaveSubjectNamespace,
+				mustHaveObjectNamespace);
 		bean.setPrefix(prefix);
 	
 		return this.getSqlMapClientTemplate().
@@ -396,10 +401,12 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String codingSchemeUid,
 			List<String> associationPredicateUids, 
 			List<QualifierNameValuePair> qualifiers, 
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveObjectNamespace,
 			TraverseAssociations traverse) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(traverse.toString(), associationPredicateUids, qualifiers);
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(traverse.toString(), associationPredicateUids, qualifiers, mustHaveSubjectNamespace, mustHaveObjectNamespace);
 		bean.setPrefix(prefix);
 		
 		return this.getSqlMapClientTemplate().

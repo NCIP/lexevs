@@ -304,7 +304,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#addCodingSchemeResourceToSystem(java.lang.String, java.lang.String)
 	 */
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void addCodingSchemeResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addCodingSchemeResourceToSystem(uri, version);

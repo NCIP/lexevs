@@ -52,6 +52,8 @@ public interface CodedNodeGraphService {
 			String relationsContainerName,
 			List<String> associationPredicateNames, 
 			List<QualifierNameValuePair> qualifiers,
+			List<String> subjectEntityCodeNamespaces, 
+			List<String> objectEntityCodeNamespaces, 
 			TraverseAssociations traverse);
 	
 	public List<ConceptReference> getTailConceptReferences(
@@ -60,6 +62,8 @@ public interface CodedNodeGraphService {
 			String relationsContainerName,
 			List<String> associationPredicateNames,
 			List<QualifierNameValuePair> qualifiers,
+			List<String> subjectEntityCodeNamespaces,
+			List<String> objectEntityCodeNamespaces,  
 			TraverseAssociations traverse);
 	
 	public List<String> getTripleUidsContainingSubject(
