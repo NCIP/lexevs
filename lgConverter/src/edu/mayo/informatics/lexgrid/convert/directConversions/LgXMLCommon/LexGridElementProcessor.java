@@ -55,9 +55,29 @@ public class LexGridElementProcessor {
     private static ArrayList<CodingScheme> codingSchemes = new ArrayList<CodingScheme>();
     
     /**
+     * This list of Value Set Definitions is eventually passed to the baseloader for post processing
+     */
+    private static ArrayList<ValueSetDefinition> valueSetDefinitions = new ArrayList<ValueSetDefinition>();
+    
+    /**
+     * This list of Pick List Definitions is eventually passed to the baseloader for post processing
+     */
+    private static ArrayList<PickListDefinition> pickListDefinitions = new ArrayList<PickListDefinition>();
+    
+    /**
      * We'll convert the array list to an array eventually
      */
     private static  CodingScheme[] cs = null;
+
+    /**
+     * We'll convert the array list to an array eventually
+     */
+    private static  ValueSetDefinition[] vsd = null;
+    
+    /**
+     * We'll convert the array list to an array eventually
+     */
+    private static  PickListDefinition[] pld = null;
     
     /**
      * Map of relations and their predicates to track what has been loaded and when.
@@ -75,6 +95,22 @@ public class LexGridElementProcessor {
             cs[i] = codingSchemes.get(i);
         }
         return cs;
+    }
+    
+    public static ValueSetDefinition[] setAndRetrieveValueSetDefinitions() {
+        vsd = new ValueSetDefinition[valueSetDefinitions.size()];
+        for (int i = 0; i < valueSetDefinitions.size(); i++) {
+            vsd[i] = valueSetDefinitions.get(i);
+        }
+        return vsd;
+    }
+    
+    public static PickListDefinition[] setAndRetrievePickListDefinitions() {
+        pld = new PickListDefinition[pickListDefinitions.size()];
+        for (int i = 0; i < pickListDefinitions.size(); i++) {
+            pld[i] = pickListDefinitions.get(i);
+        }
+        return pld;
     }
 
     /**
