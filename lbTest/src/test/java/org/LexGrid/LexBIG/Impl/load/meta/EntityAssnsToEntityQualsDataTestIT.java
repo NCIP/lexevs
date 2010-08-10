@@ -116,8 +116,9 @@ public class EntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 	
 	@Test
 	public void testSuppressQual() throws Exception {	
+		//'N' values aren't loaded.
 		NameAndValueList quals = associatedConcept.getAssociationQualifiers();
-		assertTrue(
+		assertFalse(
 		DataTestUtils.isQualifierNameAndValuePresent(RrfLoaderConstants.SUPPRESS_QUALIFIER, "N", quals));
 	}
 	
