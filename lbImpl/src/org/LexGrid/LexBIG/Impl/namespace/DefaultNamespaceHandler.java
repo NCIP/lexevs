@@ -13,6 +13,7 @@ import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.KnownTags;
@@ -23,6 +24,25 @@ import org.springframework.util.CollectionUtils;
 public class DefaultNamespaceHandler implements NamespaceHandler {
 
     private static final long serialVersionUID = 7565547967975571009L;
+    
+    @Override
+    @CacheMethod
+    public String getCodingSchemeNameForNamespace(String codingSchemeUri, String version, String namespace)
+            throws LBParameterException {
+        CodingScheme cs = getCodingScheme(codingSchemeUri, version);
+        
+        if(namespace.equals(cs.getCodingSchemeName())) {
+            return cs.getCodingSchemeName();
+        }
+        
+        SupportedNamespace sns = getSupportedNamespace(cs, namespace);
+        
+        if(sns == null){
+            return null;
+        } else {
+            return sns.getEquivalentCodingScheme();
+        }
+    }
 
     @Override
     @CacheMethod
@@ -38,8 +58,14 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
             return null;
         }
         
-        String uri = LexEvsServiceLocator.getInstance().
-            getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme());
+        String uri;
+        try {
+            uri = LexEvsServiceLocator.getInstance().
+                getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme());
+        } catch (Exception e) {
+            LoggerFactory.getLogger().info("The Equivalent Coding Scheme:" + sns.getEquivalentCodingScheme() + " was not found in the system.");
+            return null;
+        }
         
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
         
@@ -99,12 +125,15 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
                     sn.getEquivalentCodingScheme(),
                     codingSchemeNameOfSearchCodingScheme)){
                 returnList.add(sn.getLocalId());
+            } else {
+                if(StringUtils.equals(codingSchemeNameOfSearchCodingScheme, sn.getLocalId())
+                        &&
+                   StringUtils.equals(codingSchemeNameOfSearchCodingScheme, cs.getCodingSchemeName())
+                       &&
+                   StringUtils.isBlank(sn.getEquivalentCodingScheme())){
+                    returnList.add(sn.getLocalId());
+                }
             }
-        }
-        
-        if(CollectionUtils.isEmpty(returnList)) {
-            throw new LBParameterException("The Coding Scheme Name: " + codingSchemeNameOfSearchCodingScheme
-                    + " cannot be mapped to any Supported Namespaces, so it cannot be used as a restriction.");
         }
         
         return returnList;   

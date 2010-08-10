@@ -57,7 +57,9 @@ public class NullFocusRootsResolver implements RootsResolver {
                    codingSchemeVersion, 
                    relationsContainerName, 
                    query.getRestrictToAssociations(),
-                   query.getRestrictToAssociationsQualifiers());
+                   query.getRestrictToAssociationsQualifiers(),
+                   query.getRestrictToSourceCodeSystem(),
+                   query.getRestrictToTargetCodeSystem());
         }
         
         if(direction.equals(ResolveDirection.BACKWARD)) {
@@ -79,7 +81,9 @@ public class NullFocusRootsResolver implements RootsResolver {
                     codingSchemeVersion, 
                     relationsContainerName, 
                     query.getRestrictToAssociations(),
-                    query.getRestrictToAssociationsQualifiers());
+                    query.getRestrictToAssociationsQualifiers(),
+                    query.getRestrictToSourceCodeSystem(),
+                    query.getRestrictToTargetCodeSystem());
         }
         
         return returnList;
@@ -163,7 +167,9 @@ public class NullFocusRootsResolver implements RootsResolver {
             String codingSchemeVersion,
             String relationsContainerName,
             List<String> associationNames,
-            List<QualifierNameValuePair> qualifiers){
+            List<QualifierNameValuePair> qualifiers,
+            List<String> subjectEntityCodeNamespaces,
+            List<String> objectEntityCodeNamespaces){
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
@@ -175,7 +181,7 @@ public class NullFocusRootsResolver implements RootsResolver {
             service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion, relationsContainerName);
             traverseAssociations = TraverseAssociations.TOGETHER;
         } else {
-            traverseAssociations = TraverseAssociations.INDIVIDUALLY;
+           traverseAssociations = TraverseAssociations.TOGETHER;
         }
         
         List<ConceptReference> roots = 
@@ -185,6 +191,8 @@ public class NullFocusRootsResolver implements RootsResolver {
             		relationsContainerName, 
             		associationNames, 
             		qualifiers,
+            		subjectEntityCodeNamespaces,
+            		objectEntityCodeNamespaces,
             		traverseAssociations);
         
         return roots;
@@ -195,7 +203,9 @@ public class NullFocusRootsResolver implements RootsResolver {
             String codingSchemeVersion,
             String relationsContainerName,
             List<String> associationNames,
-            List<QualifierNameValuePair> qualifiers){
+            List<QualifierNameValuePair> qualifiers,
+            List<String> subjectEntityCodeNamespaces,
+            List<String> objectEntityCodeNamespaces){
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
@@ -207,7 +217,7 @@ public class NullFocusRootsResolver implements RootsResolver {
             service.getAssociationPredicateNamesForCodingScheme(codingSchemeUri, codingSchemeVersion, relationsContainerName);
             traverseAssociations = TraverseAssociations.TOGETHER;
         } else {
-        	 traverseAssociations = TraverseAssociations.INDIVIDUALLY;
+        	 traverseAssociations = TraverseAssociations.TOGETHER;
         }
         
         return 
@@ -217,6 +227,8 @@ public class NullFocusRootsResolver implements RootsResolver {
             		relationsContainerName, 
             		associationNames, 
             		qualifiers,
+            		subjectEntityCodeNamespaces,
+            		objectEntityCodeNamespaces,
             		traverseAssociations);
     }
 }

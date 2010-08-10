@@ -34,7 +34,8 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.codednodeset.SingleLuceneIndexCodedNodeSet;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Impl.codednodeset.ToNodeListCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -319,30 +320,22 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
         ResolvedConceptReferenceList list = 
             this.doResolveAsList(
-                graphFocus, 
-                resolveForward, 
-                resolveBackward, 
-                0, 
-                resolveAssociationDepth,
-                null, null, null, null, maxToReturn, false);
-        
+                    graphFocus, 
+                    resolveForward, 
+                    resolveBackward, 
+                    0, 
+                    resolveAssociationDepth,
+                    null, null, null, null, maxToReturn, false);
+
         ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
 
         try {
-            CodedNodeSet cns = new SingleLuceneIndexCodedNodeSet(
-                    this.getCodingSchemeUri(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), 
-                    true, 
-                    null);
-            
-            cns = cns.restrictToCodes(codeList);
-
-            return cns;
-        } catch (Exception e) {
+            return new ToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
+        } catch (LBResourceUnavailableException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     private ConceptReferenceList traverseGraph(
             ResolvedConceptReferenceList list, 
             boolean resolveForward, 

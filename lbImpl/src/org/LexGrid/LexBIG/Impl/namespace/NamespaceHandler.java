@@ -14,6 +14,12 @@ public interface NamespaceHandler extends Serializable {
                 String version, 
                 String namespace) throws LBParameterException;
     
+    public String 
+        getCodingSchemeNameForNamespace(
+            String codingSchemeUri, 
+            String version, 
+            String namespace) throws LBParameterException;
+    
     public List<String> 
         getNamespacesForCodingScheme(
                 String codingSchemeUri, 

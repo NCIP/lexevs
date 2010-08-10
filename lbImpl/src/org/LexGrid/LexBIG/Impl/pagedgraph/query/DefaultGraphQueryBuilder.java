@@ -37,10 +37,8 @@ import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.naming.SupportedAssociation;
-import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
@@ -58,6 +56,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
     private static final long serialVersionUID = 3959687202074292860L;
 
     public static ConceptReference INVALID_MATCH_CONCEPT_REFERENCE = new InvalidMatchCodeNamspacePair();
+    private static String INVALID_CODE_SYSTEM_RESTRICTION = "INVALID_CODE_SYSTEM_RESTRICTION";
     
     /** The graph query. */
     private GraphQuery graphQuery = new GraphQuery();
@@ -108,8 +107,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                     LoggerFactory.getLogger().warn("URIs are currently not resolved.");
                 }
                 String localId = nameAndValue.getName();
-                ServiceUtility.validateParameter(codingSchemeUri, version, localId, SupportedAssociation.class);
-                
+                 
                 graphQuery.getRestrictToAssociations().add(localId);
 
             }
@@ -119,8 +117,6 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                 String qualName = nameAndValue.getName();
                 String qualValue = nameAndValue.getContent();
                 
-                ServiceUtility.validateParameter(codingSchemeUri, version, qualName, SupportedAssociationQualifier.class);
-
                 if(StringUtils.hasText(qualValue) && !StringUtils.hasText(qualName)) {
                     throw new LBParameterException("When applying a Qualifier Restriction onto an Association," +
                     " you must not specify a Qualifier VALUE without a Qualifier NAME");
@@ -142,6 +138,10 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                 this.codingSchemeUri, 
                 this.version, 
                 codingScheme);
+        
+        if(CollectionUtils.isEmpty(namespaces)) {
+            namespaces.add(INVALID_CODE_SYSTEM_RESTRICTION);
+        }
         
         this.graphQuery.getRestrictToSourceCodeSystem().addAll(namespaces);
         this.graphQuery.getRestrictToTargetCodeSystem().addAll(namespaces);
@@ -230,6 +230,10 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                 this.version, 
                 codingScheme);
         
+        if(CollectionUtils.isEmpty(namespaces)) {
+            namespaces.add(INVALID_CODE_SYSTEM_RESTRICTION);
+        }
+        
         this.graphQuery.getRestrictToSourceCodeSystem().addAll(namespaces);
     }
 
@@ -255,6 +259,10 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
                 this.codingSchemeUri, 
                 this.version, 
                 codingScheme);
+        
+        if(CollectionUtils.isEmpty(namespaces)) {
+            namespaces.add(INVALID_CODE_SYSTEM_RESTRICTION);
+        }
         
         this.graphQuery.getRestrictToTargetCodeSystem().addAll(namespaces);
     }

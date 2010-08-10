@@ -157,21 +157,55 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     }
                 }  
             }
+           
             if(focus == null) {
                focus = new ResolvedConceptReference();
                focus.setCode(graphFocus.getCode());
                
                String namespace = graphFocus.getCodeNamespace();
+               String codingSchemeName = graphFocus.getCodingSchemeName();
              
                if(StringUtils.isBlank(namespace)){
-                   namespace = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
+                   if(StringUtils.isBlank(codingSchemeName)) {
+                       namespace = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
+                   } else {
+                       List<String> namespaces = this.getNamespaceHandler().getNamespacesForCodingScheme(codingSchemeUri, version, codingSchemeName);
+                       if(CollectionUtils.isEmpty(namespaces)) {
+                           throw new LBParameterException("The provided focus did not contain a namespace, and information in the " +
+                                   "SupportedNamespaces was unable to generate the correct one.");
+                       }
+                       if(namespaces.size() > 1) {
+                           throw new LBParameterException("The provided focus did not contain a namespace, and information in the " +
+                               "SupportedNamespaces did not provide a unique namespace. Please provide a namespace with the focus");
+                       }
+                       
+                       namespace = namespaces.get(0);
+                   }
+               } 
+               
+               String expectedCodingSchemeName = this.getNamespaceHandler().getCodingSchemeNameForNamespace(codingSchemeUri, version, namespace);
+               if(StringUtils.isBlank(codingSchemeName)){
+                   codingSchemeName = expectedCodingSchemeName;
+               } else {
+                   if(!codingSchemeName.equals(expectedCodingSchemeName)) {
+                       throw new LBParameterException("Based on the namespace provided as a focus (" + namespace + ")" +
+                       		" there is no match to the provided Coding Scheme Name (" + codingSchemeName + ")." +
+                       		" If " + namespace + " is meant to be equivalent to the CodingScheme " + codingSchemeName + ", " +
+                       		" this must be declared in the SupportedNamespaces."
+                       );
+                   }
                }
 
+               if(StringUtils.isBlank(codingSchemeName)) {
+                   throw new LBParameterException("Could not determine a Coding Scheme for the requested Focus Code.");
+               }
+               
                focus.setCodeNamespace(namespace);    
                
-               focus.setCodingSchemeName(graphFocus.getCodingSchemeName());
+               focus.setCodingSchemeName(codingSchemeName);
             }
-            boolean isValidFocus = this.checkFocus(focus, filters);
+            
+            boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward, filters);
             
             if(! isValidFocus) {
                 return new ResolvedConceptReferenceList();
@@ -279,18 +313,21 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         return returnList;
     }
 
-    protected boolean checkFocus(ResolvedConceptReference focus, Filter[] filters) {
+    protected boolean checkFocus(ResolvedConceptReference focus, boolean resolveForward, boolean resolveBackward, Filter[] filters) {
+        if(focus == null) {return false;}
  
         boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
         boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
         boolean isInvalidMatchConceptReference = isNotInvalidMatchConceptReference(focus);
         boolean isNotFilteredOut = isNotFilteredConceptReference(focus, filters);
-     
+        boolean existsInGraph = existsInGraph(focus);
+      
         return 
             hasReferenceToSourceCodeRestriction && 
             hasReferenceToTargetCodeRestriction && 
             isInvalidMatchConceptReference &&
-            isNotFilteredOut;  
+            isNotFilteredOut &&
+            existsInGraph;  
     }
     
     private boolean isNotFilteredConceptReference(ResolvedConceptReference focus, Filter[] filters) {
@@ -325,7 +362,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         
         return !count.isEmpty();
     }
-    
+
     private boolean hasReferenceToSourceCodeRestriction(ConceptReference focus) {
         List<ConceptReference>  restrictToSourceCodes = this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodes(); 
         if(CollectionUtils.isEmpty(restrictToSourceCodes)) {
@@ -348,6 +385,32 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 this.getGraphQueryBuilder().getQuery());
         
         return !count.isEmpty();
+    }
+    
+    private boolean existsInGraph(ConceptReference focus) {
+ 
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        Map<String,Integer> subjectCount = 
+        service.getTripleUidsContainingSubjectCount(
+                this.getCodingSchemeUri(), 
+                this.getVersion(), 
+                this.getRelationsContainerName(), 
+                focus.getCode(), 
+                focus.getCodeNamespace(), 
+                this.getGraphQueryBuilder().getQuery());
+        
+        Map<String,Integer> objectCount = 
+            service.getTripleUidsContainingObjectCount(
+                    this.getCodingSchemeUri(), 
+                    this.getVersion(), 
+                    this.getRelationsContainerName(), 
+                    focus.getCode(), 
+                    focus.getCodeNamespace(), 
+                    this.getGraphQueryBuilder().getQuery());
+        
+        return !subjectCount.isEmpty() || !objectCount.isEmpty();
     }
     
     private static boolean containsConceptReference(ConceptReference ref, List<ConceptReference> list) {
