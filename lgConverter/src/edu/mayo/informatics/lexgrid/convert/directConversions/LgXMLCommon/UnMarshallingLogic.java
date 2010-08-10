@@ -35,6 +35,7 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -158,6 +159,16 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
     public static boolean isValueSetDefinition(Object parent, Object child) {
         return child instanceof ValueSetDefinition && parent == null;
     }
+    
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
+    public static boolean isValueSetDefinitionEntry(Object parent, Object child) {
+        return child instanceof DefinitionEntry && parent instanceof ValueSetDefinition;
+    }
+    
     /**
      * @param parent
      * @param child
@@ -165,6 +176,15 @@ private static final int CHANGE_INSTRUCTIONS_TYPE = 1;
      */
     public static boolean isValueSetMappings(Object parent, Object child) {
         return child instanceof Mappings && parent instanceof ValueSetDefinitions;
+    }
+    
+    /**
+     * @param parent
+     * @param child
+     * @return boolean
+     */
+    public static boolean isValueSetProperties(Object parent, Object child) {
+        return parent instanceof ValueSetDefinition && child instanceof Properties;
     }
 
     /**
