@@ -456,8 +456,14 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 		CodingScheme codingScheme = 
         	this.getDatabaseServiceManager().
         		getCodingSchemeService().
-        		getCompleteCodingScheme(codingSchemeURI, codeSystemVersion);
+        		getCodingSchemeByUriAndVersion(codingSchemeURI, codeSystemVersion);
 		
+		if( codingScheme != null ) {
+			
+			codingScheme.removeAllRelations();
+			codingScheme.setEntities(null);
+			codingScheme.setProperties(null);
+		}
 		
 		String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
 		
@@ -473,8 +479,7 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
         // Ensure RevisionInfo is provided
         validateRevisionInfo(revision);
         
-        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.MODIFY, null);
-        
+        commitCodeSystemChangeSet(codingScheme, revision, prevRevisionId, ChangeType.VERSIONABLE, null);
 	}
 	
 
