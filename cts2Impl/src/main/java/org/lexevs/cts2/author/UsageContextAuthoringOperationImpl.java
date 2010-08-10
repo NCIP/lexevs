@@ -48,7 +48,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 			String codeSystemVersion, RevisionInfo revisionInfo) throws LBException
 	{
 		if (StringUtils.isEmpty(usageContextId))
-			throw new LBException("Usage COntext Id can not be empty");
+			throw new LBException("Usage Context Id can not be empty");
 		
 		Versionable ver = new Versionable();
 		ver.setIsActive(true);
