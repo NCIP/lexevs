@@ -77,7 +77,8 @@ public class DefinitionQualifiersDataTestIT extends DataLoadTestBase {
 	
 	@Test
 	public void testDefinitionWithPropertyQualifierSuppress() throws Exception {	
-		assertTrue(DataTestUtils.isQualifierNameAndValuePresentInProperty(RrfLoaderConstants.SUPPRESS_QUALIFIER, "N", definition));
+		//'N' values aren't loaded.
+		assertFalse(DataTestUtils.isQualifierNameAndValuePresentInProperty(RrfLoaderConstants.SUPPRESS_QUALIFIER, "N", definition));
 	}
 	
 	@Test
