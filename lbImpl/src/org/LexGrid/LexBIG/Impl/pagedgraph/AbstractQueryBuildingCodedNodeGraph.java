@@ -75,6 +75,8 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     
     /** The relations container name. */
     private String relationsContainerName;
+        
+    private boolean strictFocusValidation = true;
     
     public AbstractQueryBuildingCodedNodeGraph() {
         super();
@@ -264,6 +266,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     @Override
     public CodedNodeGraph restrictToCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         this.graphQueryBuilder.restrictToCodes(codes);
+        this.setStrictFocusValidation(false);
         return this;
     }
 
@@ -293,6 +296,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     @Override
     public CodedNodeGraph restrictToSourceCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         this.graphQueryBuilder.restrictToSourceCodes(codes);
+        this.setStrictFocusValidation(false);
         return this;
     }
 
@@ -312,6 +316,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     @Override
     public CodedNodeGraph restrictToTargetCodes(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         this.graphQueryBuilder.restrictToTargetCodes(codes);
+        this.setStrictFocusValidation(false);
         return this;
     }
     
@@ -480,5 +485,14 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         } catch (CloneNotSupportedException e) {
            throw new RuntimeException(e);
         }
+    }
+    
+
+    public void setStrictFocusValidation(boolean strictFocusValidation) {
+        this.strictFocusValidation = strictFocusValidation;
+    }
+
+    public boolean isStrictFocusValidation() {
+        return strictFocusValidation;
     }
 }

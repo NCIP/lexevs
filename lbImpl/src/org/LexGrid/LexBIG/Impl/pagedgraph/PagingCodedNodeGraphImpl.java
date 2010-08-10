@@ -61,7 +61,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1153282485482789848L;
-    
+
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
@@ -114,28 +114,30 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         if (graphFocus == null && resolveForward && resolveBackward) {
             throw new LBParameterException(
                     "If you do not provide a focus node, you must choose resolve forward or resolve reverse, not both."
-                            + "  Choose resolve forward to start at root nodes.  Choose resolve reverse to start at tail nodes.");
+                    + "  Choose resolve forward to start at root nodes.  Choose resolve reverse to start at tail nodes.");
         }
         
         ResolvedConceptReference focus = null;
         
         if(graphFocus != null) {
-            
+
             if(StringUtils.isNotBlank(graphFocus.getCodeNamespace())
                     &&
                     StringUtils.isNotBlank(graphFocus.getCodingSchemeName())){
                 String codingSchemeName =
                     this.getNamespaceHandler().getCodingSchemeNameForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
-                
+
                 if(! StringUtils.equals(graphFocus.getCodingSchemeName(), codingSchemeName)){
-                    throw new LBParameterException("Based on the namespace provided as a focus (" + graphFocus.getCodeNamespace() + ")" +
-                            " there is no match to the provided Coding Scheme Name (" + graphFocus.getCodingSchemeName() + ")." +
-                            " If " + graphFocus.getCodeNamespace() + " is meant to be equivalent to the CodingScheme " + graphFocus.getCodingSchemeName() + ", " +
-                            " this must be declared in the SupportedNamespaces."
-                       );
+                    return ServiceUtility.throwExceptionOrReturnDefault(
+                            new LBParameterException("Based on the namespace provided as a focus (" + graphFocus.getCodeNamespace() + ")" +
+                                    " there is no match to the provided Coding Scheme Name (" + graphFocus.getCodingSchemeName() + ")." +
+                                    " If " + graphFocus.getCodeNamespace() + " is meant to be equivalent to the CodingScheme " + graphFocus.getCodingSchemeName() + ", " +
+                                    " this must be declared in the SupportedNamespaces."),
+                            new ResolvedConceptReferenceList(),
+                            this.isStrictFocusValidation());
                 }
             }
-           
+            
             focus =
                 LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
                 getEntityService().
@@ -186,12 +188,18 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                    } else {
                        List<String> namespaces = this.getNamespaceHandler().getNamespacesForCodingScheme(codingSchemeUri, version, codingSchemeName);
                        if(CollectionUtils.isEmpty(namespaces)) {
-                           throw new LBParameterException("The provided focus did not contain a namespace, and information in the " +
-                                   "SupportedNamespaces was unable to generate the correct one.");
+                           return ServiceUtility.throwExceptionOrReturnDefault(
+                                   new LBParameterException("The provided focus did not contain a namespace, and information in the " +
+                                   "SupportedNamespaces was unable to generate the correct one."),
+                                   new ResolvedConceptReferenceList(),
+                                   this.isStrictFocusValidation());
                        }
                        if(namespaces.size() > 1) {
-                           throw new LBParameterException("The provided focus did not contain a namespace, and information in the " +
-                               "SupportedNamespaces did not provide a unique namespace. Please provide a namespace with the focus");
+                           return ServiceUtility.throwExceptionOrReturnDefault(
+                                   new LBParameterException("The provided focus did not contain a namespace, and information in the " +
+                                   "SupportedNamespaces did not provide a unique namespace. Please provide a namespace with the focus"),
+                                   new ResolvedConceptReferenceList(),
+                                   this.isStrictFocusValidation());
                        }
                        
                        namespace = namespaces.get(0);
@@ -203,16 +211,24 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                    codingSchemeName = expectedCodingSchemeName;
                } else {
                    if(!codingSchemeName.equals(expectedCodingSchemeName)) {
-                       throw new LBParameterException("Based on the namespace provided as a focus (" + namespace + ")" +
-                       		" there is no match to the provided Coding Scheme Name (" + codingSchemeName + ")." +
-                       		" If " + namespace + " is meant to be equivalent to the CodingScheme " + codingSchemeName + ", " +
-                       		" this must be declared in the SupportedNamespaces."
+                       return ServiceUtility.throwExceptionOrReturnDefault(
+                               new LBParameterException("Based on the namespace provided as a focus (" + namespace + ")" +
+                                       " there is no match to the provided Coding Scheme Name (" + codingSchemeName + ")." +
+                                       " If " + namespace + " is meant to be equivalent to the CodingScheme " + codingSchemeName + ", " +
+                                       " this must be declared in the SupportedNamespaces."
+                               ), 
+                               new ResolvedConceptReferenceList(),
+                               this.isStrictFocusValidation()
                        );
                    }
                }
 
                if(StringUtils.isBlank(codingSchemeName)) {
-                   throw new LBParameterException("Could not determine a Coding Scheme for the requested Focus Code.");
+                   return ServiceUtility.throwExceptionOrReturnDefault(
+                           new LBParameterException("Could not determine a Coding Scheme for the requested Focus Code."),
+                           new ResolvedConceptReferenceList(),
+                           this.isStrictFocusValidation()
+                           );
                }
                
                focus.setCodeNamespace(namespace);    
