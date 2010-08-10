@@ -1,9 +1,11 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.castor.xml.UnmarshalListener;
@@ -18,7 +20,7 @@ public class LgPickListListener implements UnmarshalListener {
 
     private boolean isPropertiesPresent = false;
     private AssociationPredicate currentPredicate = new AssociationPredicate();
-    private CodingScheme[] codingSchemes = null;
+    private PickListDefinition[] plds = null;
 
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private LgMessageDirectorIF messages_;
@@ -43,12 +45,12 @@ public class LgPickListListener implements UnmarshalListener {
         return nentities;
     }
     
-    public CodingScheme[] getCodingSchemes() {
-        return codingSchemes;
+    public PickListDefinition[] getPickListDefinitions() {
+        return plds;
     }
 
-    public void setCodingSchemes(CodingScheme[] codingSchemes) {
-        this.codingSchemes = codingSchemes;
+    public void setPickListDefinitions(PickListDefinition[] pickListDefinitions) {
+        this.plds = pickListDefinitions;
     }
 
     /**
@@ -107,19 +109,27 @@ public class LgPickListListener implements UnmarshalListener {
      */
     public void unmarshalled(Object target, Object parent) {
         
-                messages_.debug("Unmarshalled target: "
+        messages_.debug("Unmarshalled target: "
                 + (target != null ? target.getClass().getSimpleName() : "target is null"));
-                messages_.debug("parent of Unmarshalled target: "
+        messages_.debug("parent of Unmarshalled target: "
                 + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
-        
-        if(target instanceof PickListDefinition && parent == null){
-            setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
-           try {
-            LexGridElementProcessor.processPickListDefinition(serviceAdaptor, target, parent);
-        } catch (LBException e) {
-          messages_.error("Error processing pick list from XML", e);
-            e.printStackTrace();
-        }
+
+        if (target instanceof PickListDefinition && parent == null) {
+            if (getPickListDefinitions() == null || getPickListDefinitions().length == 0)
+                setPickListDefinitions(new PickListDefinition[] {(PickListDefinition) target});
+            else
+            {
+                List<PickListDefinition> pldList = Arrays.asList(getPickListDefinitions());
+                pldList.add((PickListDefinition) target); 
+                setPickListDefinitions((PickListDefinition[]) pldList.toArray());
+            }
+//            setPickListDefinitions(LexGridElementProcessor.setAndRetrievePickListDefinitions());
+            try {
+                LexGridElementProcessor.processPickListDefinition(serviceAdaptor, target, parent);
+            } catch (LBException e) {
+                messages_.error("Error processing pick list from XML", e);
+                e.printStackTrace();
+            }
         }
     }
 
