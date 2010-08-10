@@ -7,7 +7,8 @@
     xmlns:data="data"
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets"
     xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
-    valueSetDefinitionURI="CTS2IMPLE:JUNIT:TEST:AUTO:PropertyRef1" valueSetDefinitionName="CTS2 JUNIT - Property Reference Test 1" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+    valueSetDefinitionURI="SRITEST:AUTO:PropertyRefTest1-VSDONLY" valueSetDefinitionName="Property Reference Test 1" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+    <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
     <lgVD:mappings>
         <lgNaming:supportedSource localId="GM">GM</lgNaming:supportedSource>
         <lgNaming:supportedSource localId="Ford">Ford</lgNaming:supportedSource>
