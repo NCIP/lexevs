@@ -283,6 +283,7 @@ public class AllTestsNormalConfig {
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.IntersectionTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FilterTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RootsTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FocusTest.class);
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
