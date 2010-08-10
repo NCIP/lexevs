@@ -19,6 +19,8 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -30,7 +32,9 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.valueSets.PickListDefinition;
+import org.LexGrid.valueSets.PickListDefinitions;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.castor.xml.UnmarshalListener;
@@ -52,6 +56,8 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     private AssociationPredicate currentPredicate = new AssociationPredicate();
     private XMLDaoServiceAdaptor serviceAdaptor = null;
     private CodingScheme[] codingSchemes = null;
+    private ValueSetDefinition[] valueSetDefinitions = null;
+    private PickListDefinition[] pickListDefinitions = null;
     private LgMessageDirectorIF messages_;
     private ArrayList<SystemReleaseSurvey> survey = null;
     /**
@@ -126,13 +132,42 @@ public class LgSystemReleaseListener implements UnmarshalListener {
      * @see org.castor.xml.UnmarshalListener#unmarshalled(java.lang.Object, java.lang.Object)
      */
     public void unmarshalled(Object target, Object parent) {
-        
-//       messages_.debug("Unmarshalled target: "
-//                + (target != null ? target.getClass().getSimpleName() : "target is null"));
-//       messages_.debug("parent of Unmarshalled target: "
-//                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
         if(target instanceof CodingSchemes && parent instanceof SystemRelease){
             setCodingSchemes(LexGridElementProcessor.setAndRetrieveCodingSchemes());
+        }
+        else if (target instanceof ValueSetDefinition && (parent == null || parent instanceof ValueSetDefinitions)) {
+            if (getValueSetDefinitions() == null || getValueSetDefinitions().length == 0)
+                setValueSetDefinitions(new ValueSetDefinition[] {(ValueSetDefinition) target});
+            else
+            {
+                List<ValueSetDefinition> vsdList = new ArrayList<ValueSetDefinition>();
+                vsdList.add((ValueSetDefinition) target);
+                vsdList.addAll(Arrays.asList(getValueSetDefinitions()));
+                ValueSetDefinition[] vsdArray = new ValueSetDefinition[vsdList.size()];
+                int i = 0;
+                for (ValueSetDefinition vsd : vsdList)
+                {
+                    vsdArray[i++] = vsd;
+                }
+                setValueSetDefinitions(vsdArray);
+            }
+        }
+        else if (target instanceof PickListDefinition && (parent instanceof PickListDefinitions)) {
+            if (getPickListDefinitions() == null || getPickListDefinitions().length == 0)
+                setPickListDefinitions(new PickListDefinition[] {(PickListDefinition) target});
+            else
+            {
+                List<PickListDefinition> pldList = new ArrayList<PickListDefinition>();
+                pldList.add((PickListDefinition) target);
+                pldList.addAll(Arrays.asList(getPickListDefinitions()));
+                PickListDefinition[] pldArray = new PickListDefinition[pldList.size()];
+                int i = 0;
+                for (PickListDefinition pld : pldList)
+                {
+                    pldArray[i++] = pld;
+                }
+                setPickListDefinitions(pldArray);
+            }
         }
     }
 
@@ -144,16 +179,28 @@ public class LgSystemReleaseListener implements UnmarshalListener {
     public void setCodingSchemes(CodingScheme[] codingSchemes) {
         this.codingSchemes = codingSchemes;
     }
+    
+    public ValueSetDefinition[] getValueSetDefinitions() {
+        return valueSetDefinitions;
+    }
 
-//    /* (non-Javadoc)
-//     * @see org.castor.xml.UnmarshalListener#fieldAdded(java.lang.String, java.lang.Object, java.lang.Object)
-//     */
+    public void setValueSetDefinitions(ValueSetDefinition[] valueSetDefinitions) {
+        this.valueSetDefinitions = valueSetDefinitions;
+    }
+    
+    public PickListDefinition[] getPickListDefinitions() {
+        return pickListDefinitions;
+    }
+
+    public void setPickListDefinitions(PickListDefinition[] pickListDefinitions) {
+        this.pickListDefinitions = pickListDefinitions;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.castor.xml.UnmarshalListener#fieldAdded(java.lang.String, java.lang.Object, java.lang.Object)
+     */
     public void fieldAdded(String fieldName, Object parent, Object child) {
-
-        // messages_.debug("fieldName:" + fieldName);
-        // messages_.debug("PARENT: " + parent.getClass().getSimpleName());
-        // messages_.debug("CHILD: " + child.getClass().getSimpleName());
-        // messages_.debug("");
         if (!inEditHistory && parent instanceof Revision && child instanceof EntityDescription) {
             inEditHistory = true;
         }
