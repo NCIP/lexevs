@@ -283,7 +283,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
 	private class RootResolvedConceptReferenceIterator extends AbstractPageableIterator<ResolvedConceptReference> {
 
 	    private RootConceptReferenceIterator rootConceptReferenceIterator;
-	    
+
 	    private RootResolvedConceptReferenceIterator(){
 	        rootConceptReferenceIterator = new RootConceptReferenceIterator(
                 codingSchemeUri,
@@ -325,6 +325,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
                     for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
 
                         returnList.add(ref);    
+                        count++;
                     }
                 }
             }
