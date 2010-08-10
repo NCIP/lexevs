@@ -780,6 +780,14 @@
 			)
 			</isNotEmpty>
 			
+<!--			<isNotEmpty property="param4" prepend="AND">-->
+<!--			(-->
+<!--				<iterate property="param4" conjunction="AND"> -->
+<!--					eate1.sourceEntityCodeNamespace != #param4[]#-->
+<!--				</iterate>-->
+<!--			)-->
+<!--			</isNotEmpty>-->
+			
 			)	
 		<isNotEmpty property="param3">
 			LEFT JOIN
@@ -806,6 +814,22 @@
 			<isNotEmpty property="param2" prepend="AND">
 				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
 			</isNotEmpty>	
+			
+			<isNotEmpty property="param4" prepend="AND">
+			(
+				<iterate property="param4" conjunction="AND"> 
+					eate1.sourceEntityCodeNamespace = #param4[]#
+				</iterate>
+			)
+			</isNotEmpty>
+			
+			<isNotEmpty property="param5" prepend="AND">
+			(
+				<iterate property="param5" conjunction="AND"> 
+					eate1.targetEntityCodeNamespace = #param5[]#
+				</iterate>
+			)
+			</isNotEmpty>
 	</select>
 	
 	<select id="getTailEntityAssnsToEntityUids"
@@ -866,6 +890,14 @@
 			</iterate>
 			)
 			</isNotEmpty>
+			
+<!--			<isNotEmpty property="param4" prepend="AND">-->
+<!--			(-->
+<!--				<iterate property="param4" conjunction="AND"> -->
+<!--					eate1.sourceEntityCodeNamespace != #param4[]#-->
+<!--				</iterate>-->
+<!--			)-->
+<!--			</isNotEmpty>-->
 			)
 			
 		<isNotEmpty property="param3">
@@ -888,10 +920,26 @@
 			</iterate>
 			)
 			</isNotEmpty>
-	
+
 			<isNotEmpty property="param2" prepend="AND">
 				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[]#</iterate> )
 			</isNotEmpty>	
+			
+			<isNotEmpty property="param4" prepend="AND">
+			(
+				<iterate property="param4" conjunction="AND"> 
+					eate1.sourceEntityCodeNamespace = #param4[]#
+				</iterate>
+			)
+			</isNotEmpty>
+			
+			<isNotEmpty property="param5" prepend="AND">
+			(
+				<iterate property="param5" conjunction="AND"> 
+					eate1.targetEntityCodeNamespace = #param5[]#
+				</iterate>
+			)
+			</isNotEmpty>
 			
 	</select>
   
