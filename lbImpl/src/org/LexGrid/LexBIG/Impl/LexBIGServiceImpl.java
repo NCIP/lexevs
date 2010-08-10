@@ -79,6 +79,7 @@ import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
 import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
@@ -540,6 +541,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
         NCIHistoryLoaderImpl.register();
+        new MrmapRRFLoader().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
