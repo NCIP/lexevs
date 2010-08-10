@@ -2,31 +2,93 @@ package edu.mayo.informatics.lexgrid.convert.directConversions;
 
 
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
+import org.LexGrid.codingSchemes.CodingScheme;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MRMAP2LexGrid;
 
 public class MrmapToSQL {
 
     
-    public org.LexGrid.codingSchemes.CodingScheme[] load(boolean loadMrSat, String mrMapFileLocation,  String mrSatFileLocation, LgMessageDirectorIF messageDirector,
-            CodingSchemeManifest manifest){
-        MRMAP2LexGrid map = new MRMAP2LexGrid(true, messageDirector, mrSatFileLocation, mrMapFileLocation);
+    public org.LexGrid.codingSchemes.CodingScheme[] load(LgMessageDirectorIF messageDirector, URI mrMapFileLocation,  URI mrSatFileLocation,
+            String nameForMappingScheme,
+            String nameForMappingVersion,
+            String nameForMappingURI,
+            String sourceScheme,
+            String sourceVersion,
+            String sourceURI,
+            String targetScheme,
+            String targetVersion,
+            String targetURI,
+            CodingSchemeManifest manifest) throws LBException{
+        CodingScheme scheme = null;
+        if(mrSatFileLocation == null){
+            throw new LBException("Source for MRSAT is not available -- Loading without MRSAT is not available at this time");
+        }
+        if(nameForMappingScheme == null || nameForMappingVersion == null || nameForMappingURI == null){
+            messageDirector.info("One or more designations for the mapping coding schemes metadata have not been made." +
+            		"default metadata will be employed.");
+            
+        }
+        if(sourceScheme == null || sourceVersion == null || sourceURI == null){
+            messageDirector.info("One or more designations for a loaded source scheme have not been made." +
+                    "Full resolution of concepts will not be available");
+            
+        }
+        if(targetScheme == null || targetVersion == null || targetURI == null){
+            messageDirector.info("One or more designations for a loaded target scheme have not been made." +
+                    "Full resolution of concepts will not be available");
+            
+        }
+
+        MRMAP2LexGrid map = new MRMAP2LexGrid(messageDirector, 
+                mrSatFileLocation.getPath(), 
+                mrMapFileLocation.getPath(), 
+                nameForMappingScheme,
+                nameForMappingVersion,
+                nameForMappingURI,
+                sourceScheme,
+                sourceVersion,
+                sourceURI,
+                targetScheme,
+                targetVersion,
+                targetURI);
         try {
-            map.loadToRevision();
+           scheme = map.loadToRevision();
         } catch (LBRevisionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        
+        return new CodingScheme[]{scheme};
     }
     /**
      * @param args
      */
     public static void main(String[] args) {
-        new MrmapToSQL().load(true, args[0], args[1], null, null);
+        URI map = null;
+        URI sat = null;
+        try {
+
+            try {
+                map = new URI(args[0]);
+                sat = new URI(args[1]);
+            } catch (URISyntaxException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            CodingScheme[] load = new MrmapToSQL().load(null, map, sat, null, null, null, null, null, null, null, null, null, null);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
