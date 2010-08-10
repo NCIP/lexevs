@@ -9,7 +9,7 @@ public class CreateAssociationTargetTest extends TestCase {
 	MrMap map = new MrMap();
 	map.setMapid("AT102971857");
 	map.setToid("C123");
-	MRMAP2LexGrid mapping = new MRMAP2LexGrid(false, null, null, null);
+	MRMAP2LexGrid mapping = new MRMAP2LexGrid(null, null, null);
 	AssociationTarget target = mapping.createAssociationTarget(map, "targetNamespace");
 	assertSame(target.getAssociationInstanceId(),"AT102971857");
 	assertSame(target.getTargetEntityCode(),"C123");

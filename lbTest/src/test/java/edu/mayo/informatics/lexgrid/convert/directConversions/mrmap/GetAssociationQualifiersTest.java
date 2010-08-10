@@ -43,7 +43,7 @@ public class GetAssociationQualifiersTest extends TestCase {
 		map.setRel("df");
 		map.setRela("ew");
 		
-		MRMAP2LexGrid mapping = new MRMAP2LexGrid(false, null, null, null);
+		MRMAP2LexGrid mapping = new MRMAP2LexGrid(null, null, null);
 		List<AssociationQualification> qualifiers = mapping.getAssociationQualifiers(map);
 		assertTrue(qualifiers.size() == 23);
 		
@@ -86,7 +86,7 @@ public class GetAssociationQualifiersTest extends TestCase {
 		map1.setRel("df");
 		map1.setRela("ew");
 		
-		MRMAP2LexGrid mapping1 = new MRMAP2LexGrid(false, null, null, null);
+		MRMAP2LexGrid mapping1 = new MRMAP2LexGrid(null, null, null);
 		List<AssociationQualification> qualifiers1 = mapping1.getAssociationQualifiers(map1);
 		assertTrue(qualifiers1.size() == 20);
         for(AssociationQualification q : qualifiers1){

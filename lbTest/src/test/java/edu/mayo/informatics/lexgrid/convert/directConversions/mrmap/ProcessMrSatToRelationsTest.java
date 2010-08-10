@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 public class ProcessMrSatToRelationsTest extends TestCase {
 public void testProcessMrSatToRelations() throws SecurityException, IllegalArgumentException, FileNotFoundException, NoSuchFieldException, IllegalAccessException{
-	  MRMAP2LexGrid map = new MRMAP2LexGrid(false, null, null, null);
+	  MRMAP2LexGrid map = new MRMAP2LexGrid(null, null, null);
 	  Relations relation = map.processMrSatBean("resources/testData/mrmap_mapping/MRSAT.RRF");
 	  assertNotNull(relation != null);
 	  assertNotNull(relation.getProperties());

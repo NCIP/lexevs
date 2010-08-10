@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 public class AddTargetToExistingSourceTest extends TestCase {
 public void testaddTargetToExistingSource() throws IndexOutOfBoundsException, Exception{
-	MRMAP2LexGrid mapping = new MRMAP2LexGrid(false, null, null, null);
+	MRMAP2LexGrid mapping = new MRMAP2LexGrid(null, null, null);
 	MrMap map = new MrMap();
 	map.setFromid("C346");
 	map.setMapid("AT095285");

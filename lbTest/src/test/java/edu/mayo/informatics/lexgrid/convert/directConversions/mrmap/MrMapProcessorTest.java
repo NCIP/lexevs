@@ -14,7 +14,7 @@ public class MrMapProcessorTest extends TestCase {
 	  
 	  rawData[i] = String.valueOf(generator.nextInt(10000));
   }
-  MRMAP2LexGrid mrmap = new MRMAP2LexGrid(false, null, null, null);
+  MRMAP2LexGrid mrmap = new MRMAP2LexGrid(null, null, null);
   
   MrMap map = mrmap.processMrMapRow(rawData);
   //Should be MAPSETCUI	MAPSAB	MAPSUBSETID	MAPRANK	MAPID	

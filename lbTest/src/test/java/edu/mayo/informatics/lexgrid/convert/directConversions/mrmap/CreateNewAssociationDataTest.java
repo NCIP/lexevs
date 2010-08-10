@@ -8,7 +8,7 @@ public class CreateNewAssociationDataTest extends TestCase {
 		MrMap map = new MrMap();
 		map.setMapid("AT102971857");
 		map.setToexpr("<TRUTH> OR <DARE>");
-		MRMAP2LexGrid mapping = new MRMAP2LexGrid(false, null, null, null);
+		MRMAP2LexGrid mapping = new MRMAP2LexGrid(null, null, null);
 		AssociationData data = mapping.createTargetData(map);
 		assertTrue(data.getAssociationDataText().getContent().equals("<TRUTH> OR <DARE>"));
 		assertTrue(data.getAssociationInstanceId().equals("AT102971857"));

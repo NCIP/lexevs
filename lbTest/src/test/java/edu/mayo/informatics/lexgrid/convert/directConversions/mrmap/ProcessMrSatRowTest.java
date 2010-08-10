@@ -13,7 +13,7 @@ public class ProcessMrSatRowTest extends TestCase {
 				  
 				  rawData[i] = String.valueOf(generator.nextInt(10000));
 			  }
-			  MRMAP2LexGrid mrsat = new MRMAP2LexGrid(false, null, null, null);
+			  MRMAP2LexGrid mrsat = new MRMAP2LexGrid(null, null, null);
 			  
 			  MrSat sat = mrsat.processMrSatRow(rawData);
 			  //Should be     
