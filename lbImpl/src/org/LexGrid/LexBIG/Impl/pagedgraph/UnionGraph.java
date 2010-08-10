@@ -86,17 +86,27 @@ public class UnionGraph extends AbstractMultiGraph {
             boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved) throws LBInvocationException, LBParameterException {
-        ResolvedConceptReferenceList list1 = this.getGraph1().resolveAsList(
-                graphFocus, resolveForward, resolveBackward, 
-                resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
-                propertyTypes, sortOptions, maxToReturn);
+        ResolvedConceptReferenceList list1;
+        try {
+            list1 = this.getGraph1().resolveAsList(
+                    graphFocus, resolveForward, resolveBackward, 
+                    resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
+                    propertyTypes, sortOptions, maxToReturn);
+        } catch (LBParameterException e) {
+           // no-op this for unions
+            list1 = null;
+        }
         
-        ResolvedConceptReferenceList list2 = this.getGraph2().resolveAsList(
+        ResolvedConceptReferenceList list2;
+        try {
+            list2 = this.getGraph2().resolveAsList(
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
                 propertyTypes, sortOptions, maxToReturn);
-
-
+        } catch (LBParameterException e) {
+            list2 = null;
+        }
+        
         return this.unionReferenceList(graphFocus == null, list1, list2);
     }
     

@@ -87,20 +87,28 @@ public class IntersectGraph extends AbstractMultiGraph {
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved)
             throws LBInvocationException, LBParameterException {
-        ResolvedConceptReferenceList list1 = this.getGraph1().resolveAsList(
+        ResolvedConceptReferenceList list1;
+        try {
+            list1 = this.getGraph1().resolveAsList(
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
                 propertyTypes, sortOptions, maxToReturn);
+        } catch (LBParameterException e) {
+            list1 = null;
+        }
         
-        ResolvedConceptReferenceList list2 = this.getGraph2().resolveAsList(
+        ResolvedConceptReferenceList list2;
+        try {
+            list2 = this.getGraph2().resolveAsList(
                 graphFocus, resolveForward, resolveBackward, 
                 resolveCodedEntryDepth, resolveAssociationDepth, propertyNames, 
                 propertyTypes, sortOptions, maxToReturn);
+        } catch (LBParameterException e) {
+            list2 = null;
+        }
 
         return intersectReferenceList(graphFocus == null, list1, list2);
     }
-    
-    
 
     @Override
     public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
