@@ -207,19 +207,17 @@ public class CodedNodeGraphImplTest extends TestCase {
 
         // create a graph that contains 005 -> Ford
         CodedNodeGraph cng2 = lbsi.getNodeGraph("Automobiles", null, "relations");
-        cng2.restrictToSourceCodes(cm.createCodedNodeSet(new String[] { "Jaguar" }, "Automobiles", null));
+        cng2.restrictToSourceCodes(cm.createCodedNodeSet(new String[] { "Ford" }, "Automobiles", null));
 
         // intersect them
         CodedNodeGraph cng3 = cng.intersect(cng2);
 
-        // result should only contain 005 -> Ford
-        // result should be 005 -> Ford -> Jaguar
         ResolvedConceptReference[] rcr = cng3.resolveAsList(null, true, false, -1, -1, null, null, null, 50)
                 .getResolvedConceptReference();
         
         assertEquals(1, rcr.length);
         // top node
-        assertTrue(rcr[0].getConceptCode().equals("Jaguar"));
+        assertTrue(rcr[0].getConceptCode().equals("Ford"));
     }
 
     public void testIsCodeInGraph() throws LBException {
