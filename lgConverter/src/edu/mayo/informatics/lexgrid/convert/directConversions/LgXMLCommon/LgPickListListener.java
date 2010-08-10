@@ -109,10 +109,10 @@ public class LgPickListListener implements UnmarshalListener {
      */
     public void unmarshalled(Object target, Object parent) {
         
-        messages_.debug("Unmarshalled target: "
-                + (target != null ? target.getClass().getSimpleName() : "target is null"));
-        messages_.debug("parent of Unmarshalled target: "
-                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+//        messages_.debug("Unmarshalled target: "
+//                + (target != null ? target.getClass().getSimpleName() : "target is null"));
+//        messages_.debug("parent of Unmarshalled target: "
+//                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
 
         if (target instanceof PickListDefinition && parent == null) {
             if (getPickListDefinitions() == null || getPickListDefinitions().length == 0)
@@ -123,7 +123,6 @@ public class LgPickListListener implements UnmarshalListener {
                 pldList.add((PickListDefinition) target); 
                 setPickListDefinitions((PickListDefinition[]) pldList.toArray());
             }
-//            setPickListDefinitions(LexGridElementProcessor.setAndRetrievePickListDefinitions());
             try {
                 LexGridElementProcessor.processPickListDefinition(serviceAdaptor, target, parent);
             } catch (LBException e) {
@@ -138,9 +137,9 @@ public class LgPickListListener implements UnmarshalListener {
      */
     public void fieldAdded(String fieldName, Object parent, Object child) {
 
-        messages_.debug("fieldName:" + fieldName);
-        messages_.debug("parent: " + parent.getClass().getSimpleName());
-        messages_.debug("child: " + child.getClass().getSimpleName());
+//        messages_.debug("fieldName:" + fieldName);
+//        messages_.debug("parent: " + parent.getClass().getSimpleName());
+//        messages_.debug("child: " + child.getClass().getSimpleName());
         
         
     }

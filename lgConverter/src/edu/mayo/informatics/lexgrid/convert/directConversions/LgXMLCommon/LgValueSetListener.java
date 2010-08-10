@@ -112,10 +112,10 @@ public class LgValueSetListener implements UnmarshalListener {
      */
     public void unmarshalled(Object target, Object parent) {
 
-        messages_.debug("Unmarshalled target: "
-                + (target != null ? target.getClass().getSimpleName() : "target is null"));
-        messages_.debug("parent of Unmarshalled target: "
-                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
+//        messages_.debug("Unmarshalled target: "
+//                + (target != null ? target.getClass().getSimpleName() : "target is null"));
+//        messages_.debug("parent of Unmarshalled target: "
+//                + (parent != null ? parent.getClass().getSimpleName() : "parent is null"));
 
         if (target instanceof ValueSetDefinition && parent == null) {
             if (getValueSetDefinitions() == null || getValueSetDefinitions().length == 0)

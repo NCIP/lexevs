@@ -259,9 +259,9 @@ public class LexGridXMLProcessor {
             umr.setUnmarshalListener(listener);
             umr.setClass(ValueSetDefinition.class);
             umr.unmarshal(in);
-            if(isValueSetDefinitionPresent(path, messages)){
-                vsd = listener.getValueSetDefinitions();
-            }
+
+            vsd = listener.getValueSetDefinitions();
+
             in.close();
 
         } catch (MarshalException e) {
@@ -299,9 +299,9 @@ public class LexGridXMLProcessor {
             umr.setUnmarshalListener(listener);
             umr.setClass(PickListDefinition.class);
             umr.unmarshal(in);
-            if(isPickListDefinitionPresent(path, messages)){
-                pld = listener.getPickListDefinitions();
-            }
+            
+            pld = listener.getPickListDefinitions();
+            
             in.close();
 
         } catch (MarshalException e) {
