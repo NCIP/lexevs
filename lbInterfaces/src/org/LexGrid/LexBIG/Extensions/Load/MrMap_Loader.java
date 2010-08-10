@@ -1,0 +1,94 @@
+package org.LexGrid.LexBIG.Extensions.Load;
+
+import java.net.URI;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
+
+public interface MrMap_Loader extends Loader {
+
+
+
+
+	/**
+	 * User designated target Scheme URI. Non-resolving default used if null.
+	 * Load content from a candidate resource. This will also result in implicit
+	 * generation of standard indices required by the LexBIG runtime.
+	 * 
+	 * An exception is raised if resources cannot be accessed or another load
+	 * operation is already in progress.
+	 * 
+	 * @param mrMapsource
+	 *            String representation of the path to corresponding to the RRF
+	 *            file.
+	 * @param mrSatSource
+	 *            String representation of the path to corresponding to the RRF
+	 *            file.
+	 * @param nameForMappingScheme
+	 *            User designated Mapping Scheme identifier. Default used if
+	 *            null.
+	 * @param nameForMappingVersion
+	 *            User designated Mapping Scheme Version. Default used if null.
+	 * @param nameforMappingURI
+	 *            User designated Mapping Scheme URI. Non-resolving default used
+	 *            if null.
+	 * @param sourceScheme
+	 *            User designated source scheme identifier which can a local
+	 *            scheme to to which mappings resolve. Non resolving default
+	 *            created if null.
+	 * @param sourceVersion
+	 *            User designated source scheme Version. Default used if null.
+	 *            Dependent on valid user defined source scheme identifier
+	 * @param sourceURI
+	 *            User designated source scheme URI. Non-resolving default used
+	 *            if null.
+	 * @param targetScheme
+	 *            User designated target scheme identifier which can a local
+	 *            scheme to to which mappings resolve. Non resolving default
+	 *            created if null. Dependent on valid user defined source scheme
+	 *            identifier.
+	 * @param targetVersion
+	 *            User designated target scheme Version. Default used if null.
+	 * @param targetURI
+	 * 
+	 * @param source
+	 *            String representation of the path to corresponding to the RRF
+	 *            file.
+	 * @param stopOnErrors
+	 *            True means stop if any load error is detected. False means
+	 *            attempt to load what can be loaded if recoverable errors are
+	 *            encountered.
+	 * @param async
+	 *            Flag controlling whether load occurs in the calling thread. If
+	 *            true, the load will occur in a separate asynchronous process.
+	 *            If false, this method blocks until the load operation
+	 *            completes or fails. Regardless of setting, the getStatus and
+	 *            getLog calls are used to fetch results.
+	 * @throws LBException
+	 */
+	public void load(URI mrMapsource, URI mrSatSource, 
+			String nameForMappingScheme,
+	        String nameForMappingVersion,
+	        String nameforMappingURI,
+	        String sourceScheme,
+	        String sourceVersion,
+	        String sourceURI,
+	        String targetScheme,
+	        String targetVersion,
+	        String targetURI,
+	        boolean stopOnErrors, boolean async) throws LBException;
+
+	/**
+	 * Validate content for a candidate resource without performing a load.
+	 * Returns without exception if validation succeeds.
+	 * 
+	 * @param source
+	 *            URI corresponding to the XML file.
+	 * @param validationLevel
+	 *            Supported levels of validation include: 0 = Verify XML is well
+	 *            formed. 1 = Verify XML is valid.
+	 * @throws LBException
+	 */
+	public void validate(String source, int validationLevel) throws LBException;
+
+
+}
