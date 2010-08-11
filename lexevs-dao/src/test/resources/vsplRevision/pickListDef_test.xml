@@ -326,5 +326,71 @@
                 </changedPickListDefinitionEntry>
             </changedEntry>
         </revision>
+
+        <!-- Test: DEPENDENT PickListDefinition -->
+        <revision revisionId="picklistTestRelease2010May">
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
+                    representsValueSetDefinition="">
+                    <lgCommon:entryState containingRevision="picklistTestRelease2010May"
+                        prevRevision="picklistTestRelease2010Feb" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="PL005p3" isActive="true"
+                        status="active">
+                        <lgCommon:entryState containingRevision="picklistTestRelease2010May"
+                            relativeOrder="0" changeType="NEW"/>
+                        <lgVD:inclusionEntry entityCode="C1234" entryOrder="200" language="en">
+                            <lgVD:pickText>sample text</lgVD:pickText>
+                        </lgVD:inclusionEntry>
+                    </lgVD:pickListEntryNode>
+                    <lgVD:pickListEntryNode pickListEntryId="PL005p2" isActive="false">
+                        <lgCommon:entryState containingRevision="picklistTestRelease2010May"
+                            relativeOrder="0" changeType="VERSIONABLE"/>
+                        <lgVD:exclusionEntry entityCode="sd"/>
+                    </lgVD:pickListEntryNode>
+                </changedPickListDefinitionEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test: DEPENDENT PickListDefinition -->
+        <revision revisionId="picklistTestRelease2010Jun">
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
+                    representsValueSetDefinition="">
+                    <lgCommon:entryState containingRevision="picklistTestRelease2010Jun"
+                        prevRevision="picklistTestRelease2010May" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgVD:pickListEntryNode pickListEntryId="PL005p4" isActive="true"
+                        status="active">
+                        <lgCommon:entryState containingRevision="picklistTestRelease2010Jun"
+                            relativeOrder="0" changeType="NEW"/>
+                        <lgVD:inclusionEntry entityCode="C1234" entryOrder="200" language="en">
+                            <lgVD:pickText>sample text</lgVD:pickText>
+                        </lgVD:inclusionEntry>
+                    </lgVD:pickListEntryNode>
+                    <lgVD:pickListEntryNode pickListEntryId="PL005p3" isActive="false"
+                        status="inActive">
+                        <lgCommon:entryState containingRevision="picklistTestRelease2010Jun"
+                            prevRevision="picklistTestRelease2010May" relativeOrder="0"
+                            changeType="VERSIONABLE"/>
+                        <lgVD:exclusionEntry entityCode="sd"/>
+                    </lgVD:pickListEntryNode>
+                </changedPickListDefinitionEntry>
+            </changedEntry>
+        </revision>
+
+        <!-- Test: MODIFY PickListDefinition -->
+        <revision revisionId="picklistTestRelease2010July">
+            <changedEntry>
+                <changedPickListDefinitionEntry pickListId="SRITEST:AUTO:DomesticAutoMakers"
+                    representsValueSetDefinition="http://sampleValueSetDefinition.com"
+                    completeSet="false" defaultEntityCodeNamespace="sampleCodingScheme"
+                    defaultSortOrder="1" defaultLanguage="en">
+                    <lgCommon:entryState containingRevision="picklistTestRelease2010July"
+                        prevRevision="picklistTestRelease2010Jun" relativeOrder="0"
+                        changeType="MODIFY"/>
+                </changedPickListDefinitionEntry>
+            </changedEntry>
+        </revision>
     </editHistory>
 </systemRelease>

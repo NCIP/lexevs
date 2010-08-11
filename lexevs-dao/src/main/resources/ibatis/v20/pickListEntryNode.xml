@@ -363,7 +363,7 @@
 				${defaultPrefix}revision r1, 
 				${defaultPrefix}revision r2			
 			WHERE
-				plEntry.plEntryGuid = #param1# AND
+				plEntry.vsPLEntryGuid = #param1# AND
 				(
 					NOT EXISTS 
 					(
@@ -461,9 +461,17 @@
 			WHERE
 				plEntry.vsPLEntryGuid = #param1# AND
 				plEntry.entryStateGuid = es.entryStateGuid AND
-				es.revisionGuid = r1.revisionGuid AND
-				r1.revAppliedDate <= r2.revAppliedDate AND
-				r2.revisionID = #param2#
+				(
+					(
+						es.revisionGuid IS NULL
+					)
+					OR
+					(
+						es.revisionGuid = r1.revisionGuid AND
+						r1.revAppliedDate <= r2.revAppliedDate AND
+						r2.revisionID = #param2#
+					)
+				)
 			ORDER BY
 				revAppliedDate DESC		
 			LIMIT 1	

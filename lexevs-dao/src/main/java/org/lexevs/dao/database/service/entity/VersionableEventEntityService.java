@@ -568,6 +568,9 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 			String version, String entityCode, String entityCodeNamespace,
 			Date date) throws LBRevisionException {
 		
+		if( date == null )
+			return null;
+		
 		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeURI,
 				version);
 		
@@ -579,6 +582,9 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 
 		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
 	
+		if( revisionId == null)
+			return null;
+		
 		return super.resolveEntryByRevision(
 				new CodingSchemeUriVersionBasedEntryId(codingSchemeURI, version), entityUid, revisionId);
 	}

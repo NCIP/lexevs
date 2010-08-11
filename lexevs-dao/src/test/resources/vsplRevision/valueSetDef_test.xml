@@ -208,7 +208,7 @@
                 <changedValueSetDefinitionEntry
                     valueSetDefinitionURI="SRITEST:AUTO:AutomobilesNoName"
                     valueSetDefinitionName=" " defaultCodingScheme="Automobiles"
-                    effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="active">
+                    effectiveDate="2009-10-01T11:00:00Z" isActive="true" status="inactive">
                     <lgCommon:owner>Mayo</lgCommon:owner>
                     <lgCommon:entryState containingRevision="vdTestRelease2010Mar" relativeOrder="0"
                         changeType="VERSIONABLE"/>
@@ -226,5 +226,44 @@
             </changedEntry>
         </revision>
         
+        <!-- Test: DEPENDENT ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010May">
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010May" prevRevision="vdTestRelease2010Feb" relativeOrder="0"
+                    changeType="DEPENDENT"/>
+                    <lgVD:definitionEntry ruleOrder="2" isActive="true" operator="AND">
+                        <lgCommon:owner>Mayo</lgCommon:owner>
+                        <lgCommon:entryState containingRevision="vdTestRelease2010May" relativeOrder="0" changeType="NEW"/>
+                        <lgVD:entityReference entityCode="abcd" entityCodeNamespace="xyz"/>
+                    </lgVD:definitionEntry>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
+        
+        <!-- Test: DEPENDENT ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010June">
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010June" prevRevision="vdTestRelease2010May" relativeOrder="0"
+                        changeType="DEPENDENT"/>
+                    <lgVD:definitionEntry ruleOrder="3" isActive="true" operator="AND">
+                        <lgCommon:entryState containingRevision="vdTestRelease2010June" relativeOrder="0" changeType="NEW"/>
+                        <lgVD:entityReference entityCode="midas001" entityCodeNamespace="Automobiles"/>
+                    </lgVD:definitionEntry>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
+        
+        <!-- Test: MODIFY ValueSet Definition -->
+        <revision revisionId="vdTestRelease2010July">
+            <changedEntry>
+                <changedValueSetDefinitionEntry valueSetDefinitionURI="SRITEST:AUTO:Automobiles">
+                    <lgCommon:entryState containingRevision="vdTestRelease2010July" prevRevision="vdTestRelease2010June" relativeOrder="0"
+                    changeType="MODIFY"/>
+                    <lgCommon:entityDescription>test DEPENDENT changes.</lgCommon:entityDescription>
+                </changedValueSetDefinitionEntry>
+            </changedEntry>
+        </revision>
     </editHistory>
 </systemRelease>

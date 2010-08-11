@@ -1,8 +1,8 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Properties;
@@ -14,6 +14,7 @@ import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
@@ -70,7 +71,7 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 	
 	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLENTRY_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "getPrevRevIdFromGivenRevIdForPLEntry";
 	
-	private static String GET_PICKLIST_ENTRY_METADATA_FROM_HISTORY_BY_REVISION_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "getPickListEntryMetaDataByRevision";
+	private static String GET_PICKLIST_ENTRY_METADATA_FROM_HISTORY_BY_REVISION_SQL = PICKLIST_ENTRY_NODE_NAMESPACE + "getPickListEntryMetaDataHistoryByRevision";
 	
 	private static String GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "getContextListFromHistoryByParentEntryStateGuidandType";
 	
@@ -502,7 +503,8 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the picklistEntry
 		// then use getPLEntryById to get the PLEntry object and return.
 		
-		if (revisionId == null || plEntryRevisionId == null
+		if (StringUtils.isEmpty(revisionId)
+				|| StringUtils.isEmpty(plEntryRevisionId)
 				|| revisionId.equals(plEntryRevisionId)) {
 			return getPLEntryByUId(vsPLEntryUId);
 		}
@@ -510,17 +512,22 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 		// 2. Get the earliest revisionId on which change was applied on given 
 		// PLEntry with reference given revisionId.
 		
-		TreeMap revisionIdMap = (TreeMap) this.getSqlMapClientTemplate()
+		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
 				.queryForMap(
 						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLENTRY_SQL,
 						new PrefixedParameterTuple(prefix, vsPLEntryUId,
 								revisionId), "revId", "revAppliedDate");
 		
 		if( revisionIdMap.isEmpty() ) {
-			throw new LBRevisionException("Invalid Revision : " + tempRevId);
-		}
+			revisionId = null;
+		} else {
 		
-		revisionId = (String) revisionIdMap.keySet().toArray()[0];
+			revisionId = (String) revisionIdMap.keySet().toArray()[0];
+		
+			if( revisionId.equals(plEntryRevisionId)) {
+				return getPLEntryByUId(vsPLEntryUId);
+			}
+		}
 		
 		// 3. Get the pick list entry data from history.
 		PickListEntryNode pickListEntryNode = null;
@@ -557,7 +564,7 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 		}
 		
 		// 4. If pick list entry is not in history, get it from base table.
-		if (pickListEntryNode == null) {
+		if (pickListEntryNode == null && revisionId != null) {
 
 			InsertOrUpdatePickListEntryBean plEntryNodeBean = (InsertOrUpdatePickListEntryBean) this
 					.getSqlMapClientTemplate().queryForObject(
@@ -571,29 +578,32 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 		}
 		
 		// 5. Get all pick list entry node property.
-		List<String> propertyIdList = this.getSqlMapClientTemplate()
-				.queryForList(
-						GET_ENTRYNODE_PROPERTY_IDS_LIST_BY_ENTRYNODE_UID_SQL,
-						new PrefixedParameterTuple(prefix, vsPLEntryUId,
-								ReferenceType.PICKLISTENTRY.name()));
-			
-		Properties properties = new Properties();
-		
-		for (String propId : propertyIdList) {
-			Property pickListEntryProperty = null;
+		if (pickListEntryNode != null) {
+			List<String> propertyIdList = this
+					.getSqlMapClientTemplate()
+					.queryForList(
+							GET_ENTRYNODE_PROPERTY_IDS_LIST_BY_ENTRYNODE_UID_SQL,
+							new PrefixedParameterTuple(prefix, vsPLEntryUId,
+									ReferenceType.PICKLISTENTRY.name()));
 
-			try {
-				pickListEntryProperty = vsPropertyDao
-						.resolveVSPropertyByRevision(vsPLEntryUId, propId,
-								revisionId);
-			} catch (LBRevisionException e) {
-				continue;
+			Properties properties = new Properties();
+
+			for (String propId : propertyIdList) {
+				Property pickListEntryProperty = null;
+
+				try {
+					pickListEntryProperty = vsPropertyDao
+							.resolveVSPropertyByRevision(vsPLEntryUId, propId,
+									tempRevId);
+				} catch (LBRevisionException e) {
+					continue;
+				}
+
+				properties.addProperty(pickListEntryProperty);
 			}
 
-			properties.addProperty(pickListEntryProperty);
+			pickListEntryNode.setProperties(properties);
 		}
-		
-		pickListEntryNode.setProperties(properties);
 		
 		return pickListEntryNode;
 	}
@@ -647,18 +657,20 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 			List<InsertOrUpdateValueSetsMultiAttribBean> multiAttribList = plEntryNodeBean
 					.getVsMultiAttribList();
 
-			List<String> contextList = new ArrayList<String>();
-
-			for (InsertOrUpdateValueSetsMultiAttribBean multiAttibBean : multiAttribList) {
-
-				if (SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT
-						.equals(multiAttibBean.getAttributeType())) {
-					contextList.add(multiAttibBean.getAttributeValue());
+			if( multiAttribList != null && multiAttribList.size() != 0 ) {
+				List<String> contextList = new ArrayList<String>();
+	
+				for (InsertOrUpdateValueSetsMultiAttribBean multiAttibBean : multiAttribList) {
+	
+					if (SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT
+							.equals(multiAttibBean.getAttributeType())) {
+						contextList.add(multiAttibBean.getAttributeValue());
+					}
 				}
+	
+				if (contextList != null)
+					plEntry.setPickContext(contextList);
 			}
-
-			if (contextList != null)
-				plEntry.setPickContext(contextList);
 
 			plEntryNodeChoice.setInclusionEntry(plEntry);
 		} else {

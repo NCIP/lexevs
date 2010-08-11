@@ -361,7 +361,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		
 		String entryLatestRevisionId = this.getLatestRevisionId(id, entryUid);
 
-		if(StringUtils.equals(revisionId, entryLatestRevisionId)) {
+		if(StringUtils.equals(revisionId, entryLatestRevisionId) || revisionId == null) {
 			return this.getCurrentEntry(id, entryUid);
 		} else {
 			

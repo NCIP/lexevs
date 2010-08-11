@@ -413,9 +413,15 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public ValueSetDefinition getValueSetDefinitionByDate(String valueSetDefURI,
 			Date date) throws LBRevisionException {
 		
+		if( date == null )
+			return null;
+		
 		RevisionDao revisionDao = getDaoManager().getRevisionDao();
 
 		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
+		
+		if( revisionId == null )
+			return null;
 		
 		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
 				.getCurrentValueSetDefinitionDao();

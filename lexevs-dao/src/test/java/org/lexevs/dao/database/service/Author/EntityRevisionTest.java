@@ -180,6 +180,14 @@ public class EntityRevisionTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	public void testNullEntity() throws Exception {
+		Entity entity = entityService.resolveEntityByRevision(
+				"urn:oid:22.22.0.2", "2.0", "midas002", "Automobiles", null);
+
+		assertNotNull(entity);
+	}
+	
+	@Test
+	public void testEntityBeforeCreation() throws Exception {
 		Entity olderEntity = entityService.resolveEntityByDate(
 				"urn:oid:22.22.0.2", "2.0", "midas002", "Automobiles",
 				new Date(Timestamp.valueOf("2010-07-29 00:00:00").getTime()));

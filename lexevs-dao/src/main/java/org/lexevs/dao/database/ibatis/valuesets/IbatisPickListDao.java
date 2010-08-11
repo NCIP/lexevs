@@ -38,6 +38,7 @@ import org.LexGrid.valueSets.PickListEntryNode;
 import org.LexGrid.valueSets.PickListEntryNodeChoice;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
@@ -154,7 +155,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 	
 	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLDEF_SQL = PICKLIST_NAMESPACE + "getPrevRevIdFromGivenRevIdForPLDef";
 	
-	private static String GET_PICKLIST_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionMetaDataByRevision";
+	private static String GET_PICKLIST_DEFINITION_METADATA_FROM_HISTORY_BY_REVISION_SQL = PICKLIST_NAMESPACE + "getPickListDefinitionMetaDataHistoryByRevision";
 	
 	private static String GET_PL_ENTRY_NODES_LIST_BY_PICKLIST_ID_SQL = PICKLIST_NAMESPACE + "getPickListEntryNodeListByPickListId";
 	
@@ -882,7 +883,9 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		// 1. If 'revisionId' is null or 'revisionId' is the latest revision of the picklistDefinition
 		// then use getPickListDefinitionById to get the pickListDefinition object and return.
 		
-		if ( revisionId == null || plDefRevisionId == null ) {
+		if (StringUtils.isEmpty(revisionId)
+				|| StringUtils.isEmpty(plDefRevisionId)
+				|| revisionId.equals(plDefRevisionId)) {
 			return this.getPickListDefinitionById(pickListId);
 		}
 		
@@ -987,12 +990,13 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			try {
 				pickListEntryNode = pickListEntryNodeDao
 						.resolvePLEntryNodeByRevision(pickListId, plEntryId,
-								revisionId);
+								tempRevId);
 			} catch (LBRevisionException e) {
 				continue;
 			}
-
-			pickListDefinition.addPickListEntryNode(pickListEntryNode);
+			
+			if( pickListEntryNode != null)
+				pickListDefinition.addPickListEntryNode(pickListEntryNode);
 		}
 		
 		// 6. Get all pick list definition properties.
@@ -1008,7 +1012,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			
 			try {
 				prop = vsPropertyDao.resolveVSPropertyByRevision(
-						pickListDefinitionUId, propId, revisionId);
+						pickListDefinitionUId, propId, tempRevId);
 			} catch (LBRevisionException e) {
 				continue;
 			}

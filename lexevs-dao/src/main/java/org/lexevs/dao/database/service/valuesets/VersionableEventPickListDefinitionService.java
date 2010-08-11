@@ -360,6 +360,14 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 					ReferenceType.VALUESETDEFINITION.name(), null, entryState);
 		}
 		
+		EntryState currentPLDEntryState = vsEntryStateDao.getEntryStateByUId(prevEntryStateUId);
+		// if the exiting PLD entry change type is non-dependent, move to history table
+		if (!currentPLDEntryState.getChangeType().equals(ChangeType.DEPENDENT))
+		{
+			prevEntryStateUId = pickListDefDao
+					.insertHistoryPickListDefinition(pickListDefUId, pickListId);
+		}
+		
 		String entryStateUId = this.getDaoManager().getCurrentVsEntryStateDao()
 				.insertEntryState(pickListDefUId,
 						ReferenceType.PICKLISTDEFINITION.name(),
@@ -385,6 +393,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		RevisionDao revisionDao = getDaoManager().getRevisionDao();
 
 		String revisionId = revisionDao.getRevisionIdForDate(new Timestamp(date.getTime()));
+		
+		if( revisionId == null )
+			return null;
 		
 		PickListDao pickListDefDao = this.getDaoManager()
 				.getCurrentPickListDefinitionDao();
