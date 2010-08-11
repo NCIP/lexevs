@@ -119,6 +119,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         
         ResolvedConceptReference focus = null;
         
+        boolean needToValidateFocusExistsInGraph = true;
+        
         if(graphFocus != null) {
 
             if(StringUtils.isNotBlank(graphFocus.getCodeNamespace())
@@ -173,6 +175,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                     DaoUtility.propertyTypeArrayToString(propertyTypes));
                     }
                 }  
+            } else {
+                needToValidateFocusExistsInGraph = false;
             }
            
             if(focus == null) {
@@ -236,7 +240,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                focus.setCodingSchemeName(codingSchemeName);
             }
             
-            boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward, filters);
+            boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward, filters, needToValidateFocusExistsInGraph);
             
             if(! isValidFocus) {
                 return new ResolvedConceptReferenceList();
@@ -344,14 +348,14 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         return returnList;
     }
 
-    protected boolean checkFocus(ResolvedConceptReference focus, boolean resolveForward, boolean resolveBackward, Filter[] filters) {
+    protected boolean checkFocus(ResolvedConceptReference focus, boolean resolveForward, boolean resolveBackward, Filter[] filters, boolean needToValidateFocusExistsInGraph) {
         if(focus == null) {return false;}
  
         boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
         boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
         boolean isInvalidMatchConceptReference = isNotInvalidMatchConceptReference(focus);
         boolean isNotFilteredOut = isNotFilteredConceptReference(focus, filters);
-        boolean existsInGraph = existsInGraph(focus);
+        boolean existsInGraph = needToValidateFocusExistsInGraph ? true : existsInGraph(focus);
       
         return 
             hasReferenceToSourceCodeRestriction && 
