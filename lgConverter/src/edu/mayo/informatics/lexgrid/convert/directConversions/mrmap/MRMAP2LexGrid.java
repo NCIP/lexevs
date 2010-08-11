@@ -205,9 +205,6 @@ public class MRMAP2LexGrid {
         targetScheme,
         targetVersion,
         targetURI);
-        //ChangedEntry entry = new ChangedEntry();
-        //entry.setChangedCodingSchemeEntry(scheme);
-        //revision.addChangedEntry(entry);
         return scheme;
     }
     
@@ -435,6 +432,7 @@ public class MRMAP2LexGrid {
         nameSpace.setContent(scheme.getCodingSchemeName());
         nameSpace.setLocalId(scheme.getCodingSchemeName());
         nameSpace.setUri(scheme.getCodingSchemeURI());
+        nameSpace.setEquivalentCodingScheme(scheme.getCodingSchemeName());
         
         //create a supported relations container.
         SupportedContainerName container = new SupportedContainerName();
@@ -461,6 +459,7 @@ public class MRMAP2LexGrid {
         else{
             supportedSourceNamespace.setUri(supportedSourceScheme.getUri());
         }
+        supportedSourceNamespace.setContent(rel.getSourceCodingScheme());
         supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
         
         // supported target scheme namespace to coding scheme mapping
@@ -483,14 +482,17 @@ public class MRMAP2LexGrid {
         else{
             supportedTargetNamespace.setUri(supportedTargetScheme.getUri());
         }
+        supportedTargetNamespace.setContent(rel.getTargetCodingScheme());
         supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
         
         Mappings mappings = new Mappings();
         mappings.addSupportedCodingScheme(supportedSourceScheme);
         mappings.addSupportedCodingScheme(supportedTargetScheme);
+        mappings.addSupportedCodingScheme(supportedScheme);
+        
         mappings.addSupportedNamespace(supportedSourceNamespace);
         mappings.addSupportedNamespace(supportedTargetNamespace);
-        mappings.addSupportedCodingScheme(supportedScheme);
+        mappings.addSupportedNamespace(nameSpace);
 
         SupportedAssociation supportedMapping = new SupportedAssociation();
         supportedMapping.setContent(rel.getAssociationPredicate(0).getAssociationName());
