@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -157,22 +159,47 @@ public class MRMAP2LexGrid {
         service = dbManager.getAuthoringService();
     }
 
-    public CodingScheme loadToRevision() throws LBRevisionException{
-       CodingScheme scheme = processMrMapToLexGrid();
-       CodingScheme schemeToReturn = new CodingScheme();
-       schemeToReturn.setCodingSchemeName(scheme.getCodingSchemeName());
-       schemeToReturn.setRepresentsVersion(scheme.getRepresentsVersion());
-       schemeToReturn.setCodingSchemeURI(scheme.getCodingSchemeURI());
-        service.loadRevision(scheme, null, true);
-        return schemeToReturn;
-    }
-    public CodingScheme processMrMapToLexGrid() {
+    public CodingScheme[] loadToRevision() throws LBRevisionException{
+       CodingScheme[] schemes = processMrMapToLexGrid();
+       CodingScheme[] schemesMinimal = new CodingScheme[schemes.length];
+       for(int i = 0; i < schemes.length; i++){
+           CodingScheme schemeToReturn = new CodingScheme();
+           schemeToReturn.setCodingSchemeName(schemes[i].getCodingSchemeName());
+           schemeToReturn.setRepresentsVersion(schemes[i].getRepresentsVersion());
+           schemeToReturn.setCodingSchemeURI(schemes[i].getCodingSchemeURI());
+           schemesMinimal[i] = schemeToReturn;
+           service.loadRevision(schemes[i], null, true);
 
-        Relations rel = null;
-        
+       }
+   
+       return  schemesMinimal;
+    }
+    
+    public CodingScheme[] processMrMapToLexGrid() {
+
+       Relations rel = null;
+        HashMap<String, Relations> relationsMap;
+        ArrayList<CodingScheme> schemes = new ArrayList<CodingScheme>();
         try {
-        rel = processMrSatBean(satPath);
-        rel.addAssociationPredicate(processMrMapBean(mapPath, rel.getSourceCodingScheme(), rel.getTargetCodingScheme()));
+        relationsMap = processMrSatBean(satPath, mapPath);
+        Object[] os = relationsMap.keySet().toArray();
+
+        for(Object o: os){
+           rel = relationsMap.get(o);
+            rel.addAssociationPredicate(processMrMapBean(mapPath, rel.getSourceCodingScheme(), rel.getTargetCodingScheme(), (String)o));
+            CodingScheme scheme = createMrMapScheme(rel,
+                    nameForMappingScheme,
+                    nameForMappingVersion,
+                    nameforMappingURI,
+                    sourceScheme,
+                    sourceVersion,
+                    sourceURI,
+                    targetScheme,
+                    targetVersion,
+                    targetURI);
+            schemes.add(scheme);
+        }
+
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
@@ -194,36 +221,32 @@ public class MRMAP2LexGrid {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        CodingScheme scheme = createMrMapScheme(rel,
-        nameForMappingScheme,
-        nameForMappingVersion,
-        nameforMappingURI,
-        sourceScheme,
-        sourceVersion,
-        sourceURI,
-        targetScheme,
-        targetVersion,
-        targetURI);
-        return scheme;
+        CodingScheme[] schemesToReturn = new CodingScheme[schemes.size()];
+        for(int i = 0; i < schemes.size(); i++){
+        schemesToReturn[i]= schemes.get(i);
+        }
+        return schemesToReturn;
     }
     
     
-    protected Relations processMrSatBean(String path) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException {
-        RRFLineReader satReader = new RRFLineReader(path);
+    protected HashMap<String, Relations> processMrSatBean(String sPath, String mPath) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException {
+        RRFLineReader satReader = new RRFLineReader(sPath);
         String[] mrSatRow;
-        Relations relation = new Relations();
+        HashMap<String, Relations> relationsMap = null;
         try {
+         relationsMap = processRelationsContainers(mPath);
             while((mrSatRow = satReader.readRRFLine()) != null){
                 MrSat metaData = processMrSatRow(mrSatRow);
-               processMrSatToRelation(metaData, relation);
+               if (relationsMap.containsKey(metaData.getCui())){
+               processMrSatToRelation(metaData, relationsMap.get(metaData.getCui()));
+                }
             }
             satReader.close();
         } catch (IOException e) {
 
             e.printStackTrace();
         }
-        return relation;
+        return relationsMap;
     }
 
     protected void processMrSatToRelation(MrSat metaData, Relations relation) {
@@ -272,21 +295,17 @@ public class MRMAP2LexGrid {
     }
     
     //TODO create JUnit
-    protected AssociationPredicate processMrMapBean(String path, String sourceSchemeNamespace, String targetSchemeNamespace) throws Exception {
+    protected AssociationPredicate processMrMapBean(String path, String sourceSchemeNamespace, String targetSchemeNamespace, String currentRelation) throws Exception {
         String[] mrMapRow;
         RRFLineReader mapReader = new RRFLineReader(path);
         AssociationPredicate predicate  = createAssociationPredicate();
 
             try {
                 while((mrMapRow = mapReader.readRRFLine()) != null){
-                    
                     MrMap map = processMrMapRow(mrMapRow);
-                    currentMapping = map.getMapsetcui();
-                    if (currentMapping != null && !map.getMapsetcui().equals(currentMapping)){
-                        break;
+                    if(currentRelation.equals(map.getMapsetcui())){
+                        processAndMergeIntoSource(map, predicate, sourceSchemeNamespace, targetSchemeNamespace);
                     }
-               processAndMergeIntoSource(map, predicate, sourceSchemeNamespace, targetSchemeNamespace);
-
                 }
                 mapReader.close();
             } catch (SecurityException e) {
@@ -308,7 +327,20 @@ public class MRMAP2LexGrid {
      
             return predicate;
     }
-    
+    protected HashMap<String, Relations> processRelationsContainers(String mapPath) throws IOException{
+        HashMap<String, Relations> relations = new HashMap<String, Relations>();
+        RRFLineReader mapReader = new RRFLineReader(mapPath);
+        String[] mrMapRow;
+            while((mrMapRow = mapReader.readRRFLine()) != null){
+                if(!relations.containsKey(mrMapRow[0])){
+                    Relations rel = new Relations();
+                    rel.setContainerName(mrMapRow[0]);
+                    relations.put(mrMapRow[0], rel);
+                }
+            }
+        
+        return relations;
+    }
     private AssociationPredicate processAndMergeIntoSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws Exception {
 
         if(sources.add(map.getFromid())){
@@ -414,14 +446,16 @@ public class MRMAP2LexGrid {
         CodingScheme scheme = new CodingScheme();
         //Create the basics of a mapping Coding Scheme.
         if (codingSchemeName == null) {
-            scheme.setCodingSchemeName(CODING_SCHEME_NAME);
+            scheme.setCodingSchemeName(createDescriptiveSchemeName(rel));
         }
         if (codingSchemeVersion == null) {
-            scheme.setCodingSchemeURI(CODING_SCHEME_URI);
+            scheme.setCodingSchemeURI(createUniqueSchemeURI(rel));
         }
         if (codingSchemeURI == null) {
-            scheme.setRepresentsVersion(REPRESENTS_VERSION);
+            scheme.setRepresentsVersion(setMappingSchemeVersion(rel));
         }
+        scheme.setFormalName(createDescriptiveSchemeName(rel));
+        scheme.addLocalName(createDescriptiveSchemeName(rel));
         //Create a supported version of it for the coding scheme
         SupportedCodingScheme supportedScheme = new SupportedCodingScheme();
         supportedScheme.setContent(scheme.getCodingSchemeName());
@@ -505,6 +539,20 @@ public class MRMAP2LexGrid {
     }
 
 
+    private String setMappingSchemeVersion(Relations rel) {
+        
+        return (rel.getRepresentsVersion()== null? "1.0": rel.getRepresentsVersion());
+    }
+
+    private String createUniqueSchemeURI(Relations rel) {
+
+        return "urn:oid:" + rel.getContainerName() + "." + rel.getSourceCodingScheme() + "." + rel.getTargetCodingScheme();
+    }
+
+    private String createDescriptiveSchemeName(Relations rel) {
+      return rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion() + "_TO_" + rel.getTargetCodingScheme() + rel.getTargetCodingSchemeVersion();
+    }
+
     protected MrMap processMrMapRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrMap mrMap = new MrMap();
         Class<?> mapClass = mrMap.getClass();
@@ -523,40 +571,24 @@ public class MRMAP2LexGrid {
         }
         return mrSat;
     }
-//    public static void main(String[] args){
-//        try {
-//           Relations relation = new MRMAP2LexGrid(true, null, null, null).processMrSatBean("../lbTest/resources/testData/mrmap_mapping/MRSAT.RRF");
-//           System.out.println(relation.getContainerName());
-//           System.out.println(relation.getSourceCodingScheme());
-//           System.out.println(relation.getSourceCodingSchemeVersion());
-//           System.out.println(relation.getTargetCodingScheme());
-//           System.out.println(relation.getTargetCodingSchemeVersion());
-//           System.out.println(relation.getRepresentsVersion());
-//           System.out.println(relation.getOwner());
-//           Properties properties = relation.getProperties();
-//           Property[] property = properties.getProperty();
-//           for(Property p: property){
-//               System.out.println("propertyName:  " + p.getPropertyName());
-//               System.out.println("propertyValue:  " + p.getValue().getContent());
-//           }
-//          
-//        } catch (SecurityException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IllegalArgumentException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (NoSuchFieldException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//
-//        
-//    }
+    
+    public static void main(String[] args){
+        try {
+            HashMap<String, Relations> rels = new MRMAP2LexGrid(null, null, null).processRelationsContainers("../lbTest/resources/testData/mrmap_mapping/MRMAP.RRF");
+            
+            Set set = rels.keySet();
+            Object[] os1 = rels.values().toArray();
+            Object[] os = set.toArray();
+            
+            for(Object o: os){
+                System.out.println(o);
+            }
+            for(Object o: os1){
+                System.out.println(((Relations)o).getContainerName());
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }
