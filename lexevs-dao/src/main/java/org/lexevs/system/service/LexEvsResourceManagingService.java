@@ -187,6 +187,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	}
 
 	public void removeValueSetDefinitionResourceFromSystem(String valueSetDefinitionURI, String version) throws LBParameterException {
+		this.databaseServiceManager.getValueSetDefinitionService().removeValueSetDefinition(valueSetDefinitionURI);
+		
 		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.VALUESET_DEFINITION, valueSetDefinitionURI, version);
 		for (RegistryEntry entry : entryList)
 		{
@@ -195,6 +197,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	}
 
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException {
+		this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
+		
 		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
 		for (RegistryEntry entry : entryList)
 		{
