@@ -234,9 +234,8 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 				this.insertValueSetDefinition(valueSetDefinition, releaseURI,
 						mapping);
 			} else if (changeType == ChangeType.REMOVE) {
-
-				this.removeValueSetDefinition(valueSetDefinition
-						.getValueSetDefinitionURI());
+				LexEvsServiceLocator.getInstance().getSystemResourceService().
+					removeValueSetDefinitionResourceFromSystem(valueSetDefinition.getValueSetDefinitionURI(), null);
 			} else if (changeType == ChangeType.MODIFY) {
 
 				this.updateValueSetDefinition(valueSetDefinition);
