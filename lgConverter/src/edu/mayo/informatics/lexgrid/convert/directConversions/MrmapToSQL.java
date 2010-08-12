@@ -27,7 +27,7 @@ public class MrmapToSQL {
             String targetVersion,
             String targetURI,
             CodingSchemeManifest manifest) throws LBException{
-        CodingScheme scheme = null;
+        CodingScheme[] schemes = null;
         if(mrSatFileLocation == null){
             throw new LBException("Source for MRSAT is not available -- Loading without MRSAT is not available at this time");
         }
@@ -60,13 +60,13 @@ public class MrmapToSQL {
                 targetVersion,
                 targetURI);
         try {
-           scheme = map.loadToRevision();
+           schemes = map.loadToRevision();
         } catch (LBRevisionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
-        return new CodingScheme[]{scheme};
+        return schemes;
     }
     /**
      * @param args
