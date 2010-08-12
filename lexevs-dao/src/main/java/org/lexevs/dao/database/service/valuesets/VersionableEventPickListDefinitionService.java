@@ -222,8 +222,8 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 				this.insertPickListDefinition(pickListDefinition, releaseURI,
 						mapping);
 			} else if (changeType == ChangeType.REMOVE) {
-
-				this.removePickListDefinition(pickListDefinition);
+				LexEvsServiceLocator.getInstance().getSystemResourceService().
+					removePickListDefinitionResourceFromSystem(pickListDefinition.getPickListId(), null);
 			} else if (changeType == ChangeType.MODIFY) {
 
 				this.updatePickListDefinition(pickListDefinition);
