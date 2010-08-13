@@ -119,10 +119,11 @@ public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 
 		assertNotNull(entity);
 		
-		assertEquals(2,entity.getPropertyCount());
+		assertEquals(3,entity.getPropertyCount());
 
-		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision3Value"));
-		assertTrue(TestUtils.entityContainsPropertyWithValue(entity,"revision5Value"));
+		assertTrue(TestUtils.entityContainsPropertyWithId(entity, "1"));
+		assertTrue(TestUtils.entityContainsPropertyWithId(entity,"2"));
+		assertTrue(TestUtils.entityContainsPropertyWithId(entity,"5"));
 	}
 	
 	@Test
@@ -140,7 +141,7 @@ public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
 		assertEquals("TestQual",prop.getPropertyQualifier(0).getPropertyQualifierName());
 		assertEquals("TestQualValueR6",prop.getPropertyQualifier(0).getValue().getContent());
 		
-		assertEquals(2,entity.getPropertyCount());	
+		assertEquals(3,entity.getPropertyCount());	
 	}
 	
 	@Test

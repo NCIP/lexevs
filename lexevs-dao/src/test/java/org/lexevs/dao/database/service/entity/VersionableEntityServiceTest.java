@@ -352,13 +352,13 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, forwardName, reverseName, isNavigable, isTransitive) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens', 'forwardName', 'reverseName', true, true)");
+			"values ('1', '1', 'ecode', 'ens', 'forwardName', 'reverseName', '1', '1')");
 			
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'association')");
+			"values ('1', 'association')");
 		
 		AssociationEntity entity = service.getAssociationEntity("csuri", "csversion", "ecode", "ens");
 		assertNotNull(entity);
@@ -377,13 +377,13 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 			
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', 'csguid', 'ecode', 'ens')");
 			
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'someOtherType')");
+			"values ('1', 'someOtherType')");
 		
 		AssociationEntity entity = service.getAssociationEntity("csuri", "csversion", "ecode", "ens");	
 		
@@ -420,19 +420,19 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+			"values ('1', '1', 'ecode', 'ens', '1')");
 			
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid1', 'rid1', NOW() )");
+			"values ('1', 'rid1', NOW() )");
 
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+			"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid2', 'rid2', NOW() )");
+			"values ('2', 'rid2', NOW() )");
 		
 		Entity entity = new Entity();
 		entity.setEntityCode("ecode");
@@ -456,19 +456,19 @@ public class VersionableEntityServiceTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+			"values ('1', '1', 'ecode', 'ens', '1')");
 			
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid1', 'rid1', NOW() )");
+			"values ('1', 'rid1', NOW() )");
 
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-			"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+			"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid2', 'rid2', NOW() )");
+			"values ('2', 'rid2', NOW() )");
 		
 		Entity entity = new Entity();
 		entity.setEntityCode("ecode");

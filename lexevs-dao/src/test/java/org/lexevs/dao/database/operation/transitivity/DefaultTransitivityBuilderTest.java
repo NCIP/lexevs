@@ -8,8 +8,6 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Node;
-import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -30,12 +28,6 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	@Resource
 	private LexEvsResourceManagingService lexEvsResourceManagingService;
 	
-	@Resource
-	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
-	
-	@Resource
-	private CodingSchemeService codingSchemeService;
-
 	@Test
 	public void getRegistryEntryForCodingSchemeName() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
@@ -43,28 +35,28 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', true)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -87,28 +79,28 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', true)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -116,7 +108,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<Node> nodes = 
-			defaultTransitivityBuilder.getDistinctSourceTriples("csuri", "csversion", "ap-guid");
+			defaultTransitivityBuilder.getDistinctSourceTriples("csuri", "csversion", "1");
 		
 		assertEquals(1, nodes.size());
 	}
@@ -128,25 +120,25 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', true)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-				"values ('eguid', 'association')");
+				"values ('1', 'association')");
 		
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		lexEvsResourceManagingService.refresh();
@@ -155,7 +147,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 			defaultTransitivityBuilder.getTransitiveAssociationPredicateIds("csuri", "csversion");
 		
 		assertEquals(1, transitiveAssocs.size());
-		assertEquals("ap-guid", transitiveAssocs.get(0));
+		assertEquals("1", transitiveAssocs.get(0));
 	}
 	
 	@Test
@@ -165,27 +157,27 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', true)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-				"values ('eguid', 'association')");
+				"values ('1', 'association')");
 		
 		boolean isTransitive =
 			defaultTransitivityBuilder.isTransitive("csuri", "csversion", "ae-code", "ae-codens");
@@ -200,27 +192,27 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', false)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-				"values ('eguid', 'association')");
+				"values ('1', 'association')");
 		
 		boolean isTransitive =
 			defaultTransitivityBuilder.isTransitive("csuri", "csversion", "ae-code", "ae-codens");
@@ -235,29 +227,29 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isNavigable, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', true, true)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1', '1')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-				"values ('eguid', 'association')");
+				"values ('1', 'association')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -278,7 +270,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "ap-guid");
+				assertEquals(rs.getString(2), "1");
 				assertEquals(rs.getString(3), "s-code");
 				assertEquals(rs.getString(4), "s-ns");
 				assertEquals(rs.getString(5), "t-code1");
@@ -295,29 +287,29 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isNavigable, isTransitive) " +
-				"values ('eguid', 'cs-guid', 'ae-code', 'ae-codens', true, true)");
+				"values ('1', '1', 'ae-code', 'ae-codens', '1', '1')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-				"values ('eguid', 'association')");
+				"values ('1', 'association')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -325,8 +317,8 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 				" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +

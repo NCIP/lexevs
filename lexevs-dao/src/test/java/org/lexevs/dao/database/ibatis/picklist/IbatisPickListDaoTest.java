@@ -111,8 +111,8 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
 		
-		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl1', 'id1', 'vd')");
-		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl2', 'id2', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('1', 'id1', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('2', 'id2', 'vd')");
 		
 		List<String> ids = this.ibatisPickListDao.getPickListIds();
 		
@@ -129,8 +129,8 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
 		
-		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl1', 'id1', 'vd')");
-		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl2', 'id2', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('1', 'id1', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('2', 'id2', 'vd')");
 		
 		PickListDefinition definition = this.ibatisPickListDao.getPickListDefinitionById("id1");
 		
@@ -145,11 +145,11 @@ public class IbatisPickListDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("insert into systemrelease (releaseGuid, releaseURI, releaseDate) values ('123', 'releaseuri', NOW())");
 		
-		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl1', 'id1', 'vd')");
-		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('pl2', 'id2', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('1', 'id1', 'vd')");
+		template.execute("insert into vsPickList (vsPickListGuid, pickListId, representsvaluesetdefinition) values ('2', 'id2', 'vd')");
 		
 		String guid = this.ibatisPickListDao.getPickListGuidFromPickListId("id2");
 		
-		assertEquals("pl2", guid);
+		assertEquals("2", guid);
 	}
 }

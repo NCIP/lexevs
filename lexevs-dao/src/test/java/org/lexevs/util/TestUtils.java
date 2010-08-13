@@ -13,6 +13,15 @@ public class TestUtils {
 		}
 		return false;
 	}
+	
+	public static boolean entityContainsPropertyWithId(Entity entity, String propertyId) {
+		for(Property prop : entity.getAllProperties()) {
+			if(prop.getPropertyId().equals(propertyId)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static Property getPropertyWithValue(Entity entity, String propertyValue) {
 		for(Property prop : entity.getAllProperties()) {

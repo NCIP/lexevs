@@ -87,7 +87,7 @@ public class DatabaseServiceManagerTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		EntityService entityService = this.databaseServiceManager.wrapServiceForErrorHandling(
 				databaseServiceManager.getEntityService(),

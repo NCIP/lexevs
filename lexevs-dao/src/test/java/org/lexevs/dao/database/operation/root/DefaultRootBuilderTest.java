@@ -34,25 +34,25 @@ public class DefaultRootBuilderTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -74,25 +74,25 @@ public class DefaultRootBuilderTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+				"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
-				"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'test-assoc')");
+				"('1', '1', 'test-assoc')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +

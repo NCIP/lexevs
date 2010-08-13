@@ -90,21 +90,21 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		es.setRelativeOrder(23l);
 		property.setEntryState(es);
 		
-		String id = ibatisPropertyDao.insertProperty("fake-cs-id", "fake-entityCode-id", PropertyType.ENTITY, property);
+		String id = ibatisPropertyDao.insertProperty("1", "1", PropertyType.ENTITY, property);
 	
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		final String[] keys = (String[])template.queryForObject("Select * from Property", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				String id = rs.getString(1);
-				assertEquals(rs.getString(2),"fake-entityCode-id");
+				assertEquals(rs.getString(2),"1");
 				assertEquals(rs.getString(3),"entity");
 				assertEquals(rs.getString(4),"pId");
 				assertEquals(rs.getString(5),"propType");
 				assertEquals(rs.getString(6),"propName");
 				assertEquals(rs.getString(7),"lang");
 				assertEquals(rs.getString(8),"format");
-				assertTrue(rs.getBoolean(9) == false);
+				assertEquals("0", rs.getString(9));
 				assertTrue(rs.getBoolean(10) == true);
 				assertEquals(rs.getString(11),"DOF");
 				assertEquals(rs.getString(12),"repForm");
@@ -148,13 +148,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'propId')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		Presentation prop = new Presentation();
 		prop.setPropertyId("propId");
@@ -173,9 +173,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		prop.setIsPreferred(true);
 		
 		this.ibatisPropertyDao.updateProperty(
-				"csguid", 
-				"eguid", 
-				"pguid", 
+				"1", 
+				"1", 
+				"1", 
 				PropertyType.ENTITY, 
 				prop);
 		
@@ -187,8 +187,8 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 				assertEquals(rs.getString(6), "pname");
 				assertEquals(rs.getString(7), "Lang");
 				assertEquals(rs.getString(8), "testFormat");
-				assertEquals(rs.getBoolean(9), true);
-				assertEquals(rs.getBoolean(10), false);
+				assertEquals("1", rs.getString(9));
+				assertEquals("0", rs.getString(10));
 				assertEquals(rs.getString(11), "dof");
 				assertEquals(rs.getString(12), "testRepForm");
 				assertEquals(rs.getString(13), "some updated value");
@@ -211,13 +211,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'propId')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		Property prop = new Property();
 		prop.setPropertyId("propId");
@@ -232,9 +232,9 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		prop.setStatus("testing");
 		
 		this.ibatisPropertyDao.updateProperty(
-				"csguid", 
-				"eguid", 
-				"pguid", 
+				"1", 
+				"1", 
+				"1", 
 				PropertyType.ENTITY, 
 				prop);
 		
@@ -291,14 +291,14 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		es.setRelativeOrder(23l);
 		property.setEntryState(es);
 		
-		String id = ibatisPropertyDao.insertProperty("fake-cs-id", "fake-entityCode-id", PropertyType.ENTITY, property);
+		String id = ibatisPropertyDao.insertProperty("1", "1", PropertyType.ENTITY, property);
 	
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		final String[] keys = (String[])template.queryForObject("Select * from Property", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				String id = rs.getString(1);
-				assertEquals(rs.getString(2),"fake-entityCode-id");
+				assertEquals(rs.getString(2),"1");
 				assertEquals(rs.getString(3),"entity");
 				assertEquals(rs.getString(4),"pId");
 				assertEquals(rs.getString(5),"propType");
@@ -347,14 +347,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void insertHistoryProperty(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId', 'esguid')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'propId', '99')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
-		
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		Property property = new Property();
 		property.setPropertyId("pId");
@@ -375,7 +374,7 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		es.setChangeType(ChangeType.MODIFY);
 		property.setEntryState(es);
 		
-		ibatisPropertyDao.insertHistoryProperty("fake-cs-id", "pguid", property);
+		ibatisPropertyDao.insertHistoryProperty("1", "1", property);
 		
 		assertEquals(1, template.queryForInt("select count(*) from h_property"));
 	}
@@ -386,27 +385,27 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation', '1')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid')");
+				"values ('1', '1', 'ecode', 'ens', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid1', 'rid1', NOW() )");
+				"values ('1', 'rid1', NOW() )");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+		template.execute("Insert into entrystate (entryStateGuid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
-		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid1");
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("1", "1", "rguid1");
 		
 		assertEquals(1, props.size());
 	}
@@ -416,33 +415,33 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetHistoryPropertyWithQualifier() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-			"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual', 'esguid')");
+			"values ('1', '1', 'qualifier', 'aqual', 'some_qual', '1')");
 	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation', '1')");
 		
 		template.execute("Insert into h_propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-				"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual', 'esguid')");
+				"values ('1', '1', 'qualifier', 'aqual', 'some_qual', '1')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid')");
+				"values ('1', '1', 'ecode', 'ens', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid1', 'rid1', NOW() )");
+				"values ('1', 'rid1', NOW() )");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+		template.execute("Insert into entrystate (entryStateGuid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
-		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid1");
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("1", "1", "rguid1");
 		
 		assertEquals(1, props.size());
 	}
@@ -452,52 +451,52 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetHistoryPropertyWithTwoQualifiers() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 	
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-			"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual', 'esguid')");
+			"values ('1', '1', 'qualifier', 'aqual', 'some_qual', '0')");
 	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid1')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation', '1')");
 		
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid2')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation', '2')");
 
 		template.execute("Insert into h_propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-				"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual1', 'esguid1')");
+				"values ('1', '1', 'qualifier', 'aqual', 'some_qual1', '1')");
 		
 		template.execute("Insert into h_propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue, entryStateGuid) " +
-				"values ('pmaguid', 'pguid', 'qualifier', 'aqual', 'some_qual2', 'esguid2')");
+				"values ('1', '1', 'qualifier', 'aqual', 'some_qual2', '2')");
 
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1')");
+				"values ('1', '1', 'ecode', 'ens', '1')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid2')");
+				"values ('1', '1', 'ecode', 'ens', '2')");
 
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid1', 'rid1', NOW() )");
+				"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid2', 'rid2', NOW() )");
+				"values ('2', 'rid2', NOW() )");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+		template.execute("Insert into entrystate (entryStateGuid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
+		template.execute("Insert into entrystate (entryStateGuid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('2', '1', 'entity', 'MODIFY', '0', '2')");
 
-		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid1");
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("1", "1", "rguid1");
 		
 		assertEquals(1, props.size());
 
-		props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid2");
+		props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("1", "1", "rid2");
 		
 		assertEquals(1, props.size());
 
@@ -509,36 +508,36 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue1', 'presentation', 'esguid1')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue1', 'presentation', '1')");
 		
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue2', 'presentation', 'esguid2')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue2', 'presentation', '2')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid')");
+				"values ('1', '1', 'ecode', 'ens', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid1', 'rid1', NOW() )");
+				"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid2', 'rid2', NOW() )");
+				"values ('2', 'rid2', NOW() )");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid1', 'pguid', 'property', 'NEW', '0', 'rguid1')");
+		template.execute("Insert into entrystate (entryStateGuid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('1', '1', 'property', 'NEW', '0', '1')");
 		
-		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid2', 'pguid', 'property', 'MODIFY', '0', 'rguid2')");
+		template.execute("Insert into entrystate (entryStateGuid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
+				"values ('2', '1', 'property', 'MODIFY', '0', '2')");
 		
-		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("csguid", "eguid", "rguid2");
+		List<String> props = ibatisPropertyDao.getAllHistoryPropertyUidsOfParentByRevisionId("1", "1", "rguid2");
 		
 		assertEquals(1, props.size());
 	}
@@ -550,13 +549,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void insertPropertyQualifier(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");		
+			"values ('1', '1', 'ecode', 'ens')");		
 		
 		PropertyQualifier qual = new PropertyQualifier();
 		qual.setPropertyQualifierName("qualName");
@@ -565,13 +564,13 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		text.setContent("qual text");
 		qual.setValue(text);
 		
-		ibatisPropertyDao.insertPropertyQualifier("csguid", "pguid", qual);
+		ibatisPropertyDao.insertPropertyQualifier("1", "1", qual);
 		
 		template.queryForObject("Select * from propertymultiattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "pguid");
+				assertEquals(rs.getString(2), "1");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_QUALIFIER);
 				assertEquals(rs.getString(4), "qualName");
 				assertEquals(rs.getString(5), "qual text");
@@ -590,27 +589,27 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void insertPropertySource(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");	
+			"values ('1', '1', 'ecode', 'ens')");	
 		
 		Source source = new Source();
 		source.setContent("test source");
 		source.setSubRef("test subref");
 		source.setRole("test role");
 		
-		ibatisPropertyDao.insertPropertySource("csguid","pguid", source);
+		ibatisPropertyDao.insertPropertySource("1","1", source);
 		
 		
 		template.queryForObject("Select * from propertymultiattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "pguid");
+				assertEquals(rs.getString(2), "1");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_SOURCE);
 				assertEquals("test source", rs.getString(5));
 				assertEquals(rs.getString(6), "test subref");
@@ -629,24 +628,24 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void insertPropertyUsageContext(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");	
+			"values ('1', '1', 'ecode', 'ens')");	
 		
 		String usageContext = "test usageContext";
 		
-		ibatisPropertyDao.insertPropertyUsageContext("csguid", "pguid", usageContext);
+		ibatisPropertyDao.insertPropertyUsageContext("1", "1", usageContext);
 		
 		
 		template.queryForObject("Select * from propertymultiattrib", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "pguid");
+				assertEquals(rs.getString(2), "1");
 				assertEquals(rs.getString(3), SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 				assertEquals(rs.getString(5), "test usageContext");
 				assertNull(rs.getString(6));
@@ -664,16 +663,16 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void insertPropertyLink(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname', 'pvalue', '1')");
+				"values ('11', '1', 'entity', 'pname', 'pvalue', '1')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-		"values ('pguid2', 'eguid', 'entity', 'pname', 'pvalue', '2')");
+		"values ('12', '1', 'entity', 'pname', 'pvalue', '2')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 	
 		
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
@@ -686,17 +685,17 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		link.setPropertyLink("link");
 		link.setTargetProperty("2");
 		
-		ibatisPropertyDao.insertPropertyLink("csgid", "eguid", link);
+		ibatisPropertyDao.insertPropertyLink("csgid", "1", link);
 		
 		
 		template.queryForObject("Select * from propertylinks", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
 				assertNotNull(rs.getString(1));
-				assertEquals(rs.getString(2), "eguid");
-				assertEquals(rs.getString(3), "pguid1");
+				assertEquals(rs.getString(2), "1");
+				assertEquals(rs.getString(3), "11");
 				assertEquals(rs.getString(4), "link");
-				assertEquals(rs.getString(5), "pguid2");
+				assertEquals(rs.getString(5), "12");
 			
 				return null;
 			}
@@ -712,15 +711,15 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertyByParent(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("csguid", "eguid", PropertyType.ENTITY);
+		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("1", "1", PropertyType.ENTITY);
 		
 		assertEquals(1, props.size());
 	}
@@ -734,15 +733,15 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParents(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("eguid"));
+		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("1", DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(1, props.size());
 	}
@@ -751,19 +750,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsRestrictByName(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+				"values ('11', '1', 'entity', 'pname1', 'pType1', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+			"values ('12', '1', 'entity', 'pname2', 'pType2', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		List<Property> props = ibatisPropertyDao.
-			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname1"), null, DaoUtility.createNonTypedList("eguid"));
+			getPropertiesOfParents("1", DaoUtility.createNonTypedList("pname1"), null, DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(1, props.size());
 		assertEquals("pname1", props.get(0).getPropertyName());
@@ -773,19 +772,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsRestrictByType(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+				"values ('11', '1', 'entity', 'pname1', 'pType1', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+			"values ('12', '1', 'entity', 'pname2', 'pType2', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		List<Property> props = ibatisPropertyDao.
-			getPropertiesOfParents("csguid", null, DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+			getPropertiesOfParents("1", null, DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(1, props.size());
 		assertEquals("pType2", props.get(0).getPropertyType());
@@ -795,19 +794,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsRestrictByNameAndType(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+				"values ('11', '1', 'entity', 'pname1', 'pType1', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+			"values ('12', '1', 'entity', 'pname2', 'pType2', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		List<Property> props = ibatisPropertyDao.
-			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname2"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+			getPropertiesOfParents("1", DaoUtility.createNonTypedList("pname2"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(1, props.size());
 		assertEquals("pname2", props.get(0).getPropertyName());
@@ -818,19 +817,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsRestrictByNameAndTypeWrongName(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+				"values ('11', '1', 'entity', 'pname1', 'pType1', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+			"values ('12', '1', 'entity', 'pname2', 'pType2', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		List<Property> props = ibatisPropertyDao.
-			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("WRONG_NAME"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+			getPropertiesOfParents("1", DaoUtility.createNonTypedList("WRONG_NAME"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(0, props.size());
 	}
@@ -839,19 +838,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsRestrictByNameAndTypeWrongType(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+				"values ('11', '1', 'entity', 'pname1', 'pType1', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+			"values ('12', '1', 'entity', 'pname2', 'pType2', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		List<Property> props = ibatisPropertyDao.
-			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname2"), DaoUtility.createNonTypedList("WRONG_TYPE"), DaoUtility.createNonTypedList("eguid"));
+			getPropertiesOfParents("1", DaoUtility.createNonTypedList("pname2"), DaoUtility.createNonTypedList("WRONG_TYPE"), DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(0, props.size());
 	}
@@ -860,19 +859,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsRestrictByNameAndTypeWrongMismatched(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pname1', 'pType1', 'pvalue')");
+				"values ('11', '1', 'entity', 'pname1', 'pType1', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyType, propertyValue) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pType2', 'pvalue')");
+			"values ('12', '1', 'entity', 'pname2', 'pType2', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		List<Property> props = ibatisPropertyDao.
-			getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("pname1"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("eguid"));
+			getPropertiesOfParents("1", DaoUtility.createNonTypedList("pname1"), DaoUtility.createNonTypedList("pType2"), DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(0, props.size());
 	}
@@ -881,21 +880,21 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsWithTwoDifferentEntities(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid1', 'eguid1', 'entity', 'pid1', 'pvalue1')");
+				"values ('11', '11', 'entity', 'pid1', 'pvalue1')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+			"values ('11', '1', 'ecode1', 'ens1')");
 		
-		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("eguid1"));
+		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("1", DaoUtility.createNonTypedList("11"));
 		
 		assertEquals(1, props.size());
 		
@@ -906,21 +905,21 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsTwoProperties(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyId, propertyName, propertyValue) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pname', 'pvalue')");
+				"values ('1', '1', 'entity', 'pid', 'pname', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyId, propertyName, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pid1', 'pname', 'pvalue1')");
+				"values ('11', '1', 'entity', 'pid1', 'pname', 'pvalue1')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+			"values ('11', '1', 'ecode1', 'ens1')");
 		
-		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("eguid"));
+		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("1", DaoUtility.createNonTypedList("1"));
 		
 		assertEquals(2, props.size());
 	}
@@ -929,21 +928,21 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertiesOfParentsZeroProperties(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid1', 'eguid', 'entity', 'pid1', 'pvalue1')");
+				"values ('11', '1', 'entity', 'pid1', 'pvalue1')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+			"values ('11', '1', 'ecode1', 'ens1')");
 		
-		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("csguid", DaoUtility.createNonTypedList("eguid1"));
+		List<Property> props = ibatisPropertyDao.getPropertiesOfParents("1", DaoUtility.createNonTypedList("11"));
 		
 		assertEquals(0, props.size());
 	}
@@ -955,36 +954,36 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyId, propertyType, propertyName, language, format, isPreferred, matchIfNoContext, degreeOfFidelity, representationalForm, propertyValue, isActive, owner, status,    effectiveDate,         expirationDate, entryStateGuid) " +
-			"values (                             'pguid',      'eguid',       'entity',       'pid',  'presentation', 'pname',      'lang',  'xml',    true,          false,             'dof',             'repForm',       'pvalue',        true,   'me', 'test', '"+ ts1.toString()+"', '"+ ts2.toString() + "',      'esguid')");
+			"values (                             '1',      '1',       'entity',       'pid',  'presentation', 'pname',      'lang',  'xml',    '1',          '0',             'dof',             'repForm',       'pvalue',        '1',   'me', 'test', '"+ ts1.toString()+"', '"+ ts2.toString() + "',      '1')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeValue,  subRef, role, entryStateGuid) " +
-			"values ('pmaguid1', 'pguid', 'source', 'aValue', 'aSubRef', 'aRole', 'esguid')");
+			"values ('1', '1', 'source', 'aValue', 'aSubRef', 'aRole', '1')");
 	
-		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
-			"values ('pmaguid2', 'pguid', 'usageContext', 'usageContext1')");
+		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeValue) " +
+			"values ('2', '1', 'usageContext', 'usageContext1')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId, attributeValue) " +
-			"values ('pmaguid3', 'pguid', 'qualifier', 'aQual', 'aQualValue')");
+			"values ('3', '1', 'qualifier', 'aQual', 'aQualValue')");
 		
 		template.execute("Insert into revision (revisionGuid, revisionId, revAppliedDate) " +
-			"values (								'rguid', 	 'rid1',       NOW() )");
+			"values (								'1', 	 'rid1',       NOW() )");
 		
 		template.execute("Insert into revision (revisionGuid, revisionId, revAppliedDate) " +
-			"values (								'rguid2', 	 'rid2',       NOW() )");
+			"values (								'2', 	 'rid2',       NOW() )");
 		
 		template.execute("Insert into entrystate (entryStateGuid, entryGuid, entryType, changeType, relativeOrder, revisionGuid, prevRevisionGuid) " +
-			"values (								'esguid2', 	   'pguid2', 'property', 'DEPENDENT',     '1',        'rguid',    'rguid2')");
+			"values (								'2', 	   '12', 'property', 'DEPENDENT',     '1',        '1',    '2')");
 		
-		template.execute("Insert into entrystate (entryStateGuid, entryGuid, entryType, changeType, relativeOrder, revisionGuid, prevRevisionGuid, prevEntryStateGuid) " +
-			"values (								'esguid', 	   'pguid',  'property', 'MODIFY',     '1',            'rguid',        'rguid2',           'esguid2')");
+		template.execute("Insert into entrystate (entryStateGuid, entryGuid, entryType, changeType, relativeOrder, revisionGuid, prevRevisionGuid, preventryStateGuid) " +
+			"values (								'1', 	   '1',  'property', 'MODIFY',     '1',            '1',        '2',           '2')");
 		
-		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("csguid", "eguid", PropertyType.ENTITY);
+		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("1", "1", PropertyType.ENTITY);
 		
 		assertEquals(1, props.size());
 		
@@ -1039,17 +1038,17 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPropertId(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'id1')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'id1')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		String id = ibatisPropertyDao.getPropertyUIdFromParentUIdAndPropId("csguid", "eguid", "id1");
+		String id = ibatisPropertyDao.getPropertyUIdFromParentUIdAndPropId("1", "1", "id1");
 		
-		assertEquals("pguid", id);
+		assertEquals("1", id);
 	}
 	
 	/**
@@ -1061,15 +1060,15 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 	public void getPresentationPropertyByParent(){
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("csguid", "eguid", PropertyType.ENTITY);
+		List<Property> props = ibatisPropertyDao.getAllPropertiesOfParent("1", "1", PropertyType.ENTITY);
 		
 		assertEquals(1, props.size());
 		
@@ -1084,19 +1083,19 @@ public class IbatisPropertyDaoTest extends LexEvsDbUnitTestBase {
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		assertEquals(1, template.queryForInt("Select count(*) from codingScheme"));
 		assertEquals(1, template.queryForInt("Select count(*) from entity"));
 		assertEquals(1, template.queryForInt("Select count(*) from property"));
 		
-		ibatisPropertyDao.deleteAllEntityPropertiesOfCodingScheme("csguid");
+		ibatisPropertyDao.deleteAllEntityPropertiesOfCodingScheme("1");
 		
 		assertEquals(0, template.queryForInt("Select count(*) from property"));
 

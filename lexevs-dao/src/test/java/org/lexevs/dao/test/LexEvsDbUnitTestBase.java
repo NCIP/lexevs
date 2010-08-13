@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.cache.MethodCachingProxy;
+import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
@@ -69,6 +70,9 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@Resource
 	protected SystemVariables systemVariables;
 	
+	@Resource
+	protected PrimaryKeyIncrementer primaryKeyIncrementer;
+	
     @BeforeClass
     public static void setSystemProp() {
         System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
@@ -96,8 +100,10 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 		
 		if(check.isCommonLexGridSchemaInstalled()) {
 			lexEvsDatabaseOperations.dropAllTables();
+			primaryKeyIncrementer.destroy();
 		}	
 		
+		primaryKeyIncrementer.initialize();
 		lexEvsDatabaseOperations.createAllTables();
 	}
 	
@@ -113,6 +119,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 			new SimpleJdbcTemplate(dataSource).getJdbcOperations().execute("SHUTDOWN");
 		} else {
 			lexEvsDatabaseOperations.dropAllTables();
+			primaryKeyIncrementer.destroy();
 		}
 	}
 	

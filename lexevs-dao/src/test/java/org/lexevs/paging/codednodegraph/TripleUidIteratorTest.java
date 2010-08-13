@@ -50,20 +50,20 @@ public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'aname')");
+		"('1', '1', 'aname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -71,8 +71,8 @@ public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code1', " +
 				" 's-ns1'," +
 				" 't-code1'," +
@@ -82,7 +82,7 @@ public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 		TripleUidIterator itr = new TripleUidIterator("csuri", "csversion", "c-name", "aname", "s-code", "s-ns", new GraphQuery(), TripleNode.SUBJECT, null, 5);
 		
 		assertTrue(itr.hasNext());
-		assertEquals(itr.next(), "eae-guid1");
+		assertEquals(itr.next(), "1");
 		assertFalse(itr.hasNext());
 	}
 	

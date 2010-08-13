@@ -68,19 +68,19 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(getDataSource());
 
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId, entryStateGuid) " +
-		"values ('pguid', 'eguid', 'entity', 'pname', 'pvalue', 'propId', 'esguid')");
+		"values ('1', '1', 'entity', 'pname', 'pvalue', 'propId', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid', 'rid', NOW() )");
+			"values ('1', 'rid', NOW() )");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-			"values ('esguid', 'pguid', 'property', 'NEW', '0', 'rguid')");
+			"values ('1', '1', 'property', 'NEW', '0', '1')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid', 'csguid', 'ecode', 'ens')");
+		"values ('1', '1', 'ecode', 'ens')");
 
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri("csuri");
@@ -103,7 +103,7 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 	
 		service.updateEntityProperty("csuri", "csversion", "ecode", "ens", property);
 
-		assertTrue(testListener.foundUpdate);
+		assertEquals("updated prop value", template.queryForObject("select propertyValue from property where propertyId = 'propId'", String.class));
 	}
 
 	
@@ -113,13 +113,13 @@ public class VersionablePropertyServiceTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(getDataSource());
 
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyId) " +
-		"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'propId')");
+		"values ('1', '1', 'entity', 'pid', 'pvalue', 'propId')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid', 'csguid', 'ecode', 'ens')");
+		"values ('1', '1', 'ecode', 'ens')");
 
 		RegistryEntry entry = new RegistryEntry();
 		entry.setResourceUri("csuri");

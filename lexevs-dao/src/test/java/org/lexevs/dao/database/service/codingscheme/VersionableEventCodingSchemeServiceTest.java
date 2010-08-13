@@ -244,10 +244,10 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entryStateGuid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion', 'dummyEntryStateUId')");
+			"values ('1', 'csname', 'csuri', 'csversion', '1')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', " +
+			"values ('99', '1', 'CodingScheme', 'id', 'uri', " +
 			"null, null, null, null, null, null, null, null, null, null, null)");
 		
 		RegistryEntry entry = new RegistryEntry();
@@ -282,10 +282,10 @@ public class VersionableEventCodingSchemeServiceTest extends LexEvsDbUnitTestBas
 		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entryStateGuid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion', 'entryStateUId')");
+			"values ('1', 'csname', 'csuri', 'csversion', '1')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', " +
+			"values ('1', '1', 'CodingScheme', 'id', 'uri', " +
 			"null, null, null, null, null, null, null, null, null, null, null)");
 		
 		RegistryEntry entry = new RegistryEntry();

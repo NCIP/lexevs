@@ -42,27 +42,27 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	public void getHistoryCodingSchemeByRevisionWithHistoryFromHistoryWithMultiple() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid2')");
+			"values ('1', 'csname', 'csuri', 'csversion2', '2')");
 	
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid1', 'rid1', NOW() )");
+			"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid2', 'rid2', NOW() )");
+			"values ('2', 'rid2', NOW() )");
 	
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid1', 'csguid', 'cs', 'NEW', 'rguid1', '0')");
+			"values ('1', '1', 'cs', 'NEW', '1', '0')");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid,  relativeorder) " +
-			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
+			"values ('2', '1', 'cs', 'MODIFY', '2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("1", "rid2");
 		
 		assertEquals("csversion2", cs.getRepresentsVersion());	
 	}
@@ -71,33 +71,33 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	public void getHistoryCodingSchemeByRevisionWithLocalName() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
-			"values ('csmaguid', 'csguid', 'localName', 'local name', 'esguid2')");
+			"values ('1', '1', 'localName', 'local name', '2')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid2')");
+			"values ('1', 'csname', 'csuri', 'csversion2', '2')");
 		
 		template.execute("Insert into h_csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
-			"values ('csmaguid', 'csguid', 'localName', 'local name', 'esguid2')");
+			"values ('1', '1', 'localName', 'local name', '2')");
 	
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid1', 'rid1', NOW() )");
+			"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid2', 'rid2', NOW() )");
+			"values ('2', 'rid2', NOW() )");
 	
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid1', 'csguid', 'cs', 'NEW', 'rguid1', '0')");
+			"values ('1', '1', 'cs', 'NEW', '1', '0')");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
+			"values ('2', '1', 'cs', 'MODIFY', '2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("1", "rid2");
 		
 		assertEquals("local name", cs.getLocalName(0));
 	}
@@ -106,33 +106,33 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	public void getHistoryCodingSchemeByRevisionWithSource() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
-			"values ('csmaguid', 'csguid', 'source', 'a source', 'esguid2')");
+			"values ('1', '1', 'source', 'a source', '2')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion1', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid2')");
+			"values ('1', 'csname', 'csuri', 'csversion2', '2')");
 		
 		template.execute("Insert into h_csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
-			"values ('csmaguid', 'csguid', 'source', 'a source', 'esguid2')");
+			"values ('1', '1', 'source', 'a source', '2')");
 	
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid1', 'rid1', NOW() )");
+			"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid2', 'rid2', NOW() )");
+			"values ('2', 'rid2', NOW() )");
 	
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid1', 'csguid', 'cs', 'NEW', 'rguid1', '0')");
+			"values ('1', '1', 'cs', 'NEW', '1', '0')");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
+			"values ('2', '1', 'cs', 'MODIFY', '2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("1", "rid2");
 		
 		assertEquals("a source", cs.getSource(0).getContent());
 	}
@@ -141,24 +141,24 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	public void getHistoryCodingSchemeByRevisionWithHistoryFromHistory() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid1')");
+			"values ('1', 'csname', 'csuri', 'csversion2', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion2', 'esguid2')");
+			"values ('1', 'csname', 'csuri', 'csversion2', '2')");
 	
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid1', 'rid1', NOW() )");
+			"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-			"values ('rguid2', 'rid2', NOW() )");
+			"values ('2', 'rid2', NOW() )");
 	
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid1', 'csguid', 'cs', 'NEW', 'rguid1', '0')");
+			"values ('1', '1', 'cs', 'NEW', '1', '0')");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, revisionguid, relativeorder) " +
-			"values ('esguid2', 'csguid', 'cs', 'MODIFY', 'rguid2', '0')");
+			"values ('2', '1', 'cs', 'MODIFY', '2', '0')");
 		
-		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("csguid", "rid2");
+		CodingScheme cs = ibatisCodingSchemeDao.getHistoryCodingSchemeByRevision("1", "rid2");
 		
 		assertNotNull(cs);
 		

@@ -48,14 +48,14 @@ public class IbatisAssociationTargetDaoTest extends LexEvsDbUnitTestBase {
 	public void getTriple() throws SQLException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-				"values ('rel-guid', 'cs-guid', 'c-name')");
+				"values ('1', '1', 'c-name')");
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-				"('ap-guid', 'rel-guid', 'apname')");
+				"('1', '1', 'apname')");
 		
 		template.execute("insert into " +
 				"entityassnstoentity (" +
@@ -66,8 +66,8 @@ public class IbatisAssociationTargetDaoTest extends LexEvsDbUnitTestBase {
 				"targetEntityCode, " +
 				"targetEntityCodeNamespace " +
 				") values " +
-				"('eae-guid', " +
-				"'ap-guid'," +
+				"('1', " +
+				"'1'," +
 				"'sc'," +
 				"'sns'," +
 				"'tc'," +
@@ -79,30 +79,30 @@ public class IbatisAssociationTargetDaoTest extends LexEvsDbUnitTestBase {
 				"associationPredicateGuid, " +
 				"sourceEntityCode, " +
 				"sourceEntityCodeNamespace) values " +
-				"('ead-guid', " +
-				"'ap-guid'," +
+				"('2', " +
+				"'1'," +
 				"'sc'," +
 				"'sns')");
 		
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eaeq-guid', " +
-				"'eae-guid'," +
+				"'1', " +
+				"'2'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'esguid' )");
+				"'1' )");
 		
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eaeq-guid2', " +
-				"'ead-guid'," +
+				"'2', " +
+				"'1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'esguid' )");
+				"'2' )");
 		
 		
 		
-		AssociationSource source = ibatisAssociationTargetDao.getTripleByUid("cs-guid", "eae-guid");
+		AssociationSource source = ibatisAssociationTargetDao.getTripleByUid("1", "1");
 		assertNotNull(source);
 		
 		assertEquals("sc", source.getSourceEntityCode());

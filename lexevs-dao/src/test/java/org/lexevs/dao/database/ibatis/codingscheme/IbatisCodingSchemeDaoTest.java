@@ -63,13 +63,13 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		SupportedHierarchy hier = new SupportedHierarchy();
 		hier.setLocalId("test");
 		hier.setAssociationNames(new String[] {"test", "test2", "test3"});
 	
-		ibatisCodingSchemeDao.insertURIMap("csguid", hier);
+		ibatisCodingSchemeDao.insertURIMap("1", hier);
 		
 		template.queryForObject("Select * from cssupportedattrib", new RowMapper(){
 
@@ -135,7 +135,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 				assertTrue(rs.getLong(7) == 22l);
 				assertTrue(rs.getString(8).equals("cs Description"));
 				assertTrue(rs.getString(9).equals("cs Copyright"));
-				assertTrue(rs.getBoolean(10) == false);
+				assertEquals("0",rs.getString(10));
 				assertTrue(rs.getString(11).equals("cs owner"));
 				assertTrue(rs.getString(12).equals("testing"));
 				assertTrue(rs.getTimestamp(13).equals(effectiveDate));
@@ -291,17 +291,17 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	public void testUpdateCodingSchemeSource() throws SQLException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into csmultiattrib " +
-			"values ('csmaguid', 'csguid', 'source', 'a source', 'subRef', 'role', null)");
+			"values ('1', '1', 'source', 'a source', 'subRef', 'role', null)");
 		
 		Source source = new Source();
 		source.setContent("a source");
 		source.setSubRef("updatedSubRef");
 		source.setRole("updated role");
 		
-		ibatisCodingSchemeDao.insertOrUpdateCodingSchemeSource("csguid", source);
+		ibatisCodingSchemeDao.insertOrUpdateCodingSchemeSource("1", source);
 		
 		assertEquals(1, template.queryForInt("select count(*) from csmultiattrib"));
 		
@@ -441,10 +441,10 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid', 'csguid', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null, null, null, null, null, null)");
+			"values ('1', '1', 'CodingScheme', 'id', 'uri', null, null, null, null, null, null, null, null, null, null, null)");
 		
 		
 		SupportedCodingScheme scs = new SupportedCodingScheme();
@@ -452,7 +452,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		scs.setLocalId("id");
 		scs.setUri("changedUri");
 		
-		ibatisCodingSchemeDao.insertOrUpdateURIMap("csguid", scs);
+		ibatisCodingSchemeDao.insertOrUpdateURIMap("1", scs);
 		
 		assertEquals(1, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
@@ -477,17 +477,17 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid1', 'csguid', 'CodingScheme', 'id1', 'uri1', null, null, null, null, null, null, null, null, null, null, null)");
+			"values ('1', '1', 'CodingScheme', 'id1', 'uri1', null, null, null, null, null, null, null, null, null, null, null)");
 		
 		template.execute("Insert into cssupportedattrib " +
-			"values ('cssaguid2', 'csguid', 'CodingScheme', 'id2', 'uri2', null, null, null, null, null, null, null, null, null, null, null)");
+			"values ('2', '1', 'CodingScheme', 'id2', 'uri2', null, null, null, null, null, null, null, null, null, null, null)");
 
 		assertEquals(2, template.queryForInt("Select count(*) from cssupportedattrib"));
 		
-		ibatisCodingSchemeDao.deleteCodingSchemeMappings("csguid");
+		ibatisCodingSchemeDao.deleteCodingSchemeMappings("1");
 		
 		assertEquals(0, template.queryForInt("Select count(*) from cssupportedattrib"));
 	}
@@ -667,16 +667,16 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	}
 	
 	@Test
-	public void testGetCodingSchemeByIdEntryState() throws SQLException{
+	public void testGetCodingSchemeByUidEntryState() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 			template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-				"values ('csguid', 'csname', 'csuri', 'csversion', 'esguid')");
+				"values ('1', 'csname', 'csuri', 'csversion', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid', 'rid', NOW() )");
+				"values ('1', 'rid', NOW() )");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder) " +
-				"values ('esguid', 'csguid', 'cs', 'NEW', '0')");
+				"values ('1', '1', 'cs', 'NEW', '0')");
 		
 		CodingScheme returnedCs = ibatisCodingSchemeDao.getCodingSchemeByNameAndVersion("csname", "csversion");
 		
@@ -690,12 +690,12 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
-		"values ('cssa-guid', 'cs-guid', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+		"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 		
-		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("1");
 		
 		assertNotNull(mappings);
 		assertEquals(1, mappings.getSupportedAssociationCount());
@@ -706,12 +706,12 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, idValue, uri, equivalentCodingScheme) " +
-		"values ('cssa-guid', 'cs-guid', 'Namespace', 'test-ns', 'test-ns', 'a-uri', 'eq-cs')");
+		"values ('1', '1', 'Namespace', 'test-ns', 'test-ns', 'a-uri', 'eq-cs')");
 		
-		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("1");
 		
 		assertNotNull(mappings);
 		assertEquals(1, mappings.getSupportedNamespaceCount());
@@ -729,12 +729,12 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, idValue, uri) " +
-		"values ('cssa-guid', 'cs-guid', 'Namespace', 'test-ns', 'test-ns', 'a-uri')");
+		"values ('1', '1', 'Namespace', 'test-ns', 'test-ns', 'a-uri')");
 		
-		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("1");
 		
 		assertNotNull(mappings);
 		assertEquals(1, mappings.getSupportedNamespaceCount());
@@ -752,12 +752,12 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, idValue, associationNames, rootCode, isForwardNavigable) " +
-		"values ('cssa-guid', 'cs-guid', 'Hierarchy', 'test-h', 'test-h', 'test-assoc', 'root', true)");
+		"values ('1', '1', 'Hierarchy', 'test-h', 'test-h', 'test-assoc', 'root', '1')");
 		
-		Mappings mappings = ibatisCodingSchemeDao.getMappings("cs-guid");
+		Mappings mappings = ibatisCodingSchemeDao.getMappings("1");
 		
 		assertNotNull(mappings);
 		assertEquals(1, mappings.getSupportedHierarchyCount());
@@ -870,23 +870,23 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	public void testUpdateCodingSchemeById() throws SQLException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, approxNumConcepts) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion', '1234')");
+			"values ('1', 'csname', 'csuri', 'csversion', 1234)");
 		
 		int count1 = template.queryForInt("select count(*) from codingscheme");
 		assertEquals(1, count1);
 		
-		long preUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = 'csguid'");
+		long preUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = '1'");
 		assertEquals(1234l, preUpdateConcepts);
 		
 		CodingScheme newCs = new CodingScheme();
 		newCs.setApproxNumConcepts(11111l);
 		
-		ibatisCodingSchemeDao.updateCodingScheme("csguid", newCs);
+		ibatisCodingSchemeDao.updateCodingScheme("1", newCs);
 		
 		int count2 = template.queryForInt("select count(*) from codingscheme");
 		assertEquals(1, count2);
 		
-		long postUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = 'csguid'");
+		long postUpdateConcepts = template.queryForLong("select approxNumConcepts from codingscheme where codingSchemeGuid = '1'");
 		assertEquals(11111l, postUpdateConcepts);
 	}
 	
@@ -898,19 +898,19 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	public void testDistinctPropertyNames() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pname1', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation')");
+			"values ('2', '1', 'entity', 'pname2', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		
-		List<String> pnames = this.ibatisCodingSchemeDao.getDistinctPropertyNamesOfCodingScheme("csguid");
+		List<String> pnames = this.ibatisCodingSchemeDao.getDistinctPropertyNamesOfCodingScheme("1");
 		
 		assertEquals(2, pnames.size());
 		
@@ -927,21 +927,21 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+			"values ('1', '1', 'ecode1', 'ens1')");
 		
 		template.execute("Insert into entityType " +
-			"values ('eguid1', 'etype1')");
+			"values ('1', 'etype1')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+			"values ('2', '1', 'ecode2', 'ens2')");
 	
 		template.execute("Insert into entityType " +
-			"values ('eguid2', 'etype2')");
+			"values ('2', 'etype2')");
 		
-		List<String> etypes = this.ibatisCodingSchemeDao.getDistinctEntityTypesOfCodingScheme("csguid");
+		List<String> etypes = this.ibatisCodingSchemeDao.getDistinctEntityTypesOfCodingScheme("1");
 		
 		assertEquals(2, etypes.size());
 		
@@ -958,21 +958,21 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'csguid', 'ecode1', 'ens1')");
+			"values ('1', '1', 'ecode1', 'ens1')");
 		
 		template.execute("Insert into entityType " +
-			"values ('eguid1', 'etype1')");
+			"values ('1', 'etype1')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+			"values ('2', '1', 'ecode2', 'ens2')");
 	
 		template.execute("Insert into entityType " +
-			"values ('eguid2', 'etype2')");
+			"values ('2', 'etype2')");
 		
-		List<String> etypes = this.ibatisCodingSchemeDao.getDistinctNamespacesOfCodingScheme("csguid");
+		List<String> etypes = this.ibatisCodingSchemeDao.getDistinctNamespacesOfCodingScheme("1");
 		
 		assertEquals(2, etypes.size());
 		
@@ -989,21 +989,21 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+			"values ('1', '1', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+			"values ('2', '1', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid3', 'eguid', 'entity', 'pname3', 'pvalue', 'presentation')");
+			"values ('3', '1', 'entity', 'pname3', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<String> formats = this.ibatisCodingSchemeDao.getDistinctFormatsOfCodingScheme("csguid");
+		List<String> formats = this.ibatisCodingSchemeDao.getDistinctFormatsOfCodingScheme("1");
 		
 		assertEquals(2, formats.size());
 		
@@ -1020,18 +1020,18 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('en', 'pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+			"values ('en', '1', '1', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
 		
 		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('fr', 'pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+			"values ('fr', '2', '1', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
 		
 		template.execute("Insert into codingScheme (defaultLanguage, codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('ge', 'csguid', 'csname', 'csuri', 'csversion')");
+			"values ('ge', '1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<String> langs = this.ibatisCodingSchemeDao.getDistinctLanguagesOfCodingScheme("csguid");
+		List<String> langs = this.ibatisCodingSchemeDao.getDistinctLanguagesOfCodingScheme("1");
 		
 		assertEquals(3, langs.size());
 		
@@ -1049,24 +1049,24 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('en', 'pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+			"values ('en', '1', '1', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
 		
 		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('fr', 'pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+			"values ('fr', '2', '1', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
-			"values ('pmaguid1', 'pguid1', 'type1', 'name1')");
+			"values ('1', '1', 'type1', 'name1')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
-			"values ('pmaguid2', 'pguid2', 'type2', 'name2')");
+			"values ('2', '2', 'type2', 'name2')");
 		
 		template.execute("Insert into codingScheme (defaultLanguage, codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('ge', 'csguid', 'csname', 'csuri', 'csversion')");
+			"values ('ge', '1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<String> types = this.ibatisCodingSchemeDao.getDistinctPropertyQualifierTypesOfCodingScheme("csguid");
+		List<String> types = this.ibatisCodingSchemeDao.getDistinctPropertyQualifierTypesOfCodingScheme("1");
 		
 		assertEquals(2, types.size());
 		
@@ -1083,24 +1083,24 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('en', 'pguid1', 'eguid', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
+			"values ('en', '1', '1', 'entity', 'pname1', 'pvalue', 'presentation', 'format1')");
 		
 		template.execute("Insert into property (language, propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, format) " +
-			"values ('fr', 'pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
+			"values ('fr', '2', '1', 'entity', 'pname2', 'pvalue', 'presentation', 'format2')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
-			"values ('pmaguid1', 'pguid1', 'type1', 'name1')");
+			"values ('1', '1', 'type1', 'name1')");
 		
 		template.execute("Insert into propertymultiattrib (propMultiAttribGuid, propertyGuid, attributeType, attributeId) " +
-			"values ('pmaguid2', 'pguid2', 'type2', 'name2')");
+			"values ('2', '2', 'type2', 'name2')");
 		
 		template.execute("Insert into codingScheme (defaultLanguage, codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('ge', 'csguid', 'csname', 'csuri', 'csversion')");
+			"values ('ge', '1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<String> names = this.ibatisCodingSchemeDao.getDistinctPropertyQualifierNamesOfCodingScheme("csguid");
+		List<String> names = this.ibatisCodingSchemeDao.getDistinctPropertyQualifierNamesOfCodingScheme("1");
 		
 		assertEquals(2, names.size());
 		

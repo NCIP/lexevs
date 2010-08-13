@@ -31,6 +31,7 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class VersionableEventCodingSchemeServiceTest.
@@ -53,25 +54,25 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid2', 'rel-guid', 'apname2')");
+		"('2', '1', 'apname2')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -79,8 +80,8 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentitytr" +
-				" values ('eaetr-guid1'," +
-				" 'ap-guid2'," +
+				" values ('1'," +
+				" '2'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -102,25 +103,25 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid2', 'rel-guid', 'apname2')");
+		"('2', '1', 'apname2')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -128,8 +129,8 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentitytr" +
-				" values ('eaetr-guid1'," +
-				" 'ap-guid2'," +
+				" values ('1'," +
+				" '2'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -151,25 +152,25 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid2', 'rel-guid', 'apname2')");
+		"('2', '1', 'apname2')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -177,13 +178,13 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentitytr" +
-				" values ('eaetr-guid1'," +
-				" 'ap-guid2'," +
+				" values ('1'," +
+				" '2'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
 				" 't-ns1', " +
-				" null");
+				" null)");
 		
 		List<String> rels = service.
 			listCodeRelationships("csuri", "csversion", "INVALID_CONTAINER_NAME", "s-code", "s-ns", "t-code1", "t-ns1", new GraphQuery(), true);
@@ -197,23 +198,23 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'csguid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -221,10 +222,10 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		AssociatedConcept associatedConcept = this.service.
-			getAssociatedConceptFromUidSource("csuri", "csversion", true, null, null, "eae-guid");
+			getAssociatedConceptFromUidSource("csuri", "csversion", true, null, null, "1");
 		
 		assertNotNull(associatedConcept.getEntity());
 	}
@@ -235,23 +236,23 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'csguid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -259,10 +260,10 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		AssociatedConcept associatedConcept = this.service.
-			getAssociatedConceptFromUidSource("csuri", "csversion", false, null, null, "eae-guid");
+			getAssociatedConceptFromUidSource("csuri", "csversion", false, null, null, "1");
 		
 		assertNull(associatedConcept.getEntity());
 	}
@@ -273,26 +274,26 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid1', 'eguid', 'entity', 'pid1', 'pvalue1', 'presentation')");
+			"values ('1', '1', 'entity', 'pid1', 'pvalue1', 'presentation')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid2', 'eguid', 'entity', 'pid2', 'pvalue2', 'definition')");
+			"values ('2', '1', 'entity', 'pid2', 'pvalue2', 'definition')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'csguid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -300,7 +301,7 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		AssociatedConcept associatedConcept = this.service.
 			getAssociatedConceptFromUidSource(
@@ -309,7 +310,7 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 					true, 
 					null, 
 					new PropertyType[] {PropertyType.DEFINITION}, 
-					"eae-guid");
+					"1");
 		
 		assertEquals(1,associatedConcept.getEntity().getDefinitionCount());
 		assertEquals(0,associatedConcept.getEntity().getPresentationCount());
@@ -322,26 +323,26 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid1', 'eguid', 'entity', 'pid1', 'pname1', 'presentation')");
+			"values ('1', '1', 'entity', 'pid1', 'pname1', 'presentation')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid2', 'eguid', 'entity', 'pname2', 'pvalue', 'definition')");
+			"values ('2', '1', 'entity', 'pname2', 'pvalue', 'definition')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'csguid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -349,7 +350,7 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		LocalNameList lnl = new LocalNameList();
 		lnl.addEntry("pname2");
@@ -361,7 +362,7 @@ public class VersionableEventCodedNodeGraphServiceTest extends LexEvsDbUnitTestB
 					true, 
 					lnl, 
 					null, 
-					"eae-guid");
+					"1");
 		
 		assertEquals(1,associatedConcept.getEntity().getDefinitionCount());
 		assertEquals(0,associatedConcept.getEntity().getPresentationCount());

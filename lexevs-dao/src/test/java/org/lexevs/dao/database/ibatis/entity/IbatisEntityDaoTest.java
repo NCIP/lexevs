@@ -126,7 +126,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 				assertTrue(rs.getBoolean(5));
 				assertTrue(rs.getBoolean(6));
 				assertTrue(rs.getString(7).equals("a description"));
-				assertFalse(rs.getBoolean(8));
+				assertEquals('0',rs.getString(8));
 				assertTrue(rs.getString(9).equals("entity owner"));
 				assertTrue(rs.getString(10).equals("testing"));
 				assertTrue(rs.getTimestamp(11).equals(effectiveDate));
@@ -216,7 +216,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 				assertTrue(rs.getBoolean(5) == true);
 				assertTrue(rs.getBoolean(6) == true);
 				assertTrue(rs.getString(7).equals("a description"));
-				assertTrue(rs.getBoolean(8) == false);
+				assertEquals("0",rs.getString(8));
 				assertTrue(rs.getString(9).equals("entity owner"));
 				assertTrue(rs.getString(10).equals("testing"));
 				assertTrue(rs.getTimestamp(11).equals(effectiveDate));
@@ -587,15 +587,15 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	public void testEntityPresentations() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("csguid", 0, -1);
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("1", 0, -1);
 		
 		assertEquals(1, entities.size());
 		
@@ -614,20 +614,35 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetAllEntitiesByUids() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+			"values ('2', '1', 'ecode2', 'ens2')");
 		
-		List<Entity> entities = ibatisEntityDao.getEntities("csguid", DaoUtility.createNonTypedList("eguid","eguid2"));
+		List<Entity> entities = ibatisEntityDao.getEntities("1", DaoUtility.createNonTypedList("1","2"));
 		
 		assertEquals(2, entities.size());
+	}
+	
+	@Test
+	public void testGetEntityUId() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 'ecode', 'ens')");
+		
+		String entityUid = ibatisEntityDao.getEntityUId("1", "ecode", "ens");
+		
+		assertEquals("1", entityUid);
 	}
 	
 	/**
@@ -638,15 +653,15 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	public void testEntityDefinition() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'definition')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'definition')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
-		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("csguid", 0, -1);
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("1", 0, -1);
 		
 		assertEquals(1, entities.size());
 		
@@ -666,22 +681,22 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	public void testEntityCount() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid2', 'csguid', 'ecode2', 'ens2')");
+			"values ('2', '1', 'ecode2', 'ens2')");
 		
-		int count = ibatisEntityDao.getEntityCount("csguid");
+		int count = ibatisEntityDao.getEntityCount("1");
 		
 		assertEquals(2, count);
 		
-		int count2 = ibatisEntityDao.getEntityCount("BOGUScsguid");
+		int count2 = ibatisEntityDao.getEntityCount("9999");
 		
 		assertEquals(0, count2);
 	}
@@ -695,27 +710,27 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation', '1')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid')");
+				"values ('1', '1', 'ecode', 'ens', '1')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid1', 'rid1', NOW() )");
+				"values ('1', 'rid1', NOW() )");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+				"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
-		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rid1");
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("1", "1", "rid1");
 		
 		assertNotNull(entity);
 	}
@@ -725,38 +740,38 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 	public void testGetHistoryEntityWithTwoInHistory() throws InterruptedException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType) " +
-			"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation')");
+			"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation')");
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 	
 		template.execute("Insert into h_property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, entryStateGuid) " +
-				"values ('pguid', 'eguid', 'entity', 'pid', 'pvalue', 'presentation', 'esguid1')");
+				"values ('1', '1', 'entity', 'pid', 'pvalue', 'presentation', '1')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid, description) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid1', 'd1')");
+				"values ('1', '1', 'ecode', 'ens', '1', 'd1')");
 		
 		template.execute("Insert into h_entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, entryStateGuid, description) " +
-				"values ('eguid', 'csguid', 'ecode', 'ens', 'esguid2', 'd2')");
+				"values ('1', '1', 'ecode', 'ens', '2', 'd2')");
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid1', 'rid1', NOW() )");
+				"values ('1', 'rid1', NOW() )");
 		
 		Thread.sleep(10);
 		
 		template.execute("Insert into revision (revisionguid, revisionId, revAppliedDate) " +
-				"values ('rguid2', 'rid2', NOW() )");
+				"values ('2', 'rid2', NOW() )");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid1', 'eguid', 'entity', 'NEW', '0', 'rguid1')");
+				"values ('1', '1', 'entity', 'NEW', '0', '1')");
 		
 		template.execute("Insert into entrystate (entrystateguid, entryguid, entrytype, changetype, relativeorder, revisionguid) " +
-				"values ('esguid2', 'eguid', 'entity', 'MODIFY', '0', 'rguid2')");
+				"values ('2', '1', 'entity', 'MODIFY', '0', '2')");
 		
-		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("csguid", "eguid", "rid2");
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("1", "1", "rid2");
 		
 		assertNotNull(entity);
 		
@@ -769,15 +784,15 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 	
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'association')");
+			"values ('1', 'association')");
 			
-		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("1", "ecode", "ens");
 		
 		assertNotNull(entity);
 		
@@ -790,18 +805,18 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'instance')");
+			"values ('1', 'instance')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'concept')");
+			"values ('1', 'concept')");
 			
-		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("1", "ecode", "ens");
 		
 		assertNotNull(entity);
 		
@@ -820,30 +835,30 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		Timestamp timestamp2 = new Timestamp(2l);
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isDefined, isAnonymous, description, isActive, owner, status,       effectiveDate,                 expirationDate) " +
-			"values 							('eguid',   'csguid',         'ecode',       'ens',            false,        true,     'ed',       true,   'me',  'test', '" +timestamp1.toString()+"', '" +timestamp2.toString()+ "')");
+			"values 							('1',            '1',         'ecode',       'ens',            '0',        '1',         'ed',       '1',   'me',  'test', '"+ timestamp1.toString()+"', '" + timestamp2.toString()+ "')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, propertyId) " +
-			"values ('pguid1', 'eguid', 'entity', 'pid1', 'pvalue', 'presentation', 'propId1')");
+			"values ('1', '1', 'entity', 'pid1', 'pvalue', 'presentation', 'propId1')");
 		
 		template.execute("Insert into property (propertyGuid, referenceGuid, referenceType, propertyName, propertyValue, propertyType, propertyId) " +
-			"values ('pguid2', 'eguid', 'entity', 'pid2', 'pvalue', 'presentation', 'propId2')");
+			"values ('2', '1', 'entity', 'pid2', 'pvalue', 'presentation', 'propId2')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'instance')");
+			"values ('1', 'instance')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'concept')");
+			"values ('1', 'concept')");
 		
 		template.execute("Insert into propertylinks " +
-			"values ('plguid1', 'eguid', 'pguid1', 'propertyLink1', 'pguid2', null)");
+			"values ('1', '1', '1', 'propertyLink1', '2', null)");
 		
 		template.execute("Insert into propertylinks " +
-			"values ('plguid2', 'eguid', 'pguid2', 'propertyLink2', 'pguid1', null)");
+			"values ('2', '1', '2', 'propertyLink2', '1', null)");
 			
-		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("1", "ecode", "ens");
 		
 		assertNotNull(entity);
 		
@@ -884,15 +899,15 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'association')");
+			"values ('1', 'association')");
 			
-		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("csguid", "ecode", "ens");
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("1", "ecode", "ens");
 		
 		assertNotNull(entity);
 		
@@ -909,13 +924,13 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-			"values ('csguid', 'csname', 'csuri', 'csversion')");
+			"values ('1', 'csname', 'csuri', 'csversion')");
 	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'csguid', 'ecode', 'ens')");
+			"values ('1', '1', 'ecode', 'ens')");
 
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid', 'association')");
+			"values ('1', 'association')");
 			
 		Entity modifiedEntity = new Entity();
 		modifiedEntity.setEntityCode("ecode");
@@ -925,7 +940,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		ed.setContent("updated content");
 		modifiedEntity.setEntityDescription(ed);
 		
-		ibatisEntityDao.updateEntity("csguid", "eguid", modifiedEntity);
+		ibatisEntityDao.updateEntity("1", "1", modifiedEntity);
 
 		template.queryForObject("Select * from entity", new RowMapper(){
 

@@ -59,12 +59,12 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('csguid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		ibatisVersionsDao.insertEntryState(
-				"csguid",
-				"entryStateUId",
-				"entryUId", 
+				"1",
+				"1",
+				"1", 
 				EntryStateType.CODINGSCHEME, 
 				null, 
 				es);
@@ -72,8 +72,6 @@ public class IbatisVersionsDaoTest extends LexEvsDbUnitTestBase {
 		template.queryForObject("Select * from EntryState", new RowMapper(){
 
 			public Object mapRow(ResultSet rs, int arg1) throws SQLException {
-				assertEquals(rs.getString(1), "entryStateUId");
-				assertEquals(rs.getString(2), "entryUId");
 				assertEquals("codingScheme", rs.getString(3));
 				assertEquals(rs.getString(4), ChangeType.REMOVE.toString());
 				assertEquals(rs.getLong(5), 24l);

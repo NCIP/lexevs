@@ -59,20 +59,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -80,11 +80,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, null, false);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, null, false);
 			
 		
 		assertEquals(1, rels.size());
-		assertTrue(rels.contains("ap-guid"));
+		assertTrue(rels.contains("1"));
 	}
 	
 	@Test
@@ -92,32 +92,32 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 	
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1')");
+		"values ('2', '1', 't-code1', 't-ns1')");
 
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-		"values ('eguid2', 'concept')");
+		"values ('2', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -125,11 +125,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept"), null, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept"), null, true);
 			
 		
 		assertEquals(1, rels.size());
-		assertTrue(rels.contains("ap-guid"));
+		assertTrue(rels.contains("1"));
 	}
 
 	@Test
@@ -137,32 +137,32 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 	
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'definition')");
+			"values ('1', 'definition')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1')");
+		"values ('2', '1', 't-code1', 't-ns1')");
 
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-		"values ('eguid2', 'concept')");
+		"values ('2', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -170,7 +170,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept"), null, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept"), null, true);
 			
 		
 		assertEquals(0, rels.size());
@@ -181,32 +181,32 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 	
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'definition')");
+			"values ('1', 'definition')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1')");
+		"values ('2', '1', 't-code1', 't-ns1')");
 
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-		"values ('eguid2', 'instance')");
+		"values ('2', 'instance')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -214,7 +214,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept"), null, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept"), null, true);
 			
 		
 		assertEquals(0, rels.size());
@@ -225,32 +225,32 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 	
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'definition')");
+			"values ('1', 'definition')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1')");
+		"values ('2', '1', 't-code1', 't-ns1')");
 
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-		"values ('eguid2', 'concept')");
+		"values ('2', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -258,7 +258,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept", "definition"), null, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, DaoUtility.createNonTypedList("concept", "definition"), null, true);
 			
 		
 		assertEquals(1, rels.size());
@@ -269,26 +269,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns', false)");
+			"values ('1', '1', 's-code', 's-ns', '0')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1', false)");
+		"values ('2', '1', 't-code1', 't-ns1', '0')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -296,7 +296,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, false, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, false, true);
 			
 		assertEquals(1, rels.size());
 	}
@@ -306,26 +306,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns', true)");
+			"values ('1', '1', 's-code', 's-ns', '1')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1', true)");
+		"values ('2', '1', 't-code1', 't-ns1', '1')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -333,7 +333,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, true, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, true, true);
 			
 		assertEquals(1, rels.size());
 	}
@@ -343,26 +343,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns', true)");
+			"values ('1', '1', 's-code', 's-ns', '1')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-		"values ('eguid2', 'cs-guid', 't-code1', 't-ns1', false)");
+		"values ('2', '1', 't-code1', 't-ns1', '0')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -370,7 +370,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, true, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, true, true);
 			
 		assertEquals(0, rels.size());
 	}
@@ -380,25 +380,25 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid2', 'rel-guid', 'apname2')");
+		"('12', '1', 'apname2')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -406,8 +406,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentitytr" +
-				" values ('eaetr-guid1'," +
-				" 'ap-guid2'," +
+				" values ('1'," +
+				" '12'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -415,11 +415,11 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				" null)");
 		
 		List<String> rels = ibatisCodedNodeGraphDao.
-			listCodeRelationships("cs-guid", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, null, true);
+			listCodeRelationships("1", null, "s-code", "s-ns", "t-code1", "t-ns1", null, null, null, null, null, null, null, null, true);
 			
 		assertEquals(2, rels.size());
-		assertTrue(rels.contains("ap-guid"));
-		assertTrue(rels.contains("ap-guid2"));
+		assertTrue(rels.contains("1"));
+		assertTrue(rels.contains("12"));
 	}
 
 	@Test
@@ -427,20 +427,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -448,8 +448,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -458,8 +458,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<String> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubject(
-					"cs-guid", 
-					"ap-guid", 
+					"1", 
+					"1", 
 					"s-code", 
 					"s-ns", 
 					null,
@@ -473,8 +473,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					-1);
 		
 		assertEquals(2, uids.size());
-		assertTrue(uids.contains("eae-guid1"));
-		assertTrue(uids.contains("eae-guid2"));
+		assertTrue(uids.contains("1"));
+		assertTrue(uids.contains("2"));
 	}
 	
 	@Test
@@ -482,20 +482,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -503,8 +503,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -513,7 +513,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, null, null, null, null, null);
+					"1", null, "s-code", "s-ns", null, null, null, null, null, null);
 
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(2), uids.get("apname"));
@@ -524,20 +524,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -545,8 +545,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -555,7 +555,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingObjectCount(
-					"cs-guid", null, "t-code1", "t-ns1", null, null, null, null, null, null);
+					"1", null, "t-code1", "t-ns1", null, null, null, null, null, null);
 		
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -566,23 +566,23 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -590,8 +590,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -601,8 +601,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<? extends AssociatedConcept> associatedConcepts = 
 			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
-					"cs-guid", 
-					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
+					"1", 
+					DaoUtility.createNonTypedList("1", "2"),
 					null,
 					TripleNode.SUBJECT);
 		
@@ -614,23 +614,23 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 'as-code', " +
 				" 'as-ns'," +
 				" 't-code1'," +
@@ -638,8 +638,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 'bs-code', " +
 				" 'bs-ns'," +
 				" 't-code2'," +
@@ -650,8 +650,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<? extends AssociatedConcept> associatedConcepts = 
 			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
-					"cs-guid", 
-					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
+					"1", 
+					DaoUtility.createNonTypedList("1", "2"),
 					Arrays.asList(sort),
 					TripleNode.SUBJECT);
 		
@@ -665,23 +665,23 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 'as-code', " +
 				" 'as-ns'," +
 				" 't-code1'," +
@@ -689,8 +689,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 'bs-code', " +
 				" 'bs-ns'," +
 				" 't-code2'," +
@@ -701,8 +701,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<? extends AssociatedConcept> associatedConcepts = 
 			ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
-					"cs-guid", 
-					DaoUtility.createNonTypedList("eae-guid1", "eae-guid2"),
+					"1", 
+					DaoUtility.createNonTypedList("1", "2"),
 					Arrays.asList(sort),
 					TripleNode.SUBJECT);
 		
@@ -716,26 +716,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-		"values ('eguid2', 'cs-guid', 't-code', 't-ns')");
+		"values ('2', '1', 't-code', 't-ns')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -744,8 +744,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 	
 		List<? extends AssociatedConcept> associatedConcepts = ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid(
-				"cs-guid", 
-				DaoUtility.createNonTypedList("eae-guid1"), null, TripleNode.OBJECT);
+				"1", 
+				DaoUtility.createNonTypedList("1"), null, TripleNode.OBJECT);
 		
 		assertEquals(1,associatedConcepts.size());
 		AssociatedConcept associatedConcept = associatedConcepts.get(0);
@@ -759,26 +759,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -787,7 +787,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = 
 			ibatisCodedNodeGraphDao.
-				getTripleUidsContainingSubjectCount("cs-guid", null, "s-code", "s-ns", null, null, null, null, null, false);
+				getTripleUidsContainingSubjectCount("1", null, "s-code", "s-ns", null, null, null, null, null, false);
 	
 		assertTrue(uids.isEmpty());
 	}
@@ -797,29 +797,29 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns', true)");
+			"values ('1', '1', 's-code', 's-ns', '1')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-			"values ('eguid2', 'cs-guid', 't-code', 't-ns', true)");
+			"values ('2', '1', 't-code', 't-ns', '1')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -828,7 +828,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = 
 			ibatisCodedNodeGraphDao.
-				getTripleUidsContainingSubjectCount("cs-guid", null, "s-code", "s-ns", null, null, null, null, null, true);
+				getTripleUidsContainingSubjectCount("1", null, "s-code", "s-ns", null, null, null, null, null, true);
 	
 		assertEquals(1,uids.size());
 	}
@@ -838,26 +838,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous) " +
-			"values ('eguid2', 'cs-guid', 't-code', 't-ns', false)");
+			"values ('2', '1', 't-code', 't-ns', '0')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid2', 'concept')");
+			"values ('2', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -866,7 +866,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = 
 			ibatisCodedNodeGraphDao.
-				getTripleUidsContainingSubjectCount("cs-guid", null, "s-code", "s-ns", null, null, null, null, null, false);
+				getTripleUidsContainingSubjectCount("1", null, "s-code", "s-ns", null, null, null, null, null, false);
 	
 		assertEquals(1,uids.size());
 	}
@@ -876,26 +876,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 't-code', 't-ns')");
+			"values ('1', '1', 't-code', 't-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -904,7 +904,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = 
 			ibatisCodedNodeGraphDao.
-				getTripleUidsContainingSubjectCount("cs-guid", null, "s-code", "s-ns", null, null, null, null, DaoUtility.createNonTypedList("concept"), null);
+				getTripleUidsContainingSubjectCount("1", null, "s-code", "s-ns", null, null, null, null, DaoUtility.createNonTypedList("concept"), null);
 	
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -915,26 +915,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -943,7 +943,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = 
 			ibatisCodedNodeGraphDao.
-				getTripleUidsContainingSubjectCount("cs-guid", null, "s-code", "s-ns", null, null, null, null, DaoUtility.createNonTypedList("WRONG_ENTITY_TYPE"), null);
+				getTripleUidsContainingSubjectCount("1", null, "s-code", "s-ns", null, null, null, null, DaoUtility.createNonTypedList("WRONG_ENTITY_TYPE"), null);
 	
 		assertTrue(uids.isEmpty());
 	}
@@ -953,29 +953,29 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 't-code', 't-ns')");
+			"values ('1', '1', 't-code', 't-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'some_other_type')");
+			"values ('1', 'some_other_type')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -984,7 +984,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = 
 			ibatisCodedNodeGraphDao.
-				getTripleUidsContainingSubjectCount("cs-guid", null, "s-code", "s-ns", null, null, null, null, DaoUtility.createNonTypedList("some_other_type"), null);
+				getTripleUidsContainingSubjectCount("1", null, "s-code", "s-ns", null, null, null, null, DaoUtility.createNonTypedList("some_other_type"), null);
 	
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -995,20 +995,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1016,8 +1016,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1026,17 +1026,17 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eae-quals-guid', " +
-				"'eae-guid1'," +
+				"'1', " +
+				"'1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'es' )");
+				"'1' )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", null));
 		
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, list, null, null, null, null);
+					"1", null, "s-code", "s-ns", null, list, null, null, null, null);
 		
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -1047,20 +1047,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1068,8 +1068,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1078,17 +1078,17 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eae-quals-guid', " +
-				"'eae-guid1'," +
+				"'1', " +
+				"'1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'es' )");
+				"'1' )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("BAD_qualName", null));
 		
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, list, null, null, null, null);
+					"1", null, "s-code", "s-ns", null, list, null, null, null, null);
 		
 		assertEquals(0, uids.keySet().size());
 	}
@@ -1098,20 +1098,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1119,8 +1119,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1129,17 +1129,17 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eae-quals-guid', " +
-				"'eae-guid1'," +
+				"'1', " +
+				"'1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'es'  )");
+				"'1'  )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", "qualValue"));
 		
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, list, null, null, null, null);
+					"1", null, "s-code", "s-ns", null, list, null, null, null, null);
 		
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -1150,20 +1150,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1171,8 +1171,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1181,17 +1181,17 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eae-quals-guid', " +
-				"'eae-guid1'," +
+				"'1', " +
+				"'1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'es' )");
+				"'1' )");
 		List<QualifierNameValuePair> list = new ArrayList<QualifierNameValuePair>();
 		list.add(new QualifierNameValuePair("qualName", "BAD_qualValue"));
 		
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, list, null, null, null, null);
+					"1", null, "s-code", "s-ns", null, list, null, null, null, null);
 		
 		assertEquals(0, uids.keySet().size());
 	}
@@ -1201,20 +1201,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1222,8 +1222,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1232,17 +1232,17 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		template.execute("insert into " +
 				"entityassnquals values ( " +
-				"'eae-quals-guid', " +
-				"'eae-guid1'," +
+				"'1', " +
+				"'1'," +
 				"'qualName'," +
 				"'qualValue'," +
-				"'es' )");
+				"'1' )");
 		
 		CodeNamespacePair pair = new CodeNamespacePair("t-code2", "t-ns2");
 	
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, null, DaoUtility.createNonTypedList(pair), null, null, null);
+					"1", null, "s-code", "s-ns", null, null, DaoUtility.createNonTypedList(pair), null, null, null);
 		
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -1253,20 +1253,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1274,8 +1274,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1285,7 +1285,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		Map<String,Integer> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubjectCount(
-					"cs-guid", null, "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), null, null);
+					"1", null, "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), null, null);
 		
 		assertEquals(1, uids.keySet().size());
 		assertEquals(new Integer(1), uids.get("apname"));
@@ -1296,20 +1296,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1317,8 +1317,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1328,10 +1328,10 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	
 		List<String> uids = ibatisCodedNodeGraphDao.
 			getTripleUidsContainingSubject(
-					"cs-guid", "ap-guid", "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), null, null, null, 0, -1);
+					"1", "1", "s-code", "s-ns", null, null, null, DaoUtility.createNonTypedList("t-ns2"), null, null, null, 0, -1);
 		
 		assertEquals(1, uids.size());
-		assertEquals("eae-guid2", uids.get(0));
+		assertEquals("2", uids.get(0));
 	}
 	
 	@Test
@@ -1339,20 +1339,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1360,8 +1360,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1369,7 +1369,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id2', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null, null, null, null,TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", null, null, null, null,TraverseAssociations.INDIVIDUALLY);
 
 		assertEquals(1, uids.size());
 
@@ -1380,20 +1380,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1401,8 +1401,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1410,7 +1410,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", null, null, null, null,TraverseAssociations.TOGETHER);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", null, null, null, null,TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
 		
@@ -1422,20 +1422,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1443,8 +1443,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1452,7 +1452,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id2', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"), null, null, null,TraverseAssociations.TOGETHER);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", DaoUtility.createNonTypedList("1"), null, null, null,TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
 
@@ -1464,20 +1464,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1485,8 +1485,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1495,7 +1495,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 
 		List<ConceptReference> uids = ibatisCodedNodeGraphDao.
-		getRootNodes("cs-guid", DaoUtility.createNonTypedList("INVALID"), null,null, null,
+		getRootNodes("1", DaoUtility.createNonTypedList("999"), null,null, null,
 				TraverseAssociations.INDIVIDUALLY);
 
 		assertEquals(0, uids.size());
@@ -1506,20 +1506,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1527,8 +1527,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1536,8 +1536,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", 
-				DaoUtility.createNonTypedList("INVALID", "ap-guid"), null,null, null, TraverseAssociations.TOGETHER);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", 
+				DaoUtility.createNonTypedList("999", "1"), null,null, null, TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
 
@@ -1549,20 +1549,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1570,8 +1570,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1579,16 +1579,16 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnquals" +
-				" values ('eaeq-guid1'," +
-				" 'eae-guid2'," +
+				" values ('1'," +
+				" '2'," +
 				" 'test', " +
 				" 'testValue'," +
 				" null )");
 
 		QualifierNameValuePair quals = new QualifierNameValuePair("test","testValue");
 		
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("cs-guid", 
-				DaoUtility.createNonTypedList("ap-guid"), Arrays.asList(quals), null, null,TraverseAssociations.TOGETHER);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", 
+				DaoUtility.createNonTypedList("1"), Arrays.asList(quals), null, null,TraverseAssociations.TOGETHER);
 
 		assertEquals(1, uids.size());
 
@@ -1600,20 +1600,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1621,8 +1621,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1630,7 +1630,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", null, null, null, null,TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", null, null, null, null,TraverseAssociations.INDIVIDUALLY);
 
 		assertEquals(1, uids.size());
 
@@ -1642,20 +1642,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1663,8 +1663,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1672,7 +1672,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("ap-guid"), null, null, null,TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("1"), null, null, null,TraverseAssociations.INDIVIDUALLY);
 
 		assertEquals(1, uids.size());
 
@@ -1684,20 +1684,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1705,8 +1705,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1714,7 +1714,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("INVALID"), null, null, null, TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("999"), null, null, null, TraverseAssociations.INDIVIDUALLY);
 
 		assertEquals(0, uids.size());
 	}
@@ -1724,20 +1724,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1745,8 +1745,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 't-code1', " +
 				" 't-ns1'," +
 				" 't-code2'," +
@@ -1754,7 +1754,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("cs-guid", DaoUtility.createNonTypedList("INVALID", "ap-guid"), null, null, null, TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("999", "1"), null, null, null, TraverseAssociations.INDIVIDUALLY);
 
 		assertEquals(1, uids.size());
 
@@ -1766,26 +1766,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -1800,7 +1800,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		List<CountConceptReference> refs = 
 			ibatisCodedNodeGraphDao.
-				getCountConceptReferencesContainingSubject("cs-guid", null, codeList, null, null, null, null, null, null);
+				getCountConceptReferencesContainingSubject("1", null, codeList, null, null, null, null, null, null);
 	
 		assertEquals(1,refs.size());
 		
@@ -1813,26 +1813,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code'," +
@@ -1847,7 +1847,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		List<CountConceptReference> refs = 
 			ibatisCodedNodeGraphDao.
-				getCountConceptReferencesContainingObject("cs-guid", null, codeList, null, null, null, null, null, null);
+				getCountConceptReferencesContainingObject("1", null, codeList, null, null, null, null, null, null);
 	
 		assertEquals(1,refs.size());
 		
@@ -1860,26 +1860,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('cs-guid', 'csname', 'csuri', 'csversion')");
+		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('eguid1', 'cs-guid', 's-code', 's-ns')");
+			"values ('1', '1', 's-code', 's-ns')");
 		
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('eguid1', 'concept')");
+			"values ('1', 'concept')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
-		"values ('rel-guid', 'cs-guid', 'c-name')");
+		"values ('1', '1', 'c-name')");
 		
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('ap-guid', 'rel-guid', 'apname')");
+		"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid1'," +
-				" 'ap-guid'," +
+				" values ('1'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code1'," +
@@ -1887,8 +1887,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
 		template.execute("insert into entityassnstoentity" +
-				" values ('eae-guid2'," +
-				" 'ap-guid'," +
+				" values ('2'," +
+				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
 				" 't-code2'," +
@@ -1898,10 +1898,10 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		Sort sort = new Sort(ColumnSortType.CODE, Order.DESC);
 		
 		List<String> uids = 
-			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("cs-guid", null, "s-code", "s-ns", null, null, null, null, null, null, Arrays.asList(sort), 0, -1);
+			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, Arrays.asList(sort), 0, -1);
 	
 		assertEquals(2, uids.size());
-		assertEquals("eae-guid2", uids.get(0));
-		assertEquals("eae-guid1", uids.get(1));
+		assertEquals("2", uids.get(0));
+		assertEquals("1", uids.get(1));
 	}
 }
