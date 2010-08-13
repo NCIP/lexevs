@@ -13,12 +13,12 @@
 			isNavigable,
 			isTransitive
 		) VALUES (
-			#uid#, 
-			#entityUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#, 
+			#entityUId,handler=variablePrimaryKeyTypeHandler#,
 			#associationEntity.forwardName#,
 			#associationEntity.reverseName#,
-			#associationEntity.isNavigable#,
-			#associationEntity.isTransitive#
+			#associationEntity.isNavigable,handler=numericBooleanTypeHandler#,
+			#associationEntity.isTransitive,handler=numericBooleanTypeHandler#
 		)
   </insert>
   
@@ -35,15 +35,15 @@
 				associationEntity.reverseName = #associationEntity.reverseName#
 			</isNotNull>
 			<isNotNull prepend="," property="associationEntity.isNavigable">
-				associationEntity.isNavigable = #associationEntity.isNavigable#
+				associationEntity.isNavigable = #associationEntity.isNavigable,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="associationEntity.isTransitive">
-				associationEntity.isTransitive = #associationEntity.isTransitive#
+				associationEntity.isTransitive = #associationEntity.isTransitive,handler=numericBooleanTypeHandler#
 			</isNotNull>
 		</dynamic>
 
 		WHERE 
-			associationEntity.entityGuid = #entityId#
+			associationEntity.entityGuid = #entityId,handler=variablePrimaryKeyTypeHandler#
   </update>
 
 </sqlMap>

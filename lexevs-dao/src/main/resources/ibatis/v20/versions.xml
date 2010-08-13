@@ -42,7 +42,7 @@
 			ON
 				es0.revisionGuid = r0.revisionGuid
 			WHERE
-				es0.entryGuid = #param1#  
+				es0.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#  
 			AND
 				(
 				r0.revAppliedDate = (
@@ -56,7 +56,7 @@
 				ON
 					es1.revisionGuid = r1.revisionGuid
 				WHERE
-					es1.entryGuid = #param1#
+					es1.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 				AND
 					es1.changeType!= 'DEPENDENT'	
 				AND 
@@ -121,7 +121,7 @@
 		LEFT JOIN ${defaultPrefix}revision pr ON
 			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
-			es.entryGuid = #param1#
+			es.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			cr.revisionId = #param2#		
      </select>
@@ -139,7 +139,7 @@
 			${defaultPrefix}revision rev2
 			ON es.prevRevisionGuid = rev2.revisionGuid
 		WHERE
-			es.entryGuid = #param2#
+			es.entryGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 		AND
 			rev.revisionId = #param1#	
      </select>
@@ -148,9 +148,9 @@
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
      	UPDATE $prefix$entryState
 		SET 
-			prevEntryStateGuid = #param3#
+			prevEntryStateGuid = #param3,handler=variablePrimaryKeyTypeHandler#
 		WHERE
-			prevEntryStateGuid = #param2#
+			prevEntryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 		AND
 			entryGuid = #param1#
      </update>
@@ -175,7 +175,7 @@
 			description
 			)
 		VALUES (
-			#releaseUId#,
+			#releaseUId,handler=variablePrimaryKeyTypeHandler#,
 			#systemRelease.releaseURI#,
 			#systemRelease.releaseId#,
 			#systemRelease.releaseDate#,
@@ -199,10 +199,10 @@
 			description
 			)
 		VALUES (
-			#revisionGuid#,	
+			#revisionGuid,handler=variablePrimaryKeyTypeHandler#,	
 					
 			<isNotNull property="releaseGuid">
-				#releaseGuid#,
+				#releaseGuid,handler=variablePrimaryKeyTypeHandler#,
 			</isNotNull>	
 			<isNull property="releaseGuid">
 				null,
@@ -261,14 +261,14 @@
 			prevEntryStateGuid
 			)
 		VALUES (
-			#entryStateUId#,
-			#entryUId#,
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#,
+			#entryUId,handler=variablePrimaryKeyTypeHandler#,
 			#entryType:VARCHAR#,
 			#entryState.changeType:VARCHAR#,
 			#entryState.relativeOrder:NUMERIC#,
-			#revisionUId:VARCHAR#,
-			#prevRevisionUId:VARCHAR#,
-			#previousEntryStateUId:VARCHAR#
+			#revisionUId,handler=variablePrimaryKeyTypeHandler#,
+			#prevRevisionUId,handler=variablePrimaryKeyTypeHandler#,
+			#previousEntryStateUId,handler=variablePrimaryKeyTypeHandler#
 			)
  	</insert>
  	
@@ -289,7 +289,7 @@
 		FROM
 			$prefix$entryState es
 		WHERE
-			es.entryStateGuid = #param1#
+			es.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      <select id="checkRevisionExistsInVSEntryState" remapResults="true"
@@ -300,7 +300,7 @@
 		FROM
 			$prefix$vsEntryState es
 		WHERE
-			es.revisionGuid = #param1#
+			es.revisionGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
 
 	<select id="checkRevisionExistsInEntryState" remapResults="true"
@@ -311,7 +311,7 @@
 		FROM
 			$prefix$entryState es
 		WHERE
-			es.revisionGuid = #param1#
+			es.revisionGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      <select id="checkSystemReleaseExistsInCodingScheme" 
@@ -323,7 +323,7 @@
 		FROM
 			$prefix$codingScheme
 		WHERE
-			releaseGuid = #param1#
+			releaseGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      <select id="checkSystemReleaseExistsInValueSetDefinition" 
@@ -335,7 +335,7 @@
 		FROM
 			$prefix$valueSetDefinition
 		WHERE
-			releaseGuid = #param1#
+			releaseGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      <select id="checkSystemReleaseExistsInPickListDefinition" 
@@ -347,21 +347,21 @@
 		FROM
 			$prefix$vsPickList
 		WHERE
-			releaseGuid = #param1#
+			releaseGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
 
 	<delete id="deleteAllEntrySateEntriesByEntryUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$entryState
 		WHERE
-			entryGuid = #param1#
+			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 	
 	<delete id="deleteAllCodingSchemeEntrySatesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$entryState
 		WHERE
-			entryGuid = #param1#
+			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 	
 	<delete id="deletaAllCSPropEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
@@ -380,7 +380,7 @@
 			WHERE
 				prop.referenceGuid = cs.codingSchemeGuid 
 			AND
-				cs.codingSchemeGuid = #param2#
+				cs.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -400,7 +400,7 @@
 			WHERE
 				prop.referenceGuid = ent.entityGuid
 			AND
-				ent.codingSchemeGuid = #param2#
+				ent.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -417,7 +417,7 @@
 			FROM
 				$prefix$entity ent
 			WHERE
-				ent.codingSchemeGuid = #param2#
+				ent.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -437,7 +437,7 @@
 			WHERE
 				prop.referenceGuid = rel.relationGuid
 			AND
-				rel.codingSchemeGuid = #param2#
+				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -454,7 +454,7 @@
 			FROM
 				$prefix$relation rel
 			WHERE
-				rel.codingSchemeGuid = #param2#
+				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -477,7 +477,7 @@
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.codingSchemeGuid = #param2#
+				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -500,7 +500,7 @@
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.codingSchemeGuid = #param2#
+				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -518,7 +518,7 @@
 				$prefix$entity ent,
 				$prefix$property prop
 			WHERE
-				ent.entityGuid = #param2#
+				ent.entityGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			AND
 				ent.entityGuid = prop.referenceGuid				
 			)
@@ -543,7 +543,7 @@
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.relationGuid = #param2#
+				rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -566,7 +566,7 @@
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.relationGuid = #param2#
+				rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 
@@ -586,7 +586,7 @@
 			WHERE
 				prop.referenceGuid = rel.relationGuid
 			AND
-				rel.relationGuid = #param2#
+				rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	

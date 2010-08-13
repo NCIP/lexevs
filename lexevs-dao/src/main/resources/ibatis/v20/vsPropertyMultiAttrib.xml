@@ -13,15 +13,15 @@
 	
 	<resultMap id="propertyMultiAttribResultBean"
 		class="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
-		<result property="uid" column="vsPropMultiAttribGuid" />
-		<result property="propertyUId" column="vsPropertyGuid" />
+		<result property="uid" column="vsPropMultiAttribGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="propertyUId" column="vsPropertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="attributeType" column="attributeType" />
 		<result property="attributeId" column="attributeId" />
 		<result property="attributeValue" column="attributeValue" />
 		<result property="subRef" column="subRef" />
 		<result property="role" column="role" />
 		<result property="qualifierType" column="qualifierType" />
-		<result property="entryStateUId" column="esGuid" />
+		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
 	<resultMap id="usageContextResult" class="string">
@@ -53,7 +53,7 @@
 		FROM 
 			$prefix$vsPropertyMultiAttrib
 		WHERE
-			vsPropertyGuid = #param1#
+			vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</select>
 
 	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
@@ -68,15 +68,15 @@
 			qualifierType,
 			entryStateGuid
 		) VALUES (
-			#uid#,
-			#propertyUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#,
+			#propertyUId,handler=variablePrimaryKeyTypeHandler#,
 			#attributeType#,
 			#attributeId#,
 			#attributeValue#,
 			#subRef#,
 			#role#,
 			#qualifierType#,
-			#entryStateUId#
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
 		)
 	</insert>
 	
@@ -84,7 +84,7 @@
 		DELETE FROM
 			$prefix$vsPropertyMultiAttrib
 		WHERE
-			vsPropertyGuid = #param1#
+			vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND 
 			attributeType = #param2#			
 	</delete>
@@ -94,9 +94,9 @@
 		UPDATE
 			$prefix$vsPropertyMultiAttrib
 		SET
-			entryStateGuid = #param3#
+			entryStateGuid = #param3,handler=variablePrimaryKeyTypeHandler#
 		WHERE
-			vsPropertyGuid = #param1#
+			vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			attributeType = #param2#
 	</update>
@@ -117,7 +117,7 @@
 			FROM 
 				$prefix$h_vsPropertyMultiAttrib multiAttrib
 			WHERE
-				multiAttrib.entryStateGuid = #param1#
+				multiAttrib.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</select>
 
 </sqlMap>

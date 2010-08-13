@@ -159,13 +159,13 @@
 	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1#
+	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 </select>
 	 
 	 <select id="getURIMapByLocalNameAndType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1#
+	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
 	 		urimap.supportedAttributeTag = #param2#
 	 	AND
@@ -175,7 +175,7 @@
 	 <select id="getPropertyURIMapByPropertyType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1#
+	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
 	 		urimap.supportedAttributeTag = #param2#
 	 	AND
@@ -189,7 +189,7 @@
 	 	FROM
 	 		$prefix$csSupportedAttrib urimap
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1#
+	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
 	 		urimap.id = #param2#
 	 	AND
@@ -215,8 +215,8 @@
 	 		assnEntityCode,
 	 		propertyType
 		) VALUES (
-			#uid#, 
-			#codingSchemeUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#, 
+			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
 			#supportedAttributeTag#, 
 			#uriMap.localId#, 
 			#uriMap.uri:VARCHAR#,
@@ -378,7 +378,7 @@
 		DELETE FROM
 			$prefix$csSupportedAttrib
 		WHERE
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
     
 </sqlMap>

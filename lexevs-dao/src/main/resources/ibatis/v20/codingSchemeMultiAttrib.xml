@@ -15,13 +15,13 @@
 	
 	<resultMap id="csMultiAttribResultBean"
 		class="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeMultiAttribBean">
-		<result property="uid" column="csMultiAttribGuid" />
-		<result property="codingSchemeUId" column="csGuid" />
+		<result property="uid" column="csMultiAttribGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="codingSchemeUId" column="csGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="attributeType" column="attributeType" />
 		<result property="attributeValue" column="attributeValue" />
 		<result property="subRef" column="subRef" />
 		<result property="role" column="role" />
-		<result property="entryStateUId" column="esGuid" />
+		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
 	<select id="getSourceListByCodingSchemeId" remapResults="true"
@@ -34,7 +34,7 @@
 		FROM 
 			$prefix$csMultiAttrib
 		WHERE
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			attributeType = 'source'
 			
@@ -48,7 +48,7 @@
 		FROM 
 			$prefix$csMultiAttrib
 		WHERE
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			attributeType = 'localName'
 			
@@ -65,13 +65,13 @@
 			role,
 			entryStateGuid
 		) VALUES (
-			#uid#,
-			#codingSchemeUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#,
+			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
 			#attributeType#,
 			#attributeValue#,
 			#subRef:VARCHAR#,
 			#role:VARCHAR#,
-			#entryStateUId:VARCHAR#
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
 		)
 	</insert>
 
@@ -91,7 +91,7 @@
 		</dynamic>
 		
 		WHERE
-			csMultiAttrib.codingSchemeGuid = #codingSchemeUId#
+			csMultiAttrib.codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
 		AND
 			csMultiAttrib.attributeType = #attributeType#
 		AND
@@ -103,7 +103,7 @@
 		DELETE FROM
 			$prefix$csMultiAttrib
 		WHERE
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			attributeType = #param2#
 	</delete>
@@ -113,9 +113,9 @@
 		UPDATE
 			$prefix$csMultiAttrib
 		SET
-			entryStateGuid = #param3#
+			entryStateGuid = #param3,handler=variablePrimaryKeyTypeHandler#
 		WHERE
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			attributeType = #param2#
 	</update>

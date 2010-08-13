@@ -68,7 +68,7 @@
 		extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme" extends="uriMapResult">
-		<result property="isImported" column="isImported" />	
+		<result property="isImported" column="isImported" typeHandler="numericBooleanTypeHandler"/>	
 	</resultMap>
 	<resultMap id="supportedConceptDomainResult" class="supportedConceptDomain"
 		extends="uriMapResult">
@@ -92,7 +92,7 @@
 		extends="uriMapResult">
 		<result property="associationNames" column="associationNames" typeHandler="StringArrayTypeHandler"/>
 		<result property="rootCode" column="rootCode" />
-		<result property="isForwardNavigable" column="isForwardNavigable"/>
+		<result property="isForwardNavigable" column="isForwardNavigable" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	<resultMap id="supportedLanguageResult" class="supportedLanguage"
 		extends="uriMapResult">
@@ -157,7 +157,7 @@
 	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.referenceGuid = #param1#
+	 		urimap.referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
 	 		urimap.referenceType = #param2#
 	 </select>
@@ -165,7 +165,7 @@
 	 <select id="getURIMapByLocalNameAndType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.referenceGuid = #param1#
+	 		urimap.referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
 	 		urimap.referenceType = #param2#
 	 	AND
@@ -181,7 +181,7 @@
 	 	FROM
 	 		$prefix$vsSupportedAttrib urimap
 	 	WHERE
-	 		urimap.referenceGuid = #param1#
+	 		urimap.referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
 	 		urimap.id = #param2#
 	 	AND
@@ -258,8 +258,8 @@
 	 		assnEntityCode,
 	 		propertyType
 		) VALUES (
-			#uid#, 
-			#codingSchemeUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#, 
+			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
 			#referenceType#,
 			#supportedAttributeTag#, 
 			#uriMap.localId#, 
@@ -362,13 +362,13 @@
 			
 			<isPropertyAvailable property="uriMap.isForwardNavigable">
 				<isNotNull prepend="," property="uriMap.isForwardNavigable">
-					isForwardNavigable = #uriMap.isForwardNavigable#
+					isForwardNavigable = #uriMap.isForwardNavigable,handler=numericBooleanTypeHandler#
 				</isNotNull>
 			</isPropertyAvailable>
 			
 			<isPropertyAvailable property="uriMap.isImported">
 				<isNotNull prepend="," property="uriMap.isImported">
-					isImported = #uriMap.isImported#
+					isImported = #uriMap.isImported,handler=numericBooleanTypeHandler#
 				</isNotNull>
 			</isPropertyAvailable>
 			
@@ -411,7 +411,7 @@
 		</dynamic>
 		
 		WHERE
-			vssupportedattrib.referenceGuid = #codingSchemeUId#
+			vssupportedattrib.referenceGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
 		AND
 			vssupportedattrib.referenceType = #referenceType#
 		AND
@@ -426,7 +426,7 @@
 		DELETE FROM
 			$prefix$vsSupportedAttrib
 		WHERE
-			referenceGuid = #param1#
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 	</delete>

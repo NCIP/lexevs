@@ -9,7 +9,7 @@
      		entityGuid,
      		entityType
      	) VALUES (
-     		#param1#,
+     		#param1,handler=variablePrimaryKeyTypeHandler#,
      		#param2#
      	)
      </insert>

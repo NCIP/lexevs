@@ -23,7 +23,7 @@
 		LEFT JOIN ${defaultPrefix}revision pr ON
 			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
-			entryStateGuid = #param1#		
+			entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#		
      </select>
 
 	<update id="updateEntryStateByUId" parameterClass="map">
@@ -46,14 +46,14 @@
 			prevEntryStateGuid
 			)
 		VALUES (
-			#entryStateUId#,
-			#entryUId#,
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#,
+			#entryUId,handler=variablePrimaryKeyTypeHandler#,
 			#entryType#,
 			#entryState.changeType#,
 			#entryState.relativeOrder#,
-			#revisionUId#,
-			#prevRevisionUId#,
-			#previousEntryStateUId#
+			#revisionUId,handler=variablePrimaryKeyTypeHandler#,
+			#prevRevisionUId,handler=variablePrimaryKeyTypeHandler#,
+			#previousEntryStateUId,handler=variablePrimaryKeyTypeHandler#
 			)
  	</insert>
  	
@@ -65,7 +65,7 @@
 		FROM
 			$prefix$vsEntryState es
 		WHERE
-			es.entryStateGuid = #param1#
+			es.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
     
 	<select id="checkVSEntryStateExists" remapResults="true"
@@ -76,7 +76,7 @@
 		FROM
 			$prefix$vsEntryState es
 		WHERE
-			es.entryStateGuid = #param1#
+			es.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
 
 	<delete id="deleteAllVSPropertiesEntryStateByParentUId"
@@ -91,7 +91,7 @@
 				FROM
 					$prefix$vsProperty prop
 				WHERE
-					prop.referenceGuid = #param1#
+					prop.referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 				AND
 					prop.referenceType = #param2#
 			)		
@@ -102,7 +102,7 @@
 		DELETE FROM
 			$prefix$vsEntryState
 		WHERE
-			entryGuid = #param1#
+			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 		
 	<delete id="deleteAllValueSetDefEntryStatesByValueSetDefUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -115,7 +115,7 @@
 				FROM					
 					$prefix$valueSetDefinition
 				WHERE					
-					valueSetDefGuid = #param1#
+					valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 			)					
 	</delete>
 	
@@ -131,7 +131,7 @@
 				FROM
 					$prefix$vsdEntry entry
 				WHERE
-					entry.valueSetDefGuid = #param1#
+					entry.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 			)		
 	</delete>
 
@@ -150,7 +150,7 @@
 				WHERE
 					prop.referenceGuid = plEntry.vsPLEntryGuid
 				AND	
-					plEntry.vsPickListGuid = #param1#	
+					plEntry.vsPickListGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 			)		
 	</delete>
 
@@ -166,7 +166,7 @@
 				FROM
 					$prefix$vsPLEntry plEntry
 				WHERE
-					plEntry.vsPickListGuid = #param1#	
+					plEntry.vsPickListGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 			)		
 	</delete>	
 	
@@ -182,7 +182,7 @@
 				FROM
 					$prefix$vsPickList
 				WHERE
-					vsPickListGuid = #param1#	
+					vsPickListGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 			)		
 	</delete>	
 	

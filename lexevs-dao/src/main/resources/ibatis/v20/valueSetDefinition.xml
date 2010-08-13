@@ -18,7 +18,7 @@
 		<result property="defaultCodingScheme" column="defaultCodingScheme" />
 		<result property="conceptDomain" column="conceptDomain" />
 		<result property="entityDescription.content" column="description" />
-		<result property="isActive" column="isActive" />
+		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
@@ -26,42 +26,42 @@
 	</resultMap>
 	
 	<resultMap id="valueSetDefinitionMetaDataResult" class="valueSetDefinitionBean" groupBy="uid">
-		<result property="uid" column="valueSetDefGuid" />
+		<result property="uid" column="valueSetDefGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
 		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
 		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
 		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
 		<result property="valueSetDefinition.entityDescription.content" column="description" />
-		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="valueSetDefinition.isActive" column="isActive" />
 		<result property="valueSetDefinition.owner" column="owner" />
 		<result property="valueSetDefinition.status" column="status" />
 		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
 		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
 	<resultMap id="valueSetDefinitionMetaDataWithMultiAttrib" class="valueSetDefinitionBean" groupBy="uid">
-		<result property="uid" column="valueSetDefGuid" />
+		<result property="uid" column="valueSetDefGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
 		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
 		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
 		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
 		<result property="valueSetDefinition.entityDescription.content" column="description" />
-		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="valueSetDefinition.isActive" column="isActive" />
 		<result property="valueSetDefinition.owner" column="owner" />
 		<result property="valueSetDefinition.status" column="status" />
 		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
 		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
 	<resultMap  id="definitionEntryResult" class="definitionEntry">
 		<result property="ruleOrder" column="ruleOrder"/>
 		<result property="operator" column="operator"/>
-		<result property="isActive" column="isActive" />
+		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
@@ -112,9 +112,9 @@
 	
 	<select id="getValueSetDefinitionGuidByValueSetDefinitionURI" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		resultClass="string">
+		resultMap="Common.uidResult">
 		SELECT
-			valueSetDefGuid
+			valueSetDefGuid AS uid
 		FROM
 			$prefix$valueSetDefinition
 		WHERE
@@ -211,7 +211,7 @@
   			entryState.prevRevisionGuid =
   			previousRevision.revisionGuid	
 		WHERE
-			vsdEntry.valueSetDefGuid = #param1#
+			vsdEntry.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		ORDER BY
 			ruleOrder
 	</select>
@@ -234,19 +234,19 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#uid#,
+				#uid,handler=variablePrimaryKeyTypeHandler#,
 				#valueSetDefinition.valueSetDefinitionURI#,
 				#valueSetDefinition.valueSetDefinitionName#,
 				#valueSetDefinition.defaultCodingScheme#,
 				#valueSetDefinition.conceptDomain#,
 				#valueSetDefinition.entityDescription.content#,
-				#systemReleaseUId#,
-				#valueSetDefinition.isActive#,
+				#systemReleaseUId,handler=variablePrimaryKeyTypeHandler#,
+				#valueSetDefinition.isActive,handler=numericBooleanTypeHandler#,
 				#valueSetDefinition.owner#,
 				#valueSetDefinition.status#,
 				#valueSetDefinition.effectiveDate#,
 				#valueSetDefinition.expirationDate#,
-				#entryStateUId#	
+				#entryStateUId,handler=variablePrimaryKeyTypeHandler#	
 			)
      </insert>
 
@@ -268,12 +268,12 @@
 				description = #valueSetDefinition.entityDescription.content#
 			</isNotNull>			
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>
 		</dynamic>
 
 		WHERE 
-			valueSetDefGuid = #uid#
+			valueSetDefGuid = #uid,handler=variablePrimaryKeyTypeHandler#
  	</update>	
 
 	<update id="updateValueSetDefVersionableChangesByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
@@ -282,7 +282,7 @@
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="valueSetDefinition.isActive">
-				isActive = #valueSetDefinition.isActive#
+				isActive = #valueSetDefinition.isActive,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="valueSetDefinition.owner">
 				owner = #valueSetDefinition.owner#
@@ -297,21 +297,21 @@
 				expirationDate = #valueSetDefinition.expirationDate#
 			</isNotNull>				
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>
 		</dynamic>
 
 		WHERE 
-			vsDef.valueSetDefGuid = #uid#
+			vsDef.valueSetDefGuid = #uid,handler=variablePrimaryKeyTypeHandler#
  	</update> 	
  	
 	<update id="updateValueSetDefinitinEntryStateUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE 
 			$prefix$valueSetDefinition vsDef
 		SET 
-			entryStateGuid = #param2#
+			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 		WHERE 
-			vsDef.valueSetDefGuid = #param1#
+			vsDef.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
  	</update> 	
  	
 	<delete id="removevalueSetDefinitionByValueSetDefinitionURI" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -325,7 +325,7 @@
 		DELETE FROM
 			$prefix$vsdEntry
 		WHERE
-			valueSetDefGuid = #param1#
+			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 	
 	<select id="getValueSetDefinitionMetadataByUId" 		
@@ -360,18 +360,18 @@
 		ON
 			vsMulti.referenceGuid = vs.valueSetDefGuid
 		WHERE
-			valueSetDefGuid = #param1#
+			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</select>
 
 	<select id="getEntryStateUIdByValuesetDefUId" 
-		resultClass="string" 
+		resultMap="Common.uidResult"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
-			entryStateGuid
+			entryStateGuid AS uid
 		FROM
 			$prefix$valueSetDefinition
 		WHERE
-			valueSetDefGuid = #param1#
+			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</select>
 	
 	<select id="getValueSetDefinitionLatestRevisionIdByUId" remapResults="true"
@@ -384,7 +384,7 @@
 			$prefix$vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			vsDef.valueSetDefGuid = #param1#	
+			vsDef.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 		AND
 			vsDef.entryStateGuid = es.entryStateGuid	
 		AND

@@ -13,29 +13,29 @@
 	</resultMap>
 
 	<resultMap id="associationDataEntryResult" class="associationData" groupBy="uid">
-		<result property="uid" column="entityAssnsDataGuid" />
-		<result property="associationPredicateUId" column="associationPredicateGuid" />
+		<result property="uid" column="entityAssnsDataGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="associationPredicateUId" column="associationPredicateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="associationSource.sourceEntityCode" column="sourceEntityCode" />
 		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
 		<result property="associationData.associationInstanceId" column="associationInstanceId" />
-		<result property="associationData.isDefining" column="isDefining" />
-		<result property="associationData.isInferred" column="isInferred" />
+		<result property="associationData.isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
+		<result property="associationData.isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
 		<result property="associationData.associationDataText.content" column="dataValue" />
-		<result property="associationData.isActive" column="isActive" />
+		<result property="associationData.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="associationData.owner" column="owner" />
 		<result property="associationData.status" column="status" />
 		<result property="associationData.effectiveDate" column="effectiveDate" />
 		<result property="associationData.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateGuid" />
+		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
 	</resultMap>
 	
 	<resultMap id="associationDataResult" class="org.LexGrid.relations.AssociationData" groupBy="associationInstanceId">
 		<result property="associationInstanceId" column="associationInstanceId" />
-		<result property="isDefining" column="isDefining" />
-		<result property="isInferred" column="isInferred" />
+		<result property="isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
 		<result property="associationDataText.content" column="dataValue" />
-		<result property="isActive" column="isActive" />
+		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="owner" column="owner" />
 		<result property="status" column="status" />
 		<result property="effectiveDate" column="effectiveDate" />
@@ -61,26 +61,26 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#uid#,
-			#associationPredicateUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#,
+			#associationPredicateUId,handler=variablePrimaryKeyTypeHandler#,
 			#associationSource.sourceEntityCode#,
 			#associationSource.sourceEntityCodeNamespace#,
 			#associationData.associationInstanceId#,
-			#associationData.isDefining#,
-			#associationData.isInferred#,
+			#associationData.isDefining,handler=numericBooleanTypeHandler#,
+			#associationData.isInferred,handler=numericBooleanTypeHandler#,
 			#associationData.associationDataText.content#,
-			#associationData.isActive#,
+			#associationData.isActive,handler=numericBooleanTypeHandler#,
 			#associationData.owner#,
 			#associationData.status#,
 			#associationData.effectiveDate#,
 			#associationData.expirationDate#,
-			#entryStateUId#
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
 		)
   </insert>
   	
-	<select id="getEntityAssnDataUIDByAssocInstanceId" remapResults="true" resultClass="string">
+	<select id="getEntityAssnDataUIDByAssocInstanceId" remapResults="true" resultMap="Common.uidResult">
 		SELECT
-			ead.entityAssnsDataGuid
+			ead.entityAssnsDataGuid AS uid
 		FROM 
 			$prefix$entityAssnsToData ead
 		JOIN
@@ -95,7 +95,7 @@
 			rel.relationGuid
 		WHERE
 			rel.codingSchemeGuid = 
-			#param1#
+			#param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			ead.associationInstanceId = 
 			#param2#
@@ -148,7 +148,7 @@
 		<include refid="getEntityAssnDataFragment"/>
 		
 		WHERE
-			data.entityAssnsDataGuid = #param1#	
+			data.entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 	</select>
 	
 	<select id="getAssociationDataTripleByUid"
@@ -157,7 +157,7 @@
 		<include refid="getEntityAssnDataFragment"/>
 		
 		WHERE
-			data.entityAssnsDataGuid = #param1#	
+			data.entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 	</select>
 	
 	<select id="getEntityAssnDataByUidAndRevisionId"
@@ -166,7 +166,7 @@
 		<include refid="getEntityAssnDataFragment"/>
 		
 		WHERE
-			data.entityAssnsDataGuid = #param1#	
+			data.entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 		AND
 			currentRevision.revisionId = #param2#
 	</select>
@@ -201,7 +201,7 @@
 		ON
 			data.entityAssnsDataGuid = quals.referenceGuid
 		WHERE
-			data.entityAssnsDataGuid = #param1# 
+			data.entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler# 
 	</select>
 	
 	<update id="updateEntityAssnToDataByUId"
@@ -217,20 +217,20 @@
 				sourceEntityCodeNamespace = #associationSource.sourceEntityCodeNamespace#
 			</isNotNull>
 			<isNotNull prepend="," property="associationData.isDefining">
-				isDefined = #associationData.isDefining#
+				isDefined = #associationData.isDefining,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="associationData.isInferred">
-				isInferred = #associationData.isInferred#
+				isInferred = #associationData.isInferred,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="associationData.associationDataText">
 				dataValue = #associationData.associationDataText.content#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>
 		</dynamic>
 		WHERE
-			entityAssnsDataGuid = #uid#
+			entityAssnsDataGuid = #uid,handler=variablePrimaryKeyTypeHandler#
 	</update>	
 
 	<update id="updateEntityAssnToDataVerAttribByUId"
@@ -241,7 +241,7 @@
 		<dynamic prepend=" ">
 			<isNotNull prepend="," property="associationData.isActive">
 				isActive =
-				#associationData.isActive#
+				#associationData.isActive,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="associationData.owner">
 				owner = #associationData.owner#
@@ -258,18 +258,18 @@
 				#associationData.expirationDate#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>
 		</dynamic>
 		WHERE
-			entityAssnsDataGuid = #uid#
+			entityAssnsDataGuid = #uid,handler=variablePrimaryKeyTypeHandler#
 	</update>	
 		
 	<delete id="deleteAssocDataByAssnUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$entityAssnsToData
 		WHERE
-			entityAssnsDataGuid = #param1#
+			entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 
 	<select id="getAssociationDataLatestRevisionIdByUId" remapResults="true"
@@ -282,7 +282,7 @@
 			$prefix$entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			entAssnData.entityAssnsDataGuid = #param1#	
+			entAssnData.entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 		AND
 			entAssnData.entryStateGuid = es.entryStateGuid
 		AND
@@ -291,12 +291,12 @@
 	
 	<select id="getEntryStateUidByAssociationData"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultClass="string">
+		remapResults="true" resultMap="Common.uidResult">
 		SELECT 
-			eatd.entryStateGuid
+			eatd.entryStateGuid AS uid
 		FROM
 			$prefix$entityAssnsToData eatd
 		WHERE
-			eatd.entityAssnsDataGuid = #param1# 
+			eatd.entityAssnsDataGuid = #param1,handler=variablePrimaryKeyTypeHandler# 
 	</select>
 </sqlMap>

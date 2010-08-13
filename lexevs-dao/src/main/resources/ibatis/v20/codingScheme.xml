@@ -31,7 +31,7 @@
 	</resultMap>
 	
 	<resultMap id="codingSchemeMetaDataResult" class="codingSchemeBean" groupBy="uid">
-		<result property="uid" column="codingSchemeGuid" />
+		<result property="uid" column="codingSchemeGuid" typeHandler="variablePrimaryKeyTypeHandler" />
 		<result property="codingScheme.codingSchemeName" column="codingSchemeName" />
 		<result property="codingScheme.codingSchemeURI" column="codingSchemeURI" />
 		<result property="codingScheme.representsVersion" column="representsVersion" />
@@ -383,7 +383,7 @@
 			releaseGuid,
 			entryStateGuid
 		) VALUES (
-			#uid#, 
+			#uid,handler=variablePrimaryKeyTypeHandler#, 
 			#codingScheme.codingSchemeName#, 
 			#codingScheme.codingSchemeURI#, 
 			#codingScheme.representsVersion#,
@@ -421,7 +421,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1#
+		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      <select id="getDistinctPropertyNamdAndType" 
@@ -441,7 +441,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1#
+		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      	<select id="getDistinctEntityTypes" remapResults="true"
@@ -459,7 +459,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1#
+		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
       <select id="getDistinctNamespaces" remapResults="true"
@@ -469,7 +469,7 @@
      FROM
      	$prefix$entity entity
 	 WHERE
-		entity.codingSchemeGuid = #param1#
+		entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
       <select id="getDistinctFormats" remapResults="true"
@@ -487,7 +487,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1#
+		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 AND
 	 	prop.format IS NOT NULL
      </select>
@@ -507,7 +507,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1#
+		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 AND
 	 	prop.language IS NOT NULL
 			
@@ -518,7 +518,7 @@
 		FROM
 			$prefix$codingScheme cs
 		WHERE
-			cs.codingSchemeGuid = #param1#
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
 
 
@@ -538,7 +538,7 @@
 		ON
 			entity.codingSchemeGuid = cs.codingSchemeGuid
 		WHERE
-			cs.codingSchemeGuid = #param1#
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</sql>
 
 	<select id="getDistinctPropertyQualifierTypes" remapResults="true"
@@ -565,7 +565,7 @@
 		FROM
 			$prefix$codingScheme cs
 		WHERE
-			cs.codingSchemeGuid = #param1#	
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 	</select>
 
 	<select id="getCodingSchemeLatestRevisionIdByUId" remapResults="true"
@@ -578,7 +578,7 @@
 			$prefix$entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #param1#	
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 		AND
 			cs.entryStateGuid = es.entryStateGuid	
 		AND
@@ -591,13 +591,17 @@
 		SELECT 
 			rev.revisionId
 		FROM
+			$prefix$codingScheme cs
+		INNER JOIN
 			$prefix$entryState es
+		ON
+			cs.entryStateGuid = es.entryStateGuid
 		INNER JOIN
 			${defaultPrefix}revision rev
 		ON
 			es.revisionGuid = rev.revisionGuid
 		WHERE
-			es.entryGuid = #param1#	
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 		AND
 			es.changeType = 'NEW'
 	</select>
@@ -609,7 +613,7 @@
 		WHERE
 			attributeType = 'source'
 		AND
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 	
 	<delete id="deleteAllCodingSchemeLocalNamesByCodingSchemeUId"
@@ -619,7 +623,7 @@
 		WHERE
 			attributeType = 'localName'
 		AND
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 	
 	<select id="getAllCodingSchemeRevisionsByUId" 
@@ -633,7 +637,7 @@
 			$prefix$entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #param1# 
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler# 
 		AND
 			cs.entryStateGuid = es.entryStateGuid
 		AND

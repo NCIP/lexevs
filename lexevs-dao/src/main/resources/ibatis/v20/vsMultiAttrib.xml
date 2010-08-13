@@ -11,14 +11,14 @@
 
 	<resultMap id="vsMultiAttribResultBean"
 		class="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
-		<result property="uid" column="vsMultiAttribGuid" />
-		<result property="referenceUId" column="referenceGuid" />
+		<result property="uid" column="vsMultiAttribGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="referenceUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="referenceType" column="referenceType" />
 		<result property="attributeType" column="attributeType" />
 		<result property="attributeValue" column="attributeValue" />
 		<result property="subRef" column="subRef" />
 		<result property="role" column="role" />
-		<result property="entryStateUId" column="esGuid" />
+		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 
 	<resultMap id="localNameResult" class="string">
@@ -35,7 +35,7 @@
 		FROM 
 			$prefix$vsMultiAttrib
 		WHERE
-			referenceGuid = #param1#
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 		AND
@@ -53,7 +53,7 @@
 		FROM 
 			$prefix$h_vsMultiAttrib
 		WHERE
-			entryStateGuid = #param1#
+			entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 		AND
@@ -69,7 +69,7 @@
 		FROM 
 			$prefix$vsMultiAttrib
 		WHERE
-			referenceGuid = #param1#
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 		AND
@@ -85,7 +85,7 @@
 		FROM 
 			$prefix$h_vsMultiAttrib
 		WHERE
-			entryStateGuid = #param1#
+			entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 		AND
@@ -105,14 +105,14 @@
 			role,
 			entryStateGuid
 		) VALUES (
-			#uid#,
-			#referenceUId#,
+			#uid,handler=variablePrimaryKeyTypeHandler#,
+			#referenceUId,handler=variablePrimaryKeyTypeHandler#,
 			#referenceType#,
 			#attributeType#,
 			#attributeValue#,
 			#subRef#,
 			#role#,
-			#entryStateUId#
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
 		)
 	</insert>
 
@@ -121,7 +121,7 @@
 		DELETE FROM
 			$prefix$vsMultiAttrib
 		WHERE
-			referenceGuid = #param1#
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 		AND 
@@ -133,7 +133,7 @@
 		DELETE FROM
 			$prefix$vsMultiAttrib
 		WHERE
-			referenceGuid = #param1#
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			referenceType = #param2#
 		AND 
@@ -155,7 +155,7 @@
 			FROM
 				$prefix$vsPLEntry
 			WHERE
-				vsPickListGuid = #param2#
+				vsPickListGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 			)
 	</delete>
 	
@@ -164,9 +164,9 @@
 		UPDATE
 			$prefix$vsMultiAttrib
 		SET
-			entryStateGuid = #param3#
+			entryStateGuid = #param3,handler=variablePrimaryKeyTypeHandler#
 		WHERE
-			referenceGuid = #param1#
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			attributeType = #param2#
 	</update>

@@ -51,9 +51,9 @@
 	
 	<select id="getSystemReleaseUidForDate"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="string">
+		resultMap="Common.uidResult">
 		SELECT 
-			releaseGuid
+			releaseGuid AS uid
 		FROM
 			${defaultPrefix}nciHistSystemRelease systemRelease
 		WHERE
@@ -284,7 +284,7 @@
 	
 		<include refid="getBaseLineFragment" />
 			AND
-			systemRelease.releaseGuid = #param2#
+			systemRelease.releaseGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 	</select> 
 	
 	<insert id="insertSystemRelease" parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
@@ -299,7 +299,7 @@
 			description
 			)
 		VALUES (
-			#param1#,
+			#param1,handler=variablePrimaryKeyTypeHandler#,
 			#param2#,
 			#param3.releaseURI#,
 			#param3.releaseId#,
@@ -322,8 +322,8 @@
 			referenceName
 			)
 		VALUES (
-			#param1#,
-			#param2#,
+			#param1,handler=variablePrimaryKeyTypeHandler#,
+			#param2,handler=variablePrimaryKeyTypeHandler#,
 			#param3.conceptcode#,
 			#param3.conceptName#,
 			#param3.editaction#,
