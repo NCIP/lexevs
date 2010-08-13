@@ -62,7 +62,7 @@ LG_BASE_PATH=
 #
 # This path can be relative to the location of LG_BASE_PATH or absolute.
 # You may put more than one folder here by seperating the folders with a ';'.
-JAR_FILE_LOCATION=../../../lgSharedLibraries;../../extLib
+JAR_FILE_LOCATION=../../../lgSharedLibraries;../extLib
 
 # The location of the file that will store information about
 # all loaded terminologies.  
@@ -109,6 +109,17 @@ MOVE_REGISTRY_TO_DATABASE=false
 # be loaded in Multi Database Mode. Existing content loaded in
 # Multi Database Mode may still be accessed.
 SINGLE_TABLE_MODE=true
+
+# This parameter indicates which strategy will be used
+# for the primary key of the database tables.
+# Allowable values include:
+#
+#	"GUID" 
+#		- Primary Keys are implemented as random GUIDs.
+#	"SEQUENTIAL_INTEGER" 
+#		- Primary Keys will be sequentially incremented
+#		- as Ingeter values.
+DB_PRIMARY_KEY_STRATEGY=GUID
 
 # This variable _should_ contain the database name.
 #
