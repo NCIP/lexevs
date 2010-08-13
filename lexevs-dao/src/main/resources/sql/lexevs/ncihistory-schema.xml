@@ -2,8 +2,8 @@
 <!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database">
   <database name="nciHistory">
     <table name="@PREFIX@nciHist">
-      <column name="ncitHistGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="releaseGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="ncitHistGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entityCode" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
       <column name="conceptName" primaryKey="false" required="true" type="LONGVARCHAR" size="65535" autoIncrement="false"/>
       <column name="editAction" primaryKey="false" required="true" type="VARCHAR" size="10" autoIncrement="false"/>
@@ -25,7 +25,7 @@
       </index>
     </table>
     <table name="@PREFIX@nciHistSystemRelease">
-      <column name="releaseGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="codingSchemeUri" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="releaseId" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="releaseURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>

@@ -37,8 +37,8 @@
     </table>
     
     <table name="@PREFIX@revision">
-      <column name="revisionGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="revisionGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="revisionId" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="changeAgent" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="revisionDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
@@ -51,7 +51,7 @@
       </index>
     </table>
     <table name="@PREFIX@systemRelease">
-      <column name="releaseGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="releaseURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="releaseId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="releaseDate" primaryKey="false" required="true" type="TIMESTAMP" size="19" autoIncrement="false"/>

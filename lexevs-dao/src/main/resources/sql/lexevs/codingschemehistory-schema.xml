@@ -3,7 +3,7 @@
   <database name="codingSchemeHistory">
    
     <table name="@PREFIX@h_codingScheme">
-      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="codingSchemeName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="codingSchemeURI" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="representsVersion" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
@@ -17,8 +17,8 @@
       <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
-      <column name="releaseGuid" primaryKey="false" required="false" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="releaseGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_codingScheme_codingScheme" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
@@ -30,21 +30,21 @@
       </index>
     </table>
     <table name="@PREFIX@h_csMultiAttrib">
-      <column name="csMultiAttribGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="csMultiAttribGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="attributeType" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
       <column name="attributeValue" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <index name="@PREFIX@idx_h_csMultiAttrib">
         <index-column name="codingSchemeGuid"/>
         <index-column name="attributeType"/>
       </index>
     </table>
     <table name="@PREFIX@h_entity">
-      <column name="entityGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="entityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="isDefined" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
@@ -55,7 +55,7 @@
       <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="forwardName" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
       <column name="reverseName" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
       <column name="isNavigable" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
@@ -74,15 +74,15 @@
       </index>
     </table>
     <table name="@PREFIX@h_entityAssnQuals">
-      <column name="entityAssnQualsGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="referenceGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityAssnQualsGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="referenceGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="qualifierName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="qualifierValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
     </table>
     <table name="@PREFIX@h_entityAssnsToData">
-      <column name="entityAssnsDataGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="associationPredicateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityAssnsDataGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="associationPredicateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="sourceEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="sourceEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="associationInstanceId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
@@ -94,7 +94,7 @@
       <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <foreign-key foreignTable="@PREFIX@entityAssnsToData" name="@PREFIX@FK_h_entityAssnsD_entityAssnsD" onDelete="cascade">
         <reference local="entityAssnsDataGuid" foreign="entityAssnsDataGuid"/>
       </foreign-key>
@@ -104,8 +104,8 @@
       </index>
     </table>
     <table name="@PREFIX@h_entityAssnsToEntity">
-      <column name="entityAssnsGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="associationPredicateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entityAssnsGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="associationPredicateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="sourceEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="sourceEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="targetEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
@@ -118,7 +118,7 @@
       <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <foreign-key foreignTable="@PREFIX@entityAssnsToEntity" name="@PREFIX@FK_h_entityAssnsE_entityAssnsE" onDelete="cascade">
         <reference local="entityAssnsGuid" foreign="entityAssnsGuid"/>
       </foreign-key>
@@ -142,8 +142,8 @@
       </index>
     </table>
     <table name="@PREFIX@h_property">
-      <column name="propertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="referenceGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="propertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="referenceGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="referenceType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="propertyId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="propertyType" primaryKey="false" required="false" type="VARCHAR" size="15" autoIncrement="false"/>
@@ -160,7 +160,7 @@
       <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_h_property_property" onDelete="cascade">
         <reference local="propertyGuid" foreign="propertyGuid"/>
       </foreign-key>
@@ -169,12 +169,12 @@
       </index>
     </table>
     <table name="@PREFIX@h_propertyLinks">
-      <column name="propertyLinksGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="entityGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="sourcePropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="propertyLinksGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="entityGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="sourcePropertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="link" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
-      <column name="targetPropertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="targetPropertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <foreign-key foreignTable="@PREFIX@propertyLinks" name="@PREFIX@FK_h_propertyLin_propertyLinks">
         <reference local="propertyLinksGuid" foreign="propertyLinksGuid"/>
       </foreign-key>
@@ -186,22 +186,22 @@
       </index>
     </table>
     <table name="@PREFIX@h_propertyMultiAttrib">
-      <column name="propMultiAttribGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="propertyGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="propMultiAttribGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="propertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="attributeType" primaryKey="false" required="true" type="VARCHAR" size="30" autoIncrement="false"/>
       <column name="attributeId" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="attributeValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <index name="@PREFIX@idx_h_propertyMultiAttrib">
         <index-column name="propertyGuid"/>
       </index>
     </table>
     <table name="@PREFIX@h_relation">
-      <column name="relationGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
-      <column name="codingSchemeGuid" primaryKey="false" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="relationGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
+      <column name="codingSchemeGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="containerName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="isMapping" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
       <column name="representsVersion" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
@@ -215,7 +215,7 @@
       <column name="status" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
-      <column name="entryStateGuid" primaryKey="true" required="true" type="VARCHAR" size="36" autoIncrement="false"/>
+      <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_h_relation_relation" onDelete="cascade">
         <reference local="relationGuid" foreign="relationGuid"/>
       </foreign-key>
