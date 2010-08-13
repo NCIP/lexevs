@@ -356,7 +356,9 @@
 			isDefined,
 			isAnonymous,
 			description,
-			isActive,			
+			<isNotNull property="entity.isActive">
+			isActive,		
+			</isNotNull>	
 			owner,
 			status,
 			effectiveDate,
@@ -374,7 +376,11 @@
 			#entity.isDefined,handler=numericBooleanTypeHandler#,
 			#entity.isAnonymous,handler=numericBooleanTypeHandler#,
 			#entity.entityDescription.content:VARCHAR#,
-			#entity.isActive,handler=numericBooleanTypeHandler#,
+			
+			<isNotNull property="entity.isActive">
+				#entity.isActive,handler=numericBooleanTypeHandler#,
+			</isNotNull>
+			
 			#entity.owner:VARCHAR#,
 			#entity.status:VARCHAR#,
 			#entity.effectiveDate:TIMESTAMP#,
