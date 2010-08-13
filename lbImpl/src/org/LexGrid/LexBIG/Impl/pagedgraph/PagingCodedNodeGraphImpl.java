@@ -130,6 +130,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     this.getNamespaceHandler().getCodingSchemeNameForNamespace(codingSchemeUri, version, graphFocus.getCodeNamespace());
 
                 if(! StringUtils.equals(graphFocus.getCodingSchemeName(), codingSchemeName)){
+                    
+                    /* Hold off on the strict validation for now...
                     return ServiceUtility.throwExceptionOrReturnDefault(
                             new LBParameterException("Based on the namespace provided as a focus (" + graphFocus.getCodeNamespace() + ")" +
                                     " there is no match to the provided Coding Scheme Name (" + graphFocus.getCodingSchemeName() + ")." +
@@ -137,6 +139,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                     " this must be declared in the SupportedNamespaces."),
                             new ResolvedConceptReferenceList(),
                             this.isStrictFocusValidation());
+                            */
                 }
             }
             
@@ -214,6 +217,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                if(StringUtils.isBlank(codingSchemeName)){
                    codingSchemeName = expectedCodingSchemeName;
                } else {
+                   
+                   /* Hold off on the strict validation for now...
                    if(!codingSchemeName.equals(expectedCodingSchemeName)) {
                        return ServiceUtility.throwExceptionOrReturnDefault(
                                new LBParameterException("Based on the namespace provided as a focus (" + namespace + ")" +
@@ -225,6 +230,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                this.isStrictFocusValidation()
                        );
                    }
+                   */
                }
 
                if(StringUtils.isBlank(codingSchemeName)) {
