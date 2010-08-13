@@ -25,6 +25,8 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
@@ -86,5 +88,17 @@ public class SingleLuceneIndexCodedNodeSet extends CodedNodeSetImpl {
     @Override
     protected void doUnion(String internalCodeSystemName, String internalVersionString, Union union) throws LBException {
        //
+    }
+
+    @Override
+    protected void doDifference(String internalCodeSystemName, String internalVersionString, Difference difference)
+            throws LBException {
+        //
+    }
+
+    @Override
+    protected void doIntersect(String internalCodeSystemName, String internalVersionString, Intersect intersect)
+            throws LBException {
+        //
     }
 }
