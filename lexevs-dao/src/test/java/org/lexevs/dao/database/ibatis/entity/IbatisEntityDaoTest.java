@@ -81,6 +81,21 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		csId = ibatisCodingSchemeDao.insertCodingScheme(cs, null, true);
 	}
 	
+	@Test
+	public void testDefaultIsActiveEntity(){
+		
+		Entity entity = new Entity();
+		entity.setEntityCode("code");
+		entity.setEntityCodeNamespace("namespace");
+		
+		this.ibatisEntityDao.insertEntity(csId, entity, false);
+		
+		Entity foundEntity = 
+			this.ibatisEntityDao.getEntityByCodeAndNamespace(csId, "code", "namespace");
+		
+		assertTrue(foundEntity.getIsActive());
+	}
+	
 	/**
 	 * Insert entity.
 	 */
