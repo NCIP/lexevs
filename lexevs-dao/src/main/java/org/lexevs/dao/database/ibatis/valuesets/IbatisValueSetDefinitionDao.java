@@ -648,7 +648,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			throws SQLException {
 				executor.startBatch();
 				for(URIMap uriMap : urimapList){
-					String uriMapId = UUID.randomUUID().toString();
+					String uriMapId = createUniqueId();
 					
 					executor.insert(INSERT_URIMAPS_SQL, 
 							buildInsertOrUpdateURIMapBean(

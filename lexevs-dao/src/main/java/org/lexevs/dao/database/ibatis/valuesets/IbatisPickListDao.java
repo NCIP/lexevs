@@ -522,7 +522,7 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 			throws SQLException {
 				executor.startBatch();
 				for(URIMap uriMap : urimapList){
-					String uriMapId = UUID.randomUUID().toString();
+					String uriMapId = createUniqueId();
 					executor.insert(INSERT_URIMAPS_SQL, 
 							buildInsertOrUpdateURIMapBean(
 									prefix,

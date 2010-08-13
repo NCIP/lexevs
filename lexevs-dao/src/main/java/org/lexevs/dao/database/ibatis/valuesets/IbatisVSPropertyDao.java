@@ -33,6 +33,7 @@ import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -259,7 +260,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		
 		if (property.getPropertyId() == null
 				|| property.getPropertyId().trim().equals("")) {
-			property.setPropertyId("@_" + this.createUniqueId());
+			property.setPropertyId(DatabaseConstants.GENERATED_ID_PREFIX  + this.createRandomIdentifier());
 		}
 		
 		EntryState entryState = property.getEntryState();
@@ -564,8 +565,9 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		/* 2. Remove all pick list entry node properties */
 		this.getSqlMapClientTemplate().delete(
 				DELETE_ALL_PICKLIST_ENTRYNODE_PROPERTIES_BY_PICKLISTENTRYUID,
-				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
-						ReferenceType.PICKLISTENTRY.name()));
+				new PrefixedParameterTuple(prefix,
+						ReferenceType.PICKLISTENTRY.name(),
+						pickListEntryNodeUId));
 	}
 
 	/**

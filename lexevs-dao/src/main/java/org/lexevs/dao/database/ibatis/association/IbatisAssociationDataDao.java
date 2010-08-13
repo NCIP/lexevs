@@ -9,6 +9,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean;
@@ -173,7 +174,7 @@ public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 
 		if (data.getAssociationInstanceId() == null
 				|| data.getAssociationInstanceId().trim().equals("")) {
-			data.setAssociationInstanceId("_@" + this.createUniqueId());
+			data.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX  + this.createRandomIdentifier());
 		}
 		
 		bean.setPrefix(prefix);

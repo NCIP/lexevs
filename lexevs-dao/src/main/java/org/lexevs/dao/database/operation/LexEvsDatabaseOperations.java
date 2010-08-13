@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
@@ -85,6 +86,8 @@ public interface LexEvsDatabaseOperations {
 	 * @return the database utility
 	 */
 	public DatabaseUtility getDatabaseUtility();
+	
+	public PrimaryKeyIncrementer getPrimaryKeyIncrementer();
 	
 	/**
 	 * Gets the data source.

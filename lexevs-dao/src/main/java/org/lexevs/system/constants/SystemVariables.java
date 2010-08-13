@@ -85,6 +85,9 @@ public class SystemVariables {
     
     private int luceneMaxClauseCount = 40000;
     private static String LUCENE_MAX_CLAUSE_COUNT_PROP = "LUCENE_MAX_CLAUSE_COUNT";
+    
+    private String primaryKeyStrategy;
+    private static String PRIMARY_KEY_STRATEGY_PROP = "DB_PRIMARY_KEY_STRATEGY";
 
     private boolean emailErrors_ = false;
     private String SMTPServer_;
@@ -343,8 +346,9 @@ public class SystemVariables {
                     logger.error("INVALID VALUE in config file for " + LUCENE_MAX_CLAUSE_COUNT_PROP);
                 }
             }
-
-
+            
+            this.primaryKeyStrategy = getProperty(props, PRIMARY_KEY_STRATEGY_PROP);
+           
             emailErrors_ = new Boolean(getProperty(props, "EMAIL_ERRORS")).booleanValue();
             if (emailErrors_) {
                 SMTPServer_ = getProperty(props, "SMTP_SERVER");
@@ -641,4 +645,12 @@ public class SystemVariables {
     public int getLuceneMaxClauseCount() {
         return luceneMaxClauseCount;
     }
+
+	public void setPrimaryKeyStrategy(String primaryKeyStrategy) {
+		this.primaryKeyStrategy = primaryKeyStrategy;
+	}
+
+	public String getPrimaryKeyStrategy() {
+		return primaryKeyStrategy;
+	}
 }

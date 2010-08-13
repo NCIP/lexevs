@@ -21,10 +21,14 @@ package org.lexevs.dao.database.operation;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.ddlutils.DdlUtilsException;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
@@ -33,6 +37,7 @@ import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
 import org.apache.ddlutils.platform.CreationParameters;
 import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
 import org.lexevs.dao.database.operation.root.RootBuilder;
 import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
 import org.lexevs.dao.database.prefix.PrefixResolver;
@@ -103,6 +108,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	private SystemVariables systemVariables;
 	
 	private TransitivityBuilder transitivityBuilder;
+	
+	private PrimaryKeyIncrementer primaryKeyIncrementer;
 	
 	private RootBuilder rootBuilder;
 	
@@ -188,7 +195,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	@Override
 	public void dropCodingSchemeTables(String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
-		
+
 		if(! this.getSystemVariables().isSingleTableMode()) {
 			this.dropCodingSchemeHistoryTables(codingSchemeUri, version);
 		}
@@ -250,7 +257,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	 */
 	public void createCodingSchemeTables(String prefix) {
 		this.doExecuteSql(this.codingSchemeXmlDdl, new CreateSchemaPlatformActor(), prefix);	
-		
+	
 		if(! this.getSystemVariables().isSingleTableMode()) {
 			this.createCodingSchemeHistoryTables(prefix);
 		}
@@ -293,8 +300,20 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	private Database readDatabase(Resource xmlSchema) {
 		DatabaseIO dbio = new NonValidatingDatabaseIO();
 		
+		StringWriter writer = new StringWriter();
 		try {
-			return dbio.read(new InputSource(xmlSchema.getInputStream()));
+			IOUtils.copy(xmlSchema.getInputStream(), writer);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		String schemaString = writer.toString();
+
+		schemaString = schemaString.replaceAll(DatabaseConstants.VARIABLE_KEY_TYPE_PLACEHOLDER, this.primaryKeyIncrementer.getKeyType().toString());
+		schemaString = schemaString.replaceAll(DatabaseConstants.VARIABLE_KEY_SIZE_PLACEHOLDER, String.valueOf(this.primaryKeyIncrementer.getKeyLength()));
+		
+		try {
+			return dbio.read(new StringReader(schemaString));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -530,6 +549,16 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 
 
 
+	public void setPrimaryKeyIncrementer(PrimaryKeyIncrementer primaryKeyIncrementer) {
+		this.primaryKeyIncrementer = primaryKeyIncrementer;
+	}
+
+	public PrimaryKeyIncrementer getPrimaryKeyIncrementer() {
+		return primaryKeyIncrementer;
+	}
+
+
+
 	private static class NonValidatingDatabaseIO extends DatabaseIO {
 		   
 		  public Database read(InputSource inputSource) throws DdlUtilsException
@@ -552,7 +581,27 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		        
 				return db;
 		    }
-		
+		  
+		  public Database read(Reader reader) throws DdlUtilsException
+		    {
+		        Database model = null;
+
+		        try
+		        {
+		            model = (Database)getReader().parse(reader);
+		        }
+		        catch (Exception ex)
+		        {
+		            throw new DdlUtilsException(ex);
+		        }
+		      
+		        Database db = new AliasingDatabase();
+		       
+		        db.addTables(DaoUtility.createNonTypedList(model.getTables()));
+		        db.setName(model.getName());
+		        
+				return db;
+		    }
 	}
 	
 	private static class AliasingDatabase extends Database {

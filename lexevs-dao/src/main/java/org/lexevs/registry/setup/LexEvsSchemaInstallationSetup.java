@@ -19,6 +19,7 @@
 package org.lexevs.registry.setup;
 
 import org.lexevs.dao.database.access.registry.RegistryDao;
+import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.constants.SystemVariables;
@@ -41,6 +42,8 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 	
 	/** The is lex grid schema installed. */
 	private boolean isLexGridSchemaInstalled;
+	
+	private PrimaryKeyIncrementer primaryKeyIncrementer;
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -51,6 +54,7 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 		if(!isLexGridSchemaInstalled){
 				this.getLexEvsDatabaseOperations().createAllTables();	
 				this.registryDao.initRegistryMetadata();
+				this.primaryKeyIncrementer.initialize();
 		}		
 	}
 
@@ -125,5 +129,13 @@ public class LexEvsSchemaInstallationSetup extends AbstractLoggingBean implement
 	 */
 	public RegistryDao getRegistryDao() {
 		return registryDao;
+	}
+
+	public void setPrimaryKeyIncrementer(PrimaryKeyIncrementer primaryKeyIncrementer) {
+		this.primaryKeyIncrementer = primaryKeyIncrementer;
+	}
+
+	public PrimaryKeyIncrementer getPrimaryKeyIncrementer() {
+		return primaryKeyIncrementer;
 	}
 }

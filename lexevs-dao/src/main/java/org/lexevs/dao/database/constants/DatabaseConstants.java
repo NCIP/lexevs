@@ -37,6 +37,13 @@ public class DatabaseConstants {
 	/** The Constant PREFIX_PLACEHOLDER. */
 	public static final String PREFIX_PLACEHOLDER = "@PREFIX@";
 	
+	public static String VARIABLE_KEY_TYPE_PLACEHOLDER = "@VARIABLE_KEY_TYPE@";
+	
+	public static String VARIABLE_KEY_SIZE_PLACEHOLDER = "@VARIABLE_KEY_SIZE@";
+	
 	/** The Constant PREFIX_PLACEHOLDER. */
 	public static final String MULTIPLE_TABLES_PREFIX_PLACEHOLDER = "@MULTIPLE_TABLES_PREFIX@";
+	
+	public static final String GENERATED_ID_PREFIX = "@_";
+
 }

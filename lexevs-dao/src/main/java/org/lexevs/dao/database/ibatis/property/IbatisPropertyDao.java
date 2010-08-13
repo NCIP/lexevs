@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.constants.classifier.property.PropertyMultiAttributeClassifier;
 import org.lexevs.dao.database.constants.classifier.property.PropertyTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -358,7 +359,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		if (property.getPropertyId() == null
 				|| property.getPropertyId().trim().equals("")) {
-			property.setPropertyId("@_" + this.createUniqueId());
+			property.setPropertyId(DatabaseConstants.GENERATED_ID_PREFIX  + this.createRandomIdentifier());
 		}
 		
 		if (property.getEntryState() != null) {
@@ -460,9 +461,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						type, 
 						property),
 						1);	
-		
-		this.updatePropertyVersionableAttrib(codingSchemeUId, propertyUId, property);
-		
+
 		if(property.getSourceCount() > 0) {
 			String multiAttributeType = this.propertyMultiAttributeClassifier.classify(Source.class);
 			this.deleteMultiAttribOfProperty(codingSchemeUId, propertyUId, multiAttributeType);

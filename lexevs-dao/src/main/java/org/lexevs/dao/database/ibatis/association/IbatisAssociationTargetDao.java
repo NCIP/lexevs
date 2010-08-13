@@ -11,6 +11,7 @@ import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
@@ -286,7 +287,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 		if (target.getAssociationInstanceId() == null
 				|| target.getAssociationInstanceId().trim().equals("")) {
-			target.setAssociationInstanceId("_@" + this.createUniqueId());
+			target.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX + this.createRandomIdentifier());
 		}
 		
 		bean.setPrefix(prefix);

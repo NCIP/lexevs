@@ -12,6 +12,9 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 public class NumericBooleanTypeHandler implements TypeHandlerCallback {
 	
+	private static String TRUE = "1";
+	private static String FALSE = "0";
+	
 	public void setParameter(ParameterSetter setter, Object parameter) {
 		if(parameter == null) {
 			try {
@@ -21,7 +24,12 @@ public class NumericBooleanTypeHandler implements TypeHandlerCallback {
 			}
 		} else {
 			try {
-				setter.setBoolean(BooleanUtils.toBoolean(parameter.toString()));
+				Boolean bool = (Boolean)parameter;
+				if(bool) {
+					setter.setString(TRUE);
+				}else {
+					setter.setString(FALSE);
+				}
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
