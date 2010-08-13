@@ -143,6 +143,20 @@ DB_URL=jdbc:mysql://localhost/v6test
 # NOTE: This variable should typically not be changed after content has been loaded.
 DB_PREFIX=lb
 
+# DB_PRIMARY_KEY_STRATEGY indicates which strategy will be used
+# for the primary key of the database tables.
+# WARNING - This cannot be change after the initial 
+# schema installation.
+#
+# Allowable values include:
+#
+#	"GUID" 
+#		- Primary Keys are implemented as random GUIDs.
+#	"SEQUENTIAL_INTEGER" 
+#		- Primary Keys will be sequentially incremented
+#		- as Ingeter values.
+DB_PRIMARY_KEY_STRATEGY=GUID
+
 # Optional parameters to append to the end of the database
 # connection string.  Access to some database environments
 # may require additional values to be passed in.
