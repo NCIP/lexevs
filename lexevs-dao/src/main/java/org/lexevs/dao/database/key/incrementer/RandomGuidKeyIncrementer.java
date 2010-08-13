@@ -1,0 +1,147 @@
+/*
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
+package org.lexevs.dao.database.key.incrementer;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.lexevs.dao.database.key.Java5UUIDKeyGenerator;
+import org.lexevs.dao.database.type.DatabaseType;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
+
+/**
+ * The Class RandomGuidKeyIncrementer.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
+public class RandomGuidKeyIncrementer extends AbstractKeyIncrementer {
+
+	/** The SIZE. */
+	private static int SIZE = 36;
+	
+	/** The NAME. */
+	private static String NAME = "GUID";
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#getKeyType()
+	 */
+	@Override
+	public KeyType getKeyType() {
+		return KeyType.VARCHAR;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#valueOf(java.lang.String)
+	 */
+	@Override
+	public Object valueOf(String key) {
+		return key;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#stringValue(java.lang.Object)
+	 */
+	@Override
+	public String stringValue(Object key) {
+		if(key == null) {return null;}
+		return key.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#getKeyLength()
+	 */
+	@Override
+	public int getKeyLength() {
+		return SIZE;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#getName()
+	 */
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.AbstractKeyIncrementer#createDataFieldMaxValueIncrementer()
+	 */
+	@Override
+	protected DataFieldMaxValueIncrementer createDataFieldMaxValueIncrementer() {
+		return new RandomGuidIncrementer();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#destroy()
+	 */
+	@Override
+	public void destroy() {
+		// no-op
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer#initialize()
+	 */
+	@Override
+	public void initialize() {
+		// no-op
+	}
+
+	/**
+	 * The Class RandomGuidIncrementer.
+	 * 
+	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+	 */
+	private class RandomGuidIncrementer implements DataFieldMaxValueIncrementer {
+
+		/* (non-Javadoc)
+		 * @see org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer#nextIntValue()
+		 */
+		@Override
+		public int nextIntValue() throws DataAccessException {
+			throw new UnsupportedOperationException();
+		}
+
+		/* (non-Javadoc)
+		 * @see org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer#nextLongValue()
+		 */
+		@Override
+		public long nextLongValue() throws DataAccessException {
+			throw new UnsupportedOperationException();
+		}
+
+		/* (non-Javadoc)
+		 * @see org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer#nextStringValue()
+		 */
+		@Override
+		public String nextStringValue() throws DataAccessException {
+			return Java5UUIDKeyGenerator.getRandomUUID().toString();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.key.incrementer.AbstractKeyIncrementer#getSupportedDatabaseTypes()
+	 */
+	@Override
+	protected List<DatabaseType> getSupportedDatabaseTypes() {
+		return Arrays.asList(DatabaseType.values());
+	}
+}
