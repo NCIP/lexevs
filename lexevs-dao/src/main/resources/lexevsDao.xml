@@ -42,6 +42,7 @@
     <bean id="abstractIbatisDao" abstract="true">
     	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
+		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>
     </bean>
 	
 	<bean id="ibatisPropertyDao"
@@ -518,6 +519,31 @@
 		<property name="logger" ref="loggerFactory"/>
     </bean>
     
+    <bean id="primaryKeyIncrementer" 
+    	class="org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementerFactory">
+    	<property name="systemVariables" ref="systemVariables"/>
+    	<property name="databaseType" ref="databaseTypeFactory"/>
+    	<property name="primaryKeyIncrementers">
+			<list>
+				<bean class="org.lexevs.dao.database.key.incrementer.RandomGuidKeyIncrementer"/>
+				<ref bean="sequenceBasedBigIntKeyIncrementer"/>
+				<ref bean="mysqlTableBasedBigIntKeyIncrementer"/>
+			</list>
+		</property>
+    </bean>
+    
+    <bean id="mysqlTableBasedBigIntKeyIncrementer" class="org.lexevs.dao.database.key.incrementer.MysqlTableBasedBigIntKeyIncrementer">
+   		<property name="databaseUtility" ref="defaultDatabaseUtility" />
+   		<property name="dataSource" ref="dataSource"/>
+   		<property name="prefixResolver" ref="defaultPrefixResolver"/>
+    </bean>
+    
+    <bean id="sequenceBasedBigIntKeyIncrementer" class="org.lexevs.dao.database.key.incrementer.SequenceBasedBigIntKeyIncrementer">
+    	<property name="dataSource" ref="dataSource"/>
+    	<property name="databaseType" ref="databaseTypeFactory"/>
+    	<property name="prefixResolver" ref="defaultPrefixResolver"/>
+    </bean>
+    
     <bean id="defaultLexEvsDatabaseOperations" class="org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations">
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
@@ -527,6 +553,7 @@
    		<property name="transitivityBuilder" ref="defaultTransitivityBuilder"/>
    		<property name="rootBuilder" ref="defaultRootBuilder"/>
    		<property name="systemVariables" ref="systemVariables"/>
+   		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>
    		
    		<property name="commonXmlDdl" value="classpath:sql/lexevs/common-schema.xml"/>
    		<property name="nciHistoryXmlDdl" value="classpath:sql/lexevs/ncihistory-schema.xml"/>
@@ -656,6 +683,7 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>
 		<property name="registryDao" ref="hibernateRegistryDao"/>
+		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>
 	</bean>
 	
     <bean id="defaultDatabaseUtility"
