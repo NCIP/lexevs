@@ -18,7 +18,6 @@
  */
 package org.lexgrid.loader.rrf.data.property;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +34,12 @@ public class DefaultMrrankUtility implements MrrankUtility {
 	/** The mrrank list. */
 	private List<Mrrank> mrrankList;
 	
-	private Map<String,Integer> mrrankCache = Collections.synchronizedMap(new HashMap<String,Integer>());
+	private Map<String,Integer> mrrankCache = new HashMap<String,Integer>();
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.data.property.MrrankUtility#getRank(java.lang.String, java.lang.String)
 	 */
-	public int getRank(String sab, String tty) {
+	public synchronized int getRank(String sab, String tty) {
 		String key = this.getKey(sab, tty);
 		
 		if(! mrrankCache.containsKey(key)){
