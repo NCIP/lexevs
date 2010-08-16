@@ -760,11 +760,11 @@
 			
 				<isNotEmpty property="param2" prepend="AND">
 				(
-					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler#</iterate>
+					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
 				)
 				AND
 				(
-					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler#</iterate>
+					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
 				)
 				</isNotEmpty>		
 			
@@ -871,11 +871,11 @@
 		
 				<isNotEmpty property="param2" prepend="AND">
 				(
-					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler#</iterate>
+					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
 				)
 				AND
 				(
-					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler#</iterate>
+					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
 				)
 				</isNotEmpty>		
 			
