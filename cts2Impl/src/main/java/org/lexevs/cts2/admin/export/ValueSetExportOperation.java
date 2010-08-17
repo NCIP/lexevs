@@ -43,13 +43,13 @@ public interface ValueSetExportOperation {
 	
 	/**
 	 * Exports contents of the Value Set Definition using the exporter specified.
-	 * @param valueSetURI URI of the Value Set Definition to be exported
+	 * @param valueSetDefinitionURI URI of the Value Set Definition to be exported
 	 * @param exportDestination Destination path information for the exported file.
 	 * @param exporter Name of the exporter to use. Use getSupportedExporterNames to get all the exporters supported by this instance of CTS2. 
 	 * @return URI of destination if successfully exported.
 	 * @throws LBException
 	 */
-	public URI exportValueSetContents(String valueSetURI, URI exportDestination, String exporter) throws LBException;
+	public URI exportValueSetContents(URI valueSetDefinitionURI, URI exportDestination, String exporter) throws LBException;
 	
 	/**
 	 * Exports contents of Value Set Definition as Code System in LexGrid canonical XML format.
@@ -69,9 +69,10 @@ public interface ValueSetExportOperation {
 	 * 			True: to override the existing file.
 	 * @param failOnAllErrors
 	 * 			True: stops exporting if any error.
+	 * @return URI of destination if successfully exported.
 	 * @throws LBException
 	 */
-	public void exportValueSetContents(URI valueSetDefinitionURI, String valueSetDefinitionVersion,  
+	public URI exportValueSetContents(URI valueSetDefinitionURI, String valueSetDefinitionVersion,  
 			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
