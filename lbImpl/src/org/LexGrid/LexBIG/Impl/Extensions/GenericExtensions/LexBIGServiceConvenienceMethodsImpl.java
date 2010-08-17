@@ -77,11 +77,11 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.util.PrintUtility;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.connection.SQLInterface;
@@ -1039,7 +1039,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 // Need to resolve first level; only want to return 'real'
                 // concepts ...
                 ConceptReference cr = new ConceptReference();
-                cr.setCodingSchemeName(codingScheme);
+                cr.setCodingSchemeName(this.getCodingScheme(codingScheme, versionOrTag).getCodingSchemeName());
+
                 cr.setCode(sh.getRootCode());
                 CodedNodeGraph cng = getLexBIGService().getNodeGraph(codingScheme, versionOrTag, null);
                 cng = cng.restrictToAssociations(ConvenienceMethods.createNameAndValueList(sh.getAssociationNames()),
