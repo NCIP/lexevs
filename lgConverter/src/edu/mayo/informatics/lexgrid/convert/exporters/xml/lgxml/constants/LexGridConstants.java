@@ -36,7 +36,7 @@ public class LexGridConstants {
     /*========================================================================================
     ValueDomains Package
     ========================================================================================*/
-    public static final String lgVD = "http://LexGrid.org/schema/2010/01/LexGrid/valueDomains";
+    public static final String lgVD = "http://LexGrid.org/schema/2010/01/LexGrid/valueSets";
 
     /*========================================================================================
     Versions Package
