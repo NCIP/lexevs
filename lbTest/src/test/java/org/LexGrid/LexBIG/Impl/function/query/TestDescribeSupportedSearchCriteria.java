@@ -48,10 +48,6 @@ public class TestDescribeSupportedSearchCriteria extends LexBIGServiceTestCase {
         for (CodingSchemeRendering csr : schemeList.getCodingSchemeRendering()) {
             CodingSchemeSummary css = csr.getCodingSchemeSummary();
             assertTrue(css != null);
-            assertTrue(css.getCodingSchemeDescription().toString() != null
-                    && css.getCodingSchemeDescription().toString().length() > 0);
-            RenderingDetail rd = csr.getRenderingDetail();
-            assertTrue(rd != null);
         }
     }
 
