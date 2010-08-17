@@ -36,6 +36,8 @@ public class DefaultMrrankUtility implements MrrankUtility {
 	
 	private Map<String,Integer> mrrankCache = new HashMap<String,Integer>();
 	
+	private static int NOT_FOUND_SCORE = -1;
+	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.data.property.MrrankUtility#getRank(java.lang.String, java.lang.String)
 	 */
@@ -47,8 +49,11 @@ public class DefaultMrrankUtility implements MrrankUtility {
 				if(mrrank.getSab().equals(sab) && mrrank.getTty().equals(tty)){
 					int rank = Integer.parseInt(mrrank.getRank());
 					mrrankCache.put(key, rank);
+					return rank;
 				}
 			}
+			mrrankCache.put(key, NOT_FOUND_SCORE);
+			return NOT_FOUND_SCORE;
 		}
 		return mrrankCache.get(key);
 	}
