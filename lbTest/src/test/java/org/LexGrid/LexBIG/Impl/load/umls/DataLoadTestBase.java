@@ -28,6 +28,8 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
+import org.junit.Test;
+import org.springframework.util.Assert;
 
 /**
  * The Class DataLoadTestBase.
@@ -55,5 +57,10 @@ public class DataLoadTestBase extends TestCase{
 	public CodedNodeSet getCodedNodeSet() throws Exception {
 		setUp();
 		return lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.AIR_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.AIR_VERSION));
+	}
+	
+	@Test
+	public void testSetUp() throws Exception {
+		Assert.noNullElements(new Object[] {lbs,cns,cng});
 	}
 }
