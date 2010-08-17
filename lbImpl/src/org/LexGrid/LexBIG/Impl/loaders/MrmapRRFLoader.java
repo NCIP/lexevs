@@ -1,9 +1,6 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -13,9 +10,6 @@ import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.MrmapToSQL;
-import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
-import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
-import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -25,7 +19,6 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     
     public final static String name = "MrMap_Loader";
     
-    @SuppressWarnings("unused")
     private final static String description = "This loader loads MRMAP.RRF and MRSAT.RRF" +
     		" files into the LexGrid database as a mapping coding scheme.";
 
