@@ -31,7 +31,7 @@
     <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>    
     <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
     <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
-    <lgNaming:supportedNamespace localId="GermanMadeParts" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">GermanMadeParts</lgNaming:supportedNamespace>
+    <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">GermanMadePartsNamespace</lgNaming:supportedNamespace>
     <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
     <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
     <lgNaming:supportedProperty localId="genericProperty" >genericProperty</lgNaming:supportedProperty>
@@ -42,7 +42,7 @@
     <lgCommon:entityDescription>Automobiles To GMP Mappings</lgCommon:entityDescription>
     <lgRel:associationPredicate  associationName="hasPart">
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Jaguar">
-        <lgRel:target targetEntityCodeNamespace="GermanMadeParts" targetEntityCode="T0001"/>
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="E0001" />
       </lgRel:source>
 	</lgRel:associationPredicate>      
   </relations>
