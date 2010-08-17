@@ -70,20 +70,28 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
     
     /**
      * Test one directional name null qualifiers no match.
+     * @throws LBParameterException 
+     * @throws LBInvocationException 
      * 
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
-    public void testOneAssociationNameNullQualifiersNoMatch(){
-        try {
-			cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
-			        null);
-		} catch (LBInvocationException e) {
-			fail();
-		} catch (LBParameterException e) {
-			return;
-		}
-        fail();
+    public void testOneAssociationNameNullQualifiersNoMatch() throws Exception{
+
+    	cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
+    			null);
+    	ResolvedConceptReference[] rcr = 
+    		cng.resolveAsList(Constructors.createConceptReference("A0001", LexBIGServiceTestCase.AUTO_SCHEME), 
+    				true, 
+    				false, 
+    				-1, 
+    				-1, 
+    				null, 
+    				null, 
+    				null, 
+    				-1).getResolvedConceptReference();
+
+    	assertTrue(rcr.length == 0);
     }
     
     /**
@@ -234,11 +242,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
                     null, 
                     -1).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 1);
-
-        ResolvedConceptReference ref = rcr[0];
-
-        assertTrue(ref.getSourceOf() == null);
+        assertEquals(0,rcr.length);
     }
     
     public void testOneAssociationNameOneQualifierWithValueResolveAllQuals() throws LBInvocationException, LBParameterException{
