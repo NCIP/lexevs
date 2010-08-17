@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codingScheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  https://ncisvn.nci.nih.gov/svn/lexevs/base/v6/trunk/lexgrid_model/lgModel/master/codingSchemes.xsd" 
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" 
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations" 
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" 
+    xmlns:lgLDAP="http://LexGrid.org/schema/2010/01/LexGrid/ldap" 
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" 
+    xmlns:lgService="http://LexGrid.org/schema/2010/01/LexGrid/service" 
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains" 
+    xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" 
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" 
+    codingSchemeName="CST"
+    codingSchemeURI="http://CST.test.shell" representsVersion="1.1" defaultLanguage="EN" formalName="CST_Test_Shell">
+    <lgCommon:entityDescription>CST</lgCommon:entityDescription>
+    <mappings>
+        <supportedAssociation xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="original_type"  uri="urn:oid:1170.17.70">original_type</supportedAssociation>
+        <supportedCodingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="CST" uri= "http://CST.test.shell"  >CST</supportedCodingScheme>
+        <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+        <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>    
+        <supportedLanguage xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="EN"></supportedLanguage>
+        <supportedNamespace xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="CST" equivalentCodingScheme="CST" uri="http://CST.test.shell">CST</supportedNamespace>
+        <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="genericProperty" >genericProperty</lgNaming:supportedProperty>
+        <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+    </mappings>
+    <entities>  
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="EAR DIS"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                 
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="PLEURAL DIS"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>             
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="HYPERTROPHY"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>             
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="PYELONEPHRITIS"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>          
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="ANOMALY CONGEN"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>          
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="THIRST"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                 
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="SKIN DISCOLOR"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>         
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="ENTERITIS"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>               
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="EDEMA TONGUE"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>            
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="BRONCHITIS"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>              
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="CARCINOMA LIVER"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>         
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="LE SYND"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="MYOPATHY"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="TINNITUS"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="LEUKEMIA"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="ULCER INTEST"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>            
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="RHABDO"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>                  
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="LEUKEMIA CHRON MYELO"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>    
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="DRUG DEPEND"  entityCodeNamespace="CST">
+            <lgCommon:entityDescription >CST entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>CST_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>             
+        
+    </entities>
+</codingScheme>

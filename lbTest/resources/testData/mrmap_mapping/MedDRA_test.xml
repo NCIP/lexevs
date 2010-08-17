@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codingScheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  https://ncisvn.nci.nih.gov/svn/lexevs/base/v6/trunk/lexgrid_model/lgModel/master/codingSchemes.xsd" 
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" 
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations" 
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" 
+    xmlns:lgLDAP="http://LexGrid.org/schema/2010/01/LexGrid/ldap" 
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" 
+    xmlns:lgService="http://LexGrid.org/schema/2010/01/LexGrid/service" 
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains" 
+    xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" 
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" 
+    codingSchemeName="MDR"
+    codingSchemeURI="http://MDR.test.shell" representsVersion="1.1" defaultLanguage="EN" formalName="MDR_Test_Shell">
+    <lgCommon:entityDescription>MDR</lgCommon:entityDescription>
+    <mappings>
+        <supportedAssociation xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="original_type"  uri="urn:oid:1170.17.70">original_type</supportedAssociation>
+        <supportedCodingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="MDR" uri= "http://MDR.test.shell"  >MDR</supportedCodingScheme>
+        <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+        <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>    
+        <supportedLanguage xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="EN"></supportedLanguage>
+        <supportedNamespace xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="MDR" equivalentCodingScheme="MDR" uri="http://MDR.test.shell">MDR</supportedNamespace>
+        <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="genericProperty" >genericProperty</lgNaming:supportedProperty>
+        <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+    </mappings>
+    <entities>
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10032600"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>    
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10043871"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10031673"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10032159"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10022372"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10017163"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10009546"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10013383"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10046037"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10014049"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10045123"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10019993"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10033102"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10035618"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10019912"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>     
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10020901"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10021689"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>      
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10037596"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>      
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10043115"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10030040"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10014866"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10043967"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10006457"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10024658"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10024064"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10028300"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10014001"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10024311"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10009983"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10039020"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10024299"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>      
+        <lgCon:entity xmlns="http://LexGrid.org/schema/2010/01/LexGrid/concepts" entityCode="10013699"  entityCodeNamespace="MDR">
+            <lgCommon:entityDescription >MedDRA entity</lgCommon:entityDescription>
+            <entityType>concept</entityType>
+            <presentation propertyName="textualPresentation" propertyId="p1" isPreferred="true">
+                <lgCommon:value>MedDra_Presentation</lgCommon:value>   
+            </presentation>
+        </lgCon:entity>       
+        
+        
+        
+    </entities>
+</codingScheme>
