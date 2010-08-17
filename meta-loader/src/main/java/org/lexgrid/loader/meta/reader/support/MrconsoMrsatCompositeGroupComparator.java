@@ -23,7 +23,6 @@ import java.util.List;
 import org.lexgrid.loader.reader.support.CompositeGroupComparator;
 import org.lexgrid.loader.rrf.model.Mrconso;
 import org.lexgrid.loader.rrf.model.Mrsat;
-import org.lexgrid.loader.rrf.model.Mrsty;
 
 /**
  * The Class MrrelMrhierCompositeGroupComparator.

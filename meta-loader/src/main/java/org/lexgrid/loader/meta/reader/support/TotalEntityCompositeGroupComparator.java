@@ -38,6 +38,7 @@ public class TotalEntityCompositeGroupComparator implements CompositeGroupCompar
 	 * @see org.lexgrid.loader.reader.support.CompositeGroupComparator#doGroupsMatch(java.util.List, java.util.List)
 	 */
 	public boolean doGroupsMatch(List<CompositeReaderChunk<Mrconso,Mrsat>> list1, List<CompositeReaderChunk<Mrsty,Mrdef>> list2) {
+	
 		if(list1 == null || list2 == null){
 			return false;
 		}
@@ -48,9 +49,8 @@ public class TotalEntityCompositeGroupComparator implements CompositeGroupCompar
 		if(		list1.get(0) == null ||
 				list2.get(0) == null ||
 				list1.get(0).getItem1List() == null || 
-				list1.get(0).getItem2List() == null ||
-				list2.get(0).getItem1List() == null || 
-				list2.get(0).getItem2List() == null 
+				list2.get(0).getItem1List() == null
+
 			){
 			return false;
 		}
