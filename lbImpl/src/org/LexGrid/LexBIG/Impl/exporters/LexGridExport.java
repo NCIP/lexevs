@@ -183,6 +183,8 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
             // outFile did not exist.  do nothing.
         }
         
+        this.getStatus().setDestination(outFile.toURI().toString());
+        
         Writer w = null;
         BufferedWriter out = null;
         LexBIGService lbsvc = null;
@@ -294,6 +296,8 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
             // outFile did not exist.  do nothing.
         }
         
+        this.getStatus().setDestination(outFile.toURI().toString());
+        
         Writer w = null;
         BufferedWriter out = null;
         
@@ -346,6 +350,8 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         } else {
             // outFile did not exist.  do nothing.
         }
+        
+        this.getStatus().setDestination(outFile.toURI().toString());
         
         Writer w = null;
         BufferedWriter out = null;
