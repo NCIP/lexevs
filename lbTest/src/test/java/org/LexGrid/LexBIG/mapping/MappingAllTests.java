@@ -7,7 +7,7 @@ public class MappingAllTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"LG Value Set and Pick List Definition Test");
+				"Mapping Authoring Test");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(LexEVSAssociationPredicateCreationTest.class);
 		suite.addTestSuite(LexEVSAssociationStatusUpdateTest.class);
