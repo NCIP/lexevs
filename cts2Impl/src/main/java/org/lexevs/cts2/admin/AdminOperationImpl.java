@@ -22,6 +22,7 @@ import org.lexevs.cts2.admin.export.AssociationExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperationImpl;
 import org.lexevs.cts2.admin.export.ValueSetExportOperation;
+import org.lexevs.cts2.admin.export.ValueSetExportOperationImpl;
 import org.lexevs.cts2.admin.load.AssociationLoadOperation;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperationImpl;
@@ -38,6 +39,7 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	private CodeSystemLoadOperation csLoadOp_;
 	private CodeSystemExportOperation csExportOp_;
 	private ValueSetLoadOperation vsLoadOp_;
+	private ValueSetExportOperation vsExportOp_;
 	private NotificationAdminOperation notificationAdminOp_;
 	
 	/*
@@ -102,8 +104,10 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	 */
 	@Override
 	public ValueSetExportOperation getValueSetExportOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (vsExportOp_ == null)
+			vsExportOp_ = new ValueSetExportOperationImpl();
+		
+		return vsExportOp_;
 	}
 
 	/*
