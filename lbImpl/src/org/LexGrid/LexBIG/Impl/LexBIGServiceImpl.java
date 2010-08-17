@@ -84,6 +84,7 @@ import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
@@ -542,6 +543,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new ClaMLLoaderImpl().register();
         NCIHistoryLoaderImpl.register();
         new MrmapRRFLoader().register();
+        new SemNetLoaderImpl().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
