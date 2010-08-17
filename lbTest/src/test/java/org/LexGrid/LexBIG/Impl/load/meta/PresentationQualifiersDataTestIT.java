@@ -144,8 +144,8 @@ public class PresentationQualifiersDataTestIT extends DataLoadTestBase {
 	
 	@Test	
 	public void testSuppressQualifierValue() throws Exception {
-		PropertyQualifier suppressQual = DataTestUtils.getPropertyQualifiersFromProperty(presentation, RrfLoaderConstants.SUPPRESS_QUALIFIER).get(0);
-		assertTrue(suppressQual.getValue().getContent().equals("N"));
+		//'N' values aren't loaded.
+		assertEquals(0,DataTestUtils.getPropertyQualifiersFromProperty(presentation, RrfLoaderConstants.SUPPRESS_QUALIFIER).size());
 	}
 	
 	@Test
