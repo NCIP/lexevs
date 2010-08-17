@@ -18,5 +18,68 @@
  */
 package org.lexevs.cts2.admin.export;
 
+import java.net.URI;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+
 public interface ValueSetExportOperation {
+	
+	/**
+	 * Export Value Set Definition to LexGrid canonical XML format.
+	 * 
+	 * @param valueSetDefinitionURI
+	 * 			value set definition URI
+	 * @param xmlFullPathName
+	 * 			Location to save the definition
+	 * @param overwrite
+	 * 			True: to override the existing file.
+	 * @param failOnAllErrors
+	 * 			True: stops exporting if any error.
+	 * @throws LBException
+	 */
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	
+	/**
+	 * Exports contents of the Value Set Definition using the exporter specified.
+	 * @param valueSetURI URI of the Value Set Definition to be exported
+	 * @param exportDestination Destination path information for the exported file.
+	 * @param exporter Name of the exporter to use. Use getSupportedExporterNames to get all the exporters supported by this instance of CTS2. 
+	 * @return URI of destination if successfully exported.
+	 * @throws LBException
+	 */
+	public URI exportValueSetContents(String valueSetURI, URI exportDestination, String exporter) throws LBException;
+	
+	/**
+	 * Exports contents of Value Set Definition as Code System in LexGrid canonical XML format.
+	 * 
+	 * @param valueSetDefinitionURI
+	 * 			value set definition URI
+	 * @param valueSetDefinitionVersion
+	 * 			value set definition version
+	 * @param exportDestination
+	 * 			Location to save the definition
+	 * @param csVersionList 
+	 * 			A list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 * 			the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag 
+	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     * @param overwrite
+	 * 			True: to override the existing file.
+	 * @param failOnAllErrors
+	 * 			True: stops exporting if any error.
+	 * @throws LBException
+	 */
+	public void exportValueSetContents(URI valueSetDefinitionURI, String valueSetDefinitionVersion,  
+			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	
+	/**
+	 * Returns list of Exporter names supported by this LexEVS instance.
+	 *  
+	 * @return List of supported Exporter names
+	 * @throws LBException
+	 */
+	public List<String> getSupportedExporterNames() throws LBException;
 }
