@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
 
@@ -24,7 +25,7 @@ public class DefaultRootBuilder implements RootBuilder {
 	private DatabaseServiceManager databaseServiceManager;
 	
 	private SystemResourceService systemResourceService;
-
+	
 	@Override
 	public void addRootRelationNode(
 			String codingSchemeUri,
@@ -33,7 +34,17 @@ public class DefaultRootBuilder implements RootBuilder {
 			String relationContainerName, 
 			RootOrTail rootOrTail,
 			TraverseAssociations traverse) {
+		Assert.notNull(relationContainerName);
+		
 		List<ConceptReference> refs;
+		
+		if(CollectionUtils.isEmpty(associationNames)) {
+			associationNames = this.databaseServiceManager.getCodedNodeGraphService().
+				getAssociationPredicateNamesForCodingScheme(
+						codingSchemeUri, 
+						codingSchemeVersion, 
+						relationContainerName);
+		}
 		
 		if(rootOrTail.equals(RootOrTail.ROOT)) {
 			refs = databaseServiceManager.getCodedNodeGraphService().
