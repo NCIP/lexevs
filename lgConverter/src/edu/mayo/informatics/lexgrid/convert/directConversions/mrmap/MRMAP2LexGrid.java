@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
+import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
@@ -474,58 +475,58 @@ public class MRMAP2LexGrid {
         container.setLocalId(rel.getContainerName());
         
         // Supported source scheme namespace to coding scheme mapping
-        SupportedCodingScheme supportedSourceScheme = new SupportedCodingScheme();
-        if (sourceSchemeName == null) {
-            supportedSourceScheme.setLocalId(rel.getSourceCodingScheme());
-            supportedSourceScheme.setContent(rel.getSourceCodingScheme());
-            supportedSourceScheme.setUri(URIPREFIX + ":" + rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion());
-        } else {
-            supportedSourceScheme.setLocalId(sourceSchemeName);
-            supportedSourceScheme.setUri(sourceSchemeURI);
-            supportedSourceScheme.setContent(sourceSchemeName);
-        }
+//        SupportedCodingScheme supportedSourceScheme = new SupportedCodingScheme();
+//        if (sourceSchemeName == null) {
+//            supportedSourceScheme.setLocalId(rel.getSourceCodingScheme());
+//            supportedSourceScheme.setContent(rel.getSourceCodingScheme());
+//            supportedSourceScheme.setUri(URIPREFIX + ":" + rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion());
+//        } else {
+//            supportedSourceScheme.setLocalId(sourceSchemeName);
+//            supportedSourceScheme.setUri(sourceSchemeURI);
+//            supportedSourceScheme.setContent(sourceSchemeName);
+//        }
 
-        SupportedNamespace supportedSourceNamespace = new SupportedNamespace();
-        supportedSourceNamespace.setLocalId(rel.getSourceCodingScheme());
-        if(sourceSchemeURI != null){
-            supportedSourceNamespace.setUri(sourceSchemeURI);
-        }
-        else{
-            supportedSourceNamespace.setUri(supportedSourceScheme.getUri());
-        }
-        supportedSourceNamespace.setContent(rel.getSourceCodingScheme());
-        supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
+//        SupportedNamespace supportedSourceNamespace = new SupportedNamespace();
+//        supportedSourceNamespace.setLocalId(rel.getSourceCodingScheme());
+//        if(sourceSchemeURI != null){
+//            supportedSourceNamespace.setUri(sourceSchemeURI);
+//        }
+//        else{
+//            supportedSourceNamespace.setUri(supportedSourceScheme.getUri());
+//        }
+//        supportedSourceNamespace.setContent(rel.getSourceCodingScheme());
+//        supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
         
         // supported target scheme namespace to coding scheme mapping
-        SupportedCodingScheme supportedTargetScheme = new SupportedCodingScheme();
-        if (targetSchemeName == null) {
-            supportedTargetScheme.setLocalId(rel.getTargetCodingScheme());
-            supportedTargetScheme.setContent(rel.getTargetCodingScheme());
-            supportedTargetScheme.setUri(URIPREFIX + ":" + rel.getTargetCodingScheme() + ":" + rel.getTargetCodingSchemeVersion());
-        }
-        else {
-            supportedTargetScheme.setLocalId(targetSchemeName);
-            supportedTargetScheme.setUri(targetSchemeURI);
-            supportedTargetScheme.setContent(targetSchemeName);
-        }
-        SupportedNamespace supportedTargetNamespace = new SupportedNamespace();
-        supportedTargetNamespace.setLocalId(rel.getTargetCodingScheme());
-        if (targetSchemeURI != null) {
-            supportedTargetNamespace.setUri(targetSchemeURI);
-        }
-        else{
-            supportedTargetNamespace.setUri(supportedTargetScheme.getUri());
-        }
-        supportedTargetNamespace.setContent(rel.getTargetCodingScheme());
-        supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
+//        SupportedCodingScheme supportedTargetScheme = new SupportedCodingScheme();
+//        if (targetSchemeName == null) {
+//            supportedTargetScheme.setLocalId(rel.getTargetCodingScheme());
+//            supportedTargetScheme.setContent(rel.getTargetCodingScheme());
+//            supportedTargetScheme.setUri(URIPREFIX + ":" + rel.getTargetCodingScheme() + ":" + rel.getTargetCodingSchemeVersion());
+//        }
+//        else {
+//            supportedTargetScheme.setLocalId(targetSchemeName);
+//            supportedTargetScheme.setUri(targetSchemeURI);
+//            supportedTargetScheme.setContent(targetSchemeName);
+//        }
+//        SupportedNamespace supportedTargetNamespace = new SupportedNamespace();
+//        supportedTargetNamespace.setLocalId(rel.getTargetCodingScheme());
+//        if (targetSchemeURI != null) {
+//            supportedTargetNamespace.setUri(targetSchemeURI);
+//        }
+//        else{
+//            supportedTargetNamespace.setUri(supportedTargetScheme.getUri());
+//        }
+//        supportedTargetNamespace.setContent(rel.getTargetCodingScheme());
+//        supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
         
         Mappings mappings = new Mappings();
-        mappings.addSupportedCodingScheme(supportedSourceScheme);
-        mappings.addSupportedCodingScheme(supportedTargetScheme);
+//        mappings.addSupportedCodingScheme(supportedSourceScheme);
+//        mappings.addSupportedCodingScheme(supportedTargetScheme);
         mappings.addSupportedCodingScheme(supportedScheme);
         
-        mappings.addSupportedNamespace(supportedSourceNamespace);
-        mappings.addSupportedNamespace(supportedTargetNamespace);
+//        mappings.addSupportedNamespace(supportedSourceNamespace);
+//        mappings.addSupportedNamespace(supportedTargetNamespace);
         mappings.addSupportedNamespace(nameSpace);
 
         SupportedAssociation supportedMapping = new SupportedAssociation();
@@ -550,7 +551,7 @@ public class MRMAP2LexGrid {
     }
 
     private String createDescriptiveSchemeName(Relations rel) {
-      return rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion() + "_TO_" + rel.getTargetCodingScheme() + rel.getTargetCodingSchemeVersion();
+      return rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion() + "_TO_" + rel.getTargetCodingScheme() + ":"+ rel.getTargetCodingSchemeVersion();
     }
 
     protected MrMap processMrMapRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
