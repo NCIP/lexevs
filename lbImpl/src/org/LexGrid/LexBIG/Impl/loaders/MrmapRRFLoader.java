@@ -81,6 +81,12 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
 
     }
 
+    public void load(URI mrMapsource, URI mrSatSource, String nameForMappingScheme, String nameForMappingVersion,
+            String nameforMappingURI, boolean stopOnErrors, boolean async) throws LBException{
+        this.load(mrMapsource, mrSatSource, nameForMappingScheme, 
+                nameForMappingVersion, nameforMappingURI, null, null, 
+                null, null, null, null, stopOnErrors, async);
+    }
     @Override
     public void load(URI mrMapsource, URI mrSatSource, String nameForMappingScheme, String nameForMappingVersion,
             String nameforMappingURI, String sourceScheme, String sourceVersion, String sourceURI, String targetScheme,
