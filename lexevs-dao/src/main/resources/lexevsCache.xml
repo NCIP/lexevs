@@ -2,12 +2,21 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:aop="http://www.springframework.org/schema/aop"
    xmlns:tx="http://www.springframework.org/schema/tx"
+   xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
    xsi:schemaLocation="
    http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-2.0.xsd
    http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd
-   http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd">
+   http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
+   http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
+   http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
 	
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
+
+	<bean id="cacheConfigLocationFactory" class="org.lexevs.cache.CacheConfigLocationFactory"/>
+	
+	 <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    	<property name="configLocation" ref="cacheConfigLocationFactory"/>
+    </bean>
 	
 	<bean id="methodCachingProxyAspect" 
 		class="org.lexevs.cache.MethodCachingProxy">
@@ -24,6 +33,8 @@
 		<property name="cacheRegistry" ref="cacheRegistry"/>
 	</bean>
 	
-	<bean id="cacheRegistry" class="org.lexevs.cache.CacheRegistry"/>
+	<bean id="cacheRegistry" class="org.lexevs.cache.CacheRegistry">
+		<property name="cacheManager" ref="ehCacheManager"/>
+	</bean>
 	
 </beans>

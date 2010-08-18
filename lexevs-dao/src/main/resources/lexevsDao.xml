@@ -846,5 +846,9 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
 	</bean>
+	
+	<bean id="cacheConfigLocationFactory" class="org.lexevs.cache.CacheConfigLocationFactory">
+		<property name="systemVariables" ref="systemVariables"/> 
+	</bean>
 
 </beans>
