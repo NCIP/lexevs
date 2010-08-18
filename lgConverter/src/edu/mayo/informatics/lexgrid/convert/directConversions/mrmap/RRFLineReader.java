@@ -24,6 +24,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class RRFLineReader {
     
     BufferedReader reader = null;

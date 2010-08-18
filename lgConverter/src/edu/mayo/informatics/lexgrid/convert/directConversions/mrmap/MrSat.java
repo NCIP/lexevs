@@ -18,6 +18,10 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 
+/**
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class MrSat {
 
     public String getCui() {

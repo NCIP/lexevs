@@ -18,8 +18,10 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 
-import java.io.Serializable;
-
+/**
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class MrMap {
     
     public MrMap(){

@@ -23,6 +23,10 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 
+/**
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class LexGridMappingValues {
     
 AssociationSource sourceTargetpair;

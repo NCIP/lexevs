@@ -49,6 +49,10 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+/**
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class MRMAP2LexGrid {
     //services
     AuthoringService service;
