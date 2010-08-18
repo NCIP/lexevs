@@ -2,6 +2,10 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 
 import org.LexGrid.commonTypes.Properties;
 
+/**
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
+ */
 public class LexEVSRelationsValues {
     
 /**
