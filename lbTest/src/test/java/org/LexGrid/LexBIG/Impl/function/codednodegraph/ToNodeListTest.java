@@ -66,4 +66,47 @@ public class ToNodeListTest extends BaseCodedNodeGraphTest {
                 -1).getResolvedConceptReference();
         assertTrue("Length: " + refs.length, refs.length == 4);
     }
+    
+    public void testUnionToNodeList() throws Exception {
+        CodedNodeSet cns1 = cng.toNodeList(Constructors.createConceptReference("005", AUTO_SCHEME), true, false, 1, -1);
+        CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("A0001", AUTO_SCHEME), true, false, 1, -1);
+        
+        CodedNodeSet union = cns1.union(cns2);
+        ResolvedConceptReference[] refs = union.resolveToList(
+                null,
+                null, 
+                null, 
+                -1).getResolvedConceptReference();
+        assertEquals(10,refs.length);
+    }
+    
+    public void testUnionToNodeListNotInCodedNodeSet() throws Exception {
+        CodedNodeSet cns1 = cng.toNodeList(Constructors.createConceptReference("Batteries", AUTO_SCHEME), true, false, 1, -1);
+        CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("Tires", AUTO_SCHEME), true, false, 1, -1);
+        
+        CodedNodeSet union = cns1.union(cns2);
+        ResolvedConceptReference[] refs = union.resolveToList(
+                null,
+                null, 
+                null, 
+                -1).getResolvedConceptReference();
+        assertEquals(2,refs.length);
+    }
+    
+    public void testUnionToNodeListSomeInSomeNotInCodedNodeSet() throws Exception {
+        CodedNodeSet cns1 = cng.toNodeList(Constructors.createConceptReference("A0001", AUTO_SCHEME), true, false, -1, -1);
+        CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("Tires", AUTO_SCHEME), true, false, -1, -1);
+        
+        CodedNodeSet union = cns1.union(cns2);
+        ResolvedConceptReference[] refs = union.resolveToList(
+                null,
+                null, 
+                null, 
+                -1).getResolvedConceptReference();
+        assertEquals(8,refs.length);
+        
+        assertEquals("T0001",refs[0].getCode());
+    }
+    
+  
 }
