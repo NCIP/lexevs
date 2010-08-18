@@ -58,7 +58,7 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 		sb.append("\n - Hits: " + hits);
 		sb.append("\n - Misses: " + misses);
 		
-		sb.append("\n - Cache Efficency: " + (hits/(misses+hits)));
+		sb.append("\n - Cache Efficiency: " + (hits/(misses+hits)));
 		
 		sb.append("\n===============================\n");
 		
