@@ -90,18 +90,19 @@ public class ManifestUtil {
 
         CodingSchemeManifest manifest = null;
         boolean valid = isValidFile(uri);
-        String schema = "http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifest.xsd";
+        String schema = "http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest.xsd";
         if (valid) {
             try {
                 org.exolab.castor.xml.Unmarshaller um = new org.exolab.castor.xml.Unmarshaller(
                         CodingSchemeManifest.class);
+                boolean validating = um.isValidating();
                 manifest = (CodingSchemeManifest) um.unmarshal(new InputStreamReader(uri.toURL()
                         .openConnection().getInputStream()));
 
                 StringWriter myWriter = new StringWriter();
                 Marshaller m1 = new Marshaller(myWriter);
                 m1.setNamespaceMapping("", schema);
-                m1.setSchemaLocation("http://LexGrid.org/schema/2009/01/LexOnt/CodingSchemeManifest" + schema);
+                m1.setSchemaLocation("http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest" + schema);
                 m1.marshal(manifest);
 
             } catch (Exception e) {
