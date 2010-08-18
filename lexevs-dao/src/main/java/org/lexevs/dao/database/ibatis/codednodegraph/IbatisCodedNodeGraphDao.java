@@ -305,7 +305,6 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@CacheMethod
 	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
 			String codingSchemeUid, 
 			List<String> tripleUids, 
