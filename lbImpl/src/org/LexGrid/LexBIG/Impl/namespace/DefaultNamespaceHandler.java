@@ -20,7 +20,7 @@ import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.util.CollectionUtils;
 
-@Cacheable(cacheName = "ResourceCache")
+@Cacheable(cacheName = "DefaultNamespaceHandlerCache")
 public class DefaultNamespaceHandler implements NamespaceHandler {
 
     private static final long serialVersionUID = 7565547967975571009L;
