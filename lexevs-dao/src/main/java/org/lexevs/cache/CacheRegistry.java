@@ -7,14 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.Statistics;
 
 import org.lexevs.logging.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class CacheRegistry implements InitializingBean {
+public class CacheRegistry implements InitializingBean, DisposableBean {
 	
 	private CacheManager cacheManager;
 	
@@ -23,6 +26,43 @@ public class CacheRegistry implements InitializingBean {
 	
 	public void afterPropertiesSet() throws Exception {
 		initializeCache();
+	}
+	
+	@Override
+	public void destroy() throws Exception {
+		LoggerFactory.getLogger().info(
+				getCacheStatisticsStringRepresentation());
+	}
+	
+	protected String getCacheStatisticsStringRepresentation() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n===============================");
+		sb.append("\n         Cache Statistics      \n");
+		
+		float hits = 0;
+		float misses = 0;
+
+		for(String cacheName : this.cacheManager.getCacheNames()) {
+			Cache cache = this.cacheManager.getCache(cacheName);
+			
+			Statistics stats = cache.getStatistics();
+			hits += stats.getCacheHits();
+			misses += stats.getCacheMisses();
+			
+			sb.append("\n" + cache.getStatistics().toString());
+		}
+		
+		sb.append("\n\n");
+		sb.append("\nTOTAL STATS:");
+		sb.append("\n - Total Cache Requests: " + (hits + misses));
+		sb.append("\n - Hits: " + hits);
+		sb.append("\n - Misses: " + misses);
+		
+		sb.append("\n - Cache Efficency: " + (hits/(misses+hits)));
+		
+		sb.append("\n===============================\n");
+		
+		return sb.toString();
 	}
 	
 	protected void initializeCache() {
