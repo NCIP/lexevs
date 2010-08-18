@@ -3,8 +3,6 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.Relations;
-
 import junit.framework.TestCase;
 
 public class AddTargetToExistingSourceTest extends TestCase {

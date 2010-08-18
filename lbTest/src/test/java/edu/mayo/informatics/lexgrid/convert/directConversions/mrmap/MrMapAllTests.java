@@ -19,6 +19,7 @@ suite.addTestSuite(MrMapProcessorTest.class);
 suite.addTestSuite(MrMapReaderTest.class);
 suite.addTestSuite(ProcessMrSatToRelationsTest.class);
 suite.addTestSuite(ProcessMrSatRowTest.class);
+suite.addTest(MrMapQueryTests.suite());
 //$JUnit-END$
 return suite;
 	}
