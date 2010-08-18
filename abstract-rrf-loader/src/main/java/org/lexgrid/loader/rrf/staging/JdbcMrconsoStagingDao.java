@@ -38,7 +38,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "JdbcMrconsoStagingDao", cacheSize=10000)
+@Cacheable(cacheName = "JdbcMrconsoStagingDaoCache")
 public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStagingDao {
 	
 	/** The log. */
