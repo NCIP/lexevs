@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -586,23 +585,5 @@ public class MRMAP2LexGrid {
         return mrSat;
     }
     
-    public static void main(String[] args){
-        try {
-            HashMap<String, Relations> rels = new MRMAP2LexGrid(null, null, null).processRelationsContainers("../lbTest/resources/testData/mrmap_mapping/MRMAP.RRF");
-            
-            Set set = rels.keySet();
-            Object[] os1 = rels.values().toArray();
-            Object[] os = set.toArray();
-            
-            for(Object o: os){
-                System.out.println(o);
-            }
-            for(Object o: os1){
-                System.out.println(((Relations)o).getContainerName());
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+
 }
