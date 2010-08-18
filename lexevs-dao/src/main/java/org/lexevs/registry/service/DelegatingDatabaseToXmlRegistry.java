@@ -36,7 +36,7 @@ import org.lexevs.registry.model.RegistryEntry;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName="ResourceCache")
+@Cacheable(cacheName="DelegatingDatabaseToXmlRegistryCache")
 public class DelegatingDatabaseToXmlRegistry implements Registry {
 	
 	/** The database registry. */
@@ -47,8 +47,8 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#addNewItem(org.lexevs.registry.model.RegistryEntry)
-	 */
-	@ClearCache
+	 */         
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingSystemResourceServiceCache"})
 	public void addNewItem(RegistryEntry entry) throws Exception {
 	    databaseRegistry.addNewItem(entry);
 	}
@@ -193,7 +193,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#removeEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingSystemResourceServiceCache"})
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
 		throw new UnsupportedOperationException();
 	}
@@ -201,7 +201,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	/* (non-Javadoc)
 	 * @see org.lexevs.registry.service.Registry#updateEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingSystemResourceServiceCache"})
 	public void updateEntry(RegistryEntry entry) throws LBParameterException {
 		if(entry.getResourceType().equals(ResourceType.CODING_SCHEME)) {
 			
@@ -232,7 +232,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingSystemResourceServiceCache"})
 	public void updateCodingSchemeEntryTag(
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {

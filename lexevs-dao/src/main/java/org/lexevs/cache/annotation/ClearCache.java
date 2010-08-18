@@ -32,6 +32,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ClearCache {
 	
+	String[] clearCaches() default {};
+	
 	boolean clearAll() default false;
 
 }

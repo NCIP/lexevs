@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.ClassUtils;
+import org.lexevs.cache.CacheRegistry.CacheWrapper;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
@@ -73,17 +73,31 @@ public abstract class AbstractMethodCachingBean<T> {
 		
 		ClearCache clearCacheAnnotation = method.getAnnotation(ClearCache.class);
 		
+		clearCache(cacheableAnnotation, clearCacheAnnotation);
+		
 		Object returnObj = this.proceed(joinPoint);
 		
+		clearCache(cacheableAnnotation, clearCacheAnnotation);
+		
+		return returnObj;
+	}
+
+	private void clearCache(
+			Cacheable cacheableAnnotation,
+			ClearCache clearCacheAnnotation) {
 		if(clearCacheAnnotation.clearAll()) {
 			this.cacheRegistry.clearAll();
 		} else {
-			Map<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), cacheableAnnotation.cacheSize());
+
+			for(String cacheName : clearCacheAnnotation.clearCaches()){
+				CacheWrapper<String,Object> cache = this.getCacheFromName(cacheName, false);
+				cache.clear();
+			}
+			
+			CacheWrapper<String,Object> cache = this.getCacheFromName(cacheableAnnotation.cacheName(), false);
 	
 			cache.clear();
 		}
-		
-		return returnObj;
 	}
 	
 	public void clearAll() {
@@ -100,6 +114,9 @@ public abstract class AbstractMethodCachingBean<T> {
 	 * @throws Throwable the throwable
 	 */
 	protected Object doCacheMethod(T joinPoint) throws Throwable {
+		if(!CacheSessionManager.getCachingStatus()) {
+			return this.proceed(joinPoint);
+		}
 		
 		Method method = this.getMethod(joinPoint);
 
@@ -115,9 +132,8 @@ public abstract class AbstractMethodCachingBean<T> {
 		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(target.getClass(), Cacheable.class);
 		CacheMethod cacheMethodAnnotation = AnnotationUtils.findAnnotation(method, CacheMethod.class);
 	
-		Map<String,Object> cache = this.getCacheFromName(
-				cacheableAnnotation.cacheName(),
-				cacheableAnnotation.cacheSize());
+		CacheWrapper<String,Object> cache = this.getCacheFromName(
+				cacheableAnnotation.cacheName(), true);
 		
 		Object result;
 		
@@ -126,7 +142,8 @@ public abstract class AbstractMethodCachingBean<T> {
 				return this.clearCache(joinPoint, method);
 			}
 
-			if(cache.containsKey(key)){
+			Object value = cache.get(key);
+			if(value != null) {
 				logger.debug("Cache hit on: " + key);
 				Object obj = cache.get(key);
 				return obj;
@@ -135,7 +152,10 @@ public abstract class AbstractMethodCachingBean<T> {
 			}
 
 			result = this.proceed(joinPoint);
-			cache.put(key, result);
+			
+			if(result != null) {
+				cache.put(key, result);
+			}
 		}
 
 		if(result != null && 
@@ -154,21 +174,9 @@ public abstract class AbstractMethodCachingBean<T> {
 	protected abstract Object proceed(T joinPoint) throws Throwable;
 
 	protected abstract Object[] getArguments(T joinPoint);
-
-	/**
-	 * Gets the cache from name.
-	 * 
-	 * @param name the name
-	 * @param cacheSize the cache size
-	 * 
-	 * @return the cache from name
-	 */
-	@SuppressWarnings("unchecked")
-	public Map<String,Object> getCacheFromName(String name, int cacheSize){
-		if(!cacheRegistry.getCaches().containsKey(name)){
-			cacheRegistry.getCaches().put(name, new LRUMap(cacheSize));
-		}
-		return cacheRegistry.getCaches().get(name);
+	
+	public CacheWrapper<String,Object> getCacheFromName(String cacheName, boolean createIfNotPresent){
+		return this.cacheRegistry.getCache(cacheName, createIfNotPresent);
 	}
 
 	/**
@@ -248,7 +256,7 @@ public abstract class AbstractMethodCachingBean<T> {
 		return sb.toString();
 	}
 	
-	protected Map<String, Map<String, Object>> getCaches(){
+	protected Map<String, CacheWrapper<String, Object>> getCaches(){
 		return this.cacheRegistry.getCaches();
 	}
 	

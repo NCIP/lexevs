@@ -29,7 +29,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.Qualifier
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.util.CollectionUtils;
 
-@Cacheable(cacheName = "ResourceCache")
+@Cacheable(cacheName = "IbatisCodedNodeGraphDaoCache")
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 	
 	/** The supported datebase version. */
@@ -49,6 +49,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> listCodeRelationships(
 			String codingSchemeUid,
 			String relationsContainerName,
@@ -87,6 +88,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	}
 
 	@Override
+	@CacheMethod
 	public Map<String,Integer> getTripleUidsContainingObjectCount(
 			String codingSchemeUid,
 			String relationsContainerName,
@@ -113,6 +115,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	}
 
 	@Override
+	@CacheMethod
 	public Map<String,Integer> getTripleUidsContainingSubjectCount(
 			String codingSchemeUid, 
 			String relationsContainerName,
@@ -172,6 +175,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	}
 	
 	@Override
+	@CacheMethod
 	public List<String> getTripleUidsContainingSubject(
 			String codingSchemeUid,
 			String associationPredicateUid,
@@ -203,6 +207,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	}
 
 	@Override
+	@CacheMethod
 	public List<String> getTripleUidsContainingObject(
 			String codingSchemeUid,
 			String associationPredicateUid,
@@ -280,6 +285,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@Override
 	@SuppressWarnings("unchecked")
+	@CacheMethod
 	public List<ConceptReference> getConceptReferencesFromUid(
 			String codingSchemeUid, 
 			List<String> tripleUids,
@@ -299,6 +305,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
 			String codingSchemeUid, 
 			List<String> tripleUids, 

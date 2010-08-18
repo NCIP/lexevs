@@ -34,7 +34,7 @@ import org.lexevs.system.utility.MyClassLoader;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "ResourceCache")
+@Cacheable(cacheName = "DelegatingSystemResourceServiceCache")
 public class DelegatingSystemResourceService extends SystemEventSupport implements SystemResourceService {
 	
 	/** The primary system resource service. */
@@ -140,10 +140,9 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 			}
 		}
 	}
-	
-	
-	
+
 	@Override
+	@ClearCache(clearAll=true)
 	public void removeNciHistoryResourceToSystemFromSystem(String uri) {
 		try {
 			if(primarySystemResourceService.containsNonCodingSchemeResource(uri)){
@@ -172,7 +171,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 		
 	}
 	
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void removeValueSetDefinitionResourceFromSystem(String uri, String version)
 		throws LBParameterException {
 		if(primarySystemResourceService.containsValueSetDefinitionResource(uri, version)){
@@ -183,7 +182,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	
 	}
 	
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version)
 	throws LBParameterException {
 		if(primarySystemResourceService.containsPickListDefinitionResource(pickListId, version)){
@@ -196,7 +195,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#removeNonCodingSchemeResourceFromSystem(java.lang.String)
 	 */
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void removeNonCodingSchemeResourceFromSystem(String uri)
 			throws LBParameterException {
 		if(primarySystemResourceService.containsNonCodingSchemeResource(uri)){
@@ -211,7 +210,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceTag(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
 	public void updateCodingSchemeResourceTag(AbsoluteCodingSchemeVersionReference codingScheme, String newTag) 
 		throws LBParameterException {
 		if(primarySystemResourceService.containsCodingSchemeResource(
@@ -232,7 +231,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateCodingSchemeResourceStatus(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
 	public void updateCodingSchemeResourceStatus(
 			AbsoluteCodingSchemeVersionReference codingScheme,
 			CodingSchemeVersionStatus status) throws LBParameterException {
@@ -255,7 +254,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceStatus(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
 	public void updateNonCodingSchemeResourceStatus(String uri,
 			CodingSchemeVersionStatus status) throws LBParameterException {
 		
@@ -270,6 +269,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 
 	@Override
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
 	public void registerCodingSchemeSupplement(
 			AbsoluteCodingSchemeVersionReference parentScheme,
 			AbsoluteCodingSchemeVersionReference supplement)
@@ -286,6 +286,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 	
 	@Override
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
 	public void unRegisterCodingSchemeSupplement(
 			AbsoluteCodingSchemeVersionReference parentScheme,
 			AbsoluteCodingSchemeVersionReference supplement)
@@ -310,18 +311,19 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 		primarySystemResourceService.addCodingSchemeResourceToSystem(uri, version);
 	}
 	
+	@ClearCache(clearAll=true)
 	public void addNciHistoryResourceToSystem(String uri)
 		throws LBParameterException {
 		primarySystemResourceService.addNciHistoryResourceToSystem(uri);
 	}
 	
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void addValueSetDefinitionResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addValueSetDefinitionResourceToSystem(uri, version);
 	}
 	
-	@ClearCache
+	@ClearCache(clearAll=true)
 	public void addPickListDefinitionResourceToSystem(String uri, String version)
 		throws LBParameterException {
 		primarySystemResourceService.addPickListDefinitionResourceToSystem(uri, version);
@@ -330,7 +332,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#updateNonCodingSchemeResourceTag(java.lang.String, java.lang.String)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistry","DelegatingDatabaseToXmlRegistry"})
 	public void updateNonCodingSchemeResourceTag(String uri, String newTag)
 			throws LBParameterException {
 		
@@ -393,7 +395,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 	
 	@Override
-	@ClearCache
+	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
 	public void refresh() {
 		primarySystemResourceService.refresh();
 		delegateSystemResourceService.refresh();

@@ -30,6 +30,9 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.cache.annotation.CacheMethod;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -59,6 +62,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName = "IbatisEntityDaoCache")
 public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	/** The supported datebase version. */
@@ -119,16 +123,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	private static String UPDATE_ENTITY_ENTRYSTATE_UID = ENTITY_NAMESPACE + "updateEntityEntryStateUId";
 	
-	private static String GET_ENTITY_METADATA_FROM_HISTORY_BY_REVISION_SQL = ENTITY_NAMESPACE + "getEntityMetaDataByRevision";
-	
-	private static String GET_ENTITY_PROPERTY_IDS_LIST_BY_ENTITY_UID_SQL = ENTITY_NAMESPACE + "getEntityPropertyIdsListByEntityUId";
-	
-	private static String GET_ENTITY_TYPE_BY_ENTITYUID_SQL = ENTITY_NAMESPACE + "getEntityTypeByEntityUId";
-	
-	private static String GET_PREVIOUS_ENTRY_STATE_UID_SQL = ENTITY_NAMESPACE + "getPreviousEntryStateUid";
-	
-	private static String GET_ENTITY_BY_ENTRY_STATE_UID_SQL = ENTITY_NAMESPACE + "getEntityByEntryStateUid";
-	
 	public static String GET_ENTRY_STATE = VERSIONS_NAMESPACE + "getEntryState";
 	
 	/** The ENTITY. */
@@ -150,6 +144,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityByCodeAndNamespace(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public Entity getEntityByCodeAndNamespace(String codingSchemeUid, String entityCode, String entityCodeNamespace){
 		return this.getEntityByCodeAndNamespace(
 				codingSchemeUid, 
@@ -160,6 +155,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 
 	@Override
+	@CacheMethod
 	public Entity getEntityByCodeAndNamespace(
 			String codingSchemeUid,
 			String entityCode, 
@@ -173,6 +169,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 
 	@Override
+	@CacheMethod
 	public List<Entity> getEntities(
 			String codingSchemeId,
 			List<String> propertyNames, 
@@ -188,6 +185,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public Map<String,Entity> getEntitiesWithUidMap(String codingSchemeId,
 			List<String> propertyNames, List<String> propertyTypes,
 			List<String> entityUids) {
@@ -215,11 +213,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 
 	@Override
+	@CacheMethod
 	public List<Entity> getEntities(String codingSchemeId,
 			List<String> entityUids) {
 		return this.getEntities(codingSchemeId, null, null, entityUids);
 	}
 
+	@Override
+	@CacheMethod
 	public AssociationEntity getAssociationEntityByCodeAndNamespace(String codingSchemeId, String entityCode, String entityCodeNamespace){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
@@ -235,6 +236,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				entity);
 	}
 	@Override
+	@CacheMethod
 	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(
 			String codingSchemeId, String entityCode, String entityCodeNamespace) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -261,12 +263,14 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				bean);
 	}
 	
+	@CacheMethod
 	public Entity getEntityByUId(
 			String codingSchemeId, 
 			String entityId) {
 		return this.getEntityByUId(codingSchemeId, entityId, null, null);
 	}
 
+	@CacheMethod
 	public Entity getEntityByUId(
 			String codingSchemeId, 
 			String entityId, 
@@ -288,6 +292,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 	
 	@Override
+	@CacheMethod
 	public Entity getHistoryEntityByRevision(String codingSchemeUid, String entityUid, String revisionId) {
 		String REVISION_ID_PARAMETER = "revisionId";
 
@@ -340,6 +345,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#updateEntity(java.lang.String, org.LexGrid.concepts.Entity)
 	 */
+	@ClearCache
 	public String updateEntity(String codingSchemeUId, String entityUId,
 			Entity entity) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -348,6 +354,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 	
 	@Override
+	@ClearCache
 	public String updateEntityVersionableAttrib(String codingSchemeUId, String entityUId, Entity entity) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
@@ -393,6 +400,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		return entryStateUId;
 	}
 	
+	@ClearCache
 	public void updateEntity(String codingSchemeId,
 			AssociationEntity entity) {
 		String entityId = this.getEntityUId(codingSchemeId, entity.getEntityCode(), entity.getEntityCodeNamespace());
@@ -591,6 +599,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.entity.EntityDao#getEntityId(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@ClearCache
 	public String getEntityUId(String codingSchemeId, String entityCode,
 			String entityCodeNamespace) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);

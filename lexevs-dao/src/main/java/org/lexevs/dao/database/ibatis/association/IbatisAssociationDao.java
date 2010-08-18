@@ -68,7 +68,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "ResourceCache", cacheSize=100)
+@Cacheable(cacheName = "IbatisAssociationDaoCache")
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
 
 	/** The supported datebase version. */

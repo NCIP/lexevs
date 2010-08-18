@@ -38,11 +38,4 @@ public @interface Cacheable {
 	 * @return the string
 	 */
 	String cacheName();
-	
-	/**
-	 * Cache size.
-	 * 
-	 * @return the int
-	 */
-	int cacheSize() default 50;
 }

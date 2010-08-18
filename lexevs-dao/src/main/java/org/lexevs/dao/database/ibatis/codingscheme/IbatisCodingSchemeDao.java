@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
@@ -73,7 +72,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Cacheable(cacheName = "ResourceCache")
+@Cacheable(cacheName = "IbatisCodingSchemeDaoCache")
 public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSchemeDao {
 	
 	/** The supported datebase version. */
@@ -197,6 +196,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
 	 */
+	@CacheMethod
 	public CodingScheme getCodingSchemeByUId(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
@@ -224,6 +224,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByUriAndVersion(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
 			String version) {
 		String codingSchemeUId = this.getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
@@ -234,6 +235,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByNameAndVersion(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodingScheme getCodingSchemeByNameAndVersion(String codingSchemeName, String representsVersion){
 		String codingSchemeUId = this.getCodingSchemeUIdByNameAndVersion(codingSchemeName, representsVersion);
 		return this.getCodingSchemeByUId(codingSchemeUId);
@@ -277,6 +279,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByRevision(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public CodingScheme getHistoryCodingSchemeByRevision(String codingSchemeUId, String revisionId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -333,7 +336,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#insertCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
 	 */
-	@ClearCache
 	public String insertCodingScheme(
 			CodingScheme codingScheme, String releaseUId,
 			boolean cascade) {
@@ -584,6 +586,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getEntryStateId(java.lang.String, java.lang.String)
 	 */
+	@CacheMethod
 	public String getEntryStateUId(String codingSchemeUId) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -858,6 +861,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#validateSupportedAttribute(java.lang.String, java.lang.String, java.lang.Class)
 	 */
+	@CacheMethod
 	public <T extends URIMap> boolean validateSupportedAttribute(String codingSchemeId, String localId, Class<T> uriMap) {	
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		

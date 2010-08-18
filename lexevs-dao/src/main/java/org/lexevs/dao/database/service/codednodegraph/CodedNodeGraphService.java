@@ -33,6 +33,39 @@ public interface CodedNodeGraphService {
 		public Order getOrder() {
 			return order;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime
+					* result
+					+ ((columnSortType == null) ? 0 : columnSortType.hashCode());
+			result = prime * result + ((order == null) ? 0 : order.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Sort other = (Sort) obj;
+			if (columnSortType == null) {
+				if (other.columnSortType != null)
+					return false;
+			} else if (!columnSortType.equals(other.columnSortType))
+				return false;
+			if (order == null) {
+				if (other.order != null)
+					return false;
+			} else if (!order.equals(other.order))
+				return false;
+			return true;
+		}
 	}
 	
 	public List<String> listCodeRelationships(
