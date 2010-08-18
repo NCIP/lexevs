@@ -6,6 +6,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +41,13 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
         if(sns == null){
             return null;
         } else {
-            return sns.getEquivalentCodingScheme();
+            String equivalentNamespace = 
+                sns.getEquivalentCodingScheme();
+            if(equivalentNamespace != null ) {
+                return equivalentNamespace;
+            } else {
+                return ServiceUtility.getCodingSchemeName(codingSchemeUri, version);
+            }
         }
     }
 
@@ -55,7 +62,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
         SupportedNamespace sns = getSupportedNamespace(cs, namespace);
         
         if(sns == null || StringUtils.isBlank(sns.getEquivalentCodingScheme())){
-            return null;
+            return Constructors.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version);
         }
         
         String uri;
@@ -131,7 +138,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
                    StringUtils.equals(codingSchemeNameOfSearchCodingScheme, cs.getCodingSchemeName())
                        &&
                    StringUtils.isBlank(sn.getEquivalentCodingScheme())){
-                    returnList.add(sn.getLocalId());
+                        returnList.add(sn.getLocalId());
                 }
             }
         }
