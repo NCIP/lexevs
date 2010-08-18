@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
+    <!--
+     | Please see http://ehcache.sourceforge.net/documentation/configuration.html for
+     | detailed information on how to configurigure caches in this file
+     +-->
+    <!-- Location of persistent caches on disk -->
+    <diskStore path="java.io.tmpdir/lexevs60" />
+
+    <defaultCache eternal="false" maxElementsInMemory="1000"
+        overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+        timeToLiveSeconds="600" memoryStoreEvictionPolicy="LRU"/>
+
+	<cache name="DatabaseRegistryCache" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="DelegatingDatabaseToXmlRegistryCache" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="IbatisCodingSchemeDaoCache" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="true" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="DefaultPrefixResolverCache" eternal="false"
+		maxElementsInMemory="1000" overflowToDisk="false" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="IbatisAssociationDaoCache" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="true" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="DelegatingSystemResourceServiceCache" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="IbatisEntityDaoCache" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="true" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="IbatisPickListDao" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="IbatisValueSetDefinitionDao" eternal="false"
+		maxElementsInMemory="100" overflowToDisk="false" diskPersistent="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LRU" />
+
+</ehcache>
