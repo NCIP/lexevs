@@ -162,6 +162,16 @@ public class DataTestUtils {
 		return false;
 	}
 	
+	public static boolean isConceptReferencePresent(List<? extends ConceptReference> refs, String code){
+		for(ConceptReference concept : refs){
+			if(concept.getCode().equals(code)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Checks if is qualifier name and value present.
 	 * 
