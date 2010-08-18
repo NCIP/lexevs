@@ -58,6 +58,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.SetOperation;
 import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
@@ -93,6 +94,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
+    
+    private CodeHolder toNodeListCodes = new DefaultCodeHolder();
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -879,5 +882,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     public void setCodeHolderFactory(CodeHolderFactory codeHolderFactory) {
         this.codeHolderFactory = codeHolderFactory;
+    }
+
+    public void setToNodeListCodes(CodeHolder toNodeListCodes) {
+        this.toNodeListCodes = toNodeListCodes;
+    }
+
+    public CodeHolder getToNodeListCodes() {
+        return toNodeListCodes;
     }
 }
