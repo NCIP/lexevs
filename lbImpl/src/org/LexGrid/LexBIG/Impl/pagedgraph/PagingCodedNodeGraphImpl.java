@@ -274,11 +274,19 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
 
         }
         
+        int resolveForwardAssociationDepth = resolveAssociationDepth;
+        int resolveBackwardAssociationDepth = resolveAssociationDepth;
+        
         if(this.rootsResolver.isRootOrTail(focus) && resolveAssociationDepth >= 0) {
-            resolveAssociationDepth++;
+        	if(resolveForward) {
+        		resolveForwardAssociationDepth++;
+        	}
+        	if(resolveBackward) {
+        		resolveBackwardAssociationDepth++;
+            }
         }
 
-        if(resolveForward && shouldResolveNextLevel(resolveAssociationDepth)) {
+        if(resolveForward && shouldResolveNextLevel(resolveForwardAssociationDepth)) {
  
             focus.setSourceOf(
             		associationListBuilder.buildSourceOfAssociationList(
@@ -289,8 +297,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     relationsContainerName,
                     resolveForward,
                     resolveBackward,
-                    resolveAssociationDepth - 1, 
-                    resolveAssociationDepth,
+                    resolveForwardAssociationDepth - 1, 
+                    resolveBackwardAssociationDepth,
                     resolveCodedEntryDepth,
                     graphQueryBuilder.getQuery(),
                     propertyNames,
@@ -300,7 +308,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     cycleDetectingCallback));
         }
         
-        if(resolveBackward && shouldResolveNextLevel(resolveAssociationDepth)) {
+        if(resolveBackward && shouldResolveNextLevel(resolveBackwardAssociationDepth)) {
             focus.setTargetOf(
             		associationListBuilder.buildTargetOfAssociationList(
             		this.getCodingSchemeUri(),
@@ -310,8 +318,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     relationsContainerName,
                     resolveForward,
                     resolveBackward,
-                    resolveAssociationDepth, 
-                    resolveAssociationDepth - 1,
+                    resolveForwardAssociationDepth, 
+                    resolveBackwardAssociationDepth - 1,
                     resolveCodedEntryDepth,
                     graphQueryBuilder.getQuery(),
                     propertyNames,

@@ -32,7 +32,6 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
-import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -53,8 +52,6 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     
     private static final long serialVersionUID = -5959522938971242708L;
     
-    private CodeHolder toNodeListCodes;
-    
     public ToNodeListCodedNodeSet(String uri, String version, ConceptReferenceList codeList) throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         super(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version), null, null);
         
@@ -68,7 +65,7 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
         ref.setCodingSchemeURN(uri);
         ref.setCodingSchemeVersion(version);
         
-        toNodeListCodes = codeHolder;    
+        this.setToNodeListCodes(codeHolder);    
         this.restrictToCodes(codeList);
     }
     
@@ -83,14 +80,14 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     @Override
     public CodedNodeSet restrictToMatchingDesignations(String matchText, boolean preferredOnly, String matchAlgorithm,
             String language) throws LBInvocationException, LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder()); 
         return super.restrictToMatchingDesignations(matchText, preferredOnly, matchAlgorithm, language);
     }
 
     @Override
     public CodedNodeSet restrictToMatchingDesignations(String matchText, SearchDesignationOption option,
             String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder());
         return super.restrictToMatchingDesignations(matchText, option, matchAlgorithm, language);
     }
 
@@ -98,7 +95,7 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     public CodedNodeSet restrictToMatchingProperties(LocalNameList propertyList, PropertyType[] propertyTypes,
             LocalNameList sourceList, LocalNameList contextList, NameAndValueList qualifierList, String matchText,
             String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder());
         return super.restrictToMatchingProperties(propertyList, propertyTypes, sourceList, contextList, qualifierList, matchText, matchAlgorithm, language);
     }
 
@@ -106,7 +103,7 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     public CodedNodeSet restrictToMatchingProperties(LocalNameList propertyList, PropertyType[] propertyTypes,
             String matchText, String matchAlgorithm, String language) throws LBInvocationException,
             LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder());    
         return super.restrictToMatchingProperties(propertyList, propertyTypes, matchText, matchAlgorithm, language);
     }
 
@@ -114,21 +111,21 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     public CodedNodeSet restrictToProperties(LocalNameList propertyList, PropertyType[] propertyTypes,
             LocalNameList sourceList, LocalNameList contextList, NameAndValueList qualifierList)
             throws LBInvocationException, LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder());
         return super.restrictToProperties(propertyList, propertyTypes, sourceList, contextList, qualifierList);
     }
 
     @Override
     public CodedNodeSet restrictToProperties(LocalNameList propertyList, PropertyType[] propertyTypes)
             throws LBInvocationException, LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder());;    
         return super.restrictToProperties(propertyList, propertyTypes);
     }
 
     @Override
     public CodedNodeSet restrictToStatus(ActiveOption activeOption, String[] conceptStatus)
             throws LBInvocationException, LBParameterException {
-        toNodeListCodes = null;
+        this.setToNodeListCodes(new DefaultCodeHolder());   
         return super.restrictToStatus(activeOption, conceptStatus);
     }
 
@@ -137,8 +134,9 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
             CodedNodeSetImpl unioned = (CodedNodeSetImpl)codes;
             
             UnionSingleLuceneIndexCodedNodeSet cns = new UnionSingleLuceneIndexCodedNodeSet(this, unioned);
+            this.getToNodeListCodes().union(unioned.getToNodeListCodes());
             
-            cns.setToNodeListCodes(this.toNodeListCodes);
+            cns.setToNodeListCodes(this.getToNodeListCodes());
             return cns;
         } else {
            return super.union(codes);
@@ -150,8 +148,9 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
             CodedNodeSetImpl intersected = (CodedNodeSetImpl)codes;
             
             IntersectSingleLuceneIndexCodedNodeSet cns = new IntersectSingleLuceneIndexCodedNodeSet(this, intersected);
+            this.getToNodeListCodes().intersect(intersected.getToNodeListCodes());
             
-            cns.setToNodeListCodes(this.toNodeListCodes);
+            cns.setToNodeListCodes(this.getToNodeListCodes());
             return cns;
         } else {
            return super.union(codes);
@@ -163,7 +162,9 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
             CodedNodeSetImpl diffed = (CodedNodeSetImpl)codes;
             
             DifferenceSingleLuceneIndexCodedNodeSet cns = new DifferenceSingleLuceneIndexCodedNodeSet(this, diffed);
-            cns.setToNodeListCodes(this.toNodeListCodes);
+            this.getToNodeListCodes().difference(diffed.getToNodeListCodes());
+            
+            cns.setToNodeListCodes(this.getToNodeListCodes());
             
             return cns;
         } else {
@@ -183,12 +184,12 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
             }
         }
         
-        this.toNodeListCodes = newCodeHolder;
+        this.setToNodeListCodes(newCodeHolder);
         return super.restrictToCodes(codeList);
     }
     
     private CodeToReturn findCodeToReturn(ConceptReference ref) {
-        for(CodeToReturn codeToReturn : this.toNodeListCodes.getAllCodes()) {
+        for(CodeToReturn codeToReturn : this.getToNodeListCodes().getAllCodes()) {
             if(codeToReturn.getCode().equals(ref.getCode())) {
                 if(StringUtils.isNotBlank(ref.getCodeNamespace())) {
                     if(codeToReturn.getNamespace().equals(ref.getCodeNamespace())) {
@@ -225,8 +226,8 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
             throws LBInvocationException, LBParameterException {
         super.toBruteForceMode(internalCodeSystemName, internalVersionString);
 
-        if(this.toNodeListCodes != null && this.toNodeListCodes.getNumberOfCodes() > 0) {
-            this.codesToInclude_.union(toNodeListCodes);
+        if(this.getToNodeListCodes() != null && this.getToNodeListCodes().getNumberOfCodes() > 0) {
+            this.codesToInclude_.union(getToNodeListCodes());
         }
     } 
 }

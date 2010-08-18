@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.codednodeset.ToNodeListCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -334,17 +335,9 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
 
         try {
-            /*
-            return new ToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
-            */
-            
-            CodedNodeSet cns = LexBIGServiceImpl.defaultInstance().getNodeSet(codingSchemeUri, 
-                        Constructors.createCodingSchemeVersionOrTagFromVersion(version), null);
-
-            cns = cns.restrictToCodes(codeList);
           
-            return cns;
-            
+            return new ToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
