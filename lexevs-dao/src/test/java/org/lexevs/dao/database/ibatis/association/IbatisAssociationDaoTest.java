@@ -387,11 +387,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				+ "('1', " + "'1'," + "'sc'," + "'sns')");
 
 		template.execute("insert into " + "entityassnquals values ( "
-				+ "'1', " + "'1'," + "'qualName',"
+				+ "'1', " + "'1'," + "'qualName1',"
 				+ "'qualValue'," + "'1' )");
 
 		template.execute("insert into " + "entityassnquals values ( "
-				+ "'2', " + "'1'," + "'qualName',"
+				+ "'2', " + "'1'," + "'qualName2',"
 				+ "'qualValue'," + "'1' )");
 
 		assertEquals(2, template

@@ -58,7 +58,7 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 	 */
 	@Before
 	public void clearCache(){
-		testCacheProxy.getCaches().clear();
+		testCacheProxy.clearAll();
 	}
 	
 	@Test

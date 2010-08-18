@@ -61,7 +61,7 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 	 */
 	@Before
 	public void clearCache(){
-		testCacheProxy.getCaches().clear();
+		testCacheProxy.clearAll();
 		testCacheBean = cacheWrappingFactory.wrapForCaching(new NonSpringManagedTestCacheBean());
 	}
 	
@@ -128,7 +128,7 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("onetwo", testCacheBean.getValueNotCachable("one", "two"));
 		
-		assertNull(testCacheProxy.getCaches().get("testCache"));
+		assertEquals(0,testCacheProxy.getCaches().get("testCache").size());
 	}
 	
 	/**
@@ -157,6 +157,24 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 		
 		assertNull(cachedCs.getDefaultLanguage());
 	}
+	
+	@Test
+	public void testDisableCache(){
+		CacheSessionManager.turnOnCaching();
+		assertEquals("onetwo", testCacheBean.getValue("one", "two"));
+		assertEquals(1, testCacheProxy.getCaches().get("testCache").size());
+		testCacheProxy.clearAll();
+		
+		CacheSessionManager.turnOffCaching();
+		assertEquals("onetwo", testCacheBean.getValue("one", "two"));
+		assertEquals(0, testCacheProxy.getCaches().get("testCache").size());
+		testCacheProxy.clearAll();
+		
+		CacheSessionManager.turnOnCaching();
+		assertEquals("onetwo", testCacheBean.getValue("one", "two"));
+		assertEquals(1, testCacheProxy.getCaches().get("testCache").size());
+	}
+	
 	
 	/**
 	 * The main method.
