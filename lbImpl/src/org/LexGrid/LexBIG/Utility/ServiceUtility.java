@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Utility;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
@@ -48,6 +49,26 @@ import org.lexevs.system.service.SystemResourceService;
  */
 public class ServiceUtility {
     
+    public static Entity resolveConceptReference(ResolvedConceptReference conceptReference) {
+        String codingSchemeUri = conceptReference.getCodingSchemeURI();
+        String version = conceptReference.getCodingSchemeVersion();
+        
+        if(codingSchemeUri == null || version == null) {
+            return null;
+        }
+        
+        Entity entity = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getEntityService().
+                    getEntity(
+                            codingSchemeUri, 
+                            version, 
+                            conceptReference.getCode(), 
+                            conceptReference.getCodeNamespace());
+        
+        return entity;
+    }
+    
     /**
      * Gets the version.
      * 
@@ -71,6 +92,14 @@ public class ServiceUtility {
         }
         
         return version;
+    }
+    
+    public static String getCodingSchemeName(String codingScheme, String version) throws LBParameterException {
+        SystemResourceService systemResourceService = 
+            LexEvsServiceLocator.getInstance().getSystemResourceService();
+        
+        return systemResourceService.
+            getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
     }
     
     public static void validateParameter(String codingSchemeNameOrUri, String codingSchemeVersion, LocalNameList list, Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
