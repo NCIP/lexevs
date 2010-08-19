@@ -55,7 +55,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     private CodedNodeSetImpl cns1;
     private CodedNodeSetImpl cns2;
     
-    public AbstractMultiSingleLuceneIndexCodedNodeSet(){
+    protected AbstractMultiSingleLuceneIndexCodedNodeSet(){
         super();
     }
 

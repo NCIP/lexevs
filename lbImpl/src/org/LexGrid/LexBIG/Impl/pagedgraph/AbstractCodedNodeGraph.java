@@ -52,6 +52,10 @@ public abstract class AbstractCodedNodeGraph implements CodedNodeGraph {
         return LoggerFactory.getLogger();
     }
     
+    protected AbstractCodedNodeGraph() {
+        super();
+    }
+    
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph#resolveAsList(org.LexGrid.LexBIG.DataModel.Core.ConceptReference, boolean, boolean, int, int, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], org.LexGrid.LexBIG.DataModel.Collections.SortOptionList, int)
      */

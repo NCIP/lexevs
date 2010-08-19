@@ -46,6 +46,10 @@ public class UnionGraph extends AbstractMultiGraph {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8545723123536546421L;
     
+    public UnionGraph() {
+        super();
+    }
+    
     /**
      * Instantiates a new union graph.
      * 

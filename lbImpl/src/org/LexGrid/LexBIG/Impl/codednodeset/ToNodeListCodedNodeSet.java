@@ -52,6 +52,10 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     
     private static final long serialVersionUID = -5959522938971242708L;
     
+    public ToNodeListCodedNodeSet() {
+        super();
+    }
+    
     public ToNodeListCodedNodeSet(String uri, String version, ConceptReferenceList codeList) throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         super(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version), null, null);
         
