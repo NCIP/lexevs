@@ -99,7 +99,15 @@ public class ExtensionRegistryImpl implements ExtensionRegistry {
                 } catch (LBParameterException e) {
                    this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
                 }
-            } else {
+            }
+            else if(ClassUtils.isAssignable(extensionBaseClass, Exporter.class)){
+                try {
+                    this.registerExportExtension(ed);
+                } catch (LBParameterException e) {
+                   this.getLogger().warn("Could not load Extension: " + ed.getName(), e);
+                }
+            }
+            else {
                 getLogger().warn("Extension: " + ed.getName() + " is not recognized as an Extension Type.");
             }
         }
