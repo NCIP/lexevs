@@ -20,9 +20,14 @@ package org.LexGrid.LexBIG.Impl.function.codednodeset;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.util.PrintUtility;
 
 /**
  * The Class UnionTest.
@@ -186,5 +191,78 @@ public class UnionTest extends BaseCodedNodeSetTest {
         assertTrue(contains(rcr, "005", LexBIGServiceTestCase.AUTO_SCHEME));
         assertTrue(contains(rcr, "Ford", LexBIGServiceTestCase.AUTO_SCHEME));
         assertTrue(contains(rcr, "GM", LexBIGServiceTestCase.AUTO_SCHEME));
+    }
+    
+    public void testMultipleUnions() throws Exception {
+    	CodedNodeSet cns1 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns1 = cns1.restrictToCodes(Constructors.createConceptReferenceList("005"));
+		
+		CodedNodeSet cns2 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+		
+		CodedNodeSet cns3 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns3 = cns3.restrictToCodes(Constructors.createConceptReferenceList("C0001"));
+		
+		CodedNodeSet cns4 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns4 = cns4.restrictToCodes(Constructors.createConceptReferenceList("Ford"));
+
+		
+		CodedNodeSet cns5 = cns1.union(cns2).union(cns3).union(cns4);
+		
+		assertEquals(4, cns5.resolve(null, null, null).numberRemaining());
+    }
+    
+    public void testMultipleUnionsWithRestriction() throws Exception {
+    	CodedNodeSet cns1 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns1 = cns1.restrictToCodes(Constructors.createConceptReferenceList("005"));
+		
+		CodedNodeSet cns2 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+		
+		CodedNodeSet cns3 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns3 = cns3.restrictToCodes(Constructors.createConceptReferenceList("C0001"));
+		
+		CodedNodeSet cns4 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns4 = cns4.restrictToCodes(Constructors.createConceptReferenceList("Ford"));
+
+		
+		CodedNodeSet cns5 = cns1.union(cns2).union(cns3).union(cns4);
+		cns5 = cns5.restrictToCodes(Constructors.createConceptReferenceList("Ford"));
+		
+		assertEquals(1, cns5.resolve(null, null, null).numberRemaining());
+    }
+    
+    public void testUnionWithCodesAndPropertyRestriction() throws Exception {
+    	CodedNodeSet cns1 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns1 = cns1.restrictToMatchingDesignations("General", SearchDesignationOption.ALL, "LuceneQuery", null);
+		
+		CodedNodeSet cns2 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.PARTS_SCHEME, null, null);
+
+		cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"P0001", "R0001"}));
+		
+		assertEquals(3, cns1.union(cns2).resolve(null, null, null).numberRemaining());
+    }
+    
+    public void testUnionWithCodesAndPropertyRestrictionUnionOtherWay() throws Exception {
+    	CodedNodeSet cns1 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
+		cns1 = cns1.restrictToMatchingDesignations("General", SearchDesignationOption.ALL, "LuceneQuery", null);
+		
+		CodedNodeSet cns2 = 
+			lbs.getNodeSet(LexBIGServiceTestCase.PARTS_SCHEME, null, null);
+
+		cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"P0001", "R0001"}));
+		
+		assertEquals(3, cns2.union(cns1).resolve(null, null, null).numberRemaining());
     }
 }
