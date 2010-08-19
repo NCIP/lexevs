@@ -152,39 +152,4 @@ public class LexEVSMappingLoadTest extends TestCase {
 		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
 	}
 
-//	private AssociationTarget createTarget(String code, String namespace) {
-//		AssociationTarget target = new AssociationTarget();
-//		target.setTargetEntityCode(code);
-//		target.setTargetEntityCodeNamespace(namespace);
-//		return target;
-//	}
-//
-//	private AssociationTarget createTargetWithValuesPopulated()
-//			throws LBException {
-//		Versionable versionableData = new Versionable();
-//		versionableData.setEffectiveDate(new Date());
-//		versionableData.setExpirationDate(new Date());
-//		versionableData.setIsActive(Boolean.TRUE);
-//		versionableData.setOwner("Mayo");
-//		versionableData.setStatus("ACTIVE");
-//		String instanceId = "instance_001";
-//
-//		List<String> usageContextList = null;
-//		AssociationQualification qualifier = new AssociationQualification();
-//		qualifier.setAssociationQualifier("qualifier");
-//		Text text = new Text();
-//		text.setContent("qualifies SY");
-//		qualifier.setQualifierText(text);
-//		List<AssociationQualification> associationQualifiers = Arrays
-//				.asList(qualifier);
-//		AbsoluteCodingSchemeVersionReference targetCodeSystemIdentifier = new AbsoluteCodingSchemeVersionReference();
-//		targetCodeSystemIdentifier.setCodingSchemeURN("urn:oid:11.11.0.1");
-//		targetCodeSystemIdentifier.setCodingSchemeVersion(TARGET_VERSION);
-//		String targetConceptCodeIdentifier = "005";
-//		return authoring.createAssociationTarget(null, versionableData,
-//				instanceId, Boolean.FALSE, Boolean.TRUE, usageContextList,
-//				associationQualifiers, targetCodeSystemIdentifier,
-//				targetConceptCodeIdentifier);
-//	}
-
 }
