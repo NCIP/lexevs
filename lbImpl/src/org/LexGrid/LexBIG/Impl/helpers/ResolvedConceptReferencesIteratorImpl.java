@@ -200,7 +200,7 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
                     } else {
                         // filter rejected this result. need to bump up max so that
                         // I return the correct number of results.
-                        if (max + 1 < codesToReturn_.getAllCodes().size()){
+                        if (max < codesToReturn_.getAllCodes().size()){
                             max++;
                         }
                     }
@@ -376,7 +376,7 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         // I need to scan forward to get an accurate answer to hasNext() if
         // filters are involved.
         if (filters_ != null && filters_.length > 0) {
-            for (int i = pos_; i < codesToReturn_.getNumberOfCodes(); i++) {
+            for (int i = pos_; i < codesToReturn_.getNumberOfCodes(); i++, pos_++) {
                 ResolvedConceptReference rcr;
                 try {
                     rcr = codeToReturnResolver.buildResolvedConceptReference(
