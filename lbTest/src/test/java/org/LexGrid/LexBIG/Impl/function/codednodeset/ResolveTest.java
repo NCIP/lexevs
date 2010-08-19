@@ -219,6 +219,24 @@ public class ResolveTest extends BaseCodedNodeSetTest {
         
         ResolvedConceptReferencesIterator itr = cns.resolve(null, Constructors.createLocalNameList("JUnit Test Filter"), null, null);
         
+        for(int i=0;i<4;i++) {
+        	itr.next();
+        }
+        
+        assertFalse(itr.hasNext());
+    }
+    
+    public void testFilterOptionsWithScroll() throws LBException{
+        TestFilter filter = new TestFilter();
+
+        try{
+            filter.register();
+        } catch (Exception e) {
+            //if its already registered....
+        }
+        
+        ResolvedConceptReferencesIterator itr = cns.resolve(null, Constructors.createLocalNameList("JUnit Test Filter"), null, null);
+        
         itr.scroll(4);
         
         assertFalse(itr.hasNext());
