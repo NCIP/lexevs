@@ -18,6 +18,9 @@
  */
 package org.lexevs.dao.database.service.error;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -41,7 +44,10 @@ public class DefaultDatabaseError implements DatabaseError {
 	private Date errorTime = new Date();
 	
 	private String errorCode;
+	
+	private String errorDescription;
     
+	private boolean debug = false;
 
 	/**
 	 * Instantiates a new default database error.
@@ -50,11 +56,63 @@ public class DefaultDatabaseError implements DatabaseError {
 	 * @param errorException the error exception
 	 */
 	public DefaultDatabaseError(String errorCode, Object errorObject, Exception errorException) {
+		this(errorCode, errorObject, "An " + errorCode + " + Error Occured.", errorException);
+	}
+	
+	public DefaultDatabaseError(String errorCode, Object errorObject, String errorDescription, Exception errorException) {
 		super();
 		this.errorObject = errorObject;
 		this.errorException = errorException;
 		this.errorCode = errorCode;
 	}
+	
+    public String getErrorMessage() {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("\n             *ERROR REPORT*");
+        sb.append("\n");
+        sb.append("\nError Code: " + this.getErrorCode());
+        sb.append("\nUnique Error Id: " + this.getUniqueErrorId());
+        sb.append("\nDescription: " + getErrorDescription() );
+        sb.append("\n -- Caused By Object with Description: ");
+        sb.append("\n --- " + getErrorObjectDescription());
+        sb.append("\nException Message (if any):");
+        sb.append("\n");
+        if(getErrorException() != null) {
+            sb.append(getErrorException().getMessage());
+            if(debug) {
+                sb.append("\n");
+                sb.append("\n");
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                getErrorException().printStackTrace(pw);
+                pw.flush();
+                sw.flush();
+                sb.append(sw.getBuffer());
+                pw.close();
+                try {
+                    sw.close();
+                } catch (IOException e) {
+                    //
+                }
+            }
+        }
+        
+        return sb.toString();
+    }
+    
+    /**
+     * Gets the error object description.
+     * 
+     * @return the error object description
+     */
+    protected String getErrorObjectDescription() {
+    	return this.getErrorObject().toString();
+    }
+    
+    public String getErrorDescription() {
+    	return this.errorDescription;
+    }
 	
 	/**
 	 * Gets the unique error id.
@@ -107,5 +165,13 @@ public class DefaultDatabaseError implements DatabaseError {
 
 	public String getErrorCode() {
 		return errorCode;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 }

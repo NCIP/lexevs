@@ -45,5 +45,5 @@ public interface ResolverProcessor {
      * 
      * @return the list< resolved load validation error>
      */
-    public List<ResolvedLoadValidationError> resolve(List<LoadValidationError> errors);
+    public List<ResolvedLoadValidationError> resolve(List<? extends LoadValidationError> errors);
 }

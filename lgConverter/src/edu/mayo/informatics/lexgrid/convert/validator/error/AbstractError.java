@@ -18,10 +18,6 @@
  */
 package edu.mayo.informatics.lexgrid.convert.validator.error;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.lexevs.dao.database.service.error.DefaultDatabaseError;
 
 /**
@@ -33,9 +29,7 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
     
     /** The severity. */
     private Severity severity = Severity.UNKNOWN;
-    
-    private boolean debug = false;
-  
+
     protected AbstractError(Object errorObject) {
         this(null, errorObject, null);
     }
@@ -45,56 +39,11 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
     }
 
     /* (non-Javadoc)
-     * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getErrorMessage()
-     */
-    public String getErrorMessage() {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append("\n             *ERROR REPORT*");
-        sb.append("\n");
-        sb.append("\nError Code: " + this.getErrorCode());
-        sb.append("\nUnique Error Id: " + this.getUniqueErrorId());
-        sb.append("\nDescription: " + this.getErrorDescription() );
-        sb.append("\n -- Caused By Object with Description: ");
-        sb.append("\n --- " + this.getErrorObjectDescription());
-        sb.append("\nException Message (if any):");
-        sb.append("\n");
-        if(super.getErrorException() != null) {
-            sb.append(super.getErrorException().getMessage());
-            if(debug) {
-                sb.append("\n");
-                sb.append("\n");
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                super.getErrorException().printStackTrace(pw);
-                pw.flush();
-                sw.flush();
-                sb.append(sw.getBuffer());
-                pw.close();
-                try {
-                    sw.close();
-                } catch (IOException e) {
-                    //
-                }
-            }
-        }
-        
-        return sb.toString();
-    }
-    
-    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     public String toString() {
         return getErrorMessage();
     }
-    
-    /**
-     * Gets the error object description.
-     * 
-     * @return the error object description
-     */
-    protected abstract String getErrorObjectDescription();
 
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError#getSeverity()
@@ -111,13 +60,4 @@ public abstract class AbstractError extends DefaultDatabaseError implements Load
     public void setSeverity(Severity severity) {
         this.severity = severity;
     }
-    
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
 }

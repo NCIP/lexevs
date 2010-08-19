@@ -20,6 +20,8 @@ package edu.mayo.informatics.lexgrid.convert.validator.error;
 
 import java.util.Date;
 
+import org.lexevs.dao.database.service.error.DatabaseError;
+
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport;
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.ErrorResolutionReport.ResolutionStatus;
 
@@ -48,6 +50,10 @@ public class WrappingLoadValidationError implements ResolvedLoadValidationError 
     public WrappingLoadValidationError(LoadValidationError error, ErrorResolutionReport report){
         this.error = error;
         this.report = report;
+    }
+    
+    public WrappingLoadValidationError(DatabaseError error){
+        this(new LoadValidationErrorWrapper(error));
     }
     
     /**
@@ -133,11 +139,59 @@ public class WrappingLoadValidationError implements ResolvedLoadValidationError 
         StringBuffer sb = new StringBuffer();
 
         sb.append("\n####################################################");
-        sb.append(error.toString());
-        sb.append("\n");
-        sb.append(report.toString());
+        sb.append("\n" + this.getErrorMessage());
+        sb.append("\n" + this.getErrorResolutionReport());
         sb.append("\n####################################################");
         
         return sb.toString();
+    }
+    
+    private static class LoadValidationErrorWrapper implements LoadValidationError {
+        
+        private DatabaseError error;
+        
+        private LoadValidationErrorWrapper(DatabaseError error) {
+            this.error = error;
+        }
+
+        @Override
+        public String getErrorDescription() {
+            return error.getErrorDescription();
+        }
+
+        @Override
+        public String getErrorMessage() {
+            return error.getErrorMessage();
+        }
+
+        @Override
+        public Severity getSeverity() {
+            return Severity.UNKNOWN;
+        }
+
+        @Override
+        public String getErrorCode() {
+            return error.getErrorCode();
+        }
+
+        @Override
+        public Exception getErrorException() {
+           return error.getErrorException();
+        }
+
+        @Override
+        public Object getErrorObject() {
+            return error.getErrorObject();
+        }
+
+        @Override
+        public Date getErrorTime() {
+            return error.getErrorTime();
+        }
+
+        @Override
+        public String getUniqueErrorId() {
+            return error.getUniqueErrorId();
+        }
     }
 }

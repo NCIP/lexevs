@@ -41,21 +41,6 @@ public interface LoadValidationError extends DatabaseError {
             UNKNOWN}
     
     /**
-     * Gets the error message.
-     * 
-     * @return the error message
-     */
-    public String getErrorMessage();
-
-    
-    /**
-     * Gets the error description.
-     * 
-     * @return the error description
-     */
-    public String getErrorDescription();
-    
-    /**
      * Gets the severity.
      * 
      * @return the severity

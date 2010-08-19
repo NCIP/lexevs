@@ -23,6 +23,7 @@ import java.util.List;
 
 import edu.mayo.informatics.lexgrid.convert.validator.error.LoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.error.ResolvedLoadValidationError;
+import edu.mayo.informatics.lexgrid.convert.validator.error.WrappingLoadValidationError;
 import edu.mayo.informatics.lexgrid.convert.validator.resolution.Resolver;
 
 /**
@@ -45,14 +46,21 @@ public class DefaultResolverProcessor implements ResolverProcessor {
     /* (non-Javadoc)
      * @see edu.mayo.informatics.lexgrid.convert.validator.processor.ResolverProcessor#resolve(java.util.List)
      */
-    public List<ResolvedLoadValidationError> resolve(List<LoadValidationError> errors) {
+    public List<ResolvedLoadValidationError> resolve(List<? extends LoadValidationError> errors) {
         List<ResolvedLoadValidationError> returnList =
                new ArrayList<ResolvedLoadValidationError>();
         
         for(LoadValidationError error : errors) {
             String errorCode = error.getErrorCode();
-            for(Resolver resolver : getResolversForCode(errorCode)) {
-                returnList.add(resolver.resolveError(error));
+            
+            List<Resolver> resolvers = getResolversForCode(errorCode);
+            
+            if(resolvers.size() > 0) {
+                for(Resolver resolver : getResolversForCode(errorCode)) {
+                    returnList.add(resolver.resolveError(error));
+                }
+            } else {
+                returnList.add(new WrappingLoadValidationError(error));
             }
         }
         return returnList;

@@ -52,10 +52,14 @@ public interface DatabaseError {
     
     public String getUniqueErrorId();
     
+    public String getErrorDescription();
+    
     /**
      * Gets the error code.
      * 
      * @return the error code
      */
     public String getErrorCode();
+    
+    public String getErrorMessage();
 }

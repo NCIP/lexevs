@@ -14,7 +14,7 @@ public class AllFatalResolverProcessor implements ResolverProcessor {
         throw new UnsupportedOperationException("No adding Resolvers allowed -- this is a special Processor to make all errors Fatal.");
     }
 
-    public List<ResolvedLoadValidationError> resolve(List<LoadValidationError> errors) {
+    public List<ResolvedLoadValidationError> resolve(List<? extends LoadValidationError> errors) {
         List<ResolvedLoadValidationError> returnList = new ArrayList<ResolvedLoadValidationError>();
         
         for(LoadValidationError error : errors) {
