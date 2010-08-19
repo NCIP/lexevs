@@ -54,7 +54,9 @@ public abstract class BaseExporter {
     private URI resourceUri;
     private AbsoluteCodingSchemeVersionReference source;
     private URI valueSetDefinitionURI;
+    private String valueSetDefinitionRevisionId;
     private String pickListId;
+    private boolean exportValueSetResolution;
 
     public static String ASYNC_OPTION = "Async Load";
     public static String FAIL_ON_ERROR_OPTION = Option.getNameForType(Option.FAIL_ON_ERROR);
@@ -124,11 +126,26 @@ public abstract class BaseExporter {
         baseExport(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue());
     }
     
-    public void exportValueSetDefinition(URI valueSetDefinitionURI, URI destination) {
+    public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, URI destination) {
         try {
             setInUse();
             this.setResourceUri(destination);
             this.setValueSetDefinitionURI(valueSetDefinitionURI);
+            this.setValueSetDefinitionRevisionId(valueSetDefinitionRevisionId);
+            this.setExportValueSetResolution(false);
+        } catch (LBInvocationException e) {
+           throw new RuntimeException(e);
+        }
+        baseExport(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue());
+    }
+    
+    public void exportValueSetResolution(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, URI destination) {
+        try {
+            setInUse();
+            this.setResourceUri(destination);
+            this.setValueSetDefinitionURI(valueSetDefinitionURI);
+            this.setValueSetDefinitionRevisionId(valueSetDefinitionRevisionId);
+            this.setExportValueSetResolution(true);
         } catch (LBInvocationException e) {
            throw new RuntimeException(e);
         }
@@ -243,6 +260,34 @@ public abstract class BaseExporter {
      */
     public void setPickListId(String pickListId) {
         this.pickListId = pickListId;
+    }
+
+    /**
+     * @return the valueSetDefinitionRevisionId
+     */
+    public String getValueSetDefinitionRevisionId() {
+        return valueSetDefinitionRevisionId;
+    }
+
+    /**
+     * @param valueSetDefinitionRevisionId the valueSetDefinitionRevisionId to set
+     */
+    public void setValueSetDefinitionRevisionId(String valueSetDefinitionRevisionId) {
+        this.valueSetDefinitionRevisionId = valueSetDefinitionRevisionId;
+    }
+
+    /**
+     * @return the exportValueSetResolution
+     */
+    public boolean isExportValueSetResolution() {
+        return exportValueSetResolution;
+    }
+
+    /**
+     * @param exportValueSetResolution the exportValueSetResolution to set
+     */
+    public void setExportValueSetResolution(boolean exportValueSetResolution) {
+        this.exportValueSetResolution = exportValueSetResolution;
     }
     
 }

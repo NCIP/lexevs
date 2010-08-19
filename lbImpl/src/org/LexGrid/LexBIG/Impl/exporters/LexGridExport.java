@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -46,6 +47,7 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -104,9 +106,14 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     protected void doExport(){
         if (super.getSource() != null)
             exportCodingSchemeData();
-        if (super.getValueSetDefinitionURI() != null)
-            exportValueSetDefinitionData();
-        if (super.getPickListId() != null)
+        else if (super.getValueSetDefinitionURI() != null)
+        {
+            if (super.isExportValueSetResolution())
+                exportValueSetResolutionData();
+            else
+                exportValueSetDefinitionData();
+        }
+        else if (super.getPickListId() != null)
             exportPickListDefinitionData();
     }
     
@@ -231,6 +238,98 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
     }
     
+    protected void exportValueSetResolutionData(){
+        URI destination = super.getResourceUri();
+        
+        boolean overwrite = super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).getOptionValue().booleanValue();
+        // construct out file name
+        String separator = File.separator;
+        String directory = destination.getPath();
+        this.verifyOutputDirectory(directory);
+        String outDirWithEndingPathSeparator = directory;
+        if(outDirWithEndingPathSeparator.endsWith(separator) == false) {
+            outDirWithEndingPathSeparator = outDirWithEndingPathSeparator + separator;
+        }
+        
+        ValueSetDefinitionService vsdServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+        
+        ValueSetDefinition vsd = null;
+        try {
+            vsd = vsdServ.getValueSetDefinitionByRevision(this.getValueSetDefinitionURI().toString(), this.getValueSetDefinitionRevisionId());
+        } catch (LBRevisionException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        String codingSchemeUri = vsd.getValueSetDefinitionURI();
+        String codingSchemeVersion = vsd.getEntryState() == null ? "UNASSIGNED" : vsd.getEntryState().getContainingRevision();
+        
+        String codingSchemeName = StringUtils.isEmpty(vsd.getValueSetDefinitionName()) ? codingSchemeUri : vsd.getValueSetDefinitionName();
+
+        String outFileName = outDirWithEndingPathSeparator + codingSchemeName + 
+                    "_" + codingSchemeVersion + ".xml";  
+        
+        File outFile = new File(outFileName);
+        
+        System.out.println("Content will be exported to file: " + outFile.getAbsolutePath());
+        
+        if(outFile.exists() == true && overwrite == true) 
+        {
+            outFile.delete();
+        } else if (outFile.exists() == true && overwrite == false) {
+            String msg = "Output file \"" + outFileName + "\" already exists. Set force option to overwrite an existing file.";
+            this.getLogger().fatal(msg);
+            this.getStatus().setErrorsLogged(true);
+            throw new RuntimeException(msg);
+        } else {
+            // outFile did not exist.  do nothing.
+        }
+        
+        this.getStatus().setDestination(outFile.toURI().toString());
+        
+        Writer w = null;
+        BufferedWriter out = null;
+        CodingScheme cs = null;
+        try {
+            w = new FileWriter(outFile, false);
+            out = new BufferedWriter(w);
+
+            cs = new CodingScheme();
+            
+            cs.setCodingSchemeName(codingSchemeName);
+            cs.setCodingSchemeURI(codingSchemeUri);
+            cs.setRepresentsVersion(codingSchemeVersion);
+            if (vsd.getEffectiveDate() != null)
+                cs.setEffectiveDate(vsd.getEffectiveDate());
+            if (vsd.getExpirationDate() != null)
+                cs.setExpirationDate(vsd.getExpirationDate());
+            cs.setEntryState(vsd.getEntryState());
+            cs.setFormalName(codingSchemeName);
+            cs.setIsActive(vsd.getIsActive());
+            cs.setMappings(vsd.getMappings());
+            cs.setOwner(vsd.getOwner());
+            cs.setProperties(vsd.getProperties());
+            cs.setSource(vsd.getSource());
+            cs.setStatus(vsd.getStatus());
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+        
+        Entities entities = new Entities();
+        Entity entity = new Entity();
+        entity.setEntityCode(LexGridConstants.MR_FLAG);
+        entities.addEntity(entity);
+        cs.setEntities(entities);
+        
+        addStopFlagsToAssociationPredicates(cs);
+        
+        
+        XmlContentWriter xmlContentWriter = new XmlContentWriter();
+        xmlContentWriter.marshalToXml(cs, cng, cns, out, this.pageSize, true, this.getMessageDirector());
+        
+    }
+    
     private void addStopFlagsToAssociationPredicates(CodingScheme cs) {
         if(cs == null) return;
         
@@ -312,10 +411,15 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         ValueSetDefinitionService vsdSer = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
         ValueSetDefinition vsd = null;
-        vsd = vsdSer.getValueSetDefinitionByUri(vsdURI);
+        try {
+            vsd = vsdSer.getValueSetDefinitionByRevision(vsdURI.toString(), this.getValueSetDefinitionRevisionId());
+        } catch (LBRevisionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(vsd, null, null, out, this.pageSize, true, this.getMessageDirector());
+        xmlContentWriter.marshalToXml(vsd, cng, cns, out, this.pageSize, true, this.getMessageDirector());
     }
     
     protected void exportPickListDefinitionData(){
@@ -412,6 +516,10 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter#exportPickListDefinition(java.lang.String, java.net.URI, boolean, boolean, boolean)
+     */
     @Override
     public void exportPickListDefinition(String pickListId, URI destination, boolean overwrite, boolean stopOnErros,
             boolean async) throws LBException {
@@ -420,12 +528,29 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         super.exportPickListDefinition(pickListId, destination);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter#exportValueSetDefinition(java.net.URI, java.lang.String, java.net.URI, boolean, boolean, boolean)
+     */
     @Override
-    public void exportValueSetDefinition(URI valueSetDefinitionURI, URI destination, boolean overwrite,
+    public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, URI destination, boolean overwrite,
             boolean stopOnErros, boolean async) throws LBException {
         super.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
-        super.exportValueSetDefinition(valueSetDefinitionURI, destination);
+        super.exportValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionRevisionId, destination);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter#exportValueSetResolution(java.net.URI, java.lang.String, java.net.URI, boolean, boolean, boolean)
+     */
+    @Override
+    public void exportValueSetResolution(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId,
+            URI destination, boolean overwrite, boolean stopOnErros, boolean async) throws LBException {
+        super.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
+        
+        super.exportValueSetResolution(valueSetDefinitionURI, valueSetDefinitionRevisionId, destination);
     }    
     
 }
