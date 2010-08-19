@@ -43,11 +43,11 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.association.AssociationDataService;
 import org.lexevs.dao.database.service.association.AssociationService;
 import org.lexevs.dao.database.service.association.AssociationTargetService;
-import org.lexevs.dao.database.service.association.VersionableEventAssociationService;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
@@ -55,6 +55,8 @@ import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
+
+import edu.mayo.informatics.lexgrid.convert.errorcallback.ErrorCallbackListenerFactory;
 
 /**
  * @author  <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
@@ -69,7 +71,6 @@ public class XMLDaoServiceAdaptor {
     CodingSchemeService codingSchemeService = null;
     AssociationService assocService = null;
     RelationService relationService = null;
-    VersionableEventAssociationService assocServiceForPred = null;
     DaoCallbackService daoCallbackService;
     PropertyService propertyService = null;
     PickListDefinitionService pickListService;
@@ -81,6 +82,8 @@ public class XMLDaoServiceAdaptor {
     ArrayList<AssociationPredicate> associationList = null;
     ArrayList<String> relationList = null;
     
+    ErrorCallbackListener errorCallbackListener = ErrorCallbackListenerFactory.getErrorCallbackListener();
+    
     /**
      * constructor initializes all DAO services
      */
@@ -89,13 +92,12 @@ public class XMLDaoServiceAdaptor {
         dbManager = locator.getDatabaseServiceManager();
         assocDataService = dbManager.getAssociationDataService();
         authoringService = dbManager.getAuthoringService();
-        entityService = dbManager.getEntityService();
+        entityService = dbManager.wrapServiceForErrorHandling(dbManager.getEntityService(), errorCallbackListener);
         codingSchemeService = dbManager.getCodingSchemeService();
         assocService = dbManager.getAssociationService();
         relationService = dbManager.getRelationService();
         associationList = new ArrayList<AssociationPredicate>();
         relationList = new ArrayList<String>();
-        assocServiceForPred = (VersionableEventAssociationService) assocService;
         daoCallbackService = dbManager.getDaoCallbackService();
         propertyService = dbManager.getPropertyService();
         pickListService = dbManager.getPickListDefinitionService();
