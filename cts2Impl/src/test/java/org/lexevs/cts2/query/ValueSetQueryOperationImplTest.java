@@ -3,8 +3,6 @@
  */
 package org.lexevs.cts2.query;
 
-import static org.junit.Assert.fail;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -25,14 +23,6 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
  *
  */
 public class ValueSetQueryOperationImplTest {
-
-	/**
-	 * Test method for {@link org.lexevs.cts2.query.ValueSetQueryOperationImpl#ValueSetQueryOperationImpl(org.lexevs.cts2.LexEvsCTS2)}.
-	 */
-	@Test
-	public void testValueSetQueryOperationImpl() {
-		fail("Not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.query.ValueSetQueryOperationImpl#checkConceptValueSetMembership(java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String, java.lang.String, java.lang.String)}.

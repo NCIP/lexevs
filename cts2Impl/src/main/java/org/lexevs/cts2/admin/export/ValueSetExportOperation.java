@@ -31,25 +31,33 @@ public interface ValueSetExportOperation {
 	 * 
 	 * @param valueSetDefinitionURI
 	 * 			value set definition URI
+	 * @param valueSetDefinitionVersion
+	 * 			value set definition version
 	 * @param xmlFullPathName
-	 * 			Location to save the definition
+	 * 			File location (including file name *.xml) to save the definition
 	 * @param overwrite
 	 * 			True: to override the existing file.
 	 * @param failOnAllErrors
 	 * 			True: stops exporting if any error.
 	 * @throws LBException
 	 */
-	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionVersion, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Exports contents of the Value Set Definition using the exporter specified.
-	 * @param valueSetDefinitionURI URI of the Value Set Definition to be exported
-	 * @param exportDestination Destination path information for the exported file.
-	 * @param exporter Name of the exporter to use. Use getSupportedExporterNames to get all the exporters supported by this instance of CTS2. 
+	 * 
+	 * @param valueSetDefinitionURI 
+	 * 			URI of the Value Set Definition to be exported
+	 * @param valueSetDefinitionVersion 
+	 * 			version of the Value Set Definition to be exported
+	 * @param exportDestination 
+	 * 			Destination path information for the exported file.
+	 * @param exporter 
+	 * 			Name of the exporter to use. Use getSupportedExporterNames to get all the exporters supported by this instance of CTS2. 
 	 * @return URI of destination if successfully exported.
 	 * @throws LBException
 	 */
-	public URI exportValueSetContents(URI valueSetDefinitionURI, URI exportDestination, String exporter) throws LBException;
+	public URI exportValueSetContents(URI valueSetDefinitionURI, String valueSetDefinitionVersion, URI exportDestination, String exporter) throws LBException;
 	
 	/**
 	 * Exports contents of Value Set Definition as Code System in LexGrid canonical XML format.
@@ -59,7 +67,7 @@ public interface ValueSetExportOperation {
 	 * @param valueSetDefinitionVersion
 	 * 			value set definition version
 	 * @param exportDestination
-	 * 			Location to save the definition
+	 * 			Location (path to the folder withOUT the file name) to save the definition
 	 * @param csVersionList 
 	 * 			A list of coding scheme URI's and versions to be used.  These will be used only if they are present in
 	 * 			the service.  If absent, the most recent version will be used instead.

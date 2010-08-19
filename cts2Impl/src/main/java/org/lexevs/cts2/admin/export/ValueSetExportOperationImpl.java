@@ -5,17 +5,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
-import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
@@ -27,20 +23,20 @@ public class ValueSetExportOperationImpl extends BaseService implements ValueSet
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.export.ValueSetExportOperation#exportValueSetDefinition(java.net.URI, java.lang.String, boolean, boolean)
+	 * @see org.lexevs.cts2.admin.export.ValueSetExportOperation#exportValueSetDefinition(java.net.URI, java.lang.String, java.lang.String, boolean, boolean)
 	 */
 	@Override
-	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException {
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionVersion, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException {
 		LexEVSValueSetDefinitionServices vsdServ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
-		vsdServ.exportValueSetDefinition(valueSetDefinitionURI, xmlFullPathName, overwrite, failOnAllErrors);
+		vsdServ.exportValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionVersion, xmlFullPathName, overwrite, failOnAllErrors);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.export.ValueSetExportOperation#exportValueSetContents(java.net.URI, java.net.URI, java.lang.String)
+	 * @see org.lexevs.cts2.admin.export.ValueSetExportOperation#exportValueSetContents(java.net.URI, java.lang.String, java.net.URI, java.lang.String)
 	 */
 	@Override
-	public URI exportValueSetContents(URI valueSetDefinitionURI, URI exportDestination, String exporterName)
+	public URI exportValueSetContents(URI valueSetDefinitionURI, String valueSetDefinitionVersion, URI exportDestination, String exporterName)
 			throws LBException {
 		if (StringUtils.isEmpty(exporterName))
 			throw new LBException("Value Set exporterName is not specified. Call getExporterNames() to get supported exporters.");
@@ -49,7 +45,7 @@ public class ValueSetExportOperationImpl extends BaseService implements ValueSet
 			throw new LBException("Exporter name specified is not supported. Call getSystemExporterNames() to get supported exporters.");
 		
 		Exporter exporter = getLexBIGServiceManager().getExporter(exporterName);
-		exporter.exportValueSetDefinition(valueSetDefinitionURI, exportDestination);
+		exporter.exportValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionVersion, exportDestination);
 		
 		while (exporter.getStatus().getEndTime() == null) {
 			try {
@@ -75,48 +71,8 @@ public class ValueSetExportOperationImpl extends BaseService implements ValueSet
 	public URI exportValueSetContents(URI valueSetDefinitionURI, String valueSetDefinitionVersion, 
 			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException {
-		
-		if (valueSetDefinitionURI == null)
-			throw new LBException("Value Set Definition URI can not be empty.");
-		
 		LexEVSValueSetDefinitionServices vsdServ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
-		ResolvedValueSetCodedNodeSet rvscns = vsdServ.getCodedNodeSetForValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionVersion, csVersionList, csVersionTag);
-		if (rvscns != null)
-		{
-			CodedNodeSet cns = rvscns.getCodedNodeSet();
-			if (cns != null)
-			{
-				LexGridExport exporter;
-		        try {
-		            exporter = (LexGridExport)getLexBIGService().getServiceManager(null).getExporter(LexGridExport.name);
-		        } catch (LBException e) {
-		            throw new RuntimeException(e);
-		        }
-		        
-		        exporter.setCns(cns);
-		        AbsoluteCodingSchemeVersionReferenceList csRefList = rvscns.getCodingSchemeVersionRefList();
-		        if (csRefList != null)
-		        {
-		        	AbsoluteCodingSchemeVersionReference acsvr = csVersionList.getAbsoluteCodingSchemeVersionReference(0);
-		        	exporter.export(acsvr, exportDestination, overwrite, failOnAllErrors, true);
-		        }
-		            
-		        while (exporter.getStatus().getEndTime() == null) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {				
-					}
-				}
-		        
-		        if (exporter.getReferences() != null)
-				{
-					URI[] uris = exporter.getReferences();
-					return uris[0];
-				}
-			}
-		}
-		
-		return null;
+		return vsdServ.exportValueSetResolution(valueSetDefinitionURI, valueSetDefinitionVersion, exportDestination, csVersionList, csVersionTag, overwrite, failOnAllErrors);
 	}
 
 	/*
@@ -147,7 +103,7 @@ public class ValueSetExportOperationImpl extends BaseService implements ValueSet
 		}
 		
 		try {
-			vsExporter.exportValueSetDefinition(new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), "C:/temp/exportTest.xml", true, true);
+			vsExporter.exportValueSetDefinition(new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), null, "C:/temp/exportTest.xml", true, true);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
