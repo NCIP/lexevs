@@ -389,6 +389,8 @@ public class AllTestsNormalConfig {
         //LexGrid XML Exporter tests
         mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
         
+        //MRMAP RRF load tests
+        mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         // $JUnit-END$
 
         return mainSuite;
