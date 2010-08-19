@@ -74,7 +74,6 @@ import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
-import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExport;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
@@ -600,7 +599,6 @@ public class LexBIGServiceImpl implements LexBIGService {
 
         // export extensions
         LexGridExport.register();
-        OwlRdfExport.register();
         OBOExport.register();
 
         // Generic Extensions
