@@ -526,6 +526,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         }
 
         List<ResolvedLoadValidationError> errors = inserter.insertCodingScheme(codingScheme);
+        
+        if(errors.size() > 0) {
+            this.getStatus().setWarningsLogged(true);
+        }
        
         for(ResolvedLoadValidationError error : errors) {
             this.getMessageDirector().info(error.toString());
