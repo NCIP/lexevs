@@ -212,10 +212,12 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public ValueSetDefinition getValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId) throws LBException;
 	
 	/**
-	 * Export value set definition to LexGrid cononical XML format.
+	 * Export value set definition to LexGrid canonical XML format.
 	 * 
 	 * @param valueSetDefinitionURI
 	 * 			value set definition URI
+	 * @param valueSetDefinitionRevisionId
+	 * 			revision id of the value set definition to export
 	 * @param xmlFullPathName
 	 * 			Location to save the definition
 	 * @param overwrite
@@ -224,8 +226,32 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 			True: stops exporting if any error.
 	 * @throws LBException
 	 */
-	public void exportValueSetDefinition(URI valueSetDefinitionURI, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
+	/**
+	 * Exports contents of Value Set Definition as Coding Scheme in LexGrid canonical XML format.
+	 * 
+	 * @param valueSetDefinitionURI
+	 * 			value set definition URI
+	 * @param valueSetDefinitionRevisionId
+	 * 			value set definition revision id
+	 * @param exportDestination
+	 * 			Location to save the definition
+	 * @param csVersionList 
+	 * 			A list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 * 			the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag 
+	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     * @param overwrite
+	 * 			True: to override the existing file.
+	 * @param failOnAllErrors
+	 * 			True: stops exporting if any error.
+	 * @return URI of destination if successfully exported.
+	 * @throws LBException
+	 */
+	public URI exportValueSetResolution(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId,  
+			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	/**
 	 * Return the URI's for the value set definition(s) for the supplied
 	 * value set definition name. If the name is null, returns everything. If the name is not

@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -669,11 +670,11 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return uri.toString();
     }
 	
-	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.valuedomain.LexEVSValueDomainServices#exportValueSetDefinition(java.net.URI, java.lang.String, boolean, boolean)
+	/*
+	 * 
 	 */
-	public void exportValueSetDefinition(URI valueDomainURI,
+	@Override
+	public void exportValueSetDefinition(URI valueDomainURI, String valueSetDefinitionRevisionId, 
 			String xmlFullPathName, boolean overwrite, boolean failOnAllErrors)
 			throws LBException {
 		md_.info("Starting to export value domain definition : " + valueDomainURI);
@@ -681,7 +682,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		{
 			File f = new File(xmlFullPathName.trim());
 			LexGrid_Exporter exporter = (LexGrid_Exporter)getLexBIGService().getServiceManager(null).getExporter(org.LexGrid.LexBIG.Impl.exporters.LexGridExport.name);			
-			exporter.exportValueSetDefinition(valueDomainURI, f.toURI(), overwrite, failOnAllErrors, true);
+			exporter.exportValueSetDefinition(valueDomainURI, valueSetDefinitionRevisionId, f.toURI(), overwrite, failOnAllErrors, true);
 			
 			while (exporter.getStatus().getEndTime() == null) {
 	            try {
@@ -697,6 +698,53 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		{
 			md_.error("XML file destination can not be blank.");
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetResolution(java.net.URI, java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, boolean, boolean)
+	 */
+	@Override
+	public URI exportValueSetResolution(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
+			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException {
+		
+		if (valueSetDefinitionURI == null)
+			throw new LBException("Value Set Definition URI can not be empty.");
+		
+		ResolvedValueSetCodedNodeSet rvscns = getCodedNodeSetForValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionRevisionId, csVersionList, csVersionTag);
+		
+		if (rvscns != null)
+		{
+			CodedNodeSet cns = rvscns.getCodedNodeSet();
+			if (cns != null)
+			{
+				LexGridExport exporter;
+		        try {
+		            exporter = (LexGridExport)getLexBIGService().getServiceManager(null).getExporter(LexGridExport.name);
+		        } catch (LBException e) {
+		            throw new RuntimeException(e);
+		        }
+		        
+		        exporter.setCns(cns);
+		        exporter.exportValueSetResolution(valueSetDefinitionURI, valueSetDefinitionRevisionId, exportDestination, overwrite, failOnAllErrors, true);
+		            
+		        while (exporter.getStatus().getEndTime() == null) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {				
+					}
+				}
+		        
+		        if (exporter.getReferences() != null)
+				{
+					URI[] uris = exporter.getReferences();
+					return uris[0];
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	/*
