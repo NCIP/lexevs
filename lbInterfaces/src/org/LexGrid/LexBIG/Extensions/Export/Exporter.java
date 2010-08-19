@@ -76,9 +76,10 @@ public interface Exporter extends Extendable, StatusReporter {
 	 * Export a Value Set Definition resource to a URI destination.
 	 * 
 	 * @param URI of value set definition
+	 * @param version of value set definition
 	 * @param destination the destination
 	 */
-	public void exportValueSetDefinition(URI valueSetDefinitionURI,
+	public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionVersion, 
 			URI destination);
 	
 	/**
