@@ -69,8 +69,10 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -686,6 +688,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     public void runPendingOps() throws LBInvocationException, LBParameterException {
         try {
+            boolean areMultipleDesignationQueries = areMultipleDesignationQueries();
+            
+            BooleanQuery combinedQuery = new BooleanQuery();
+            
             EntityIndexService entityIndexService = 
                   LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
             
@@ -704,22 +710,30 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             for (int i = 1; i < pendingOperations_.size(); i++) {
                 Operation operation = pendingOperations_.get(i);
 
-                if(operation instanceof RestrictToProperties){
-                   Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);
-                   org.apache.lucene.search.Filter
-                       filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
-                   this.filters.add(filter);
-                } else if(operation instanceof RestrictToMatchingDesignations ||
+                if(operation instanceof RestrictToMatchingDesignations ||
                         operation instanceof RestrictToMatchingProperties){
                     Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
-                    this.queries.add(query);
+  
+                    if(areMultipleDesignationQueries) {
+                        combinedQuery.add(query, Occur.SHOULD);
+                        org.apache.lucene.search.Filter
+                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
+                        this.filters.add(filter);
+                    } else {
+                        this.queries.add(query);
+                    }
                 } else if(operation instanceof RestrictToStatus ||
                         operation instanceof RestrictToAnonymous ||
                         operation instanceof RestrictToCodes ||
                         operation instanceof RestrictToEntityTypes){
                     Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
                     this.queries.add(query);
-                }
+                } else  if(operation instanceof RestrictToProperties){
+                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);
+                    org.apache.lucene.search.Filter
+                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
+                    this.filters.add(filter);
+                 }
   
                 else if (operation instanceof Union) {
                     
@@ -737,6 +751,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                     doDifference(internalCodeSystemName, internalVersionString, difference);
                 } 
             }
+            
+            if(combinedQuery.getClauses().length > 0) {
+                queries.add(combinedQuery);
+            }
 
             // remove the completed pending ops.
             for (int i = 1; i < pendingOperations_.size(); i++) {
@@ -749,6 +767,17 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String logId = getLogger().error("Unexpected Internal Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
+    }
+    
+    private boolean areMultipleDesignationQueries() {
+        int count = 0;
+        for(Operation op : this.pendingOperations_) {
+            if(op instanceof RestrictToMatchingDesignations
+                    || op instanceof RestrictToMatchingProperties) {
+                count++;
+            }
+        }
+        return count > 1;
     }
     
     protected void doUnion(String internalCodeSystemName, String internalVersionString, Union union) throws LBException {
