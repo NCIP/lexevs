@@ -43,6 +43,13 @@ public class UmlsIntrospectiveHardcodedValues extends AbstractIntrospectiveHardc
 					this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
 					this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
 					relation);
-		
+
+		this.getSupportedAttributeTemplate().addSupportedNamespace(
+				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeName(), 
+				null, 
+				this.getCodingSchemeIdSetter().getCodingSchemeName(), 
+				this.getCodingSchemeIdSetter().getCodingSchemeName());
 	}
 }
