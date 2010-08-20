@@ -1998,7 +1998,10 @@ public class ProtegeOwl2LG {
                     r.close();
             }
         } catch (Exception e) {
-            throw new LgConvertException("Unable to read ontology URI.", e);
+            throw new LgConvertException("\nAn error was encountered loading OWL file from " + owlURI_.toString() + "\n" +
+                    "\nPlease Consider running the file through an RDF or OWL validation service such as:\n" +
+                    "  - RDF Validator: http://www.w3.org/RDF/Validator\n" +
+                    "  - OWL Validator: http://phoebus.cs.man.ac.uk:9999/OWL/Validator\n", e);
         }
     }
 
