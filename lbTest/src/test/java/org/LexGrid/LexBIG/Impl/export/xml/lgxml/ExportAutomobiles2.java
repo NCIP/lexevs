@@ -54,16 +54,16 @@ public class ExportAutomobiles2 extends TestCase {
     };
     
     private final String[] entity2 = {
-    	"<lgCon:associationEntity", 
+    		"<lgCon:associationEntity", 
     		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-    	    "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
-    	    "entityCode=\"uses\" entityCodeNamespace=\"Automobiles\"",
-    	    "forwardName=\"uses\" isNavigable=\"true\">",
-    	    "<lgCommon:entityDescription>uses</lgCommon:entityDescription>",
-    	    "<lgCon:entityType>association</lgCon:entityType>",
-    	"</lgCon:associationEntity>"
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    		"isActive=\"true\" entityCode=\"uses\"",
+    		"entityCodeNamespace=\"Automobiles\" forwardName=\"uses\" isNavigable=\"true\">",
+    		"<lgCommon:entityDescription>uses</lgCommon:entityDescription>",
+    		"<lgCon:entityType>association</lgCon:entityType>",
+    		"</lgCon:associationEntity>"
     };
-    
+
 
     
     public void testLexGridExportAutomibiles2() {
