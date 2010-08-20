@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.lexevs.system.ResourceManager;
 
@@ -45,5 +44,9 @@ public class ResourceManagerTest extends LexBIGServiceTestCase {
      */
     public void setUp(){
         resourceManager = ResourceManager.instance();
+    }
+    
+    public void testInit(){
+        assertNotNull(this.resourceManager);
     }
 }
