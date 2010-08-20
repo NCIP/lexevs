@@ -223,8 +223,10 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     public void postMarshal(Object arg0) {
         if (org.LexGrid.codingSchemes.CodingScheme.class.equals(arg0.getClass())) {
             messager.info("Done marshalling CodingScheme. Clean up caches.");
-            this.sourceCache.destroy();
-            this.associationEntityCache.destroy();
+            if (this.sourceCache != null)
+                this.sourceCache.destroy();
+            if (this.associationEntityCache != null)
+                this.associationEntityCache.destroy();
         }
     }
 
