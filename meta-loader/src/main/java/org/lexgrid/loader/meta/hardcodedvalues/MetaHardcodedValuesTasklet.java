@@ -45,7 +45,15 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 				this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
 				RrfLoaderConstants.UMLS_RELATIONS_NAME, 
 				null, 
-				RrfLoaderConstants.UMLS_RELATIONS_NAME);		
+				RrfLoaderConstants.UMLS_RELATIONS_NAME);	
+		
+		this.getSupportedAttributeTemplate().addSupportedNamespace(
+				codingSchemeIdSetter.getCodingSchemeUri(), 
+				codingSchemeIdSetter.getCodingSchemeVersion(), 
+				codingSchemeIdSetter.getCodingSchemeName(), 
+				null, 
+				codingSchemeIdSetter.getCodingSchemeName(), 
+				codingSchemeIdSetter.getCodingSchemeName());
 		
 		this.getDatabaseServiceManager().
 		getRelationService().
