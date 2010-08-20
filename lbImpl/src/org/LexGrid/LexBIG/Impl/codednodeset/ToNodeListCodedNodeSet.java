@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.lang.StringUtils;
@@ -69,7 +70,12 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
         ref.setCodingSchemeURN(uri);
         ref.setCodingSchemeVersion(version);
         
-        this.setToNodeListCodes(codeHolder);    
+        this.setToNodeListCodes(codeHolder);  
+        
+        if(codeList.getConceptReferenceCount() == 0) {
+            codeList.addConceptReference(DefaultGraphQueryBuilder.INVALID_MATCH_CONCEPT_REFERENCE);
+        }
+        
         this.restrictToCodes(codeList);
     }
     
