@@ -89,6 +89,7 @@ public abstract class BaseExporter {
                 doExport();
                 status_.setState(ProcessState.COMPLETED);
                 md_.info("Export process completed without error");
+                md_.info("Exported file : " + status_.getDestination());
             } catch (Exception e) {
                 status_.setState(ProcessState.FAILED);
                 md_.fatal("Failed while running the export", e);
