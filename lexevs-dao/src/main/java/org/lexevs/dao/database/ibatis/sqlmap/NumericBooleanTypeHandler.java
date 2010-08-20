@@ -38,6 +38,7 @@ public class NumericBooleanTypeHandler implements TypeHandlerCallback {
 
     public Object getResult(ResultGetter getter) throws SQLException {
     	String booleanString = getter.getString();
+
     	if(StringUtils.isNotBlank(booleanString)) {
     		if(StringUtils.isNumeric(booleanString)){
     		 return BooleanUtils.toBoolean(Integer.valueOf(getter.getString()));
@@ -45,7 +46,7 @@ public class NumericBooleanTypeHandler implements TypeHandlerCallback {
     			return BooleanUtils.toBoolean(getter.getString());
     		}
     	} else {
-    		return getter.getBoolean();
+    		return null;
     	}
     }
 
