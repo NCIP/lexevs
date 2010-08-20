@@ -53,16 +53,16 @@ public class GForge17019 extends LexBIGServiceTestCase {
         cng = lbs.getNodeGraph(META_SCHEME, csvt, null);  
         cng.restrictToAssociations(Constructors.createNameAndValueList("RB", null), 
                 Constructors.createNameAndValueList("RG", "testRG"));
-        ConceptReference cr = Constructors.createConceptReference("C0000005", META_SCHEME);
-        ResolvedConceptReferenceList rcrl = cng.resolveAsList(cr, false, true, 1, 1, null, null, null, null, -1);
+        ConceptReference cr = Constructors.createConceptReference("C0036775", META_SCHEME);
+        ResolvedConceptReferenceList rcrl = cng.resolveAsList(cr, true, true, 1, 1, null, null, null, null, -1);
 
         assertTrue(rcrl.getResolvedConceptReferenceCount()>0);   
         ResolvedConceptReference[] rcrList = rcrl.getResolvedConceptReference();
         ArrayList<String> al = new ArrayList<String>();
 
         for(ResolvedConceptReference rcr: rcrList){
-            AssociationList targetof = rcr.getTargetOf();
-            Association[] associations = targetof.getAssociation();
+            AssociationList source = rcr.getSourceOf();
+            Association[] associations = source.getAssociation();
             for (int i = 0; i < associations.length; i++) {
                 Association assoc = associations[i];
                 AssociatedConcept[] acl = assoc.getAssociatedConcepts().getAssociatedConcept();
@@ -72,7 +72,7 @@ public class GForge17019 extends LexBIGServiceTestCase {
                 }
             }
         }
-        assertTrue(al.contains("C0036775"));
+        assertTrue(al.contains("C0000005"));
     }
     
     public void testBadRoleGroupInMeta() throws Exception {
