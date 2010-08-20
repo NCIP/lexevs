@@ -23,6 +23,7 @@
 
 	<job id="umlsJob" restartable="true">
 		<listeners>
+			<listener ref="cachingSupportedAttribuiteTemplate" />
 			<listener ref="jobSetupListener" />
 			<listener ref="cleanupListener" />
 		</listeners>
@@ -702,6 +703,9 @@
 		class="org.lexgrid.loader.umls.hardcodedvalues.UmlsIntrospectiveHardcodedValues">
 		<beans:property name="codingSchemeIdSetter">
 			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="supportedAttributeTemplate">
+			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
 		</beans:property>
 	</beans:bean>
 	
