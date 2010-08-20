@@ -38,75 +38,56 @@ import org.LexGrid.versions.types.ChangeType;
 
 public class GForge21211 extends TestCase {
 
-    public void testPropertyEntryState() {
+    public void testPropertyEntryState() throws Exception {
         
-        LexBIGService service = ServiceHolder.instance().getLexBIGService();
+    	LexBIGService service = ServiceHolder.instance().getLexBIGService();
 
-        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-        versionOrTag.setVersion("1.0");
-        
-        try {
-            CodedNodeSet nodeSet = service.getCodingSchemeConcepts("Automobiles", versionOrTag);
-            
-            nodeSet.restrictToCodes(Constructors.createConceptReferenceList("Ford"));
-            
-            ResolvedConceptReferenceList resolvedCodeList = nodeSet.resolveToList(null, null, null, 1);
-            
-            ResolvedConceptReference resolvedCode = resolvedCodeList.getResolvedConceptReference()[0];
-            
-            assertNotNull(resolvedCode);
-            
-            Entity ford = resolvedCode.getEntity();
-            
-            assertNotNull(ford);
-            
-            Property[] properties = ford.getAllProperties();
-            
-            assertTrue(properties.length == 2);
-            
-            for (int i = 0; i < properties.length; i++) {
-                
-                String propId = properties[i].getPropertyId();
-                
-                if( "p1".equals(propId)) {
-                    
-                    assertEquals(properties[i].getEffectiveDate().getTime(), 
-                            Timestamp.valueOf("2006-05-04 18:13:51").getTime());
+    	CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+    	versionOrTag.setVersion("1.0");
 
-                    assertEquals(properties[i].getExpirationDate().getTime(), 
-                            Timestamp.valueOf("2006-06-04 18:13:51").getTime());
+    	CodedNodeSet nodeSet = service.getCodingSchemeConcepts("Automobiles", versionOrTag);
 
-                    assertEquals(properties[i].getStatus(), "Active");
+    	nodeSet.restrictToCodes(Constructors.createConceptReferenceList("Ford"));
 
-                    assertNotNull(properties[i].getEntryState());
+    	ResolvedConceptReferenceList resolvedCodeList = nodeSet.resolveToList(null, null, null, 1);
 
-                    assertEquals(properties[i].getEntryState().getContainingRevision(),
-                            "initialLoad");
-                    assertEquals(properties[i].getEntryState().getChangeType(),
-                            ChangeType.NEW);
-                    assertNull(properties[i].getEntryState().getPrevRevision());
-                    
-                } else if( "p2".equals(propId)) {
-                    
-                    assertNull(properties[i].getEntryState());
-                    
-                    assertNull(properties[i].getEffectiveDate());
-                    
-                    assertNull(properties[i].getExpirationDate());
-                    
-                    assertNull(properties[i].getStatus());
-                }
-            }
-            
-        } catch (LBInvocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (LBParameterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (LBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    	ResolvedConceptReference resolvedCode = resolvedCodeList.getResolvedConceptReference()[0];
+
+    	assertNotNull(resolvedCode);
+
+    	Entity ford = resolvedCode.getEntity();
+
+    	assertNotNull(ford);
+
+    	Property[] properties = ford.getAllProperties();
+
+    	assertTrue(properties.length == 2);
+
+    	for (int i = 0; i < properties.length; i++) {
+
+    		String propId = properties[i].getPropertyId();
+
+    		if( "p1".equals(propId)) {
+
+    			assertEquals(properties[i].getEffectiveDate().getTime(), 
+    					Timestamp.valueOf("2006-05-04 18:13:51").getTime());
+
+    			assertEquals(properties[i].getExpirationDate().getTime(), 
+    					Timestamp.valueOf("2006-06-04 18:13:51").getTime());
+
+    			assertEquals(properties[i].getStatus(), "Active");
+
+    		} else if( "p2".equals(propId)) {
+
+    			assertNull(properties[i].getEntryState());
+
+    			assertNull(properties[i].getEffectiveDate());
+
+    			assertNull(properties[i].getExpirationDate());
+
+    			assertNull(properties[i].getStatus());
+    		}
+    	}
+
     }
 }
