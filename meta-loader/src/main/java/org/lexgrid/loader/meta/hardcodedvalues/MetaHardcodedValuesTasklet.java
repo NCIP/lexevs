@@ -27,9 +27,6 @@ import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
  * A factory for creating MetaHardcodedValues objects.
  */
 public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedValues {
-
-	/** The coding scheme name setter. */
-	private CodingSchemeIdSetter codingSchemeIdSetter;
 	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.hardcodedvalues.AbstractHardcodedValuesFactory#buildList(java.util.List)
@@ -48,12 +45,12 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 				RrfLoaderConstants.UMLS_RELATIONS_NAME);	
 		
 		this.getSupportedAttributeTemplate().addSupportedNamespace(
-				codingSchemeIdSetter.getCodingSchemeUri(), 
-				codingSchemeIdSetter.getCodingSchemeVersion(), 
-				codingSchemeIdSetter.getCodingSchemeName(), 
+				getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+				getCodingSchemeIdSetter().getCodingSchemeName(), 
 				null, 
-				codingSchemeIdSetter.getCodingSchemeName(), 
-				codingSchemeIdSetter.getCodingSchemeName());
+				getCodingSchemeIdSetter().getCodingSchemeName(), 
+				getCodingSchemeIdSetter().getCodingSchemeName());
 		
 		this.getDatabaseServiceManager().
 		getRelationService().
@@ -61,24 +58,5 @@ public class MetaHardcodedValuesTasklet extends AbstractIntrospectiveHardcodedVa
 				this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
 				this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
 				relation);
-	}
-
-	/**
-	 * Gets the coding scheme name setter.
-	 * 
-	 * @return the coding scheme name setter
-	 */
-	public CodingSchemeIdSetter getCodingSchemeNameSetter() {
-		return codingSchemeIdSetter;
-	}
-
-	/**
-	 * Sets the coding scheme name setter.
-	 * 
-	 * @param codingSchemeIdSetter the new coding scheme name setter
-	 */
-	public void setCodingSchemeNameSetter(
-			CodingSchemeIdSetter codingSchemeIdSetter) {
-		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
 }
