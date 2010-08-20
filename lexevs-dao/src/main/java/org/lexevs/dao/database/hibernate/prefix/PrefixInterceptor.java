@@ -18,7 +18,6 @@
  */
 package org.lexevs.dao.database.hibernate.prefix;
 
-import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.prefix.PrefixResolver;
@@ -37,9 +36,6 @@ public class PrefixInterceptor extends EmptyInterceptor {
 
 	/** The PREFI x_ placeholder. */
 	public static String PREFIX_PLACEHOLDER = DatabaseConstants.PREFIX_PLACEHOLDER;
-	
-	/** The log. */
-	private static Logger log = Logger.getLogger(PrefixInterceptor.class.getName());
 	
 	/** The prefix. */
 	private PrefixResolver prefixResolver;
@@ -64,7 +60,6 @@ public class PrefixInterceptor extends EmptyInterceptor {
 	 * @see org.hibernate.EmptyInterceptor#onPrepareStatement(java.lang.String)
 	 */
 	public String onPrepareStatement(String sql) { 	
-		log.debug("Adjusting table names to prefix: " + prefixResolver.resolveDefaultPrefix());
 		sql = sql.replaceAll(PREFIX_PLACEHOLDER, prefixResolver.resolveDefaultPrefix());
 	
 		return sql;			
