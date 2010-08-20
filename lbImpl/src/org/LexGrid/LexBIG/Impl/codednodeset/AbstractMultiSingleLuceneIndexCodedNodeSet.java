@@ -39,6 +39,7 @@ import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -201,16 +202,26 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
         for(CodeToReturn code : codeHolder.getAllCodes()) {
             String uri = code.getUri();
             String version = code.getVersion();
-            
-            Entity entity = LexEvsServiceLocator.getInstance().
-                getDatabaseServiceManager().
+
+            Entity entity = null;
+
+            if(StringUtils.isNotBlank(code.getUri()) && StringUtils.isNotBlank(code.getVersion())){
+                try {
+                    LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
                     getEntityService().
-                        getEntity(uri, version, code.getCode(), code.getNamespace());
-            
+                    getEntity(uri, version, code.getCode(), code.getNamespace());
+                } catch(Exception e) {
+                    LoggerFactory.getLogger().warn("Active Status cannot be determined for: " + code.getCode() + ", " + code.getNamespace());
+                }
+            }
+
             if(entity != null) {
                 if(entity.getIsActive() != false) {
                     returnCodeHolder.add(code);
                 }
+            } else {
+                returnCodeHolder.add(code);
             }
         }
         return returnCodeHolder;
