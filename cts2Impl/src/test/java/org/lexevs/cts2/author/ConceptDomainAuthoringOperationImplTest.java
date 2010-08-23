@@ -3,7 +3,7 @@
  */
 package org.lexevs.cts2.author;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.commonTypes.Properties;
@@ -38,6 +39,8 @@ public class ConceptDomainAuthoringOperationImplTest {
 
 	private static ConceptDomainAuthoringOperation CD_AUTH_OP;
 	
+	private static List<String> revIds_ = new ArrayList<String>();
+	
 	@BeforeClass
 	public static void runBeforeClass(){
 		CD_AUTH_OP = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getConceptDomainAuthoringOperation();
@@ -51,7 +54,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void createConceptDomainCodeSystem() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR100");
+		rev.setRevisionId(getRevId());
 		
 		Mappings maps = new Mappings();
 		SupportedCodingScheme scs = new SupportedCodingScheme();
@@ -75,7 +78,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void createConceptDomain() throws LBException, IOException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR110");
+		rev.setRevisionId(getRevId());
 		
 		Properties props = new Properties();
 		Property prop = new Property();
@@ -101,7 +104,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		props.addProperty(prop);
 		
 		
-		rev.setRevisionId("cdR120");
+		rev.setRevisionId(getRevId());
 		
 		CD_AUTH_OP.createConceptDomain("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, "cd unit test 2", "testing", 
 				false, props, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
@@ -109,8 +112,6 @@ public class ConceptDomainAuthoringOperationImplTest {
 	
 	@Test
 	public void createConceptDomainFromFile() throws LBException, IOException {
-		String revPrefix = "cdR";
-		
 		RevisionInfo rev = new RevisionInfo();
 		
 		File file = new File("src/test/resources/testData/ConceptDomainTestData.txt");
@@ -124,7 +125,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		ConceptDomainData cdData = null;
 		//read each line of text file
 		
-		while((line = bufRdr.readLine()) != null)
+		while((line = bufRdr.readLine()) != null && row <= 10)
 		{
 			if (line.startsWith("#")) // ignore the comment record
 				continue;
@@ -149,12 +150,9 @@ public class ConceptDomainAuthoringOperationImplTest {
 		 
 		//close the file
 		bufRdr.close();
-		
-		int i = 110;
-		
 		for (ConceptDomainData cd : cdDatas)
 		{
-			rev.setRevisionId(revPrefix + i++);
+			rev.setRevisionId(getRevId());
 			
 			CD_AUTH_OP.createConceptDomain(cd.id, cd.name, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, cd.description, "testing", 
 					false, null, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
@@ -170,9 +168,11 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void updateConceptDomainStatus() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR111");
 		
-		CD_AUTH_OP.updateConceptDomainStatus("cdunitest1", null, "New Status cdr112", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		String revId = getRevId();
+		rev.setRevisionId(revId);
+		
+		CD_AUTH_OP.updateConceptDomainStatus("cdunitest1", null, "New Status " + revId, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void activateConceptDomain() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR112");
+		rev.setRevisionId(getRevId());
 		
 		CD_AUTH_OP.activateConceptDomain("cdunitest1", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
@@ -194,7 +194,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void deactivateConceptDomain() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR113");
+		rev.setRevisionId(getRevId());
 		
 		CD_AUTH_OP.deactivateConceptDomain("cdunitest1", null, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
@@ -206,13 +206,14 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void updateConceptDomainVersionable() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR114");
+		String revId = getRevId();
+		rev.setRevisionId(revId);
 		
 		Versionable changedVersionable = new Versionable();
 		changedVersionable.setEffectiveDate(new Date());
 		changedVersionable.setIsActive(true);
-		changedVersionable.setOwner("new Owner - cdR114");
-		changedVersionable.setStatus("new status - cdR114");
+		changedVersionable.setOwner("new Owner - " + revId);
+		changedVersionable.setStatus("new status - " + revId);
 		
 		CD_AUTH_OP.updateConceptDomainVersionable("cdunitest1", null, changedVersionable, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
@@ -224,7 +225,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void addConceptDomainProperty() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR211");
+		rev.setRevisionId(getRevId());
 		
 		Property prop = new Property();
 		prop.setPropertyId("cd2propId2");
@@ -243,7 +244,8 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void updateConceptDomainProperty() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR212");
+		String revId = getRevId();
+		rev.setRevisionId(revId);
 		
 		Property prop = new Property();
 		prop.setPropertyId("cd2propId2");
@@ -251,9 +253,9 @@ public class ConceptDomainAuthoringOperationImplTest {
 		value.setContent("cd2content2 updated - cdR212");
 		prop.setValue(value);
 		prop.setPropertyName("cd2propertyName2");
-		prop.setLanguage("en updated - cdR212");
+		prop.setLanguage("en updated");
 		prop.setIsActive(true);
-		prop.setOwner("owner updated - cdR212");
+		prop.setOwner("owner updated");
 		
 		CD_AUTH_OP.updateConceptDomainProperty("cdunitest2", null, prop, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
@@ -265,7 +267,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void removeConceptDomainProperty() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR213");
+		rev.setRevisionId(getRevId());
 		
 		Property prop = new Property();
 		prop.setPropertyId("cd2propId2");
@@ -277,43 +279,76 @@ public class ConceptDomainAuthoringOperationImplTest {
 	@Test
 	public void removeConceptDomain() throws LBException{
 		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId("cdR220");
+		rev.setRevisionId(getRevId());
 		
-		CD_AUTH_OP.removeConceptDomain("#ConceptDomainId", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME,
+		CD_AUTH_OP.removeConceptDomain("AcknowledgementCondition", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME,
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
 	
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#addConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
 	 */
-	@Test
-	public void addConceptDomainToValueSetBinding() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	public void addConceptDomainToValueSetBinding() {
+//		fail("Not yet implemented");
+//	}
+//
+//	/**
+//	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#removeConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
+//	 */
+//	@Test
+//	public void removeConceptDomainToValueSetBinding() {
+//		fail("Not yet implemented");
+//	}
 
-	/**
-	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#removeConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
-	 */
+	
 	@Test
-	public void removeConceptDomainToValueSetBinding() {
-		fail("Not yet implemented");
+	public void removeConceptDomainCodeSystem() throws LBException{
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId(getRevId());
+		
+	    
+	    String codingSchemeURI = ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI;
+		String representsVersion = ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION;
+		
+		Boolean removeStatus = false;
+	    
+	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+	
+	    try {
+			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	
+		assertTrue(removeStatus);
 	}
-
+	
 	@Test
 	public void removeRevisionRecordById() throws LBException {
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-		System.out.println(authServ.removeRevisionRecordbyId("cdR100"));
-		System.out.println(authServ.removeRevisionRecordbyId("cdR110"));
-		System.out.println(authServ.removeRevisionRecordbyId("cdR120"));
-		System.out.println(authServ.removeRevisionRecordbyId("cdR111"));
-		System.out.println(authServ.removeRevisionRecordbyId("cdR112"));
-		System.out.println(authServ.removeRevisionRecordbyId("cdR113"));
-		System.out.println(authServ.removeRevisionRecordbyId("cdR114"));
+		for (String revId : revIds_)
+		{
+			System.out.println(authServ.removeRevisionRecordbyId(revId));
+		}
 	}
 	
 	class ConceptDomainData{
 		String id;
 		String name;
 		String description;
+	}
+	
+	private String getRevId(){
+		String revId = UUID.randomUUID().toString();
+		revIds_.add(revId);
+		
+		return revId;
 	}
 }

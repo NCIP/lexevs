@@ -42,6 +42,7 @@ import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.cts2.query.ConceptDomainQueryOperation;
 import org.lexevs.cts2.query.ValueSetQueryOperation;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -351,6 +352,14 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 			throw new LBException("Concept Domain Id can not be empty");
 		
 		validateRevisionInfo(revision);
+		
+		// check if concept domain being removed is binded to any value set, if it is, we can not remove this concept domain
+		ConceptDomainQueryOperation cdQueryOp = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getConceptDomainQueryOperation();
+		List<String> vsds = cdQueryOp.getConceptDomainBindings(conceptDomainId, codeSystemNameOrURI);
+		if (vsds != null && vsds.size() > 0)
+		{
+			throw new LBException("Concept Domain '" + conceptDomainId + "' can not be removed as it is binded to existing value sets.");
+		}
 		
 		String csURI = getCodeSystemURI(codeSystemNameOrURI);
 		
