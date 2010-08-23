@@ -42,9 +42,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQuery;
 
@@ -64,10 +62,6 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
     private BooleanQuery textQuery_;
     private List<Term> queryTerms_ = new ArrayList<Term>();
     private String language_;
-    private CodingSchemeService codingSchemeService = 
-        LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
-    private SystemResourceService systemResourceService =
-        LexEvsServiceLocator.getInstance().getSystemResourceService();
     
     @LgClientSideSafe
     public String getLanguage() {
@@ -158,9 +152,9 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
                     } else {
                         
                         if(internalCodeSystemName!= null && internalVersionString != null) {
-                            String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+                            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
                             // this will throw the necessary exceptions
-                            if(!codingSchemeService.
+                            if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
                                     validatedSupportedAttribute(uri, internalVersionString, item, SupportedProperty.class)) {
                                 throw new LBParameterException("Property: " + item + " is not a Supported Property.");
                             }
@@ -188,8 +182,8 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
 
             if (language != null && language.length() > 0) {
                 // this validated that language (throws exceptions as necessary)
-                String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
-                if(!codingSchemeService.
+                String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+                if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
                         validatedSupportedAttribute(uri, internalVersionString, language, SupportedProperty.class)) {
                         throw new LBParameterException(language = " is not a Supported Property.");
                     }
