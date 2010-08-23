@@ -519,11 +519,25 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public void deleteConcept(String codingSchemeUri, String codeSystemVersion,
-			String conceptCode, String namespace, RevisionInfo revision)
+	public void deleteConcept(
+			String codingSchemeUri, 
+			String codeSystemVersion,
+			String conceptCode, 
+			String namespace, 
+			RevisionInfo revisionInfo)
 			throws LBException {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptCode);
+		entity.setEntityCodeNamespace(namespace);
+		
+		this.doReviseConcept(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				entity, 
+				ChangeType.REMOVE, 
+				null, 
+				0l, 
+				revisionInfo);
 	}
 
 	@Override

@@ -587,6 +587,33 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 		assertEquals("Modified",ref.getEntity().getStatus());
 	}
 	
+	@Test
+	public void testRemoveConcept() throws LBException {
+		CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+        RevisionInfo info = new RevisionInfo();
+        info.setRevisionId(UUID.randomUUID().toString());
+        
+		Entity entityToUpdate = new Entity();
+		entityToUpdate.setEntityCode("005");
+		entityToUpdate.setEntityCodeNamespace(Cts2TestConstants.CTS2_AUTOMOBILES_NAME);
+		
+		codeSystemAuthOp.deleteConcept(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI, 
+				Cts2TestConstants.CTS2_AUTOMOBILES_VERSION, 
+				"005",
+				Cts2TestConstants.CTS2_AUTOMOBILES_NAME,
+				info);
+		
+		CodedNodeSet cns = super.getLexBIGService().getNodeSet(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI,
+				null, 
+				null);
+		
+		ResolvedConceptReferenceList refList = cns.restrictToCodes(Constructors.createConceptReferenceList("005")).resolveToList(null, null, null, -1);
+	
+		assertEquals(0,refList.getResolvedConceptReferenceCount());
+	}
+	
 	protected void testRemoveRevisionRecordById(String revisionID) throws LBException {
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 		System.out.println(authServ.removeRevisionRecordbyId(revisionID));
