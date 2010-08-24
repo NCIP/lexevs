@@ -491,58 +491,41 @@ public class MRMAP2LexGrid {
         container.setLocalId(rel.getContainerName());
         
         // Supported source scheme namespace to coding scheme mapping
-//        SupportedCodingScheme supportedSourceScheme = new SupportedCodingScheme();
-//        if (sourceSchemeName == null) {
-//            supportedSourceScheme.setLocalId(rel.getSourceCodingScheme());
-//            supportedSourceScheme.setContent(rel.getSourceCodingScheme());
-//            supportedSourceScheme.setUri(URIPREFIX + ":" + rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion());
-//        } else {
-//            supportedSourceScheme.setLocalId(sourceSchemeName);
-//            supportedSourceScheme.setUri(sourceSchemeURI);
-//            supportedSourceScheme.setContent(sourceSchemeName);
-//        }
+        SupportedCodingScheme supportedSourceScheme = new SupportedCodingScheme();
+        supportedSourceScheme = makeSupportedCodingScheme(rel,sourceSchemeName,sourceSchemeURI, true );
 
-//        SupportedNamespace supportedSourceNamespace = new SupportedNamespace();
-//        supportedSourceNamespace.setLocalId(rel.getSourceCodingScheme());
-//        if(sourceSchemeURI != null){
-//            supportedSourceNamespace.setUri(sourceSchemeURI);
-//        }
-//        else{
-//            supportedSourceNamespace.setUri(supportedSourceScheme.getUri());
-//        }
-//        supportedSourceNamespace.setContent(rel.getSourceCodingScheme());
-//        supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
+        SupportedNamespace supportedSourceNamespace = new SupportedNamespace();
+        supportedSourceNamespace.setLocalId(rel.getSourceCodingScheme());
+        if(sourceSchemeURI != null){
+            supportedSourceNamespace.setUri(sourceSchemeURI);
+        }
+        else{
+            supportedSourceNamespace.setUri(supportedSourceScheme.getUri());
+        }
+        supportedSourceNamespace.setContent(rel.getSourceCodingScheme());
+        supportedSourceNamespace.setEquivalentCodingScheme(rel.getSourceCodingScheme());
         
         // supported target scheme namespace to coding scheme mapping
-//        SupportedCodingScheme supportedTargetScheme = new SupportedCodingScheme();
-//        if (targetSchemeName == null) {
-//            supportedTargetScheme.setLocalId(rel.getTargetCodingScheme());
-//            supportedTargetScheme.setContent(rel.getTargetCodingScheme());
-//            supportedTargetScheme.setUri(URIPREFIX + ":" + rel.getTargetCodingScheme() + ":" + rel.getTargetCodingSchemeVersion());
-//        }
-//        else {
-//            supportedTargetScheme.setLocalId(targetSchemeName);
-//            supportedTargetScheme.setUri(targetSchemeURI);
-//            supportedTargetScheme.setContent(targetSchemeName);
-//        }
-//        SupportedNamespace supportedTargetNamespace = new SupportedNamespace();
-//        supportedTargetNamespace.setLocalId(rel.getTargetCodingScheme());
-//        if (targetSchemeURI != null) {
-//            supportedTargetNamespace.setUri(targetSchemeURI);
-//        }
-//        else{
-//            supportedTargetNamespace.setUri(supportedTargetScheme.getUri());
-//        }
-//        supportedTargetNamespace.setContent(rel.getTargetCodingScheme());
-//        supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
+        SupportedCodingScheme supportedTargetScheme = makeSupportedCodingScheme(rel,targetSchemeName,targetSchemeURI, false);
+
+        SupportedNamespace supportedTargetNamespace = new SupportedNamespace();
+        supportedTargetNamespace.setLocalId(rel.getTargetCodingScheme());
+        if (targetSchemeURI != null) {
+            supportedTargetNamespace.setUri(targetSchemeURI);
+        }
+        else{
+            supportedTargetNamespace.setUri(supportedTargetScheme.getUri());
+        }
+        supportedTargetNamespace.setContent(rel.getTargetCodingScheme());
+        supportedTargetNamespace.setEquivalentCodingScheme(rel.getTargetCodingScheme());
         
         Mappings mappings = new Mappings();
-//        mappings.addSupportedCodingScheme(supportedSourceScheme);
-//        mappings.addSupportedCodingScheme(supportedTargetScheme);
+        mappings.addSupportedCodingScheme(supportedSourceScheme);
+        mappings.addSupportedCodingScheme(supportedTargetScheme);
         mappings.addSupportedCodingScheme(supportedScheme);
         
-//        mappings.addSupportedNamespace(supportedSourceNamespace);
-//        mappings.addSupportedNamespace(supportedTargetNamespace);
+        mappings.addSupportedNamespace(supportedSourceNamespace);
+        mappings.addSupportedNamespace(supportedTargetNamespace);
         mappings.addSupportedNamespace(nameSpace);
 
         SupportedAssociation supportedMapping = new SupportedAssociation();
@@ -555,6 +538,62 @@ public class MRMAP2LexGrid {
         return scheme;
     }
 
+
+    private SupportedCodingScheme makeSupportedCodingScheme(Relations rel, String sourceSchemeName,
+            String sourceSchemeURI, boolean isSource) {
+
+        if (sourceSchemeName == null) {
+            if (rel.getSourceCodingScheme() != null) {
+                return makeSupportedCodingSchemeFromRelAttributes(rel, isSource);
+            } else {
+                return makeSupportedCodingSchemeFromAssocNamespaces(rel, isSource);
+            }
+        } else {
+            return makeSupportedCodingSchemeFromParams(sourceSchemeName, sourceSchemeURI, sourceSchemeName);
+        }
+
+    }
+
+    private SupportedCodingScheme makeSupportedCodingSchemeFromParams(String targetSchemeName, String targetSchemeURI,
+            String schemeContent) {
+        SupportedCodingScheme supportedCodingScheme = new SupportedCodingScheme();
+        supportedCodingScheme.setLocalId(targetSchemeName);
+        supportedCodingScheme.setUri(targetSchemeURI);
+        supportedCodingScheme.setContent(schemeContent);
+        return supportedCodingScheme;
+    }
+
+    private SupportedCodingScheme makeSupportedCodingSchemeFromAssocNamespaces(Relations rel, boolean isSource) {
+        if(isSource)
+        { SupportedCodingScheme supportedCodingScheme = new SupportedCodingScheme();
+        supportedCodingScheme.setLocalId(rel.getAssociationPredicate(0).getSource(0).getSourceEntityCodeNamespace());
+        supportedCodingScheme.setContent(rel.getAssociationPredicate(0).getSource(0).getSourceEntityCodeNamespace());
+        supportedCodingScheme.setUri(URIPREFIX + ":" + rel.getAssociationPredicate(0).getSource(0).getSourceEntityCodeNamespace() + ":" + "version");
+        return supportedCodingScheme;}
+        else{
+            SupportedCodingScheme supportedCodingScheme = new SupportedCodingScheme();
+            supportedCodingScheme.setLocalId(rel.getAssociationPredicate(0).getSource(0).getTarget(0).getTargetEntityCodeNamespace());
+            supportedCodingScheme.setContent(rel.getAssociationPredicate(0).getSource(0).getTarget(0).getTargetEntityCodeNamespace());
+            supportedCodingScheme.setUri(URIPREFIX + ":" + rel.getAssociationPredicate(0).getSource(0).getTarget(0).getTargetEntityCodeNamespace() + ":" + "version");
+            return supportedCodingScheme;
+        }
+    }
+
+    private SupportedCodingScheme makeSupportedCodingSchemeFromRelAttributes(Relations rel, boolean isSource) {
+        if(isSource){
+            SupportedCodingScheme supportedCodingScheme = new SupportedCodingScheme();
+            supportedCodingScheme.setLocalId(rel.getSourceCodingScheme());
+            supportedCodingScheme.setContent(rel.getSourceCodingScheme());
+            supportedCodingScheme.setUri(URIPREFIX + ":" + rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion());
+            return supportedCodingScheme;
+        }
+        else{
+        SupportedCodingScheme supportedCodingScheme = new SupportedCodingScheme();
+        supportedCodingScheme.setLocalId(rel.getTargetCodingScheme());
+        supportedCodingScheme.setContent(rel.getTargetCodingScheme());
+        supportedCodingScheme.setUri(URIPREFIX + ":" + rel.getTargetCodingScheme() + ":" + rel.getTargetCodingSchemeVersion());
+        return supportedCodingScheme;}
+    }
 
     private String setMappingSchemeVersion(Relations rel) {
         
