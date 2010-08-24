@@ -234,7 +234,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(codingScheme, cng, cns, out, this.pageSize, true, this.getMessageDirector());
+        xmlContentWriter.marshalToXml(codingScheme, cng, cns, out, this.pageSize, true, true, this.getMessageDirector());
         
     }
     
@@ -326,7 +326,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(cs, cng, cns, out, this.pageSize, true, this.getMessageDirector());
+        xmlContentWriter.marshalToXml(cs, cng, cns, out, this.pageSize, true, false, this.getMessageDirector());
         
     }
     
@@ -419,7 +419,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         }
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(vsd, cng, cns, out, this.pageSize, true, this.getMessageDirector());
+        xmlContentWriter.marshalToXml(vsd, cng, cns, out, this.pageSize, true, false, this.getMessageDirector());
     }
     
     protected void exportPickListDefinitionData(){
@@ -473,7 +473,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         pld = pldSer.getPickListDefinitionByPickListId(pickListId);
         
         XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        xmlContentWriter.marshalToXml(pld, null, null, out, this.pageSize, true, this.getMessageDirector());
+        xmlContentWriter.marshalToXml(pld, null, null, out, this.pageSize, true, false, this.getMessageDirector());
     }
 
     public URI getSchemaURL() {
