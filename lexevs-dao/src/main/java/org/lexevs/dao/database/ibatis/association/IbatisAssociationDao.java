@@ -489,7 +489,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationPredicate(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationPredicate)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches = {"IbatisCodingSchemeDaoCache"})
 	public String insertAssociationPredicate(
 			String codingSchemeId, 
 			String relationId,
