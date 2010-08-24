@@ -93,9 +93,6 @@
 		<antcall target="genCastorJava">
 			<param name="xsdFile" value="enums"/>
 		</antcall>
-		<antcall target="genCastorJava">
-		   	<param name="xsdFile" value="cagrid"/>
-		</antcall>
 		<antcall target="genLoaderPreferencesCastorJava">
 			<param name="xsdFile" value="LoadPreferences"/>
 		</antcall>
