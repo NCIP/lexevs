@@ -236,7 +236,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				entity);
 	}
 	@Override
-	@CacheMethod
 	public ResolvedConceptReference getResolvedCodedNodeReferenceByCodeAndNamespace(
 			String codingSchemeId, String entityCode, String entityCodeNamespace) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
