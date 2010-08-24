@@ -18,7 +18,6 @@
  */
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -26,8 +25,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.proxy.CastorProxy;
 import org.castor.xml.XMLProperties;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 
@@ -105,7 +102,7 @@ public class XmlContentWriter {
      * RuntimeException(e); } }
      */
     public void marshalToXml(Object obj, CodedNodeGraph cng, CodedNodeSet cns, Writer writer, int pageSize,
-            boolean useStreaming, LgMessageDirectorIF messager) {
+            boolean useStreaming, boolean validate, LgMessageDirectorIF messager) {
         Marshaller marshaller = ns_marshaller;
         MarshalListener listener = null;
         if (useStreaming == true) {
@@ -114,6 +111,7 @@ public class XmlContentWriter {
             listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize);
         }
         try {
+            marshaller.setValidation(validate);
             marshaller.setMarshalListener(listener);
             marshaller.setWriter(writer);
             marshaller.marshal(obj);
