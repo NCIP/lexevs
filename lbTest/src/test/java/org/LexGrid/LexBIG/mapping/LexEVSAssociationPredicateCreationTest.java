@@ -35,6 +35,7 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class LexEVSAssociationPredicateCreationTest extends TestCase {
 	
@@ -47,7 +48,6 @@ public class LexEVSAssociationPredicateCreationTest extends TestCase {
 
 		   authoring = new LexEVSAuthoringServiceImpl();
 		   lbs = LexBIGServiceImpl.defaultInstance();
-
 	   }
 
 	public void testCreateNewAssocationPredicate() throws LBException {
@@ -68,7 +68,6 @@ public class LexEVSAssociationPredicateCreationTest extends TestCase {
 		EntryState entryState = new EntryState();
 		entryState.setContainingRevision("Mayo_predicate_revision");
 		revision.setRevisionId("Mayo_predicate_revision");
-		//entryState.setPrevRevision("Should_not_be_set");
 		entryState.setRelativeOrder(new Long(0));
 
 		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
@@ -111,7 +110,6 @@ public class LexEVSAssociationPredicateCreationTest extends TestCase {
 		EntryState entryState = new EntryState();
 		entryState.setContainingRevision("Mayo_predicate_revisionb");
 		revision.setRevisionId("Mayo_predicate_revisionb");
-		///entryState.setPrevRevision("Should_not_be_set");
 		entryState.setRelativeOrder(new Long(0));
 
 		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
