@@ -684,8 +684,8 @@ public class LexEVSAuthoringServiceImpl implements LexEVSAuthoringService{
         CodingScheme baseScheme = null;
         baseScheme = getCodingSchemeMetaData(scheme);
         
-       entryState.setPrevRevision(baseScheme.getEntryState().getContainingRevision());
-       revision.setRevisionId(entryState.getContainingRevision());
+        //let the revision service determine the previous revision id
+        revision.setRevisionId(entryState.getContainingRevision());
         EntryState modifiedState = cloneEntryState(entryState, ChangeType.MODIFY);
         EntryState dependentState = cloneEntryState(entryState, ChangeType.DEPENDENT);
         EntryState newState = cloneEntryState(entryState, ChangeType.NEW);
