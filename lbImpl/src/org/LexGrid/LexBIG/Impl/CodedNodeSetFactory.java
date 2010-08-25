@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
@@ -28,6 +29,11 @@ import org.LexGrid.LexBIG.Impl.codednodeset.UnionSingleLuceneIndexCodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.relations.Relations;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -52,7 +58,7 @@ public class CodedNodeSetFactory {
      * @throws LBParameterException the LB parameter exception
      */
     public CodedNodeSet getCodedNodeSet(String codingScheme, CodingSchemeVersionOrTag versionOrTag, Boolean activeOnly, LocalNameList types)
-    throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
+    throws LBInvocationException, LBParameterException, LBResourceUnavailableException, LBException {
         String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
         String version = ServiceUtility.getVersion(codingScheme, versionOrTag);
 
@@ -83,8 +89,45 @@ public class CodedNodeSetFactory {
                 
                 return new UnionSingleLuceneIndexCodedNodeSet(parent, supplement);
             } else {
-            
-                return new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
+                CodedNodeSet codingSchemeToReturn = new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
+                
+                CodingScheme csToFind = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingScheme, versionOrTag);
+                
+                for(Relations relation : csToFind.getRelations()) {
+                    if(BooleanUtils.toBoolean(relation.getIsMapping())) {
+                        
+                        String sourceCodingSchemeName = relation.getSourceCodingScheme();
+                        String sourceCodingSchemeVersion = relation.getSourceCodingSchemeVersion();
+                        String targetCodingSchemeName = relation.getTargetCodingScheme();
+                        String targetCodingSchemeVersion = relation.getTargetCodingSchemeVersion();
+                        
+                        if(! DaoUtility.containsNulls(
+                                sourceCodingSchemeName,
+                                targetCodingSchemeName)) {
+                            
+                            CodingSchemeVersionOrTag sourceCsvt = 
+                                StringUtils.isBlank(sourceCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(sourceCodingSchemeVersion);
+                            
+                            CodingSchemeVersionOrTag targetCsvt = 
+                                StringUtils.isBlank(targetCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(targetCodingSchemeVersion);
+                            
+                            CodedNodeSet sourceCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                                    sourceCodingSchemeName, 
+                                    sourceCsvt,
+                                    null).toNodeList(null, true, false, 0, -1);
+                            
+                            CodedNodeSet targetCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                                    targetCodingSchemeName, 
+                                    targetCsvt,
+                                    null).toNodeList(null, false, true, 0, -1);
+
+                            return codingSchemeToReturn.union(
+                                    sourceCodedNodeSet.union(targetCodedNodeSet));
+                        }
+                    }
+                }   
+
+                return codingSchemeToReturn;
             }
         }
 
