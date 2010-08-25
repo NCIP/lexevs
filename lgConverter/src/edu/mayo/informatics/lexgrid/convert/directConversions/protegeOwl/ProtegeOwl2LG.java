@@ -64,7 +64,6 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -95,7 +94,6 @@ import edu.stanford.smi.protegex.owl.model.OWLNAryLogicalClass;
 import edu.stanford.smi.protegex.owl.model.OWLNamedClass;
 import edu.stanford.smi.protegex.owl.model.OWLNames;
 import edu.stanford.smi.protegex.owl.model.OWLObjectProperty;
-import edu.stanford.smi.protegex.owl.model.OWLProperty;
 import edu.stanford.smi.protegex.owl.model.OWLQuantifierRestriction;
 import edu.stanford.smi.protegex.owl.model.OWLRestriction;
 import edu.stanford.smi.protegex.owl.model.OWLUnionClass;
@@ -107,6 +105,7 @@ import edu.stanford.smi.protegex.owl.model.RDFSDatatype;
 import edu.stanford.smi.protegex.owl.model.RDFSLiteral;
 import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import edu.stanford.smi.protegex.owl.model.impl.DefaultRDFSLiteral;
 
 /**
  * This is the main class containing the logic for the conversion from OWL to
@@ -132,7 +131,6 @@ public class ProtegeOwl2LG {
     private LgMessageDirectorIF messages_ = null;
 
     private Connection sqlConnection_ = null;
-    private SQLTableUtilities sqlTableUtil_ = null;
     private String dbType_ = null;
     private String dbDriver_ = null, dbUrl_ = null, dbProtegeTempTable_ = null, dbUser_ = null, dbPassword_ = null;
     private StringBuffer whereClause_ = null;
@@ -1522,7 +1520,14 @@ public class ProtegeOwl2LG {
             lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_);
             if (prop.getLabels().isEmpty() == false) {
                 for(Iterator in = prop.getLabels().iterator(); in.hasNext();) {
-                    String label = (String) in.next();
+                    Object obj = in.next();
+                    String label = null;
+                    
+                    if( obj instanceof DefaultRDFSLiteral) {
+                        label = ((DefaultRDFSLiteral) obj).getBrowserText();
+                    } else {
+                        label = (String) obj;
+                    }
                     lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("label", label, lgSupportedMappings_));
                 }
             }
@@ -2872,7 +2877,7 @@ public class ProtegeOwl2LG {
                 RelationsUtil.subsume(source, target);
             }
         } else {
-            writeAssociationSourceTarget(aw.getAssociationPredicate(), source, target);
+            writeAssociationSourceTarget(aw, source, target);
         }
     }
 
@@ -2885,11 +2890,11 @@ public class ProtegeOwl2LG {
         } else {
             if (data != null)
                 source.addTargetData(data);
-            writeAssociationSourceTarget(aw.getAssociationPredicate(), source, null);
+            writeAssociationSourceTarget(aw, source, null);
         }
     }
 
-    protected void writeAssociationSourceTarget(AssociationPredicate assoc, AssociationSource source,
+    protected void writeAssociationSourceTarget(AssociationWrapper aw, AssociationSource source,
             AssociationTarget target) {
         try {
             if (StringUtils.isEmpty(source.getSourceEntityCode())) {
@@ -2911,19 +2916,19 @@ public class ProtegeOwl2LG {
                 source.addTarget(target);
             }
 
-            assoc.addSource(source);
+            aw.getAssociationPredicate().addSource(source);
 
             String uri = lgScheme_.getCodingSchemeURI();
             String version = lgScheme_.getRepresentsVersion();
 
-            AssociationWrapper wrapper = this.assocManager.getAssociation(assoc.getAssociationName());
+            AssociationWrapper wrapper = this.assocManager.getAssociation(aw.getAssociationEntity().getEntityCode());
             databaseServiceManager.getAssociationService().insertAssociationSource(uri, version,
-                    wrapper.getRelationsContainerName(), assoc.getAssociationName(), source);
+                    wrapper.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
 
         } catch (Exception e) {
             this.messages_.warn("Error Inserting AssociationSource.", e);
         } finally {
-            assoc.removeSource(source);
+            aw.getAssociationPredicate().removeSource(source);
             if (target != null)
                 source.removeTarget(target);
         }
