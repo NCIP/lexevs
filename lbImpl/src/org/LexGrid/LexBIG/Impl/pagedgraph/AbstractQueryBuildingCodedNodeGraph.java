@@ -19,8 +19,10 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -40,6 +42,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycl
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
+import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
@@ -334,7 +337,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
 
         try {
-          
+
             return new ToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
 
         } catch (Exception e) {
@@ -354,17 +357,59 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward, maxToReturn));
         }
         
+        for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
+            returnList.addAll(traverseGraph(ref, resolveForward, resolveBackward, maxToReturn));
+        }
+        
         ConceptReferenceList refList = new ConceptReferenceList();
         refList.setConceptReference(returnList.toArray(new ConceptReference[returnList.size()] ));
         
         return refList;
     }
     
+    private static class VisitedConceptReference {
+        
+        private boolean resolvedForward;
+        private boolean resolvedBackward;
+        
+        private ConceptReference conceptReference;
+
+        private VisitedConceptReference(ConceptReference conceptReference, ResolveDirection direction) {
+            super();
+            this.conceptReference = conceptReference;
+            switch (direction) {
+                case FORWARD : {this.resolvedForward = true;}
+                case BACKWARD : {this.resolvedBackward = true;}
+            }
+        }   
+        
+        public int hashCode() {
+            return getKey(conceptReference).hashCode();
+        }
+      
+        private static String getKey(ConceptReference conceptReference) {
+            return conceptReference.getCode() + conceptReference.getCodeNamespace();
+        }
+        
+        public boolean equals(Object o) {
+            return this.hashCode() == o.hashCode();
+        }
+    }
     private List<ConceptReference> traverseGraph(
             ResolvedConceptReference ref, 
             boolean resolveForward, 
             boolean resolveBackward,
             int maxToReturn){
+        return this.traverseGraph(new HashMap<String,VisitedConceptReference>(), ref, resolveForward, resolveBackward, maxToReturn);
+    }
+    
+    private List<ConceptReference> traverseGraph(
+            Map<String,VisitedConceptReference> vistedMap,
+            ResolvedConceptReference ref, 
+            boolean resolveForward, 
+            boolean resolveBackward,
+            int maxToReturn){
+        
         List<ConceptReference> returnList = new ArrayList<ConceptReference>();
         returnList.add(ref);
         
@@ -372,8 +417,11 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             if(ref.getSourceOf() != null) {
                 for(Association assoc : ref.getSourceOf().getAssociation()) {
                     for(AssociatedConcept ac : buildAssociatedConceptArray(assoc, maxToReturn)) {
-                        returnList.addAll(
-                                this.traverseGraph(ac, resolveForward, resolveBackward, maxToReturn));
+                        if(this.continueTraverse(ResolveDirection.FORWARD, ac, vistedMap)) {
+                            
+                            returnList.addAll(
+                                    this.traverseGraph(vistedMap, ac, resolveForward, resolveBackward, maxToReturn));
+                        }
                     }
                 }
             }
@@ -383,14 +431,45 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             if(ref.getTargetOf() != null) {
                 for(Association assoc : ref.getTargetOf().getAssociation()) {
                     for(AssociatedConcept ac : buildAssociatedConceptArray(assoc, maxToReturn)) {
-                        returnList.addAll(
-                                this.traverseGraph(ac, resolveForward, resolveBackward, maxToReturn));
+                        if(this.continueTraverse(ResolveDirection.BACKWARD, ac, vistedMap)) {
+                           
+                            returnList.addAll(
+                                    this.traverseGraph(vistedMap, ac, resolveForward, resolveBackward, maxToReturn));
+                        }
                     }
                 }
             }
         }
         
         return returnList;
+    }
+    
+    private boolean continueTraverse(ResolveDirection direction, ConceptReference ref, Map<String,VisitedConceptReference> vistedMap) {
+        VisitedConceptReference visitedRef = vistedMap.get(VisitedConceptReference.getKey(ref));
+        if(visitedRef == null) {
+            vistedMap.put(VisitedConceptReference.getKey(ref),new VisitedConceptReference(ref, direction));
+            return true;
+        } else {
+            switch (direction) {
+                case FORWARD : {
+                    if(visitedRef.resolvedForward) {
+                        return false;
+                    } else {
+                        visitedRef.resolvedForward = true;
+                        return true;
+                    }
+                    }
+                case BACKWARD : {
+                    if(visitedRef.resolvedBackward ) {
+                        return false;
+                    } else {
+                        visitedRef.resolvedBackward = true;
+                        return true;
+                    }
+                    }
+                default : throw new RuntimeException("Error Traversing Graph.");
+            }
+        }   
     }
     
     private AssociatedConcept[] buildAssociatedConceptArray(Association association, int maxToReturn) {
