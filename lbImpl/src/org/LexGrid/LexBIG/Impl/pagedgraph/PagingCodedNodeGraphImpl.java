@@ -276,7 +276,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                 boolean keepLastAssociationLevelUnresolved,
                                 CycleDetectingCallback cycleDetectingCallback) throws LBInvocationException, LBParameterException {
                             
-                            return this.doResolveAsValidatedParameterList(
+                            return PagingCodedNodeGraphImpl.this.doResolveAsValidatedParameterList(
                                     graphFocus, 
                                     resolveForward, 
                                     resolveBackward, 
