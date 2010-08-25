@@ -1,22 +1,17 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.utility;
 
+import java.io.Serializable;
+
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.pagedgraph.AbstractCodedNodeGraph;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 
-public class ValidatedParameterResolvingCallback {
-    
-    private AbstractCodedNodeGraph abstractCodedNodeGraph;
-    
-    public ValidatedParameterResolvingCallback(AbstractCodedNodeGraph abstractCodedNodeGraph){
-        this.abstractCodedNodeGraph = abstractCodedNodeGraph;
-    }
+public interface ValidatedParameterResolvingCallback extends Serializable {
 
     public ResolvedConceptReferenceList doResolveAsValidatedParameterList(
             ConceptReference graphFocus, 
@@ -31,18 +26,5 @@ public class ValidatedParameterResolvingCallback {
             int maxToReturn, 
             boolean keepLastAssociationLevelUnresolved, 
             CycleDetectingCallback cycleDetectingCallback)
-            throws LBInvocationException, LBParameterException{
-        return this.abstractCodedNodeGraph.doResolveAsList(
-                graphFocus, 
-                resolveForward, 
-                resolveBackward, 
-                resolveCodedEntryDepth, 
-                resolveAssociationDepth, 
-                propertyNames, 
-                propertyTypes, 
-                sortOptions, 
-                filterOptions, 
-                maxToReturn, 
-                keepLastAssociationLevelUnresolved);
-    }
+            throws LBInvocationException, LBParameterException;
 }
