@@ -28,6 +28,7 @@ public class MrMapQueryTests {
 			"MrMap Loader supporting methods Test");
 	//$JUnit-BEGIN$
 	suite.addTestSuite(TestLoadMrMapOneMapping.class);
+	suite.addTestSuite(TestMRMapResolveGraphOnly.class);
 	suite.addTestSuite(TestManifestSetup.class);
 	suite.addTestSuite(TestMrMapMappingResolution.class);
 	suite.addTestSuite(TestRemoveMrMapOneLoad .class);
