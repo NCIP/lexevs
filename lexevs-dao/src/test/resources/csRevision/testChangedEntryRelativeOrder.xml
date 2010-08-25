@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory"
+    releaseURI="testReleaseApr2010" releaseDate="2010-04-01T00:00:00">
+
+    <!--Test : NEW coding scheme-->
+    <editHistory>        
+        <revision revisionId="testRelease2010Jan" editOrder="0">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a">
+               		<lgCommon:entryState changeType="NEW" relativeOrder="4" containingRevision="testRelease2010Jan"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+            <changedEntry>
+            	<changedCodingSchemeEntry codingSchemeName="b" codingSchemeURI="b" representsVersion="b">
+            		<lgCommon:entryState changeType="NEW" relativeOrder="2" containingRevision="testRelease2010Jan"/>
+                    <lgCS:mappings></lgCS:mappings>
+            	</changedCodingSchemeEntry>
+            </changedEntry>
+            <changedEntry>
+            	<changedValueSetDefinitionEntry valueSetDefinitionURI="c">
+            		<lgCommon:entryState changeType="NEW" relativeOrder="5" containingRevision="testRelease2010Jan"/>
+            	</changedValueSetDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+            	<changedPickListDefinitionEntry pickListId="d" representsValueSetDefinition="d">
+            		<lgCommon:entryState changeType="NEW" containingRevision="testRelease2010Jan" relativeOrder="0"/>
+            	</changedPickListDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+            	<changedValueSetDefinitionEntry valueSetDefinitionURI="e">
+            		<lgCommon:entryState changeType="NEW" containingRevision="testRelease2010Jan" relativeOrder="2000"/>
+            	</changedValueSetDefinitionEntry>
+            </changedEntry>
+            <changedEntry>
+            	<changedPickListDefinitionEntry pickListId="f" representsValueSetDefinition="f">
+            		<lgCommon:entryState changeType="NEW" containingRevision="testRelease2010Jan" relativeOrder="0"/>
+            	</changedPickListDefinitionEntry>
+            </changedEntry>
+        </revision>
+    </editHistory>
+</systemRelease>

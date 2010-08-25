@@ -289,6 +289,7 @@
 				<bean class="org.lexevs.dao.database.service.listener.LuceneEntityRemoveListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.HistoryTableReplicatingListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.NullEntityNamespaceListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.NullAssociationNamespaceListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.DuplicatePropertyIdListener"/>
 			</list>

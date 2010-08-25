@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.LexGrid.relations.Relations;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
@@ -29,6 +30,7 @@ import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
+import org.lexevs.dao.database.service.event.association.AssociationBatchInsertEvent;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,10 +102,16 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 		String codingSchemeUId = codingSchemeDao.
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
 		
-		String associationPredicateUId = this.getDaoManager().getAssociationDao(codingSchemeUri, version).
+		AssociationDao assocDao = this.getDaoManager().getAssociationDao(codingSchemeUri, version);
+		
+		String relationsUId = assocDao.getRelationUId(codingSchemeUId, relationContainerName);
+		
+		String associationPredicateUId = assocDao.
 			getAssociationPredicateUIdByContainerName(codingSchemeUId, relationContainerName, associationPredicateName);
 		
-		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeUId, associationPredicateUId, 
+		Relations relations = assocDao.getRelationsByUId(codingSchemeUId, relationsUId, false);
+		
+		this.doInsertAssociationSource(codingSchemeUri, version, codingSchemeUId, relations, associationPredicateUId, 
 				DaoUtility.createNonTypedList(source));
 	}
 	
@@ -158,12 +166,15 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	 * @param sources the sources
 	 */
 	protected void doInsertAssociationSource(String codingSchemeUri, 
-			String codingSchemeVersion, String codingSchemeId, String predicateId, List<AssociationSource> sources) {
+			String codingSchemeVersion, String codingSchemeId, Relations relations, String predicateId, List<AssociationSource> sources) {
 		AssociationDao associationDao = this.getDaoManager().getAssociationDao(codingSchemeUri, codingSchemeVersion);
-		associationDao.insertBatchAssociationSources(
-				codingSchemeId, 
-				predicateId, 
-				sources);
+
+		this.firePreBatchAssociationInsertEvent(new AssociationBatchInsertEvent(
+						codingSchemeUri, codingSchemeVersion, relations,
+						sources));
+
+		associationDao.insertBatchAssociationSources(codingSchemeId,
+				predicateId, sources);
 	}
 
 	/**

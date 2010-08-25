@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory"
+    releaseURI="testReleaseApr2010" releaseDate="2010-04-01T00:00:00">
+
+    <!--Test : NEW coding scheme-->
+    <editHistory>
+        <revision revisionId="testRelease2010May" editOrder="5">
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a" status="active">
+                    <lgCommon:entryState changeType="VERSIONABLE" relativeOrder="0" containingRevision="testRelease2010May" prevRevision="testRelease2010Apr"/>
+                    <lgCS:mappings></lgCS:mappings>                    
+                </changedCodingSchemeEntry>                
+            </changedEntry>
+        </revision>
+
+        <revision revisionId="testRelease2010Mar" editOrder="2">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a" defaultLanguage="en">
+                	<lgCommon:entryState changeType="MODIFY" relativeOrder="0" containingRevision="testRelease2010Mar" prevRevision="testRelease2010Feb"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+
+        <revision revisionId="testRelease2010Apr" editOrder="4">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a" formalName="A">  
+                	<lgCommon:entryState changeType="MODIFY" relativeOrder="0" containingRevision="testRelease2010Apr" prevRevision="testRelease2010Mar"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>                
+            </changedEntry>
+        </revision>
+
+        <revision revisionId="testRelease2010Feb" editOrder="1">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a" isActive="true">
+                	<lgCommon:entryState changeType="VERSIONABLE" relativeOrder="0" containingRevision="testRelease2010Feb" prevRevision="testRelease2010Jan"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>
+                
+            </changedEntry>
+        </revision>
+        
+        <revision revisionId="testRelease2010Jan" editOrder="0">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a">
+               		<lgCommon:entryState changeType="NEW" relativeOrder="0" containingRevision="testRelease2010Jan"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>
+            </changedEntry>
+        </revision>
+        
+        <revision revisionId="testRelease2010July">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a">
+                	<lgCommon:entryState changeType="REMOVE" relativeOrder="0" containingRevision="testRelease2010July" prevRevision="testRelease2010June"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>
+                
+            </changedEntry>
+        </revision>
+        
+        <revision revisionId="testRelease2010June" editOrder="2000">
+            <lgCommon:entityDescription>test Description</lgCommon:entityDescription>
+            <changedEntry>
+                <changedCodingSchemeEntry codingSchemeName="a" codingSchemeURI="a" representsVersion="a">
+                	<lgCommon:owner>Mayo</lgCommon:owner>
+                	<lgCommon:entryState changeType="VERSIONABLE" relativeOrder="0" containingRevision="testRelease2010June" prevRevision="testRelease2010May"/>
+                    <lgCS:mappings></lgCS:mappings>
+                </changedCodingSchemeEntry>
+                
+            </changedEntry>
+        </revision>
+    </editHistory>
+</systemRelease>

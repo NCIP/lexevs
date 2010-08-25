@@ -161,7 +161,7 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public String getRelationEntryStateUId(String codingSchemeUId, String relationUId);
 
 	public Relations getRelationsByUId(String codingSchemeUId,
-			String relationsUId);
+			String relationsUId, Boolean getAssocPredicates);
 
 	public AssociationPredicate getAssociationPredicateByUId(
 			String codingSchemeUId, String associationPredicateUId);

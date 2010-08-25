@@ -154,7 +154,7 @@ public class VersionableEventRelationService extends RevisableAbstractDatabaseSe
 		String codingSchemeUid = this.getCodingSchemeUid(id);
 		
 		return 
-			this.getAssociationDao(id).getRelationsByUId(codingSchemeUid, entryUId);
+			this.getAssociationDao(id).getRelationsByUId(codingSchemeUid, entryUId, true);
 	}
 
 	@Override

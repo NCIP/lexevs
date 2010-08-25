@@ -67,6 +67,13 @@ public interface CodingSchemeService {
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String codingSchemeUri, String codingSchemeVersion);
 	
+	/**
+	 * Returns entire codingScheme.
+	 * 
+	 * @param codingSchemeUri
+	 * @param codingSchemeVersion
+	 * @return
+	 */
 	public CodingScheme getCompleteCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion);
 	

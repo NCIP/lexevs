@@ -1,10 +1,15 @@
 package org.lexevs.dao.database.service.association;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.types.ChangeType;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
@@ -12,6 +17,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService;
 import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
+import org.lexevs.dao.database.service.event.association.AssociationBatchInsertEvent;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -192,19 +198,36 @@ public class VersionableEventAssociationTargetService
 
 		String codingSchemeUId = this.getCodingSchemeUId(codingSchemeUri,
 				version);
-
-			String associationPredicateUId = this.getDaoManager()
-				.getAssociationDao(codingSchemeUri, version)
-				.getAssociationPredicateUIdByContainerName(codingSchemeUId,
-					relationContainerName, associationPredicateName);
-
-			this.getDaoManager().getAssociationTargetDao(codingSchemeUri, version)
-				.insertAssociationTarget(
-						codingSchemeUId,
-						associationPredicateUId, 
-						sourceEntityCode, 
-						sourceEntityCodeNamespace,
-						target);
+		
+		AssociationDao assocDao = this.getDaoManager().getAssociationDao(codingSchemeUri, version);
+		
+		String relationsUId = assocDao.getRelationUId(codingSchemeUId, relationContainerName);
+		
+		String associationPredicateUId = assocDao.
+			getAssociationPredicateUIdByContainerName(codingSchemeUId, relationContainerName, associationPredicateName);
+		
+		Relations relations = assocDao.getRelationsByUId(codingSchemeUId, relationsUId, false);
+		
+		AssociationSource assocSource = new AssociationSource();
+		
+		assocSource.setSourceEntityCode(sourceEntityCode);
+		assocSource.setSourceEntityCodeNamespace(sourceEntityCodeNamespace);
+		
+		assocSource.setTarget(new AssociationTarget[]{target});
+		List<AssociationSource> sourceList = new ArrayList<AssociationSource>();
+		sourceList.add(assocSource);
+		
+		this.firePreBatchAssociationInsertEvent(new AssociationBatchInsertEvent(
+				codingSchemeUri, version, relations,
+				sourceList));
+		
+		this.getDaoManager().getAssociationTargetDao(codingSchemeUri, version)
+			.insertAssociationTarget(
+					codingSchemeUId,
+					associationPredicateUId, 
+					sourceEntityCode, 
+					sourceEntityCodeNamespace,
+					target);
 
 	}
 

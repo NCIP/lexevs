@@ -762,7 +762,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@Override
 	@CacheMethod
 	public Relations getRelationsByUId(String codingSchemeId,
-			String relationsUid) {
+			String relationsUid, Boolean getAssocPredicates) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		PrefixedParameterTuple bean = new PrefixedParameterTuple();
@@ -772,8 +772,15 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		Relations relations = (Relations) this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_FOR_UID_SQL, bean);
 	
-		for(String predicateId : this.getAssociationPredicateUIdsForRelationsUId(codingSchemeId, relationsUid)) {
-			relations.addAssociationPredicate(getAssociationPredicateByUId(codingSchemeId, predicateId));
+		if (getAssocPredicates) {
+			List<String> assocPredicateUIdList = this
+					.getAssociationPredicateUIdsForRelationsUId(codingSchemeId,
+							relationsUid);
+
+			for (String predicateId : assocPredicateUIdList) {
+				relations.addAssociationPredicate(getAssociationPredicateByUId(
+						codingSchemeId, predicateId));
+			}
 		}
 		
 		return relations;

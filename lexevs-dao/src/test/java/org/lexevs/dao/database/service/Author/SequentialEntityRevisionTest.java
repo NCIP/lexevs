@@ -82,7 +82,7 @@ public class SequentialEntityRevisionTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("Revision 2 Description", entity.getEntityDescription().getContent());
 		
-		assertEquals("3", entity.getEntryState().getContainingRevision());
+		assertEquals("2", entity.getEntryState().getContainingRevision());
 	}
 	
 	@Test
