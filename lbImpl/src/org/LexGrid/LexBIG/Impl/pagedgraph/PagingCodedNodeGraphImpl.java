@@ -19,7 +19,6 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -37,7 +36,6 @@ import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.builder.AssociationListBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
-import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
@@ -46,7 +44,6 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.utility.ValidatedParameterResolvingCal
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -242,7 +239,16 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                focus.setCodingSchemeName(codingSchemeName);
             }
             
-            boolean isValidFocus = this.checkFocus(focus, resolveForward, resolveBackward, filters, needToValidateFocusExistsInGraph);
+            boolean isValidFocus = PagedGraphUtils.checkFocus(
+                    this.getCodingSchemeUri(),
+                    this.getVersion(),
+                    this.getRelationsContainerName(),
+                    focus, 
+                    resolveForward, 
+                    resolveBackward, 
+                    filters, 
+                    this.getGraphQueryBuilder().getQuery(),
+                    needToValidateFocusExistsInGraph);
             
             if(! isValidFocus) {
                 return new ResolvedConceptReferenceList();
@@ -251,7 +257,42 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         } else {
 
             return new LazyLoadableResolvedConceptReferenceList(
-                    new ValidatedParameterResolvingCallback(this), 
+                    new ValidatedParameterResolvingCallback() {
+
+                        private static final long serialVersionUID = 1401783416514871042L;
+
+                        @Override
+                        public ResolvedConceptReferenceList doResolveAsValidatedParameterList(
+                                ConceptReference graphFocus, 
+                                boolean resolveForward, 
+                                boolean resolveBackward,
+                                int resolveCodedEntryDepth, 
+                                int resolveAssociationDepth, 
+                                LocalNameList propertyNames,
+                                PropertyType[] propertyTypes, 
+                                SortOptionList sortOptions, 
+                                LocalNameList filterOptions,
+                                int maxToReturn, 
+                                boolean keepLastAssociationLevelUnresolved,
+                                CycleDetectingCallback cycleDetectingCallback) throws LBInvocationException, LBParameterException {
+                            
+                            return this.doResolveAsValidatedParameterList(
+                                    graphFocus, 
+                                    resolveForward, 
+                                    resolveBackward, 
+                                    resolveCodedEntryDepth, 
+                                    resolveAssociationDepth, 
+                                    propertyNames, 
+                                    propertyTypes, 
+                                    sortOptions, 
+                                    filterOptions, 
+                                    maxToReturn, 
+                                    keepLastAssociationLevelUnresolved, 
+                                    cycleDetectingCallback);
+                        }
+                        
+                    }, 
+                    
                     this.getCodingSchemeUri(),
                     this.getVersion(),
                     this.getRelationsContainerName(),
@@ -267,7 +308,6 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     filterOptions, 
                     cycleDetectingCallback,
                     maxToReturn);
-
         }
         
         int resolveForwardAssociationDepth = resolveAssociationDepth;
@@ -357,118 +397,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         
         return returnList;
     }
-
-    protected boolean checkFocus(ResolvedConceptReference focus, boolean resolveForward, boolean resolveBackward, Filter[] filters, boolean needToValidateFocusExistsInGraph) {
-        if(focus == null) {return false;}
- 
-        boolean hasReferenceToSourceCodeRestriction = hasReferenceToSourceCodeRestriction(focus);
-        boolean hasReferenceToTargetCodeRestriction = hasReferenceToTargetCodeRestriction(focus);
-        boolean isInvalidMatchConceptReference = isNotInvalidMatchConceptReference(focus);
-        boolean isNotFilteredOut = isNotFilteredConceptReference(focus, filters);
-        boolean existsInGraph = needToValidateFocusExistsInGraph ? existsInGraph(focus) : true;
       
-        return 
-            hasReferenceToSourceCodeRestriction && 
-            hasReferenceToTargetCodeRestriction && 
-            isInvalidMatchConceptReference &&
-            isNotFilteredOut &&
-            existsInGraph;  
-    }
-    
-    private boolean isNotFilteredConceptReference(ResolvedConceptReference focus, Filter[] filters) {
-        return ServiceUtility.passFilters(focus, filters);
-    }
-
-
-    private boolean isNotInvalidMatchConceptReference(ConceptReference focus) {
-        return !PagedGraphUtils.areCodedNodeReferencesEquals(focus, DefaultGraphQueryBuilder.INVALID_MATCH_CONCEPT_REFERENCE);
-    }
-    
-    private boolean hasReferenceToTargetCodeRestriction(ConceptReference focus) {
-        List<ConceptReference>  restrictToTargetCodes = this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodes();
-        if(CollectionUtils.isEmpty(restrictToTargetCodes)) {
-            return true;
-        }
-        if(containsConceptReference(focus, restrictToTargetCodes)) {
-            return true;
-        }
-        
-        CodedNodeGraphService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        Map<String,Integer> count = 
-        service.getTripleUidsContainingSubjectCount(
-                this.getCodingSchemeUri(), 
-                this.getVersion(), 
-                this.getRelationsContainerName(), 
-                focus.getCode(), 
-                focus.getCodeNamespace(), 
-                this.getGraphQueryBuilder().getQuery());
-        
-        return !count.isEmpty();
-    }
-
-    private boolean hasReferenceToSourceCodeRestriction(ConceptReference focus) {
-        List<ConceptReference>  restrictToSourceCodes = this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodes(); 
-        if(CollectionUtils.isEmpty(restrictToSourceCodes)) {
-            return true;
-        }
-        if(containsConceptReference(focus, restrictToSourceCodes)) {
-            return true;
-        }
-        
-        CodedNodeGraphService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        Map<String,Integer> count = 
-        service.getTripleUidsContainingObjectCount(
-                this.getCodingSchemeUri(), 
-                this.getVersion(), 
-                this.getRelationsContainerName(), 
-                focus.getCode(), 
-                focus.getCodeNamespace(), 
-                this.getGraphQueryBuilder().getQuery());
-        
-        return !count.isEmpty();
-    }
-    
-    private boolean existsInGraph(ConceptReference focus) {
- 
-        CodedNodeGraphService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        Map<String,Integer> subjectCount = 
-        service.getTripleUidsContainingSubjectCount(
-                this.getCodingSchemeUri(), 
-                this.getVersion(), 
-                this.getRelationsContainerName(), 
-                focus.getCode(), 
-                focus.getCodeNamespace(), 
-                this.getGraphQueryBuilder().getQuery());
-        
-        Map<String,Integer> objectCount = 
-            service.getTripleUidsContainingObjectCount(
-                    this.getCodingSchemeUri(), 
-                    this.getVersion(), 
-                    this.getRelationsContainerName(), 
-                    focus.getCode(), 
-                    focus.getCodeNamespace(), 
-                    this.getGraphQueryBuilder().getQuery());
-        
-        return !subjectCount.isEmpty() || !objectCount.isEmpty();
-    }
-    
-    private static boolean containsConceptReference(ConceptReference ref, List<ConceptReference> list) {
-        for(ConceptReference conceptRef : list) {
-            if(ref.getCode().equals(conceptRef.getCode()) &&
-                    ref.getCodeNamespace().equals(conceptRef.getCodeNamespace())){
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    
     /**
      * Should resolve next level.
      * 
