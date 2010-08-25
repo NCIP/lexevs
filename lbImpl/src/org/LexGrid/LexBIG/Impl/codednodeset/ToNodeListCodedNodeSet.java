@@ -32,12 +32,16 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
+import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
 
 /**
@@ -52,6 +56,8 @@ import org.lexevs.system.utility.CodingSchemeReference;
 public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
     
     private static final long serialVersionUID = -5959522938971242708L;
+    
+    private CodeHolder toNodeListCodes = new DefaultCodeHolder();
     
     public ToNodeListCodedNodeSet() {
         super();
@@ -143,10 +149,13 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
         if(codes instanceof CodedNodeSetImpl ) {
             CodedNodeSetImpl unioned = (CodedNodeSetImpl)codes;
             
-            UnionSingleLuceneIndexCodedNodeSet cns = new UnionSingleLuceneIndexCodedNodeSet(this, unioned);
-            this.getToNodeListCodes().union(unioned.getToNodeListCodes());
+            CodeHolder codeHolder = new DefaultCodeHolder();
+            codeHolder.union(this.getCodeHolder());
+            codeHolder.union(unioned.getCodeHolder());
             
-            cns.setToNodeListCodes(this.getToNodeListCodes());
+            CodedNodeSetImpl cns = new CodedNodeSetImpl(codeHolder, null, null);
+            cns.getCodingSchemeReferences().addAll(this.getCodingSchemeReferences());
+            cns.getCodingSchemeReferences().addAll(unioned.getCodingSchemeReferences());
             return cns;
         } else {
            return super.union(codes);
@@ -157,13 +166,17 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
         if(codes instanceof CodedNodeSetImpl ) {
             CodedNodeSetImpl intersected = (CodedNodeSetImpl)codes;
             
-            IntersectSingleLuceneIndexCodedNodeSet cns = new IntersectSingleLuceneIndexCodedNodeSet(this, intersected);
-            this.getToNodeListCodes().intersect(intersected.getToNodeListCodes());
+            CodeHolder codeHolder = new DefaultCodeHolder();
+            codeHolder.union(this.getCodeHolder());
+            codeHolder.intersect(intersected.getCodeHolder());
             
-            cns.setToNodeListCodes(this.getToNodeListCodes());
+            CodedNodeSetImpl cns = new CodedNodeSetImpl(codeHolder, null, null);
+            cns.getCodingSchemeReferences().addAll(this.getCodingSchemeReferences());
+            cns.getCodingSchemeReferences().addAll(intersected.getCodingSchemeReferences());
+            
             return cns;
         } else {
-           return super.union(codes);
+           return super.intersect(codes);
         }
     }
     
@@ -171,14 +184,17 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
         if(codes instanceof CodedNodeSetImpl ) {
             CodedNodeSetImpl diffed = (CodedNodeSetImpl)codes;
             
-            DifferenceSingleLuceneIndexCodedNodeSet cns = new DifferenceSingleLuceneIndexCodedNodeSet(this, diffed);
-            this.getToNodeListCodes().difference(diffed.getToNodeListCodes());
+            CodeHolder codeHolder = new DefaultCodeHolder();
+            codeHolder.union(this.getCodeHolder());
+            codeHolder.difference(diffed.getCodeHolder());
             
-            cns.setToNodeListCodes(this.getToNodeListCodes());
+            CodedNodeSetImpl cns = new CodedNodeSetImpl(codeHolder, null, null);
+            cns.getCodingSchemeReferences().addAll(this.getCodingSchemeReferences());
+            cns.getCodingSchemeReferences().addAll(diffed.getCodingSchemeReferences());
             
             return cns;
         } else {
-           return super.union(codes);
+           return super.difference(codes);
         }
     }
 
@@ -236,8 +252,49 @@ public class ToNodeListCodedNodeSet extends CodedNodeSetImpl {
             throws LBInvocationException, LBParameterException {
         super.toBruteForceMode(internalCodeSystemName, internalVersionString);
 
-        if(this.getToNodeListCodes() != null && this.getToNodeListCodes().getNumberOfCodes() > 0) {
+        if(this.getToNodeListCodes() == null || this.getToNodeListCodes().getNumberOfCodes() == 0) {
             this.codesToInclude_.union(getToNodeListCodes());
+        } else {
+            this.codesToInclude_.union(removeInactiveCodes(this.getToNodeListCodes()));
         }
     } 
+    
+    private CodeHolder removeInactiveCodes(CodeHolder codeHolder) {
+        AdditiveCodeHolder returnCodeHolder = new DefaultCodeHolder();
+        
+        for(CodeToReturn code : codeHolder.getAllCodes()) {
+            String uri = code.getUri();
+            String version = code.getVersion();
+
+            Entity entity = null;
+
+            if(StringUtils.isNotBlank(code.getUri()) && StringUtils.isNotBlank(code.getVersion())){
+                try {
+                    entity = LexEvsServiceLocator.getInstance().
+                        getDatabaseServiceManager().
+                        getEntityService().
+                        getEntity(uri, version, code.getCode(), code.getNamespace());
+                } catch(Exception e) {
+                    LoggerFactory.getLogger().warn("Active Status cannot be determined for: " + code.getCode() + ", " + code.getNamespace());
+                }
+            }
+
+            if(entity != null) {
+                if(entity.getIsActive() != false) {
+                    returnCodeHolder.add(code);
+                }
+            } else {
+                returnCodeHolder.add(code);
+            }
+        }
+        return returnCodeHolder;
+    }
+    
+    public void setToNodeListCodes(CodeHolder toNodeListCodes) {
+        this.toNodeListCodes = toNodeListCodes;
+    }
+
+    public CodeHolder getToNodeListCodes() {
+        return toNodeListCodes;
+    }
 }
