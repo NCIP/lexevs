@@ -61,7 +61,9 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
         
         SupportedNamespace sns = getSupportedNamespace(cs, namespace);
         
-        if(sns == null || StringUtils.isBlank(sns.getEquivalentCodingScheme())){
+        if(sns == null || 
+                StringUtils.isBlank(sns.getEquivalentCodingScheme()) ||
+                namespace.equals(cs.getCodingSchemeName())){
             return Constructors.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version);
         }
         
