@@ -96,8 +96,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
-    
-    private CodeHolder toNodeListCodes = new DefaultCodeHolder();
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -164,6 +162,11 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
+    }
+    
+    public CodedNodeSetImpl(CodeHolder codes)
+        throws LBInvocationException {
+        codesToInclude_ = codes;
     }
 
     /**
@@ -688,6 +691,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     public void runPendingOps() throws LBInvocationException, LBParameterException {
         try {
+            if(this.codesToInclude_ != null) {return;}
+            
             boolean areMultipleDesignationQueries = areMultipleDesignationQueries();
             
             BooleanQuery combinedQuery = new BooleanQuery();
@@ -801,7 +806,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     /*
      * Get the populatedCodedHolder object for this CodedNodeSet.
      */
-    private CodeHolder getCodeHolder() throws LBInvocationException, LBParameterException {
+    public CodeHolder getCodeHolder() throws LBInvocationException, LBParameterException {
         runPendingOps();
         this.toBruteForceMode(this.getInternalCodeSystemName(), this.getInternalVersionString());
         return codesToInclude_;
@@ -911,13 +916,5 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     public void setCodeHolderFactory(CodeHolderFactory codeHolderFactory) {
         this.codeHolderFactory = codeHolderFactory;
-    }
-
-    public void setToNodeListCodes(CodeHolder toNodeListCodes) {
-        this.toNodeListCodes = toNodeListCodes;
-    }
-
-    public CodeHolder getToNodeListCodes() {
-        return toNodeListCodes;
     }
 }
