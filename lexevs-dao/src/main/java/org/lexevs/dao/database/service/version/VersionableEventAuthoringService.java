@@ -18,6 +18,9 @@
  */
 package org.lexevs.dao.database.service.version;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -45,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * The Class VersionableEventVersionService.
  * 
+ * @author <a href="mailto:rao.ramachandra@mayo.edu">Ramachandra Rao (Satya)</a>
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class VersionableEventAuthoringService extends AbstractDatabaseService
@@ -57,12 +61,87 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	private PickListDefinitionService pickListDefinitionService = null;
 
 	public static final String LEXGRID_GENERATED_REVISION = "autoGen-";
-	/*
-	 * (non-Javadoc)
+	
+	private Comparator<Revision> revisionComparator = new Comparator<Revision>() {
+
+		@Override
+		public int compare(Revision rev1, Revision rev2) {
+			
+			Long editOrder1 = rev1.getEditOrder();
+			Long editOrder2 = rev2.getEditOrder();
+			
+			if( editOrder1 == null && editOrder2 == null ) {
+				return 0;
+			}
+			
+			if( editOrder1 == null )
+				return 1;
+			
+			if( editOrder2 == null )
+				return -1;
+			
+			if( editOrder1 == editOrder2 ) {
+				return 0;
+			}
+			
+			return editOrder1 < editOrder2 ? -1 : 1;
+		}
+	};
+	
+	private Comparator<ChangedEntry> changedEntryComparator = new Comparator<ChangedEntry>() {
+
+		@Override
+		public int compare(ChangedEntry cEntry1, ChangedEntry cEntry2) {
+			
+			Versionable changedEntry1 = (Versionable) cEntry1.getChoiceValue();
+			Versionable changedEntry2 = (Versionable) cEntry2.getChoiceValue();
+			
+			Long relativeOrder1 = null;
+			Long relativeOrder2 = null;
+			
+			if( changedEntry1 != null ) {
+				EntryState entryState1 = changedEntry1.getEntryState();
+				
+				if( entryState1 != null ) {
+					relativeOrder1 = entryState1.getRelativeOrder();
+				}
+			}
+			
+			if( changedEntry2 != null ) {
+				EntryState entryState2 = changedEntry2.getEntryState();
+				
+				if( entryState2 != null ) {
+					relativeOrder2 = entryState2.getRelativeOrder();
+				}
+			}
+			
+			if( relativeOrder1 == null && relativeOrder2 == null ) {
+				return 0;
+			}
+			
+			if( relativeOrder1 == null )
+				return 1;
+			
+			if( relativeOrder2 == null )
+				return -1;
+			
+			if( relativeOrder1 == relativeOrder2 ) {
+				return 0;
+			}
+			
+			return relativeOrder1 < relativeOrder2 ? -1 : 1;
+		}
+	};
+	
+	/**
+	 * Load system release. A systemRelease can contain a codingScheme,
+	 * valueSet, pickList and/or revision objects. All codingScheme, valueSet
+	 * and pickLists loaded outside revision are wrapped under a system
+	 * generated revision object.
 	 * 
-	 * @see
-	 * org.lexevs.dao.database.service.version.VersionService#insertSystemRelease
-	 * (org.LexGrid.versions.SystemRelease)
+	 * @param systemRelease
+	 * @param indexNewCodingScheme
+	 * @throws LBRevisionException
 	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
@@ -162,6 +241,9 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 			Revision[] revisionList = editHistory.getRevision();
 			
 			if (revisionList != null && revisionList.length != 0) {
+				
+				Arrays.sort(revisionList, revisionComparator);
+
 				for (int i = 0; i < revisionList.length; i++) {
 
 					loadRevision(revisionList[i], systemRelease.getReleaseURI(), indexNewCodingScheme);
@@ -170,12 +252,22 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Method Loads the revision of an entry point object in lexEVS system.
+	 * Revision will be validated for proper syntax and sequence before loading.
+	 * If invalid, LBRevisionException is thrown. Entry point objects in lexEVS
+	 * system are CodingScheme, ValueSet and PickList. A revision can contain
+	 * single or multiple instances of one or all of the entry point objects.
+	 * ChangedEntries are loaded by ascending order of relativeOrder.
 	 * 
-	 * @see
-	 * org.lexevs.dao.database.service.version.VersionService#revise(org.LexGrid
-	 * .versions.Revision)
+	 * @param revision
+	 *            - revision object to be applied.
+	 * @param systemReleaseURI
+	 *            - URI of the systemRelease (if any)
+	 * @param indexNewCodingScheme
+	 *            - Boolean value to indicate if the any newly loaded codingScheme
+	 *            in this revision needs to Lucene indexed or not.
+	 * @throws LBRevisionException
 	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
@@ -190,6 +282,8 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 			
 			RevisionDao revisionDao = this.getDaoManager().getRevisionDao();
 			revisionDao.insertRevisionEntry(revision, releaseURI);
+			
+			Arrays.sort(changedEntry, changedEntryComparator);
 			
 			for (int j = 0; j < changedEntry.length; j++) {
 
@@ -253,6 +347,20 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		}
 	}
 
+	/**
+	 * Method Loads an entry point versionable object by wrapping it into a
+	 * revision. Revision will be validated for proper syntax and sequence
+	 * before loading. If invalid, LBRevisionException is thrown. Entry point
+	 * objects in lexEVS system are CodingScheme, ValueSet and PickList.
+	 * 
+	 * @param versionable
+	 * @param releaseURI
+	 *            - URI of the systemRelease (if any)
+	 * @param indexNewCodingScheme
+	 *            - Boolean value to indicate if the any newly loaded
+	 *            codingScheme in this revision needs to Lucene indexed or not.
+	 * @throws LBRevisionException
+	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void loadRevision(Versionable versionable, String releaseURI, Boolean indexNewCodingScheme)
 			throws LBRevisionException {
@@ -373,3 +481,4 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		return revisionDao.removeRevisionById(revisionId);
 	}
 }
+

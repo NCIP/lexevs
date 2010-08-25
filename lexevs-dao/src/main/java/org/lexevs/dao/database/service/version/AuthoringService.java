@@ -27,27 +27,56 @@ import org.LexGrid.versions.SystemRelease;
 /**
  * The Interface VersionService.
  * 
+ * @author <a href="mailto:rao.ramachandra@mayo.edu">Ramachandra Rao (Satya)</a>
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface AuthoringService {
 
 	/**
-	 * Load system release.
+	 * Load system release. A systemRelease can contain a codingScheme,
+	 * valueSet, pickList and/or revision objects. All codingScheme, valueSet
+	 * and pickLists loaded outside revision are wrapped under a system
+	 * generated revision object.
 	 * 
-	 * @param systemRelease the system release
-	 * @throws LBRevisionException 
+	 * @param systemRelease
+	 * @param indexNewCodingScheme
+	 * @throws LBRevisionException
 	 */
 	public void loadSystemRelease(SystemRelease systemRelease, Boolean indexNewCodingScheme) throws LBRevisionException;
-	
+
 	/**
-	 * Revise.
+	 * Method Loads the revision of an entry point object in lexEVS system.
+	 * Revision will be validated for proper syntax and sequence before loading.
+	 * If invalid, LBRevisionException is thrown. Entry point objects in lexEVS
+	 * system are CodingScheme, ValueSet and PickList. A revision can contain
+	 * single or multiple instances of one or all of the entry point objects.
+	 * ChangedEntries are loaded by ascending order of relativeOrder.
 	 * 
-	 * @param revision the revision
+	 * @param revision
+	 *            - revision object to be applied.
 	 * @param systemReleaseURI
-	 * @throws LBRevisionException 
+	 *            - URI of the systemRelease (if any)
+	 * @param indexNewCodingScheme
+	 *            - Boolean value to indicate if the any newly loaded codingScheme
+	 *            in this revision needs to Lucene indexed or not.
+	 * @throws LBRevisionException
 	 */
 	public void loadRevision(Revision revision, String systemReleaseURI, Boolean indexNewCodingScheme) throws LBRevisionException;
 	
+	/**
+	 * Method Loads an entry point versionable object by wrapping it into a
+	 * revision. Revision will be validated for proper syntax and sequence
+	 * before loading. If invalid, LBRevisionException is thrown. Entry point
+	 * objects in lexEVS system are CodingScheme, ValueSet and PickList.
+	 * 
+	 * @param versionable
+	 * @param releaseURI
+	 *            - URI of the systemRelease (if any)
+	 * @param indexNewCodingScheme
+	 *            - Boolean value to indicate if the any newly loaded
+	 *            codingScheme in this revision needs to Lucene indexed or not.
+	 * @throws LBRevisionException
+	 */
 	public void loadRevision(Versionable versionable, String releaseURI, Boolean indexNewCodingScheme) throws LBRevisionException;
 	
 	/**
