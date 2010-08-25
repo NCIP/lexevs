@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Impl.pagedgraph.model.LazyLoadableAssociatedConceptList;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
+import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -220,6 +221,20 @@ public class AssociationListBuilder implements Serializable{
             CycleDetectingCallback cycleDetectingCallback,
             AssociationDirection direction) {
         Assert.notNull(graphQuery, "Must pass in a GraphQuery.");
+        
+        boolean isValidFocus = PagedGraphUtils.checkFocus(
+                codingSchemeUri, 
+                version, 
+                relationsContainerName, 
+                entityCode,
+                entityCodeNamespace,
+                resolveForward, 
+                resolveBackward, 
+                graphQuery);
+        
+        if(!isValidFocus) {
+            return null;
+        }
 
         CodedNodeGraphService codedNodeGraphService =
             getDatabaseServiceManager().getCodedNodeGraphService();
