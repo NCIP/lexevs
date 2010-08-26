@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -235,7 +236,11 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
 	 */
 	@Override
 	public Iterator<ResolvedConceptReference> iterateResolvedConceptReference() {
-	    return new RootResolvedConceptReferenceIterator();
+	    if(this.cache != null) {
+	        return Arrays.asList(this.cache).iterator();
+	    } else {
+	        return new RootResolvedConceptReferenceIterator();
+	    }
 	}
 
 	/* (non-Javadoc)
