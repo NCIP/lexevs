@@ -399,7 +399,7 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 			}
 		}
 		
-		if (!entryStateExists(prefix, assnTargetBean.getEntryStateUId())) {
+		if (!entryStateExists(codingSchemeUId, assnTargetBean.getEntryStateUId())) {
 
 			EntryState entryState = new EntryState();
 
