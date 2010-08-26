@@ -51,11 +51,33 @@ public class PagedGraphUtils {
             boolean resolveForward, 
             boolean resolveBackward, 
             GraphQuery graphQuery) {
+        return checkFocus(
+                uri,
+                version,
+                relationsContainer,
+                entityCode,
+                entityCodeNamespace,
+                resolveForward, 
+                resolveBackward, 
+                graphQuery,
+                false);
+    }
+    
+    public static boolean checkFocus(
+            String uri,
+            String version,
+            String relationsContainer,
+            String entityCode,
+            String entityCodeNamespace,
+            boolean resolveForward, 
+            boolean resolveBackward, 
+            GraphQuery graphQuery,
+            boolean initialFocus) {
         ResolvedConceptReference ref = new ResolvedConceptReference();
         ref.setCode(entityCode);
         ref.setCodeNamespace(entityCodeNamespace);
         
-        return checkFocus(uri,version,relationsContainer, ref, resolveForward, resolveBackward, null, graphQuery, false);
+        return checkFocus(uri,version,relationsContainer, ref, resolveForward, resolveBackward, null, graphQuery, false, initialFocus);
     }
     
     public static boolean checkFocus(
@@ -67,14 +89,15 @@ public class PagedGraphUtils {
             boolean resolveBackward, 
             Filter[] filters, 
             GraphQuery graphQuery,
-            boolean needToValidateFocusExistsInGraph) {
+            boolean needToValidateFocusExistsInGraph,
+            boolean initialFocus) {
         if(focus == null) {return false;}
  
         boolean hasReferenceToSourceCodeRestriction = 
-            resolveForward ? hasReferenceToSourceCodeRestriction(uri, version, relationsContainer, focus, graphQuery) : true;
+            resolveForward ? hasReferenceToSourceCodeRestriction(uri, version, relationsContainer, focus, graphQuery, initialFocus) : true;
         
         boolean hasReferenceToTargetCodeRestriction = 
-            resolveBackward ? hasReferenceToTargetCodeRestriction(uri, version, relationsContainer, focus, graphQuery) : true;
+            resolveBackward ? hasReferenceToTargetCodeRestriction(uri, version, relationsContainer, focus, graphQuery, initialFocus) : true;
        
         boolean isInvalidMatchConceptReference = isNotInvalidMatchConceptReference(focus);
        
@@ -104,7 +127,8 @@ public class PagedGraphUtils {
             String version, 
             String relationsContainer, 
             ConceptReference focus, 
-            GraphQuery graphQuery) {
+            GraphQuery graphQuery,
+            boolean initialFocus) {
         List<ConceptReference>  restrictToTargetCodes = graphQuery.getRestrictToTargetCodes();
         if(CollectionUtils.isEmpty(restrictToTargetCodes)) {
             return true;
@@ -113,19 +137,23 @@ public class PagedGraphUtils {
             return true;
         }
         
-        CodedNodeGraphService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        Map<String,Integer> count = 
-        service.getTripleUidsContainingSubjectCount(
-                uri, 
-                version, 
-                relationsContainer, 
-                focus.getCode(), 
-                focus.getCodeNamespace(), 
-                graphQuery);
-        
-        return !count.isEmpty();
+        if(initialFocus) {
+            CodedNodeGraphService service = 
+                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+
+            Map<String,Integer> count = 
+                service.getTripleUidsContainingSubjectCount(
+                        uri, 
+                        version, 
+                        relationsContainer, 
+                        focus.getCode(), 
+                        focus.getCodeNamespace(), 
+                        graphQuery);
+
+            return !count.isEmpty();
+        } else {
+            return false;
+        }
     }
 
     private static boolean hasReferenceToSourceCodeRestriction(
@@ -133,7 +161,8 @@ public class PagedGraphUtils {
             String version, 
             String relationsContainer, 
             ConceptReference focus, 
-            GraphQuery graphQuery) {
+            GraphQuery graphQuery,
+            boolean initialFocus) {
         List<ConceptReference>  restrictToSourceCodes = graphQuery.getRestrictToSourceCodes(); 
         if(CollectionUtils.isEmpty(restrictToSourceCodes)) {
             return true;
@@ -142,19 +171,23 @@ public class PagedGraphUtils {
             return true;
         }
         
-        CodedNodeGraphService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        Map<String,Integer> count = 
-        service.getTripleUidsContainingObjectCount(
-                uri, 
-                version, 
-                relationsContainer, 
-                focus.getCode(), 
-                focus.getCodeNamespace(), 
-                graphQuery);
-        
-        return !count.isEmpty();
+        if(initialFocus) {
+            CodedNodeGraphService service = 
+                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+
+            Map<String,Integer> count = 
+                service.getTripleUidsContainingObjectCount(
+                        uri, 
+                        version, 
+                        relationsContainer, 
+                        focus.getCode(), 
+                        focus.getCodeNamespace(), 
+                        graphQuery);
+
+            return !count.isEmpty();
+        } else {
+            return false;
+        }
     }
     
     private static boolean existsInGraph(

@@ -238,7 +238,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                
                focus.setCodingSchemeName(codingSchemeName);
             }
-            
+         
             boolean isValidFocus = PagedGraphUtils.checkFocus(
                     this.getCodingSchemeUri(),
                     this.getVersion(),
@@ -248,7 +248,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     resolveBackward, 
                     filters, 
                     this.getGraphQueryBuilder().getQuery(),
-                    needToValidateFocusExistsInGraph);
+                    needToValidateFocusExistsInGraph,
+                    true);
             
             if(! isValidFocus) {
                 return new ResolvedConceptReferenceList();
