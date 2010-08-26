@@ -224,8 +224,15 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                         );
             }
         } else {
-            adjustedRelationsContainer = this.relationsContainerName;
-            
+            adjustedRelationsContainer = this.relationsContainerName; 
+        }
+        
+        associatedConcept.setCodingSchemeURI(adjustedCodingSchemeUri);
+        associatedConcept.setCodingSchemeVersion(adjustedCodingSchemeVersion);
+        try {
+            associatedConcept.setCodingSchemeName(ServiceUtility.getCodingSchemeName(adjustedCodingSchemeUri, adjustedCodingSchemeVersion));
+        } catch (LBParameterException e) {
+           LoggerFactory.getLogger().warn("Could not assign CodingScheme Name.");
         }
 	    
 	    if(this.cycleDetectingCallback.isAssociatedConceptAlreadyInGraph(associationPredicateName, associatedConcept)) {

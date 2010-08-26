@@ -94,7 +94,24 @@ public class CodedNodeSetFactory {
                 CodingScheme csToFind = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingScheme, versionOrTag);
                 
                 for(Relations relation : csToFind.getRelations()) {
+     
+                    CodedNodeSet toNodeListSet = null;
+                    
                     if(BooleanUtils.toBoolean(relation.getIsMapping())) {
+                        
+                        if(toNodeListSet == null) {
+                            CodedNodeSet toNodeListSetSource = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                                uri, 
+                                versionOrTag,
+                                null).toNodeList(null, true, false, 0, -1);
+                            
+                            CodedNodeSet toNodeListSetTarget = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                                    uri, 
+                                    versionOrTag,
+                                    null).toNodeList(null, false, true, 0, -1);
+                            
+                            toNodeListSet = toNodeListSetSource.union(toNodeListSetTarget);
+                        }
                         
                         String sourceCodingSchemeName = relation.getSourceCodingScheme();
                         String sourceCodingSchemeVersion = relation.getSourceCodingSchemeVersion();
@@ -111,18 +128,18 @@ public class CodedNodeSetFactory {
                             CodingSchemeVersionOrTag targetCsvt = 
                                 StringUtils.isBlank(targetCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(targetCodingSchemeVersion);
                             
-                            CodedNodeSet sourceCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                            CodedNodeSet sourceCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
                                     sourceCodingSchemeName, 
                                     sourceCsvt,
-                                    null).toNodeList(null, true, false, 0, -1);
+                                    null);
                             
-                            CodedNodeSet targetCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                            CodedNodeSet targetCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
                                     targetCodingSchemeName, 
                                     targetCsvt,
-                                    null).toNodeList(null, false, true, 0, -1);
+                                    null);
 
-                            return codingSchemeToReturn.union(
-                                    sourceCodedNodeSet.union(targetCodedNodeSet));
+                            codingSchemeToReturn = codingSchemeToReturn.union(
+                                    sourceCodedNodeSet.union(targetCodedNodeSet)).intersect(toNodeListSet);
                         }
                     }
                 }   
