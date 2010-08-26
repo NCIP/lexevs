@@ -242,6 +242,8 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
                     null, 
                     -1).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 0);
+        assertEquals(1,rcr.length);
+        assertNull(rcr[0].getSourceOf());
+        assertNull(rcr[0].getTargetOf());
     }
 }

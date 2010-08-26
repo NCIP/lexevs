@@ -18,9 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.junit.Test;
 
 /**
  * The Class RestrictToSourceCodesTest.
@@ -55,6 +57,40 @@ public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
        assertTrue("Length: " + rcr.length, rcr.length == 1);
 
        resolvedConceptListContains(rcr, "005");  
+    }
+
+    @Test
+    public void testRestrictToSourceCodesAndOnlySourceCodes() throws Exception {
+        
+        CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
+        cns.restrictToCodes(Constructors.createConceptReferenceList("005", AUTO_SCHEME));
+ 
+        cng.restrictToSourceCodes(cns);
+        
+        ResolvedConceptReference[] rcr = 
+            cng.resolveAsList(null, 
+                    true, 
+                    false, 
+                    -1, 
+                    -1, 
+                    null, 
+                    null, 
+                    null, 
+                    -1).getResolvedConceptReference();
+
+       assertTrue("Length: " + rcr.length, rcr.length == 1);
+
+       resolvedConceptListContains(rcr, "005");  
+       
+       assertNotNull(rcr[0].getSourceOf());
+       assertNull(rcr[0].getTargetOf());
+       
+       assertEquals(1,rcr[0].getSourceOf().getAssociationCount());
+       
+       for(AssociatedConcept ac : rcr[0].getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept()) {
+    	   assertNull(ac.getSourceOf());
+       }
+       
     }
     
     /**

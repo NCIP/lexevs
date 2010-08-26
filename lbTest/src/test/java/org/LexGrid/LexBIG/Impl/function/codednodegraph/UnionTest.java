@@ -70,6 +70,8 @@ public class UnionTest extends BaseCodedNodeGraphTest {
 		//should be GM, C0001, T0001, A0001, and Ford
 		CodedNodeSet cns6 = cns1.union(cns2).union(cns3).union(cns4).union(cns5);
 		
+		PrintUtility.print(cns6);
+		
 		ResolvedConceptReferenceList list = cns6.resolveToList(null, null, null, -1);
 		
 		assertEquals(5,list.getResolvedConceptReferenceCount());

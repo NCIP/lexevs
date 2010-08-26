@@ -18,8 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import java.util.Arrays;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -43,6 +46,7 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
         CodedNodeSet cns1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
         cns1.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001", "Chevy"}));
  
+        //005,GM,Ford,A,C0001,T0001,Batteries,Brakes,Tires
         cngIntersect1.restrictToSourceCodes(cns1);
 
         CodedNodeGraph cngIntersect2 = 
@@ -56,22 +60,17 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
         CodedNodeGraph cngIntersect = cngIntersect2.intersect(cngIntersect1);
         
         ResolvedConceptReference[] rcr = 
-            cngIntersect.resolveAsList(null, 
-                    true, 
-                    false, 
-                    -1, 
-                    -1, 
-                    null, 
-                    null, 
-                    null, 
-                    -1).getResolvedConceptReference();
-
-        assertTrue("Length: " + rcr.length, rcr.length == 1);
-
-        ResolvedConceptReference ref = rcr[0];
+            cngIntersect.toNodeList(null, true, false, -1, -1).resolveToList(null, null, null, -1).getResolvedConceptReference();
         
-        assertTrue(ref.getCode().equals("005"));
-       
+        List<? extends ResolvedConceptReference> list = Arrays.asList(rcr);
+        
+        assertTrue(DataTestUtils.isConceptReferencePresent(list, "005"));
+        assertTrue(DataTestUtils.isConceptReferencePresent(list, "Ford"));
+        assertTrue(DataTestUtils.isConceptReferencePresent(list, "A"));
+        assertTrue(DataTestUtils.isConceptReferencePresent(list, "Chevy"));
+        assertTrue(DataTestUtils.isConceptReferencePresent(list, "GM"));
+
+        assertTrue("Length: " + rcr.length, rcr.length == 5);    
     }
     
     /**
@@ -85,17 +84,17 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns1.restrictToCodes(Constructors.createConceptReferenceList("T0001", AUTO_SCHEME));
+        cns1.restrictToCodes(Constructors.createConceptReferenceList("Jaguar", AUTO_SCHEME));
  
-        cngIntersect1.restrictToTargetCodes(cns1);
+        cngIntersect1.restrictToCodes(cns1);
         
         CodedNodeGraph cngIntersect2 = 
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns2.restrictToCodes(Constructors.createConceptReferenceList("GM", AUTO_SCHEME));
+        cns2.restrictToCodes(Constructors.createConceptReferenceList("Ford", AUTO_SCHEME));
             
-        cngIntersect2.restrictToTargetCodes(cns2);
+        cngIntersect2.restrictToCodes(cns2);
         
         CodedNodeGraph cngIntersect = cngIntersect1.intersect(cngIntersect2);
         

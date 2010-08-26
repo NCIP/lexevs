@@ -91,7 +91,9 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
     				null, 
     				-1).getResolvedConceptReference();
 
-    	assertTrue(rcr.length == 0);
+    	assertEquals(1,rcr.length);
+        assertNull(rcr[0].getSourceOf());
+        assertNull(rcr[0].getTargetOf());
     }
     
     /**
@@ -242,7 +244,9 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
                     null, 
                     -1).getResolvedConceptReference();
 
-        assertEquals(0,rcr.length);
+        assertEquals(1,rcr.length);
+        assertNull(rcr[0].getSourceOf());
+        assertNull(rcr[0].getTargetOf());
     }
     
     public void testOneAssociationNameOneQualifierWithValueResolveAllQuals() throws LBInvocationException, LBParameterException{

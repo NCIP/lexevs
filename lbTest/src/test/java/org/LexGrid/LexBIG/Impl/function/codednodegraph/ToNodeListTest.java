@@ -78,9 +78,9 @@ public class ToNodeListTest extends BaseCodedNodeGraphTest {
                 null, 
                 null, 
                 -1).getResolvedConceptReference();
-        assertEquals(10,refs.length);
+        assertEquals(7,refs.length);
     }
-    
+    /*
     public void testUnionToNodeListNotInCodedNodeSet() throws Exception {
         CodedNodeSet cns1 = cng.toNodeList(Constructors.createConceptReference("Batteries", "ExpendableParts"), true, false, 1, -1);
         CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("Tires", "ExpendableParts"), true, false, 1, -1);
@@ -110,4 +110,5 @@ public class ToNodeListTest extends BaseCodedNodeGraphTest {
         	System.out.println(ref.getCode());
         }
     }
+    */
 }
