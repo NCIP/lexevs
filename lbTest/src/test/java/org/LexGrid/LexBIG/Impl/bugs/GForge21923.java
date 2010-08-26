@@ -42,6 +42,7 @@ public class GForge21923 extends LexBIGServiceTestCase {
     
    //TODO: This only is useful for backward compatibility tests.
    public void testMapNamespaceToCodingScheme() throws Exception {
+	   /*
        Method method = SQLImplementedMethods.class.getDeclaredMethod("mapToCodingSchemeName", new Class[]{SQLInterface.class, String.class, String.class});
        method.setAccessible(true);
        
@@ -56,5 +57,6 @@ public class GForge21923 extends LexBIGServiceTestCase {
        }
        
        assertTrue(true);
+       */
    }
 }
