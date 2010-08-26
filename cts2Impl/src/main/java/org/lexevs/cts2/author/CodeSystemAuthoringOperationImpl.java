@@ -10,11 +10,14 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
@@ -152,8 +155,12 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	     
 	        CodingScheme codingScheme = 
 	        	this.getDatabaseServiceManager().
-	        		getCodingSchemeService().
-	        		getCompleteCodingScheme(codingSchemeURI, representsVersion);
+	        		getCodingSchemeService().getCodingSchemeByUriAndVersion(
+	        			codingSchemeURI, representsVersion);
+	        codingScheme = (CodingScheme) SerializationUtils.clone(codingScheme);
+	        codingScheme.setProperties(new Properties());
+	        codingScheme.setEntities(new Entities());
+	        codingScheme.setRelations(new Relations[0]);
 	        
 	        String prevRevisionId = codingScheme.getEntryState() != null?codingScheme.getEntryState().getContainingRevision():null;
 	         
