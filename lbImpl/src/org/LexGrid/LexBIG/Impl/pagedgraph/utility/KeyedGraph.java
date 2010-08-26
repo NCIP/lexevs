@@ -148,10 +148,13 @@ public class KeyedGraph {
                 AssociatedConcept intersectConcept = intersect(ac1, ac2);
                 ac1.setSourceOf(intersectConcept.getSourceOf());
                 ac1.setTargetOf(intersectConcept.getTargetOf());   
-            }  
+            } else {
+                masterTree.roots.remove(pair);
+            }
         }  
         
         KeyedGraph unionTree = new KeyedGraph(masterTree.nodes);
+        
         unionTree.setRoots(masterTree.roots);
         
         return unionTree;
