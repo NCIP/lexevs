@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.LexGrid.annotations.LgProxyClass;
 import org.springframework.util.Assert;
 
 public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterable<T>, Serializable{
@@ -20,9 +21,10 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	private int currentPage = 0;
 	
 	private int globalPosition = 0;
-
 	
-	public AbstractPageableIterator(){
+	private Pager<T> pager;
+	
+	protected AbstractPageableIterator(){
 		this(DEFAULT_PAGE_SIZE);
 	}
 	
@@ -34,6 +36,8 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	public AbstractPageableIterator(int pageSize){
 		Assert.isTrue(pageSize > 0, "Cannot specify a Page Size less than 0.");
 		this.pageSize = pageSize;
+		
+		this.pager = new Pager<T>();
 	}
 	
 	@Override
@@ -79,9 +83,23 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	}
 	
 	protected void page() {
-		cache = doPage(globalPosition, pageSize);
+		cache = this.pager.doPage(this, globalPosition, pageSize);
 		currentPage++;
 	}
 	
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
+	
+	@LgProxyClass
+	public static class Pager<T> implements Serializable {
+
+		private static final long serialVersionUID = 6142588013131141095L;
+
+		public Pager() {
+			super();
+		}
+		
+		public List<? extends T> doPage(AbstractPageableIterator<T> abstractPageableIterator, int currentPosition, int pageSize){
+			return abstractPageableIterator.doPage(currentPosition, pageSize);
+		}
+	}
 }

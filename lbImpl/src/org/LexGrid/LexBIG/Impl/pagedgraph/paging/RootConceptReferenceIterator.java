@@ -24,7 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver.ResolveDirection;
-import org.LexGrid.annotations.LgProxyClass;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.paging.AbstractPageableIterator;
 
@@ -33,7 +33,7 @@ import org.lexevs.paging.AbstractPageableIterator;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@LgProxyClass
+@LgClientSideSafe
 public class RootConceptReferenceIterator extends AbstractPageableIterator<ConceptReference> {
 
     private static final long serialVersionUID = -7463384030723777372L;
@@ -71,6 +71,4 @@ public class RootConceptReferenceIterator extends AbstractPageableIterator<Conce
                     currentPosition, 
                     pageSize);
     }
-    
-   
 }

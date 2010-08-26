@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.ValidatedParameterResolvingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.annotations.LgProxyClass;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.paging.AbstractPageableIterator;
@@ -239,7 +240,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
 	    if(this.cache != null) {
 	        return Arrays.asList(this.cache).iterator();
 	    } else {
-	        return new RootResolvedConceptReferenceIterator();
+	        return new RootResolvedConceptReferenceIterator(this);
 	    }
 	}
 
@@ -285,13 +286,53 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
 		throw new UnsupportedOperationException();
 	}	
 	
-	private class RootResolvedConceptReferenceIterator extends AbstractPageableIterator<ResolvedConceptReference> {
+	@LgClientSideSafe
+	public static class RootResolvedConceptReferenceIterator extends AbstractPageableIterator<ResolvedConceptReference> {
 
         private static final long serialVersionUID = -1322750106614136398L;
         
         private RootConceptReferenceIterator rootConceptReferenceIterator;
+        
+        private GraphQuery graphQuery;
+        private String codingSchemeUri; 
+        private String codingSchemeVersion;
+        private String relationsContainerName; 
+        private boolean resolveForward;
+        private boolean resolveBackward; 
+        private int resolveCodedEntryDepth; 
+        private int resolveAssociationDepth;
+        private LocalNameList propertyNames;
+        private PropertyType[] propertyTypes;
+        private SortOptionList sortAlgorithms; 
+        private LocalNameList filterOptions; 
+        private int maxToReturn; 
+        private boolean keepLastAssociationLevelUnresolved;
+        private CycleDetectingCallback cycleDetectingCallback;
+        private ValidatedParameterResolvingCallback validatedParameterResolvingCallback;
+        
+        public RootResolvedConceptReferenceIterator() {
+            super();
+        }
 
-	    private RootResolvedConceptReferenceIterator(){
+        public RootResolvedConceptReferenceIterator(LazyLoadableResolvedConceptReferenceList parent){
+            super();
+            this.graphQuery = parent.graphQuery;
+            this.codingSchemeUri = parent.codingSchemeUri;
+            this.codingSchemeVersion = parent.codingSchemeVersion;
+            this.relationsContainerName = parent.relationsContainerName;
+            this.resolveForward = parent.resolveForward;
+            this.resolveBackward = parent.resolveBackward;
+            this.resolveCodedEntryDepth = parent.resolveCodedEntryDepth;
+            this.resolveAssociationDepth = parent.resolveAssociationDepth;
+            this.propertyNames = parent.propertyNames;
+            this.propertyTypes = parent.propertyTypes;
+            this.sortAlgorithms = parent.sortAlgorithms;
+            this.filterOptions = parent.filterOptions;
+            this.maxToReturn = parent.maxToReturn;
+            this.keepLastAssociationLevelUnresolved = parent.keepLastAssociationLevelUnresolved;
+            this.cycleDetectingCallback = parent.cycleDetectingCallback;
+            this.validatedParameterResolvingCallback = parent.validatedParameterResolvingCallback;
+
 	        rootConceptReferenceIterator = new RootConceptReferenceIterator(
                 codingSchemeUri,
                 codingSchemeVersion,
