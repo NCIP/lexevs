@@ -3,6 +3,8 @@ package org.LexGrid.LexBIG.load.xml;
 import java.io.File;
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -22,8 +24,6 @@ import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
-
-import junit.framework.TestCase;
 
 public class TestLoadXMLTargetAssocRevision extends TestCase {
 	protected LexBIGService service;
@@ -78,7 +78,7 @@ public class TestLoadXMLTargetAssocRevision extends TestCase {
 				.createNameAndValueList("hasSubtype"), null);
 		ResolvedConceptReferenceList rcrl = cng.resolveAsList(
 				ConvenienceMethods.createConceptReference("GM",
-						"Automobiles"), true, true, -1, -1, null, null, null,
+						"AutomobilesCS"), true, true, -1, -1, null, null, null,
 				-1);
 		ResolvedConceptReference rcr = rcrl.getResolvedConceptReference(0);
 	   assertNotNull(rcr);
@@ -190,9 +190,9 @@ public class TestLoadXMLTargetAssocRevision extends TestCase {
 
         lbsm.removeCodingSchemeVersion(a);
         AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-		System.out.println(authServ.removeRevisionRecordbyId("scotttest2010Jan_testTarget"));
-		System.out.println(authServ.removeRevisionRecordbyId("scottTest2010Feb_testTarget"));
-		System.out.println(authServ.removeRevisionRecordbyId("scottTest2010Mar_testTarget"));
-		System.out.println(authServ.removeRevisionRecordbyId("scottTest2010Apr_testTarget"));
+        assertTrue(authServ.removeRevisionRecordbyId("scotttest2010Jan_testTarget"));
+        assertTrue(authServ.removeRevisionRecordbyId("scottTest2010Feb_testTarget"));
+        assertTrue(authServ.removeRevisionRecordbyId("scottTest2010Mar_testTarget"));
+        assertTrue(authServ.removeRevisionRecordbyId("scottTest2010Apr_testTarget"));
     }
 }
