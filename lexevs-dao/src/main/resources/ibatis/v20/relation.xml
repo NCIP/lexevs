@@ -108,7 +108,7 @@
    <select id="getAssociationPredicateUidsForName" remapResults="true"
    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Common.uidResult">
    		SELECT
-   			associationPredicateGuid AS uid
+   			associationPredicateGuid AS uidKey
    		FROM
    			$prefix$associationPredicate associationPredicate
    		INNER JOIN
@@ -147,7 +147,7 @@
   	<select id="getAssociationPredicateKeysForRelationsId" remapResults="true"
   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
    		SELECT
-   			associationPredicateGuid AS uid
+   			associationPredicateGuid AS uidKey
    		FROM
    			$prefix$associationPredicate
 		WHERE
@@ -158,7 +158,7 @@
    <select id="getRelationsKey" 
     	remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
    		SELECT
-   			relationGuid AS uid
+   			relationGuid AS uidKey
    		FROM
    			$prefix$relation
 		WHERE
@@ -172,7 +172,7 @@
     <select id="getRelationsKeysForCodingSchemeId" remapResults="true"
     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
    		SELECT
-   			relationGuid AS uid
+   			relationGuid AS uidKey
    		FROM
    			$prefix$relation
 		WHERE
@@ -282,7 +282,7 @@
    <select id="getAssociationPredicateUIdByContainerName" remapResults="true"
    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Common.uidResult">
    		SELECT
-   			assoc.associationPredicateGuid AS uid
+   			assoc.associationPredicateGuid AS uidKey
    		FROM
    			$prefix$associationPredicate assoc
    		INNER JOIN
@@ -300,7 +300,7 @@
 	<select id="getAssociationPredicateUIdByContainerUId" remapResults="true"
    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
    		SELECT
-   			assoc.associationPredicateGuid AS uid
+   			assoc.associationPredicateGuid AS uidKey
    		FROM
    			$prefix$associationPredicate assoc   			
 		WHERE
@@ -388,7 +388,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultMap="Common.uidResult">
 		SELECT 
-			entryStateGuid AS uid
+			entryStateGuid AS uidKey
 		FROM
 			$prefix$relation rel
 		WHERE

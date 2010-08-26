@@ -215,7 +215,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
 		resultMap="Common.uidResult" remapResults="true">
 		SELECT
-			vsdEntryGuid AS uid
+			vsdEntryGuid AS uidKey
 		FROM
 			$prefix$vsdEntry vsdEntry,
 			$prefix$valueSetDefinition vsDef 

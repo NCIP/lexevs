@@ -230,7 +230,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
 		resultMap="Common.uidResult" remapResults="true">
 		SELECT
-			entityGuid AS uid
+			entityGuid AS uidKey
 		FROM
 			$prefix$entity entity
 		WHERE
@@ -339,7 +339,7 @@
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
      	resultMap="Common.uidResult">
 		SELECT
-			entityGuid AS uid
+			entityGuid AS uidKey
 		FROM
 			$prefix$entity entity
 		WHERE
@@ -518,7 +518,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
 		resultMap="Common.uidResult">
 		SELECT 
-			eat.entityAssnsGuid AS uid
+			eat.entityAssnsGuid AS uidKey
 		FROM 
 			$prefix$entityAssnsToEntity eat
 		WHERE
@@ -546,7 +546,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultMap="Common.uidResult">
 		SELECT 
-			entryStateGuid AS uid
+			entryStateGuid AS uidKey
 		FROM
 			$prefix$entity en
 		WHERE

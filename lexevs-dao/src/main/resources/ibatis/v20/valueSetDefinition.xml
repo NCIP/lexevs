@@ -114,7 +114,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
 		resultMap="Common.uidResult">
 		SELECT
-			valueSetDefGuid AS uid
+			valueSetDefGuid AS uidKey
 		FROM
 			$prefix$valueSetDefinition
 		WHERE
@@ -367,7 +367,7 @@
 		resultMap="Common.uidResult"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		SELECT
-			entryStateGuid AS uid
+			entryStateGuid AS uidKey
 		FROM
 			$prefix$valueSetDefinition
 		WHERE

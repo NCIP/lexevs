@@ -4,7 +4,7 @@
 <sqlMap namespace="Common">
 
 	<resultMap id="uidResult" class="string">
-		<result property="java.lang.String" column="uid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="java.lang.String" column="uidKey" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
 </sqlMap>

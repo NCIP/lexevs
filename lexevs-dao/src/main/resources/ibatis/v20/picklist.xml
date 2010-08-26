@@ -70,7 +70,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
 		resultMap="Common.uidResult">
 		SELECT
-			vsPickListGuid AS uid
+			vsPickListGuid AS uidKey
 		FROM
 			$prefix$vsPickList pickListDef
 		WHERE
@@ -118,7 +118,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
 		resultMap="Common.uidResult">
 		SELECT
-			vsPLEntryGuid AS uid
+			vsPLEntryGuid AS uidKey
 		FROM
 			$prefix$vsPLEntry
 		WHERE

@@ -41,7 +41,7 @@
 		<result property="codeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
 		<result property="codingSchemeURI" column="codingSchemeURI" />
-		<result property="codingSchemeVersion" column="representsVersion" />
+<!--		<result property="codingSchemeVersion" column="representsVersion" />-->
 		<result property="codingSchemeName" column="codingSchemeName" />
 		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
 	</resultMap>
@@ -950,7 +950,7 @@
 				remapResults="true"
 				resultMap="Common.uidResult">
 		SELECT DISTINCT 
-			(eate.entityAssnsGuid) AS uid
+			(eate.entityAssnsGuid) AS uidKey
 			
 		<isNotEmpty property="sorts" prepend=",">
 			<iterate property="sorts" conjunction=",">
@@ -1059,7 +1059,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		remapResults="true" resultMap="Common.uidResult">
 		SELECT 
-			eate.entryStateGuid AS uid
+			eate.entryStateGuid AS uidKey
 		FROM
 			$prefix$entityAssnsToEntity eate
 		WHERE

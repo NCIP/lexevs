@@ -53,7 +53,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		resultMap="Common.uidResult">
 		SELECT 
-			releaseGuid AS uid
+			releaseGuid AS uidKey
 		FROM
 			${defaultPrefix}nciHistSystemRelease systemRelease
 		WHERE

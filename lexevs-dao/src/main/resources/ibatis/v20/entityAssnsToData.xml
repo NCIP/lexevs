@@ -80,7 +80,7 @@
   	
 	<select id="getEntityAssnDataUIDByAssocInstanceId" remapResults="true" resultMap="Common.uidResult">
 		SELECT
-			ead.entityAssnsDataGuid AS uid
+			ead.entityAssnsDataGuid AS uidKey
 		FROM 
 			$prefix$entityAssnsToData ead
 		JOIN
@@ -293,7 +293,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		remapResults="true" resultMap="Common.uidResult">
 		SELECT 
-			eatd.entryStateGuid AS uid
+			eatd.entryStateGuid AS uidKey
 		FROM
 			$prefix$entityAssnsToData eatd
 		WHERE

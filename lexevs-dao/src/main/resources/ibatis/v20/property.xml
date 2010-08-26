@@ -72,7 +72,7 @@
 	<select id="getPropertyId" resultMap="Common.uidResult" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		SELECT
-  			propertyGuid AS uid
+  			propertyGuid AS uidKey
   		FROM
   			$prefix$property
   		WHERE
@@ -84,7 +84,7 @@
  	<select id="getPropertyUIdByPropIdAndName" resultMap="Common.uidResult" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
   		SELECT
-  			propertyGuid AS uid
+  			propertyGuid AS uidKey
   		FROM
   			$prefix$property
   		WHERE
@@ -324,7 +324,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		resultMap="Common.uidResult">
 		SELECT 
-			entryStateGuid AS uid
+			entryStateGuid AS uidKey
 		FROM
 			$prefix$property prop
 		WHERE

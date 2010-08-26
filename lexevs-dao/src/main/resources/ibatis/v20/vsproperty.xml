@@ -95,7 +95,7 @@
 	<select id="getPropertyGuid" resultMap="Common.uidResult" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		SELECT
-  			vsPropertyGuid AS uid
+  			vsPropertyGuid AS uidKey
   		FROM
   			$prefix$vsProperty
   		WHERE
