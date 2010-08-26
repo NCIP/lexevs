@@ -53,7 +53,9 @@ import org.lexevs.paging.codednodegraph.TripleUidIterator;
  */
 @LgProxyClass
 public class AssociatedConceptIterator extends AbstractPageableIterator<AssociatedConcept> {
-    
+
+    private static final long serialVersionUID = 8499054225802045957L;
+
     /** The association list builder. */
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
   

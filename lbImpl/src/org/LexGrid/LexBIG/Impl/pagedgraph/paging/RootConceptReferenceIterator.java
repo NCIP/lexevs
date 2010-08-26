@@ -36,6 +36,8 @@ import org.lexevs.paging.AbstractPageableIterator;
 @LgProxyClass
 public class RootConceptReferenceIterator extends AbstractPageableIterator<ConceptReference> {
 
+    private static final long serialVersionUID = -7463384030723777372L;
+
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
     
     private String codingSchemeUri;
