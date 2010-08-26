@@ -287,7 +287,9 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
 	
 	private class RootResolvedConceptReferenceIterator extends AbstractPageableIterator<ResolvedConceptReference> {
 
-	    private RootConceptReferenceIterator rootConceptReferenceIterator;
+        private static final long serialVersionUID = -1322750106614136398L;
+        
+        private RootConceptReferenceIterator rootConceptReferenceIterator;
 
 	    private RootResolvedConceptReferenceIterator(){
 	        rootConceptReferenceIterator = new RootConceptReferenceIterator(
