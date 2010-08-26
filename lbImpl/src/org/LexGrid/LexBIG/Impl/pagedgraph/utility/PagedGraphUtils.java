@@ -113,7 +113,19 @@ public class PagedGraphUtils {
             return true;
         }
         
-        return false;
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        Map<String,Integer> count = 
+        service.getTripleUidsContainingSubjectCount(
+                uri, 
+                version, 
+                relationsContainer, 
+                focus.getCode(), 
+                focus.getCodeNamespace(), 
+                graphQuery);
+        
+        return !count.isEmpty();
     }
 
     private static boolean hasReferenceToSourceCodeRestriction(
@@ -130,7 +142,19 @@ public class PagedGraphUtils {
             return true;
         }
         
-        return false;
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        Map<String,Integer> count = 
+        service.getTripleUidsContainingObjectCount(
+                uri, 
+                version, 
+                relationsContainer, 
+                focus.getCode(), 
+                focus.getCodeNamespace(), 
+                graphQuery);
+        
+        return !count.isEmpty();
     }
     
     private static boolean existsInGraph(
