@@ -38,7 +38,7 @@
     <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
   </mappings>
   <entities/>
-  <relations containerName="AutoToGMPMappings" sourceCodingScheme="Automobiles" targetCodingScheme="GermanMadeParts">
+  <relations containerName="AutoToGMPMappings" isMapping="true" sourceCodingScheme="Automobiles" targetCodingScheme="GermanMadeParts">
     <lgCommon:entityDescription>Automobiles To GMP Mappings</lgCommon:entityDescription>
     <lgRel:associationPredicate  associationName="hasPart">
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Jaguar">
