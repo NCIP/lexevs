@@ -5,6 +5,10 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.LexEVSAuthoringService;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -12,7 +16,9 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.Revision;
@@ -49,14 +55,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
        //load as revision
        this.getDatabaseServiceManager().getAuthoringService().loadRevision(lgRevision, null, indexCodeSystem);
        
-	}
-
-	
-
-	@Override
-	public void createAssociationType() {
-		// TODO Auto-generated method stub
-
 	}
 	
 	@Override
@@ -432,24 +430,6 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 	}
 
 	@Override
-	public void updateAssociationType() {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateCodeSystemSuppliment(CodingScheme codingScheme, RevisionInfo revisionInfo) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateCodeSystemVersion(String codingScheme, RevisionInfo revisionInfo) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void updateCodeSystemVersionStatus(
 			String codingSchemeURI, 
 			String codeSystemVersion, 
@@ -666,5 +646,56 @@ public class CodeSystemAuthoringOperationImpl extends AuthoringCore implements
 				revisionInfo);
 		
 		this.getDatabaseServiceManager().getAuthoringService().loadRevision(revision, revisionInfo.getSystemReleaseURI(), null);
+	}
+
+	@Override
+	public void createAssociationType(
+			String codingSchemeUri,
+			String codeSystemVersion, 
+			String relationsContainerName,
+			String associationName, 
+			String forwardName, 
+			String reverseName,
+			Boolean isNavigable, 
+			Boolean isTransitive, 
+			RevisionInfo revisionInfo) throws LBException {
+		LexEVSAuthoringService authoring = new LexEVSAuthoringServiceImpl();
+		
+		AssociationEntity associationEntity = EntityFactory.createAssociation();
+		associationEntity.setEntityCode(associationName);
+		associationEntity.setEntityCodeNamespace(ServiceUtility.getCodingSchemeName(codingSchemeUri, codeSystemVersion));
+		associationEntity.setForwardName(forwardName);
+		associationEntity.setReverseName(reverseName);
+		associationEntity.setIsNavigable(isNavigable);
+		associationEntity.setIsTransitive(isTransitive);
+		
+		authoring.createAssociationPredicate(
+				this.getLexGridRevisionObject(revisionInfo), 
+				this.populateEntryState(ChangeType.NEW, revisionInfo.getRevisionId(), null, 0l), 
+				Constructors.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, codeSystemVersion), 
+				relationsContainerName, 
+				associationName);
+		
+		this.doReviseConcept(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				associationEntity, 
+				ChangeType.NEW, 
+				null, 
+				0l, 
+				revisionInfo);
+	}
+
+	@Override
+	public void updateAssociationType(
+			String codingSchemeUri,
+			String codeSystemVersion, 
+			AssociationEntity associationEntity,
+			RevisionInfo revisionInfo) throws LBException {
+		this.updateConcept(
+				codingSchemeUri, 
+				codeSystemVersion, 
+				associationEntity, 
+				revisionInfo);
 	}
 }

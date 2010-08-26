@@ -28,6 +28,7 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.versions.Revision;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.exception.author.InvalidCodeSystemSupplementException;
@@ -63,17 +64,12 @@ public interface CodeSystemAuthoringOperation {
 	
 	public int commitChangeSet(Revision changeSet);
 	
-	public void updateCodeSystemVersion(String codingScheme, RevisionInfo revisionInfo);
-	
 	public void updateCodeSystemVersionStatus(String codingSchemeURI, String codeSystemVersion, String status, Boolean isActive,
 			RevisionInfo revision) throws LBException; 
 	
 	public void createCodeSystemSuppliment(
 			AbsoluteCodingSchemeVersionReference parent, 
 			AbsoluteCodingSchemeVersionReference supplement) throws InvalidCodeSystemSupplementException;
-	
-	public void updateCodeSystemSuppliment(
-			CodingScheme codingScheme, RevisionInfo revisionInfo) throws InvalidCodeSystemSupplementException;
 
 	public void createConcept(
 			String codingSchemeUri, 
@@ -128,8 +124,20 @@ public interface CodeSystemAuthoringOperation {
 			Boolean isActive,
 			RevisionInfo revisionInfo) throws LBException;
 	
-	public void createAssociationType();
-	public void updateAssociationType();
-
-
+	public void createAssociationType(
+			String codingSchemeUri, 
+			String codeSystemVersion,
+			String relationsContainerName,
+			String associationName,
+			String forwardName,
+			String reverseName,
+			Boolean isNavigable,
+			Boolean isTransitive,
+			RevisionInfo revision) throws LBException;
+	
+	public void updateAssociationType(
+			String codingSchemeUri, 
+			String codeSystemVersion, 
+			AssociationEntity associationEntity,
+			RevisionInfo revision) throws LBException;
 }
