@@ -1,12 +1,15 @@
 package org.lexevs.paging;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.util.Assert;
 
-public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterable<T> {
+public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterable<T>, Serializable{
+
+	private static final long serialVersionUID = -5398591025205732109L;
 
 	private static int DEFAULT_PAGE_SIZE = 100;
 	
