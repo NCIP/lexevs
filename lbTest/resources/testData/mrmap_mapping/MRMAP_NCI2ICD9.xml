@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest.xsd" 
+    xmlns="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest" xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="urn:oid:CL413321.NCI.CST">
+    <codingScheme>
+        NCI:NCI12_1_TO_CSTCST95
+    </codingScheme>
+    <codingSchemeURI>urn:oid:CL413321.NCI.CST</codingSchemeURI>
+    <mappings>
+        <lgNaming:supportedAssociation xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="mapped_to"></lgNaming:supportedAssociation>
+        <lgNaming:supportedAssociationQualifier xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="qualifier"></lgNaming:supportedAssociationQualifier>
+        <lgNaming:supportedCodingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="NCI" uri="http://NCI.test.shell" >NCI</lgNaming:supportedCodingScheme>
+        <lgNaming:supportedCodingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="ICD9" uri="http://ICD9.test.shell">ICD9</lgNaming:supportedCodingScheme>
+        <lgNaming:supportedCodingScheme xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="CST" uri="http://CST.test.shell">CST</lgNaming:supportedCodingScheme>
+        <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+        <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>    
+        <lgNaming:supportedNamespace xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="NCI" uri="http://NCI.test.shell" equivalentCodingScheme="NCI">NCI</lgNaming:supportedNamespace>
+        <lgNaming:supportedNamespace xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="ICD9" uri="http://ICD9.test.shell" equivalentCodingScheme="ICD9">ICD9</lgNaming:supportedNamespace>
+        <lgNaming:supportedNamespace xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming" localId="CST" uri="http://CST.test.shell" equivalentCodingScheme="CST">CST</lgNaming:supportedNamespace>
+        <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="genericProperty" >genericProperty</lgNaming:supportedProperty>
+        <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+    </mappings>
+</CodingSchemeManifest>

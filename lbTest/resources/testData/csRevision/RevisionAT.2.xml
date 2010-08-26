@@ -9,28 +9,28 @@
     xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
     xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
-    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010Feb_testTarget">
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="scottTest2010Feb_testTarget">
     <changeAgent>Mayo-Feb</changeAgent>
     <changeInstructions>changedInstruction</changeInstructions>
     <changedEntry>
-        <changedCodingSchemeEntry codingSchemeName="Automobiles"
-            codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
-            <lgCommon:entryState containingRevision="testRelease2010Feb_testTarget"
-                prevRevision="testRelease2010Jan_testTarget" relativeOrder="0"
+        <changedCodingSchemeEntry codingSchemeName="AutomobilesAT"
+            codingSchemeURI="urn:oid:22.22.0.3" representsVersion="2.0">
+            <lgCommon:entryState containingRevision="scottTest2010Feb_testTarget"
+                prevRevision="scotttest2010Jan_testTarget" relativeOrder="0"
                 changeType="DEPENDENT"/>
             <lgCS:mappings/>
             <lgCS:relations containerName="rel">
-                <lgCommon:entryState containingRevision="testRelease2010Feb_testTarget"
-                    prevRevision="testRelease2010Jan_testTarget" relativeOrder="0"
+                <lgCommon:entryState containingRevision="scottTest2010Feb_testTarget"
+                    prevRevision="scotttest2010Jan_testTarget" relativeOrder="0"
                     changeType="DEPENDENT"/>
                 <lgRel:associationPredicate associationName="hasSubtype">
                     <lgRel:source sourceEntityCode="005"
-                        sourceEntityCodeNamespace="Automobiles">
-                        <lgRel:target targetEntityCodeNamespace="Automobiles"
+                        sourceEntityCodeNamespace="AutomobilesAT">
+                        <lgRel:target targetEntityCodeNamespace="AutomobilesAT"
                             targetEntityCode="Ford" associationInstanceId="inst001"
                             isDefining="true" isInferred="true">
                             <lgCommon:entryState
-                                containingRevision="testRelease2010Feb_testTarget"
+                                containingRevision="scottTest2010Feb_testTarget"
                                 relativeOrder="0" changeType="MODIFY"/>
                             <lgRel:usageContext>context3</lgRel:usageContext>
                             <lgRel:associationQualification associationQualifier="qual3">
