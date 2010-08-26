@@ -36,7 +36,7 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.codednodeset.ToNodeListCodedNodeSet;
+import org.LexGrid.LexBIG.Impl.codednodeset.LuceneOnlyToNodeListCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -338,7 +338,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
 
         try {
 
-            return new ToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
+            return new LuceneOnlyToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
