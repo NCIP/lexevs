@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<revision revisionId="testRelease2010Apr_testProp">
+<revision revisionId="testReleasePropTest2010Apr_testProp">
     <changeAgent>Mayo</changeAgent>
     <changedEntry>
         <changedCodingSchemeEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,14 +12,14 @@
             xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
             xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
             xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
-            xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" codingSchemeName="Automobiles"
-            codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.2">
-            <lgCommon:entryState containingRevision="testRelease2010Apr_testProp"
-                prevRevision="testRelease2010Mar_testProp" relativeOrder="0"
+            xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" codingSchemeName="AutomobilesTP"
+            codingSchemeURI="urn:oid:22.22.0.6" representsVersion="1.2">
+            <lgCommon:entryState containingRevision="testReleasePropTest2010Apr_testProp"
+                prevRevision="testReleasePropTest2010Mar_testProp" relativeOrder="0"
                 changeType="DEPENDENT"/>
             <lgCS:mappings/>
             <lgCS:relations containerName="association">
-                <lgCommon:entryState containingRevision="testRelease2010Apr_testProp" prevRevision="testRelease2010Jan"
+                <lgCommon:entryState containingRevision="testReleasePropTest2010Apr_testProp" prevRevision="testReleasePropTest2010Jan"
                     relativeOrder="0" changeType="DEPENDENT"/>
                 <lgCommon:entityDescription/>
                 <lgRel:associationPredicate associationName="isA"/>
@@ -27,8 +27,8 @@
                     <lgCommon:property propertyName="relProp" propertyId="p3"
                         propertyType="modProperty" language="ka">
                         <lgCommon:entryState
-                            containingRevision="testRelease2010Apr_testProp"
-                            prevRevision="testRelease2010Jan" relativeOrder="0"
+                            containingRevision="testReleasePropTest2010Apr_testProp"
+                            prevRevision="testReleasePropTest2010Jan" relativeOrder="0"
                             changeType="MODIFY"/>
                         <lgCommon:value>relationProperty-modified.</lgCommon:value>
                     </lgCommon:property>

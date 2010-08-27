@@ -11,13 +11,13 @@
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
     xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010Jan_testEntity">
     <changedEntry>
-        <changedCodingSchemeEntry codingSchemeName="Automobiles"
-            codingSchemeURI="urn:oid:22.22.0.2" representsVersion="2.0">
+        <changedCodingSchemeEntry codingSchemeName="AutomobilesEN"
+            codingSchemeURI="urn:oid:22.22.0.5" representsVersion="2.0">
             <lgCommon:entryState containingRevision="testRelease2010Jan_testEntity"
                 relativeOrder="0" changeType="DEPENDENT"/>
             <lgCS:mappings/>
             <lgCS:entities>
-                <lgCon:entity entityCode="midas002" entityCodeNamespace="Automobiles"
+                <lgCon:entity entityCode="midas002" entityCodeNamespace="AutomobilesEN"
                     isActive="true">
                     <lgCommon:entryState containingRevision="testRelease2010Jan_testEntity"
                     relativeOrder="0" changeType="NEW"/>
@@ -30,7 +30,7 @@
                         <lgCommon:value>Test Presentation2</lgCommon:value>
                     </lgCon:presentation>
                 </lgCon:entity>
-                <lgCon:entity entityCode="midas001" entityCodeNamespace="Automobiles"
+                <lgCon:entity entityCode="midas001" entityCodeNamespace="AutomobilesEN"
                     isActive="true">
                     <lgCommon:entryState containingRevision="testRelease2010Jan_testEntity"
                     relativeOrder="0" changeType="NEW"/>
@@ -44,7 +44,7 @@
                     </lgCon:presentation>
                 </lgCon:entity>
                 <lgCon:associationEntity entityCode="assocEntity01"
-                    entityCodeNamespace="Automobiles" isDefined="true" isAnonymous="true"
+                    entityCodeNamespace="AutomobilesEN" isDefined="true" isAnonymous="true"
                     forwardName="fName" reverseName="rName" isNavigable="true"
                     isTransitive="true">
                     <lgCommon:entryState containingRevision="testRelease2010Jan_testEntity"

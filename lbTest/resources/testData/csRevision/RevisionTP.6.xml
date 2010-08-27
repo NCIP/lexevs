@@ -9,19 +9,19 @@
     xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
     xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
-    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010Jun_testProp">
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testReleasePropTest2010Jun_testProp">
     <changedEntry>
-        <changedCodingSchemeEntry codingSchemeName="Automobiles"
-            codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.2">
-            <lgCommon:entryState containingRevision="testRelease2010Jun_testProp"
-                relativeOrder="0" prevRevision="testRelease2010May_testProp"
+        <changedCodingSchemeEntry codingSchemeName="AutomobilesTP"
+            codingSchemeURI="urn:oid:22.22.0.6" representsVersion="1.2">
+            <lgCommon:entryState containingRevision="testReleasePropTest2010Jun_testProp"
+                relativeOrder="0" prevRevision="testReleasePropTest2010May_testProp"
                 changeType="DEPENDENT"/>
             <lgCS:mappings/>
             <lgCS:properties>
                 <lgCommon:property propertyName="textualProperty" propertyId="p1"
                     propertyType="property">
-                    <lgCommon:entryState containingRevision="testRelease2010Jun_testProp"
-                        prevRevision="testRelease2010Jan" relativeOrder="0" changeType="REMOVE"
+                    <lgCommon:entryState containingRevision="testReleasePropTest2010Jun_testProp"
+                        prevRevision="testReleasePropTest2010Jan" relativeOrder="0" changeType="REMOVE"
                     />
                 </lgCommon:property>
             </lgCS:properties>

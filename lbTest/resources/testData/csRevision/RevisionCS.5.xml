@@ -9,12 +9,12 @@
     xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
     xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
     xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueDomains"
-    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="testRelease2010May">
+    xmlns:NCIHistory="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" revisionId="ScottCSRelease2010May">
     <changedEntry>
-        <changedCodingSchemeEntry codingSchemeName="Automobiles"
-            codingSchemeURI="urn:oid:11.11.0.1" representsVersion="1.1">
-            <lgCommon:entryState containingRevision="testRelease2010May"
-                prevRevision="testRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
+        <changedCodingSchemeEntry codingSchemeName="AutomobilesCS"
+            codingSchemeURI="urn:oid:22.22.0.4" representsVersion="1.1">
+            <lgCommon:entryState containingRevision="ScottCSRelease2010May"
+                prevRevision="ScottCSRelease2010Feb" relativeOrder="0" changeType="REMOVE"/>
             <lgCS:mappings/>
         </changedCodingSchemeEntry>
     </changedEntry>
