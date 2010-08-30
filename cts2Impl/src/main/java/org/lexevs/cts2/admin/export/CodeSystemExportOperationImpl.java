@@ -38,18 +38,17 @@ public class CodeSystemExportOperationImpl extends BaseService implements CodeSy
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#exportCodeSystemContent(java.lang.String, java.lang.String, java.net.URI, java.lang.String)
+	 * @see org.lexevs.cts2.admin.export.CodeSystemExportOperation#exportCodeSystemContent(java.lang.String, java.lang.String, java.net.URI, org.LexGrid.LexBIG.Extensions.Export.Exporter)
 	 */
 	@Override
 	public URI exportCodeSystemContent(String codeSystemNameOrURI,
-			String codeSystemVersion, URI exportDestination, String exporterName) throws LBException {
-		if (StringUtils.isEmpty(exporterName))
-			throw new LBException("Code system exporterName is not specified. Call getSupportedExporterNames() to get supported exporters.");
+			String codeSystemVersion, URI exportDestination, Exporter exporter) throws LBException {
+		if (exporter == null)
+			throw new LBException("Code system exporter can not be null. Call getSupportedExporterNames() to get supported exporters.");
 		
-		if (!getSupportedExporterNames().contains(exporterName))
-			throw new LBException("Exporter name specified is not supported. Call getSupportedExporterNames() to get supported exporters.");
+		if (!getSupportedExporterNames().contains(exporter.getName()))
+			throw new LBException("Exporter not supported. Call getSupportedExporterNames() to get supported exporters.");
 		
-		Exporter exporter = getLexBIGServiceManager().getExporter(exporterName);
 		exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(codeSystemNameOrURI, codeSystemVersion), exportDestination);
 		
 		while (exporter.getStatus().getEndTime() == null) {

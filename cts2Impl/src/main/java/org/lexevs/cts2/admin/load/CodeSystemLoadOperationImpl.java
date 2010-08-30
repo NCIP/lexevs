@@ -87,6 +87,13 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 		
 		CodingSchemeLoader codingSchemeLoader = new CodingSchemeLoader(codeSystem);
 		codingSchemeLoader.load(stopOnErrors, async);
+		
+		while (codingSchemeLoader.getStatus().getEndTime() == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {				
+			}
+		}
 
 		// load code system meta data if provided
 		if (metadata != null)
@@ -298,7 +305,10 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 
 		@Override
 		protected ExtensionDescription buildExtensionDescription() {
-			return null;
+			ExtensionDescription ed = new ExtensionDescription();
+			ed.setName("CTS 2 Code System Loader");
+			return ed;
+//			return null;
 		}
 	}
 	

@@ -11,7 +11,6 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.util.PrintUtility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

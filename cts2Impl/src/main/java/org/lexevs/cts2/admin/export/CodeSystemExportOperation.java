@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Export.Exporter;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 
@@ -35,12 +36,12 @@ public interface CodeSystemExportOperation {
 	 * @param codeSystemNameOrURI URI of the Code System to be exported
 	 * @param codeSystemVersion Version of the Code System to be exported
 	 * @param exportDestination Destination path information for the exported file.
-	 * @param exporter Name of the exporter to use. Use getSupportedExporterNames to get all the exporters supported by this instance of CTS2. 
+	 * @param exporter to use. Use getSupportedExporterNames to get all the exporters supported by this instance of CTS2.
 	 * @return URI of destination if successfully exported.
 	 * @throws LBException
 	 */
 	public URI exportCodeSystemContent(String codeSystemNameOrURI, String codeSystemVersion, 
-			URI exportDestination, String exporter) throws LBException;
+			URI exportDestination, Exporter exporter) throws LBException;
 	
 	/**
 	 * Returns CodedNodeSet(CNS) for a Code System Version. This CNS can be used to apply further restrictions before exporting.
