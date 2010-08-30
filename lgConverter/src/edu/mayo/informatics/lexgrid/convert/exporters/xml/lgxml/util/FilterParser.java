@@ -14,16 +14,13 @@ public class FilterParser {
         return null;
     }
     
-    public static CnsCngPair parse( LexBIGService lbs, CommandLine cl ) throws LBException {
-        
-        String urn = cl.getOptionValue("u");
-        String ver = cl.getOptionValue("v");
+    public static CnsCngPair parse( LexBIGService lbs, String uri, String version, CommandLine cl ) throws LBException {
         String assocName = cl.getOptionValue("an");
         boolean xall = cl.hasOption("xall");
         boolean xa = cl.hasOption("xa");
         boolean xc = cl.hasOption("xc");
          
-        return FilterParser.createCnsCng(lbs, urn, ver, assocName, xall, xa, xc);
+        return FilterParser.createCnsCng(lbs, uri, version, assocName, xall, xa, xc);
     }
     
     private static CnsCngPair createCnsCng(LexBIGService lbs, String urn, String ver, String assocName, boolean xall, boolean xa, boolean xc) throws LBException {

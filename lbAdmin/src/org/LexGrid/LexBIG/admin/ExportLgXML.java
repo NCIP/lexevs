@@ -147,7 +147,7 @@ public class ExportLgXML {
             LexGridExport exporter = (LexGridExport) lbsm.getExporter(LexGridExport.name);
 
             // Perform the requested action ...
-            CnsCngPair cngCngPair = FilterParser.parse(lbs, cl);
+            CnsCngPair cngCngPair = FilterParser.parse(lbs, css.getCodingSchemeURI(), css.getRepresentsVersion(), cl);
             exporter.setCng(cngCngPair.getCng());
             exporter.setCns(cngCngPair.getCns());
             
