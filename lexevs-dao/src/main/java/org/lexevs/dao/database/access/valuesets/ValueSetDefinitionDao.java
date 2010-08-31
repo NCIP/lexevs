@@ -18,7 +18,6 @@
  */
 package org.lexevs.dao.database.access.valuesets;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
