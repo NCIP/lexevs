@@ -277,7 +277,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
 	}
-
+	
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createNonTypedList(this.supportedDatebaseVersion);
@@ -289,14 +289,15 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	public List<ConceptReference> getConceptReferencesFromUid(
 			String codingSchemeUid, 
 			List<String> tripleUids,
-			TripleNode tripleNode) {
+			TripleNode tripleNode,
+			List<Sort> sorts) {
 		if(CollectionUtils.isEmpty(tripleUids)) {
 			return new ArrayList<ConceptReference>();
 		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		SequentialMappedParameterBean bean = 
-			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids);
+			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts);
 		bean.setPrefix(prefix);
 		
 		return this.getSqlMapClientTemplate().queryForList(
@@ -385,7 +386,10 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<QualifierNameValuePair> qualifiers, 
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveObjectNamespace,
-			TraverseAssociations traverse) {
+			TraverseAssociations traverse,
+			List<Sort> sorts, 
+			int start, 
+			int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
@@ -393,11 +397,16 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				associationPredicateUids, 
 				qualifiers,
 				mustHaveSubjectNamespace,
-				mustHaveObjectNamespace);
+				mustHaveObjectNamespace,
+				sorts);
 		bean.setPrefix(prefix);
+		
+		if(pageSize < 0) {
+			pageSize = Integer.MAX_VALUE;
+		}
 	
 		return this.getSqlMapClientTemplate().
-			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
+			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -409,14 +418,27 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			List<QualifierNameValuePair> qualifiers, 
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveObjectNamespace,
-			TraverseAssociations traverse) {
+			TraverseAssociations traverse,
+			List<Sort> sorts, 
+			int start, 
+			int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
-		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(traverse.toString(), associationPredicateUids, qualifiers, mustHaveSubjectNamespace, mustHaveObjectNamespace);
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				traverse.toString(), 
+				associationPredicateUids, 
+				qualifiers, 
+				mustHaveSubjectNamespace, 
+				mustHaveObjectNamespace,
+				sorts);
 		bean.setPrefix(prefix);
 		
+		if(pageSize < 0) {
+			pageSize = Integer.MAX_VALUE;
+		}
+		
 		return this.getSqlMapClientTemplate().
-			queryForList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean);
+			queryForList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
 	}
 
 	@Override
