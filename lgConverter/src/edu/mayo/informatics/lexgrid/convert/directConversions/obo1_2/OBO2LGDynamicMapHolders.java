@@ -178,7 +178,8 @@ public class OBO2LGDynamicMapHolders {
                 Entity concept = new Entity();
                 concept.setEntityType(new String[] {EntityTypes.CONCEPT.toString()});
                 concept.setEntityCodeNamespace(csclass.getCodingSchemeName());
-
+                concept.setIsDefined(false);
+                
                 if (!OBO2LGUtils.isNull(oboTerm.getId()))
                     concept.setEntityCode(oboTerm.getId());
                 else
@@ -401,6 +402,10 @@ public class OBO2LGDynamicMapHolders {
     private boolean processSpecialAssociationLikeOWL(Entity concept, String relation_name, Collection<String> targets) {
         boolean processed = false;
         List<String> special_relationNames = Arrays.asList(OBO2LGConstants.BUILT_IN_SPECIAL_ASSOCIATIONS);
+        
+        if( relation_name.equals(OBO2LGConstants.ASSOCIATION_INTERSECTION_OF)) {
+            concept.setIsDefined(true);
+        }
         if (special_relationNames.contains(relation_name)) {
             processed = true;
             processed = true;
