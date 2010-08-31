@@ -20,7 +20,6 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
 import java.util.Arrays;
 
-import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -33,7 +32,7 @@ import org.LexGrid.util.PrintUtility;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class SearchByRelationshipTest extends BaseCodedNodeGraphTest {
-/*
+
 	//get all sub codes of codes that contain 'car'
 	//looking for 'C0011(5564)', 'Ford', 'GM' 'A'
     public void testSearchByRelationshipChildrenOf() throws Exception {
@@ -68,7 +67,7 @@ public class SearchByRelationshipTest extends BaseCodedNodeGraphTest {
         } 
     }
     
-    */
+
     //get all parent codes of codes that contain 'car'
     //looking for 'A0001', 'C0001'
     public void testSearchByRelationshipParentsOf() throws Exception {
@@ -90,9 +89,6 @@ public class SearchByRelationshipTest extends BaseCodedNodeGraphTest {
                     null, 
                     -1).getResolvedConceptReference();
 
-        for(ConceptReference ref : rcr) {
-        	System.out.println("----"+ref.getCode());
-        }
         assertEquals(2,rcr.length);
         
         assertTrue(DataTestUtils.isConceptReferencePresent(Arrays.asList(rcr), "A0001"));
@@ -103,6 +99,4 @@ public class SearchByRelationshipTest extends BaseCodedNodeGraphTest {
         	assertNull(ref.getTargetOf());
         } 
     }
-
-    
 }
