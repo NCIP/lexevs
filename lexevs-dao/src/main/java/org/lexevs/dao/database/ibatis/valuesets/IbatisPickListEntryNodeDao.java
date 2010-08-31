@@ -472,6 +472,10 @@ public class IbatisPickListEntryNodeDao extends AbstractIbatisDao implements
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
+		// delete entry state record
+		this.vsEntryStateDao.deleteAllEntryStateByEntryUIdAndType(pickListEntryNodeUId, ReferenceType.PICKLISTENTRY.name());
+		
+		// delete pick list entry node
 		this.getSqlMapClientTemplate().delete(
 				DELETE_PL_ENTRY_NODE_BY_UID_SQL,
 				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
