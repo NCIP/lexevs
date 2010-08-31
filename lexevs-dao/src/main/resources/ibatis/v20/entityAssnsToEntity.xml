@@ -723,6 +723,13 @@
 		SELECT DISTINCT
 			eate1.sourceEntityCode AS entityCode,
 			eate1.sourceEntityCodeNamespace AS entityCodeNamespace
+			
+		<isNotEmpty property="param6" prepend=",">
+			<iterate property="param6" conjunction=",">
+				$param6[].columnSortType.rootColumn$
+				$param6[].order$
+			</iterate>
+		</isNotEmpty>
 		FROM
 			$prefix$entityAssnsToEntity eate1
 
@@ -742,7 +749,7 @@
 			eate1.sourceEntityCode = eate2.targetEntityCode
 
 			AND
-			eate1.sourceEntityCodeNamespace = eate2.TargetEntityCodeNamespace
+			eate1.sourceEntityCodeNamespace = eate2.targetEntityCodeNamespace
 
 			<isEqual property="param1" compareValue="INDIVIDUALLY">
 			AND
@@ -825,6 +832,14 @@
 				</iterate>
 			)
 			</isNotEmpty>
+
+		<isNotEmpty property="param6">
+			ORDER BY
+			<iterate property="param6" conjunction=",">
+				$param6[].columnSortType.rootColumn$
+				$param6[].order$
+			</iterate>
+		</isNotEmpty>
 	</select>
 	
 	<select id="getTailEntityAssnsToEntityUids"
@@ -834,6 +849,12 @@
 		SELECT DISTINCT
 			eate1.targetEntityCode AS entityCode,
 			eate1.targetEntityCodeNamespace AS entityCodeNamespace
+		<isNotEmpty property="param6" prepend=",">
+			<iterate property="param6" conjunction=",">
+				$param6[].columnSortType.tailColumn$
+				$param6[].order$
+			</iterate>
+		</isNotEmpty>
 		FROM
 			$prefix$entityAssnsToEntity eate1
 		
@@ -934,7 +955,14 @@
 					eate1.targetEntityCodeNamespace = #param5[]#
 				</iterate>
 			)
-			</isNotEmpty>
+		</isNotEmpty>
+			<isNotEmpty property="param6">
+			ORDER BY
+			<iterate property="param6" conjunction=",">
+				$param6[].columnSortType.tailColumn$
+				$param6[].order$
+			</iterate>
+		</isNotEmpty>
 			
 	</select>
   
