@@ -119,6 +119,15 @@
 			)					
 	</delete>
 	
+	<delete id="deleteVSEntryStatesByEntryGuidAndType" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+		DELETE FROM
+			$prefix$vsEntryState
+		WHERE
+			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		AND 
+			entryType = #param2#			
+	</delete>
+	
 	<delete id="deleteAllDefinitionEntryEntrySateEntriesByUId"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
