@@ -91,7 +91,13 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
 
     @Override
     public boolean hasNext() throws LBResourceUnavailableException {
-        if(!delegate.hasNext()) {
+        boolean delegateHasNext;
+        try {
+            delegateHasNext = !delegate.hasNext();
+        } catch (LBResourceUnavailableException e) {
+            delegateHasNext = false;
+        }
+        if(! delegateHasNext ) {
            return toNodeListCodes.getAllCodes().size() > 0;
         } else {
             return true;
