@@ -3,12 +3,15 @@ package org.LexGrid.LexBIG.Impl.pagedgraph.root;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
+import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.database.utility.DaoUtility.SortContainer;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class NullFocusRootsResolver implements RootsResolver {
@@ -22,8 +25,9 @@ public class NullFocusRootsResolver implements RootsResolver {
             String version, 
             String containerName,
             ResolveDirection direction, 
-            GraphQuery graphQuery) {
-        return this.resolveRoots(codingSchemeUri, version, containerName, direction, graphQuery, 0, -1);
+            GraphQuery graphQuery,
+            SortOptionList sortOptionList) {
+        return this.resolveRoots(codingSchemeUri, version, containerName, direction, graphQuery, sortOptionList, 0, -1);
     }
     
     
@@ -34,6 +38,7 @@ public class NullFocusRootsResolver implements RootsResolver {
             String relationsContainerName,
             ResolveDirection direction,
             GraphQuery query,
+            SortOptionList sortOptionList,
             int currentPosition, 
             int pageSize) {
         List<ConceptReference> returnList = new ArrayList<ConceptReference>();
@@ -48,6 +53,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                         codingSchemeUri, 
                         codingSchemeVersion, 
                         query, 
+                        sortOptionList,
                         currentPosition,
                         pageSize);
             }
@@ -59,7 +65,10 @@ public class NullFocusRootsResolver implements RootsResolver {
                    query.getRestrictToAssociations(),
                    query.getRestrictToAssociationsQualifiers(),
                    query.getRestrictToSourceCodeSystem(),
-                   query.getRestrictToTargetCodeSystem());
+                   query.getRestrictToTargetCodeSystem(),
+                   sortOptionList,
+                   currentPosition,
+                   pageSize);
         }
         
         if(direction.equals(ResolveDirection.BACKWARD)) {
@@ -72,6 +81,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                         codingSchemeUri, 
                         codingSchemeVersion, 
                         query,
+                        sortOptionList,
                         currentPosition,
                         pageSize);
             }
@@ -83,7 +93,10 @@ public class NullFocusRootsResolver implements RootsResolver {
                     query.getRestrictToAssociations(),
                     query.getRestrictToAssociationsQualifiers(),
                     query.getRestrictToSourceCodeSystem(),
-                    query.getRestrictToTargetCodeSystem());
+                    query.getRestrictToTargetCodeSystem(),
+                    sortOptionList,
+                    currentPosition,
+                    pageSize);
         }
         
         return returnList;
@@ -104,6 +117,7 @@ public class NullFocusRootsResolver implements RootsResolver {
             String  codingSchemeUri, 
             String codingSchemeVersion,
             GraphQuery query,
+            SortOptionList sortOptionList,
             int currentPosition,
             int pageSize){
          
@@ -111,6 +125,8 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
         
         for(ConceptReference ref : query.getRestrictToSourceCodes()) {
             uids.addAll( 
@@ -123,18 +139,23 @@ public class NullFocusRootsResolver implements RootsResolver {
                     ref.getCode(), 
                     ref.getCodeNamespace(), 
                     query, 
-                    null,
+                    sortContainer.getSorts(), 
                     currentPosition, 
                     pageSize));
         }
         
-        return service.getConceptReferencesFromUidTarget(codingSchemeUri, codingSchemeVersion, uids);
+        return service.getConceptReferencesFromUidTarget(
+                codingSchemeUri, 
+                codingSchemeVersion, 
+                sortContainer.getSorts(), 
+                uids);
     }
     
     protected List<ConceptReference> getRelatedSourceCodes(
             String  codingSchemeUri, 
             String codingSchemeVersion,
             GraphQuery query, 
+            SortOptionList sortOptionList,
             int currentPosition,
             int pageSize){
          
@@ -142,6 +163,8 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
         
         for(ConceptReference ref : query.getRestrictToTargetCodes()) {
             uids.addAll( 
@@ -154,12 +177,16 @@ public class NullFocusRootsResolver implements RootsResolver {
                     ref.getCode(), 
                     ref.getCodeNamespace(), 
                     query, 
-                    null,
+                    sortContainer.getSorts(), 
                     currentPosition, 
                     pageSize));
         }
         
-        return service.getConceptReferencesFromUidSource(codingSchemeUri, codingSchemeVersion, uids);
+        return service.getConceptReferencesFromUidSource(
+                codingSchemeUri, 
+                codingSchemeVersion, 
+                sortContainer.getSorts(), 
+                uids);
     }
     
     protected List<ConceptReference> getRoots(
@@ -169,7 +196,10 @@ public class NullFocusRootsResolver implements RootsResolver {
             List<String> associationNames,
             List<QualifierNameValuePair> qualifiers,
             List<String> subjectEntityCodeNamespaces,
-            List<String> objectEntityCodeNamespaces){
+            List<String> objectEntityCodeNamespaces,
+            SortOptionList sortOptionList,
+            int currentPosition, 
+            int pageSize){
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
@@ -184,6 +214,8 @@ public class NullFocusRootsResolver implements RootsResolver {
            traverseAssociations = TraverseAssociations.TOGETHER;
         }
         
+        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
+        
         List<ConceptReference> roots = 
             service.getRootConceptReferences(
             		codingSchemeUri, 
@@ -193,7 +225,10 @@ public class NullFocusRootsResolver implements RootsResolver {
             		qualifiers,
             		subjectEntityCodeNamespaces,
             		objectEntityCodeNamespaces,
-            		traverseAssociations);
+            		traverseAssociations, 
+            		sortContainer.getSorts(), 
+            		currentPosition, 
+                    pageSize);
         
         return roots;
     }
@@ -205,7 +240,10 @@ public class NullFocusRootsResolver implements RootsResolver {
             List<String> associationNames,
             List<QualifierNameValuePair> qualifiers,
             List<String> subjectEntityCodeNamespaces,
-            List<String> objectEntityCodeNamespaces){
+            List<String> objectEntityCodeNamespaces,
+            SortOptionList sortOptionList,
+            int currentPosition, 
+            int pageSize){
         
         CodedNodeGraphService service =
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
@@ -220,6 +258,8 @@ public class NullFocusRootsResolver implements RootsResolver {
         	 traverseAssociations = TraverseAssociations.TOGETHER;
         }
         
+        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
+        
         return 
             service.getTailConceptReferences(
             		codingSchemeUri, 
@@ -229,6 +269,9 @@ public class NullFocusRootsResolver implements RootsResolver {
             		qualifiers,
             		subjectEntityCodeNamespaces,
             		objectEntityCodeNamespaces,
-            		traverseAssociations);
+            		traverseAssociations,
+            		sortContainer.getSorts(), 
+                    currentPosition, 
+                    pageSize);
     }
 }

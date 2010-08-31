@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.pagedgraph.paging;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.RootsResolver;
@@ -45,18 +46,21 @@ public class RootConceptReferenceIterator extends AbstractPageableIterator<Conce
     private String containerName;
     private ResolveDirection direction;
     private GraphQuery graphQuery;
+    private SortOptionList sortOptionList;
     
     public RootConceptReferenceIterator(
             String codingSchemeUri,
             String version,
             String containerName,
             ResolveDirection direction,
-            GraphQuery graphQuery) {
+            GraphQuery graphQuery,
+            SortOptionList sortOptionList) {
         this.codingSchemeUri = codingSchemeUri;
         this.version = version;
         this.containerName = containerName;
         this.direction = direction;
         this.graphQuery = graphQuery;
+        this.sortOptionList = sortOptionList;
     }
     
     @Override
@@ -68,6 +72,7 @@ public class RootConceptReferenceIterator extends AbstractPageableIterator<Conce
                     containerName,
                     direction, 
                     graphQuery, 
+                    sortOptionList,
                     currentPosition, 
                     pageSize);
     }

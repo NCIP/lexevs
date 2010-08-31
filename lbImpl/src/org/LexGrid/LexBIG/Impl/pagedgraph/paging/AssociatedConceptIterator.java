@@ -41,6 +41,7 @@ import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNod
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.database.utility.DaoUtility.SortContainer;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.paging.AbstractPageableIterator;
@@ -320,7 +321,10 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
             count++;
         }
         
+        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortAlgorithms);
+        
         if(direction.equals(AssociationDirection.SOURCE_OF)) {
+            
             returnList.addAll(
                     codedNodeGraphSerivce.
                     getAssociatedConceptsFromUidTarget(
@@ -329,7 +333,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                             this.shouldResolveNextLevel(resolveCodedEntryDepth),
                             propertyNames,
                             propertyTypes,
-                            DaoUtility.mapSortOptionListToSort(sortAlgorithms),
+                            sortContainer.getSorts(),
                             uids));
         } else {
             returnList.addAll(
@@ -340,7 +344,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
                             this.shouldResolveNextLevel(resolveCodedEntryDepth),
                             propertyNames,
                             propertyTypes,
-                            DaoUtility.mapSortOptionListToSort(sortAlgorithms),
+                            sortContainer.getSorts(),
                             uids));
         }
         

@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl.ArtificialRootResolvePolicy;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.RootConceptReferenceIterator;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.utility.PagedGraphUtils;
@@ -91,6 +92,8 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
     
     private boolean keepLastAssociationLevelUnresolved;
     
+    private ArtificialRootResolvePolicy artificialRootResolvePolicy;
+    
     private ValidatedParameterResolvingCallback validatedParameterResolvingCallback;
 
     private ResolvedConceptReference[] cache;
@@ -135,6 +138,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
             SortOptionList sortAlgorithms,
             LocalNameList filterOptions, 
             CycleDetectingCallback cycleDetectingCallback,
+            ArtificialRootResolvePolicy artificialRootResolvePolicy,
             int maxToReturn) {
         super();
         this.codingSchemeUri = codingSchemeUri;
@@ -152,6 +156,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
         this.filterOptions = filterOptions;
         this.maxToReturn = maxToReturn;
         this.keepLastAssociationLevelUnresolved = keepLastAssociationLevelUnresolved;
+        this.artificialRootResolvePolicy = artificialRootResolvePolicy;
         this.validatedParameterResolvingCallback = validatedParameterResolvingCallback;
     }
 
@@ -307,6 +312,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
         private LocalNameList filterOptions; 
         private int maxToReturn; 
         private boolean keepLastAssociationLevelUnresolved;
+        private ArtificialRootResolvePolicy artificialRootResolvePolicy;
         private CycleDetectingCallback cycleDetectingCallback;
         private ValidatedParameterResolvingCallback validatedParameterResolvingCallback;
         
@@ -331,6 +337,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
             this.maxToReturn = parent.maxToReturn;
             this.keepLastAssociationLevelUnresolved = parent.keepLastAssociationLevelUnresolved;
             this.cycleDetectingCallback = parent.cycleDetectingCallback;
+            this.artificialRootResolvePolicy = parent.artificialRootResolvePolicy;
             this.validatedParameterResolvingCallback = parent.validatedParameterResolvingCallback;
 
 	        rootConceptReferenceIterator = new RootConceptReferenceIterator(
@@ -338,7 +345,8 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
                 codingSchemeVersion,
                 relationsContainerName,
                 PagedGraphUtils.getDirection(resolveForward, resolveBackward),
-                graphQuery);
+                graphQuery,
+                this.sortAlgorithms);
 	    }
 
         @Override
@@ -363,6 +371,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
                             filterOptions, 
                             maxToReturn, 
                             keepLastAssociationLevelUnresolved,
+                            artificialRootResolvePolicy,
                             cycleDetectingCallback);
                 } catch (Exception e) {
                    throw new RuntimeException(e);

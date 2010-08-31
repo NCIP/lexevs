@@ -8,6 +8,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl.ArtificialRootResolvePolicy;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 
@@ -25,6 +26,7 @@ public interface ValidatedParameterResolvingCallback extends Serializable {
             LocalNameList filterOptions, 
             int maxToReturn, 
             boolean keepLastAssociationLevelUnresolved, 
+            ArtificialRootResolvePolicy artificialRootResolvePolicy,
             CycleDetectingCallback cycleDetectingCallback)
             throws LBInvocationException, LBParameterException;
 }
