@@ -55,8 +55,6 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	
 	private static String DELETE_ALL_ENTRYSTATE_ENTRIES_BY_ENTRY_UID = VERSIONS_NAMESPACE + "deleteAllEntrySateEntriesByEntryUId";
 	
-	private static String DELETE_ALL_VSDEF_ENTRYSTATE_ENTRIES_BY_VSDEF_UID = VERSIONS_NAMESPACE + "deleteAllValueSetDefEntryStatesByValueSetDefUId";
-	
 	private static String DELETE_ALL_DEFINITIONENTRY_ENTRYSTATE_OF_VALUESET_DEFINITION = VERSIONS_NAMESPACE + "deleteAllDefinitionEntryEntrySateEntriesByUId";
 	
 	private static String DELETE_ALL_PLENTRY_PROPERTY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryPropsEntrySateEntriesOfPLDefinition";
@@ -64,6 +62,8 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	private static String DELETE_ALL_PLENTRY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION = VERSIONS_NAMESPACE + "deleteAllPLEntryEntrySateEntriesOfPLDefinition";
 
 	private static String DELETE_ALL_PL_DEFINITION_ENTRYSTATES = VERSIONS_NAMESPACE + "deleteAllPLDefinitionEntryStates";
+	
+	private static String DELETE_ENTRYSTATE_BY_ENTRYGUID_AND_TYPE = VERSIONS_NAMESPACE + "deleteVSEntryStatesByEntryGuidAndType";
 
 	/** ibatis revision dao*/
 	private IbatisRevisionDao ibatisRevisionDao = null;
@@ -235,9 +235,18 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				new PrefixedParameter(prefix, valueSetDefGuid));
 		
 		/* 3. Delete all value set definition entry states. */
+		this.deleteAllEntryStateByEntryUIdAndType(valueSetDefGuid, ReferenceType.VALUESETDEFINITION.name());
+	}
+	
+	@Override
+	public void deleteAllEntryStateByEntryUIdAndType(
+			String valueSetDefGuid, String entryType) {
+		
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
 		this.getSqlMapClientTemplate().delete(
-				DELETE_ALL_VSDEF_ENTRYSTATE_ENTRIES_BY_VSDEF_UID,
-				new PrefixedParameter(prefix, valueSetDefGuid));
+				DELETE_ENTRYSTATE_BY_ENTRYGUID_AND_TYPE,
+				new PrefixedParameterTuple(prefix, valueSetDefGuid, entryType));
 	}
 	
 	public void deleteAllEntryStateEntriesByEntryUId(String entryUId) {
