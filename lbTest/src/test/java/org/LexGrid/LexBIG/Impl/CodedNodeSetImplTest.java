@@ -278,6 +278,8 @@ public class CodedNodeSetImplTest extends TestCase {
         // filter.
         assertTrue(rcri.next() == null);
 
+        assertFalse(rcri.hasNext());
+
         // yet another call should throw an exception
 
         try {
