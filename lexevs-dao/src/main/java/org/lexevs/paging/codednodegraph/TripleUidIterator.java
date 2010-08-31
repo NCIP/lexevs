@@ -1,23 +1,20 @@
 package org.lexevs.paging.codednodegraph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
-import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Order;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
-import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.database.utility.DaoUtility.SortContainer;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.paging.AbstractPageableIterator;
 
 public class TripleUidIterator extends AbstractPageableIterator<String>{
 
+	private static final long serialVersionUID = 5700989835363272357L;
+	
 	private String codingSchemeUri;
 	private String codingSchemeVersion;
 	private String relationsContainerName;
@@ -55,6 +52,8 @@ public class TripleUidIterator extends AbstractPageableIterator<String>{
 		CodedNodeGraphService codedNodeGraphService =
 			LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
 
+		SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortAlgorithms);
+		
 		if(tripleNode.equals(TripleNode.SUBJECT)) {
 			return codedNodeGraphService.getTripleUidsContainingSubject(
 					codingSchemeUri, 
@@ -64,7 +63,7 @@ public class TripleUidIterator extends AbstractPageableIterator<String>{
 					entityCode,
 					entityCodeNamespace,
 					graphQuery,
-					DaoUtility.mapSortOptionListToSort(sortAlgorithms),
+					sortContainer.getSorts(),
 					currentPosition, 
 					pageSize);
 		} else {
@@ -76,7 +75,7 @@ public class TripleUidIterator extends AbstractPageableIterator<String>{
 					entityCode,
 					entityCodeNamespace,
 					graphQuery,
-					DaoUtility.mapSortOptionListToSort(sortAlgorithms),
+					sortContainer.getSorts(),
 					currentPosition,
 					pageSize);
 		}
