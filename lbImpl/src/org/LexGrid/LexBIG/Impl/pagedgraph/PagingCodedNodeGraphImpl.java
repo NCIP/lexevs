@@ -44,6 +44,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.utility.ValidatedParameterResolvingCal
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -60,6 +61,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
     private static final long serialVersionUID = -1153282485482789848L;
 
     private RootsResolver rootsResolver = new NullFocusRootsResolver();
+    
+    public enum ArtificialRootResolvePolicy {RESOLVE_AS_IS, RESOLVE_CHILDREN, SKIP}
     
     private AssociationListBuilder associationListBuilder = new AssociationListBuilder();
     
@@ -99,7 +102,14 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
             LocalNameList filterOptions, 
             int maxToReturn,
             boolean keepLastAssociationLevelUnresolved,
+            ArtificialRootResolvePolicy artificialRootResolvePolicy,
             CycleDetectingCallback cycleDetectingCallback) throws LBInvocationException, LBParameterException {
+        
+        artificialRootResolvePolicy = adjustArtificialRootResolvePolicy(
+                resolveForward,
+                resolveBackward,
+                artificialRootResolvePolicy, 
+                this.getGraphQueryBuilder().getQuery());
               
         String codingSchemeUri = this.getCodingSchemeUri();
         String version = this.getVersion();
@@ -275,6 +285,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                 LocalNameList filterOptions,
                                 int maxToReturn, 
                                 boolean keepLastAssociationLevelUnresolved,
+                                ArtificialRootResolvePolicy artificialRootResolvePolicy,
                                 CycleDetectingCallback cycleDetectingCallback) throws LBInvocationException, LBParameterException {
                             
                             return PagingCodedNodeGraphImpl.this.doResolveAsValidatedParameterList(
@@ -289,6 +300,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                     filterOptions, 
                                     maxToReturn, 
                                     keepLastAssociationLevelUnresolved, 
+                                    artificialRootResolvePolicy,
                                     cycleDetectingCallback);
                         }
                         
@@ -308,13 +320,16 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                     sortOptions, 
                     filterOptions, 
                     cycleDetectingCallback,
+                    artificialRootResolvePolicy,
                     maxToReturn);
         }
         
         int resolveForwardAssociationDepth = resolveAssociationDepth;
         int resolveBackwardAssociationDepth = resolveAssociationDepth;
         
-        if(this.rootsResolver.isRootOrTail(focus) && resolveAssociationDepth >= 0) {
+        if(this.rootsResolver.isRootOrTail(focus) && 
+                resolveAssociationDepth >= 0 && 
+                artificialRootResolvePolicy.equals(ArtificialRootResolvePolicy.RESOLVE_CHILDREN)) {
         	if(resolveForward) {
         		resolveForwardAssociationDepth++;
         	}
@@ -371,10 +386,37 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         if(! this.rootsResolver.isRootOrTail(focus)) {
             returnList.addResolvedConceptReference(focus);
         } else {
-            returnList = flattenRootList(focus);
+            switch (artificialRootResolvePolicy) {
+                case RESOLVE_CHILDREN: {
+                    returnList = flattenRootList(focus);
+                    break;
+                }
+                case RESOLVE_AS_IS: {
+                    returnList.addResolvedConceptReference(focus);
+                    break;
+                }
+                case SKIP: {
+                    break;
+                }
+            }
         }
     
         return returnList;
+    }
+
+    protected ArtificialRootResolvePolicy adjustArtificialRootResolvePolicy(
+            boolean resolveForward,
+            boolean resolveBackward, 
+            ArtificialRootResolvePolicy artificialRootResolvePolicy, 
+            GraphQuery query) {
+        if(resolveForward && query.getRestrictToTargetCodes().size() > 0) {
+            return ArtificialRootResolvePolicy.SKIP;
+        }
+        if(resolveBackward && query.getRestrictToSourceCodes().size() > 0) {
+            return ArtificialRootResolvePolicy.SKIP;
+        }
+       
+        return artificialRootResolvePolicy;
     }
 
     private ResolvedConceptReferenceList flattenRootList(ResolvedConceptReference root) {

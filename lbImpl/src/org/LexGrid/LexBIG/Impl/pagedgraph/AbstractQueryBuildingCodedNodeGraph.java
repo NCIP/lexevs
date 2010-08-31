@@ -36,7 +36,9 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.codednodeset.LuceneOnlyToNodeListCodedNodeSet;
+import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl.ArtificialRootResolvePolicy;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.StubReturningCycleDetectingCallback;
@@ -157,7 +159,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             throws LBInvocationException, LBParameterException {
         
         ServiceUtility.validateParameter(this.getCodingSchemeUri(), this.getVersion(), propertyNames, SupportedProperty.class);
-        
+        ServiceUtility.validateSortOptions(sortOptions);
         //Implementation to return either the full reference or a stub upon detecting a cycle
         CycleDetectingCallback cycleDetectingCallback;
         
@@ -174,10 +176,33 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                 filterOptions, maxToReturn, keepLastAssociationLevelUnresolved, cycleDetectingCallback);
     }
     
+    protected ResolvedConceptReferenceList doResolveAsValidatedParameterList(ConceptReference graphFocus, boolean resolveForward,
+            boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
+            LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
+            LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved, 
+            CycleDetectingCallback cycleDetectingCallback)
+            throws LBInvocationException, LBParameterException{
+        return this.doResolveAsValidatedParameterList(
+                graphFocus, 
+                resolveForward, 
+                resolveBackward, 
+                resolveCodedEntryDepth, 
+                resolveAssociationDepth, 
+                propertyNames, 
+                propertyTypes,
+                sortOptions, 
+                filterOptions,
+                maxToReturn, 
+                keepLastAssociationLevelUnresolved, 
+                ArtificialRootResolvePolicy.RESOLVE_CHILDREN, 
+                cycleDetectingCallback);
+    }
+    
     protected abstract ResolvedConceptReferenceList doResolveAsValidatedParameterList(ConceptReference graphFocus, boolean resolveForward,
             boolean resolveBackward, int resolveCodedEntryDepth, int resolveAssociationDepth,
             LocalNameList propertyNames, PropertyType[] propertyTypes, SortOptionList sortOptions,
             LocalNameList filterOptions, int maxToReturn, boolean keepLastAssociationLevelUnresolved, 
+            ArtificialRootResolvePolicy artificialRootResolvePolicy,
             CycleDetectingCallback cycleDetectingCallback)
             throws LBInvocationException, LBParameterException;
 
@@ -326,23 +351,29 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
             int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
         ResolvedConceptReferenceList list = 
-            this.doResolveAsList(
+            this.doResolveAsValidatedParameterList(
                     graphFocus, 
                     resolveForward, 
                     resolveBackward, 
                     0, 
                     resolveAssociationDepth,
-                    null, null, null, null, maxToReturn, false);
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    maxToReturn, 
+                    false, 
+                    ArtificialRootResolvePolicy.RESOLVE_AS_IS,
+                    new ReferenceReturningCycleDetectingCallback());
 
         ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
-
+   
         try {
-
             return new LuceneOnlyToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (LBResourceUnavailableException e) {
+           throw new RuntimeException(e);
         }
+
     }
 
     private ConceptReferenceList traverseGraph(

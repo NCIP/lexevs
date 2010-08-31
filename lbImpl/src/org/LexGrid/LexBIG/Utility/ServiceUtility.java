@@ -19,10 +19,12 @@
 package org.LexGrid.LexBIG.Utility;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
@@ -240,5 +242,18 @@ public class ServiceUtility {
             registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
 
         return entry.getDbSchemaVersion();
+    }
+
+    public static void validateSortOptions(SortOptionList sortOptions) throws LBParameterException {
+        if(sortOptions == null || sortOptions.getEntryCount() == 0) {
+            return;
+        }
+        for(SortOption option : sortOptions.getEntry()) {
+              SortDescription extension = ExtensionRegistryImpl.instance().getSortExtension(option.getExtensionName());
+              if(extension == null) {
+                  throw new LBParameterException("Sort Option: " + option.getExtensionName() + " is not a registered Sort Extension.");
+              }
+            
+        }
     }
 }
