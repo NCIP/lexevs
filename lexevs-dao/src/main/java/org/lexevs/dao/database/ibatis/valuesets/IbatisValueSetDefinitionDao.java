@@ -21,7 +21,6 @@ package org.lexevs.dao.database.ibatis.valuesets;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
