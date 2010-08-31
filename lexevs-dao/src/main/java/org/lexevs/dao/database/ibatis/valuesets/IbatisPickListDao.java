@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Properties;
@@ -430,7 +429,8 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 				new PrefixedParameter(prefix, pickListDefinitionId));
 		
 		// remove entry state details
-		this.vsEntryStateDao.deleteAllEntryStatesOfPickListDefinitionByUId(pickListGuid);
+		this.vsEntryStateDao.deleteAllEntryStateByEntryUIdAndType(pickListGuid, ReferenceType.PICKLISTDEFINITION.name());
+		//this.vsEntryStateDao.deleteAllEntryStatesOfPickListDefinitionByUId(pickListGuid);
 		
 		// remove all pick list entry context
 		this.getSqlMapClientTemplate().delete(
