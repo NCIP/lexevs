@@ -27,10 +27,6 @@ import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.PickListDefinitions;
-import org.LexGrid.valueSets.PickListEntryNode;
-import org.LexGrid.valueSets.ValueSetDefinition;
-import org.lexevs.dao.database.access.revision.RevisionDao;
-import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 
 /**
  * The Interface PickListService.
