@@ -85,4 +85,7 @@ public interface VSEntryStateDao extends LexGridSchemaVersionAwareDao {
 
 	public void deleteAllEntryStatesOfPLEntryNodeByUId(
 			String pickListEntryNodeUId);
+	
+	public void deleteAllEntryStateByEntryUIdAndType(
+			String entryGuid, String entryType);
 }
