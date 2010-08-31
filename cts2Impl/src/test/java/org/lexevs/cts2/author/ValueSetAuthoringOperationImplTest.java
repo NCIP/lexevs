@@ -3,6 +3,9 @@
  */
 package org.lexevs.cts2.author;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,7 +24,6 @@ import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,8 +33,6 @@ import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.query.ValueSetQueryOperation;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
-
-import static junit.framework.Assert.*;
 
 /**
  * @author m004181

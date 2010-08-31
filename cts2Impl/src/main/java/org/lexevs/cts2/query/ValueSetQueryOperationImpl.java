@@ -84,6 +84,20 @@ public class ValueSetQueryOperationImpl implements ValueSetQueryOperation {
 		}
 		return false;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.cts2.query.ValueSetQueryOperation#listValueSetsWithConceptCode(java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
+	public List<String> listValueSetsWithConceptCode(String conceptCode, URI entityCodeNamespace,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
+		if (StringUtils.isEmpty(conceptCode))
+		{
+			throw new LBException("Invalid parametes. ConceptCode can not be empty");
+		}
+		
+		return getValueSetService().listValueSetsWithEntityCode(conceptCode, entityCodeNamespace, csVersionList, versionTag);
+	}
 
 	/*
 	 * (non-Javadoc)

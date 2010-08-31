@@ -109,4 +109,20 @@ public interface ValueSetQueryOperation {
 	 * @throws LBException
 	 */
 	public boolean checkConceptValueSetMembership(String conceptCode, URI entityCodeNamespace, AbsoluteCodingSchemeVersionReference codeSystemAndVersion, String valueSetId, String valueSetVersion, String versionTag) throws LBException;
+	
+	/**
+     * Returns all the value set definition uris that contains supplied concept code.
+	 * 
+	 * @param conceptCode          - coded concept id
+	 * @param entityCodeNamespace  - the URI of the entity code namespace.  If omitted, the default coding scheme namespace for the value domain
+	 *                               will be used, if it is present.  Otherwise the first matching entity code, if any, will pass
+	 * @param csVersionList        - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+     * @param versionTag           - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
+	 * @return The value set definition URIs 
+	 * @throws LBException
+	 */
+	public List<String> listValueSetsWithConceptCode(String conceptCode, URI entityCodeNamespace,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException;
 }
