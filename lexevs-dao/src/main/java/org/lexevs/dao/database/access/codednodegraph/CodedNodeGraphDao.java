@@ -134,10 +134,16 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			Boolean restrictToAnonymous);
 	
 	public List<EntityReferencingAssociatedConcept> getAssociatedConceptsFromUid(
-			String codingSchemeUid, List<String> tripleUids, List<Sort> sorts, TripleNode tripleNode);
+			String codingSchemeUid, 
+			List<String> tripleUids, 
+			List<Sort> sorts, 
+			TripleNode tripleNode);
 	
 	public List<ConceptReference> getConceptReferencesFromUid(
-			String codingSchemeUid, List<String> tripleUids, TripleNode tripleNode);
+			String codingSchemeUid, 
+			List<String> tripleUids, 
+			TripleNode tripleNode, 
+			List<Sort> sorts);
 	
 	public List<String> getAssociationPredicateNamesForCodingSchemeUid(
 			String codingSchemeUid,
@@ -152,14 +158,17 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUid, 
 			String sourceEntityCode, 
 			String sourceEntityCodeNamespace);
-	
+
 	public List<ConceptReference> getTailNodes(
 			String codingSchemeUid,
 			List<String> associationPredicateUids, 
 			List<QualifierNameValuePair> qualifiers, 
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveObjectNamespace,
-			TraverseAssociations traverse);
+			TraverseAssociations traverse,
+			List<Sort> sorts, 
+			int start,
+			int pageSize);
 	
 	public List<ConceptReference> getRootNodes(
 			String codingSchemeUid,
@@ -167,5 +176,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<QualifierNameValuePair> qualifiers, 
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveObjectNamespace,
-			TraverseAssociations traverse);
+			TraverseAssociations traverse,
+			List<Sort> sorts, 
+			int start,
+			int pageSize);
 }
