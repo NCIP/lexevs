@@ -60,6 +60,7 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
+import org.LexGrid.LexBIG.Impl.helpers.ToNodeListResolvedConceptReferencesIteratorDecorator;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.NonProxyCodeHolderFactory;
@@ -96,6 +97,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
+    
+    private CodeHolder toNodeListCodes = new DefaultCodeHolder();
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -281,6 +284,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { matchText, option, matchAlgorithm, language });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToMatchingDesignations(matchText, option, matchAlgorithm, language,
                     getInternalCodeSystemName(), getInternalVersionString()));
             return this;
@@ -302,6 +306,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes, sourceList, contextList, qualifierList });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToProperties(propertyList, propertyTypes, sourceList, contextList,
                     qualifierList, getInternalCodeSystemName(), getInternalVersionString()));
             return this;
@@ -322,6 +327,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToProperties(propertyList, propertyTypes, null, null, null,
                     getInternalCodeSystemName(), getInternalVersionString()));
             return this;
@@ -347,6 +353,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             LBParameterException {
         getLogger().logMethod(new Object[] { codeList });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToCodes(codeList));
             return this;
         } catch (LBParameterException e) {
@@ -360,6 +367,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodedNodeSet restrictToEntityTypes(LocalNameList typeList) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { typeList });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToEntityTypes(typeList));
             return this;
         } catch (LBParameterException e) {
@@ -377,6 +385,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 new Object[] { propertyList, propertyTypes, sourceList, contextList, qualifierList, matchText,
                         matchAlgorithm, language });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToMatchingProperties(propertyList, propertyTypes, sourceList,
                     contextList, qualifierList, matchText, matchAlgorithm, language, getInternalCodeSystemName(),
                     getInternalVersionString()));
@@ -400,6 +409,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             LBParameterException {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes, matchText, matchAlgorithm, language });
         try {
+            this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToMatchingProperties(propertyList, propertyTypes, null, null, null,
                     matchText, matchAlgorithm, language, getInternalCodeSystemName(), getInternalVersionString()));
             return this;
@@ -485,7 +495,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             ResolvedConceptReferenceList rcrl = new ResolvedConceptReferenceList();
             
-            int max = codes.size();
+            int max = codes.size() + this.getToNodeListCodes().getNumberOfCodes();
 
             if (maxToReturn > 0 && maxToReturn < max) {
                 max = maxToReturn;
@@ -501,7 +511,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                         + ".  You will need to set the maxToReturn flag, or use the iterator resolve method.");
             }
 
-            ResolvedConceptReferencesIterator itr = new ResolvedConceptReferencesIteratorImpl(
+            ResolvedConceptReferencesIterator itr = getResolvedConceptReferencesIterator(
                     codesToInclude_, restrictToProperties, restrictToPropertyTypes, filters, resolveObjects);
             
             ResolvedConceptReferenceList list = itr.next(max);
@@ -626,7 +636,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             ResultComparator<CodeToReturn> comparator = getResultComparator(sortByProperty, SortContext.SETITERATION, CodeToReturn.class);
             Collections.sort(codesToInclude_.getAllCodes(), comparator);
             
-            return new ResolvedConceptReferencesIteratorImpl(codesToInclude_, restrictToProperties, restrictToPropertyTypes,
+            return getResolvedConceptReferencesIterator(codesToInclude_, restrictToProperties, restrictToPropertyTypes,
                     filters, resolveObjects);
         } catch (LBInvocationException e) {
             throw e;
@@ -785,6 +795,23 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         return count > 1;
     }
     
+    protected ResolvedConceptReferencesIterator getResolvedConceptReferencesIterator(
+            CodeHolder codesToInclude, 
+            LocalNameList restrictToProperties, 
+            PropertyType[] restrictToPropertyTypes, 
+            Filter[] filters, 
+            boolean resolveObjects) {
+        
+        ResolvedConceptReferencesIterator itr = new ResolvedConceptReferencesIteratorImpl(
+                codesToInclude, restrictToProperties, restrictToPropertyTypes, filters, resolveObjects);
+        
+        if(this.getToNodeListCodes().getAllCodes().size() > 0) {
+            return new ToNodeListResolvedConceptReferencesIteratorDecorator(itr, this.getToNodeListCodes());
+        } else {
+            return itr;
+        }  
+    }
+    
     protected void doUnion(String internalCodeSystemName, String internalVersionString, Union union) throws LBException {
         toBruteForceMode(internalCodeSystemName, internalVersionString);
 
@@ -810,6 +837,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         runPendingOps();
         this.toBruteForceMode(this.getInternalCodeSystemName(), this.getInternalVersionString());
         return codesToInclude_;
+    }
+    
+    protected void clearToNodeListCodes() {
+        this.setToNodeListCodes(new DefaultCodeHolder());
     }
 
     /*
@@ -916,5 +947,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     public void setCodeHolderFactory(CodeHolderFactory codeHolderFactory) {
         this.codeHolderFactory = codeHolderFactory;
+    }
+
+    public void setToNodeListCodes(CodeHolder toNodeListCodes) {
+        this.toNodeListCodes = toNodeListCodes;
+    }
+
+    public CodeHolder getToNodeListCodes() {
+        return toNodeListCodes;
     }
 }

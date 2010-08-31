@@ -19,6 +19,8 @@
 package org.LexGrid.LexBIG.Impl.codednodeset;
 
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
+import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -51,5 +53,14 @@ public class IntersectSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleL
         query.add(query2, Occur.MUST);
         
         return query;
+    }
+
+    @Override
+    protected CodeHolder handleToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2) {
+        CodeHolder newCodeHolder = new DefaultCodeHolder();
+        newCodeHolder.union(toNodeListCodes1);
+        newCodeHolder.intersect(toNodeListCodes2);
+        
+        return newCodeHolder;
     }
 }

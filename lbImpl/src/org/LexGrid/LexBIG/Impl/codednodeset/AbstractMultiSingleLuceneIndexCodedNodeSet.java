@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
+import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.search.BooleanQuery;
@@ -58,7 +59,14 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
        
        this.getCodingSchemeReferences().addAll(cns1.getCodingSchemeReferences());
        this.getCodingSchemeReferences().addAll(cns2.getCodingSchemeReferences());
+
+       if(cns1.getToNodeListCodes().getAllCodes().size() > 0 || 
+               cns2.getToNodeListCodes().getAllCodes().size() > 0) {
+           this.setToNodeListCodes(handleToNodeListCodes(cns1.getToNodeListCodes(), cns2.getToNodeListCodes()));
+       }
     }
+
+    protected abstract CodeHolder handleToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2);
 
     @Override
     public CodedNodeSet restrictToAnonymous(AnonymousOption anonymousOption) throws LBInvocationException,
@@ -73,14 +81,17 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
             LBParameterException {
         cns1.restrictToCodes(codeList);
         cns2.restrictToCodes(codeList);
+        this.clearToNodeListCodes();
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public CodedNodeSet restrictToMatchingDesignations(String matchText, boolean preferredOnly, String matchAlgorithm,
             String language) throws LBInvocationException, LBParameterException {
         cns1.restrictToMatchingDesignations(matchText, preferredOnly, matchAlgorithm, language);
         cns2.restrictToMatchingDesignations(matchText, preferredOnly, matchAlgorithm, language);
+        this.clearToNodeListCodes();
         return this;
     }
 
@@ -89,6 +100,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
             String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
         cns1.restrictToMatchingDesignations(matchText, option, matchAlgorithm, language);
         cns2.restrictToMatchingDesignations(matchText, option, matchAlgorithm, language);
+        this.clearToNodeListCodes();
         return this;
     }
 
@@ -98,6 +110,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
             String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
         cns1.restrictToMatchingProperties(propertyList, propertyTypes, sourceList, contextList, qualifierList, matchText, matchAlgorithm, language);
         cns2.restrictToMatchingProperties(propertyList, propertyTypes, sourceList, contextList, qualifierList, matchText, matchAlgorithm, language);
+        this.clearToNodeListCodes();
         return this;
     }
 
@@ -107,6 +120,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
             LBParameterException {
        cns1.restrictToMatchingProperties(propertyList, propertyTypes, matchText, matchAlgorithm, language);
        cns2.restrictToMatchingProperties(propertyList, propertyTypes, matchText, matchAlgorithm, language);
+       this.clearToNodeListCodes();
        return this;
     }
 
@@ -116,6 +130,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
             throws LBInvocationException, LBParameterException {
         cns1.restrictToProperties(propertyList, propertyTypes, sourceList, contextList, qualifierList);
         cns2.restrictToProperties(propertyList, propertyTypes, sourceList, contextList, qualifierList);
+        this.clearToNodeListCodes();
         return this;
     }
 
@@ -124,6 +139,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
             throws LBInvocationException, LBParameterException {
        cns1.restrictToProperties(propertyList, propertyTypes);
        cns2.restrictToProperties(propertyList, propertyTypes);
+       this.clearToNodeListCodes();
        return this;
     }
 
@@ -228,4 +244,11 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
         return null;
     }
 
+    protected CodedNodeSetImpl getCns1() {
+        return cns1;
+    }
+
+    protected CodedNodeSetImpl getCns2() {
+        return cns2;
+    }
 }

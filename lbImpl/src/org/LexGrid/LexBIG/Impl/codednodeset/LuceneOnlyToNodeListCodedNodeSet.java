@@ -19,9 +19,13 @@
 package org.LexGrid.LexBIG.Impl.codednodeset;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
+import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
 
 public class LuceneOnlyToNodeListCodedNodeSet extends SingleLuceneIndexCodedNodeSet {
@@ -35,6 +39,16 @@ public class LuceneOnlyToNodeListCodedNodeSet extends SingleLuceneIndexCodedNode
     public LuceneOnlyToNodeListCodedNodeSet(String uri, String version, ConceptReferenceList codeList) throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         super(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version), null, null);
         
+        if(codeList == null || codeList.getConceptReferenceCount() == 0) {
+            codeList = Constructors.createConceptReferenceList("NO-MATCH-CODE", "NO-MATCH-NAMESPACE", "NO-MATCH-CODINGSCHEME");
+        }
         this.restrictToCodes(codeList);
+        
+        AdditiveCodeHolder holder = new DefaultCodeHolder();
+        for(ConceptReference ref : codeList.getConceptReference()) {
+            holder.add(new CodeToReturn(uri, version, ref));
+        }
+        
+        this.setToNodeListCodes(holder);
     }
 }
