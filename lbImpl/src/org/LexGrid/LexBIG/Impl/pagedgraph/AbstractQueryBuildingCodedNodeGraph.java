@@ -363,7 +363,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                     null, 
                     maxToReturn, 
                     false, 
-                    ArtificialRootResolvePolicy.RESOLVE_AS_IS,
+                    ArtificialRootResolvePolicy.RESOLVE_CHILDREN,
                     new ReferenceReturningCycleDetectingCallback());
 
         ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
