@@ -12,7 +12,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
 
@@ -56,7 +55,10 @@ public class DefaultRootBuilder implements RootBuilder {
 					null,
 					null,
 					null,
-					traverse);
+					traverse,
+					null,
+					0,
+					-1);
 		} else {
 			refs = databaseServiceManager.getCodedNodeGraphService().
 			getTailConceptReferences(
@@ -67,7 +69,10 @@ public class DefaultRootBuilder implements RootBuilder {
 					null,
 					null,
 					null,
-					traverse);
+					traverse,
+					null,
+					0,
+					-1);
 		}
 		
 		if(CollectionUtils.isNotEmpty(refs)) {
