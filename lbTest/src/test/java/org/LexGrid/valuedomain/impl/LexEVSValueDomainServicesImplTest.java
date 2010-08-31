@@ -426,6 +426,52 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	}
 
 	@Test
+	public void testListValueSetsWithEntityCode() throws LBException, URISyntaxException {
+		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
+	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
+		
+	    List<String> uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Focus", new URI("Automobiles"), incsvrl, null);
+	    
+	    assertTrue(uris.size() == 0);
+	    
+	    uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Ford", new URI("Automobiles"), incsvrl, null);
+	    
+	    assertTrue(uris.size() == 4);
+	    for (String uri : uris)
+	    {
+	    	assertTrue(uri.equals("SRITEST:AUTO:AllDomesticButGM") ||
+	    			uri.equals("SRITEST:AUTO:DomesticAutoMakers") ||
+	    			uri.equals("SRITEST:AUTO:EveryThing") ||
+	    			uri.equals("SRITEST:AUTO:Ford"));
+	    }
+	    
+	    incsvrl.setAbsoluteCodingSchemeVersionReference(0, Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1"));
+	    uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Focus", new URI("Automobiles"), incsvrl, null);
+	    
+	    assertTrue(uris.size() == 6);
+	    for (String uri : uris)
+	    {
+	    	assertTrue(uri.equals("SRITEST:AUTO:AllDomesticButGM") ||
+	    			uri.equals("SRITEST:AUTO:DomasticLeafOnly") ||
+	    			uri.equals("SRITEST:AUTO:DomesticAutoMakers") ||
+	    			uri.equals("SRITEST:AUTO:EveryThing") ||
+	    			uri.equals("SRITEST:AUTO:Ford") ||
+	    			uri.equals("SRITEST:AUTO:PropRefGeneralOrFocus"));
+	    }
+	    
+	    uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Ford", new URI("Automobiles"), incsvrl, null);
+	    
+	    assertTrue(uris.size() == 4);
+	    for (String uri : uris)
+	    {
+	    	assertTrue(uri.equals("SRITEST:AUTO:AllDomesticButGM") ||
+	    			uri.equals("SRITEST:AUTO:DomesticAutoMakers") ||
+	    			uri.equals("SRITEST:AUTO:EveryThing") ||
+	    			uri.equals("SRITEST:AUTO:Ford"));
+	    }
+	}
+	
+	@Test
 	public void testIsSubDomain() throws LBException, URISyntaxException {
 
 		assertFalse(getValueSetDefinitionService().isSubSet(new URI("SRITEST:AUTO:DomesticAutoMakers"), new URI("SRITEST:AUTO:GM"), null, null));
