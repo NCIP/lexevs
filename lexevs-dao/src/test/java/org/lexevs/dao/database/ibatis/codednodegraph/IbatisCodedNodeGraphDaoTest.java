@@ -1369,7 +1369,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id2', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", null, null, null, null,TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", null, null, null, null,TraverseAssociations.INDIVIDUALLY, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1410,7 +1410,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", null, null, null, null,TraverseAssociations.TOGETHER);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", null, null, null, null,TraverseAssociations.TOGETHER, null, 0, -1);
 
 		assertEquals(1, uids.size());
 		
@@ -1452,7 +1452,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id2', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", DaoUtility.createNonTypedList("1"), null, null, null,TraverseAssociations.TOGETHER);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", DaoUtility.createNonTypedList("1"), null, null, null,TraverseAssociations.TOGETHER, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1496,7 +1496,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 		List<ConceptReference> uids = ibatisCodedNodeGraphDao.
 		getRootNodes("1", DaoUtility.createNonTypedList("999"), null,null, null,
-				TraverseAssociations.INDIVIDUALLY);
+				TraverseAssociations.INDIVIDUALLY, null, 0, -1);
 
 		assertEquals(0, uids.size());
 	}
@@ -1537,7 +1537,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 
 
 		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", 
-				DaoUtility.createNonTypedList("999", "1"), null,null, null, TraverseAssociations.TOGETHER);
+				DaoUtility.createNonTypedList("999", "1"), null,null, null, TraverseAssociations.TOGETHER, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1588,7 +1588,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		QualifierNameValuePair quals = new QualifierNameValuePair("test","testValue");
 		
 		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getRootNodes("1", 
-				DaoUtility.createNonTypedList("1"), Arrays.asList(quals), null, null,TraverseAssociations.TOGETHER);
+				DaoUtility.createNonTypedList("1"), Arrays.asList(quals), null, null,TraverseAssociations.TOGETHER, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1630,7 +1630,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", null, null, null, null,TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", null, null, null, null,TraverseAssociations.INDIVIDUALLY, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1672,7 +1672,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("1"), null, null, null,TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("1"), null, null, null,TraverseAssociations.INDIVIDUALLY, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1714,7 +1714,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("999"), null, null, null, TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("999"), null, null, null, TraverseAssociations.INDIVIDUALLY, null, 0, -1);
 
 		assertEquals(0, uids.size());
 	}
@@ -1754,7 +1754,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id', null, null, null, null, null, null, null, null)");
 
 
-		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("999", "1"), null, null, null, TraverseAssociations.INDIVIDUALLY);
+		List<ConceptReference> uids = ibatisCodedNodeGraphDao.getTailNodes("1", DaoUtility.createNonTypedList("999", "1"), null, null, null, TraverseAssociations.INDIVIDUALLY, null, 0, -1);
 
 		assertEquals(1, uids.size());
 
@@ -1904,4 +1904,272 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("2", uids.get(0));
 		assertEquals("1", uids.get(1));
 	}
+
+	/*
+	@Test
+	public void testGetTripleUidsContainingSubjectWithQualifierSortAsc() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('1'," +
+				" '1'," +
+				" 'testQualName', " +
+				" '1111', '1')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('2'," +
+				" '2'," +
+				" 'testQualName', " +
+				" '9999', '2')");
+	
+		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.ASC, "testQualName");
+		
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
+	
+		assertEquals(2, uids.size());
+		assertEquals("1", uids.get(0));
+		assertEquals("2", uids.get(1));
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectWithQualifierSortDesc() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('1'," +
+				" '1'," +
+				" 'testQualName', " +
+				" '1111', '1')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('2'," +
+				" '2'," +
+				" 'testQualName', " +
+				" '9999', '2')");
+	
+		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.DESC, "testQualName");
+		
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
+	
+		assertEquals(2, uids.size());
+		assertEquals("2", uids.get(0));
+		assertEquals("1", uids.get(1));
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectWithMoreQualifiersSortDesc() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('1'," +
+				" '1'," +
+				" 'testQualName', " +
+				" '1111', '1')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('2'," +
+				" '2'," +
+				" 'testQualName', " +
+				" '9999', '2')");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('3'," +
+				" '2'," +
+				" 'someOtherQualName', " +
+				" 'someValue', '3')");
+	
+		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.DESC, "someOtherQualName");
+		
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
+	
+		assertEquals(2, uids.size());
+		assertEquals("1", uids.get(0));
+		assertEquals("2", uids.get(1));
+	}
+	
+	@Test
+	public void testGetTripleUidsContainingSubjectWithMoreQualifiersSortAsc() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('1'," +
+				" '1'," +
+				" 'testQualName', " +
+				" '1111', '1')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('2'," +
+				" '2'," +
+				" 'testQualName', " +
+				" '9999', '2')");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('3'," +
+				" '1'," +
+				" 'someOtherQualName', " +
+				" '2', '3')");
+		
+		template.execute("insert into entityassnquals" +
+				" values ('4'," +
+				" '2'," +
+				" 'someOtherQualName', " +
+				" '1', '4')");
+	
+		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.ASC, "someOtherQualName");
+		
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
+	
+		assertEquals(2, uids.size());
+		assertEquals("2", uids.get(0));
+		assertEquals("1", uids.get(1));
+	}
+	*/
 }
