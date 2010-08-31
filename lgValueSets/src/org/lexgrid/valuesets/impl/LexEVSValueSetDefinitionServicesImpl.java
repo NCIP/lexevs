@@ -269,6 +269,37 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	/*
 	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#listValueSetDefinitionURIsContainingEntityCode(java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
+	 */
+	@Override
+	public List<String> listValueSetsWithEntityCode(
+			String entityCode, URI entityCodeNamespace, 
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String versionTag) throws LBException {
+		getLogger().logMethod(new Object[] { entityCode, entityCodeNamespace, csVersionList, versionTag });
+		
+		if (StringUtils.isEmpty(entityCode))
+			throw new LBException("EntityCode can not be empty");
+		
+		List<String> listToReturn = new ArrayList<String>();
+		
+		List<String> uris = listValueSetDefinitionURIs();
+		
+		for (String uri : uris)
+		{
+			try {
+				if (isEntityInValueSet(entityCode, entityCodeNamespace, new URI(uri), null, csVersionList, versionTag) != null)
+					listToReturn.add(uri);
+			} catch (URISyntaxException e) {
+				throw new LBException(e.getMessage());
+			}
+		}
+		
+        return listToReturn;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getCodedNodeSetForValueSetDefinition(java.net.URI, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String)
 	 */
 	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
