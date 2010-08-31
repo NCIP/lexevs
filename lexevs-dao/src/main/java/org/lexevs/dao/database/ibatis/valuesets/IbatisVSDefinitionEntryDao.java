@@ -123,6 +123,9 @@ public class IbatisVSDefinitionEntryDao extends AbstractIbatisDao implements
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
+		// remove entry state
+		this.vsEntryStateDao.deleteAllEntryStateByEntryUIdAndType(vsDefinitionEntryUId, ReferenceType.DEFINITIONENTRY.name());
+		
 		// remove definition entries
 		this.getSqlMapClientTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_UID_SQL, new PrefixedParameter(prefix, vsDefinitionEntryUId));
 	}
