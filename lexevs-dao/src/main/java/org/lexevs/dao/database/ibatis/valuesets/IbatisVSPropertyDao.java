@@ -533,17 +533,23 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	}
 	
 	public void deleteAllValueSetDefinitionProperties(
-			String valueSetDefinitionURI){
+			String valueSetDefinitionUID){
+		// delete property entry states
+		this.vsEntryStateDao.deleteAllEntryStatesOfVsPropertiesByParentUId(valueSetDefinitionUID, ReferenceType.VALUESETDEFINITION.name());
+		
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_VALUESET_DEFINITION_PROPERTIES_OF_VALUESET_SQL, 
 				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), 
-						ReferenceType.VALUESETDEFINITION.name(), valueSetDefinitionURI));
+						ReferenceType.VALUESETDEFINITION.name(), valueSetDefinitionUID));
 	}
 	
 	public void deleteAllPickListEntityPropertiesOfPickListDefinition(
-			String pickListId){
+			String pickListUID){
+		// delete property entry states
+		this.vsEntryStateDao.deleteAllEntryStatesOfVsPropertiesByParentUId(pickListUID, ReferenceType.PICKLISTENTRY.name());
+		
 		this.getSqlMapClientTemplate().delete(DELETE_ALL_PICKLIST_ENTRY_PROPERTIES_OF_PCIKLIST_SQL, 
 				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), 
-						ReferenceType.PICKLISTENTRY.name(), pickListId));
+						ReferenceType.PICKLISTENTRY.name(), pickListUID));
 	}
 	
 	public void deleteAllPickListDefinitionProperties(
@@ -723,6 +729,8 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	public void deletePropertyByUId(String propertyUId) {
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
+		
+		this.vsEntryStateDao.deleteAllEntryStateByEntryUIdAndType(propertyUId, ReferenceType.VSPROPERTY.name());
 		
 		this.getSqlMapClientTemplate().delete(DELETE_PROPERTY_BY_UID_SQL, 
 				new PrefixedParameter(prefix, propertyUId));
