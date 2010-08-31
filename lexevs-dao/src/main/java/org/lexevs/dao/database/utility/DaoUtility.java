@@ -93,13 +93,25 @@ public class DaoUtility {
 		propertyClassToTypeMap.put(Property.class, PropertyType.GENERIC);
 	}
 	
-	public static List<Sort> mapSortOptionListToSort(SortOptionList list){
+	
+	public static class SortContainer {
+		private List<Sort> sorts = new ArrayList<Sort>();
+		
+		public List<Sort> getSorts() {
+			return sorts;
+		}
+		public void setSorts(List<Sort> sorts) {
+			this.sorts = sorts;
+		}
+	}
+	
+	public static SortContainer mapSortOptionListToSort(SortOptionList list){
 		Boolean DEFAULT_ASCENDING = new Boolean(true);
 		
-		if(list == null || list.getEntryCount() == 0) {return null;}
+		SortContainer sortContainer = new SortContainer();
 		
-		List<Sort> returnList = new ArrayList<Sort>();
-
+		if(list == null || list.getEntryCount() == 0) {return sortContainer;}
+		
 		for(SortOption option : list.getEntry()) {
 			
 			Boolean ascending;
@@ -112,14 +124,12 @@ public class DaoUtility {
 			ColumnSortType type = 
 				ColumnSortType.getColumnSortTypeForName(option.getExtensionName());
 			if(type != null) {
-				Sort sort = new Sort(
-					type,
-					ascending ? Order.ASC : Order.DESC);
-	
-				returnList.add(sort);
+					sortContainer.getSorts().add(new Sort(
+							type,
+							ascending ? Order.ASC : Order.DESC));
 			}
 		}
-		return returnList;
+		return sortContainer;
 	}
 
 	/**
