@@ -16,6 +16,20 @@ public interface CodedNodeGraphService {
 	
 	public enum Order {ASC, DESC}
 	
+	public static class QualifierSort extends Sort {
+		
+		private String qualifierName;
+		
+		public QualifierSort(ColumnSortType columnSortType, Order order, String qualifierName) {
+			super(columnSortType, order);
+			this.qualifierName = qualifierName;
+		}
+		
+		public String getQualifierName() {
+			return qualifierName;
+		}
+	}
+	
 	public static class Sort {
 		private ColumnSortType columnSortType;
 		private Order order;
@@ -87,7 +101,10 @@ public interface CodedNodeGraphService {
 			List<QualifierNameValuePair> qualifiers,
 			List<String> subjectEntityCodeNamespaces, 
 			List<String> objectEntityCodeNamespaces, 
-			TraverseAssociations traverse);
+			TraverseAssociations traverse,
+			List<Sort> sorts,
+			int start,
+			int pageSize);
 	
 	public List<ConceptReference> getTailConceptReferences(
 			String codingSchemeUri,
@@ -97,7 +114,10 @@ public interface CodedNodeGraphService {
 			List<QualifierNameValuePair> qualifiers,
 			List<String> subjectEntityCodeNamespaces,
 			List<String> objectEntityCodeNamespaces,  
-			TraverseAssociations traverse);
+			TraverseAssociations traverse,
+			List<Sort> sorts,
+			int start,
+			int pageSize);
 	
 	public List<String> getTripleUidsContainingSubject(
 			String codingSchemeUri,
@@ -159,6 +179,7 @@ public interface CodedNodeGraphService {
 	public List<ConceptReference> getConceptReferencesFromUidSource(
 			String codingSchemeUri,
 			String codingSchemeVersion,
+			List<Sort> sorts,
 			List<String> tripleUid);
 	
 	public AssociatedConcept getAssociatedConceptFromUidTarget(
@@ -181,6 +202,7 @@ public interface CodedNodeGraphService {
 	public List<ConceptReference> getConceptReferencesFromUidTarget(
 			String codingSchemeUri,
 			String codingSchemeVersion,
+			List<Sort> sorts,
 			List<String> tripleUid);
 	
 	public List<String> getAssociationPredicateNamesForCodingScheme(

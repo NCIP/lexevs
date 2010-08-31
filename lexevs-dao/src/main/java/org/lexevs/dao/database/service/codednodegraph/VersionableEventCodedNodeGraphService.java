@@ -442,6 +442,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	public List<ConceptReference> getConceptReferencesFromUidSource(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
+			List<Sort> sorts,
 			List<String> tripleUids) {
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
@@ -449,13 +450,15 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		getConceptReferencesFromUid(
 				codingSchemeUid, 
 				tripleUids, 
-				TripleNode.SUBJECT);
+				TripleNode.SUBJECT, 
+				sorts);
 	}
 
 	@Override
 	public List<ConceptReference> getConceptReferencesFromUidTarget(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
+			List<Sort> sorts,
 			List<String> tripleUids) {
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
@@ -463,7 +466,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		getConceptReferencesFromUid(
 				codingSchemeUid, 
 				tripleUids, 
-				TripleNode.OBJECT);
+				TripleNode.OBJECT,
+				sorts);
 	}
 
 	@Override
@@ -476,7 +480,10 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			List<QualifierNameValuePair> qualifiers,
 			List<String> subjectEntityCodeNamespaces,  
 			List<String> objectEntityCodeNamespaces,  
-			TraverseAssociations traverse) {
+			TraverseAssociations traverse,
+			List<Sort> sorts,
+			int start,
+			int pageSize) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
@@ -496,7 +503,16 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		}
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getRootNodes(codingSchemeUid, associationPredicateUids, qualifiers, subjectEntityCodeNamespaces, objectEntityCodeNamespaces, traverse);
+			getRootNodes(
+					codingSchemeUid, 
+					associationPredicateUids, 
+					qualifiers, 
+					subjectEntityCodeNamespaces, 
+					objectEntityCodeNamespaces, 
+					traverse, 
+					sorts, 
+					start,
+					pageSize);
 	}
 
 	private List<String> getAssociationPredicateUids(
@@ -532,7 +548,10 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			List<QualifierNameValuePair> qualifiers,
 			List<String> subjectEntityCodeNamespaces, 
 			List<String> objectEntityCodeNamespaces,  
-			TraverseAssociations traverse) {
+			TraverseAssociations traverse,
+			List<Sort> sorts,
+			int start,
+			int pageSize) {
 
 		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 
@@ -552,7 +571,16 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		}
 		
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
-			getTailNodes(codingSchemeUid, associationPredicateUids, qualifiers, subjectEntityCodeNamespaces, objectEntityCodeNamespaces, traverse);
+			getTailNodes(
+					codingSchemeUid, 
+					associationPredicateUids, 
+					qualifiers, 
+					subjectEntityCodeNamespaces, 
+					objectEntityCodeNamespaces, 
+					traverse, 
+					sorts, 
+					start,
+					pageSize);
 	}
 
 	@Override

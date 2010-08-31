@@ -27,11 +27,13 @@ import java.util.Map;
  */
 public enum ColumnSortType {
 
-	CODE("code", "targetEntityCode", "sourceEntityCode");
+	CODE("code", "targetEntityCode", "sourceEntityCode", "entityCode", "entityCode");
 	
 	private final String name;
 	private final String subjectColumn;
 	private final String objectColumn;
+	private final String rootColumn;
+	private final String tailColumn;
 	
 	/** The Constant nameMap. */
 	private static final Map<String,ColumnSortType> sortMap;
@@ -47,11 +49,17 @@ public enum ColumnSortType {
 		return sortMap.get(name);
 	}
 	
-	private ColumnSortType(String name, String subjectColumn,
-			String objectColumn) {
+	private ColumnSortType(
+			String name, 
+			String subjectColumn,
+			String objectColumn,
+			String rootColumn,
+			String tailColumn) {
 		this.name = name;
 		this.subjectColumn = subjectColumn;
 		this.objectColumn = objectColumn;
+		this.rootColumn = rootColumn;
+		this.tailColumn = tailColumn;
 	}
 
 	public String getName() {
@@ -64,5 +72,13 @@ public enum ColumnSortType {
 
 	public String getObjectColumn() {
 		return objectColumn;
+	}
+
+	public String getRootColumn() {
+		return rootColumn;
+	}
+
+	public String getTailColumn() {
+		return tailColumn;
 	}
 }
