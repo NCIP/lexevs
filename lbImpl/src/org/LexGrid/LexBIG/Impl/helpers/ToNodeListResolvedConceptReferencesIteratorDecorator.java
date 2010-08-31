@@ -34,7 +34,12 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
 
     @Override
     public ResolvedConceptReference next() throws LBResourceUnavailableException, LBInvocationException {
-        ResolvedConceptReference ref = delegate.next();
+        ResolvedConceptReference ref = null;;
+        try {
+            ref = delegate.next();
+        } catch (LBResourceUnavailableException e) {
+            //delegate iterator is exhausted
+        }
         if(ref != null) {
             toNodeListCodes.remove(new CodeToReturn(ref.getCode(), ref.getCodeNamespace()));
         } else {
@@ -51,7 +56,12 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
 
     @Override
     public ResolvedConceptReferenceList next(int arg0) throws LBResourceUnavailableException, LBInvocationException {
-        ResolvedConceptReferenceList list = delegate.next(arg0);
+        ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
+        try {
+            list = delegate.next(arg0);
+        } catch (LBResourceUnavailableException e) {
+            //delegate iterator is exhausted
+        }
         for(ResolvedConceptReference ref : list.getResolvedConceptReference()) {
             if(ref != null) {
                 CodeToReturn codeToReturn = new CodeToReturn(ref.getCode(), ref.getCodeNamespace());
