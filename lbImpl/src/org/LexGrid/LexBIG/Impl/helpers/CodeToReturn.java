@@ -54,6 +54,11 @@ public class CodeToReturn implements Serializable {
         super();
     }
     
+    public CodeToReturn(String code, String namespace) {
+        this.code_ = code;
+        this.namespace_ = namespace;
+    }
+    
     public CodeToReturn(String uri, String version, ConceptReference conceptReference) throws LBParameterException {
         NamespaceHandler namespaceHandler = NamespaceHandlerFactory.getNamespaceHandler();
           AbsoluteCodingSchemeVersionReference ref =
