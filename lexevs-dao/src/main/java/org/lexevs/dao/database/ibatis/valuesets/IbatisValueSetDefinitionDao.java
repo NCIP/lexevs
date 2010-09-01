@@ -116,6 +116,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "deleteSourceByParentGuidAndType";
 	
+	public static String DELETE_MAPPINGS_By_REFERENCE_GUID_TYPE_AND_SUPP_ATTRIB_SQL = VS_MAPPING_NAMESPACE + "deleteMappingsByReferenceGuidTypeAndSuppAttrib";
+	
 	public static String DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL = VS_MULTIATTRIB_NAMESPACE + "deleteContextByParentGuidAndType";
 	
 	public static String DELETE_PICKLIST_ENTRY_CONTEXT_BY_PICKLIST_GUID_SQL = VS_MULTIATTRIB_NAMESPACE + "deletePickListEntryContextByPickListGuid";
@@ -434,6 +436,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		
 		this.getSqlMapClientTemplate().update(UPDATE_VALUE_SET_DEFINITION_BY_ID_SQL, bean);
 		
+		if (StringUtils.isEmpty(valueSetDefinition.getConceptDomain()) || StringUtils.isBlank(valueSetDefinition.getConceptDomain()))
+			deleteURIMap(prefix, valueSetDefUId, ReferenceType.VALUESETDEFINITION.name(), SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN);
+		
 		if( valueSetDefinition.getSourceCount() != 0 ) {
 			
 			this.getSqlMapClientTemplate().delete(
@@ -496,6 +501,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 							SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
 							entryStateUId));
 		}
+		
+		if (valueSetDefinition.getMappings() != null)
+			insertMappings(valueSetDefUId, valueSetDefinition.getMappings());
 		
 		return entryStateUId;
 	}
@@ -647,6 +655,11 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			throws SQLException {
 				executor.startBatch();
 				for(URIMap uriMap : urimapList){
+					if (uriMap instanceof SupportedConceptDomain)
+					{
+						deleteURIMap(prefix, referenceGuid, ReferenceType.VALUESETDEFINITION.name(), SQLTableConstants.TBLCOLVAL_SUPPTAG_CONCEPTDOMAIN);
+					}
+					
 					String uriMapId = createUniqueId();
 					
 					executor.insert(INSERT_URIMAPS_SQL, 
@@ -671,6 +684,21 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 									referenceGuid,
 									classToStringMappingClassifier.classify(uriMap.getClass()),
 									uriMap));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#deleteURIMap(java.lang.String, java.lang.String)
+	 */
+	@ClearCache
+	public void deleteURIMap(String referenceGuid, String supportedAttributeTag){
+		final String prefix  = this.getPrefixResolver().resolveDefaultPrefix();
+		this.deleteURIMap(prefix, referenceGuid, ReferenceType.VALUESETDEFINITION.name(), supportedAttributeTag);
+	}
+	
+	private void deleteURIMap(String prefix, String referenceGuid, String referenceType, String supportedAttributeTag) {
+		this.getSqlMapClientTemplate().delete(DELETE_MAPPINGS_By_REFERENCE_GUID_TYPE_AND_SUPP_ATTRIB_SQL, 
+				new PrefixedParameterTriple(prefix, referenceGuid, referenceType, supportedAttributeTag));
 	}
 	
 	/**
@@ -793,7 +821,6 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	@CacheMethod
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
 			String supportedTag, String value, String uri) {
 		if (StringUtils.isNotEmpty(uri))

@@ -314,7 +314,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 								.getChangedValueSetDefinitionEntry();
 						if (valueSetDefinition != null) {
 							valueSetDefinitionService.revise(
-									valueSetDefinition, null, releaseURI);
+									valueSetDefinition, valueSetDefinition.getMappings(), releaseURI);
 							continue;
 						}
 					} catch (LBException e) {

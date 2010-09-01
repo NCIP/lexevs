@@ -430,5 +430,17 @@
 		AND
 			referenceType = #param2#
 	</delete>
+	
+	<delete id="deleteMappingsByReferenceGuidTypeAndSuppAttrib"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+		DELETE FROM
+			$prefix$vsSupportedAttrib
+		WHERE
+			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		AND
+			referenceType = #param2#
+		AND
+			supportedAttributeTag = #param3#
+	</delete>
     
 </sqlMap>

@@ -157,4 +157,11 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	
 	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException;
+	
+	/**
+	 * Removes value set supported attribute
+	 * @param referenceGuid Value Set UID
+	 * @param supportedAttributeTag supported attribute tag
+	 */
+	public void deleteURIMap(String referenceGuid, String supportedAttributeTag);
 }
