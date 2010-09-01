@@ -3,12 +3,14 @@
  */
 package org.lexevs.cts2.author;
 
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,16 +22,22 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
 import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.cts2.query.ConceptDomainQueryOperation;
 import org.lexevs.dao.database.service.version.AuthoringService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
  * @author m004181
@@ -38,17 +46,48 @@ import org.lexgrid.conceptdomain.util.ConceptDomainConstants;
 public class ConceptDomainAuthoringOperationImplTest {
 
 	private static ConceptDomainAuthoringOperation CD_AUTH_OP;
+	private static ConceptDomainQueryOperation CD_QUERY_OP;
 	
 	private static List<String> revIds_ = new ArrayList<String>();
-	
+	private static LexEVSValueSetDefinitionServices vds_ = null;
 	@BeforeClass
 	public static void runBeforeClass(){
 		CD_AUTH_OP = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getConceptDomainAuthoringOperation();
+		CD_QUERY_OP = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getConceptDomainQueryOperation();
+		vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
+		
+		ValueSetLoadOperation vsLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getValueSetLoadOperation();
+		try {
+			vsLoadOp.load(new File("src/test/resources/testData/valueSets/VSDOnlyTest.xml").toURI(), null, "LexGrid_Loader", true);
+		} catch (LBException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@AfterClass
-	public static void runAfterClass(){
+	public static void runAfterClass() throws LBException, URISyntaxException{
 		CD_AUTH_OP = null;
+		CD_QUERY_OP = null;
+		
+		List<String> uris = vds_.listValueSetDefinitions(null);
+		assertTrue(uris.size() > 0);
+		
+		for (String uri : uris)
+		{
+			if (uri.startsWith("SRITEST:"))
+				vds_.removeValueSetDefinition(new URI(uri));
+		}
+		
+		// check if we missed any test valueDomains
+		uris = vds_.listValueSetDefinitions(null);
+		
+		for (String uri : uris)
+		{
+			if (uri.toString().startsWith("SRITEST:"))
+				assertTrue("Not all test value domains were deleted.",false);
+		}
+		
+		vds_ = null;
 	}
 	
 	@Test
@@ -68,6 +107,9 @@ public class ConceptDomainAuthoringOperationImplTest {
 		CD_AUTH_OP.createConceptDomainCodeSystem(rev, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, 
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, 
 				"en", 0, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, null, null, null, maps);
+		
+		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+		csLoadOp.activateCodeSystem(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 	}
 	
 	/**
@@ -108,6 +150,10 @@ public class ConceptDomainAuthoringOperationImplTest {
 		
 		CD_AUTH_OP.createConceptDomain("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, "cd unit test 2", "testing", 
 				false, props, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		Entity cd = CD_QUERY_OP.getConceptDomainEntity("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cd.getEntityCode().equals("cdunitest2"));
 	}
 	
 	@Test
@@ -173,6 +219,12 @@ public class ConceptDomainAuthoringOperationImplTest {
 		rev.setRevisionId(revId);
 		
 		CD_AUTH_OP.updateConceptDomainStatus("cdunitest1", null, "New Status " + revId, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		
+
+		Entity cd = CD_QUERY_OP.getConceptDomainEntity("cdunitest1", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cd.getEntityCode().equals("cdunitest1"));
+		assertTrue(cd.getStatus().equals("New Status " + revId));
 	}
 
 	/**
@@ -185,6 +237,11 @@ public class ConceptDomainAuthoringOperationImplTest {
 		rev.setRevisionId(getRevId());
 		
 		CD_AUTH_OP.activateConceptDomain("cdunitest1", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		
+		Entity cd = CD_QUERY_OP.getConceptDomainEntity("cdunitest1", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cd.getEntityCode().equals("cdunitest1"));
+		assertTrue(cd.getIsActive());		
 	}
 
 	/**
@@ -196,7 +253,12 @@ public class ConceptDomainAuthoringOperationImplTest {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
-		CD_AUTH_OP.deactivateConceptDomain("cdunitest1", null, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		assertTrue(CD_AUTH_OP.deactivateConceptDomain("cdunitest1", null, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev));
+		
+		Entity cd = CD_QUERY_OP.getConceptDomainEntity("cdunitest1", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cd.getEntityCode().equals("cdunitest1"));
+		assertTrue(!cd.getIsActive());		
 	}
 
 	/**
@@ -215,7 +277,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		changedVersionable.setOwner("new Owner - " + revId);
 		changedVersionable.setStatus("new status - " + revId);
 		
-		CD_AUTH_OP.updateConceptDomainVersionable("cdunitest1", null, changedVersionable, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		assertTrue(CD_AUTH_OP.updateConceptDomainVersionable("cdunitest1", null, changedVersionable, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev));
 	}
 
 	/**
@@ -234,7 +296,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		prop.setValue(value);
 		prop.setPropertyName("cd2propertyName2");
 		
-		CD_AUTH_OP.addConceptDomainProperty("cdunitest2", null, prop, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		assertTrue(CD_AUTH_OP.addConceptDomainProperty("cdunitest2", null, prop, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev));
 	}
 
 	/**
@@ -257,7 +319,55 @@ public class ConceptDomainAuthoringOperationImplTest {
 		prop.setIsActive(true);
 		prop.setOwner("owner updated");
 		
-		CD_AUTH_OP.updateConceptDomainProperty("cdunitest2", null, prop, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
+		assertTrue(CD_AUTH_OP.updateConceptDomainProperty("cdunitest2", null, prop, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev));
+	}
+
+	/**
+	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#addConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
+	 * @throws LBException 
+	 * @throws URISyntaxException 
+	 */
+	@Test
+	public void addConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
+		RevisionInfo rev = new RevisionInfo();
+		rev.setRevisionId(getRevId());
+		
+		assertTrue(CD_AUTH_OP.addConceptDomainToValueSetBinding("cdunitest1", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, 
+				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
+				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, 
+				new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), rev));
+
+	}
+	
+	@Test
+	public void getValueSetBinding()
+	{
+		List<String> urisStr = vds_.getValueSetDefinitionURIsWithConceptDomain("cdunitest1", null);
+		
+		assertTrue(urisStr.size() == 1);
+		
+		for (String uri : urisStr)
+		{
+			assertTrue(uri.equals("SRITEST:AUTO:PropertyRefTest1-VSDONLY"));
+		}		
+	}
+
+	@Test
+	public void removeConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
+		RevisionInfo rev = new RevisionInfo();
+		rev.setRevisionId(getRevId());
+		
+		assertTrue(CD_AUTH_OP.removeConceptDomainToValueSetBinding("cdunitest1", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, 
+				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, 
+				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, 
+				new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), rev));
+	}
+	
+	@Test
+	public void getValueSetBinding2(){		
+		List<String> urisStr = vds_.getValueSetDefinitionURIsWithConceptDomain("cdunitest1", null);
+		
+		assertTrue(urisStr.size() == 0);
 	}
 
 	/**
@@ -285,23 +395,6 @@ public class ConceptDomainAuthoringOperationImplTest {
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
 	
-	/**
-	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#addConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
-	 */
-//	@Test
-//	public void addConceptDomainToValueSetBinding() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#removeConceptDomainToValueSetBinding(java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)}.
-//	 */
-//	@Test
-//	public void removeConceptDomainToValueSetBinding() {
-//		fail("Not yet implemented");
-//	}
-
-	
 	@Test
 	public void removeConceptDomainCodeSystem() throws LBException{
 		RevisionInfo revInfo = new RevisionInfo();
@@ -327,6 +420,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 			e.printStackTrace();
 		} 
 	
+		
 		assertTrue(removeStatus);
 	}
 	
@@ -335,7 +429,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 		for (String revId : revIds_)
 		{
-			System.out.println(authServ.removeRevisionRecordbyId(revId));
+			assertTrue(authServ.removeRevisionRecordbyId(revId));
 		}
 	}
 	
@@ -351,4 +445,5 @@ public class ConceptDomainAuthoringOperationImplTest {
 		
 		return revId;
 	}
+	
 }

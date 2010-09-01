@@ -321,22 +321,19 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainToValueSetBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#addConceptDomainToValueSetBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URI, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
 	public boolean addConceptDomainToValueSetBinding(String conceptDomainId, String namespace, String codeSystemNameOrURI,
-			String codeSystemVersion, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
+			String codeSystemVersion, URI valueSetURI, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
-		if (valueSetURIS == null)
-			throw new LBException("Value Set URI list can not be empty");
+		if (valueSetURI == null)
+			throw new LBException("Value Set URI can not be empty");
 		
 		ValueSetAuthoringOperation vsAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		
-		for (URI vsURI : valueSetURIS)
-		{
-			vsAuthOp.updateValueSetMetaData(vsURI, null, null, conceptDomainId, null, null, revisionInfo);
-		}
+		vsAuthOp.updateValueSetMetaData(valueSetURI, null, null, conceptDomainId, null, null, revisionInfo);
 		
 		return true;
 	}
@@ -371,27 +368,24 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainToValueSetBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.lexevs.cts2.core.update.RevisionInfo)
+	 * @see org.lexevs.cts2.author.ConceptDomainAuthoringOperation#removeConceptDomainToValueSetBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URI, org.lexevs.cts2.core.update.RevisionInfo)
 	 */
 	@Override
 	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, String namespace, String codeSystemNameOrURI,
-			String codeSystemVersion, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException {
+			String codeSystemVersion, URI valueSetURI, RevisionInfo revisionInfo) throws LBException {
 		if (StringUtils.isEmpty(conceptDomainId))
 			throw new LBException("Concept Domain Id can not be empty");
-		if (valueSetURIS == null)
-			throw new LBException("Value Set URI list can not be empty");
+		if (valueSetURI == null)
+			throw new LBException("Value Set URI can not be empty");
 		
 		ValueSetAuthoringOperation vsAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getValueSetAuthoringOperation();
 		ValueSetQueryOperation vsQueryOp = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
 		
-		for (URI vsURI : valueSetURIS)
+		ValueSetDefinition vsd = vsQueryOp.getValueSetDetails(valueSetURI.toString(), null);
+		if (vsd != null)
 		{
-			ValueSetDefinition vsd = vsQueryOp.getValueSetDetails(vsURI.toString(), null);
-			if (vsd != null)
-			{
-				if (vsd.getConceptDomain().equalsIgnoreCase(conceptDomainId))
-					vsAuthOp.updateValueSetMetaData(vsURI, null, null, " ", null, null, revisionInfo);
-			}
+			if (!StringUtils.isEmpty(vsd.getConceptDomain()) && vsd.getConceptDomain().equalsIgnoreCase(conceptDomainId))
+					vsAuthOp.updateValueSetMetaData(valueSetURI, null, null, " ", null, null, revisionInfo);
 		}
 		
 		return true;

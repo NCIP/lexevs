@@ -195,13 +195,13 @@ public interface ConceptDomainAuthoringOperation {
 	 * @param namespace - concept domain name space (If not provided, formal name of the code system will be used)
 	 * @param codeSystemNameOrURI - concept domain code system name or uri
 	 * @param codeSystemVersion - concept domain code system version
-	 * @param valueSetURIS
+	 * @param valueSetURI - value set definition uri
 	 * @param revisionInfo - revision information
 	 * @return  true; if binding update was success
 	 * @throws LBException
 	 */
 	public boolean addConceptDomainToValueSetBinding(String conceptDomainId, String namespace, String codeSystemNameOrURI,
-			String codeSystemVersion, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException;
+			String codeSystemVersion, URI valueSetURI, RevisionInfo revisionInfo) throws LBException;
 	
 	/**
 	 * Remove concept domain to value set binding.
@@ -210,13 +210,13 @@ public interface ConceptDomainAuthoringOperation {
 	 * @param namespace - concept domain name space (If not provided, formal name of the code system will be used)
 	 * @param codeSystemNameOrURI - concept domain code system name or uri
 	 * @param codeSystemVersion - concept domain code system version
-	 * @param valueSetURIS
+	 * @param valueSetURI - value set definition uri
 	 * @param revisionInfo - revision information
 	 * @return  true; if binding update was success
 	 * @throws LBException
 	 */
 	public boolean removeConceptDomainToValueSetBinding(String conceptDomainId, String namespace, String codeSystemNameOrURI,
-			String codeSystemVersion, List<URI> valueSetURIS, RevisionInfo revisionInfo) throws LBException;
+			String codeSystemVersion, URI valueSetURI, RevisionInfo revisionInfo) throws LBException;
 	
 	/**
 	 * Remove concept domain.

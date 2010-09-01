@@ -12,6 +12,11 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Versionable;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedConceptDomain;
+import org.LexGrid.naming.SupportedContext;
+import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.versions.ChangedEntry;
@@ -284,25 +289,67 @@ public class ValueSetAuthoringOperationImpl extends AuthoringCore implements
 		vsd.removeAllSource();
 		vsd.setProperties(null);
 		
+		Mappings maps = new Mappings();
+		
 		if (StringUtils.isNotEmpty(valueSetName))
 			vsd.setValueSetDefinitionName(valueSetName);
 		
 		if (StringUtils.isNotEmpty(defaultCodeSystem))
+		{
 			vsd.setDefaultCodingScheme(defaultCodeSystem);
+			SupportedCodingScheme scs = new SupportedCodingScheme();
+			scs.setContent(defaultCodeSystem);
+			scs.setLocalId(defaultCodeSystem);
+			
+			maps.addSupportedCodingScheme(scs);
+		}
 		
 		if (conceptDomainId != null)
+		{
 			vsd.setConceptDomain(conceptDomainId);
+			
+			SupportedConceptDomain scd = new SupportedConceptDomain();
+			scd.setContent(conceptDomainId);
+			scd.setLocalId(conceptDomainId);
+			
+			maps.addSupportedConceptDomain(scd);
+		}
 		
 		if (sourceList != null)
+		{
 			vsd.setSource(sourceList);
+			
+			for (Source src : sourceList)
+			{
+				SupportedSource ss = new SupportedSource();
+				ss.setAssemblyRule(src.getRole());
+				ss.setContent(src.getContent());
+				ss.setLocalId(src.getContent());
+				
+				maps.addSupportedSource(ss);
+			}
+		}
 		
 		if (usageContext != null)
+		{
 			vsd.setRepresentsRealmOrContext(usageContext);
+			
+			for (String uc : usageContext)
+			{
+				SupportedContext sc = new SupportedContext();
+				sc.setContent(uc);
+				sc.setLocalId(uc);
+				
+				maps.addSupportedContext(sc);
+			}
+		}
 		
 		Revision lgRevision = getLexGridRevisionObject(revision);
 		ChangedEntry ce = new ChangedEntry();
 		vsd.setEntryState(populateEntryState(ChangeType.MODIFY, 
 				lgRevision.getRevisionId(), prevRevisionId, 0L));
+		
+		vsd.setMappings(maps);
 		
 		ce.setChangedValueSetDefinitionEntry(vsd);
 		lgRevision.addChangedEntry(ce);
