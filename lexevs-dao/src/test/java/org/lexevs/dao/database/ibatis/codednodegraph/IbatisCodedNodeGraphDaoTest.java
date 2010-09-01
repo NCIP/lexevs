@@ -28,10 +28,14 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Direction;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionName;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Order;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
@@ -1904,21 +1908,26 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("2", uids.get(0));
 		assertEquals("1", uids.get(1));
 	}
-
-	/*
+	
 	@Test
-	public void testGetTripleUidsContainingSubjectWithQualifierSortAsc() throws SQLException{
+	public void testGetTripleUidsForMappingRelationsContainerNoSorts() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('1', 'csname', 'csuri', 'csversion')");
 		
-		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('1', '1', 's-code', 's-ns')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
 		
-		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('1', 'concept')");
-
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code', 's-ns', 'source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '3', 't-code', 't-ns', 'target-mapping-description')");
+		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
 		"values ('1', '1', 'c-name')");
@@ -1926,61 +1935,43 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('1', '1', 'apname')");
+				"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('1'," +
 				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
-				" 't-code1'," +
-				" 't-ns1'," +
+				" 't-code'," +
+				" 't-ns'," +
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
-		
-		template.execute("insert into entityassnquals" +
-				" values ('1'," +
-				" '1'," +
-				" 'testQualName', " +
-				" '1111', '1')");
-		
-		template.execute("insert into entityassnstoentity" +
-				" values ('2'," +
-				" '1'," +
-				" 's-code', " +
-				" 's-ns'," +
-				" 't-code2'," +
-				" 't-ns2'," +
-		" 'ai-id2', null, null, null, null, null, null, null, null)");
-		
-		template.execute("insert into entityassnquals" +
-				" values ('2'," +
-				" '2'," +
-				" 'testQualName', " +
-				" '9999', '2')");
-	
-		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.ASC, "testQualName");
-		
+
 		List<String> uids = 
-			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
-	
-		assertEquals(2, uids.size());
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer("1", "2", "3", "c-name", null, null, 0, -1);
+		
+		assertEquals(1,uids.size());
 		assertEquals("1", uids.get(0));
-		assertEquals("2", uids.get(1));
 	}
 	
 	@Test
-	public void testGetTripleUidsContainingSubjectWithQualifierSortDesc() throws SQLException{
+	public void testGetTripleUidsForMappingRelationsContainerSourceEnityCodeSortAsc() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('1', 'csname', 'csuri', 'csversion')");
 		
-		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('1', '1', 's-code', 's-ns')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
 		
-		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('1', 'concept')");
-
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code', 's-ns', 'source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '3', 't-code', 't-ns', 'target-mapping-description')");
+		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
 		"values ('1', '1', 'c-name')");
@@ -1988,61 +1979,62 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('1', '1', 'apname')");
+				"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('1'," +
 				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 'a-s-code', " +
+				" 'a-s-ns1'," +
 				" 't-code1'," +
 				" 't-ns1'," +
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
-		template.execute("insert into entityassnquals" +
-				" values ('1'," +
-				" '1'," +
-				" 'testQualName', " +
-				" '1111', '1')");
-		
-		template.execute("insert into entityassnstoentity" +
-				" values ('2'," +
-				" '1'," +
-				" 's-code', " +
-				" 's-ns'," +
-				" 't-code2'," +
-				" 't-ns2'," +
-		" 'ai-id2', null, null, null, null, null, null, null, null)");
-		
-		template.execute("insert into entityassnquals" +
-				" values ('2'," +
-				" '2'," +
-				" 'testQualName', " +
-				" '9999', '2')");
-	
-		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.DESC, "testQualName");
-		
+		MappingSortOption sort = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.ASC);
+
 		List<String> uids = 
-			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
-	
-		assertEquals(2, uids.size());
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
+					null, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
 		assertEquals("2", uids.get(0));
-		assertEquals("1", uids.get(1));
 	}
 	
 	@Test
-	public void testGetTripleUidsContainingSubjectWithMoreQualifiersSortDesc() throws SQLException{
+	public void testGetTripleUidsForMappingRelationsContainerSourceEnityCodeSortDesc() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('1', 'csname', 'csuri', 'csversion')");
 		
-		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('1', '1', 's-code', 's-ns')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
 		
-		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('1', 'concept')");
-
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code', 's-ns', 'source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '3', 't-code', 't-ns', 'target-mapping-description')");
+		
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
 		"values ('1', '1', 'c-name')");
@@ -2050,66 +2042,307 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('1', '1', 'apname')");
+				"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('1'," +
 				" '1'," +
 				" 's-code', " +
 				" 's-ns'," +
-				" 't-code1'," +
-				" 't-ns1'," +
+				" 't-code'," +
+				" 't-ns'," +
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
-		template.execute("insert into entityassnquals" +
-				" values ('1'," +
-				" '1'," +
-				" 'testQualName', " +
-				" '1111', '1')");
-		
 		template.execute("insert into entityassnstoentity" +
 				" values ('2'," +
 				" '1'," +
-				" 's-code', " +
-				" 's-ns'," +
-				" 't-code2'," +
-				" 't-ns2'," +
-		" 'ai-id2', null, null, null, null, null, null, null, null)");
+				" 'a-s-code', " +
+				" 'a-s-ns1'," +
+				" 'a-t-code1'," +
+				" 'a-t-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
-		template.execute("insert into entityassnquals" +
-				" values ('2'," +
-				" '2'," +
-				" 'testQualName', " +
-				" '9999', '2')");
-		
-		template.execute("insert into entityassnquals" +
-				" values ('3'," +
-				" '2'," +
-				" 'someOtherQualName', " +
-				" 'someValue', '3')");
-	
-		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.DESC, "someOtherQualName");
-		
+		MappingSortOption sort = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.DESC);
+
 		List<String> uids = 
-			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
-	
-		assertEquals(2, uids.size());
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
+					null, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
 		assertEquals("1", uids.get(0));
-		assertEquals("2", uids.get(1));
 	}
 	
 	@Test
-	public void testGetTripleUidsContainingSubjectWithMoreQualifiersSortAsc() throws SQLException{
+	public void testGetTripleUidsForMappingRelationsContainerTargetEnityCodeSortAsc() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 		"values ('1', 'csname', 'csuri', 'csversion')");
 		
-		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
-			"values ('1', '1', 's-code', 's-ns')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
 		
-		template.execute("Insert into entitytype (entityGuid, entityType) " +
-			"values ('1', 'concept')");
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code', 's-ns', 'source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '3', 't-code', 't-ns', 'target-mapping-description')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 'a-t-code'," +
+				" 'a-t-ns'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 'a-s-code', " +
+				" 'a-s-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		MappingSortOption sort = new MappingSortOption(MappingSortOptionName.TARGET_CODE, Direction.ASC);
+
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
+					null, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
+		assertEquals("1", uids.get(0));
+	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerTargetEnityCodeSortDesc() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code', 's-ns', 'source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '3', 't-code', 't-ns', 'target-mapping-description')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 'a-t-code'," +
+				" 'a-t-ns'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 'a-s-code', " +
+				" 'a-s-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		MappingSortOption sort = new MappingSortOption(MappingSortOptionName.TARGET_CODE, Direction.DESC);
+
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
+					null, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
+		assertEquals("2", uids.get(0));
+	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerSourceEnityDescriptionSortAsc() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code1', 's-ns1', 'b-source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '2', 's-code2', 's-ns2', 'a-source-mapping-description')");
+	
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code1', " +
+				" 's-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code2', " +
+				" 's-ns2'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		MappingSortOption sort = new MappingSortOption(MappingSortOptionName.SOURCE_ENTITY_DESCRIPTION, Direction.ASC);
+
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
+					null, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
+		assertEquals("2", uids.get(0));
+	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerSourceEnityDescriptionSortDesc() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('1', '2', 's-code1', 's-ns1', 'b-source-mapping-description')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, description) " +
+			"values ('2', '2', 's-code2', 's-ns2', 'a-source-mapping-description')");
+	
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code1', " +
+				" 's-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code2', " +
+				" 's-ns2'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		MappingSortOption sort = new MappingSortOption(MappingSortOptionName.SOURCE_ENTITY_DESCRIPTION, Direction.DESC);
+
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
+					null, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
+		assertEquals("1", uids.get(0));
+	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerQualifierSortAsc() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
@@ -2118,58 +2351,129 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("insert into " +
 				"associationpredicate (associationPredicateGuid," +
 				"relationGuid, associationName) values " +
-		"('1', '1', 'apname')");
+				"('1', '1', 'apname')");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('1'," +
 				" '1'," +
-				" 's-code', " +
-				" 's-ns'," +
+				" 's-code1', " +
+				" 's-ns1'," +
 				" 't-code1'," +
 				" 't-ns1'," +
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
-		template.execute("insert into entityassnquals" +
-				" values ('1'," +
-				" '1'," +
-				" 'testQualName', " +
-				" '1111', '1')");
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'1', " +
+				"'1'," +
+				"'qualName'," +
+				"'2'," +
+				"'1' )");
 		
 		template.execute("insert into entityassnstoentity" +
 				" values ('2'," +
 				" '1'," +
-				" 's-code', " +
-				" 's-ns'," +
+				" 's-code2', " +
+				" 's-ns2'," +
 				" 't-code2'," +
 				" 't-ns2'," +
-		" 'ai-id2', null, null, null, null, null, null, null, null)");
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
 		
-		template.execute("insert into entityassnquals" +
-				" values ('2'," +
-				" '2'," +
-				" 'testQualName', " +
-				" '9999', '2')");
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'2', " +
+				"'2'," +
+				"'qualName'," +
+				"'1'," +
+				"'2' )");
 		
-		template.execute("insert into entityassnquals" +
-				" values ('3'," +
-				" '1'," +
-				" 'someOtherQualName', " +
-				" '2', '3')");
-		
-		template.execute("insert into entityassnquals" +
-				" values ('4'," +
-				" '2'," +
-				" 'someOtherQualName', " +
-				" '1', '4')");
-	
-		QualifierSort sort = new QualifierSort(ColumnSortType.QUALIFIER, Order.ASC, "someOtherQualName");
-		
+		QualifierSort qualiferSort = new QualifierSort(ColumnSortType.QUALIFIER, Order.ASC, "qualName");
+
 		List<String> uids = 
-			ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("1", null, "s-code", "s-ns", null, null, null, null, null, null, null, sort, 0, -1);
-	
-		assertEquals(2, uids.size());
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					null, 
+					qualiferSort, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
 		assertEquals("2", uids.get(0));
-		assertEquals("1", uids.get(1));
 	}
-	*/
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerQualifierSortDesc() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code1', " +
+				" 's-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'1', " +
+				"'1'," +
+				"'qualName'," +
+				"'2'," +
+				"'1' )");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code2', " +
+				" 's-ns2'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'2', " +
+				"'2'," +
+				"'qualName'," +
+				"'1'," +
+				"'2' )");
+		
+		QualifierSort qualiferSort = new QualifierSort(ColumnSortType.QUALIFIER, Order.DESC, "qualName");
+
+		List<String> uids = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
+					"1", 
+					"2", 
+					"3", 
+					"c-name", 
+					null, 
+					qualiferSort, 
+					0, 
+					-1);
+		
+		assertEquals(2,uids.size());
+		assertEquals("1", uids.get(0));
+	}
 }
