@@ -2,25 +2,57 @@ package org.lexevs.cts2.query;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.dao.database.service.association.AssociationService.AssociationTriple;
 
 public class AssociationQueryOperationImplTest {
 	private AssociationQueryOperationImpl query = new AssociationQueryOperationImpl();
 
+//	@BeforeClass
+//	public static void setUpBeforeClass() throws Exception {
+//		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+//		
+//		try {
+//			csLoadOp.load(new File("src/test/resources/testData/valueSets/Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+//
+//		} catch (LBException e) {
+//			e.printStackTrace();
+//		}		
+//	}
+//
+//	@AfterClass
+//	public static void tearDownAfterClass() throws Exception {
+//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+//		AbsoluteCodingSchemeVersionReference ref = 
+//			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+//		
+//		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+//		
+//		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+//	}
+	
 	@Test
 	public void testListAssociations() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();

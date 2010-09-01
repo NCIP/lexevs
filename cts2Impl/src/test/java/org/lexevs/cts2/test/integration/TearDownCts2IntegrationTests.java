@@ -22,5 +22,29 @@ public class TearDownCts2IntegrationTests extends Cts2BaseTest {
 		
 		super.getLexBIGService().
 			getServiceManager(null).removeCodingSchemeVersion(ref);
+		
+		ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference(
+				"urn:oid:11.11.0.1",
+				"1.0");
+		super.getLexBIGService().
+			getServiceManager(null).
+				deactivateCodingSchemeVersion(
+						ref, null);
+		
+		super.getLexBIGService().
+			getServiceManager(null).removeCodingSchemeVersion(ref);
+		
+		ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference(
+				"urn:oid:11.11.0.1",
+				"1.1");
+		super.getLexBIGService().
+			getServiceManager(null).
+				deactivateCodingSchemeVersion(
+						ref, null);
+		
+		super.getLexBIGService().
+			getServiceManager(null).removeCodingSchemeVersion(ref);
 	}
 }

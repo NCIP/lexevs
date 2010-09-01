@@ -3,6 +3,7 @@
  */
 package org.lexevs.cts2.query;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -12,17 +13,56 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.test.Cts2BaseTest;
+import org.lexevs.cts2.test.Cts2TestConstants;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 
 /**
  * @author m004181
  *
  */
-public class ValueSetQueryOperationImplTest {
+public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+		
+		try {
+			csLoadOp.load(new File("src/test/resources/testData/valueSets/Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+			csLoadOp.load(new File("src/test/resources/testData/valueSets/AutomobilesV2.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+
+		} catch (LBException e) {
+			e.printStackTrace();
+		}		
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		AbsoluteCodingSchemeVersionReference ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+		
+		ref = Constructors.createAbsoluteCodingSchemeVersionReference(
+				"urn:oid:11.11.0.1","1.1");
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+	}
 
 	/**
 	 * Test method for {@link org.lexevs.cts2.query.ValueSetQueryOperationImpl#checkConceptValueSetMembership(java.lang.String, java.net.URI, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String, java.lang.String, java.lang.String)}.

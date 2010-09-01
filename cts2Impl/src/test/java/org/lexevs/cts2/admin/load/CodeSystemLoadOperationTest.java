@@ -42,7 +42,6 @@ public class CodeSystemLoadOperationTest {
 		try {
 			removeCS(Constants.VALUE_CODING_SCHEME_URI, Constants.VALUE_CODING_SCHEME_VERSION);
 			removeCS("urn:lsid:bioontology.org:fungal_anatomy", "UNASSIGNED");
-			removeCS("urn:oid:11.11.0.1", "1.0");
 		} catch (RuntimeException e) {
 //			e.printStackTrace();
 		} 
@@ -52,7 +51,6 @@ public class CodeSystemLoadOperationTest {
 	public static void afterClass() throws LBException{
 		removeCS(Constants.VALUE_CODING_SCHEME_URI, Constants.VALUE_CODING_SCHEME_VERSION);
 		removeCS("urn:lsid:bioontology.org:fungal_anatomy", "UNASSIGNED");
-		removeCS("urn:oid:11.11.0.1", "1.0");
 	}
 	
 	/**
@@ -64,12 +62,6 @@ public class CodeSystemLoadOperationTest {
 		
 		csLoadOp_.load(new File(
 				"../lbTest/resources/testData/fungal_anatomy.obo").toURI(), null, null, "OBOLoader", true, true, true, "DEV", true);
-	}
-	
-	@Test
-	public void testLoadCSResourceXML() throws LBException {
-		csLoadOp_.load(new File(
-				"../lbTest/resources/testData/ValueDomain/Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
 	}
 	
 	/**

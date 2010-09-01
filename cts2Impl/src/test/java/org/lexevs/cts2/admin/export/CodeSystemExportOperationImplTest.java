@@ -47,7 +47,7 @@ public class CodeSystemExportOperationImplTest {
 	
 	@After
 	public void deleteFile() {
-//		assertTrue(exportFile.delete());
+		assertTrue(exportFile.delete());
 	}
 	
 	/**

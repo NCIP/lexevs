@@ -34,7 +34,7 @@ public class CodeSystemQueryOperationImplTest {
 		CodingSchemeSummary queryByExample = new CodingSchemeSummary();
 		CodingSchemeRenderingList results = query
 				.listCodeSystems(queryByExample);
-		assertEquals(true, results.getCodingSchemeRenderingCount() > 1);
+		assertEquals(true, results.getCodingSchemeRenderingCount() >= 1);
 
 		// search by uri
 		queryByExample = new CodingSchemeSummary();

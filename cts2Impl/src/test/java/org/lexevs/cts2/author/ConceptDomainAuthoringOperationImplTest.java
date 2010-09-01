@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
@@ -112,50 +113,6 @@ public class ConceptDomainAuthoringOperationImplTest {
 		csLoadOp.activateCodeSystem(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 	}
 	
-	/**
-	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#createConceptDomain(java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)}.
-	 * @throws LBException 
-	 * @throws IOException 
-	 */
-	@Test
-	public void createConceptDomain() throws LBException, IOException {
-		RevisionInfo rev = new RevisionInfo();
-		rev.setRevisionId(getRevId());
-		
-		Properties props = new Properties();
-		Property prop = new Property();
-		prop.setPropertyId("cd1propId1");
-		Text value = new Text();
-		value.setContent("cd1content");
-		prop.setValue(value);
-		prop.setPropertyName("cd1propertyName");
-		props.addProperty(prop);
-		
-		CD_AUTH_OP.createConceptDomain("cdunitest1", "cd unit test 1", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, "cd unit test 1", "testing", 
-				false, props, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		
-		props = new Properties();
-		prop = new Property();
-		prop.setPropertyId("cd2propId1");
-		value = new Text();
-		value.setContent("cd2content");
-		prop.setValue(value);
-		prop.setPropertyName("cd2propertyName");
-		prop.setIsActive(true);
-		prop.setOwner("owner test");
-		props.addProperty(prop);
-		
-		
-		rev.setRevisionId(getRevId());
-		
-		CD_AUTH_OP.createConceptDomain("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, "cd unit test 2", "testing", 
-				false, props, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		
-		Entity cd = CD_QUERY_OP.getConceptDomainEntity("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
-		
-		assertTrue(cd.getEntityCode().equals("cdunitest2"));
-	}
-	
 	@Test
 	public void createConceptDomainFromFile() throws LBException, IOException {
 		RevisionInfo rev = new RevisionInfo();
@@ -206,7 +163,51 @@ public class ConceptDomainAuthoringOperationImplTest {
 		
 		cdDatas = null;
 	}
-
+	
+	/**
+	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#createConceptDomain(java.lang.String, java.lang.String, org.lexevs.cts2.core.update.RevisionInfo, java.lang.String, java.lang.String, boolean, org.LexGrid.commonTypes.Properties, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)}.
+	 * @throws LBException 
+	 * @throws IOException 
+	 */
+	@Test
+	public void createConceptDomain() throws LBException, IOException {
+		RevisionInfo rev = new RevisionInfo();
+		rev.setRevisionId(getRevId());
+		
+		Properties props = new Properties();
+		Property prop = new Property();
+		prop.setPropertyId("cd1propId1");
+		Text value = new Text();
+		value.setContent("cd1content");
+		prop.setValue(value);
+		prop.setPropertyName("cd1propertyName");
+		props.addProperty(prop);
+		
+		CD_AUTH_OP.createConceptDomain("cdunitest1", "cd unit test 1", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, "cd unit test 1", "testing", 
+				false, props, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		props = new Properties();
+		prop = new Property();
+		prop.setPropertyId("cd2propId1");
+		value = new Text();
+		value.setContent("cd2content");
+		prop.setValue(value);
+		prop.setPropertyName("cd2propertyName");
+		prop.setIsActive(true);
+		prop.setOwner("owner test");
+		props.addProperty(prop);
+		
+		
+		rev.setRevisionId(getRevId());
+		
+		CD_AUTH_OP.createConceptDomain("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, rev, "cd unit test 2", "testing", 
+				false, props, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		Entity cd = CD_QUERY_OP.getConceptDomainEntity("cdunitest2", "cd unit test 2", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cd.getEntityCode().equals("cdunitest2"));
+	}
+	
 	/**
 	 * Test method for {@link org.lexevs.cts2.author.ConceptDomainAuthoringOperationImpl#updateConceptDomainStatus(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.lexevs.cts2.core.update.RevisionInfo)}.
 	 * @throws LBException 
@@ -337,6 +338,73 @@ public class ConceptDomainAuthoringOperationImplTest {
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, 
 				new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), rev));
 
+	}
+	
+	/**
+	 * Test method for {@link org.lexevs.cts2.query.ConceptDomainQueryOperation#getConceptDomainCodingScheme(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)}.
+	 * @throws LBException 
+	 */
+	@Test
+	public void getConceptDomainCodingScheme() throws LBException {
+		CodingScheme cs = CD_QUERY_OP.getConceptDomainCodingScheme(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cs.getCodingSchemeName().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME));
+		assertTrue(cs.getCodingSchemeURI().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI));
+		assertTrue(cs.getFormalName().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME));
+	}
+
+	/**
+	 * Test method for {@link org.lexevs.cts2.query.ConceptDomainQueryOperation#getConceptDomainEntitisWithName(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption, java.lang.String, java.lang.String)}.
+	 * @throws LBException 
+	 */
+	@Test
+	public void getConceptDomainEntitisWithName() throws LBException {
+		List<Entity> entityList = CD_QUERY_OP.getConceptDomainEntitisWithName("code", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, null, null, "subString", null);
+		
+		assertTrue(entityList.size() == 4);
+		for (Entity entity : entityList)
+		{
+			assertTrue(entity.getEntityCode().equals("AcknowledgementDetailCode")
+					|| entity.getEntityCode().equals("AcknowledgementDetailNotSupportedCode")
+					|| entity.getEntityCode().equals("AcknowledgementDetailSyntaxErrorCode")
+					|| entity.getEntityCode().equals("ActAdjudicationInformationCode"));
+			assertTrue(entity.getEntityCodeNamespace().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME));
+		}
+	}
+
+	/**
+	 * Test method for {@link org.lexevs.cts2.query.ConceptDomainQueryOperation#getConceptDomainEntity(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)}.
+	 * @throws LBException 
+	 */
+	@Test
+	public void getConceptDomainEntity() throws LBException {
+		Entity entity = CD_QUERY_OP.getConceptDomainEntity("ActAdjudicationInformationCode", null, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(entity.getEntityCode().equalsIgnoreCase("ActAdjudicationInformationCode"));
+		assertTrue(entity.getEntityCodeNamespace().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME));
+	}
+	
+	/**
+	 * Test method for {@link org.lexevs.cts2.query.ConceptDomainQueryOperation#listAllConceptDomainEntities(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)}.
+	 * @throws LBException 
+	 */
+	@Test
+	public void testListAllConceptDomainEntities() throws LBException {
+		List<Entity> entities = CD_QUERY_OP.listAllConceptDomainEntities(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_URI, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(entities.size() >= 10);
+	}
+
+	/**
+	 * Test method for {@link org.lexevs.cts2.query.ConceptDomainQueryOperation#listAllConceptDomainIds(org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)}.
+	 * @throws LBException 
+	 */
+	@Test
+	public void testListAllConceptDomainIds() throws LBException {
+		
+		List<String> cdIds = CD_QUERY_OP.listAllConceptDomainIds(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
+		
+		assertTrue(cdIds.size() >= 10);
 	}
 	
 	@Test

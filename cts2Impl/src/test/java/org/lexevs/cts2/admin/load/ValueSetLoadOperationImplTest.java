@@ -20,9 +20,7 @@ import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.LexEvsCTS2Impl;
-import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -33,7 +31,6 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  */
 public class ValueSetLoadOperationImplTest {
 	private LexEVSValueSetDefinitionServices vds_;
-	private LexEVSPickListDefinitionServices pls_;
 	
 	/**
 	 * Test method for {@link org.lexevs.cts2.admin.load.ValueSetLoadOperationImpl#load(java.net.URI, java.net.URI, java.lang.String, java.lang.Boolean)}.
@@ -59,24 +56,7 @@ public class ValueSetLoadOperationImplTest {
 		for (URNVersionPair urn : urns) {
 			assertTrue(urn.getUrn().equals("SRITEST:AUTO:PropertyRefTest1-VSDONLY"));
 			assertTrue(urn.getVersion().equals("R001"));
-		}
-
-		urns = vsLoadOp.load(new File(
-				"src/test/resources/testData/valueSets/pickListTestData.xml").toURI(), 
-				null, "LexGrid_Loader", true);
-		
-		assertTrue("Number of PLD loaded : " + urns.length, urns.length == 10);
-		
-		urns = vsLoadOp.load(new File(
-				"src/test/resources/testData/valueSets/pickListOnlyTest.xml").toURI(), 
-				null, "LexGrid_Loader", true);
-		
-		assertTrue("Number of PLD loaded : " + urns.length, urns.length == 1);
-		
-		for (URNVersionPair urn : urns) {
-			assertTrue(urn.getUrn().equals("SRITEST:AUTO:DomesticAutoMakers-PickListOnly"));
-			assertTrue(urn.getVersion() == null);
-		}
+		}		
 	}
 
 	/**
@@ -138,37 +118,10 @@ public class ValueSetLoadOperationImplTest {
 		}
 	}
 	
-	@Test
-	public void testRemoveAllTestPickLists() throws LBException {
-		List<String> pickListIds = getPickListService().listPickListIds();
-		for (String pickListId : pickListIds)
-		{
-			if (pickListId.startsWith("SRITEST"))
-				getPickListService().removePickList(pickListId);
-		}
-		
-		// check if we missed any test pick lists
-		pickListIds = getPickListService().listPickListIds();
-		for (String pickListId : pickListIds)
-		{
-			if (pickListId.startsWith("SRITEST"))
-				assertTrue("Not all test pick lists were deleted.", false);
-		}
-		
-		pickListIds.clear();
-	}
-	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 		}
 		return vds_;
-	}
-	
-	private LexEVSPickListDefinitionServices getPickListService(){
-		if (pls_ == null) {
-			pls_ = LexEVSPickListDefinitionServicesImpl.defaultInstance();
-		}
-		return pls_;
 	}
 }

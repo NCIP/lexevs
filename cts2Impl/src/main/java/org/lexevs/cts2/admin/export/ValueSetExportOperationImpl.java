@@ -83,34 +83,4 @@ public class ValueSetExportOperationImpl extends BaseService implements ValueSet
 	public List<String> getSupportedExporterNames() throws LBException {
 		return this.getLexEvsCTS2().getSupportedExporterNames();
 	}
-
-	public static void main(String[] args){
-		AbsoluteCodingSchemeVersionReferenceList csVersionList = new AbsoluteCodingSchemeVersionReferenceList();
-		csVersionList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1","1.1"));
-		csVersionList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:lsid:bioontology.org:fungal_anatomy",null));
-		
-		
-		ValueSetExportOperation vsExporter = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getValueSetExportOperation();
-		
-		try {
-			System.out.println("out file : " + vsExporter.exportValueSetContents(new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), null, new URI("C:/temp/"), csVersionList, null, true, true));
-		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try {
-			vsExporter.exportValueSetDefinition(new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), null, "C:/temp/exportTest.xml", true, true);
-		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 }
