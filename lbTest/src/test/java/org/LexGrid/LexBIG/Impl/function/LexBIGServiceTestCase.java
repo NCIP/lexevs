@@ -62,6 +62,8 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String CAMERA_SCHEME_MANIFEST_VERSION = "CameraV1";
     protected final static String OVARIANMASS_SCHEME_URN = "http://www.OntoReason.com/Ontologies/OvarianMass_SNOMED_ValueSets.owl";
     protected final static String OVARIANMASS_SCHEME_VERSION = "UNASSIGNED";
+    protected final static String MAPPING_SCHEME_URI = "urn:oid:mapping:sample";
+    protected final static String MAPPING_SCHEME_VERSION = "1.0";
  
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
     /**
