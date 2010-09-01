@@ -44,6 +44,20 @@
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Jaguar">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="E0001" />
       </lgRel:source>
-	</lgRel:associationPredicate>      
+      <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="A0001">
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="R0001" />
+      </lgRel:source>
+      <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="C0001">
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
+      </lgRel:source>
+	</lgRel:associationPredicate> 
+	 <lgRel:associationPredicate  associationName="mapsTo">
+      <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="005">
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="P0001" />
+      </lgRel:source>
+      <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Ford">
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
+      </lgRel:source>
+	</lgRel:associationPredicate>         
   </relations>
 </codingScheme>
