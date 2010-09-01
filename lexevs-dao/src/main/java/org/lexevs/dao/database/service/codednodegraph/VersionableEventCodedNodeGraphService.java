@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.collections.CollectionUtils;
@@ -594,5 +596,85 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				codingSchemeUid, 
 				relationsContainerName, 
 				associationNames);
+	}
+
+	@Override
+	public List<String> getTripleUidsForMappingRelationsContainer(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
+			String relationsContainerName,
+			List<Sort> sorts,
+			QualifierSort qualifierSort, 
+			int start, 
+			int pageSize) {
+		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		String sourceCodingSchemeUid = null;
+		if(sourceCodingScheme != null) {
+			sourceCodingSchemeUid = 
+				this.getCodingSchemeUId(
+						sourceCodingScheme.getCodingSchemeURN(), 
+						sourceCodingScheme.getCodingSchemeVersion());
+		}
+		
+		String targetCodingSchemeUid = null;
+		if(targetCodingScheme != null) {
+			targetCodingSchemeUid = 
+				this.getCodingSchemeUId(
+						targetCodingScheme.getCodingSchemeURN(), 
+						targetCodingScheme.getCodingSchemeVersion());
+		}
+
+		
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+			getTripleUidsForMappingRelationsContainer(
+					mappingCodingSchemeUid, 
+					sourceCodingSchemeUid, 
+					targetCodingSchemeUid, 
+					relationsContainerName, 
+					sorts, 
+					qualifierSort, 
+					start,
+					pageSize);
+	}
+	
+	@Override
+	public List<? extends ResolvedConceptReference> getMappingTriples(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
+			String relationsContainerName,
+			List<String> tripleUids) {
+		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		String sourceCodingSchemeUid = null;
+		if(sourceCodingScheme != null) {
+			sourceCodingSchemeUid = 
+				this.getCodingSchemeUId(
+						sourceCodingScheme.getCodingSchemeURN(), 
+						sourceCodingScheme.getCodingSchemeVersion());
+		}
+		
+		String targetCodingSchemeUid = null;
+		if(targetCodingScheme != null) {
+			targetCodingSchemeUid = 
+				this.getCodingSchemeUId(
+						targetCodingScheme.getCodingSchemeURN(), 
+						targetCodingScheme.getCodingSchemeVersion());
+		}
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+					codingSchemeUri, 
+					codingSchemeVersion).
+						getTriplesForMappingRelationsContainer(
+								mappingCodingSchemeUid, 
+								sourceCodingSchemeUid, 
+								targetCodingSchemeUid, 
+								relationsContainerName, 
+								tripleUids);
 	}
 }

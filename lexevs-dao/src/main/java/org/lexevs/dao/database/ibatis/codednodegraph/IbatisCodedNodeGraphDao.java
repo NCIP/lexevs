@@ -1,10 +1,12 @@
 package org.lexevs.dao.database.ibatis.codednodegraph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
@@ -16,12 +18,14 @@ import org.lexevs.dao.database.ibatis.association.parameter.GetCountConceptRefer
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingResolvedConceptReference;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -46,6 +50,8 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getRootEntityAssnsToEntityUids";
 	private static String GET_CODE_RELATIONSHIPS_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeRelationships";
 	private static String GET_COUNT_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCountConceptReferences";
+	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainer";
+	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -513,5 +519,101 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		bean.setTripleNode(tripleNode);
 		
 		return this.getSqlMapClientTemplate().queryForList(GET_COUNT_CONCEPTREFERENCES_SQL, bean);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getTripleUidsForMappingRelationsContainer(
+			String mappingCodingSchemeUid, 
+			String sourceCodingSchemeUid,
+			String targetCodingSchemeUid, 
+			String relationsContainerName,
+			List<Sort> sortList,
+			QualifierSort qualifierSort, 
+			int start, 
+			int pageSize) {
+		
+		if(pageSize < 0) {
+			pageSize = Integer.MAX_VALUE;
+		}
+		
+		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		String sourceSchemePrefix = null;
+		String targetSchemePrefix = null;
+		
+		if(sourceCodingSchemeUid != null) {
+			sourceSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(sourceCodingSchemeUid);
+		}
+		
+		if(targetCodingSchemeUid != null) {
+			targetSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(targetCodingSchemeUid);
+		}
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				mappingCodingSchemeUid,
+				sourceCodingSchemeUid,
+				sourceSchemePrefix,
+				targetCodingSchemeUid,
+				targetSchemePrefix,
+				relationsContainerName,
+				sortList,
+				qualifierSort,
+				!CollectionUtils.isEmpty(sortList) || qualifierSort != null);
+		
+		bean.setPrefix(mappingSchemePrefix);
+
+		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL, bean, start, pageSize);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<? extends ResolvedConceptReference> getTriplesForMappingRelationsContainer(
+			String mappingCodingSchemeUid, 
+			String sourceCodingSchemeUid,
+			String targetCodingSchemeUid, 
+			String relationsContainerName,
+			List<String> tripleUids) {
+		
+		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		String sourceSchemePrefix = null;
+		String targetSchemePrefix = null;
+		
+		if(sourceCodingSchemeUid != null) {
+			sourceSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(sourceCodingSchemeUid);
+		}
+		
+		if(targetCodingSchemeUid != null) {
+			targetSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(targetCodingSchemeUid);
+		}
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				mappingCodingSchemeUid,
+				sourceCodingSchemeUid,
+				sourceSchemePrefix,
+				targetCodingSchemeUid,
+				targetSchemePrefix,
+				relationsContainerName,
+				tripleUids);
+		
+		bean.setPrefix(mappingSchemePrefix);
+
+		List<TripleUidReferencingResolvedConceptReference> list = 
+			this.getSqlMapClientTemplate().queryForList(GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL, bean);
+		
+		return sortList(list, tripleUids);
+	}
+ 
+	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){
+		Map<String,ResolvedConceptReference> keyedMap = new HashMap<String,ResolvedConceptReference>();
+		for(TripleUidReferencingResolvedConceptReference ref : list) {
+			keyedMap.put(ref.getTripleUid(), ref);
+		}
+
+		List<ResolvedConceptReference> returnList = new ArrayList<ResolvedConceptReference>();
+		for(String tripleUid : tripleUids) {
+			returnList.add(keyedMap.get(tripleUid));
+		}
+
+		return returnList;
 	}
 }

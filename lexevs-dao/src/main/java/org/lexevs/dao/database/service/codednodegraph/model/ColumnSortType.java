@@ -27,13 +27,18 @@ import java.util.Map;
  */
 public enum ColumnSortType {
 
-	CODE("code", "targetEntityCode", "sourceEntityCode", "entityCode", "entityCode");
+	CODE("code", "targetEntityCode", "sourceEntityCode", "entityCode", "entityCode", null),
+	SOURCE_CODE("SOURCE_CODE", null,null,null,null,"eate.sourceEntityCode"),
+	TARGET_CODE("TARGET_CODE", null,null,null,null,"eate.targetEntityCode"),
+	SOURCE_ENTITY_DESCRIPTION("SOURCE_ENTITY_DESCRIPTION", null,null,null,null,"sourceEntity.description"),
+	QUALIFIER("QUALIFIER", null,null,null,null,"quals.qualifierValue");
 	
 	private final String name;
 	private final String subjectColumn;
 	private final String objectColumn;
 	private final String rootColumn;
 	private final String tailColumn;
+	private final String mappingColumn;
 	
 	/** The Constant nameMap. */
 	private static final Map<String,ColumnSortType> sortMap;
@@ -54,12 +59,14 @@ public enum ColumnSortType {
 			String subjectColumn,
 			String objectColumn,
 			String rootColumn,
-			String tailColumn) {
+			String tailColumn,
+			String mappingColumn) {
 		this.name = name;
 		this.subjectColumn = subjectColumn;
 		this.objectColumn = objectColumn;
 		this.rootColumn = rootColumn;
 		this.tailColumn = tailColumn;
+		this.mappingColumn = mappingColumn;
 	}
 
 	public String getName() {
@@ -80,5 +87,9 @@ public enum ColumnSortType {
 
 	public String getTailColumn() {
 		return tailColumn;
+	}
+
+	protected String getMappingColumn() {
+		return mappingColumn;
 	}
 }

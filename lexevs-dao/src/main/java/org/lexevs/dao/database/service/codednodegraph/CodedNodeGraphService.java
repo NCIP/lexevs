@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
@@ -218,6 +220,24 @@ public interface CodedNodeGraphService {
 
 	public List<String> getRelationNamesForCodingScheme(String codingSchemeUri,
 			String codingSchemeVersion);
+
+	public List<String> getTripleUidsForMappingRelationsContainer(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
+			String relationsContainerName,
+			List<Sort> sorts,
+			QualifierSort qualifierSort, 
+			int start, 
+			int pageSize);
+
+	public List<? extends ResolvedConceptReference> getMappingTriples(String codingSchemeUri,
+			String codingSchemeVersion,
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
+			String relationsContainerName, 
+			List<String> tripleUids);
 }
 
 

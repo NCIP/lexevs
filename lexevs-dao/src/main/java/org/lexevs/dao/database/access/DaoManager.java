@@ -303,7 +303,8 @@ public class DaoManager {
 					registry.getCodingSchemeEntry(ref).getDbSchemaVersion()
 			);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("There was a problem connecting to the persistence store for the resource: " +
+					"URI: " + uri + ", Version: " + version + ".\nPlease make sure this resource exists in the system.", e);
 		}
 	}
 	

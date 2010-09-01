@@ -36,6 +36,9 @@ import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Direction;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
@@ -49,6 +52,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Order;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -103,6 +107,60 @@ public class DaoUtility {
 		public void setSorts(List<Sort> sorts) {
 			this.sorts = sorts;
 		}
+	}
+	
+	public static QualifierSort mapMappingQualifierSortOptionListToSort(QualifierSortOption option){
+		if(option == null) {
+			return null;
+		}
+		Boolean DEFAULT_ASCENDING = new Boolean(true);
+		
+		Boolean ascending;
+		if(option.getDirection() != null) {
+			ascending = option.getDirection().equals(Direction.ASC);
+		} else {
+			ascending = DEFAULT_ASCENDING;
+		}
+
+		ColumnSortType type = 
+			ColumnSortType.getColumnSortTypeForName(option.getMappingSortOptionName().toString());
+		if(type != null) {
+				return new QualifierSort(
+						type,
+						ascending ? Order.ASC : Order.DESC,
+						option.getQualifierName());
+		} else {
+			throw new RuntimeException(option.getMappingSortOptionName().toString() + " cannot be mapped to a Sort.");
+		}
+	}
+	
+	public static SortContainer mapMappingSortOptionListToSort(List<MappingSortOption> list){
+		Boolean DEFAULT_ASCENDING = new Boolean(true);
+		
+		SortContainer sortContainer = new SortContainer();
+		
+		if(list == null || list.size() == 0) {return sortContainer;}
+		
+		for(MappingSortOption option : list) {
+			
+			Boolean ascending;
+			if(option.getDirection() != null) {
+				ascending = option.getDirection().equals(Direction.ASC);
+			} else {
+				ascending = DEFAULT_ASCENDING;
+			}
+
+			ColumnSortType type = 
+				ColumnSortType.getColumnSortTypeForName(option.getMappingSortOptionName().toString());
+			if(type != null) {
+					sortContainer.getSorts().add(new Sort(
+							type,
+							ascending ? Order.ASC : Order.DESC));
+			} else {
+				throw new RuntimeException(option.getMappingSortOptionName().toString() + " cannot be mapped to a Sort.");
+			}
+		}
+		return sortContainer;
 	}
 	
 	public static SortContainer mapSortOptionListToSort(SortOptionList list){
