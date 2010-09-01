@@ -70,6 +70,16 @@ public class ServiceUtility {
         return entity;
     }
     
+    public static AbsoluteCodingSchemeVersionReference 
+        getAbsoluteCodingSchemeVersionReference(String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException {
+        String uri = 
+            LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
+        String version = 
+            getVersion(codingScheme, tagOrVersion);
+        
+        return Constructors.createAbsoluteCodingSchemeVersionReference(uri, version);
+    }
+    
     /**
      * Gets the version.
      * 
