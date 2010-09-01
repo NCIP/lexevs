@@ -25,26 +25,18 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.AssociationTarget;
-import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.ProtegeOwl2LGConstants;
 import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.ProtegeOwl2LGMain;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.NCIOwl;
-import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.Owl;
 import edu.mayo.informatics.lexgrid.convert.options.IntegerOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -115,7 +107,7 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
         holder.getIntegerOptions().add(new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE), 
-                ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY));
+                ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB));
         return holder;
     }
 
