@@ -46,6 +46,7 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             if(toNodeListCodes.getAllCodes().size() > 0) {
                 
                 CodeToReturn codeToReturn = toNodeListCodes.getAllCodes().get(0);
+                while(toNodeListCodes.getAllCodes().remove(codeToReturn));
                
                 ref = toResolvedConceptReference(codeToReturn);
             }
