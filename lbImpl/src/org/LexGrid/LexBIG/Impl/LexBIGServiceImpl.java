@@ -46,6 +46,7 @@ import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ExactMatchSearch;
@@ -605,6 +606,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SupportedAttributePostProcessor().register();
         new ApproxNumOfConceptsPostProcessor().register();
         LexBIGServiceConvenienceMethodsImpl.register();
- 
+        new MappingExtensionImpl().register();
     }
 }
