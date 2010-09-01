@@ -9,6 +9,7 @@
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
 	<typeAlias alias="countConceptReference" type="org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference"/>
+	<typeAlias alias="mappingTriple" type="org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingResolvedConceptReference"/>
 	
 	<resultMap id="countConceptReferenceResult" class="countConceptReference">
 		<result property="code" column="entityCode" />
@@ -26,7 +27,7 @@
 		<result property="value" column="relationshipsCount" javaType="int" />
 	</resultMap>
 	
-	<resultMap id="tripleResult" class="triple">
+	<resultMap id="tripleResult" class="triple" groupBy="tripleGuid">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
 		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
 		<result property="targetEntityCode" column="targetEntityCode" />
@@ -41,6 +42,26 @@
 		<result property="codeNamespace" column="entityCodeNamespace" />
 		<result property="entityDescription.content" column="description" />
 		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
+	</resultMap>
+	
+	<resultMap id="mappingTripleSubjectResult" class="mappingTriple" groupBy="tripleUid">
+		<result property="tripleUid" column="tripleUid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="code" column="sourceEntityCode" />
+		<result property="codeNamespace" column="sourceEntityCodeNamespace" />
+		<result property="entityDescription.content" column="sourceEntityDescription"/>
+<!--		<result property="entityDescription.content" column="sourceDescription" />-->
+<!--		<result property="sourceOf.association" resultMap="Association.mappingTripleAssociationResult"/>-->
+		<result property="_sourceOf._associationList" resultMap="Association.mappingTripleAssociationResult" />
+	</resultMap>
+	
+	<resultMap id="mappingTripleAssociationResult" class="org.LexGrid.LexBIG.DataModel.Core.Association" groupBy="associationName">
+		<result property="associationName" column="associationName"/>
+		<result property="_associatedConcepts._associatedConceptList" resultMap="Association.mappingTripleObjectResult"/>
+	</resultMap>
+	
+	<resultMap id="mappingTripleObjectResult" class="org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept" groupBy="code,namespace">
+		<result property="code" column="targetEntityCode" />
+		<result property="codeNamespace" column="targetEntityCodeNamespace" />
 	</resultMap>
 
 	<resultMap id="associationQualificationResult" class="associationQualification" groupBy="name,content">
@@ -1268,4 +1289,158 @@
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select> 
+	
+	<select id="getTripleUidsForMappingContainer" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="Common.uidResult">
+		SELECT
+			eate.entityAssnsGuid AS uidKey
+		FROM
+			$prefix$entityAssnsToEntity eate
+			
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eate.associationPredicateGuid = ap.associationPredicateGuid
+			
+		INNER JOIN
+			$prefix$relation rel
+		ON 
+			ap.relationGuid = rel.relationGuid
+			
+		<isNotNull property="param2">
+			LEFT JOIN
+				$param3$entity sourceEntity
+			ON (
+				sourceEntity.entityCode = eate.sourceEntityCode
+				AND
+				sourceEntity.entityCodeNamespace = eate.sourceEntityCodeNamespace
+				AND
+				sourceEntity.codingSchemeGuid = #param2#
+				)
+		</isNotNull>
+		<isNotNull property="param4">
+			LEFT JOIN
+				$param5$entity targetEntity
+			ON (
+				targetEntity.entityCode = eate.targetEntityCode
+				AND
+				targetEntity.entityCodeNamespace = eate.targetEntityCodeNamespace
+				AND
+				targetEntity.codingSchemeGuid = #param4#
+				)
+		</isNotNull>
+		
+		<isNotNull property="param8">
+			LEFT JOIN
+				$prefix$entityAssnQuals quals
+			ON (
+				eate.entityAssnsGuid = quals.referenceGuid
+				AND
+				quals.qualifierName = #param8.qualifierName#
+				AND
+				quals.qualifierValue =
+					(SELECT 
+						<isEqual property="param8.order" compareValue="ASC">
+						MAX(
+						</isEqual>
+						<isEqual property="param8.order" compareValue="DESC">
+						MIN(
+						</isEqual>
+							maxQual.qualifierValue)
+					FROM
+						$prefix$entityAssnQuals maxQual
+					WHERE
+						maxQual.referenceGuid = eate.entityAssnsGuid
+					)
+				)
+		</isNotNull>
+
+		WHERE
+			rel.codingSchemeGuid = #param1#
+		AND
+			rel.containerName = #param6#
+			
+		<isEqual property="param9" compareValue="true">
+		ORDER BY
+			<isNotEmpty property="param7">
+				<iterate property="param7" conjunction=",">
+					$param7[].columnSortType.mappingColumn$
+					$param7[].order$
+				</iterate>
+			</isNotEmpty>
+			<isNotNull property="param8">
+				$param8.columnSortType.mappingColumn$
+				$param8.order$
+			</isNotNull>
+		</isEqual>
+	</select>
+	
+	<select id="getTriplesForMappingContainer" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="mappingTripleSubjectResult">
+		SELECT
+			eate.entityAssnsGuid AS tripleUid,
+
+			eate.sourceEntityCode AS sourceEntityCode,
+			eate.sourceEntityCodeNamespace AS sourceEntityCodeNamespace,
+			sourceEntity.description AS sourceEntityDescription,
+			
+			eate.targetEntityCode AS targetEntityCode,
+			eate.targetEntityCodeNamespace AS targetEntityCodeNamespace,
+			
+			ap.associationName AS associationName,
+			
+			quals.qualifierName,
+			quals.qualifierValue
+		FROM
+			$prefix$entityAssnsToEntity eate
+			
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eate.associationPredicateGuid = ap.associationPredicateGuid
+			
+		INNER JOIN
+			$prefix$relation rel
+		ON 
+			ap.relationGuid = rel.relationGuid
+			
+		LEFT JOIN
+			$param3$entity sourceEntity
+			ON (
+				sourceEntity.entityCode = eate.sourceEntityCode
+				AND
+				sourceEntity.entityCodeNamespace = eate.sourceEntityCodeNamespace
+				AND
+				sourceEntity.codingSchemeGuid = #param2#
+				)
+			
+		LEFT JOIN
+			$prefix$entityAssnQuals quals
+		ON (eate.entityAssnsGuid = quals.referenceGuid)
+		
+<!--		LEFT JOIN-->
+<!--			$prefix$entity entity-->
+<!--		ON (-->
+<!--			<isEqual property="param1" compareValue="SUBJECT">-->
+<!--				eate.sourceEntityCode = entity.entityCode-->
+<!--				AND-->
+<!--				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace-->
+<!--			</isEqual>-->
+<!--			<isEqual property="param1" compareValue="OBJECT">-->
+<!--				eate.targetEntityCode = entity.entityCode-->
+<!--				AND-->
+<!--				eate.targetEntityCodeNamespace = entity.entityCodeNamespace-->
+<!--			</isEqual>-->
+<!--			)-->
+		
+		WHERE
+			eate.entityAssnsGuid IN ( <iterate property="param7" conjunction=",">#param7[],handler=variablePrimaryKeyTypeHandler#</iterate> )
+		AND
+			rel.codingSchemeGuid = #param1#
+		AND
+			rel.containerName = #param6#
+	</select>
+	
 </sqlMap>
