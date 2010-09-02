@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
@@ -95,6 +97,41 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		}
 		
 		assertEquals(5,count);
+	}
+	
+	public void testResolveMappingSourceAndTargetsHasEverything() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		ResolvedConceptReferencesIterator itr = mappingExtension.resolveMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings", 
+				null);
+		
+		int count = 0;
+		while(itr.hasNext()) {
+			ResolvedConceptReference next = itr.next();
+			this.checkResolvedConceptReference(next);
+			for(Association assoc : next.getSourceOf().getAssociation()) {
+				for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+					this.checkResolvedConceptReference(ac);
+				}
+			}
+			count++;
+		}
+		
+		assertEquals(5,count);
+	}
+	
+	private void checkResolvedConceptReference(ResolvedConceptReference next) {
+		assertNotNull(next);
+		assertNotNull(next.getCode());
+		assertNotNull(next.getCodeNamespace());
+		assertNotNull(next.getCodingSchemeName());
+		assertNotNull(next.getCodingSchemeURI());
+		assertNotNull(next.getCodingSchemeVersion());
+		assertNotNull(next.getEntityDescription().getContent());
 	}
 	
 	private class Tuple<T> {
