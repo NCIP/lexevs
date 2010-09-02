@@ -22,10 +22,10 @@ import org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingR
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -529,7 +529,6 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			String targetCodingSchemeUid, 
 			String relationsContainerName,
 			List<Sort> sortList,
-			QualifierSort qualifierSort, 
 			int start, 
 			int pageSize) {
 		
@@ -549,18 +548,15 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 			targetSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(targetCodingSchemeUid);
 		}
 		
-		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+		MappingTripleParameterBean bean = new MappingTripleParameterBean(
+				mappingSchemePrefix,
 				mappingCodingSchemeUid,
 				sourceCodingSchemeUid,
 				sourceSchemePrefix,
 				targetCodingSchemeUid,
 				targetSchemePrefix,
 				relationsContainerName,
-				sortList,
-				qualifierSort,
-				!CollectionUtils.isEmpty(sortList) || qualifierSort != null);
-		
-		bean.setPrefix(mappingSchemePrefix);
+				sortList);
 
 		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL, bean, start, pageSize);
 	}
@@ -594,6 +590,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 				targetSchemePrefix,
 				relationsContainerName,
 				tripleUids);
+
 		
 		bean.setPrefix(mappingSchemePrefix);
 
@@ -615,5 +612,79 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		}
 
 		return returnList;
+	}
+	
+	public static class MappingTripleParameterBean extends PrefixedTableParameterBean {
+
+		private static final long serialVersionUID = -8564556798840145817L;
+
+		String mappingCodingSchemeUid;
+		String sourceCodingSchemeUid;
+		String sourceSchemePrefix;
+		String targetCodingSchemeUid;
+		String targetSchemePrefix;
+		String relationsContainerName;
+		List<Sort> sortList;
+
+		public MappingTripleParameterBean(
+				String prefix,
+				String mappingCodingSchemeUid,
+				String sourceCodingSchemeUid, 
+				String sourceSchemePrefix,
+				String targetCodingSchemeUid, 
+				String targetSchemePrefix,
+				String relationsContainerName, 
+				List<Sort> sortList) {
+			super(prefix);
+			this.mappingCodingSchemeUid = mappingCodingSchemeUid;
+			this.sourceCodingSchemeUid = sourceCodingSchemeUid;
+			this.sourceSchemePrefix = sourceSchemePrefix;
+			this.targetCodingSchemeUid = targetCodingSchemeUid;
+			this.targetSchemePrefix = targetSchemePrefix;
+			this.relationsContainerName = relationsContainerName;
+			this.sortList = sortList;
+		}
+		public String getMappingCodingSchemeUid() {
+			return mappingCodingSchemeUid;
+		}
+		public void setMappingCodingSchemeUid(String mappingCodingSchemeUid) {
+			this.mappingCodingSchemeUid = mappingCodingSchemeUid;
+		}
+		public String getSourceCodingSchemeUid() {
+			return sourceCodingSchemeUid;
+		}
+		public void setSourceCodingSchemeUid(String sourceCodingSchemeUid) {
+			this.sourceCodingSchemeUid = sourceCodingSchemeUid;
+		}
+		public String getSourceSchemePrefix() {
+			return sourceSchemePrefix;
+		}
+		public void setSourceSchemePrefix(String sourceSchemePrefix) {
+			this.sourceSchemePrefix = sourceSchemePrefix;
+		}
+		public String getTargetCodingSchemeUid() {
+			return targetCodingSchemeUid;
+		}
+		public void setTargetCodingSchemeUid(String targetCodingSchemeUid) {
+			this.targetCodingSchemeUid = targetCodingSchemeUid;
+		}
+		public String getTargetSchemePrefix() {
+			return targetSchemePrefix;
+		}
+		public void setTargetSchemePrefix(String targetSchemePrefix) {
+			this.targetSchemePrefix = targetSchemePrefix;
+		}
+		public String getRelationsContainerName() {
+			return relationsContainerName;
+		}
+		public void setRelationsContainerName(String relationsContainerName) {
+			this.relationsContainerName = relationsContainerName;
+		}
+		public List<Sort> getSortList() {
+			return sortList;
+		}
+		public void setSortList(List<Sort> sortList) {
+			this.sortList = sortList;
+		}
 	}
 }

@@ -21,14 +21,20 @@ public interface CodedNodeGraphService {
 	public static class QualifierSort extends Sort {
 		
 		private String qualifierName;
+		private String tableAlias;
 		
-		public QualifierSort(ColumnSortType columnSortType, Order order, String qualifierName) {
+		public QualifierSort(ColumnSortType columnSortType, Order order, String qualifierName, String tableAlias) {
 			super(columnSortType, order);
 			this.qualifierName = qualifierName;
+			this.tableAlias = tableAlias;
 		}
 		
 		public String getQualifierName() {
 			return qualifierName;
+		}
+
+		protected String getTableAlias() {
+			return tableAlias;
 		}
 	}
 	
@@ -227,8 +233,7 @@ public interface CodedNodeGraphService {
 			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
 			AbsoluteCodingSchemeVersionReference targetCodingScheme,
 			String relationsContainerName,
-			List<Sort> sorts,
-			QualifierSort qualifierSort, 
+			List<Sort> sorts, 
 			int start, 
 			int pageSize);
 

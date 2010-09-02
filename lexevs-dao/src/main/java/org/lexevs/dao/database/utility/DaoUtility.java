@@ -38,6 +38,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Direction;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionName;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.commonTypes.EntityDescription;
@@ -109,39 +110,16 @@ public class DaoUtility {
 		}
 	}
 	
-	public static QualifierSort mapMappingQualifierSortOptionListToSort(QualifierSortOption option){
-		if(option == null) {
-			return null;
-		}
-		Boolean DEFAULT_ASCENDING = new Boolean(true);
-		
-		Boolean ascending;
-		if(option.getDirection() != null) {
-			ascending = option.getDirection().equals(Direction.ASC);
-		} else {
-			ascending = DEFAULT_ASCENDING;
-		}
-
-		ColumnSortType type = 
-			ColumnSortType.getColumnSortTypeForName(option.getMappingSortOptionName().toString());
-		if(type != null) {
-				return new QualifierSort(
-						type,
-						ascending ? Order.ASC : Order.DESC,
-						option.getQualifierName());
-		} else {
-			throw new RuntimeException(option.getMappingSortOptionName().toString() + " cannot be mapped to a Sort.");
-		}
-	}
-	
 	public static SortContainer mapMappingSortOptionListToSort(List<MappingSortOption> list){
 		Boolean DEFAULT_ASCENDING = new Boolean(true);
+		String qualifierColumnAliasPrefix = "qualSort";
 		
 		SortContainer sortContainer = new SortContainer();
 		
 		if(list == null || list.size() == 0) {return sortContainer;}
 		
-		for(MappingSortOption option : list) {
+		for(int i=0;i<list.size();i++) {
+			MappingSortOption option = list.get(i);
 			
 			Boolean ascending;
 			if(option.getDirection() != null) {
@@ -153,9 +131,19 @@ public class DaoUtility {
 			ColumnSortType type = 
 				ColumnSortType.getColumnSortTypeForName(option.getMappingSortOptionName().toString());
 			if(type != null) {
-					sortContainer.getSorts().add(new Sort(
+				Sort sort;
+				if(option.getMappingSortOptionName().equals(MappingSortOptionName.QUALIFIER)) {
+					sort = new QualifierSort(
 							type,
-							ascending ? Order.ASC : Order.DESC));
+							ascending ? Order.ASC : Order.DESC, 
+							((QualifierSortOption)option).getQualifierName(),
+							qualifierColumnAliasPrefix + (String.valueOf(i)));
+				} else {
+					sort = new Sort(
+							type,
+							ascending ? Order.ASC : Order.DESC);
+				}
+				sortContainer.getSorts().add(sort);
 			} else {
 				throw new RuntimeException(option.getMappingSortOptionName().toString() + " cannot be mapped to a Sort.");
 			}

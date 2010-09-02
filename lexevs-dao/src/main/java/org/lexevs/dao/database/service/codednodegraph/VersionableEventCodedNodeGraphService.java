@@ -606,7 +606,6 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			AbsoluteCodingSchemeVersionReference targetCodingScheme,
 			String relationsContainerName,
 			List<Sort> sorts,
-			QualifierSort qualifierSort, 
 			int start, 
 			int pageSize) {
 		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
@@ -635,7 +634,6 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					targetCodingSchemeUid, 
 					relationsContainerName, 
 					sorts, 
-					qualifierSort, 
 					start,
 					pageSize);
 	}
