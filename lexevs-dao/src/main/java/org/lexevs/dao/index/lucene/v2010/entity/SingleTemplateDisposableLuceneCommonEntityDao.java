@@ -72,9 +72,16 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 		BestScoreOfEntityHitCollector hitCollector = 
 			new BestScoreOfEntityHitCollector(docIdSet.iterator(), maxDoc);
 
+		long startTime = System.currentTimeMillis();
 		template.search(query, this.getCodingSchemeFilterForCodingScheme(references), hitCollector);
+		System.out.println("Lucene Search Time: " + (System.currentTimeMillis() - startTime));
 		
 		return hitCollector.getResult();
+	}
+
+	@Override
+	public void optimizeIndex() {
+		template.optimize();
 	}
 
 	@Override

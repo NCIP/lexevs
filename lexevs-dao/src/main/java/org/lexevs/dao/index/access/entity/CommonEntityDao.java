@@ -34,6 +34,8 @@ public interface CommonEntityDao extends LexEvsIndexFormatVersionAwareDao {
 	
 	public String getIndexName();
 	
+	public void optimizeIndex();
+	
 	public Document getDocumentById(int id);
 
 	public List<ScoreDoc> query(Query query);

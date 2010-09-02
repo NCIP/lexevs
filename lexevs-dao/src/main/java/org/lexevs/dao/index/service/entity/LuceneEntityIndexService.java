@@ -75,7 +75,10 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).optimizeIndex(codingSchemeUri, codingSchemeVersion);
 	}
 
-	
+	@Override
+	public void optimizeCommonIndex() {
+		indexRegistry.getCommonLuceneIndexTemplate().optimize();
+	}
 	
 	@Override
 	public Document getDocumentById(

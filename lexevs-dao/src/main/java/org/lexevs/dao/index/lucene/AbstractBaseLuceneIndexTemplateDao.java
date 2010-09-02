@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
@@ -21,6 +22,10 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 	private Map<String,Filter> boundaryDocFilterMap = new HashMap<String,Filter>();
 	
 	protected Filter getBoundaryDocFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+		if(CollectionUtils.isEmpty(codingSchemes)) {
+			return null;
+		}
+		
 		String key = getFilterMapKey(codingSchemes);
 		if(!this.boundaryDocFilterMap.containsKey(key)) {
 			Filter[] filters = new Filter[codingSchemes.size()];

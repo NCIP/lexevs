@@ -50,6 +50,8 @@ public interface EntityIndexService {
 	
 	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion);
 	
+	public void optimizeCommonIndex();
+	
 	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id);
 	
 	public void deleteEntityFromIndex(

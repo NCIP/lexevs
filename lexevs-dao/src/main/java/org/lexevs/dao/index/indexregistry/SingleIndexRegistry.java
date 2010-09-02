@@ -16,7 +16,6 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
 import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.utility.MetaData;
@@ -101,6 +100,10 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 		String indexName = luceneCodingSchemeToIndexNameMap.get(key);
 		
 		return this.luceneIndexNameToTemplateMap.get(indexName);
+	}
+	
+	public LuceneIndexTemplate getCommonLuceneIndexTemplate() {
+		return luceneIndexTemplate;
 	}
 	
 	protected void autoRegisterIndex(String codingSchemeUri, String version) {

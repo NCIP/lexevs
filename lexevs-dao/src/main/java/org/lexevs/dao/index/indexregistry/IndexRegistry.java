@@ -10,5 +10,6 @@ public interface IndexRegistry {
 
 	public LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version);
-
+	
+	public LuceneIndexTemplate getCommonLuceneIndexTemplate();
 }
