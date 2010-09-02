@@ -141,6 +141,9 @@
         <index-column name="entityCode"/>
         <index-column name="codingSchemeGuid"/>
       </index>
+      <index name="@PREFIX@idx_entityDesc">
+        <index-column name="description" size="20"/>
+      </index>
     </table>
     <table name="@PREFIX@entityAssnQuals">
       <column name="entityAssnQualsGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
@@ -323,6 +326,9 @@
       </unique>
       <index name="@PREFIX@idx_p_referenceGuid">
         <index-column name="referenceGuid"/>
+      </index>
+      <index name="@PREFIX@idx_p_value">
+        <index-column name="propertyValue" size="20"/>
       </index>
     </table>
     <table name="@PREFIX@propertyLinks">
