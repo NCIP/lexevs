@@ -4,10 +4,7 @@ import static org.kohsuke.args4j.ExampleMode.ALL;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -27,9 +24,6 @@ public class ScriptProducingLauncher {
 	
 	@Option(name="-f", aliases={"--force"}, usage="Force output directory creation.") 
 	private boolean force;
-	
-	@Argument
-    private List<String> arguments = new ArrayList<String>();
 
 	private void execute() {
 		if(this.force) {
@@ -55,11 +49,6 @@ public class ScriptProducingLauncher {
 
 		try {
 			parser.parseArgument(args);	
-
-			if( arguments.isEmpty()) {
-                throw new CmdLineException("No argument is given");
-			}
-
 			this.execute();
 		} catch(CmdLineException e) {
 			System.err.println(e.getMessage());
