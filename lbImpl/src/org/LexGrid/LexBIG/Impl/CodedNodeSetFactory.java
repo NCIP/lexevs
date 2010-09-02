@@ -100,46 +100,30 @@ public class CodedNodeSetFactory {
                     if(BooleanUtils.toBoolean(relation.getIsMapping())) {
                         
                         if(toNodeListSet == null) {
-                            CodedNodeSet toNodeListSetSource = LexBIGServiceImpl.defaultInstance().getNodeGraph(
+                            toNodeListSet = LexBIGServiceImpl.defaultInstance().getNodeGraph(
                                 uri, 
                                 versionOrTag,
-                                null).toNodeList(null, true, false, 0, -1);
-                            
-                            CodedNodeSet toNodeListSetTarget = LexBIGServiceImpl.defaultInstance().getNodeGraph(
-                                    uri, 
-                                    versionOrTag,
-                                    null).toNodeList(null, false, true, 0, -1);
-                            
-                            toNodeListSet = toNodeListSetSource.union(toNodeListSetTarget);
+                                null).toNodeList(null, true, false, 1, -1);
                         }
-                        
+
                         String sourceCodingSchemeName = relation.getSourceCodingScheme();
                         String sourceCodingSchemeVersion = relation.getSourceCodingSchemeVersion();
                         String targetCodingSchemeName = relation.getTargetCodingScheme();
                         String targetCodingSchemeVersion = relation.getTargetCodingSchemeVersion();
-                        
+
                         if(! DaoUtility.containsNulls(
                                 sourceCodingSchemeName,
                                 targetCodingSchemeName)) {
-                            
-                            CodingSchemeVersionOrTag sourceCsvt = 
-                                StringUtils.isBlank(sourceCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(sourceCodingSchemeVersion);
-                            
-                            CodingSchemeVersionOrTag targetCsvt = 
-                                StringUtils.isBlank(targetCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(targetCodingSchemeVersion);
-                            
-                            CodedNodeSet sourceCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
-                                    sourceCodingSchemeName, 
-                                    sourceCsvt,
-                                    null);
-                            
-                            CodedNodeSet targetCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
-                                    targetCodingSchemeName, 
-                                    targetCsvt,
-                                    null);
 
-                            codingSchemeToReturn = codingSchemeToReturn.union(
-                                    sourceCodedNodeSet.union(targetCodedNodeSet)).intersect(toNodeListSet);
+                            CodedNodeSet unionedCodedNode = unionMappingCodingScheme(
+                                    toNodeListSet,
+                                    sourceCodingSchemeName,
+                                    sourceCodingSchemeVersion,
+                                    targetCodingSchemeName,
+                                    targetCodingSchemeVersion);
+
+                     
+                                codingSchemeToReturn = unionedCodedNode;
                         }
                     }
                 }   
@@ -149,5 +133,57 @@ public class CodedNodeSetFactory {
         }
 
         throw new LBParameterException("Could not create a CodedNodeSet for CodingScheme: " + codingScheme);
+    }
+    
+    private CodedNodeSet unionMappingCodingScheme(
+            CodedNodeSet toNodeListSet, 
+            String sourceCodingSchemeName, 
+            String sourceCodingSchemeVersion,
+            String targetCodingSchemeName, 
+            String targetCodingSchemeVersion) {
+        CodingSchemeVersionOrTag sourceCsvt = 
+            StringUtils.isBlank(sourceCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(sourceCodingSchemeVersion);
+
+        CodingSchemeVersionOrTag targetCsvt = 
+            StringUtils.isBlank(targetCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(targetCodingSchemeVersion);
+
+        CodedNodeSet cnsToReturn = null;
+
+        try {
+            CodedNodeSet sourceCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
+                    sourceCodingSchemeName, 
+                    sourceCsvt,
+                    null);
+            
+            cnsToReturn = sourceCodedNodeSet.intersect(toNodeListSet);
+        } catch (LBException e) {
+            //not loaded or unavailable
+        }
+        
+        try {
+            CodedNodeSet targetCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
+                    targetCodingSchemeName, 
+                    targetCsvt,
+                    null);
+            
+            if(cnsToReturn != null) {
+                cnsToReturn = cnsToReturn.union(targetCodedNodeSet.intersect(targetCodedNodeSet));
+            } else {
+                cnsToReturn = targetCodedNodeSet;
+            }
+        } catch (LBException e) {
+            //not loaded or unavailable
+            if(cnsToReturn != null) {
+                try {
+                    return cnsToReturn.union(toNodeListSet);
+                } catch (Exception innerEx) {
+                    throw new RuntimeException(innerEx);
+                } 
+            } else {
+                return toNodeListSet;
+            }
+        }
+        
+        return cnsToReturn; 
     }
 }
