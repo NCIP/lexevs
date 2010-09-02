@@ -1291,7 +1291,7 @@
 	</select> 
 	
 	<select id="getTripleUidsForMappingContainer" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$MappingTripleParameterBean"
 		resultMap="Common.uidResult">
 		SELECT
 			eate.entityAssnsGuid AS uidKey
@@ -1308,72 +1308,76 @@
 		ON 
 			ap.relationGuid = rel.relationGuid
 			
-		<isNotNull property="param2">
+		<isNotNull property="sourceCodingSchemeUid">
 			LEFT JOIN
-				$param3$entity sourceEntity
+				$sourceSchemePrefix$entity sourceEntity
 			ON (
 				sourceEntity.entityCode = eate.sourceEntityCode
 				AND
 				sourceEntity.entityCodeNamespace = eate.sourceEntityCodeNamespace
 				AND
-				sourceEntity.codingSchemeGuid = #param2#
+				sourceEntity.codingSchemeGuid = #sourceCodingSchemeUid#
 				)
 		</isNotNull>
-		<isNotNull property="param4">
+		<isNotNull property="targetCodingSchemeUid">
 			LEFT JOIN
-				$param5$entity targetEntity
+				$targetSchemePrefix$entity targetEntity
 			ON (
 				targetEntity.entityCode = eate.targetEntityCode
 				AND
 				targetEntity.entityCodeNamespace = eate.targetEntityCodeNamespace
 				AND
-				targetEntity.codingSchemeGuid = #param4#
+				targetEntity.codingSchemeGuid = #targetCodingSchemeUid#
 				)
 		</isNotNull>
 		
-		<isNotNull property="param8">
-			LEFT JOIN
-				$prefix$entityAssnQuals quals
-			ON (
-				eate.entityAssnsGuid = quals.referenceGuid
-				AND
-				quals.qualifierName = #param8.qualifierName#
-				AND
-				quals.qualifierValue =
-					(SELECT 
-						<isEqual property="param8.order" compareValue="ASC">
-						MAX(
-						</isEqual>
-						<isEqual property="param8.order" compareValue="DESC">
-						MIN(
-						</isEqual>
-							maxQual.qualifierValue)
-					FROM
-						$prefix$entityAssnQuals maxQual
-					WHERE
-						maxQual.referenceGuid = eate.entityAssnsGuid
+		<isNotEmpty property="sortList">
+			<iterate property="sortList">
+				<isPropertyAvailable property="sortList[].qualifierName">
+				LEFT JOIN
+					$prefix$entityAssnQuals $sortList[].tableAlias$
+				ON (
+					eate.entityAssnsGuid = $sortList[].tableAlias$.referenceGuid
+					AND
+					$sortList[].tableAlias$.qualifierName = #sortList[].qualifierName#
+					AND
+					$sortList[].tableAlias$.qualifierValue =
+						(SELECT 
+							<isEqual property="sortList[].order" compareValue="ASC">
+							MAX(
+							</isEqual>
+							<isEqual property="sortList[].order" compareValue="DESC">
+							MIN(
+							</isEqual>
+								maxQual.qualifierValue)
+						FROM
+							$prefix$entityAssnQuals maxQual
+						WHERE
+							maxQual.referenceGuid = eate.entityAssnsGuid
+						)
 					)
-				)
-		</isNotNull>
+				</isPropertyAvailable>
+			</iterate>
+		</isNotEmpty>
 
 		WHERE
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #mappingCodingSchemeUid#
 		AND
-			rel.containerName = #param6#
-			
-		<isEqual property="param9" compareValue="true">
-		ORDER BY
-			<isNotEmpty property="param7">
-				<iterate property="param7" conjunction=",">
-					$param7[].columnSortType.mappingColumn$
-					$param7[].order$
+			rel.containerName = #relationsContainerName#
+		
+			<isNotEmpty property="sortList">
+			ORDER BY
+				<iterate property="sortList" conjunction=",">
+					<isNotPropertyAvailable property="sortList[].qualifierName">
+						$sortList[].columnSortType.mappingColumn$
+						$sortList[].order$
+					</isNotPropertyAvailable>
+					<isPropertyAvailable property="sortList[].qualifierName">
+						$sortList[].tableAlias$.$sortList[].columnSortType.mappingColumn$
+						$sortList[].order$
+					</isPropertyAvailable>
 				</iterate>
 			</isNotEmpty>
-			<isNotNull property="param8">
-				$param8.columnSortType.mappingColumn$
-				$param8.order$
-			</isNotNull>
-		</isEqual>
 	</select>
 	
 	<select id="getTriplesForMappingContainer" remapResults="true"
