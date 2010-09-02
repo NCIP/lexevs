@@ -65,6 +65,10 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
         }  
     }
     
+    public MappingTripleIterator() {
+        super();
+    }
+            
     public MappingTripleIterator(
             String uri, 
             String version,

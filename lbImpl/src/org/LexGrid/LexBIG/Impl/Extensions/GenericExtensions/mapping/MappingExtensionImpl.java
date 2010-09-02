@@ -28,6 +28,10 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
     
     protected static int PAGE_SIZE = 1000;
     
+    public MappingExtensionImpl() {
+        super();
+    }
+    
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();

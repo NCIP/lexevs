@@ -19,6 +19,10 @@ public class MappingTripleUidIterator extends AbstractPageableIterator<String> {
     private List<MappingSortOption> sortOptionList;
     private MappingAbsoluteCodingSchemeVersionReferences refs;
     
+    public MappingTripleUidIterator() {
+        super();
+    }
+    
     public MappingTripleUidIterator(
             String uri, 
             String version,
