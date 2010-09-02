@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
-import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingTripleIterator.MappingAbsoluteCodingSchemeVersionReferences;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -18,7 +17,6 @@ public class MappingTripleUidIterator extends AbstractPageableIterator<String> {
     private String version;
     private String relationsContainerName;
     private List<MappingSortOption> sortOptionList;
-    private QualifierSortOption qualifierSortOption;
     private MappingAbsoluteCodingSchemeVersionReferences refs;
     
     public MappingTripleUidIterator(
@@ -26,14 +24,14 @@ public class MappingTripleUidIterator extends AbstractPageableIterator<String> {
             String version,
             String relationsContainerName, 
             MappingAbsoluteCodingSchemeVersionReferences refs,
-            List<MappingSortOption> sortOptionList, 
-            QualifierSortOption qualifierSortOption) throws LBParameterException {
+            List<MappingSortOption> sortOptionList) throws LBParameterException {
+        super(MappingExtensionImpl.PAGE_SIZE);
+        
         this.uri = uri;
         this.version = version;
         this.relationsContainerName = relationsContainerName;
         this.refs = refs;
         this.sortOptionList = sortOptionList;
-        this.qualifierSortOption = qualifierSortOption;
     }
     
     @Override
@@ -48,7 +46,6 @@ public class MappingTripleUidIterator extends AbstractPageableIterator<String> {
                     refs.getTargetCodingScheme(),
                     relationsContainerName, 
                     DaoUtility.mapMappingSortOptionListToSort(sortOptionList).getSorts(),
-                    DaoUtility.mapMappingQualifierSortOptionListToSort(qualifierSortOption),
                     currentPosition, 
                     pageSize);
     } 

@@ -16,11 +16,18 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.helpers.IteratorBackedResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.relations.Relations;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class MappingExtensionImpl extends AbstractExtendable implements MappingExtension {
 
     private static final long serialVersionUID = 6439060328876806104L;
-
+    
+    protected static int PAGE_SIZE = 1000;
+    
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();
@@ -43,10 +50,9 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
             String codingScheme,
             CodingSchemeVersionOrTag codingSchemeVersionOrTag, 
             String relationsContainerName,
-            List<MappingSortOption> sortOptionList,
-            QualifierSortOption qualifierSortOption) throws LBParameterException {
+            List<MappingSortOption> sortOptionList) throws LBParameterException {
         AbsoluteCodingSchemeVersionReference ref = 
-            ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, codingSchemeVersionOrTag);
+            ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, codingSchemeVersionOrTag, true);
         
         String uri = ref.getCodingSchemeURN();
         String version = ref.getCodingSchemeVersion();
@@ -56,10 +62,51 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                     uri,
                     version,
                     relationsContainerName, 
-                    sortOptionList, 
-                    qualifierSortOption);
-        
+                    sortOptionList);
+
         return 
             new IteratorBackedResolvedConceptReferencesIterator(iterator);
+    }
+
+    @Override
+    public boolean isMappingCodingScheme(String codingScheme,
+            CodingSchemeVersionOrTag codingSchemeVersionOrTag) throws LBParameterException {
+        AbsoluteCodingSchemeVersionReference ref = 
+            ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, codingSchemeVersionOrTag, true);
+
+        final String uri = ref.getCodingSchemeURN();
+        final String version = ref.getCodingSchemeVersion();
+
+        boolean isMappingCodingScheme = 
+            LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getDaoCallbackService().
+            executeInDaoLayer(new DaoCallback<Boolean>() {
+
+                @Override
+                public Boolean execute(DaoManager daoManager) {
+                    String codingSchemeUid = daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+
+                    AssociationDao associationDao = daoManager.getAssociationDao(uri, version);
+
+                    List<String> relationContainerNames = 
+                        associationDao.getRelationsNamesForCodingSchemeUId(codingSchemeUid);
+
+                    for(String relationsContainerName : relationContainerNames) {
+                        String relationsUid = daoManager.getAssociationDao(uri, version).getRelationUId(codingSchemeUid, relationsContainerName);
+
+                        Relations relation = daoManager.getAssociationDao(uri, version).getRelationsByUId(
+                                codingSchemeUid, 
+                                relationsUid, 
+                                false);
+
+                        if(relation.getIsMapping() == null || relation.getIsMapping() == false) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }});
+        
+        return isMappingCodingScheme;
     }
 }

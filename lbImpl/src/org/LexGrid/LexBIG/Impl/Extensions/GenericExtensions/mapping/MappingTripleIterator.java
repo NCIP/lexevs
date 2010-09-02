@@ -8,7 +8,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
-import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.relations.Relations;
@@ -49,8 +48,8 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
             String uri, 
             String version,
             String relationsContainerName,
-            List<MappingSortOption> sortOptionList, 
-            QualifierSortOption qualifierSortOption) throws LBParameterException {
+            List<MappingSortOption> sortOptionList) throws LBParameterException {
+       super(MappingExtensionImpl.PAGE_SIZE);
        this.refs = this.getMappingAbsoluteCodingSchemeVersionReference(uri, version, relationsContainerName);
        
        this.uri = uri;
@@ -62,8 +61,7 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
                version, 
                relationsContainerName,
                refs, 
-               sortOptionList, 
-               qualifierSortOption);
+               sortOptionList);
     }
     
     @Override
@@ -89,8 +87,51 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
                                 relationsContainerName, 
                                 tripleUids);
         
+        return addAssociationList(list);
+    }
+    
+    private List<? extends ResolvedConceptReference> addAssociationList(List<? extends ResolvedConceptReference> list) {
+        /* Not sure if we need to do this...
+
+        for(ResolvedConceptReference ref : list) {
+            ref.setTargetOf(buildAssociationList(refs.getSourceCodingScheme(), ref, AssociationDirection.TARGET_OF));
+            
+            for(Association assoc : ref.getSourceOf().getAssociation()) {
+                for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                    ac.setSourceOf(buildAssociationList(refs.getSourceCodingScheme(), ac, AssociationDirection.SOURCE_OF));
+                }
+            }
+        }
+        */
         return list;
     }
+    
+    /*
+    private AssociationList buildAssociationList(
+            AbsoluteCodingSchemeVersionReference csRef, 
+            ResolvedConceptReference ref,
+            AssociationDirection direction) {
+       
+        return new LazyLoadableAssociontList(
+                new GraphQuery(),
+                csRef.getCodingSchemeURN(), 
+                csRef.getCodingSchemeVersion(), 
+                null,
+                null, 
+                ref.getCode(), 
+                ref.getCodeNamespace(),
+                direction, 
+                1,
+                1,
+                0, 
+                direction.equals(AssociationDirection.SOURCE_OF) ? true : false,
+                direction.equals(AssociationDirection.TARGET_OF) ? true : false, 
+                null,
+                null, 
+                null, 
+                null);
+    }
+    */
     
     private MappingAbsoluteCodingSchemeVersionReferences getMappingAbsoluteCodingSchemeVersionReference(
             final String uri, 
@@ -123,11 +164,13 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
         
         AbsoluteCodingSchemeVersionReference source = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
                 relations.getSourceCodingScheme(), 
-                Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getSourceCodingSchemeVersion()));
+                Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getSourceCodingSchemeVersion()),
+                false);
         
         AbsoluteCodingSchemeVersionReference target = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
                 relations.getTargetCodingScheme(), 
-                Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getTargetCodingSchemeVersion()));
+                Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getTargetCodingSchemeVersion()),
+                false);
         
         refs.setSourceCodingScheme(source);
         refs.setTargetCodingScheme(target);
