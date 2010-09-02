@@ -50,7 +50,7 @@ public class ToNodeListTest extends BaseCodedNodeGraphTest {
     public void testToNodeListNoFocusZeroLevels() throws Exception {
         CodedNodeSet cns = cng.toNodeList(null, true, false, 0, -1);
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, null, -1).getResolvedConceptReference();
-        assertEquals(1,refs.length);
+        assertEquals(2,refs.length);
     }
      
     /**
