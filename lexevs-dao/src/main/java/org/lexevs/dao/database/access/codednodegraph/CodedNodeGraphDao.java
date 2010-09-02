@@ -23,13 +23,10 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
-import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -191,7 +188,6 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String targetCodingSchemeUid, 
 			String relationsContainerName,
 			List<Sort> sortOptionList,
-			QualifierSort qualifierSort, 
 			int start, 
 			int pageSize);
 	
