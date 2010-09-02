@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
@@ -28,8 +30,23 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
     private String relationsContainerName;
     
     protected class MappingAbsoluteCodingSchemeVersionReferences {
+        private String sourceCodingSchemeName;
         private AbsoluteCodingSchemeVersionReference sourceCodingScheme;
+        private String targetCodingSchemeName;
         private AbsoluteCodingSchemeVersionReference targetCodingScheme;
+
+        protected String getSourceCodingSchemeName() {
+            return sourceCodingSchemeName;
+        }
+        protected void setSourceCodingSchemeName(String sourceCodingSchemeName) {
+            this.sourceCodingSchemeName = sourceCodingSchemeName;
+        }
+        protected String getTargetCodingSchemeName() {
+            return targetCodingSchemeName;
+        }
+        protected void setTargetCodingSchemeName(String targetCodingSchemeName) {
+            this.targetCodingSchemeName = targetCodingSchemeName;
+        }
         protected AbsoluteCodingSchemeVersionReference getSourceCodingScheme() {
             return sourceCodingScheme;
         }
@@ -87,52 +104,32 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
                                 relationsContainerName, 
                                 tripleUids);
         
-        return addAssociationList(list);
+        return addCodingSchemeInfo(list);
     }
     
-    private List<? extends ResolvedConceptReference> addAssociationList(List<? extends ResolvedConceptReference> list) {
-        /* Not sure if we need to do this...
+    private List<? extends ResolvedConceptReference> addCodingSchemeInfo(List<? extends ResolvedConceptReference> list) {
 
         for(ResolvedConceptReference ref : list) {
-            ref.setTargetOf(buildAssociationList(refs.getSourceCodingScheme(), ref, AssociationDirection.TARGET_OF));
+            if(this.refs.getSourceCodingScheme() != null) {
+                ref.setCodingSchemeURI(this.refs.getSourceCodingScheme().getCodingSchemeURN());
+                ref.setCodingSchemeVersion(this.refs.getSourceCodingScheme().getCodingSchemeVersion());
+            }
+            ref.setCodingSchemeName(this.refs.getSourceCodingSchemeName());
             
             for(Association assoc : ref.getSourceOf().getAssociation()) {
                 for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
-                    ac.setSourceOf(buildAssociationList(refs.getSourceCodingScheme(), ac, AssociationDirection.SOURCE_OF));
+                    if(this.refs.getTargetCodingScheme() != null) {
+                        ac.setCodingSchemeURI(this.refs.getTargetCodingScheme().getCodingSchemeURN());
+                        ac.setCodingSchemeVersion(this.refs.getTargetCodingScheme().getCodingSchemeVersion());
+                    }
+                    ac.setCodingSchemeName(this.refs.getTargetCodingSchemeName());
                 }
             }
         }
-        */
+      
         return list;
     }
-    
-    /*
-    private AssociationList buildAssociationList(
-            AbsoluteCodingSchemeVersionReference csRef, 
-            ResolvedConceptReference ref,
-            AssociationDirection direction) {
-       
-        return new LazyLoadableAssociontList(
-                new GraphQuery(),
-                csRef.getCodingSchemeURN(), 
-                csRef.getCodingSchemeVersion(), 
-                null,
-                null, 
-                ref.getCode(), 
-                ref.getCodeNamespace(),
-                direction, 
-                1,
-                1,
-                0, 
-                direction.equals(AssociationDirection.SOURCE_OF) ? true : false,
-                direction.equals(AssociationDirection.TARGET_OF) ? true : false, 
-                null,
-                null, 
-                null, 
-                null);
-    }
-    */
-    
+
     private MappingAbsoluteCodingSchemeVersionReferences getMappingAbsoluteCodingSchemeVersionReference(
             final String uri, 
             final String version,
@@ -166,14 +163,17 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
                 relations.getSourceCodingScheme(), 
                 Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getSourceCodingSchemeVersion()),
                 false);
-        
+   
         AbsoluteCodingSchemeVersionReference target = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
                 relations.getTargetCodingScheme(), 
                 Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getTargetCodingSchemeVersion()),
                 false);
         
         refs.setSourceCodingScheme(source);
+        refs.setSourceCodingSchemeName(relations.getSourceCodingScheme());
+        
         refs.setTargetCodingScheme(target);
+        refs.setTargetCodingSchemeName(relations.getTargetCodingScheme());
         
         return refs;
     }
