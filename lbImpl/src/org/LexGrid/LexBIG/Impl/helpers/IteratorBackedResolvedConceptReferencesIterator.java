@@ -8,7 +8,9 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.annotations.LgClientSideSafe;
 
+@LgClientSideSafe
 public class IteratorBackedResolvedConceptReferencesIterator implements ResolvedConceptReferencesIterator {
 
     private static final long serialVersionUID = -9172975996526240085L;
