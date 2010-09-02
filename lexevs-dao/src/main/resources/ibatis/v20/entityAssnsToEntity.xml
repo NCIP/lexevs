@@ -48,9 +48,7 @@
 		<result property="tripleUid" column="tripleUid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="code" column="sourceEntityCode" />
 		<result property="codeNamespace" column="sourceEntityCodeNamespace" />
-		<result property="entityDescription.content" column="sourceEntityDescription"/>
-<!--		<result property="entityDescription.content" column="sourceDescription" />-->
-<!--		<result property="sourceOf.association" resultMap="Association.mappingTripleAssociationResult"/>-->
+		<result property="entityDescription.content" column="sourceEntityDescription" />
 		<result property="_sourceOf._associationList" resultMap="Association.mappingTripleAssociationResult" />
 	</resultMap>
 	
@@ -62,6 +60,7 @@
 	<resultMap id="mappingTripleObjectResult" class="org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept" groupBy="code,namespace">
 		<result property="code" column="targetEntityCode" />
 		<result property="codeNamespace" column="targetEntityCodeNamespace" />
+		<result property="entityDescription.content" column="targetEntityDescription"/>
 	</resultMap>
 
 	<resultMap id="associationQualificationResult" class="associationQualification" groupBy="name,content">
@@ -1388,10 +1387,21 @@
 
 			eate.sourceEntityCode AS sourceEntityCode,
 			eate.sourceEntityCodeNamespace AS sourceEntityCodeNamespace,
-			sourceEntity.description AS sourceEntityDescription,
+			<isNotNull property="param2">
+				sourceEntity.description AS sourceEntityDescription,
+			</isNotNull>
+			<isNull property="param2">
+				NULL AS sourceEntityDescription,
+			</isNull>
 			
 			eate.targetEntityCode AS targetEntityCode,
 			eate.targetEntityCodeNamespace AS targetEntityCodeNamespace,
+			<isNotNull property="param4">
+				targetEntity.description AS targetEntityDescription,
+			</isNotNull>
+			<isNull property="param4">
+				NULL AS targetEntityDescription,
+			</isNull>
 			
 			ap.associationName AS associationName,
 			
@@ -1410,6 +1420,7 @@
 		ON 
 			ap.relationGuid = rel.relationGuid
 			
+		<isNotNull property="param2">
 		LEFT JOIN
 			$param3$entity sourceEntity
 			ON (
@@ -1419,25 +1430,22 @@
 				AND
 				sourceEntity.codingSchemeGuid = #param2#
 				)
-			
+		</isNotNull>
+		<isNotNull property="param4">
+		LEFT JOIN
+			$param5$entity targetEntity
+			ON (
+				targetEntity.entityCode = eate.targetEntityCode
+				AND
+				targetEntity.entityCodeNamespace = eate.targetEntityCodeNamespace
+				AND
+				targetEntity.codingSchemeGuid = #param4#
+				)
+		</isNotNull>
+		
 		LEFT JOIN
 			$prefix$entityAssnQuals quals
 		ON (eate.entityAssnsGuid = quals.referenceGuid)
-		
-<!--		LEFT JOIN-->
-<!--			$prefix$entity entity-->
-<!--		ON (-->
-<!--			<isEqual property="param1" compareValue="SUBJECT">-->
-<!--				eate.sourceEntityCode = entity.entityCode-->
-<!--				AND-->
-<!--				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace-->
-<!--			</isEqual>-->
-<!--			<isEqual property="param1" compareValue="OBJECT">-->
-<!--				eate.targetEntityCode = entity.entityCode-->
-<!--				AND-->
-<!--				eate.targetEntityCodeNamespace = entity.entityCodeNamespace-->
-<!--			</isEqual>-->
-<!--			)-->
 		
 		WHERE
 			eate.entityAssnsGuid IN ( <iterate property="param7" conjunction=",">#param7[],handler=variablePrimaryKeyTypeHandler#</iterate> )
