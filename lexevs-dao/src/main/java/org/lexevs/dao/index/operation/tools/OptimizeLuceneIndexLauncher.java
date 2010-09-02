@@ -37,8 +37,10 @@ public class OptimizeLuceneIndexLauncher {
 			parser.parseArgument(args);	
 
 			if(help) {
+				System.out.println("Optimizes the Common Lucene Index.");
+				System.out.println();
 				printUsage(parser, System.out);
-                System.out.println("Optimizes the Common Lucene Index.");
+				return;
 			}
 
 			this.execute();
