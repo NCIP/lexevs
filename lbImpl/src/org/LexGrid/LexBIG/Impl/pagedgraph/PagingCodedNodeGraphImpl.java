@@ -183,9 +183,7 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                                     DaoUtility.propertyTypeArrayToString(propertyTypes));
                     }
                 }  
-            } else {
-                needToValidateFocusExistsInGraph = false;
-            }
+            } 
            
             if(focus == null) {
                focus = new ResolvedConceptReference();
@@ -247,6 +245,8 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                focus.setCodeNamespace(namespace);    
                
                focus.setCodingSchemeName(codingSchemeName);
+            } else {
+                needToValidateFocusExistsInGraph = false;
             }
          
             boolean isValidFocus = PagedGraphUtils.checkFocus(

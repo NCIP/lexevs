@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.codednodeset.LuceneOnlyToNodeListCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl.ArtificialRootResolvePolicy;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
@@ -50,6 +53,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
@@ -365,15 +369,62 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                     false, 
                     ArtificialRootResolvePolicy.RESOLVE_CHILDREN,
                     new ReferenceReturningCycleDetectingCallback());
-
-        ConceptReferenceList codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
+        
+        MappingExtension mappingExtension = 
+            (MappingExtension) LexBIGServiceImpl.defaultInstance().getGenericExtension("MappingExtension");
+        
+        ConceptReferenceList codeList;
+        
+        if(mappingExtension.isMappingCodingScheme(
+                codingSchemeUri, 
+                Constructors.createCodingSchemeVersionOrTagFromVersion(version))) {
+            List<String> relationContainerNames;
+            if(relationsContainerName != null) {
+                relationContainerNames = Arrays.asList(relationsContainerName);
+            } else {
+                relationContainerNames = 
+                    LexEvsServiceLocator.getInstance().
+                        getDatabaseServiceManager().
+                            getCodedNodeGraphService().
+                                getRelationNamesForCodingScheme(codingSchemeUri, version);
+            }
+            
+            codeList = new ConceptReferenceList();
+            
+            for(String relationContainerName : relationContainerNames) {
+                ResolvedConceptReferencesIterator itr = mappingExtension.resolveMapping(
+                        codingSchemeUri, 
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
+                        relationContainerName, 
+                        null);
+                
+                try {
+                    while(itr.hasNext()) {
+                        ResolvedConceptReference ref = itr.next();
+                        if(resolveForward || (resolveBackward && resolveAssociationDepth > 0)) {
+                            codeList.addConceptReference(ref);
+                        }
+                        for(Association assoc : ref.getSourceOf().getAssociation()) {
+                            for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+                                if(resolveBackward || (resolveForward && resolveAssociationDepth > 0)) {
+                                    codeList.addConceptReference(ac);
+                                }
+                            }
+                        }
+                    }
+                } catch (LBResourceUnavailableException e) {
+                    throw new RuntimeException(e);
+                } 
+            }
+        } else {
+            codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
+        }
    
         try {
             return new LuceneOnlyToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
         } catch (LBResourceUnavailableException e) {
            throw new RuntimeException(e);
         }
-
     }
 
     private ConceptReferenceList traverseGraph(
