@@ -5,6 +5,9 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+
+
+
 public class AllTests {
 
 	public static Test suite() {
