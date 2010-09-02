@@ -29,7 +29,6 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				MAPPING_SCHEME_URI, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings", 
-				null, 
 				null);
 		
 		int count = 0;
@@ -50,7 +49,6 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				MAPPING_SCHEME_URI, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings", 
-				null, 
 				null);
 		
 		int count = 0;
@@ -82,7 +80,6 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				MAPPING_SCHEME_URI, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings", 
-				null, 
 				null);
 		
 		int count = 0;
