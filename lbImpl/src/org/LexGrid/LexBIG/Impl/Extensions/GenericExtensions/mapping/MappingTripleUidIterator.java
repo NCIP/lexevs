@@ -36,8 +36,7 @@ public class MappingTripleUidIterator extends AbstractPageableIterator<String> {
     
     @Override
     protected List<? extends String> doPage(int currentPosition, int pageSize) {
-   
-        
+      
         return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
             getTripleUidsForMappingRelationsContainer(
                     uri, 

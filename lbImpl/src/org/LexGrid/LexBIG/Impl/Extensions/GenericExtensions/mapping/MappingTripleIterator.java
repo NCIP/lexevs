@@ -1,5 +1,6 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +30,10 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
     private String version;
     private String relationsContainerName;
     
-    protected class MappingAbsoluteCodingSchemeVersionReferences {
+    protected class MappingAbsoluteCodingSchemeVersionReferences implements Serializable {
+
+        private static final long serialVersionUID = -5960065222089972290L;
+        
         private String sourceCodingSchemeName;
         private AbsoluteCodingSchemeVersionReference sourceCodingScheme;
         private String targetCodingSchemeName;
