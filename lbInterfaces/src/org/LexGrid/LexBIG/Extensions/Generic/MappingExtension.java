@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Extensions.Generic;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -31,7 +32,8 @@ public interface MappingExtension extends GenericExtension {
 		TARGET_CODE,
 		SOURCE_ENTITY_DESCRIPTION,
 		TARGET_ENTITY_DESCRIPTION,
-		RELATIONSHIP
+		RELATIONSHIP,
+		QUALIFIER
 	}
 	
 	public enum Direction  {
@@ -39,62 +41,58 @@ public interface MappingExtension extends GenericExtension {
 		DESC
 	}
 	
-	public class MappingSortOption {
+	public class MappingSortOption implements Serializable {
+	
+		private static final long serialVersionUID = -7602204298076863624L;
+		
 		private MappingSortOptionName mappingSortOptionName;
 		private Direction direction;
 		
 		public MappingSortOption(MappingSortOptionName mappingSortOptionName,
 				Direction direction) {
 			super();
+			if(mappingSortOptionName != null &&
+					mappingSortOptionName.equals(MappingSortOptionName.QUALIFIER)) {
+				throw new RuntimeException("Please use a QualifierSortOption for a QUALIFIER sort.");
+			}
 			this.mappingSortOptionName = mappingSortOptionName;
 			this.direction = direction;
 		}
-
+		
 		public MappingSortOptionName getMappingSortOptionName() {
 			return mappingSortOptionName;
 		}
 
-		public void setMappingSortOptionName(
-				MappingSortOptionName mappingSortOptionName) {
-			this.mappingSortOptionName = mappingSortOptionName;
-		}
-
 		public Direction getDirection() {
 			return direction;
-		}
-
-		public void setDirection(Direction direction) {
-			this.direction = direction;
 		}
 	}
 	
 	public class QualifierSortOption extends MappingSortOption {
 	
 		private static final long serialVersionUID = 7414449265393660704L;
-		
+
 		private String qualifierName;
 		
-		private QualifierSortOption(
-				MappingSortOptionName mappingSortOptionName,
-				Direction direction,
-				String qualifierName) {
-			super(mappingSortOptionName, direction);
+		public QualifierSortOption(Direction direction, String qualifierName) {
+			super(null, direction);
 			this.qualifierName = qualifierName;
 		}
-
-		public void setQualifierName(String qualifierName) {
-			this.qualifierName = qualifierName;
+		public MappingSortOptionName getMappingSortOptionName() {
+			return MappingSortOptionName.QUALIFIER;
 		}
-
 		public String getQualifierName() {
 			return qualifierName;
-		}	
+		}
 	}
+	
+	public boolean isMappingCodingScheme(
+			String codingScheme, 
+			CodingSchemeVersionOrTag codingSchemeVersionOrTag) throws LBParameterException;
 	
 	public ResolvedConceptReferencesIterator resolveMapping(
 			String codingScheme, 
 			CodingSchemeVersionOrTag codingSchemeVersionOrTag,
 			String relationsContainerName,
-			List<MappingSortOption> sortOptionList,
-			QualifierSortOption qualifierSortOption) throws LBParameterException;
+			List<MappingSortOption> sortOptionList) throws LBParameterException;
 }
