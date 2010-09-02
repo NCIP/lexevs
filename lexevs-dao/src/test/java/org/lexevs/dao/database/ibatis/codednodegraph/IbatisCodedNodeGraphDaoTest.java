@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Direction;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionName;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
@@ -1947,7 +1948,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		" 'ai-id1', null, null, null, null, null, null, null, null)");
 
 		List<String> uids = 
-			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer("1", "2", "3", "c-name", null, null, 0, -1);
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer("1", "2", "3", "c-name", null, 0, -1);
 		
 		assertEquals(1,uids.size());
 		assertEquals("1", uids.get(0));
@@ -2008,7 +2009,6 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"3", 
 					"c-name", 
 					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
-					null, 
 					0, 
 					-1);
 		
@@ -2070,8 +2070,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"2", 
 					"3", 
 					"c-name", 
-					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
-					null, 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(),  
 					0, 
 					-1);
 		
@@ -2134,7 +2133,6 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"3", 
 					"c-name", 
 					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
-					null, 
 					0, 
 					-1);
 		
@@ -2197,7 +2195,6 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"3", 
 					"c-name", 
 					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
-					null, 
 					0, 
 					-1);
 		
@@ -2260,7 +2257,6 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"3", 
 					"c-name", 
 					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
-					null, 
 					0, 
 					-1);
 		
@@ -2322,8 +2318,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"2", 
 					"3", 
 					"c-name", 
-					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(), 
-					null, 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(),  
 					0, 
 					-1);
 		
@@ -2387,7 +2382,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'1'," +
 				"'2' )");
 		
-		QualifierSort qualiferSort = new QualifierSort(ColumnSortType.QUALIFIER, Order.ASC, "qualName");
+		MappingSortOption sort = new QualifierSortOption(Direction.ASC, "qualName");
 
 		List<String> uids = 
 			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
@@ -2395,8 +2390,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"2", 
 					"3", 
 					"c-name", 
-					null, 
-					qualiferSort, 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(),  
 					0, 
 					-1);
 		
@@ -2460,7 +2454,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 				"'1'," +
 				"'2' )");
 		
-		QualifierSort qualiferSort = new QualifierSort(ColumnSortType.QUALIFIER, Order.DESC, "qualName");
+		MappingSortOption sort = new QualifierSortOption(Direction.DESC, "qualName");
 
 		List<String> uids = 
 			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer(
@@ -2468,8 +2462,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 					"2", 
 					"3", 
 					"c-name", 
-					null, 
-					qualiferSort, 
+					DaoUtility.mapMappingSortOptionListToSort(Arrays.asList(sort)).getSorts(),  
 					0, 
 					-1);
 		
