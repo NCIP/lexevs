@@ -255,4 +255,14 @@ public class CleanUpTest extends TestCase {
 		lbsm.deactivateCodingSchemeVersion(scheme, null);
 		lbsm.removeCodingSchemeVersion(scheme);
 	}
+	
+	public void testRemoveMappingScheme() throws LBException {
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
+		scheme.setCodingSchemeURN("urn:oid:mapping:sample");
+		scheme.setCodingSchemeVersion("1.0");
+		lbsm.deactivateCodingSchemeVersion(scheme, null);
+		lbsm.removeCodingSchemeVersion(scheme);
+	}
 }
