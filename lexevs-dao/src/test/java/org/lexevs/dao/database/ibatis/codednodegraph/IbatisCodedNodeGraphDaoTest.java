@@ -2469,4 +2469,76 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals(2,uids.size());
 		assertEquals("1", uids.get(0));
 	}
+	
+	@Test
+	public void testGetTriplesForMappingRelationsCount() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('2', 'sourcecsname', 'csuri-source', 'csversion')");
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('3', 'targetcsname', 'csuri-target', 'csversion')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code1', " +
+				" 's-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'1', " +
+				"'1'," +
+				"'qualName'," +
+				"'2'," +
+				"'1' )");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'2', " +
+				"'1'," +
+				"'qualName2'," +
+				"'22'," +
+				"'2' )");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code2', " +
+				" 's-ns2'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into " +
+				"entityassnquals values ( " +
+				"'3', " +
+				"'2'," +
+				"'qualName'," +
+				"'1'," +
+				"'3' )");
+		
+		int count = 
+			ibatisCodedNodeGraphDao.getTriplesForMappingRelationsContainerCount(
+					"1", 
+					"c-name");
+		
+		assertEquals(2,count);
+	}
 }
