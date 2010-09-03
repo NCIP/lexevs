@@ -51,7 +51,7 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 			misses += stats.getCacheMisses();
 			
 			sb.append("\n" + cache.getStatistics().toString());
-			long cacheMemory = getMegaBytesFromBytes(cache.calculateInMemorySize());
+			float cacheMemory = getMegaBytesFromBytes(cache.calculateInMemorySize());
 			memoryUsage += cacheMemory;
 			sb.append("\n - In Memory Size (MB): " + cacheMemory);
 		}
@@ -70,8 +70,9 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 		return sb.toString();
 	}
 	
-	private long getMegaBytesFromBytes(long bytes) {
-		return bytes / 1024;
+	private float getMegaBytesFromBytes(float bytes) {
+		//             to KB  to MB
+		return bytes / 1024 / 1024;
 	}
 	
 	protected void initializeCache() {
