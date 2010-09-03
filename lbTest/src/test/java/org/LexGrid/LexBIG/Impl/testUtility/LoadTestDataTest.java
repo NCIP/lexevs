@@ -461,6 +461,25 @@ public class LoadTestDataTest extends TestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
     
+    public void testLoadMappinglSystem() throws LBException, LBInvocationException, InterruptedException{
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+        loader.load(new File("resources/testData/testMapping.xml").toURI(), true, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+    
     private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
     	return LexBIGServiceImpl.defaultInstance().getServiceManager(null);
     }
