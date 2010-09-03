@@ -675,4 +675,19 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 								relationsContainerName, 
 								tripleUids);
 	}
+
+	@Override
+	public int getMappingTriplesCount(
+			String codingSchemeUri,
+			String codingSchemeVersion, String relationsContainerName) {
+		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+					codingSchemeUri, 
+					codingSchemeVersion).
+						getTriplesForMappingRelationsContainerCount(
+								mappingCodingSchemeUid, 
+								relationsContainerName);
+	}
 }

@@ -243,6 +243,11 @@ public interface CodedNodeGraphService {
 			AbsoluteCodingSchemeVersionReference targetCodingScheme,
 			String relationsContainerName, 
 			List<String> tripleUids);
+	
+	public int getMappingTriplesCount(
+			String codingSchemeUri,
+			String codingSchemeVersion,
+			String relationsContainerName);
 }
 
 
