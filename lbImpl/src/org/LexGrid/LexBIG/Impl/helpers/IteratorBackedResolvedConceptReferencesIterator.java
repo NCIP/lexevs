@@ -44,6 +44,9 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
 
     @Override
     public ResolvedConceptReference next() throws LBResourceUnavailableException, LBInvocationException {
+        if(count != UNKNOWN_NUMBER) {
+            count--;
+        }
         return this.iterator.next();
     }
 
@@ -52,6 +55,9 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
         for(int i=0;i<page && this.iterator.hasNext();i++) {
             returnList.addResolvedConceptReference(this.iterator.next());
+        }
+        if(count != UNKNOWN_NUMBER) {
+            count -= returnList.getResolvedConceptReferenceCount();
         }
         return returnList;
     }
