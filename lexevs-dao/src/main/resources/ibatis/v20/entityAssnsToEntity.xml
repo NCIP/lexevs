@@ -61,6 +61,7 @@
 		<result property="code" column="targetEntityCode" />
 		<result property="codeNamespace" column="targetEntityCodeNamespace" />
 		<result property="entityDescription.content" column="targetEntityDescription"/>
+		<result property="_associationQualifiers._nameAndValueList" resultMap="Association.associationQualificationResult"/>
 	</resultMap>
 
 	<resultMap id="associationQualificationResult" class="associationQualification" groupBy="name,content">
@@ -1353,6 +1354,8 @@
 							$prefix$entityAssnQuals maxQual
 						WHERE
 							maxQual.referenceGuid = eate.entityAssnsGuid
+						AND
+							maxQual.qualifierName = #sortList[].qualifierName#
 						)
 					)
 				</isPropertyAvailable>
