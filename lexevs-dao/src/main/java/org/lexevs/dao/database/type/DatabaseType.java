@@ -38,7 +38,7 @@ public enum DatabaseType {
 	DB2("DB2"),
 	
 	/** The HSQL. */
-	HSQL("HSQL"),
+	HSQL("HSQL", new String[] {"HSQLDB"} ),
 	
 	/** The MYSQL. */
 	MYSQL("MySQL"),
@@ -54,11 +54,17 @@ public enum DatabaseType {
 
 	/** The product name. */
 	private final String productName;
+	private final String[] aliases;
 
 	static{
 		nameMap = new HashMap<String, DatabaseType>();
 		for(DatabaseType type: values()){
 			nameMap.put(type.getProductName(), type);
+			if(type.getAliases() != null) {
+				for(String alias : type.getAliases()) {
+					nameMap.put(alias, type);
+				}
+			}
 		}
 	}
 	
@@ -78,7 +84,12 @@ public enum DatabaseType {
 	 * @param productName the product name
 	 */
 	private DatabaseType(String productName){
+		this(productName, new String[0]);
+	}
+	
+	private DatabaseType(String productName, String[] aliases){
 		this.productName = productName;
+		this.aliases = aliases;
 	}
 
 	/**
@@ -89,8 +100,12 @@ public enum DatabaseType {
 	public String getProductName() {
 		return productName;
 	}
+	
+	 public String[] getAliases() {
+		return aliases;
+	}
 
-	 /**
+	/**
  	 * Gets the database type.
  	 * 
  	 * @param dataSource the data source

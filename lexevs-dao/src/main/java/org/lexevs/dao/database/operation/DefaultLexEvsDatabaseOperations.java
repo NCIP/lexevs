@@ -51,6 +51,7 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.Assert;
 import org.xml.sax.InputSource;
 
 /**
@@ -292,7 +293,19 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 			platform = PlatformFactory.createNewPlatformInstance(this.dataSource);
 		} else {
 			platform = PlatformFactory.createNewPlatformInstance(databaseType.getProductName());
+			if(platform == null) {
+				//if that doesn't work, try to look up by the enum name -- this is mostly for HSQLDB
+				platform = PlatformFactory.createNewPlatformInstance(databaseType.toString());
+				
+				//if that still doesn't work, check aliases
+				for(String alias : databaseType.getAliases()) {
+					platform = PlatformFactory.createNewPlatformInstance(alias);
+					if(platform != null) {break;}
+				}
+			}
 		}
+		
+		Assert.notNull(platform);
 
 		return actor.getSqlFromPlatform(platform, db);
 	}
