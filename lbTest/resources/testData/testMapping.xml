@@ -45,7 +45,11 @@
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="E0001" />
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="A0001">
-        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="R0001" />
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="R0001">
+        	<lgRel:associationQualification associationQualifier="score">
+        		<lgRel:qualifierText>1</lgRel:qualifierText>
+        	</lgRel:associationQualification>
+        </lgRel:target>
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="C0001">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
@@ -53,7 +57,14 @@
 	</lgRel:associationPredicate> 
 	 <lgRel:associationPredicate  associationName="mapsTo">
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="005">
-        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="P0001" />
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="P0001">
+        	<lgRel:associationQualification associationQualifier="score">
+        		<lgRel:qualifierText>2</lgRel:qualifierText>
+        	</lgRel:associationQualification>
+        	<lgRel:associationQualification associationQualifier="validated">
+        		<lgRel:qualifierText>true</lgRel:qualifierText>
+        	</lgRel:associationQualification>
+        </lgRel:target>
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Ford">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
