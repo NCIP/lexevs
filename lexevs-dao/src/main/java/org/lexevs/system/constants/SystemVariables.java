@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.util.config.PropertiesUtility;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.logging.Logger;
 import org.lexevs.system.utility.CryptoUtility;
@@ -88,6 +89,7 @@ public class SystemVariables {
     
     private String primaryKeyStrategy;
     private static String PRIMARY_KEY_STRATEGY_PROP = "DB_PRIMARY_KEY_STRATEGY";
+    private static String DEFAULT_PRIMARY_KEY_STRATEGY = "GUID";
 
     private boolean emailErrors_ = false;
     private String SMTPServer_;
@@ -347,7 +349,7 @@ public class SystemVariables {
                 }
             }
             
-            this.primaryKeyStrategy = getProperty(props, PRIMARY_KEY_STRATEGY_PROP);
+            this.primaryKeyStrategy = getNullableProperty(props, PRIMARY_KEY_STRATEGY_PROP, DEFAULT_PRIMARY_KEY_STRATEGY);
            
             emailErrors_ = new Boolean(getProperty(props, "EMAIL_ERRORS")).booleanValue();
             if (emailErrors_) {
@@ -613,6 +615,15 @@ public class SystemVariables {
     
     private String getNullableProperty(Properties props, String key) throws LBParameterException {
         return props.getProperty(key); 
+    }
+    
+    private String getNullableProperty(Properties props, String key, String defaultValue) throws LBParameterException {
+        String value = props.getProperty(key);
+        if(StringUtils.isBlank(value)) {
+        	return defaultValue;
+        } else {
+        	return value;
+        }
     }
     
     private boolean getNullableBoolean(String value, boolean valueIfNull){
