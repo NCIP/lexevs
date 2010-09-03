@@ -32,7 +32,8 @@ public enum ColumnSortType {
 	TARGET_CODE("TARGET_CODE", null,null,null,null,"eate.targetEntityCode"),
 	SOURCE_ENTITY_DESCRIPTION("SOURCE_ENTITY_DESCRIPTION", null,null,null,null,"sourceEntity.description"),
 	TARGET_ENTITY_DESCRIPTION("TARGET_ENTITY_DESCRIPTION", null,null,null,null,"targetEntity.description"),
-	QUALIFIER("QUALIFIER", null,null,null,null,"qualifierValue");
+	QUALIFIER("QUALIFIER", null,null,null,null,"qualifierValue"),
+	RELATIONSHIP("RELATIONSHIP", null,null,null,null,"ap.associationName");
 	
 	private final String name;
 	private final String subjectColumn;
