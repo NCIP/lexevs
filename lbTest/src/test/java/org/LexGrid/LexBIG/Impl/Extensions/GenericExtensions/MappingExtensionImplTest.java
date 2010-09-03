@@ -2,8 +2,11 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -122,6 +125,32 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		}
 		
 		assertEquals(5,count);
+	}
+	
+	public void testHasQualifiers() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		ResolvedConceptReferencesIterator itr = mappingExtension.resolveMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings", 
+				null);
+		
+		Map<String,NameAndValueList> foundQuals = new HashMap<String,NameAndValueList>();
+		
+		while(itr.hasNext()) {
+			ResolvedConceptReference next = itr.next();
+			for(Association assoc : next.getSourceOf().getAssociation()) {
+				for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
+					if(ac.getAssociationQualifiers() != null && ac.getAssociationQualifiers().getNameAndValueCount() > 0) {
+						foundQuals.put(ac.getCode(), ac.getAssociationQualifiers());
+					}
+				}
+			}
+		}
+
+		assertEquals(2,foundQuals.size());
 	}
 	
 	private void checkResolvedConceptReference(ResolvedConceptReference next) {
