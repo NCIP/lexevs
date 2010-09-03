@@ -102,10 +102,7 @@ public class DefaultGraphQueryBuilder implements GraphQueryBuilder {
             graphQuery.getRestrictToAssociations().clear();
             graphQuery.getRestrictToAssociationsQualifiers().clear();
             for(NameAndValue nameAndValue : association.getNameAndValue()) {
-                //TODO: resolve URIs
-                if(StringUtils.hasText(nameAndValue.getContent())){
-                    LoggerFactory.getLogger().warn("URIs are currently not resolved.");
-                }
+      
                 String localId = nameAndValue.getName();
                  
                 graphQuery.getRestrictToAssociations().add(localId);
