@@ -679,7 +679,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	@Override
 	public int getMappingTriplesCount(
 			String codingSchemeUri,
-			String codingSchemeVersion, String relationsContainerName) {
+			String codingSchemeVersion, 
+			String relationsContainerName) {
 		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
