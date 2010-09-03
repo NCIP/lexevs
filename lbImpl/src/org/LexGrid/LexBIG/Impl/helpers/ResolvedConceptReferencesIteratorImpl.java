@@ -192,7 +192,9 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
                         this.restrictToPropertyTypes_,
                         this.filters_,
                         this.resolveEntities_);
-
+                
+                compactCodesToReturn(pos_, max);
+                
                 for(ResolvedConceptReference ref : returnedRefs.getResolvedConceptReference()){
                     // rcl can be null if the filters didn't pass the result back.
                     if(ref != null){
@@ -339,12 +341,16 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
                     }
                 }
             } else {
-               return codeToReturnResolver.buildResolvedConceptReference(
+               ResolvedConceptReferenceList returnList = codeToReturnResolver.buildResolvedConceptReference(
                             getCodeToReturnFromCodeHolder(start, end),
                             this.restrictToProperties_,
                             this.restrictToPropertyTypes_,
                             this.filters_,
                             this.resolveEntities_);
+               
+               compactCodesToReturn(start,end);
+               
+               return returnList;
 
             }
         } catch (LBInvocationException e) {
@@ -457,9 +463,15 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         List<CodeToReturn> returnList = new ArrayList<CodeToReturn>();
         for(int i=start;i<end;i++){
             returnList.add(codesToReturn_.getAllCodes().get(i));
-            codesToReturn_.getAllCodes().get(i).compact();
         }
         return returnList;
+    }
+    
+    @LgClientSideSafe
+    private void compactCodesToReturn(int start, int end){
+        for(int i=start;i<end;i++){
+            codesToReturn_.getAllCodes().get(i).compact();
+        }
     }
   
     private void releaseResources() {
