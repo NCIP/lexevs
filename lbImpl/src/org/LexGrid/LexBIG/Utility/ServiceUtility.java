@@ -50,12 +50,16 @@ import org.lexevs.system.service.SystemResourceService;
  */
 public class ServiceUtility {
     
-    public static Entity resolveConceptReference(ResolvedConceptReference conceptReference) {
+    public static Entity resolveConceptReference(ResolvedConceptReference conceptReference) throws LBParameterException {
         String codingSchemeUri = conceptReference.getCodingSchemeURI();
         String version = conceptReference.getCodingSchemeVersion();
         
-        if(codingSchemeUri == null || version == null) {
+        if(codingSchemeUri == null) {
             return null;
+        }
+        
+        if(version == null) {
+            version = getVersion(codingSchemeUri, null);
         }
         
         Entity entity = LexEvsServiceLocator.getInstance().
