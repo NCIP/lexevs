@@ -276,11 +276,12 @@ public class CodedNodeSetImplTest extends TestCase {
 
         // another call to next should return null - they all got removed by the
         // filter.
-        assertTrue(rcri.next() == null);
-
-        // yet another call should throw an exception
-
         try {
+	        assertTrue(rcri.next() == null);
+	
+	        assertFalse(rcri.hasNext());
+	        // yet another call should throw an exception
+     
             rcri.next();
             fail("Didn't throw LBResourceUnavailableException");
         } catch (LBResourceUnavailableException e) {
