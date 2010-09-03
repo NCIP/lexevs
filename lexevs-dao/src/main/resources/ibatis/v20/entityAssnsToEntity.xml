@@ -1455,4 +1455,27 @@
 			rel.containerName = #param6#
 	</select>
 	
+	<select id="getTriplesForMappingContainerCount" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultClass="int">
+		SELECT
+			COUNT(eate.entityAssnsGuid)
+		FROM
+			$prefix$entityAssnsToEntity eate
+			
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eate.associationPredicateGuid = ap.associationPredicateGuid
+			
+		INNER JOIN
+			$prefix$relation rel
+		ON 
+			ap.relationGuid = rel.relationGuid
+		AND
+			rel.codingSchemeGuid = #param1#
+		AND
+			rel.containerName = #param2#
+	</select>
+	
 </sqlMap>

@@ -52,6 +52,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	private static String GET_COUNT_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCountConceptReferences";
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
+	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -599,7 +600,25 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		
 		return sortList(list, tripleUids);
 	}
- 
+
+	@Override
+	@CacheMethod
+	public int getTriplesForMappingRelationsContainerCount(
+			String mappingCodingSchemeUid, 
+			String relationsContainerName) {
+		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				mappingCodingSchemeUid,
+				relationsContainerName);
+
+		bean.setPrefix(mappingSchemePrefix);
+		
+		return 
+			(Integer) 
+				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL, bean);
+	}
+
 	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){
 		Map<String,ResolvedConceptReference> keyedMap = new HashMap<String,ResolvedConceptReference>();
 		for(TripleUidReferencingResolvedConceptReference ref : list) {
