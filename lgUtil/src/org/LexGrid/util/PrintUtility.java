@@ -24,11 +24,14 @@ import java.lang.reflect.Method;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -79,13 +82,17 @@ public class PrintUtility {
 		print(ref, 0);
 	}
 	
+	public static void print(AssociatedConcept ref){
+        print(ref, 0);
+    }
+	
 	/**
 	 * Prints the.
 	 * 
 	 * @param ref the ref
 	 * @param depth the depth
 	 */
-	private static void print(ResolvedConceptReference ref, int depth){
+	private static void print(AssociatedConcept ref, int depth){
 		String description;
 		if(ref.getEntityDescription() == null) {
 			description = "NOT AVAILABLE";
@@ -93,13 +100,41 @@ public class PrintUtility {
 			description = ref.getEntityDescription().getContent();
 		}
 		System.out.println(buildPrefix(depth) + "Code: " + ref.getCode() + ", Description: " + description + " Hash: " + ref.hashCode());
-
+		print(ref.getAssociationQualifiers(), "Qualifiers", depth + 1);
+		
 		if(ref.getSourceOf() != null){
 			print(ref.getSourceOf(), depth+1);
 		}
 		if(ref.getTargetOf() != null){
 			print(ref.getTargetOf(), depth+1);
 		}
+	}
+	
+	   private static void print(ResolvedConceptReference ref, int depth){
+	        String description;
+	        if(ref.getEntityDescription() == null) {
+	            description = "NOT AVAILABLE";
+	        } else {
+	            description = ref.getEntityDescription().getContent();
+	        }
+	        System.out.println(buildPrefix(depth) + "Code: " + ref.getCode() + ", Description: " + description + " Hash: " + ref.hashCode());
+
+	        if(ref.getSourceOf() != null){
+	            print(ref.getSourceOf(), depth+1);
+	        }
+	        if(ref.getTargetOf() != null){
+	            print(ref.getTargetOf(), depth+1);
+	        }
+	    }
+	
+	private static void print(NameAndValueList nameAndValueList, String label, int depth){
+	    if(nameAndValueList != null) {
+	        System.out.println(buildPrefix(depth, false) + label + ":");
+	        for(NameAndValue nv : nameAndValueList.getNameAndValue()) {
+	            System.out.println(buildPrefix(depth + 1, false) + "/ Name: " + nv.getName());
+	            System.out.println(buildPrefix(depth + 1, false) + "\\ Value: " + nv.getContent());
+	        }
+	    }  
 	}
 	
 	/**
@@ -222,7 +257,7 @@ public class PrintUtility {
 	}
 	
 	public static void print(CodedNodeGraph cng) {
-        print(cng, null);
+        print(cng, null, null);
     }
 	
 	/**
@@ -230,14 +265,14 @@ public class PrintUtility {
 	 * 
 	 * @param cng the cng
 	 */
-	public static void print(CodedNodeGraph cng, ConceptReference focus) {
+	public static void print(CodedNodeGraph cng, ConceptReference focus, SortOptionList sorts) {
 
 		ResolvedConceptReferenceList rcrl;
 		System.out.println("-----------------");
 		System.out.println("Resolving Forward");
 		System.out.println("-----------------");
 		try {
-			rcrl = cng.resolveAsList(focus, true, false, -1, -1, null, null, null,
+			rcrl = cng.resolveAsList(focus, true, false, -1, -1, null, null, sorts,
 					-1);
 			ResolvedConceptReference[] rcrArray = rcrl
 			.getResolvedConceptReference();
@@ -248,7 +283,7 @@ public class PrintUtility {
 			System.out.println("------------------");
 			System.out.println("Resolving Backward");
 			System.out.println("------------------");
-				rcrl = cng.resolveAsList(focus, false, true, -1, -1, null, null, null,
+				rcrl = cng.resolveAsList(focus, false, true, -1, -1, null, null, sorts,
 						-1);
 				rcrArray = rcrl
 				.getResolvedConceptReference();
@@ -295,10 +330,21 @@ public class PrintUtility {
 	 * @return the string
 	 */
 	private static String buildPrefix(int depth){
-		String prefix = "";
-		for(int i=0;i<depth;i++){
-			prefix = prefix + " -> ";
-		}
-		return prefix;
+		return buildPrefix(depth, true);
 	}
+	
+	private static String buildPrefix(int depth, boolean buildArrows){
+        String prefix = "";
+        for(int i=0;i<depth;i++){
+            String padding;
+            if(buildArrows) {
+                padding = " -> ";
+            } else {
+                padding = "    ";
+            }
+            
+            prefix = prefix + padding;
+        }
+        return prefix;
+    }
 }
