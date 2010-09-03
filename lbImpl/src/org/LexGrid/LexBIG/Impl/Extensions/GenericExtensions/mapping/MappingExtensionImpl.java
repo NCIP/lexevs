@@ -67,9 +67,17 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                     version,
                     relationsContainerName, 
                     sortOptionList);
+        
+        int count = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getCodedNodeGraphService().
+                    getMappingTriplesCount(
+                            uri, 
+                            version, 
+                            relationsContainerName);
 
         return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator);
+            new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
     }
 
     @Override
