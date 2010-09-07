@@ -69,6 +69,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	private static CreationParameters MYSQL_CREATION_PARAMETERS = new CreationParameters();
 	{
 		MYSQL_CREATION_PARAMETERS.addParameter(null, "ENGINE", "INNODB");
+		MYSQL_CREATION_PARAMETERS.addParameter(null, "CHARACTER SET", "utf8");
+		MYSQL_CREATION_PARAMETERS.addParameter(null, "COLLATE", "utf8_general_ci");
 	}
 	
 	private class CreateSchemaPlatformActor implements PlatformActor {
