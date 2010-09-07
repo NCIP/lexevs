@@ -88,6 +88,12 @@ public class ConceptDomainAuthoringOperationImplTest {
 				assertTrue("Not all test value domains were deleted.",false);
 		}
 		
+		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+		for (String revId : revIds_)
+		{
+			assertTrue(authServ.removeRevisionRecordbyId(revId));
+		}
+		
 		vds_ = null;
 	}
 	
@@ -490,15 +496,6 @@ public class ConceptDomainAuthoringOperationImplTest {
 	
 		
 		assertTrue(removeStatus);
-	}
-	
-	@Test
-	public void removeRevisionRecordById() throws LBException {
-		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-		for (String revId : revIds_)
-		{
-			assertTrue(authServ.removeRevisionRecordbyId(revId));
-		}
 	}
 	
 	class ConceptDomainData{
