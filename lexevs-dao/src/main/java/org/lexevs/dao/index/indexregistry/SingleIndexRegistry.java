@@ -119,7 +119,10 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
 			
 			if(StringUtils.isBlank(indexName)) {
-				throw new RuntimeException("Cannot autoregister index for CodingScheme: " + codingSchemeUri + " Version: " + version);
+				throw new RuntimeException(
+						"Cannot autoregister index for CodingScheme: " + codingSchemeUri + " Version: " + version + ".\n" +
+						"The Lucene index for this CodingScheme may have been dropped, or indexing may have failed. " +
+						"Reindexing may be needed.");
 			}
 
 			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
