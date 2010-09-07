@@ -20,9 +20,11 @@ package org.LexGrid.LexBIG.mapping;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
+
+import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
@@ -33,8 +35,6 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
-
-import junit.framework.TestCase;
 
 public class LexEVSMappingCreationTest extends TestCase {
 	
@@ -59,7 +59,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 	public void testCreateNewMapping()throws LBException{
 		   EntryState entryState = new EntryState();
 		   entryState.setChangeType(ChangeType.NEW);
-		   entryState.setContainingRevision("TestNewMapping1");
+		   entryState.setContainingRevision(UUID.randomUUID().toString());
 		  entryState.setRelativeOrder(new Long(1));
 		   AbsoluteCodingSchemeVersionReference mappingCodingScheme = new AbsoluteCodingSchemeVersionReference();
 		   mappingCodingScheme.setCodingSchemeURN(MappingTestConstants.MAPPING_SCHEME);
@@ -101,7 +101,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 	public void testCreateNewMappingWithNewRelationsContainer()throws LBException{
 		   EntryState entryState = new EntryState();
 		   entryState.setChangeType(ChangeType.NEW);
-		   entryState.setContainingRevision("TestNewMapping2");
+		   entryState.setContainingRevision(UUID.randomUUID().toString());
 		  entryState.setRelativeOrder(new Long(1));
 		   AbsoluteCodingSchemeVersionReference mappingCodingScheme = new AbsoluteCodingSchemeVersionReference();
 		   mappingCodingScheme.setCodingSchemeURN(MappingTestConstants.MAPPING_SCHEME);
@@ -141,7 +141,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 	public void testCreateNewMappingWithNewAssociationPredicate()throws LBException{
 			   EntryState entryState = new EntryState();
 			   entryState.setChangeType(ChangeType.NEW);
-			   entryState.setContainingRevision("TestNewMapping3");
+			   entryState.setContainingRevision(UUID.randomUUID().toString());
 			  entryState.setRelativeOrder(new Long(1));
 			   AbsoluteCodingSchemeVersionReference mappingCodingScheme = new AbsoluteCodingSchemeVersionReference();
 			   mappingCodingScheme.setCodingSchemeURN(MappingTestConstants.MAPPING_SCHEME);
