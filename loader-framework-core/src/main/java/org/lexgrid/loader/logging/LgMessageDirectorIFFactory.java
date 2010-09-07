@@ -4,12 +4,13 @@ import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 public class LgMessageDirectorIFFactory implements InitializingBean, FactoryBean {
 
-	private StatusTrackingLogger logger;
+	private CachingMessageDirectorIF logger;
 
 	public void afterPropertiesSet() throws Exception {
 		LoadStatus status = new LoadStatus();

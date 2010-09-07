@@ -26,9 +26,10 @@ import java.util.Properties;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
+import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.system.utility.MyClassLoader;
-import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.SpringBatchMessageDirector;
 import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
@@ -53,7 +54,6 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	private static final long serialVersionUID = -4179393859521278360L;
 	
 	private JobExecution jobExecution;
-	private SpringBatchMessageDirector springBatchMessageDirector;
 	
 	private URNVersionPair[] loadedCodingSchemes;
 	
@@ -90,7 +90,8 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 		JobLauncher jobLauncher = (JobLauncher)ctx.getBean("jobLauncher");
 		Job job = (Job)ctx.getBean(jobName);
 		
-		springBatchMessageDirector = (SpringBatchMessageDirector)ctx.getBean("logger");
+		CachingMessageDirectorIF springBatchMessageDirector = (CachingMessageDirectorIF)ctx.getBean("logger");
+		this.setCachingMessageDirectorIF(springBatchMessageDirector);
 		
 		printStartLogInfo(connectionProperties, jobConfigFile, jobName);
 		
@@ -108,7 +109,7 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 	protected abstract URNVersionPair[] getLoadedCodingSchemes(ApplicationContext context);
 	
 	protected void printStartLogInfo(Properties connectionProperties, String jobConfigFile, String jobName){
-		springBatchMessageDirector.info("Starting Loader Job :" + jobName);
+		this.getMessageDirector().info("Starting Loader Job :" + jobName);
 		printJobProperties(connectionProperties);
 	}
 	
@@ -125,7 +126,7 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 
 			connectionProps.append(" - Value: " + propertyValue + "\n");
 		}
-		springBatchMessageDirector.info(connectionProps.toString());
+		this.getMessageDirector().info(connectionProps.toString());
 	}
 	
 	/**
