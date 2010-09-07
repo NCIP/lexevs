@@ -192,7 +192,7 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		// now check vs entry state table
 		count = (String) this.getSqlMapClientTemplate()
 			.queryForObject(CHECK_REVISION_EXISTS_IN_VS_ENTRYSTATE, 
-					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionId));
+					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionGuid));
 		
 		if (!count.equals("0"))
 			throw new LBException("Revision ID " + revisionId + " can not be removed as it is being referenced by other loaded entries.");
