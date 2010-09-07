@@ -33,20 +33,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
     public LexGridMultiLoaderImpl() {
        super();
     }
-    public void LexGridMultiLoaderbaseLoad(boolean async)throws LBInvocationException {
-        
-        setStatus(new LoadStatus());
-
-        getStatus().setState(ProcessState.PROCESSING);
-        getStatus().setStartTime(new Date(System.currentTimeMillis()));
-
-        if (async) {
-            Thread conversion = new Thread(new DoConversion());
-            conversion.start();
-        } else {
-            new DoConversion().run();
-        }
-     }
+  
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader#validate(java.net.URI, int)
      */
@@ -59,20 +46,6 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         
         this.load(source);
-    }
-    /* (non-Javadoc)
-     * @see org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader#load(java.net.URI, boolean, boolean)
-     */
-    public void load(URI uri) {
-        setResourceUri(uri);
-        try {
-           boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
-           this.setCodingSchemeManifestURI(this.getOptions().getURIOption(MANIFEST_FILE_OPTION).getOptionValue());
-           this.setLoaderPreferences(this.getOptions().getURIOption(LOADER_PREFERENCE_FILE_OPTION).getOptionValue());
-            LexGridMultiLoaderbaseLoad(async);
-        } catch (LBException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /* (non-Javadoc)
