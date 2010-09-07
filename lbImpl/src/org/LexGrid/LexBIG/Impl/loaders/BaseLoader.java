@@ -192,7 +192,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
         status_.setState(ProcessState.PROCESSING);
         status_.setStartTime(new Date(System.currentTimeMillis()));
-        md_ = new CachingMessageDirectorImpl( new MessageDirector(getName(), status_));
+        md_ = createCachingMessageDirectorIF();
 
         if (async) {
             Thread conversion = new Thread(new DoConversion());
@@ -201,19 +201,16 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             new DoConversion().run();
         }
     }
+    
+    protected CachingMessageDirectorIF createCachingMessageDirectorIF() {
+    	return new CachingMessageDirectorImpl( new MessageDirector(getName(), status_));
+    }
 
 
     public boolean isInUse() {
         return inUse;
     }
-    public CachingMessageDirectorIF getMd_() {
-        return md_;
-    }
-
-    public void setMd_(CachingMessageDirectorIF md) {
-        md_ = md;
-    }
-
+  
     public void setManifestUtil(ManifestUtil manifestUtil) {
         this.manifestUtil = manifestUtil;
     }
@@ -882,7 +879,11 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     public CachingMessageDirectorIF getMessageDirector() {
         return md_;
     }
-    
+
+    protected void setCachingMessageDirectorIF(CachingMessageDirectorIF md) {
+        md_ = md;
+    }
+
     public ManifestUtil getManifestUtil() {
         return this.manifestUtil;
     }

@@ -15,7 +15,6 @@ import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.StreamingXMLToSQL;
 import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.LexGridXMLProcessor;
@@ -40,7 +39,6 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
 
         getStatus().setState(ProcessState.PROCESSING);
         getStatus().setStartTime(new Date(System.currentTimeMillis()));
-        setMd_(new CachingMessageDirectorImpl( new MessageDirector(getName(), getStatus())));
 
         if (async) {
             Thread conversion = new Thread(new DoConversion());
@@ -96,7 +94,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
         
         Object[] loadedObject = loader.load(
                 this.getResourceUri(),
-                this.getMd_(),
+                this.getMessageDirector(),
                 this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue(),
                 this.getCodingSchemeManifest());
    
