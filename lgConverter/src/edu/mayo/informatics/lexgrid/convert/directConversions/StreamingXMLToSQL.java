@@ -47,15 +47,15 @@ public class StreamingXMLToSQL {
             boolean isXMLValid, CodingSchemeManifest manifest) throws CodingSchemeAlreadyLoadedException {
         messages_ = messageDirector;
         LexGridXMLProcessor processor = new LexGridXMLProcessor();
-        int entryPoint = processor.getEntryPointType(fileLocation.getPath(),  messageDirector);
+        int entryPoint = processor.getEntryPointType(fileLocation,  messageDirector);
 
         switch (entryPoint) {
-            case 1:  loadedObject = processor.loadCodingScheme(fileLocation.getPath(), messages_, isXMLValid, manifest); break;
-            case 2:  loadedObject = processor.loadRevision(fileLocation.getPath(), messages_, isXMLValid); break;
-            case 3:  loadedObject = processor.loadSystemRelease(fileLocation.getPath(), messages_, isXMLValid); break;
-            case 4:  loadedObject = processor.loadValueSetDefinition(fileLocation.getPath(), messages_, isXMLValid); break;
-            case 5:  loadedObject = processor.loadPickListDefinition(fileLocation.getPath(), messages_, isXMLValid); break;
-            default: messageDirector.info("No Valid LexGrid XML entry point found at " + fileLocation.getPath()); break;
+            case 1:  loadedObject = processor.loadCodingScheme(fileLocation, messages_, isXMLValid, manifest); break;
+            case 2:  loadedObject = processor.loadRevision(fileLocation, messages_, isXMLValid); break;
+            case 3:  loadedObject = processor.loadSystemRelease(fileLocation, messages_, isXMLValid); break;
+            case 4:  loadedObject = processor.loadValueSetDefinition(fileLocation, messages_, isXMLValid); break;
+            case 5:  loadedObject = processor.loadPickListDefinition(fileLocation, messages_, isXMLValid); break;
+            default: messageDirector.info("No Valid LexGrid XML entry point found at " + fileLocation); break;
         }
        
         return loadedObject;

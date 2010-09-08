@@ -20,8 +20,9 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class LexGridXMLProcessor {
      * @return Coding scheme loaded from this LexGrid xml.
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public org.LexGrid.codingSchemes.CodingScheme[] loadCodingScheme(String path, LgMessageDirectorIF messages,
+    public org.LexGrid.codingSchemes.CodingScheme[] loadCodingScheme(URI uri, LgMessageDirectorIF messages,
             boolean validateXML, CodingSchemeManifest manifest) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
@@ -92,7 +93,7 @@ public class LexGridXMLProcessor {
 
         try {
 
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
             umr = new Unmarshaller();
             LgCodingSchemeListener listener = new LgCodingSchemeListener(messages, manifest);
             // default is true -- no need to set the validation flag if the user
@@ -100,7 +101,7 @@ public class LexGridXMLProcessor {
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
-            listener.setPropertiesPresent(setPropertiesFlag(path, messages));
+            listener.setPropertiesPresent(setPropertiesFlag(uri, messages));
             umr.setUnmarshalListener(listener);
             umr.setClass(CodingScheme.class);
             cs = new CodingScheme[]{(CodingScheme) umr.unmarshal(in)};
@@ -111,10 +112,10 @@ public class LexGridXMLProcessor {
             messages.error("the Coding Scheme Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
-            messages.error("Unmarshaller detected invalid xml at: " + path);
+            messages.error("Unmarshaller detected invalid xml at: " + uri.toString());
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri.toString()));
             e.printStackTrace();
         }
         return cs;
@@ -128,7 +129,7 @@ public class LexGridXMLProcessor {
      * @return Set of coding schemes loaded as changed entry elements in this revision.
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public org.LexGrid.codingSchemes.CodingScheme[] loadRevision(String path, LgMessageDirectorIF messages,
+    public org.LexGrid.codingSchemes.CodingScheme[] loadRevision(URI uri, LgMessageDirectorIF messages,
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
@@ -136,7 +137,7 @@ public class LexGridXMLProcessor {
 
         try {
 
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
             umr = new Unmarshaller();
             LgRevisionListener listener = new LgRevisionListener(messages);
             // default is true -- no need to set the validation flag if the user
@@ -144,12 +145,12 @@ public class LexGridXMLProcessor {
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
-            listener.setLastMetaDataType(getLastRevisionElement(path, messages));
-            listener.setPropertiesPresent(setPropertiesFlag(path, messages));
+            listener.setLastMetaDataType(getLastRevisionElement(uri, messages));
+            listener.setPropertiesPresent(setPropertiesFlag(uri, messages));
             umr.setUnmarshalListener(listener);
             umr.setClass(Revision.class);
             umr.unmarshal(in);
-            if(isCodingSchemePresent(path, messages)){
+            if(isCodingSchemePresent(uri, messages)){
                 cs = listener.getCodingSchemes();
                 }
                 else{
@@ -164,10 +165,10 @@ public class LexGridXMLProcessor {
             messages.error("the Revision Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
-            messages.error("Unmarshaller detected invalid xml at: " + path);
+            messages.error("Unmarshaller detected invalid xml at: " + uri);
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
             }
         return cs;
@@ -181,7 +182,7 @@ public class LexGridXMLProcessor {
      * @return Set of coding schemes loaded wiith this system release.
      * @throws CodingSchemeAlreadyLoadedException
      */
-    public Object[] loadSystemRelease(String path, LgMessageDirectorIF messages,
+    public Object[] loadSystemRelease(URI uri, LgMessageDirectorIF messages,
             boolean validateXML) throws CodingSchemeAlreadyLoadedException {
         BufferedReader in = null;
         Unmarshaller umr = null;
@@ -192,17 +193,17 @@ public class LexGridXMLProcessor {
 
         try {
 
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
             umr = new Unmarshaller();
             LgSystemReleaseListener listener = 
-                new LgSystemReleaseListener(messages, systemReleaseCodingSchemePropertiesSurvey(path, messages));
+                new LgSystemReleaseListener(messages, systemReleaseCodingSchemePropertiesSurvey(uri, messages));
             // default is true -- no need to set the validation flag if the user
             // wants to validate.
             if (!validateXML) {
                 umr.setValidation(validateXML);
             }
-            listener.setSystemReleaseMetaData(getSystemReleaseMetadata(path, messages));
-            listener.setPropertiesPresent(setPropertiesFlag(path, messages));
+            listener.setSystemReleaseMetaData(getSystemReleaseMetadata(uri, messages));
+            listener.setPropertiesPresent(setPropertiesFlag(uri, messages));
             listener.setMessages_(messages);
             umr.setUnmarshalListener(listener);
             umr.setClass(SystemRelease.class);
@@ -217,10 +218,10 @@ public class LexGridXMLProcessor {
             messages.error("the System Release Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
-            messages.error("Unmarshaller detected invalid xml at: " + path);
+            messages.error("Unmarshaller detected invalid xml at: " + uri);
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
             }
         if (cs != null)
@@ -239,7 +240,7 @@ public class LexGridXMLProcessor {
 
     }
     
-    public ValueSetDefinition[] loadValueSetDefinition(String path, LgMessageDirectorIF messages,
+    public ValueSetDefinition[] loadValueSetDefinition(URI uri, LgMessageDirectorIF messages,
             boolean validateXML){
         BufferedReader in = null;
         Unmarshaller umr = null;
@@ -247,7 +248,7 @@ public class LexGridXMLProcessor {
 
         try {
 
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
             umr = new Unmarshaller();
             LgValueSetListener listener = new LgValueSetListener(messages);
             // default is true -- no need to set the validation flag if the user
@@ -268,10 +269,10 @@ public class LexGridXMLProcessor {
             messages.error("the Value Set Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
-            messages.error("Unmarshaller detected invalid xml at: " + path);
+            messages.error("Unmarshaller detected invalid xml at: " + uri);
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
             }
         return vsd;
@@ -279,7 +280,7 @@ public class LexGridXMLProcessor {
     }
     
     
-    public PickListDefinition[] loadPickListDefinition(String path, LgMessageDirectorIF messages,
+    public PickListDefinition[] loadPickListDefinition(URI uri, LgMessageDirectorIF messages,
             boolean validateXML){
         BufferedReader in = null;
         Unmarshaller umr = null;
@@ -287,7 +288,7 @@ public class LexGridXMLProcessor {
 
         try {
 
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
             umr = new Unmarshaller();
             LgPickListListener listener = new LgPickListListener(messages);
             // default is true -- no need to set the validation flag if the user
@@ -308,10 +309,10 @@ public class LexGridXMLProcessor {
             messages.error("the Pick List Listener detected a reading or writing problem");
             e.printStackTrace();
         } catch (ValidationException e) {
-            messages.error("Unmarshaller detected invalid xml at: " + path);
+            messages.error("Unmarshaller detected invalid xml at: " + uri);
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
             }
         return pld;
@@ -322,12 +323,12 @@ public class LexGridXMLProcessor {
      * @param path
      * @return int representation of the Entry Point Type
      */
-    public int getEntryPointType(String path,  LgMessageDirectorIF messages) {
+    public int getEntryPointType(URI uri,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         XMLStreamReader xmlStreamReader;
 
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
@@ -354,16 +355,16 @@ public class LexGridXMLProcessor {
             in.close();
             xmlStreamReader.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri.toString() + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            messages.error("While streaming file at " + uri.toString() + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri.toString() == null? "path appears to be null": uri.toString()));
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("IO Problem reading file at: " + (uri.toString() == null? "path appears to be null": uri.toString()));
             e.printStackTrace();
         }
 
@@ -374,7 +375,7 @@ public class LexGridXMLProcessor {
      * @param path
      * @return boolean indicating if a coding scheme contains a property
      */
-   public boolean setPropertiesFlag(String path,  LgMessageDirectorIF messages) {
+   public boolean setPropertiesFlag(URI uri,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean propsPresent = false;
         boolean codingSchemePresent = false;
@@ -382,7 +383,7 @@ public class LexGridXMLProcessor {
         XMLStreamReader xmlStreamReader;
 
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -406,16 +407,16 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         }
         return csPropsPresent;
@@ -426,14 +427,14 @@ public class LexGridXMLProcessor {
      * @param path
      * @return boolean indicating if a coding scheme contains a property
      */
-    public boolean setRelationsPropertiesFlag(String path,  LgMessageDirectorIF messages) {
+    public boolean setRelationsPropertiesFlag(URI uri,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean relationsPresent = false;
         boolean relPropsPresent = false;
         XMLStreamReader xmlStreamReader;
 
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -457,16 +458,16 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         }
         return relPropsPresent;
@@ -477,14 +478,14 @@ public class LexGridXMLProcessor {
      * @param messages
      * @return flag indicating there is a coding scheme element somewhere in this xml source
      */
-    public boolean isCodingSchemePresent(String path,  LgMessageDirectorIF messages) {
+    public boolean isCodingSchemePresent(URI uri,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         boolean entryStateRemove = false;
         XMLStreamReader xmlStreamReader;
 
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
             for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
@@ -515,16 +516,16 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         }
         System.out.println("Scheme Present: " + schemePresent);
@@ -536,14 +537,14 @@ public class LexGridXMLProcessor {
      * @param messages
      * @return flag indicating there is a value set definition element somewhere in this xml source
      */
-    public boolean isValueSetDefinitionPresent(String path,  LgMessageDirectorIF messages) {
+    public boolean isValueSetDefinitionPresent(URI uri,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         boolean entryStateRemove = false;
         XMLStreamReader xmlStreamReader;
 
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -575,16 +576,16 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+            messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
             e.printStackTrace();
         }
         System.out.println("Scheme Present: " + schemePresent);
@@ -596,14 +597,14 @@ public class LexGridXMLProcessor {
      * @param messages
      * @return flag indicating there is a pick list definition element somewhere in this xml source
      */
-    public boolean isPickListDefinitionPresent(String path,  LgMessageDirectorIF messages) {
+    public boolean isPickListDefinitionPresent(URI uri,  LgMessageDirectorIF messages) {
         BufferedReader in = null;
         boolean schemePresent = false;
         boolean entryStateRemove = false;
         XMLStreamReader xmlStreamReader;
 
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -641,16 +642,16 @@ public class LexGridXMLProcessor {
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-            messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+            messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-            messages.error("Problem reading file at: " + (path == null ? "path appears to be null" : path));
+            messages.error("Problem reading file at: " + (uri == null ? "path appears to be null" : uri));
             e.printStackTrace();
         } catch (IOException e) {
-            messages.error("IO Problem reading file at: " + (path == null ? "path appears to be null" : path));
+            messages.error("IO Problem reading file at: " + (uri == null ? "path appears to be null" : uri));
             e.printStackTrace();
         }
         System.out.println("Scheme Present: " + schemePresent);
@@ -663,13 +664,13 @@ public class LexGridXMLProcessor {
  * @return int indicating which revision element occurs in the revision meta data
  * allowing user to get an accurate load of the meta data for Revision.
  */
-public int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
+public int getLastRevisionElement(URI uri,  LgMessageDirectorIF messages) {
     BufferedReader in = null;
     int lastMetaDataElement = -1;
     XMLStreamReader xmlStreamReader;
 
     try {
-        in = new BufferedReader(new FileReader(path));
+        in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
         xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -690,16 +691,16 @@ public int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
         xmlStreamReader.close();
         in.close();
     } catch (XMLStreamException e) {
-        messages.error("While streaming file at " + path + "an error occured");
+        messages.error("While streaming file at " + uri + "an error occured");
         e.printStackTrace();
     } catch (FactoryConfigurationError e) {
-        messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+        messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
         e.printStackTrace();
     } catch (FileNotFoundException e) {
-        messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+        messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
         e.printStackTrace();
     } catch (IOException e) {
-        messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+        messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
         e.printStackTrace();
     }
     return lastMetaDataElement;
@@ -712,12 +713,12 @@ public int getLastRevisionElement(String path,  LgMessageDirectorIF messages) {
  * @param messages
  * @return
  */
-public SystemRelease getSystemReleaseMetadata(String path, LgMessageDirectorIF messages){
+public SystemRelease getSystemReleaseMetadata(URI uri, LgMessageDirectorIF messages){
     BufferedReader in = null;
     XMLStreamReader xmlStreamReader;  
     SystemRelease systemRelease = new SystemRelease();
     try {
-        in = new BufferedReader(new FileReader(path));
+        in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
         xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -748,16 +749,16 @@ public SystemRelease getSystemReleaseMetadata(String path, LgMessageDirectorIF m
         xmlStreamReader.close();
         in.close();
     } catch (XMLStreamException e) {
-       messages.error("While streaming file at " + path + "an error occured");
+       messages.error("While streaming file at " + uri + "an error occured");
         e.printStackTrace();
     } catch (FactoryConfigurationError e) {
-       messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+       messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
         e.printStackTrace();
     } catch (FileNotFoundException e) {
-       messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+       messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
         e.printStackTrace();
     } catch (IOException e) {
-       messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+       messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
         e.printStackTrace();
     } catch (ParseException e) {
         messages.error("Problems parsing the system release date --- please check your source formatting for format dd-mm-yyyy");
@@ -773,7 +774,7 @@ public SystemRelease getSystemReleaseMetadata(String path, LgMessageDirectorIF m
  * @param messages
  * @return
  */
-public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirectorIF messages) {
+public HashMap<String, Boolean> surveySystemRelease(URI uri,  LgMessageDirectorIF messages) {
     BufferedReader in = null;
     XMLStreamReader xmlStreamReader;
     
@@ -783,7 +784,7 @@ public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirec
     systemReleaseSurvey.put(VALUE_SETS,false);
     systemReleaseSurvey.put(PICK_LISTS,false);
     try {
-        in = new BufferedReader(new FileReader(path));
+        in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
         xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -804,16 +805,16 @@ public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirec
         xmlStreamReader.close();
         in.close();
     } catch (XMLStreamException e) {
-       messages.error("While streaming file at " + path + "an error occured");
+       messages.error("While streaming file at " + uri + "an error occured");
         e.printStackTrace();
     } catch (FactoryConfigurationError e) {
-       messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+       messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
         e.printStackTrace();
     } catch (FileNotFoundException e) {
-       messages.error("Problem reading file at: " + (path == null? "path appears to be null": path));
+       messages.error("Problem reading file at: " + (uri == null? "path appears to be null": uri));
         e.printStackTrace();
     } catch (IOException e) {
-      messages.error("IO Problem reading file at: " + (path == null? "path appears to be null": path));
+      messages.error("IO Problem reading file at: " + (uri == null? "path appears to be null": uri));
         e.printStackTrace();
     }
     return systemReleaseSurvey;
@@ -827,7 +828,7 @@ public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirec
      * @param messages
      * @return
      */
-    public ArrayList<SystemReleaseSurvey> systemReleaseCodingSchemePropertiesSurvey(String path,
+    public ArrayList<SystemReleaseSurvey> systemReleaseCodingSchemePropertiesSurvey(URI uri,
             LgMessageDirectorIF messages) {
         BufferedReader in = null;
         XMLStreamReader xmlStreamReader;
@@ -841,7 +842,7 @@ public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirec
         ArrayList<SystemReleaseSurvey> systemReleaseSurvey = new ArrayList<SystemReleaseSurvey>();
         messages.info("Surveying for optional coding scheme elements");
         try {
-            in = new BufferedReader(new FileReader(path));
+            in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
             xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(in);
 
@@ -906,33 +907,18 @@ public HashMap<String, Boolean> surveySystemRelease(String path,  LgMessageDirec
             xmlStreamReader.close();
             in.close();
         } catch (XMLStreamException e) {
-            messages.error("While streaming file at " + path + "an error occured");
+            messages.error("While streaming file at " + uri + "an error occured");
             e.printStackTrace();
         } catch (FactoryConfigurationError e) {
-         messages.error("While streaming file at " + path + "a streaming xml configuration error occured");
+         messages.error("While streaming file at " + uri + "a streaming xml configuration error occured");
             e.printStackTrace();
         } catch (FileNotFoundException e) {
-          messages.error("Problem reading file at: " + (path == null ? "path appears to be null" : path));
+          messages.error("Problem reading file at: " + (uri == null ? "path appears to be null" : uri));
             e.printStackTrace();
         } catch (IOException e) {
-          messages.error("IO Problem reading file at: " + (path == null ? "path appears to be null" : path));
+          messages.error("IO Problem reading file at: " + (uri == null ? "path appears to be null" : uri));
             e.printStackTrace();
         }
         return systemReleaseSurvey;
     }
-
-public static void main (String[] args){
-  //  LoadStatus ls = new LoadStatus();
-  //  LgMessageDirectorIF messages = new CachingMessageDirectorImpl( new MessageDirector("Test XML",ls));
-   LexGridXMLProcessor lp = new LexGridXMLProcessor();
-   ArrayList<SystemReleaseSurvey> survey = null;
-   //System.out.println("CodingSchemeProps: " + lp.setPropertiesFlag(args[0],null));
-   //System.out.println("RelationsProps: " + lp.systemReleaseCodingSchemePropertiesSurvey(args[0],null));
-  survey =  lp.systemReleaseCodingSchemePropertiesSurvey(args[0],null);
-  for(SystemReleaseSurvey srs : survey){
-      
-      System.out.println(srs.toString());
-
-  }
-}
 }
