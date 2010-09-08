@@ -517,7 +517,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), null, csvList, null, null);
 		
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
-		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:Ford")));
+		assertTrue(rvdDef.getValueSetDefinitionURI().equals(new URI("SRITEST:AUTO:Ford")));
 		assertTrue(rvdDef.getValueSetDefinitionName().equals("Ford"));
 		
 		Set<String> codes = new HashSet<String>();
@@ -543,7 +543,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
 		assertTrue(rvdDef.getCodingSchemeVersionRefList().getAbsoluteCodingSchemeVersionReference()[0].getCodingSchemeURN().equals("urn:oid:11.11.0.1"));
 		assertTrue(rvdDef.getCodingSchemeVersionRefList().getAbsoluteCodingSchemeVersionReference()[0].getCodingSchemeVersion().equals("1.0"));
-		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:Ford")));
+		assertTrue(rvdDef.getValueSetDefinitionURI().equals(new URI("SRITEST:AUTO:Ford")));
 		assertTrue(rvdDef.getValueSetDefinitionName().equals("Ford"));
 		
 		codes = new HashSet<String>();
@@ -621,7 +621,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		
 		assertTrue(rvdDef != null);
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
-		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:PropRefGeneralOrFocus")));
+		assertTrue(rvdDef.getValueSetDefinitionURI().equals(new URI("SRITEST:AUTO:PropRefGeneralOrFocus")));
 		assertTrue(rvdDef.getValueSetDefinitionName().equals("Property Ref test General OR Focus"));
 		
 		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
@@ -638,7 +638,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 		
 		assertTrue(rvdDef != null);
 		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
-		assertTrue(rvdDef.getValueDomainURI().equals(new URI("SRITEST:AUTO:PropRefGeneralOrFocus")));
+		assertTrue(rvdDef.getValueSetDefinitionURI().equals(new URI("SRITEST:AUTO:PropRefGeneralOrFocus")));
 		assertTrue(rvdDef.getValueSetDefinitionName().equals("Property Ref test General OR Focus"));
 		
 		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
