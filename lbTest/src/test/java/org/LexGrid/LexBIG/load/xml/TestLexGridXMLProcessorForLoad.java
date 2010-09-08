@@ -1,15 +1,15 @@
 package org.LexGrid.LexBIG.load.xml;
 
-import java.lang.reflect.Method;
+import java.io.File;
+
+import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.LexGridElementProcessor;
 import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.LexGridXMLProcessor;
-import junit.framework.TestCase;
 
 public class TestLexGridXMLProcessorForLoad extends TestCase{
 
@@ -28,29 +28,29 @@ public class TestLexGridXMLProcessorForLoad extends TestCase{
 	}
 	
 	public void testEntryPointDetermination(){
-		assertTrue(processor.getEntryPointType("resources/testData/Automobiles.xml", messages) == 1);
-		assertTrue(processor.getEntryPointType("resources/testData/RevisionOfAutomobiles.xml", messages) == 2);
-		assertTrue(processor.getEntryPointType("resources/testData/valueDomain/pickListTestData.xml", messages) == 3);
-		assertTrue(processor.getEntryPointType("resources/testData/valueDomain/VSDOnlyTest.xml", messages) == 4);
-		assertTrue(processor.getEntryPointType("resources/testData/valueDomain/pickListOnlyTest.xml", messages) == 5);
+		assertTrue(processor.getEntryPointType(new File("resources/testData/Automobiles.xml").toURI(), messages) == 1);
+		assertTrue(processor.getEntryPointType(new File("resources/testData/RevisionOfAutomobiles.xml").toURI(), messages) == 2);
+		assertTrue(processor.getEntryPointType(new File("resources/testData/valueDomain/pickListTestData.xml").toURI(), messages) == 3);
+		assertTrue(processor.getEntryPointType(new File("resources/testData/valueDomain/VSDOnlyTest.xml").toURI(), messages) == 4);
+		assertTrue(processor.getEntryPointType(new File("resources/testData/valueDomain/pickListOnlyTest.xml").toURI(), messages) == 5);
 	}
 	
 	public void testCodingSchemeInLgXml(){
-		assertTrue(processor.isCodingSchemePresent("resources/testData/Automobiles.xml", messages));
-		assertTrue(processor.isCodingSchemePresent("resources/testData/SystemReleaseCodingSchemeTestData.xml", messages));
-		assertTrue(processor.isCodingSchemePresent("resources/testData/RevisionOfAutomobiles.xml", messages));
-		assertFalse(processor.isCodingSchemePresent("resources/testData/valueDomain/pickListTestData.xml", messages));
-		assertFalse(processor.isCodingSchemePresent("resources/testData/valueDomain/VSDOnlyTest.xml", messages));
+		assertTrue(processor.isCodingSchemePresent(new File("resources/testData/Automobiles.xml").toURI(), messages));
+		assertTrue(processor.isCodingSchemePresent(new File("resources/testData/SystemReleaseCodingSchemeTestData.xml").toURI(), messages));
+		assertTrue(processor.isCodingSchemePresent(new File("resources/testData/RevisionOfAutomobiles.xml").toURI(), messages));
+		assertFalse(processor.isCodingSchemePresent(new File("resources/testData/valueDomain/pickListTestData.xml").toURI(), messages));
+		assertFalse(processor.isCodingSchemePresent(new File("resources/testData/valueDomain/VSDOnlyTest.xml").toURI(), messages));
 	}
 	
 	public void testRevisionPresent(){
-		assertTrue(processor.getLastRevisionElement("resources/testData/valueDomain/RevisionOfPickList.xml", messages)==2);
-		assertTrue(processor.getLastRevisionElement("resources/testData/valueDomain/RevisionOfValueSetR001.xml", messages)==2);
-		assertTrue(processor.getLastRevisionElement("resources/testData/RevisionOfAutomobiles.xml", messages)==2);
+		assertTrue(processor.getLastRevisionElement(new File("resources/testData/valueDomain/RevisionOfPickList.xml").toURI(), messages)==2);
+		assertTrue(processor.getLastRevisionElement(new File("resources/testData/valueDomain/RevisionOfValueSetR001.xml").toURI(), messages)==2);
+		assertTrue(processor.getLastRevisionElement(new File("resources/testData/RevisionOfAutomobiles.xml").toURI(), messages)==2);
 	}
 	
 	public void testRelationPropertiesPresence(){
-		assertFalse(processor.setRelationsPropertiesFlag("resources/testData/Automobiles.xml", messages));
-		assertTrue(processor.setRelationsPropertiesFlag("resources/testData/csRevision/RevisionTP.4.xml", messages));
+		assertFalse(processor.setRelationsPropertiesFlag(new File("resources/testData/Automobiles.xml").toURI(), messages));
+		assertTrue(processor.setRelationsPropertiesFlag(new File("resources/testData/csRevision/RevisionTP.4.xml").toURI(), messages));
 	}
 }
