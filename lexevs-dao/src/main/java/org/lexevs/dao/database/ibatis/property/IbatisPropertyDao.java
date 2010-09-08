@@ -31,6 +31,8 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cache.annotation.Cacheable;
+import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.batch.PropertyBatchInsertItem;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -61,6 +63,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Cacheable(cacheName = "IbatisPropertyDaoCache")
 public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao {
 	
 	/** The property type classifier. */
@@ -122,13 +125,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public static String GET_PROPERTY_UID_BY_ID_AND_NAME = PROPERTY_NAMESPACE + "getPropertyUIdByPropIdAndName";
 			
 	private static String GET_PROPERTY_LATEST_REVISION_ID_BY_UID = PROPERTY_NAMESPACE + "getLatestPropertyRevisionIdByUId";
-	
-	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PROPERTY_SQL = PROPERTY_NAMESPACE + "getPrevRevIdFromGivenRevIdForProperty";
-	
-	private static String GET_PROPERTY_FROM_HISTORY_BY_REVISION_SQL = PROPERTY_NAMESPACE + "getPropertyFromHistoryByRevision";
-	
-	private static String GET_PROPERTY_MULTIATTRIB_FROM_HISTORY_BY_ENTRYSTATEUID_SQL = PROPERTY_NAMESPACE + "getPropertyMultiAttribFromHistoryByEntryStateUId";
-	
+
 	private static String  GET_PROPERTY_BY_UID_SQL = PROPERTY_NAMESPACE + "getPropertyByUid";
 	
 	private static String GET_ENTRYSTATE_UID_BY_PROPERTY_UID_SQL = PROPERTY_NAMESPACE + "getEntryStateUIdByPropertyUId";
@@ -153,6 +150,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertBatchProperties(java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, java.util.List)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void insertBatchProperties(
 			final String codingSchemeId, 
 			final PropertyType type,
@@ -193,6 +191,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * @param batch the batch
 	 * @param inserter the inserter
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void insertBatchProperties(
 			final String codingSchemeId, 
 			final PropertyType type,
@@ -214,6 +213,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertProperty(java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public String insertProperty(
 			String codingSchemeUId,
 			String parentUId, 
@@ -229,7 +229,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				property, 
 				this.getNonBatchTemplateInserter());	
 	}
-	
+
 	public String insertHistoryProperty(String codingSchemeUId,
 			String propertyUId, Property property) {
 		
@@ -241,6 +241,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	@SuppressWarnings("unchecked")
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public List<Property> getPropertiesOfParents(
 			String codingSchemeId, 
 			List<String> propertyNames, 
@@ -341,6 +342,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	 * 
 	 * @return the string
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public String insertProperty(
 			String codingSchemeUId,
 			String referenceUId, 
@@ -440,6 +442,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#updateProperty(java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public String updateProperty(String codingSchemeUId, String parentUId,
 			String propertyUId, PropertyType type, Property property) {
 		Assert.hasText(
@@ -502,6 +505,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#updateProperty(java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.access.property.PropertyDao.PropertyType, org.LexGrid.commonTypes.Property)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public String updatePropertyVersionableAttrib(String codingSchemeUId,
 			String propertyUId, Property property) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
@@ -525,6 +529,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertPropertyQualifier(java.lang.String, java.lang.String, org.LexGrid.commonTypes.PropertyQualifier)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void insertPropertyQualifier(String codingSchemeId, String propertyId, PropertyQualifier propertyQualifier) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		String propertyQualifierId = this.createUniqueId();
@@ -627,6 +632,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	@Override
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void insertPropertyUsageContext(
 			String codingSchemeId,
 			String propertyId, 
@@ -678,6 +684,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#insertPropertyLink(java.lang.String, java.lang.String, org.LexGrid.concepts.PropertyLink)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void insertPropertyLink(String codingSchemeUId, String parentUId,
 			PropertyLink propertyLink) {
 		String propertyLinkUId = this.createUniqueId();
@@ -706,6 +713,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.property.PropertyDao#deleteAllEntityPropertiesOfCodingScheme(java.lang.String)
 	 */
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void deleteAllEntityPropertiesOfCodingScheme(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
@@ -714,6 +722,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						this.propertyTypeClassifier.classify(PropertyType.ENTITY), codingSchemeUId));
 	}
 	
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void deleteAllRelationPropertiesOfCodingScheme(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
@@ -723,6 +732,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	@Override
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void deleteAllPropertiesOfParent(String codingSchemeUId,  
 			String parentUId, PropertyType parentType) {
 
@@ -891,7 +901,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 
 	@Override
-
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public void removePropertyByUId(String codingSchemeUId, String propertyUId) {
 		String prefix = 
 			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
