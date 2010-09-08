@@ -51,8 +51,7 @@ import org.lexevs.registry.service.Registry;
  */
 public class DaoManager {
 	
-	/** The CURREN t_ version. */
-	public static LexGridSchemaVersion CURRENT_VERSION = LexGridSchemaVersion.parseStringToVersion("2.0");
+	public LexGridSchemaVersion currentVersion;
 
 	/** The coding scheme daos. */
 	private List<CodingSchemeDao> codingSchemeDaos;
@@ -126,7 +125,7 @@ public class DaoManager {
 	 * @return the current entity dao
 	 */
 	public EntityDao getCurrentEntityDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getEntityDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getEntityDaos(), currentVersion);
 	}
 	
 	/**
@@ -135,7 +134,7 @@ public class DaoManager {
 	 * @return the current association dao
 	 */
 	public AssociationDao getCurrentAssociationDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getAssociationDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getAssociationDaos(), currentVersion);
 	}
 	
 	/**
@@ -145,7 +144,7 @@ public class DaoManager {
 	 */
 	public AssociationTargetDao getCurrentAssociationTargetDao() {
 		return this.getCorrectDaoForSchemaVersion(this
-				.getAssociationTargetDaos(), CURRENT_VERSION);
+				.getAssociationTargetDaos(), currentVersion);
 	}
 	
 	/**
@@ -155,7 +154,7 @@ public class DaoManager {
 	 */
 	public AssociationDataDao getCurrentAssociationDataDao() {
 		return this.getCorrectDaoForSchemaVersion(
-				this.getAssociationDataDaos(), CURRENT_VERSION);
+				this.getAssociationDataDaos(), currentVersion);
 	}
 	
 	/**
@@ -164,7 +163,7 @@ public class DaoManager {
 	 * @return the current association dao
 	 */
 	public CodedNodeGraphDao getCurrentCodedNodeGraphDao(){
-		return this.getCorrectDaoForSchemaVersion(this.codedNodeGraphDaos, CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.codedNodeGraphDaos, currentVersion);
 	}
 	
 	/**
@@ -201,7 +200,7 @@ public class DaoManager {
 	 * @return the current coding scheme dao
 	 */
 	public CodingSchemeDao getCurrentCodingSchemeDao(){
-		return this.getCorrectDaoForSchemaVersion(this.codingSchemeDaos, CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.codingSchemeDaos, currentVersion);
 	}
 	
 	/**
@@ -475,7 +474,7 @@ public class DaoManager {
 	 * @return the current pick list dao
 	 */
 	public PickListDao getCurrentPickListDefinitionDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getPickListDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getPickListDaos(), currentVersion);
 	}
 
 	/**
@@ -484,7 +483,7 @@ public class DaoManager {
 	 * @return the current pick list entry node dao
 	 */
 	public PickListEntryNodeDao getCurrentPickListEntryNodeDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getPickListEntryNodeDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getPickListEntryNodeDaos(), currentVersion);
 	}
 	
 	public void setSystemReleaseDaos(List<SystemReleaseDao> systemReleaseDaos) {
@@ -534,7 +533,7 @@ public class DaoManager {
 	 * @return the current value set definition dao.
 	 */
 	public ValueSetDefinitionDao getCurrentValueSetDefinitionDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), currentVersion);
 	}
 
 	/**
@@ -543,7 +542,7 @@ public class DaoManager {
 	 * @return the current value set definition entry dao.
 	 */
 	public VSDefinitionEntryDao getCurrentVSDefinitionEntryDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getVsDefinitionEntryDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getVsDefinitionEntryDaos(), currentVersion);
 	}
 	
 	public List<CodedNodeGraphDao> getCodedNodeGraphDaos() {
@@ -574,7 +573,7 @@ public class DaoManager {
 	 * @return the current value set property dao
 	 */
 	public VSPropertyDao getCurrentVsPropertyDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getVsPropertyDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getVsPropertyDaos(), currentVersion);
 	}
 	
 	/**
@@ -656,7 +655,7 @@ public class DaoManager {
 	 * @return the current value set EntryState dao
 	 */
 	public VSEntryStateDao getCurrentVsEntryStateDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getVsEntryStateDaos(), CURRENT_VERSION);
+		return this.getCorrectDaoForSchemaVersion(this.getVsEntryStateDaos(), currentVersion);
 	}
 
 	public void setNciHistoryDaos(List<NciHistoryDao> nciHistoryDaos) {
@@ -665,5 +664,13 @@ public class DaoManager {
 
 	public List<NciHistoryDao> getNciHistoryDaos() {
 		return nciHistoryDaos;
+	}
+
+	public LexGridSchemaVersion getCurrentVersion() {
+		return currentVersion;
+	}
+
+	public void setCurrentVersion(LexGridSchemaVersion currentVersion) {
+		this.currentVersion = currentVersion;
 	}
 }
