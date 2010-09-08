@@ -33,6 +33,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
+import org.lexevs.dao.database.scheme.PersistenceScheme;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.exceptions.CodingSchemeParameterException;
@@ -78,6 +79,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	private DatabaseServiceManager databaseServiceManager;
 	
 	private LexEvsDatabaseSchemaSetup lexEvsDatabaseSchemaSetup;
+	
+	private PersistenceScheme persistenceScheme;
 
 	/** The alias holder. */
 	private List<CodingSchemeAliasHolder> aliasHolder = new ArrayList<CodingSchemeAliasHolder>();
@@ -87,7 +90,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	 */
 	public void initialize() {
 		try {
-			lexEvsDatabaseSchemaSetup.setUpLexEvsDbSchema();
+			persistenceScheme.initScheme();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -738,6 +741,14 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 
 	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
+	}
+	
+	public void setPersistenceScheme(PersistenceScheme persistenceScheme) {
+		this.persistenceScheme = persistenceScheme;
+	}
+
+	public PersistenceScheme getPersistenceScheme() {
+		return persistenceScheme;
 	}
 	/**
 	 * The Class CodingSchemeAliasHolder.

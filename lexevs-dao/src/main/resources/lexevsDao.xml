@@ -205,6 +205,7 @@
 		</property>
 	
 		<property name="registry" ref="registry"/>
+		<property name="currentVersion" ref="persistenceSchemeVersion"/>
 	</bean>
 	
 	 <bean id="ibatisEntityDao"
@@ -520,6 +521,25 @@
 		<property name="logger" ref="loggerFactory"/>
     </bean>
     
+    <bean id="persistenceSchemeVersion" class="org.lexevs.dao.database.scheme.CurrentPersistenceSchemeVersionFactory">
+    	<property name="systemVariables" ref="systemVariables"/>
+    </bean>
+    
+    <bean id="defaultVersion20Scheme" class="org.lexevs.dao.database.scheme.DefaultVersion20Scheme">
+    	<property name="lexEvsDatabaseSchemaSetup" ref="lexEvsSchemaInstallationSetup"/>
+    	
+    </bean>
+    
+    <bean id="persistenceScheme" class="org.lexevs.dao.database.scheme.PersistenceSchemeFactory">
+    	<property name="currentPersistenceScheme" ref="persistenceSchemeVersion"/>
+    	<property name="persistenceSchemes">
+			<list>
+				<ref bean="defaultVersion20Scheme"/>
+			</list>
+		</property>
+    </bean>
+    
+    
     <bean id="primaryKeyIncrementer" 
     	class="org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementerFactory">
     	<property name="systemVariables" ref="systemVariables"/>
@@ -668,7 +688,7 @@
 	
 	<bean id="lexEvsResourceManagingService" class="org.lexevs.system.service.LexEvsResourceManagingService" 
 		parent="loggingBean" init-method="initialize">
-		<property name="lexEvsDatabaseSchemaSetup" ref="lexEvsSchemaInstallationSetup"/>
+		<property name="persistenceScheme" ref="persistenceScheme"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="lexEvsDatabaseOperations" ref="defaultLexEvsDatabaseOperations"/>

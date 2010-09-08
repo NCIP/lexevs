@@ -90,6 +90,10 @@ public class SystemVariables {
     private String primaryKeyStrategy;
     private static String PRIMARY_KEY_STRATEGY_PROP = "DB_PRIMARY_KEY_STRATEGY";
     private static String DEFAULT_PRIMARY_KEY_STRATEGY = "GUID";
+    
+    private String currentPersistenceScheme;
+    private static String CURRENT_PERSISTENCE_SCHEME_PROP = "CURRENT_PERSISTENCE_SCHEME_PROP";
+    private static String DEFAULT_PERSISTENCE_SCHEME = "2.0";
 
     private boolean emailErrors_ = false;
     private String SMTPServer_;
@@ -350,6 +354,8 @@ public class SystemVariables {
             }
             
             this.primaryKeyStrategy = getNullableProperty(props, PRIMARY_KEY_STRATEGY_PROP, DEFAULT_PRIMARY_KEY_STRATEGY);
+            
+            this.currentPersistenceScheme = getNullableProperty(props, CURRENT_PERSISTENCE_SCHEME_PROP, DEFAULT_PERSISTENCE_SCHEME);
            
             emailErrors_ = new Boolean(getProperty(props, "EMAIL_ERRORS")).booleanValue();
             if (emailErrors_) {
@@ -664,4 +670,9 @@ public class SystemVariables {
 	public String getPrimaryKeyStrategy() {
 		return primaryKeyStrategy;
 	}
+	
+	public String getCurrentPersistenceScheme() {
+		return this.currentPersistenceScheme;
+	}
+	
 }
