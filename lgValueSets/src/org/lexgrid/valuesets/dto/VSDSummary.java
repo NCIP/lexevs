@@ -53,7 +53,7 @@ public class VSDSummary implements java.io.Serializable {
 		super();
 	}
 
-	public URI getValueDomainURI() {
+	public URI getValueSetDefinitionURI() {
 		return valueSetDefinitionURI_;
 	}
 
