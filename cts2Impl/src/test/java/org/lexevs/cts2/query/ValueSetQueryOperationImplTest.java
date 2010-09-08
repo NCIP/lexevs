@@ -3,6 +3,9 @@
  */
 package org.lexevs.cts2.query;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,18 +24,24 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lexevs.cts2.LexEvsCTS2;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
 import org.lexevs.cts2.test.Cts2BaseTest;
-import org.lexevs.cts2.test.Cts2TestConstants;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+
+import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * @author m004181
  *
  */
 public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
-
+	private static LexEVSValueSetDefinitionServices vds_;
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
@@ -44,12 +53,21 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		} catch (LBException e) {
 			e.printStackTrace();
 		}		
+		
+		LexEvsCTS2 cts2 = LexEvsCTS2Impl.defaultInstance();
+		ValueSetLoadOperation vsLoadOp = cts2.getAdminOperation().getValueSetLoadOperation();
+		
+		URNVersionPair[] urns = vsLoadOp.load(new File(
+						"src/test/resources/testData/valueSets/vdTestData.xml").toURI(), 
+						null, "LexGrid_Loader", true);
+		
+		assertTrue("Number of VSD loaded : " + urns.length, urns.length == 18);
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-		AbsoluteCodingSchemeVersionReference ref = 
+		AbsoluteCodingSchemeVersionReference ref =  
 			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
 		
 		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
@@ -62,6 +80,24 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
 		
 		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+		
+		List<String> uris = getValueSetDefinitionService().listValueSetDefinitions(null);
+		assertTrue(uris.size() > 0);
+		
+		for (String uri : uris)
+		{
+			if (uri.startsWith("SRITEST:"))
+				getValueSetDefinitionService().removeValueSetDefinition(new URI(uri));
+		}
+		
+		// check if we missed any test valueDomains
+		uris = getValueSetDefinitionService().listValueSetDefinitions(null);
+		
+		for (String uri : uris)
+		{
+			if (uri.toString().startsWith("SRITEST:"))
+				assertTrue("Not all test value domains were deleted.",false);
+		}
 	}
 
 	/**
@@ -76,8 +112,23 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		acsvr.setCodingSchemeVersion("1.0");
 		
 		try {
-			boolean member = vsQueryop.checkConceptValueSetMembership("Chevy", new URI("Automobiles"), acsvr, "SRITEST:AUTO:GM", "R104", null);
-			System.out.println("member ? : " + member);
+			boolean member = vsQueryop.checkConceptValueSetMembership("GMC", new URI("Automobiles"), acsvr, "SRITEST:AUTO:GM", null, null);
+			assertFalse(member);			
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		acsvr = new AbsoluteCodingSchemeVersionReference();
+		acsvr.setCodingSchemeURN("urn:oid:11.11.0.1");
+		acsvr.setCodingSchemeVersion("1.1");
+		
+		try {
+			boolean member = vsQueryop.checkConceptValueSetMembership("GMC", new URI("Automobiles"), acsvr, "SRITEST:AUTO:GM", null, null);
+			assertTrue(member);			
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,7 +154,10 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		
 		try {
 			boolean subsume = vsQueryop.checkValueSetSubsumption("SRITEST:AUTO:DomasticLeafOnly", null, "SRITEST:AUTO:EveryThing", null, csList, null);
-			System.out.println("subsumption ? : " + subsume);
+			assertTrue(subsume);
+			
+			subsume = vsQueryop.checkValueSetSubsumption("SRITEST:AUTO:Ford", null, "SRITEST:AUTO:GM", null, csList, null);
+			assertFalse(subsume);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -117,9 +171,14 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 	public void testGetValueSetDetails() {
 		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
 		try {
-			ValueSetDefinition vsd = vsQueryop.getValueSetDetails("SRITEST:AUTO:GMTEST", "R403");
+			ValueSetDefinition vsd = vsQueryop.getValueSetDetails("SRITEST:AUTO:AllDomesticButGM", null);
 			
-			System.out.println(vsd.getValueSetDefinitionURI());
+			assertTrue(vsd.getValueSetDefinitionURI().equals("SRITEST:AUTO:AllDomesticButGM"));
+			assertTrue(vsd.getValueSetDefinitionName().equals("All Domestic Autos But GM"));
+			assertTrue(vsd.isIsActive());
+			assertTrue(vsd.getStatus().equals("ACTIVE"));
+			assertTrue(vsd.getDefinitionEntryCount() == 2);
+			assertTrue(vsd.getProperties().getPropertyCount() == 1);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,8 +191,6 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 	@Test
 	public void testListValueSetContents() {
 		ValueSetQueryOperation vsQueryop = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getValueSetQueryOperation();
-		SortOption sortOption = new SortOption();
-		sortOption.setAscending(true);
 		AbsoluteCodingSchemeVersionReference acsvr1 = new AbsoluteCodingSchemeVersionReference();
 		acsvr1.setCodingSchemeURN("urn:oid:11.11.0.1");
 		acsvr1.setCodingSchemeVersion("1.0");
@@ -141,32 +198,63 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		csList1.addAbsoluteCodingSchemeVersionReference(acsvr1);
 		
 		try {
-			ResolvedValueSetDefinition vsdResolved = vsQueryop.listValueSetContents("SRITEST:AUTO:GMTEST", "R402", csList1, null, sortOption);
-			System.out.println();
-			if (vsdResolved != null)
+			ResolvedValueSetDefinition vsdResolved = vsQueryop.listValueSetContents("SRITEST:AUTO:DomasticLeafOnly", null, csList1, null, null);
+			assertTrue(vsdResolved.getValueSetDefinitionURI().toString().equals("SRITEST:AUTO:DomasticLeafOnly"));
+			assertTrue(vsdResolved.getValueSetDefinitionName().equals("Domestic Leaf Only"));
+			
+			AbsoluteCodingSchemeVersionReferenceList csList = vsdResolved.getCodingSchemeVersionRefList();
+			if (csList != null)
 			{
-				AbsoluteCodingSchemeVersionReferenceList csList = vsdResolved.getCodingSchemeVersionRefList();
-				if (csList != null)
+				for (AbsoluteCodingSchemeVersionReference acsvr : csList.getAbsoluteCodingSchemeVersionReference())
 				{
-					for (AbsoluteCodingSchemeVersionReference acsvr : csList.getAbsoluteCodingSchemeVersionReference())
-					{
-						System.out.println("cs urn : " + acsvr.getCodingSchemeURN());
-						System.out.println("cs version :" + acsvr.getCodingSchemeVersion());
-					}
+					assertTrue(acsvr.getCodingSchemeURN().equals("urn:oid:11.11.0.1"));
+					assertTrue(acsvr.getCodingSchemeVersion().equals("1.0"));
 				}
-				System.out.println("vsd name : " + vsdResolved.getValueSetDefinitionName());
-				System.out.println("vsd uri : " + vsdResolved.getValueDomainURI());
-				
-				ResolvedConceptReferencesIterator cItr = vsdResolved.getResolvedConceptReferenceIterator();
-				if (cItr.hasNext())
+			}
+			
+			ResolvedConceptReferencesIterator cItr = vsdResolved.getResolvedConceptReferenceIterator();
+			if (cItr.hasNext())
+			{
+				ResolvedConceptReference rcr = cItr.next();
+				assertTrue(rcr.getCode().equals("Jaguar") ||
+						rcr.getCode().equals("Chevy"));
+			}
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		acsvr1 = new AbsoluteCodingSchemeVersionReference();
+		acsvr1.setCodingSchemeURN("urn:oid:11.11.0.1");
+		acsvr1.setCodingSchemeVersion("1.1");
+		csList1 = new AbsoluteCodingSchemeVersionReferenceList();
+		csList1.addAbsoluteCodingSchemeVersionReference(acsvr1);
+		
+		try {
+			ResolvedValueSetDefinition vsdResolved = vsQueryop.listValueSetContents("SRITEST:AUTO:DomasticLeafOnly", null, csList1, null, null);
+			assertTrue(vsdResolved.getValueSetDefinitionURI().toString().equals("SRITEST:AUTO:DomasticLeafOnly"));
+			assertTrue(vsdResolved.getValueSetDefinitionName().equals("Domestic Leaf Only"));
+			
+			AbsoluteCodingSchemeVersionReferenceList csList = vsdResolved.getCodingSchemeVersionRefList();
+			if (csList != null)
+			{
+				for (AbsoluteCodingSchemeVersionReference acsvr : csList.getAbsoluteCodingSchemeVersionReference())
 				{
-					ResolvedConceptReference rcr = cItr.next();
-					System.out.println("code : " + rcr.getCode());
-					System.out.println("namespace : " + rcr.getCodeNamespace());
-					System.out.println("cs uri : " + rcr.getCodingSchemeURI());
-					System.out.println("cs name : " + rcr.getCodingSchemeName());
-					System.out.println("-------------------------");
+					assertTrue(acsvr.getCodingSchemeURN().equals("urn:oid:11.11.0.1"));
+					assertTrue(acsvr.getCodingSchemeVersion().equals("1.1"));
 				}
+			}
+			
+			ResolvedConceptReferencesIterator cItr = vsdResolved.getResolvedConceptReferenceIterator();
+			if (cItr.hasNext())
+			{
+				ResolvedConceptReference rcr = cItr.next();
+				assertTrue(rcr.getCode().equals("Jaguar") ||
+						rcr.getCode().equals("Chevy") ||
+						rcr.getCode().equals("Windsor") ||
+						rcr.getCode().equals("F150") ||
+						rcr.getCode().equals("Focus") ||
+						rcr.getCode().equals("GMC"));
 			}
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
@@ -186,7 +274,9 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 			List<String> vsdURIs = vsQueryop.listValueSets("Automobiles", "Autos", null, null, sortOption);
 			for (String vsdURI : vsdURIs)
 			{
-				System.out.println(vsdURI);
+				assertTrue(vsdURI.equals("SRITEST:AUTO:Automobiles") ||
+						vsdURI.equals("SRITEST:AUTO:DomesticAutoMakers") ||
+						vsdURI.equals("SRITEST:AUTO:EveryThing"));
 			}
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
@@ -204,14 +294,17 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		sortOption.setAscending(true);
 		try {
 			List<String> vsdURIs = vsQueryop.listAllValueSets(sortOption);
-			for (String vsdURI : vsdURIs)
-			{
-				System.out.println(vsdURI);
-			}
+			assertTrue(vsdURIs.size() >= 18);
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	private static LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
+		if (vds_ == null) {
+			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
+		}
+		return vds_;
+	}
 }

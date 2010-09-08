@@ -50,13 +50,13 @@ public class ValueSetExportOperationImplTest {
 			e.printStackTrace();
 		}		
 		
-//		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
-//		
-//		try {
-//			csLoadOp.load(new File("src/test/resources/testData/valueSets/Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
-//		} catch (LBException e) {
-//			e.printStackTrace();
-//		}
+		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+		
+		try {
+			csLoadOp.load(new File("src/test/resources/testData/valueSets/Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+		} catch (LBException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@AfterClass
@@ -82,13 +82,13 @@ public class ValueSetExportOperationImplTest {
 		assertTrue(exportFileV1.delete());
 		assertTrue(exportFileV2.delete());
 		
-//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-//		AbsoluteCodingSchemeVersionReference ref = 
-//			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
-//		
-//		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
-//		
-//		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		AbsoluteCodingSchemeVersionReference ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package org.lexevs.cts2.query;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -13,11 +14,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.AfterClass;
@@ -25,38 +22,39 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.test.Cts2TestConstants;
 import org.lexevs.dao.database.service.association.AssociationService.AssociationTriple;
 
 public class AssociationQueryOperationImplTest {
 	private AssociationQueryOperationImpl query = new AssociationQueryOperationImpl();
 
-//	@BeforeClass
-//	public static void setUpBeforeClass() throws Exception {
-//		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
-//		
-//		try {
-//			csLoadOp.load(new File("src/test/resources/testData/valueSets/Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
-//
-//		} catch (LBException e) {
-//			e.printStackTrace();
-//		}		
-//	}
-//
-//	@AfterClass
-//	public static void tearDownAfterClass() throws Exception {
-//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-//		AbsoluteCodingSchemeVersionReference ref = 
-//			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
-//		
-//		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
-//		
-//		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
-//	}
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+		
+		try {
+			csLoadOp.load(new File("src/test/resources/testData/Cts2Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+
+		} catch (LBException e) {
+			e.printStackTrace();
+		}		
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		AbsoluteCodingSchemeVersionReference ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference(Cts2TestConstants.CTS2_AUTOMOBILES_URI, Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+	}
 	
 	@Test
 	public void testListAssociations() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.0");
+		versionOrTag.setVersion(Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
 
 		// isBackward is false
 		ResolvedConceptReferenceList list1 = query.listAssociations(
@@ -93,7 +91,7 @@ public class AssociationQueryOperationImplTest {
 	@Test
 	public void testComputeSubsumptionRelationship() {
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.0");
+		versionOrTag.setVersion(Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
 
 		ConceptReference parentConRef = Constructors.createConceptReference(
 				"005", "Automobiles", "Automobiles");
@@ -106,9 +104,9 @@ public class AssociationQueryOperationImplTest {
 
 	@Test
 	public void testDetermineTransitiveConceptRelationship() {
-		String codingSchemeUri = "urn:oid:11.11.0.1";
+		String codingSchemeUri = Cts2TestConstants.CTS2_AUTOMOBILES_URI;
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.0");
+		versionOrTag.setVersion(Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
 		String containerName = "relations";
 		String associationName = "hasSubtype";
 		String sourceCode = "005", sourceNS = "Automobiles", targetCode = "C", targetNS = "Automobiles";
@@ -124,8 +122,8 @@ public class AssociationQueryOperationImplTest {
 		// for root
 		assertEquals("005", path.getCode());
 		assertEquals("Automobiles", path.getCodeNamespace());
-		assertEquals("urn:oid:11.11.0.1", path.getCodingSchemeURI());
-		assertEquals("1.0", path.getCodingSchemeVersion());
+		assertEquals(Cts2TestConstants.CTS2_AUTOMOBILES_URI, path.getCodingSchemeURI());
+		assertEquals(Cts2TestConstants.CTS2_AUTOMOBILES_VERSION, path.getCodingSchemeVersion());
 
 		AssociationList assnList = path.getSourceOf();
 		assertEquals(1, assnList.getAssociationCount());
@@ -186,9 +184,9 @@ public class AssociationQueryOperationImplTest {
 	public void testGetAssociationDetails() {
 
 		// association target
-		String codingSchemeUri = "urn:oid:11.11.0.1";
+		String codingSchemeUri = Cts2TestConstants.CTS2_AUTOMOBILES_URI;
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("1.0");
+		versionOrTag.setVersion(Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
 
 		AssociationTriple associationTriple = query.getAssociationDetails(
 				codingSchemeUri, versionOrTag, "instance001");

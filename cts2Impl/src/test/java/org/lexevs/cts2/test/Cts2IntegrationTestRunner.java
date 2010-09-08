@@ -14,11 +14,9 @@ import org.lexevs.cts2.author.ValueSetAuthoringOperationImplTest;
 import org.lexevs.cts2.query.AssociationQueryOperationImplTest;
 import org.lexevs.cts2.query.CodeSystemQueryOperationImplTest;
 import org.lexevs.cts2.query.ValueSetQueryOperationImplTest;
-import org.lexevs.cts2.test.integration.SetupCts2IntegrationTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	SetupCts2IntegrationTests.class,
 	// Admin operations
 	CodeSystemLoadOperationTest.class,
 	ValueSetLoadOperationImplTest.class,
@@ -28,14 +26,12 @@ import org.lexevs.cts2.test.integration.SetupCts2IntegrationTests;
 	// Query operations
 	AssociationQueryOperationImplTest.class,
 	CodeSystemQueryOperationImplTest.class,
-//	ConceptDomainQueryOperationTest.class,
 	ValueSetQueryOperationImplTest.class,
 	// authoring operations
 	CodeSystemAuthoringOperationImplTest.class,
 	ConceptDomainAuthoringOperationImplTest.class,
 	TestCTS2AssociationAuthoring.class,
 	ValueSetAuthoringOperationImplTest.class
-//	TearDownCts2IntegrationTests.class
 	})
 public class Cts2IntegrationTestRunner {
 	

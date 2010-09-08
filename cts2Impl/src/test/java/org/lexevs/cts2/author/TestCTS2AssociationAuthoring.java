@@ -1,5 +1,14 @@
 package org.lexevs.cts2.author;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import junit.framework.TestCase;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -7,14 +16,21 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
-import org.lexevs.cts2.author.AssociationAuthoringOperationImpl;
-
-import junit.framework.TestCase;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
+import org.lexevs.cts2.core.update.RevisionInfo;
+import org.lexevs.cts2.test.Cts2TestConstants;
+import org.lexevs.dao.database.service.version.AuthoringService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class TestCTS2AssociationAuthoring extends TestCase {
 
@@ -33,6 +49,9 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 	public static String TARGET_VERSION = "1.0";
 	public static String TARGET_URN = "urn:oid:11.11.0.1";
 
+	private static List<String> revIds_ = new ArrayList<String>();
+	
+	@BeforeClass
 	public void setUp() {
 		associationAuthoringOp = new AssociationAuthoringOperationImpl();
 		authoring = new LexEVSAuthoringServiceImpl();
@@ -45,8 +64,43 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 		} catch (LBException e) {
 			e.printStackTrace();
 		}
+		
+		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+		
+		try {
+			csLoadOp.load(new File("src/test/resources/testData/Cts2Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+			csLoadOp.load(new File("src/test/resources/testData/German_Made_Parts.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+		} catch (LBException e) {
+			e.printStackTrace();
+		}
 	}
 
+	@AfterClass
+	public static void runAfterClass() throws LBException, URISyntaxException{
+		
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		AbsoluteCodingSchemeVersionReference ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference(Cts2TestConstants.CTS2_AUTOMOBILES_URI, Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+		
+		ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.2", "2.0");
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+		
+		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+		for (String revId : revIds_)
+		{
+			assertTrue(authServ.removeRevisionRecordbyId(revId));
+		}
+	}
+	
+	@Test
 	public void testCreateMappingCodingScheme() throws LBException {
 		Revision revision = new Revision();
 
@@ -86,6 +140,7 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
 	}
 
+	@Test
 	public void testCreateMappingForExistingScheme() throws LBException {
 		Revision revision = new Revision();
 
@@ -124,6 +179,7 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 				associationType, null);
 	}
 
+	@Test
 	public void testFailCreateNewAssociation() {
 		Revision revision = new Revision();
 
@@ -165,6 +221,7 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 
 	}
 
+	@Test
 	public void testCreateNewAssociation() throws LBException {
 		Revision revision = new Revision();
 
@@ -200,6 +257,7 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 				relationsContainerName, associationType, null);
 	}
 
+	@Test
 	public void testUpdateAssociationState() throws LBException {
 		Revision revision = new Revision();
 
@@ -232,4 +290,41 @@ public class TestCTS2AssociationAuthoring extends TestCase {
 				false);
 	}
 
+	private static String getRevId(){
+		String revId = UUID.randomUUID().toString();
+		revIds_.add(revId);
+		
+		return revId;
+	}
+	
+	@Test
+	public static void testRemoveCodeSystem()   throws LBException, URISyntaxException{	
+		
+		String randomID = getRevId();
+		
+		RevisionInfo revInfo = new RevisionInfo();
+		revInfo.setChangeAgent("changeAgent");
+		revInfo.setChangeInstruction("changeInstruction");
+		revInfo.setDescription("description");
+		revInfo.setEditOrder(1L);
+		revInfo.setRevisionDate(new Date());
+		revInfo.setRevisionId(randomID);
+		
+	    
+	    String codingSchemeURI = MAPPING_URN;
+		String representsVersion = MAPPING_VERSION;
+		
+		Boolean removeStatus = false;
+	    
+	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+	
+	    try {
+			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	
+		assertTrue(removeStatus);		
+	}	
 }

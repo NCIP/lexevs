@@ -231,6 +231,13 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 		acsvr.setCodingSchemeVersion(csVersion);
         MetaData_Loader loader = (MetaData_Loader) getLexBIGServiceManager().getLoader("MetaDataLoader");
         loader.loadAuxiliaryData(metadata, acsvr, overwriteMetadata, stopOnErrors, async);
+        
+        while (loader.getStatus().getEndTime() == null) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {				
+			}
+		}
 	}
 	
 	private void loadCSMetaData(Loader loader, URI metadata, boolean overwriteMetadata, boolean stopOnErrors, boolean async) throws LBException{

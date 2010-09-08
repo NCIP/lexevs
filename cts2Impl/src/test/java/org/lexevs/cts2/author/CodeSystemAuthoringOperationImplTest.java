@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +16,13 @@ import java.util.UUID;
 
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
@@ -33,8 +37,10 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
+import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.test.Cts2BaseTest;
 import org.lexevs.cts2.test.Cts2TestConstants;
@@ -45,8 +51,27 @@ public class CodeSystemAuthoringOperationImplTest extends Cts2BaseTest {
 
 private static List<String> revIds_ = new ArrayList<String>();
 	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
+		
+		try {
+			csLoadOp.load(new File("src/test/resources/testData/Cts2Automobiles.xml").toURI(), null, null, "LexGrid_Loader", true, true, true, "DEV", true);
+		} catch (LBException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@AfterClass
-	public static void runAfterClass() throws LBException, URISyntaxException{
+	public static void tearDownAfterClass() throws Exception {
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		AbsoluteCodingSchemeVersionReference ref = 
+			Constructors.createAbsoluteCodingSchemeVersionReference(Cts2TestConstants.CTS2_AUTOMOBILES_URI, Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
+		
+		lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+		
+		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
+		
 		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
 		for (String revId : revIds_)
 		{
