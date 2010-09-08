@@ -6,7 +6,7 @@
      | detailed information on how to configurigure caches in this file
      +-->
     <!-- Location of persistent caches on disk -->
-    <diskStore path="java.io.tmpdir/lexevs60" />
+    <diskStore path="java.io.tmpdir/${user.name}/lexevs60" />
 
     <defaultCache eternal="false" maxElementsInMemory="1000"
         overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
