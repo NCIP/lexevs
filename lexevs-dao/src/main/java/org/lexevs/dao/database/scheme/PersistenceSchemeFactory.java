@@ -20,19 +20,51 @@ package org.lexevs.dao.database.scheme;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.apache.commons.lang.ClassUtils;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.system.utility.MyClassLoader;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * A factory for creating PersistenceScheme objects.
  */
-public class PersistenceSchemeFactory implements FactoryBean {
+public class PersistenceSchemeFactory implements FactoryBean, InitializingBean {
 
 	/** The current persistence scheme. */
 	private LexGridSchemaVersion currentPersistenceScheme;
 	
 	/** The persistence schemes. */
 	private List<PersistenceScheme> persistenceSchemes;
+	
+	private MyClassLoader myClassLoader;
+	
+	private LgLoggerIF logger;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		for(ExtensionDescription ed :
+			myClassLoader.getExtensionDescriptions()){
+
+			Class<?> extensionBaseClass;
+			try {
+				extensionBaseClass = Class.forName(ed.getExtensionBaseClass(), true, myClassLoader);
+			} catch (ClassNotFoundException e1) {
+				logger.warn("Extension: " + ed.getName() + " cannot be loaded, " +
+						"class: " + ed.getExtensionClass() + " could not be found.");
+				continue;
+			}
+
+			if(ClassUtils.isAssignable(extensionBaseClass, PersistenceScheme.class)){
+				this.persistenceSchemes.add(
+						(PersistenceScheme)
+						Class.forName(ed.getExtensionClass(), true, myClassLoader).newInstance()
+				);
+			}
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
@@ -110,5 +142,21 @@ public class PersistenceSchemeFactory implements FactoryBean {
 	 */
 	public List<PersistenceScheme> getPersistenceSchemes() {
 		return persistenceSchemes;
+	}
+
+	public void setMyClassLoader(MyClassLoader myClassLoader) {
+		this.myClassLoader = myClassLoader;
+	}
+
+	public MyClassLoader getMyClassLoader() {
+		return myClassLoader;
+	}
+
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
 	}
 }

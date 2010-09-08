@@ -457,7 +457,6 @@
     	<constructor-arg ref="systemVariables"/>
     	<constructor-arg ref="loggerFactory"/>
     </bean>
-    
 	
 	<bean id="pool" class="org.apache.commons.pool.impl.GenericObjectPool">
 		<property name="maxActive">
@@ -531,14 +530,15 @@
     </bean>
     
     <bean id="persistenceScheme" class="org.lexevs.dao.database.scheme.PersistenceSchemeFactory">
+    	<property name="logger" ref="loggerFactory"/>
+    	<property name="myClassLoader" ref="myClassLoader"/>
     	<property name="currentPersistenceScheme" ref="persistenceSchemeVersion"/>
     	<property name="persistenceSchemes">
 			<list>
 				<ref bean="defaultVersion20Scheme"/>
 			</list>
 		</property>
-    </bean>
-    
+    </bean>  
     
     <bean id="primaryKeyIncrementer" 
     	class="org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementerFactory">
