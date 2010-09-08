@@ -92,7 +92,7 @@ public class SystemVariables {
     private static String DEFAULT_PRIMARY_KEY_STRATEGY = "GUID";
     
     private String currentPersistenceScheme;
-    private static String CURRENT_PERSISTENCE_SCHEME_PROP = "CURRENT_PERSISTENCE_SCHEME_PROP";
+    private static String CURRENT_PERSISTENCE_SCHEME_PROP = "CURRENT_PERSISTENCE_SCHEME";
     private static String DEFAULT_PERSISTENCE_SCHEME = "2.0";
 
     private boolean emailErrors_ = false;
