@@ -641,7 +641,34 @@ private static List<String> revIds_ = new ArrayList<String>();
 		
 		ResolvedConceptReferenceList refList = cns.restrictToCodes(Constructors.createConceptReferenceList("005")).resolveToList(null, null, null, -1);
 	
-		assertEquals(0,refList.getResolvedConceptReferenceCount());
+		// since code '005' is used in associations, it won't be deleted.
+		assertEquals(1, refList.getResolvedConceptReferenceCount());
+		
+
+		info = new RevisionInfo();
+        info.setRevisionId(getRevId());
+        
+		entityToUpdate = new Entity();
+		entityToUpdate.setEntityCode("Anonymous-mobile");
+		entityToUpdate.setEntityCodeNamespace(Cts2TestConstants.CTS2_AUTOMOBILES_NAME);
+		
+		codeSystemAuthOp.deleteConcept(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI, 
+				Cts2TestConstants.CTS2_AUTOMOBILES_VERSION, 
+				"Anonymous-mobile",
+				Cts2TestConstants.CTS2_AUTOMOBILES_NAME,
+				info);
+		
+		cns = super.getLexBIGService().getNodeSet(
+				Cts2TestConstants.CTS2_AUTOMOBILES_URI,
+				null, 
+				null);
+		
+		refList = cns.restrictToCodes(Constructors.createConceptReferenceList("Anonymous-mobile")).resolveToList(null, null, null, -1);
+	
+		// since code 'Anonymous-mobile' is not used anywhere else in the code system, it should be deleted.
+		assertEquals(0, refList.getResolvedConceptReferenceCount());
+		
 	}
 	
 	private String getRevId(){
