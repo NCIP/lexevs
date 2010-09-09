@@ -136,9 +136,14 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 						" Successfully removed.");
 				}
 				
-				getLogger().warn("Optimizing Index...");
-				indexRegistry.getCommonLuceneIndexTemplate().optimize();
-				getLogger().warn("Optimizing Complete.");
+				if(! indexReader.isOptimized()) {
+					getLogger().warn("Index is not optimized, optimizing now...");
+					
+					indexRegistry.getCommonLuceneIndexTemplate().optimize();
+					getLogger().warn("Optimizing Complete.");
+				} else {
+					getLogger().warn("Index is optimized.");
+				}
 				
 				return null;
 			}
