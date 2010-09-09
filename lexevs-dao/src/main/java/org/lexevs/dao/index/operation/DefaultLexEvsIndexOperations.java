@@ -18,12 +18,38 @@
  */
 package org.lexevs.dao.index.operation;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.lexevs.dao.index.indexer.IndexCreator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class DefaultLexEvsIndexOperations implements LexEvsIndexOperations {
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.index.access.IndexDaoManager;
+import org.lexevs.dao.index.indexer.IndexCreator;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
+import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.logging.AbstractLoggingBean;
+import org.lexevs.system.model.LocalCodingScheme;
+
+import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
+import edu.mayo.informatics.indexer.utility.MetaData;
+
+public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements LexEvsIndexOperations {
 	
 	private IndexCreator indexCreator;
+	private IndexRegistry indexRegistry;
+	private IndexDaoManager indexDaoManager;
+	private MetaData metaData;
 	
 	@Override
 	public void registerCodingSchemeEntityIndex(String codingSchemeUri,
@@ -35,10 +61,140 @@ public class DefaultLexEvsIndexOperations implements LexEvsIndexOperations {
 		indexCreator.index(ref, null, true);
 	}
 	
+	@Override
+	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes) {
+		
+		final Map<String,AbsoluteCodingSchemeVersionReference> expectedMap = 
+			new HashMap<String,AbsoluteCodingSchemeVersionReference>();
+		
+		for(AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
+			String key = LuceneLoaderCode.createCodingSchemeUriVersionKey(
+					ref.getCodingSchemeURN(), 
+					ref.getCodingSchemeVersion());
+			expectedMap.put(key, ref);
+		}
+		indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Void>() {
+
+			@Override
+			public Void doInIndexReader(IndexReader indexReader)
+					throws Exception {
+				Set<String> indexSet = new HashSet<String>();
+				
+				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
+				TermEnum termEnum = indexReader.terms(term);
+				
+				while(termEnum.next() && termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
+					indexSet.add(termEnum.term().text());
+				}
+				
+				indexSet.removeAll(expectedMap.keySet());
+				
+				if(indexSet.size() == 0) {
+					getLogger().warn("No extra Lucene artifacts found.");
+				} else {
+					getLogger().warn(indexSet.size() + " extra Lucene artifacts found.");
+				}
+				
+				for(String additional : indexSet) {
+				
+					BooleanQuery query = new BooleanQuery();
+					query.add(new TermQuery(
+										new Term(
+												LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, additional)), Occur.MUST);
+					query.add(new TermQuery(
+							new Term(
+									"codeBoundry", "T")), Occur.MUST_NOT);
+					
+					List<ScoreDoc> scoreDocs = 
+						indexRegistry.getCommonLuceneIndexTemplate().search(
+								query, 
+								null);
+					
+					if(scoreDocs.size() == 0) {
+						getLogger().warn("No Documents to remove for for: " + additional);
+						continue;
+					}
+					
+					ScoreDoc scoreDoc = scoreDocs.get(0);
+					
+					Document document = indexReader.document(scoreDoc.doc);
+					
+					String uri = document.getField(LuceneLoaderCode.CODING_SCHEME_ID_FIELD).stringValue();
+					String version = document.getField(LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD).stringValue();
+					String codingSchemeName = document.getField(LuceneLoaderCode.CODING_SCHEME_NAME_FIELD).stringValue();
+					
+					getLogger().warn("Found an extra Lucene Index for URI: " + uri + " Version: " + version + 
+						". Attempting to remove...");
+					
+					AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+					ref.setCodingSchemeURN(uri);
+					ref.setCodingSchemeVersion(version);
+					
+					dropIndex(codingSchemeName, ref);
+					
+					getLogger().warn("Extra Lucene Index for URI: " + uri + " Version: " + version + 
+						" Successfully removed.");
+				}
+				
+				getLogger().warn("Optimizing Index...");
+				indexRegistry.getCommonLuceneIndexTemplate().optimize();
+				getLogger().warn("Optimizing Complete.");
+				
+				return null;
+			}
+			
+		});
+	}
+	
+	protected void dropIndex(String codingSchemeName, AbsoluteCodingSchemeVersionReference reference) {
+		String codingSchemeUri = reference.getCodingSchemeURN();
+		String codingSchemeVersion = reference.getCodingSchemeVersion();
+		
+		Term term = new Term(
+				LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+				LuceneLoaderCode.createCodingSchemeUriVersionKey(
+						codingSchemeUri, codingSchemeVersion));
+		
+		indexRegistry.getCommonLuceneIndexTemplate().removeDocuments(term);
+
+		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		
+		String key = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion()).getKey();
+		try {
+			metaData.removeIndexMetaDataValue(key);
+		} catch (InternalErrorException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public IndexDaoManager getIndexDaoManager() {
+		return indexDaoManager;
+	}
+
+	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
+		this.indexDaoManager = indexDaoManager;
+	}
+
+	public MetaData getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(MetaData metaData) {
+		this.metaData = metaData;
+	}
+
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
 	}
 	public IndexCreator getIndexCreator() {
 		return indexCreator;
+	}
+
+	public IndexRegistry getIndexRegistry() {
+		return indexRegistry;
+	}
+
+	public void setIndexRegistry(IndexRegistry indexRegistry) {
+		this.indexRegistry = indexRegistry;
 	}
 }

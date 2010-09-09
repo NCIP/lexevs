@@ -21,6 +21,7 @@ package org.lexevs.locator;
 import org.lexevs.cache.CacheWrappingFactory;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.index.operation.LexEvsIndexOperations;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
@@ -63,6 +64,8 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 	
 	/** The index service manager. */
 	private IndexServiceManager indexServiceManager;
+	
+	private LexEvsIndexOperations lexEvsIndexOperations;
 	
 	private CacheWrappingFactory cacheWrappingFactory;
 	
@@ -208,5 +211,13 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 
 	public CacheWrappingFactory getCacheWrappingFactory() {
 		return cacheWrappingFactory;
+	}
+
+	public void setLexEvsIndexOperations(LexEvsIndexOperations lexEvsIndexOperations) {
+		this.lexEvsIndexOperations = lexEvsIndexOperations;
+	}
+
+	public LexEvsIndexOperations getLexEvsIndexOperations() {
+		return lexEvsIndexOperations;
 	}
 }

@@ -734,6 +734,7 @@
 		<property name="registry" ref="registry"/>
 		<property name="indexServiceManager" ref="indexServiceManager"/>
 		<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>
+		<property name="lexEvsIndexOperations" ref="defaultLexEvsIndexOperations"/>
 	</bean>
 	
 	<bean id="loggingBean" class="org.lexevs.logging.LoggingBean" abstract="true">
@@ -755,8 +756,10 @@
 	</bean>
 	
 	<bean id="defaultLexEvsIndexOperations"
-		 class="org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations">
+		 class="org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations" parent="loggingBean">
 	 	<property name="indexCreator" ref="entityBatchingIndexCreator"/>
+	 	<property name="indexRegistry" ref="indexRegistry"/>
+	 	<property name="metaData" ref="luceneIndexMetadataFactory"/>
 	 </bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.LuceneEntityIndexService">

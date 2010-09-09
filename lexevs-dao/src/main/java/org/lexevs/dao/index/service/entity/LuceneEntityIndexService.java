@@ -218,6 +218,16 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#dropIndex(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public void dropIndex(AbsoluteCodingSchemeVersionReference reference) {
+		this.doDropIndex(reference);
+	
+		try {
+			metaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
+		} catch (InternalErrorException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected void doDropIndex(AbsoluteCodingSchemeVersionReference reference) {
 		String codingSchemeUri = reference.getCodingSchemeURN();
 		String codingSchemeVersion = reference.getCodingSchemeVersion();
 		
@@ -231,14 +241,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 				codingSchemeVersion).deleteDocuments(codingSchemeUri, codingSchemeVersion, term);
 		
 		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-	
-		try {
-			metaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
-		} catch (InternalErrorException e) {
-			throw new RuntimeException(e);
-		}
 	}
-	
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
@@ -257,12 +260,16 @@ public class LuceneEntityIndexService implements EntityIndexService {
 						reference.getCodingSchemeURN(), 
 						reference.getCodingSchemeVersion());
 			
-			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion());
-			
-			return lcs.getKey();
+			return this.getCodingSchemeKey(codingSchemeName, reference.getCodingSchemeVersion());
 		} catch (LBParameterException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	protected String getCodingSchemeKey(String codingSchemeName, String version) {
+		LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
+			
+		return lcs.getKey();
 	}
 
 	/**

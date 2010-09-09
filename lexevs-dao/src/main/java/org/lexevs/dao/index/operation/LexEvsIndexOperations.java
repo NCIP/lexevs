@@ -18,6 +18,10 @@
  */
 package org.lexevs.dao.index.operation;
 
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+
 /**
  * The Interface LexEvsIndexOperations.
  * 
@@ -33,4 +37,6 @@ public interface LexEvsIndexOperations {
 	 * @param version the version
 	 */
 	public void registerCodingSchemeEntityIndex(String codingSchemeUri, String version);
+	
+	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes);
 }
