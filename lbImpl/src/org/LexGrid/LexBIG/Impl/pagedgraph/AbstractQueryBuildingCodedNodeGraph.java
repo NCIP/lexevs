@@ -354,28 +354,15 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
     @Override
     public CodedNodeSet toNodeList(ConceptReference graphFocus, boolean resolveForward, boolean resolveBackward,
             int resolveAssociationDepth, int maxToReturn) throws LBInvocationException, LBParameterException {
-        ResolvedConceptReferenceList list = 
-            this.doResolveAsValidatedParameterList(
-                    graphFocus, 
-                    resolveForward, 
-                    resolveBackward, 
-                    0, 
-                    resolveAssociationDepth,
-                    null, 
-                    null, 
-                    null, 
-                    null, 
-                    maxToReturn, 
-                    false, 
-                    ArtificialRootResolvePolicy.RESOLVE_CHILDREN,
-                    new ReferenceReturningCycleDetectingCallback());
-        
+
         MappingExtension mappingExtension = 
             (MappingExtension) LexBIGServiceImpl.defaultInstance().getGenericExtension("MappingExtension");
         
         ConceptReferenceList codeList;
         
-        if(mappingExtension.isMappingCodingScheme(
+        if(this.isNotRestricted()
+                &&
+                mappingExtension.isMappingCodingScheme(
                 codingSchemeUri, 
                 Constructors.createCodingSchemeVersionOrTagFromVersion(version))) {
             List<String> relationContainerNames;
@@ -397,7 +384,6 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                         Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
                         relationContainerName, 
                         null);
-                
                 try {
                     while(itr.hasNext()) {
                         ResolvedConceptReference ref = itr.next();
@@ -417,14 +403,57 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                 } 
             }
         } else {
+            ResolvedConceptReferenceList list = 
+                this.doResolveAsValidatedParameterList(
+                        graphFocus, 
+                        resolveForward, 
+                        resolveBackward, 
+                        0, 
+                        resolveAssociationDepth,
+                        null, 
+                        null, 
+                        null, 
+                        null, 
+                        maxToReturn, 
+                        false, 
+                        ArtificialRootResolvePolicy.RESOLVE_CHILDREN,
+                        new ReferenceReturningCycleDetectingCallback());
+            
             codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
         }
    
         try {
+   
             return new LuceneOnlyToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
         } catch (LBResourceUnavailableException e) {
            throw new RuntimeException(e);
         }
+    }
+
+    private boolean isNotRestricted() {
+        GraphQuery query = 
+            this.getGraphQueryBuilder().getQuery();
+
+        return CollectionUtils.isEmpty(
+                query.getRestrictToAssociations())
+                &&
+                CollectionUtils.isEmpty(
+                query.getRestrictToAssociationsQualifiers())
+                &&
+                CollectionUtils.isEmpty(
+                query.getRestrictToEntityTypes())
+                &&
+                CollectionUtils.isEmpty(
+                query.getRestrictToSourceCodes()) 
+                &&
+                CollectionUtils.isEmpty(
+                query.getRestrictToSourceCodeSystem())
+                &&
+                CollectionUtils.isEmpty(
+                query.getRestrictToTargetCodes())
+                &&
+                CollectionUtils.isEmpty(
+                query.getRestrictToTargetCodeSystem());
     }
 
     private ConceptReferenceList traverseGraph(
