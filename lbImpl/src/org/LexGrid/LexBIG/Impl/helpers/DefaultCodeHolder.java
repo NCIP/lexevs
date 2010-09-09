@@ -20,8 +20,10 @@ package org.LexGrid.LexBIG.Impl.helpers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.annotations.LgClientSideSafe;
 
@@ -76,48 +78,33 @@ public class DefaultCodeHolder implements AdditiveCodeHolder, Serializable {
 
     @LgClientSideSafe
     public void union(CodeHolder otherCodes) {
-        List<CodeToReturn> codeEnum = otherCodes.getAllCodes();
-        for(CodeToReturn otherCode : codeEnum) {
 
-            
-            // if it isn't in this code system yet, add it.
-            if (!codes_.contains(otherCode)) {
-                this.add(otherCode);
-            } else {
-                int index = codes_.indexOf(otherCode);
-                // if it is already in this code system, and we are collecting
-                // scores, average the scores.
-                CodeToReturn myCode = codes_.get(index);
-                myCode.setScore((otherCode.getScore() + myCode.getScore()) / 2);
-            }
-        }
+        Set<CodeToReturn> set1 = new HashSet<CodeToReturn>(this.codes_);
+        Set<CodeToReturn> set2 = new HashSet<CodeToReturn>(otherCodes.getAllCodes());
+        
+        set1.addAll(set2);
+
+        this.codes_ = new ArrayList<CodeToReturn>(set1);
     }
 
     @LgClientSideSafe
     public void intersect(CodeHolder otherCodes) {
-        List<CodeToReturn> currentCodes = this.getAllCodes();
-        List<CodeToReturn> allOtherCodes = otherCodes.getAllCodes();
+        Set<CodeToReturn> set1 = new HashSet<CodeToReturn>(this.codes_);
+        Set<CodeToReturn> set2 = new HashSet<CodeToReturn>(otherCodes.getAllCodes());
         
-        Iterator<CodeToReturn> itr = currentCodes.iterator();
-        while(itr.hasNext()) {
-            CodeToReturn code = itr.next();
+        set1.retainAll(set2);
 
-            if (!allOtherCodes.contains(code)) {
-                // code is not in the second set - remove from the first.
-                itr.remove();
-            }
-        }
-
+        this.codes_ = new ArrayList<CodeToReturn>(set1);
     }
 
     @LgClientSideSafe
     public void difference(CodeHolder otherCodes) {
-        List<CodeToReturn> allOtherCodes = otherCodes.getAllCodes();
-        for (CodeToReturn otherCode : allOtherCodes) {
-           
-            // if the key is in the current set, remove it.
-            this.remove(otherCode);
-        }
+        Set<CodeToReturn> set1 = new HashSet<CodeToReturn>(this.codes_);
+        Set<CodeToReturn> set2 = new HashSet<CodeToReturn>(otherCodes.getAllCodes());
+        
+        set1.removeAll(set2);
+
+        this.codes_ = new ArrayList<CodeToReturn>(set1);
     }
     
     @LgClientSideSafe
