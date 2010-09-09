@@ -51,7 +51,9 @@ public abstract class AbstractMethodCachingBean<T> {
 
 	private SystemVariables systemVariables;
 	
-	private static String NULL_VALUE = "null";
+	private static String NULL_VALUE_KEY = "null";
+	
+	private static String NULL_VALUE_CACHE_PLACEHOLDER = "NULL_VALUE_CACHE_PLACEHOLDER";
 
 	private CacheRegistry cacheRegistry;
 	
@@ -144,17 +146,22 @@ public abstract class AbstractMethodCachingBean<T> {
 
 			Object value = cache.get(key);
 			if(value != null) {
-				logger.debug("Cache hit on: " + key);
-				Object obj = cache.get(key);
-				return obj;
+				this.logger.debug("Cache hit on: " + key);
+				if(value.equals(NULL_VALUE_CACHE_PLACEHOLDER)) {
+					return null;
+				} else {
+					return value;
+				}
 			} else {
-				logger.debug("Caching miss on: " + key);
+				this.logger.debug("Caching miss on: " + key);
 			}
 
 			result = this.proceed(joinPoint);
 			
 			if(result != null) {
 				cache.put(key, result);
+			} else {
+				cache.put(key, NULL_VALUE_CACHE_PLACEHOLDER);
 			}
 		}
 
@@ -249,7 +256,7 @@ public abstract class AbstractMethodCachingBean<T> {
 	protected String getArgumentKey(Object argument) {
 		StringBuffer sb = new StringBuffer();
 		if(argument == null) {
-			sb.append(NULL_VALUE);
+			sb.append(NULL_VALUE_KEY);
 		} else {
 			sb.append(argument.hashCode());
 		}
