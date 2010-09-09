@@ -476,7 +476,7 @@ public class VSDServiceHelper {
 	    
 	    cns.restrictToMatchingProperties(
 	    		StringUtils.isNotEmpty(propertyRef.getPropertyName()) ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
-	    				new PropertyType[] { PropertyType.PRESENTATION }, propertyMatchValue, matchAlgorithm, null);
+	    				null, propertyMatchValue, matchAlgorithm, null);
 	     
 	    return cns;
 	}
