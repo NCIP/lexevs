@@ -92,32 +92,33 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 	}
 
 	public CacheWrapper<String, Object> getCache(String cacheName, boolean createIfNotPresent) {
-		if(! caches.containsKey(cacheName)) {
-			if(!createIfNotPresent){
-				throw new RuntimeException("\n\n\n" +
-						"=============================================\n" +
-						"                Cache Error\n" +
-						" Cache: " + cacheName + " not found.\n" +
-						"=============================================\n\n");
-			} else {
-				if(this.cacheManager.cacheExists(cacheName)) {
-					CacheWrapper<String,Object> cacheWrapper = new EhCacheWrapper<String,Object>(cacheName,this.cacheManager);
-					this.caches.put(cacheName,cacheWrapper);
-					return cacheWrapper;
+		synchronized(caches) {
+			if(! caches.containsKey(cacheName)) {
+				if(!createIfNotPresent){
+					throw new RuntimeException("\n\n\n" +
+							"=============================================\n" +
+							"                Cache Error\n" +
+							" Cache: " + cacheName + " not found.\n" +
+					"=============================================\n\n");
 				} else {
-					LoggerFactory.getLogger().warn("Using default cache for Cache Name: " + cacheName);
-					this.cacheManager.addCache(cacheName);
-					
-					CacheWrapper<String,Object> cacheWrapper = 
-						new EhCacheWrapper<String,Object>(cacheName,this.cacheManager);
-					this.caches.put(cacheName,cacheWrapper);
-					
-					return cacheWrapper;
+					if(this.cacheManager.cacheExists(cacheName)) {
+						CacheWrapper<String,Object> cacheWrapper = new EhCacheWrapper<String,Object>(cacheName,this.cacheManager);
+						this.caches.put(cacheName,cacheWrapper);
+						return cacheWrapper;
+					} else {
+						LoggerFactory.getLogger().warn("Using default cache for Cache Name: " + cacheName);
+						this.cacheManager.addCache(cacheName);
+
+						CacheWrapper<String,Object> cacheWrapper = 
+							new EhCacheWrapper<String,Object>(cacheName,this.cacheManager);
+						this.caches.put(cacheName,cacheWrapper);
+
+						return cacheWrapper;
+					}
 				}
 			}
+			return this.caches.get(cacheName);
 		}
-		return this.caches.get(cacheName);
-		
 	}
 
 	public void setCacheManager(CacheManager cacheManager) {
