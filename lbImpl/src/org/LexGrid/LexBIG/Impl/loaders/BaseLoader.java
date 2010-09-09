@@ -343,7 +343,13 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 status_.setState(ProcessState.FAILED);
                 md_.fatal("Failed while running the conversion", e);
             } finally {
-                if (status_.getState() == null || !status_.getState().equals(ProcessState.COMPLETED)) {
+                if (status_.getState() == null || 
+                        (
+                                !status_.getState().equals(ProcessState.COMPLETED)
+                                        &&
+                                !status_.getState().equals(ProcessState.PENDING)
+                        
+                        )) {
                     status_.setState(ProcessState.FAILED);
 
                     try {

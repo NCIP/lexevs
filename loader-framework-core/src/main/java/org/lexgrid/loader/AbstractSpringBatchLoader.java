@@ -103,6 +103,10 @@ public abstract class AbstractSpringBatchLoader extends BaseLoader implements Lo
 		if(jobExecution.getExitStatus().equals(ExitStatus.COMPLETED)){
 			JobRepositoryManager jobRepositoryManager = (JobRepositoryManager)ctx.getBean("jobRepositoryManager");
 			jobRepositoryManager.dropJobRepositoryDatabases();
+		} else {
+			this.getStatus().setErrorsLogged(true);
+			this.getStatus().setWarningsLogged(true);
+			this.getStatus().setState(ProcessState.PENDING);
 		}
 	}
 	
