@@ -3,8 +3,6 @@
  */
 package org.lexevs.cts2.author;
 
-import static junit.framework.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,6 +15,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
+import junit.framework.TestCase;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
@@ -26,8 +26,6 @@ import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
@@ -44,15 +42,18 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * @author m004181
  *
  */
-public class ConceptDomainAuthoringOperationImplTest {
+public class ConceptDomainAuthoringOperationImplTest extends TestCase{
 
 	private static ConceptDomainAuthoringOperation CD_AUTH_OP;
 	private static ConceptDomainQueryOperation CD_QUERY_OP;
 	
 	private static List<String> revIds_ = new ArrayList<String>();
 	private static LexEVSValueSetDefinitionServices vds_ = null;
-	@BeforeClass
-	public static void runBeforeClass(){
+	
+//	@BeforeClass
+//	public static void runBeforeClass(){
+	protected void setUp() throws Exception {
+		super.setUp();
 		CD_AUTH_OP = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getConceptDomainAuthoringOperation();
 		CD_QUERY_OP = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getConceptDomainQueryOperation();
 		vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
@@ -63,10 +64,15 @@ public class ConceptDomainAuthoringOperationImplTest {
 		} catch (LBException e) {
 			e.printStackTrace();
 		}
+		
+//		createConceptDomainCodeSystem();
+//		createConceptDomainFromFile();
 	}
 	
-	@AfterClass
-	public static void runAfterClass() throws LBException, URISyntaxException{
+//	@AfterClass
+//	public static void runAfterClass() throws LBException, URISyntaxException{
+	protected void tearDown() throws Exception {
+		super.tearDown();
 		CD_AUTH_OP = null;
 		CD_QUERY_OP = null;
 		
@@ -98,7 +104,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@Test
-	public void createConceptDomainCodeSystem() throws LBException {
+	public void testCreateConceptDomainCodeSystem() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -120,7 +126,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@Test
-	public void createConceptDomainFromFile() throws LBException, IOException {
+	public void testCreateConceptDomainFromFile() throws LBException, IOException {
 		RevisionInfo rev = new RevisionInfo();
 		
 		File file = new File("src/test/resources/testData/ConceptDomainTestData.txt");
@@ -176,7 +182,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws IOException 
 	 */
 	@Test
-	public void createConceptDomain() throws LBException, IOException {
+	public void testCreateConceptDomain() throws LBException, IOException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -219,7 +225,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void updateConceptDomainStatus() throws LBException {
+	public void testUpdateConceptDomainStatus() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		
 		String revId = getRevId();
@@ -239,7 +245,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void activateConceptDomain() throws LBException {
+	public void testActivateConceptDomain() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -256,7 +262,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void deactivateConceptDomain() throws LBException {
+	public void testDeactivateConceptDomain() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -273,7 +279,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void updateConceptDomainVersionable() throws LBException {
+	public void testUpdateConceptDomainVersionable() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		String revId = getRevId();
 		rev.setRevisionId(revId);
@@ -292,7 +298,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void addConceptDomainProperty() throws LBException {
+	public void testAddConceptDomainProperty() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -311,7 +317,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void updateConceptDomainProperty() throws LBException {
+	public void testUpdateConceptDomainProperty() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		String revId = getRevId();
 		rev.setRevisionId(revId);
@@ -335,7 +341,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws URISyntaxException 
 	 */
 	@Test
-	public void addConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
+	public void testAddConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -351,7 +357,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void getConceptDomainCodingScheme() throws LBException {
+	public void testGetConceptDomainCodingScheme() throws LBException {
 		CodingScheme cs = CD_QUERY_OP.getConceptDomainCodingScheme(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 		
 		assertTrue(cs.getCodingSchemeName().equals(ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME));
@@ -364,7 +370,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void getConceptDomainEntitisWithName() throws LBException {
+	public void testGetConceptDomainEntitisWithName() throws LBException {
 		List<Entity> entityList = CD_QUERY_OP.getConceptDomainEntitisWithName("code", ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, null, null, "subString", null);
 		
 		assertTrue(entityList.size() == 4);
@@ -383,7 +389,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void getConceptDomainEntity() throws LBException {
+	public void testGetConceptDomainEntity() throws LBException {
 		Entity entity = CD_QUERY_OP.getConceptDomainEntity("ActAdjudicationInformationCode", null, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION);
 		
 		assertTrue(entity.getEntityCode().equalsIgnoreCase("ActAdjudicationInformationCode"));
@@ -414,7 +420,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@Test
-	public void getValueSetBinding()
+	public void testGetValueSetBinding()
 	{
 		List<String> urisStr = vds_.getValueSetDefinitionURIsWithConceptDomain("cdunitest1", null);
 		
@@ -427,7 +433,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 
 	@Test
-	public void removeConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
+	public void testRemoveConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -438,7 +444,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@Test
-	public void getValueSetBinding2(){		
+	public void testGetValueSetBinding2(){		
 		List<String> urisStr = vds_.getValueSetDefinitionURIsWithConceptDomain("cdunitest1", null);
 		
 		assertTrue(urisStr.size() == 0);
@@ -449,7 +455,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	 * @throws LBException 
 	 */
 	@Test
-	public void removeConceptDomainProperty() throws LBException {
+	public void testRemoveConceptDomainProperty() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -461,7 +467,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@Test
-	public void removeConceptDomain() throws LBException{
+	public void testRemoveConceptDomain() throws LBException{
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -470,7 +476,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@Test
-	public void removeConceptDomainCodeSystem() throws LBException{
+	public void testRemoveConceptDomainCodeSystem() throws LBException{
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
 		revInfo.setChangeInstruction("changeInstruction");
