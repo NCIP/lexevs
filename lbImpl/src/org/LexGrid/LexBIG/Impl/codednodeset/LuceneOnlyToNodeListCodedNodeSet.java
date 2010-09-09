@@ -24,9 +24,11 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.helpers.AdditiveCodeHolder;
+import org.LexGrid.LexBIG.Impl.helpers.CodeListFilterRegistry;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.apache.lucene.search.Filter;
 
 public class LuceneOnlyToNodeListCodedNodeSet extends SingleLuceneIndexCodedNodeSet {
     
@@ -42,7 +44,10 @@ public class LuceneOnlyToNodeListCodedNodeSet extends SingleLuceneIndexCodedNode
         if(codeList == null || codeList.getConceptReferenceCount() == 0) {
             codeList = Constructors.createConceptReferenceList("NO-MATCH-CODE", "NO-MATCH-NAMESPACE", "NO-MATCH-CODINGSCHEME");
         }
-        this.restrictToCodes(codeList);
+        
+        Filter filter = CodeListFilterRegistry.defaultInstance().getConceptReferenceListFilter(uri, version, codeList);
+        
+        this.getFilters().add(filter);
         
         AdditiveCodeHolder holder = new DefaultCodeHolder();
         for(ConceptReference ref : codeList.getConceptReference()) {
