@@ -474,10 +474,17 @@ public class VSDServiceHelper {
 	    if (StringUtils.isEmpty(matchAlgorithm))
 	    	matchAlgorithm = MatchAlgorithms.LuceneQuery.name();
 	    
-	    cns.restrictToMatchingProperties(
+	    if (StringUtils.isNotEmpty(propertyMatchValue))
+	    {
+	    	cns.restrictToMatchingProperties(
 	    		StringUtils.isNotEmpty(propertyRef.getPropertyName()) ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
-	    				null, propertyMatchValue, matchAlgorithm, null);
-	     
+	    				new PropertyType[] { PropertyType.PRESENTATION, PropertyType.GENERIC }, propertyMatchValue, matchAlgorithm, null);
+	    }
+	    else if (StringUtils.isNotEmpty(propertyRef.getPropertyName()))
+	    {
+	    	cns.restrictToProperties(Constructors.createLocalNameList(propertyRef.getPropertyName()), null);
+	    }
+	    	
 	    return cns;
 	}
 	
