@@ -296,9 +296,7 @@ public class RestrictionImplementations {
                     if (cr.getCodingSchemeName() == null)
                         cr.setCodingSchemeName(internalCodeSystemName);
 
-                    if (LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(
-                            internalCodeSystemName, internalVersionString).equals(internalCodeSystemName)
-                            && cr.getConceptCode() != null && cr.getConceptCode().length() > 0) {
+                    if (cr.getConceptCode() != null && cr.getConceptCode().length() > 0) {
                         BooleanQuery codeAndNamespaceQuery = new BooleanQuery();
                         
                         codeAndNamespaceQuery.add(new BooleanClause(new TermQuery(new Term(codeField, cr.getConceptCode())),
@@ -320,8 +318,6 @@ public class RestrictionImplementations {
             return masterQuery;
 
         } catch (UnexpectedInternalError e) {
-            throw e;
-        } catch (LBParameterException e) {
             throw e;
         } catch (Exception e) {
             throw new UnexpectedInternalError("There was an unexpected internal error.", e);
