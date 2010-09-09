@@ -39,6 +39,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 
@@ -246,10 +247,10 @@ public class PrintUtility {
 	 */
 	public static void print(CodedNodeSet cns){
 		try {
-			ResolvedConceptReferenceList rcrl = cns.resolveToList(null,null,null, -1);
-			ResolvedConceptReference[] rcrArray = rcrl.getResolvedConceptReference();
-			for(ResolvedConceptReference rcr: rcrArray){
-				print(rcr);
+			ResolvedConceptReferencesIterator itr = cns.resolve(null,null,null,null,false);
+			
+			while(itr.hasNext()){
+				print(itr.next());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
