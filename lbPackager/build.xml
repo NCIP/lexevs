@@ -31,7 +31,7 @@ You may obtain a copy of the License at
 	<property name="vMajor" value="6"/> <!-- Product version - major release -->
 	<property name="vMinor" value="0"/> <!-- Product version - minor release -->
 	<property name="vPatch" value=""/> <!-- Product version - patch level -->
-	<property name="vCStat" value="a2"/> <!--Product version - candidate status (e.g. a= alpha, b=beta, rc=release candidate ) -->
+	<property name="vCStat" value=""/> <!--Product version - candidate status (e.g. a= alpha, b=beta, rc=release candidate ) -->
 	<property name="vBuild" value="${vMajor}.${vMinor}${vPatch}${vCStat}"/> <!-- Product build id -->
 	
 	
@@ -111,7 +111,6 @@ You may obtain a copy of the License at
 		<property name="slf4j.libs.dir" value="${libs}/slf4j"/>
 		<property name="xstream.libs.dir" value="${libs}/xstream"/>
 		<property name="claml.libs.dir" value="${libs}/claml"/>
-		<property name="copyright.scrubber.dir" value="${libs}/util"/>
 		
 		<!-- filepath properties -->
 		<property name="dist.dir" value="${basedir}/dist"/> <!-- Build destination -->
@@ -275,9 +274,6 @@ You may obtain a copy of the License at
 			</fileset>
 			<fileset dir="${claml.libs.dir}" id="claml">
 				<include name="*"/>
-			</fileset>
-			<fileset dir="${copyright.scrubber.dir}" id="copyrightScrubber">
-						<include name="*"/>
 			</fileset>
 			
 		</path>
@@ -1141,7 +1137,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		build-lexbig-jar,config-junit-resources,run-junit"/>
 	
 	<target name="build-lexbig-bda" depends="
-		lexbig.jar, lexevs.pack, pack"/>
+		build-lexbig-jar, lexevs.pack, pack"/>
 		
 	<target name="build-lexbig-jar" depends="
 			init, clean, buildinfo, predef,
