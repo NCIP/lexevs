@@ -106,7 +106,6 @@ You may obtain a copy of the License at
                 <include name="**"/>
             </fileset>
             <executable targetfile="$INSTALL_PATH/admin/ActivateScheme.sh" stage="never" keep="true"></executable>
-            <executable targetfile="$INSTALL_PATH/admin/ClearOrphanedResources.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/DeactivateScheme.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/ExportLgXML.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/ExportOBO.sh" stage="never" keep="true"></executable>
@@ -114,19 +113,23 @@ You may obtain a copy of the License at
             <executable targetfile="$INSTALL_PATH/admin/ListSchemes.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/LoadLgXML.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/LoadManifest.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadMetaBatch.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadMetadata.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadNCIHistory.sh" stage="never" keep="true"></executable>
-            <executable targetfile="$INSTALL_PATH/admin/LoadNCIMeta.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/LoadOBO.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadOWL.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadPickListDefinition.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadRadLexProtegeFrames.sh" stage="never" keep="true"></executable>
-			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSDatabase.sh" stage="never" keep="true"></executable>
-			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSFiles.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadUmlsBatch.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSSemnet.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadValueSetDefinition.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/PasswordEncryptor.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/RebuildIndex.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/RemoveIndex.sh" stage="never" keep="true"></executable>			
 			<executable targetfile="$INSTALL_PATH/admin/RemoveMetadata.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/RemoveScheme.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/ResumeMetaBatch.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/ResumeUmlsBatch.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/TagScheme.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/TransferScheme.sh" stage="never" keep="true"></executable>
         </pack>
@@ -142,6 +145,7 @@ You may obtain a copy of the License at
                 <include name="**"/>
             </fileset>
             <executable targetfile="$INSTALL_PATH/examples/BuildTreeForCode.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/BuildTreeForMetaCodeBySource.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/examples/FindCodesForDescription.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/examples/FindDescriptionForCode.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/examples/FindPropsAndAssocForCode.sh" stage="never" keep="true"></executable>
