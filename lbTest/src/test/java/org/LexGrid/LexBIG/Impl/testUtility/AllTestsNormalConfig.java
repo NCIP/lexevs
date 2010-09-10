@@ -387,9 +387,6 @@ public class AllTestsNormalConfig {
         //ValueDomain tests
         mainSuite.addTest(org.LexGrid.valuedomain.test.VDAllTests.suite());
         
-        //ConceptDomain tests
-        mainSuite.addTestSuite(org.LexGrid.conceptdomain.LexEVSConceptDomainServicesTest.class);
-
         //LexGrid XML Exporter tests
         mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
         
