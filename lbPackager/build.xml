@@ -329,7 +329,7 @@ You may obtain a copy of the License at
 
 	<target name="temp-scrub" depends="init" description="scrub copyrights for source in temporary directories">
 		<java
-			classpath="../lgUtil/bin"
+			classpath="../lgSharedLibraries/util/lgCopyrightScrubber.jar"
 			classname="org.LexGrid.util.file.CopyrightScrubber">
 			<arg value="${temp.src}"/>
 		</java>
