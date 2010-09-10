@@ -103,6 +103,21 @@
 									</tasklet>
 								</step>
 							</flow>
+							<flow>
+								<step id="umlsLoadMrsatProperties" parent="listenerStep">
+									<tasklet>
+										<chunk reader="umlsMrsatSkippingReader" processor="umlsMrsatPropertyProcessor"
+											writer="entityPropertyWriter" commit-interval="1000" skip-limit="100000">
+											<streams>
+												<stream ref="mrsatReader" />
+											</streams>
+											<skippable-exception-classes>
+										 		<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+											</skippable-exception-classes>
+										</chunk>
+									</tasklet>
+								</step>
+							</flow>
 						</split>
 					</flow>
 					<flow>
@@ -432,11 +447,12 @@
 		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
 	</beans:bean>
 
-<!--	<beans:bean id="umlsMrsatPropertyProcessor" parent="umlsDefaultPropertyProcessor"-->
-<!--		class="org.lexgrid.loader.processor.EntityPropertyProcessor">-->
-<!--		<beans:property name="propertyResolver"-->
-<!--			ref="umlsMrsatPropertyResolver" />-->
-<!--	</beans:bean>-->
+	<beans:bean id="umlsMrsatPropertyProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityPropertyProcessor">
+		<beans:property name="propertyResolver"
+			ref="umlsMrsatPropertyResolver" />
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+	</beans:bean>
 	
 	<beans:bean id="umlsMrstyCombiningProcessor" class="org.lexgrid.loader.processor.CombiningProcessor">
 		<beans:property name="processors">
