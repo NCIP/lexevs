@@ -1,0 +1,31 @@
+<ivysettings>
+	<property name="nci.ivy.repo" value="http://gforge.nci.nih.gov/svnroot/commonlibrary/trunk/ivy-repo" />
+	<settings defaultResolver="nci-chain" />
+	<caches defaultCacheDir="${user.home}/.ivy2/lexevs" useOrigin="true"/>
+	<resolvers>
+		<chain name="nci-chain">
+		 	<filesystem name="user-local-repo" local="true">
+				<artifact pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
+				<ivy pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/ivy.xml" />
+	  		</filesystem> 
+	  		
+			<url name="ncicb-ivy-repo" m2compatible="false">
+				<ivy pattern="${nci.ivy.repo}/[organisation]/[module]/[revision]/ivy.xml" />
+				<artifact pattern="${nci.ivy.repo}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+			</url>
+			
+			 <!--<ibiblio name="cbiit-maven-mirror" m2compatible="true" root="https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk" changingPattern=".*SNAPSHOT" />-->
+     		 <url name="cbiit-maven-mirror" m2compatible="true">
+        		<artifact pattern="https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+     		 </url>
+			
+			 <!--<ibiblio name="cbiit-maven-mirror" m2compatible="true" root="https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk" changingPattern=".*SNAPSHOT" />-->
+     		 <url name="java-net" m2compatible="true">
+      			  <artifact pattern="http://download.java.net/maven/2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+      		</url>
+      		<url name="ibiblio" m2compatible="true">
+      			  <artifact pattern="http://www.ibiblio.org/pub/mirrors/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+      		</url>
+		</chain>
+	</resolvers>
+</ivysettings>

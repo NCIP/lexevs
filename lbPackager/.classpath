@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbAdmin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbExamples"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lgSharedLibraries"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,1166 @@
+<!--
+Copyright: (c) 2004-2007 Mayo Foundation for Medical Education and 
+Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+triple-shield Mayo logo are trademarks and service marks of MFMER.
+
+Except as contained in the copyright notice above, or as used to identify 
+MFMER as the author of this software, the trade names, trademarks, service
+marks, or product names of the copyright holder shall not be used in
+advertising, promotion or otherwise in connection with this software without
+prior written authorization of the copyright holder.
+ 
+Licensed under the Eclipse Public License, Version 1.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at 
+
+ 		http://www.eclipse.org/legal/epl-v10.ht
+-->
+<project name="LexBIG Packager" default="build-lexbig" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+	<description>
+		Buildfile for external LexBIG packages.
+	</description>
+	<property environment="env"/> 
+
+	<!-- *************************************** -->
+	<!-- *** TO BE CUSTOMIZED FOR EACH BUILD *** -->
+	<!-- *************************************** -->
+	<property name="prodID" value="LexEVS"/> <!-- Product ID -->
+	<property name="prodTitle" value = "LexGrid Vocabulary Services for caBIG(LexBIG)"/><!-- Product Title -->
+	<!--<property name="prodTitle" value = "LexGrid Vocabulary Services for NCBO(LexBIO)"/>--><!-- Product Title -->
+
+	<property name="vMajor" value="6"/> <!-- Product version - major release -->
+	<property name="vMinor" value="0"/> <!-- Product version - minor release -->
+	<property name="vPatch" value=""/> <!-- Product version - patch level -->
+	<property name="vCStat" value="a2"/> <!--Product version - candidate status (e.g. a= alpha, b=beta, rc=release candidate ) -->
+	<property name="vBuild" value="${vMajor}.${vMinor}${vPatch}${vCStat}"/> <!-- Product build id -->
+	
+	
+	
+	<target name="init-ivy">
+	
+		<!-- Ivy Properties -->
+		<property name="ivy.dir" location="ivy"/>
+		<property name="ivy.jar.dir" location="${ivy.dir}/lib"/>
+		
+		<!-- <property name="ivy.ibiblio.default.artifact.root" value="http://bmidev4:8282/nexus-webapp-1.3.3/content/repositories/bmidev-internal-snapshots/" /> -->
+	
+		<!-- NOTE: I used to just do this at parse time, but there is a bug in Ant versions < 1.7 
+		     with classloaders on taskdefs not getting reclaimed after subant calls, and we would 
+		     get OutOfMemory PermGen space.  Such taskdefs live across subant calls, so I only do this once now.
+		-->
+		
+		<path id="ivy.lib.path">
+		    <fileset dir="${ivy.jar.dir}">
+		        <include name="ivy-*.jar" />
+		    </fileset>
+		</path>
+		
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" loaderRef="ivy.loader" />
+		<property name="ivy.initialized" location="true" />
+	</target>
+	
+	<target name="init">
+
+		<!-- *************************************** -->
+		<!-- individual project build directories. These are just property file standins.-->
+		<property name="lgModel.dir" location="../"/>
+		<property name="lexevs.api.dir" location="../"/>
+		<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>
+		<property name="lbImpl.dir" location="../lbImpl"/>
+		<property name="lbGui.dir" location="../lbGUI"/>	
+		<property name="cts2.dir" location="../cts2Impl"/>	
+		<property name="lbTest" value="../lbTest" />
+		
+		<property name="libs" value="${lgSharedLibs.dir}"/> <!-- shared libs -->
+		<property name="jena.libs.dir" value="${libs}/jena"/> <!-- Dependency jars -->
+		<property name="apache.libs.dir" value="${libs}/apache"/> <!-- Dependency jars -->
+		<property name="gui.libs.dir" value="${libs}/eclipse/swt"/> <!-- Dependency jars -->
+		<property name="eclipse.emf.libs.dir" value="${libs}/eclipse/emf"/> <!-- Dependency jars -->
+		<property name="eclipse.core.libs.dir" value="${libs}/eclipse/core"/> <!-- Dependency jars -->
+		<property name="logging.libs.dir" value="${libs}/apache/log4j"/> <!-- Dependency jars -->
+		<property name="protege.libs.dir" value="${libs}/protege"/> <!-- Dependency jars -->
+		<property name="caGrid.libs.dir" value="${libs}/cabig"/> <!-- Dependency jars -->
+		<property name="ant.libs.dir" value="${libs}/apache/ant"/> <!--ant jars for packager-->
+		<property name="junit.libs.dir" value="${libs}/junit"/> <!--junit jars for packager-->
+		<property name="sql.libs.dir" value="${libs}/sqlDrivers"/><!-- sql drivers for packager-->
+		<property name="crossdb.libs.dir" value="${libs}/crossdb"/><!-- db tools for packager-->
+		<property name="icu4j.libs.dir" value="${libs}/icu4j"/>
+		<property name="jdom.libs.dir" value="${libs}/jdom"/>
+		<property name="lvg.libs.dir" value="${libs}/lvg"/>
+		<property name="data.libs.dir" value="${libs}/data"/>
+		<property name="ldapbp.libs.dir" value="${libs}/ldapbp"/>
+		<property name="prefuse.libs.dir" value="${libs}/prefuse"/>
+		<property name="openrdf.libs.dir" value="${libs}/OpenRDF"/>
+		<property name="cobertura.dir" value="${libs}/cobertura" />
+		<property name="fatjar.dir" value="${libs}/fatjar" />
+		<property name="castor.libs.dir" value="${libs}/castor" />
+		<property name="groboutils.libs.dir" value="${libs}/groboutils" />
+		<property name="asm.libs.dir" value="${libs}/asm" />
+		<property name="easymock.libs.dir" value="${libs}/easymock" />
+		<property name="cglib.libs.dir" value="${libs}/cglib" />	
+		<property name="spring.libs.dir" value="${libs}/spring" />	
+		<property name="c3p0.libs.dir" value="${libs}/c3p0" />
+		<property name="args4j.libs.dir" value="${libs}/args4j"/>
+		<property name="dom4j.libs.dir" value="${libs}/dom4j"/>
+		<property name="ehcache.libs.dir" value="${libs}/ehcache"/>
+		<property name="hibernate.libs.dir" value="${libs}/hibernate"/>
+		<property name="javax.libs.dir" value="${libs}/javax"/>
+		<property name="jettison.libs.dir" value="${libs}/jettison"/>
+		<property name="javassist.libs.dir" value="${libs}/javassist"/>
+		<property name="jta.libs.dir" value="${libs}/jta"/>
+		<property name="slf4j.libs.dir" value="${libs}/slf4j"/>
+		<property name="xstream.libs.dir" value="${libs}/xstream"/>
+		<property name="claml.libs.dir" value="${libs}/claml"/>
+		<property name="copyright.scrubber.dir" value="${libs}/util"/>
+		
+		<!-- filepath properties -->
+		<property name="dist.dir" value="${basedir}/dist"/> <!-- Build destination -->
+		<property name="out.file" value="${dist.dir}/${prodID}-install-${vBuild}.jar"/> <!-- Generated installer -->
+		<property name="temp.dir" value="${basedir}/anttemp"/> <!-- Temporary file location -->
+		<property name="temp.bin" value="${temp.dir}/bin"/> <!-- Temporary compile location -->
+		<property name="temp.doc" value="${temp.dir}/doc"/> <!-- Temporary javadoc source file location -->
+		<property name="temp.src" value="${temp.dir}/src"/> <!-- Temporary source location -->
+		<property name="temp.pkg" value="${temp.dir}/runtime-components"/> <!-- Temporary packaged  location -->
+		<property name="pack.dir" value="${basedir}/antbuild"/> <!-- Package destination -->
+		<property name="file.dir" value="${basedir}/files"/> <!-- Source files -->
+		
+		<!-- directories for lzPack packages  -->
+		<property name="pkg-components" location="${pack.dir}/runtime-components"/>
+		<property name="pkg-doc" location="${pack.dir}/doc"/>
+		<property name="pkg-examples" location="${pack.dir}/examples"/>
+		<property name="pkg-extlib" location="${pack.dir}/runtime-components/extLib"/>
+		<property name="pkg-javadoc" location="${pkg-doc}/javadoc"/>
+		<property name="pkg-resources" location="${pack.dir}/resources"/>
+		<property name="pkg-resources-config" location="${pkg-resources}/config"/>
+		<property name="pkg-root" location="${pack.dir}/root"/>
+		<property name="pkg-runtime" location="${pack.dir}/runtime"/>
+		<property name="pkg-source" location="${pack.dir}/source"/>
+		<property name="pkg-admin" location="${pack.dir}/admin"/>
+		<property name="pkg-test" location="${pack.dir}/test"/>
+		<property name="pkg-gui" location="${pack.dir}/gui"/>
+		
+		<!--set up a conditional to detect the presence of a ydoc license-->
+		<condition property="ydoc.present">
+		   <available file="../ydoc/resources/ydoc.license" />
+		</condition> 
+		<!-- tasks -->
+		<!-- Define the installer task for izPack-->
+		<taskdef name="izPack" classname="com.izforge.izpack.ant.IzPackTask">
+			<classpath path="${lgSharedLibs.dir}/izPack/standalone-compiler-3.8.1.jar"/>
+		</taskdef>
+		<!-- Define the code complexity review task for javancss-->
+		<!--<taskdef name="javancss"
+		            classname="javancss.JavancssAntTask"
+		            classpath="../lgSharedLibraries/javancss/javancss.jar"/>
+
+		<path id="cobertura.classpath">
+		    <fileset dir="${cobertura.dir}">
+		        <include name="cobertura.jar" />
+		        <include name="lib/**/*.jar" />
+		    </fileset>
+		</path>
+
+		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />-->	
+
+	<!--define the dependencies path variable needed for the runtime -->
+		<path id="dependencies.path">
+			<fileset dir="${pkg-extlib}" id="extLib">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${icu4j.libs.dir}" id="icu4j">
+				<include name="*"/>
+			</fileset>
+			<fileset dir="${jdom.libs.dir}" id="jdom">
+				<include name="*"/>
+			</fileset>
+			<fileset dir="${jena.libs.dir}" id="jena">
+				<include name="jena-2.5.4.jar"/>
+				<include name="iri.jar"/>
+				<include name="concurrent.jar"/>
+				<include name="arq.jar"/>
+			</fileset>			
+			<fileset dir="${prefuse.libs.dir}" id="prefuse">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${castor.libs.dir}" id="castor">
+				<include name="castor-1.3.1.jar"/>
+				<include name="castor-1.3.1-core.jar"/>
+			</fileset>			
+			
+			<fileset dir="${junit.libs.dir}" id="junit">
+				<include name="junit-4.4.jar"/>
+			</fileset>
+			<fileset dir="${groboutils.libs.dir}" id="groboutils">
+				<include name="GroboUtils-5-core.jar"/>
+			</fileset>
+			<fileset dir="${asm.libs.dir}" id="asm">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${cglib.libs.dir}" id="cglib">
+				<include name="*.jar"/>
+				<include name="*.txt"/>
+			</fileset>
+			<fileset dir="${easymock.libs.dir}" id="easymock">
+				<include name="*.jar"/>
+				<include name="*.txt"/>
+			</fileset>
+			<fileset dir="${spring.libs.dir}" id="spring">
+				<include name="*.jar"/>
+				<include name="*.txt"/>
+			</fileset>
+						
+			<fileset dir="${c3p0.libs.dir}" id="c3p0">
+				<include name="*"/>
+			</fileset>				
+			<fileset dir="${args4j.libs.dir}" id="args4j">
+				<include name="*"/>
+			</fileset>					
+			<fileset dir="${dom4j.libs.dir}" id="dom4j">
+				<include name="*"/>
+			</fileset>						
+			<fileset dir="${ehcache.libs.dir}" id="ehcache">
+				<include name="*"/>
+			</fileset>					
+			<fileset dir="${hibernate.libs.dir}" id="hibernate">
+				<include name="*"/>
+			</fileset>					
+			<fileset dir="${javax.libs.dir}" id="javax">
+				<include name="*"/>
+			</fileset>						
+			<fileset dir="${jettison.libs.dir}" id="jettison">
+				<include name="*"/>
+			</fileset>					
+			<fileset dir="${jta.libs.dir}" id="jta">
+				<include name="*"/>
+			</fileset>					
+			<fileset dir="${slf4j.libs.dir}" id="slf4j">
+				<include name="*"/>
+			</fileset>						
+			<fileset dir="${xstream.libs.dir}" id="xstream">
+				<include name="*"/>
+			</fileset>	
+			<fileset dir="${javassist.libs.dir}" id="javassist">
+				<include name="*"/>
+			</fileset>	
+			<fileset dir="${apache.libs.dir}" id="jakarta-apache">
+				<include name="commons/**/*.jar"/>
+				<include name="commons/**/*.license.txt"/>
+				<include name="xerces/**/*.jar"/>
+				<include name="xerces/**/*.license.txt"/>
+				<include name="lucene/**/*.jar"/>
+				<include name="lucene/**/*.license.txt"/>
+				<include name="log4j/**/*.jar"/>
+				<include name="log4j/**/*.license.txt"/>
+			</fileset>
+			<fileset dir="${eclipse.core.libs.dir}" id="core.eclipse.support">
+				<include name="org.eclipse.core.runtime_3.2.0.v20060603.jar"/>
+				<include name="org.eclipse.equinox.common_3.2.0.v20060603.jar"/>
+				<include name="org.eclipse.equinox.preferences_3.2.0.v20060601.jar"/>
+				<include name="org.eclipse.osgi_3.2.0.v20060601.jar"/>
+			</fileset>
+			<fileset dir="${eclipse.emf.libs.dir}" id="emf.eclipse.support">
+				<include name="org.eclipse.emf.common_2.2.1.v200609210005.jar"/>
+				<include name="org.eclipse.emf.ecore_2.2.1.v200609210005.jar"/>
+				<include name="org.eclipse.emf.ecore.xmi_2.2.1.v200609210005.jar"/>
+			</fileset>
+			<fileset dir="${protege.libs.dir}" id="protege">
+				<include name="protege-3.4.4.jar"/>
+				<include name="protege-owl-3.4.4.jar"/>
+				<include name="looks-2.1.3.jar"/>
+				<include name="orphanNodesAlg.jar"/>
+			</fileset>
+			
+			<fileset dir="${data.libs.dir}" id="data">
+				<include name="BlankAccessDB.jar"/>
+			</fileset>
+			<fileset dir="${claml.libs.dir}" id="claml">
+				<include name="*"/>
+			</fileset>
+			<fileset dir="${copyright.scrubber.dir}" id="copyrightScrubber">
+						<include name="*"/>
+			</fileset>
+			
+		</path>
+		
+		<path id="master.classpath">
+		    <path refid="dependencies.path"/>
+			<fileset dir="${temp.pkg}" id="runtime-built">
+				<include name="*.jar"/>			
+			</fileset>
+			<fileset file="${lvg.libs.dir}/*.jar" id="lvg"/>
+			<fileset file="${caGrid.libs.dir}/*.jar" id="cabig"/>
+			<fileset file="${crossdb.libs.dir}/*.jar" id="crossdb.compile-time-only"/>
+			<fileset file="${ldapbp.libs.dir}/*.jar" id="ldapbp.compile-time-only"/>
+			<fileset dir="${basedir}/libs-noship" id="LSI.compile-time-only">
+				<include name="lgServicesIndex.jar"/>
+			</fileset>
+			<fileset dir="${gui.libs.dir}" id="gui-jars">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${gui.libs.dir}" id="swt-jar">
+				<include name="windows/swt.jar"/> <!--windows jar is good enough for compiling on all platforms-->
+			</fileset>
+			<fileset dir="${sql.libs.dir}" id="sql-drivers">
+				<include name="hsqldb-1.8.0_4.jar"/>
+				<include name="postgresql-8.1-405.jdbc3.jar"/>
+				<include name="restricted-license/mysql-connector-java-5.1.6-bin.jar"/>
+			</fileset>
+		</path>
+		
+		
+		
+		
+	</target>
+	
+	<target name="init-bda">
+		<property file="bda.properties"/>
+	</target>
+	
+	<target name="temp-clean" depends="init" description="clean up temporary directories">
+		<delete dir="${temp.bin}"/>
+		<delete dir="${temp.src}"/>
+		<mkdir dir="${temp.src}"/>
+		<mkdir dir="${temp.bin}"/>
+	</target>
+	
+	
+	<target name="temp-compile" depends="init" description="compile source in temporary directories">
+		<!-- debug <echoproperties prefix="java.vm.version"></echoproperties> -->
+		<javac srcdir="${temp.src}" destdir="${temp.bin}" debug="yes">
+			<classpath refid="master.classpath"/>
+		</javac>
+	</target>
+
+	<target name="temp-scrub" depends="init" description="scrub copyrights for source in temporary directories">
+		<java
+			classpath="../lgUtil/bin"
+			classname="org.LexGrid.util.file.CopyrightScrubber">
+			<arg value="${temp.src}"/>
+		</java>
+	</target>
+
+	<target name="temp-src2doc" depends="init" description="move current source to javadoc sources directory">
+		<copy todir="${temp.doc}"><fileset dir="${temp.src}" includes="**/*"/></copy>
+	</target>
+
+	<target name="clean" depends="init" description="clean up" >
+		<!-- These files regenerated with each build -->
+		<delete file="${basedir}/izpack-install.xml"/>
+		<delete file="${basedir}/langsel-image.png"/>
+		<delete file="${out.file}"/>
+		<delete dir="${temp.dir}"/>
+		<delete dir="${pack.dir}"/>
+		<!-- Create the directory structure for a new build -->
+		<mkdir dir="${dist.dir}"/>
+		<delete dir="${dist.dir}" includes="**/*"/>
+		<mkdir dir="${temp.dir}"/>
+		<mkdir dir="${temp.src}"/>
+		<mkdir dir="${temp.bin}"/>
+		<mkdir dir="${temp.doc}"/>
+		<mkdir dir="${temp.pkg}"/>
+		<mkdir dir="${pack.dir}"/>
+		<mkdir dir="${pkg-components}"/>
+		<mkdir dir="${pkg-doc}"/>
+		<mkdir dir="${pkg-examples}"/>
+		<mkdir dir="${pkg-extlib}"/>
+		<mkdir dir="${pkg-javadoc}"/>
+		<mkdir dir="${pkg-root}"/>
+		<mkdir dir="${pkg-resources}"/>
+		<mkdir dir="${pkg-resources-config}"/>
+		<mkdir dir="${pkg-runtime}"/>
+		<mkdir dir="${pkg-source}"/>
+		<mkdir dir="${pkg-admin}"/>
+		<mkdir dir="${pkg-test}"/>
+	</target>
+	
+	<!--used by the GUI among other things, to display properties  -->
+	<target name="buildinfo" depends="clean" description="echo build details for tracking purposes">
+		<propertyfile comment="Build Information"
+			file="${pkg-root}/build.properties">
+			<entry key="build.product"
+				type="string"
+				value="${prodID}"/>
+			<entry key="build.version"
+				type="string"
+				value="${vBuild}"/>
+			<entry key="build.timestamp"
+				type="date"
+				pattern="yyyy-MM-dd,HH_mm_ss.mmm"
+				value="now"/>
+			<entry key="build.user.name"
+				value="${user.name}"/>
+			<entry key="build.computer"
+				value="${env.COMPUTERNAME}"/>
+		</propertyfile>
+	</target>
+	
+	<target name="copyaway" depends="init" >
+	 <copy todir="c:\temp" flatten="true" verbose="true">
+	    <path refid="master.classpath"/>
+	 	<fileset refid="hibernate"/>
+	 </copy>
+		
+		<path id="test.classpath">
+			<fileset refid="hibernate"/>
+			<fileset refid="core.eclipse.support"/>
+		</path>
+	</target>
+
+	
+	<target name="predef" description="copy predefined content to the build directory">
+		<!-- Product docs -->
+		<copy toDir="${pkg-doc}" file="${file.dir}/LexBIG_Installation_Admin_Guide.pdf"/>
+		<copy toDir="${pkg-doc}" file="${file.dir}/LexBIG_Programmer_Guide.pdf"/>
+        <!-- Config files -->
+		<copy toFile="${pkg-resources-config}/lbconfig.props" file="${file.dir}/config-lexbig.props"/>
+		<copy toDir="${pkg-resources}" file="${lbTest}/resources/testData/SystemReleaseHistory.txt"/>
+        <!-- Product info -->
+		<copy toDir="${pkg-root}" file="${file.dir}/license.pdf"/>
+		<copy toDir="${pkg-root}" file="${file.dir}/license.txt"/>
+		<copy toDir="${pkg-root}" file="${file.dir}/NOTICE.txt"/>
+		<!-- Readme -->
+		<copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbig.txt"/>
+		<!-- Install image/izpack language page -->
+		<copy toFile="${basedir}/langsel-image.png" file="${file.dir}/langsel-image-lexbig.png"/>
+		<!-- Required components -->
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<path refid="dependencies.path"/>
+		</copy>
+		
+		<copy todir="${pkg-extlib}/sqlDrivers">
+			<fileset dir="${sql.libs.dir}">
+				<include name="*.jar"/>
+				<include name="*.txt"/>
+				<include name="*.html"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${pkg-extlib}/guiLibraries">
+			<fileset dir ="${gui.libs.dir}"/>
+		</copy>
+		
+	</target>	
+	
+	<target name="predef-cbio" depends="predef" description="copy predefined content specific to cBIO projects">
+		<copy toFile="${pkg-resources-config}/lbconfig.props" file="${file.dir}/config-lexbio.props" overwrite="true"/>
+		<copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbio.txt" overwrite="true"/>
+		<copy toFile="${basedir}/langsel-image.png" file="${file.dir}/langsel-image-lexbio.png" overwrite="true"/>
+	</target>	
+
+	<target name="lgModel" description="packages the LexGrid model.">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/lgModel" antfile="${lexevs.api.dir}/lgModel/build.xml" target="all"/>
+		<copy file="${lexevs.api.dir}/lgModel/lib/lgModelCastor.jar" todir="${temp.pkg}"/>
+		<copy file="${lexevs.api.dir}/lgModel/lib/lgModelCastorWithSource.jar" todir="${pkg-source}"/>
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lgModel/build/lib/compile"/>
+		</copy>
+	</target>
+		
+	<target name="Indexer"   description="packages Indexer classes">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/Indexer" antfile="${lexevs.api.dir}/Indexer/build.xml" target="publish"/>
+		<copy file="${lexevs.api.dir}/Indexer/target/indexer.jar" todir="${temp.pkg}"/>
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/Indexer/lib/compile"/>
+		</copy>
+	</target>
+	
+	<target name="lgResourceReader"  depends="lgUtility" description="packages lgResourceReader classes">	
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lgResourceReader/src" includes="**/*" />
+		</copy>
+		
+		<mkdir dir="${temp.bin}/resources" />
+		
+		<copy todir="${temp.bin}/resources">
+			<fileset dir="${lexevs.api.dir}/lgResourceReader/src/resources">
+				<include name="**/*.txt" />
+				<include name="**/*.obo" />
+			</fileset>
+		</copy>	
+		<antcall target="temp-compile" />
+		
+		<jar destfile="${temp.pkg}/lgResourceReader.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lgResourceReader-src.jar" basedir="${temp.src}"/>
+	</target>
+
+	<target name="lgUtility"   description="packages LexGrid Utility classes">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/lgUtil" antfile="${lexevs.api.dir}/lgUtil/build.xml" target="publish"/>
+		<copy file="${lexevs.api.dir}/lgUtil/target/lgUtil.jar" todir="${temp.pkg}"/>
+		<copy file="${lexevs.api.dir}/lgUtil/target/lgUtil-sources.jar" todir="${pkg-source}"/>
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lgUtil/lib/"/>
+		</copy>
+	</target>
+	
+	<target name="loader-framework-core"   description="packages Loader Framework classes">
+			<antcall target="temp-clean"/>
+			<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/loader-framework-core/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
+			<antcall target="temp-compile"/>
+			<jar destfile="${temp.pkg}/loader-framework-core.jar">
+				<fileset dir="${temp.bin}" includes="**/*"/>
+				<fileset dir="${lexevs.api.dir}/loader-framework-core/src/main/resources" includes="**/*"/>
+			</jar>
+			<jar destfile="${pkg-source}/loader-framework-core-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	<target name="abstract-rrf-loader"   description="packages Abstract RRF Loader classes">
+				<antcall target="temp-clean"/>
+				<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/abstract-rrf-loader/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
+				<antcall target="temp-compile"/>
+				<jar destfile="${temp.pkg}/abstract-rrf-loader.jar">
+					<fileset dir="${temp.bin}" includes="**/*"/>
+					<fileset dir="${lexevs.api.dir}/abstract-rrf-loader/src/main/resources" includes="**/*"/>
+				</jar>
+				<jar destfile="${pkg-source}/abstract-rrf-loader-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	<target name="persistence-layer"   description="packages Persistence Layer classes">
+				<antcall target="temp-clean"/>
+				<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/persistence-layer/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
+				<antcall target="temp-compile"/>
+				<jar destfile="${temp.pkg}/persistence-layer.jar">
+					<fileset dir="${temp.bin}" includes="**/*"/>
+					<fileset dir="${lexevs.api.dir}/persistence-layer/src/main/resources" includes="**/*"/>
+				</jar>
+				<jar destfile="${pkg-source}/persistence-layer-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	<target name="meta-loader"   description="packages Meta Loader classes">
+					<antcall target="temp-clean"/>
+					<copy todir="${temp.src}">
+						<fileset dir="${lexevs.api.dir}/meta-loader/src/main/java" includes="**/*" excludes="**/Test*"/>
+					</copy>
+					<antcall target="temp-compile"/>
+					<jar destfile="${temp.pkg}/meta-loader.jar">
+						<fileset dir="${temp.bin}" includes="**/*"/>
+						<fileset dir="${lexevs.api.dir}/meta-loader/src/main/resources" includes="**/*"/>
+					</jar>
+					<jar destfile="${pkg-source}/meta-loader-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	<target name="umls-loader"   description="packages Umls Loader classes">
+						<antcall target="temp-clean"/>
+						<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/umls-loader/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
+						<antcall target="temp-compile"/>
+						<jar destfile="${temp.pkg}/umls-loader.jar">
+								<fileset dir="${temp.bin}" includes="**/*"/>
+								<fileset dir="${lexevs.api.dir}/umls-loader/src/main/resources" includes="**/*"/>
+						</jar>
+						<jar destfile="${pkg-source}/umls-loader-src.jar" basedir="${temp.src}"/>
+	</target>
+				
+	<target name="lgConverter" depends="lgUtility, Indexer, lgResourceReader"  description="packages LexGrid Converter classes">
+		<antcall target="temp-clean"/>		
+		<antcall target="temp-scrub"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lgConverter/src">
+				<include name="cl/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/apiWrapper/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/directConversions/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/emfConversions/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/exceptions/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/formats/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/indexer/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/utility/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/options/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/inserter/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/validator/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/Conversions/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/exporters/**/*"/>
+				<include name="edu/mayo/informatics/lexgrid/convert/errorcallback/**/*"/>
+				<include name="UMLS_SAB_ISO_Map.txt"/>
+				<exclude name="*swt*/*"/>
+				<exclude name="**/*SWT*"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${temp.bin}">
+			<fileset dir="${lexevs.api.dir}/lgConverter/src">
+				<include name="**/*.txt"/>
+				<include name="**/*.obo" />
+				<include name="edu/mayo/informatics/lexgrid/convert/exporters/xml/lgxml/listeners/*.xml"/>
+			</fileset>
+		</copy>
+			
+		<antcall target="temp-compile"/>
+		<jar destfile="${temp.pkg}/lgConverter.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lgConverter-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	
+	<target name="lbModel" depends="lgModel" description="packages the LexBIG model">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/lbModel" antfile="${lexevs.api.dir}/lbModel/build.xml" target="all"/>
+		<copy file="${lexevs.api.dir}/lbModel/lib/lbModel.jar" todir="${temp.pkg}"/>
+		<copy file="${lexevs.api.dir}/lbModel/lib/lbModel-sources.jar" todir="${pkg-source}"/>
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lbModel/build/lib/compile"/>
+		</copy>
+	</target>
+	
+	<target name="lexevs-dao" depends="lgModel,lbModel,Indexer,lgUtility" description="packages the LexEVS DAO">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/lexevs-dao" antfile="${lexevs.api.dir}/lexevs-dao/build.xml" target="publish"/>
+		<copy file="${lexevs.api.dir}/lexevs-dao/target/lexevs-dao.jar" todir="${temp.pkg}"/>
+		<copy file="${lexevs.api.dir}/lexevs-dao/target/lexevs-dao-sources.jar" todir="${pkg-source}"/>
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lexevs-dao/lib/"/>
+		</copy>
+	</target>
+
+	<target name="lbInterfaces" description="packages the LexBIG service interfaces">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/lbInterfaces" antfile="${lexevs.api.dir}/lbInterfaces/build.xml" target="publish"/>
+		<copy file="${lexevs.api.dir}/lbInterfaces/target/lbInterfaces.jar" todir="${temp.pkg}"/>
+		<copy file="${lexevs.api.dir}/lbInterfaces/target/lbInterfaces-sources.jar" todir="${pkg-source}"/>
+		<copy toDir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lbInterfaces/lib/"/>
+		</copy>
+	</target>
+
+	<target name="lbImpl" depends="lgModel, lgUtility, lbModel, lbInterfaces, lgConverter" description="packages the LexBIG service implementation">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lbImpl/src" includes="**/*"/>
+		</copy>
+		<antcall target="temp-compile"/>
+		<!--limiting javadoc to the Utility classes for lbImpl-->
+		<copy todir="${temp.doc}/org/LexGrid/LexBIG/Utility">
+			<fileset dir="${lexevs.api.dir}/lbImpl/src/org/LexGrid/LexBIG/Utility" includes="**/*"/>
+		</copy>
+		<jar destfile="${temp.pkg}/lbImpl.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lbImpl-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	<target name="lbAdmin" description="packages LexBIG administrative tools and classes">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lbAdmin/src" includes="**/*"/>
+		</copy>
+		<antcall target="temp-compile"/>
+		<copy todir="${pkg-admin}">
+			<fileset dir="${lexevs.api.dir}/lbAdmin/scripts" includes="*"/>
+		</copy>
+		
+		<jar destfile="${temp.pkg}/lbAdmin.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lbAdmin-src.jar" basedir="${temp.src}"/>
+	</target>
+	
+	<target name="cts2" description="packages the LexEVS CTS2 Implementation">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/cts2Impl/src/main/java" includes="**/*"/>
+		</copy>
+		<antcall target="temp-compile"/>
+		
+		<jar destfile="${temp.pkg}/cts2.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/cts2-sources.jar" basedir="${temp.src}"/>
+	</target>
+
+	<target name="lbExamples" depends="lbImpl,lbAdmin" description="packages LexBIG example programs">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lbExamples/src" includes="**/*"/>
+		</copy>
+		<antcall target="temp-compile"/>
+		<copy todir="${pkg-examples}">
+			<fileset dir="${lexevs.api.dir}/lbExamples/scripts" includes="*"/>
+			<fileset dir="${temp.src}" includes="**/*"/>
+			<fileset dir="${temp.bin}" includes="**/*"/>
+		</copy>
+		<jar destfile="${pkg-source}/lbExamples-src.jar" basedir="${temp.src}"/>
+		<!-- Add test data -->
+		<copy todir="${pkg-examples}/resources">
+			<fileset dir="${lexevs.api.dir}/lbExamples/resources" includes="**/*"/>
+		</copy>
+	</target>
+
+	<target name="lbTest" description="packages LexBIG verification tests">
+		<!-- Build distributed test jar (all impl & bvt tests) -->
+		<!-- Build impl tests for integration with test project -->
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lbTest/src/test/java/" includes="**/*"/>
+			<fileset dir="${basedir}/bvt" includes="**/*.java"/>
+		</copy>
+		<antcall target="temp-scrub"/>
+		<antcall target="temp-compile"/>
+		<jar destfile="${pkg-test}/lbTest.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lbTest-src.jar" basedir="${temp.src}"/>
+		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-test}/lbTest.license.txt"/>
+		<copy todir="${pkg-test}">
+			<!-- Required library -->
+			<fileset dir="${basedir}/bvt" includes="extlib/**/*"/>
+			<!-- Distribute scripts adjusted for user install environment. -->
+			<fileset dir="${basedir}/bvt/deploy" includes="**/*"/>
+		</copy>
+		<!-- Add test data -->
+		<mkdir dir="${pkg-test}/resources"/>
+		<copy todir="${pkg-test}/resources">
+			<fileset dir="${lexevs.api.dir}/lbTest/resources/" includes="testData/**/*"/>
+		</copy>
+	</target>
+	
+	<target name="lbGUI" description="packages LexGUI">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lbGui.dir}/src" includes="**/*"/>
+		</copy>
+		<copy todir="${temp.bin}/">
+			<fileset dir="${temp.src}">
+				<include name="**/*.gif" />
+			</fileset>
+		</copy>
+		<antcall target="temp-compile"/>
+		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-gui}/lbGUI.license.txt"/>
+		<jar destfile="${pkg-gui}/lbGUI.jar" basedir="${temp.bin}" duplicate="preserve">
+			<zipgroupfileset refid="gui-jars"/>
+			<zipgroupfileset refid="prefuse"/>
+		</jar>
+		<jar destfile="${pkg-source}/lbGUI-src.jar" basedir="${temp.src}"/>
+		<!-- copy over the rest of the gui dependencies (these aren't in lbRuntime.jar-->
+		<copy todir="${pkg-gui}">
+			<fileset dir="${gui.libs.dir}">
+				<include name="**/*"/>
+				<include name="**/license/**"/>
+				<exclude name="**/*.html"/>
+				<exclude name="**/*.txt"/>
+				<exclude name="*.jar"/>
+				<include name="**/license/**"/>
+			</fileset>
+  		</copy>
+		<!--create the start scripts-->
+		<!--create the start scripts-->
+		<echo file="${pkg-gui}/Windows-lbGUI.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+pause
+		</echo>	
+		<echo file="${pkg-gui}/Linux-lbGUI.sh">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+		</echo>
+		<echo file="${pkg-gui}/OSX-lbGUI.command">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar;OSX/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+		</echo>
+		<echo file="${pkg-gui}/Linux_64-lbGUI.sh">
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+		</echo>
+		<!--create the start scripts-->
+		<echo file="${pkg-gui}/Windows-lbGUI-browser.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+pause
+		</echo>	
+		<echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+		</echo>
+		<echo file="${pkg-gui}/OSX-lbGUI-browser.command">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar;OSX/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+		</echo>
+		<echo file="${pkg-gui}/Linux_64-browser-lbGUI.sh">
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+		</echo>
+		
+		<!-- Start Value Sets GUI scripts-->
+		<echo file="${pkg-gui}/Windows-lbVSGUI.bat">
+		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+		pause
+				</echo>	
+				<echo file="${pkg-gui}/Linux-lbVSGUI.sh">
+		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+				</echo>
+				<echo file="${pkg-gui}/OSX-lbVSGUI.command">
+		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar;OSX/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+				</echo>
+				<echo file="${pkg-gui}/Linux_64-lbVSGUI.sh">
+		java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+				</echo>
+				<!--create the start scripts-->
+				<echo file="${pkg-gui}/Windows-lbVSGUI-browser.bat">
+		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+		pause
+				</echo>	
+				<echo file="${pkg-gui}/Linux-lbVSGUI-browser.sh">
+		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+				</echo>
+				<echo file="${pkg-gui}/OSX-lbVSGUI-browser.command">
+		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar;OSX/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+				</echo>
+				<echo file="${pkg-gui}/Linux_64-browser-lbVSGUI.sh">
+		java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+				</echo>
+		<!-- End Value Sets GUI scripts -->
+		<fixcrlf srcdir="${pkg-gui}/" eol="lf" includes="*.command" />
+		<fixcrlf srcdir="${pkg-gui}/" eol="crlf" includes="*.bat" />
+		<fixcrlf srcdir="${pkg-gui}/" eol="lf" includes="*.sh" />
+	</target>
+	
+	<!-- ================================= 
+          target: lgValueSets             
+         ================================= -->
+    <target name="lgValueSets" depends="" description="builds value sets source code">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lgValueSets/src" includes="**/*"/>
+		</copy>
+		<antcall target="temp-compile"/>
+		<jar destfile="${temp.pkg}/lgValueSets.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lgValueSets.jar" basedir="${temp.src}"/>
+    </target>
+
+	
+	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
+	<target name="lexbig.jar" depends="lbModel, lbInterfaces, lexevs-dao, lgConverter, lbImpl, lbAdmin, lbExamples,
+		Indexer, lgResourceReader, lgValueSets,
+		loader-framework-core, abstract-rrf-loader, 
+		umls-loader, meta-loader, cts2, lbGUI, lbTest">
+		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
+			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
+		</jar>
+		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-components}/lexbig.license.txt"/>
+		<jar jarfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" filesetmanifest="merge" duplicate="preserve">        	
+        	<zipgroupfileset file="${pkg-extlib}/*.jar" />		
+		</jar>
+		
+		<jar destfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar"
+			basedir="${spring.libs.dir}"
+			includes="META-INF/*"
+			update="true"/>
+
+		<jar jarfile="${pkg-runtime}/lbRuntime.jar" filesetmanifest="merge" duplicate="preserve">
+        	<zipgroupfileset file="${pkg-components}/lexbig.jar" />
+			<zipgroupfileset file="${dist.dir}/LexEVS_localRuntime_dependencies.jar" />
+		</jar>
+		
+		<mkdir dir="${pkg-runtime}/sqlDrivers"/>
+		<copy todir="${pkg-runtime}/sqlDrivers">
+		<!--including just the toplevel skips the restricted license jars-->
+			<fileset dir="${sql.libs.dir}">
+					<include name="*.jar"/>
+					<include name="*.txt"/>
+					<include name="*.html"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: config-junit-resources                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="config-junit-resources">
+		<delete dir="${basedir}/../lbPackager/junit-results" />
+		<mkdir dir="${basedir}/../lbPackager/junit-results" />
+		<delete dir="${basedir}/../lbPackager/resources/config" />
+		<mkdir dir="${basedir}/../lbPackager/resources/config" />
+		<copy todir="${basedir}/../lbPackager/resources/config" overwrite="true">
+				<fileset dir="../lbImpl/resources/config">
+				 	<include name="lbconfig.props"/>
+				</fileset>
+		</copy>   
+    </target>
+
+
+	<!-- Start the junit execution -->
+	<!-- note that forking of the junit element is critical to making this run -->
+	<!-- without forking nothing happens and no logs tell you why -->
+
+	<target name="run-junit" >
+		<!--<delete dir="${basedir}/../lbPackager/junit-results" />
+		<mkdir dir="${basedir}/../lbPackager/junit-results" />
+		<delete dir="${basedir}/../lbPackager/resources/config" />
+		<mkdir dir="${basedir}/../lbPackager/resources/config" />
+		<copy todir="${basedir}/../lbPackager/resources/config" overwrite="true">
+				<fileset dir="../lbImpl/resources/config">
+				 	<include name="lbconfig.props"/>
+				</fileset>
+		</copy>-->
+	  	<junit haltonerror="false" errorProperty="test.failed" failureProperty="test.failed" dir="antbuild/test" fork="true" forkmode="perTest" showoutput="true">
+				<classpath refid="master.classpath"/>
+	  		<test 	name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig" 
+				todir="../lbPackager/junit-results">
+	  		</test>	 
+			<formatter type="brief" usefile="false" />
+ 			<formatter type="xml"/>
+	  	</junit>
+		<!-- These only run if the JUnits pass -->
+		<!--<delete dir="${basedir}/../lbPackager/resources" />
+			<delete dir="${basedir}/../lbPackager/logs" />-->
+	</target>
+	
+	<!-- Start the junit execution -->
+	<!-- note that forking of the junit element is critical to making this run -->
+	<!-- without forking nothing happens and no logs tell you why -->
+
+	<target name="run-junit-cobertura" depends="init, clean, buildinfo, predef,
+		lgModel, lgUtility,
+		lgResourceReader,
+		lbModel, lbInterfaces, lbImpl, lbAdmin,
+		lbExamples, lbGUI, lbTest, Indexer, lgConverter,
+		lexbig.jar" >
+		<delete dir="${basedir}/../lbPackager/junit-results" />
+		<mkdir dir="${basedir}/../lbPackager/junit-results" />
+		<delete dir="${basedir}/../lbPackager/resources/config" />
+		<mkdir dir="${basedir}/../lbPackager/resources/config" />
+		<copy todir="${basedir}/../lbPackager/resources/config" overwrite="true">
+				<fileset dir="../lbImpl/resources/config">
+				 	<include name="lbconfig.props"/>
+				</fileset>
+		</copy>
+	  	<junit haltonerror="false" errorProperty="test.failed" failureProperty="test.failed" dir="antbuild/test" fork="true" forkmode="perTest" showoutput="true">
+				<classpath refid="master.classpath"/>
+			<!--
+				Specify the name of the coverage data file to use.
+				The value specified below is the default.
+			-->
+			<sysproperty key="net.sourceforge.cobertura.datafile"
+				file="${basedir}/cobertura.ser" />
+
+			<!--
+				Note the classpath order: instrumented classes are before the
+				original (uninstrumented) classes.  This is important.
+			-->
+			<classpath location="${instrumented.dir}" />
+			<classpath location="${classes.dir}" />
+
+			<!--
+				The instrumented classes reference classes used by the
+				Cobertura runtime, so Cobertura and its dependencies
+				must be on your classpath.
+			-->
+			<classpath refid="cobertura_classpath" />
+
+			<formatter type="xml" />
+	  		<test 	name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig" 
+				todir="../lbPackager/junit-results">
+	  		</test>	 
+			<formatter type="brief" usefile="false" />
+ 			<formatter type="xml"/>
+	  	</junit>
+		<!-- These only run if the JUnits pass -->
+			<delete dir="${basedir}/../lbPackager/resources" />
+			<delete dir="${basedir}/../lbPackager/logs" />
+	</target>
+	
+	<!-- Normal javadoc -->
+	<!-- This task is used if the ydoc license is not detected. -->
+	<target name="javadoc" depends="lexbig.jar" description="Generate the javadocs" unless="ydoc.present">
+		<javadoc destdir="${pkg-doc}/javadoc" 
+			windowtitle="LexGrid Vocabulary Services for caBIG (LexBIG)"
+			footer="Copyright: (c) 2004-2006 Mayo Foundation for Medical Education and Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER."
+			additionalparam="-breakiterator">
+			<package name="*"/>
+			<classpath refid="master.classpath"/>
+			<!--classpath path="${pkg-runtime}/lbRuntime.jar" -->
+			<sourcepath>
+				<dirset dir="..">
+					<include name="**/src"/>
+					<include name="**/src/main/java"/>
+				</dirset>
+			</sourcepath>
+		</javadoc>
+	</target>
+	
+	<!-- ydoc javadoc -->
+	<!-- This task is automatically used if the ydoc license is detected. -->
+	<target name="javadocydoc" depends="lexbig.jar" if="ydoc.present">
+        <property name="ps" value="${path.separator}"/>
+		<property name="theClasspath" refid="classpath" />
+        <javadoc windowtitle="LexGrid Vocabulary Services for caBIG (LexBIG)"
+            source="1.6"      
+            classpath="${theClasspath}"
+            destdir="${pkg-doc}/javadoc"
+        	sourcepath="${temp.doc}"
+            additionalparam="-breakiterator">
+			<package name="*" />
+            <doclet
+                name="ydoc.doclets.YStandard"
+                path="../ydoc/lib/ydoc.jar${ps}../ydoc/lib/class2svg.jar${ps}../ydoc/resources">
+                <param name="-author"/>
+                <param name="-generic"/>
+                <param name="-umlautogen"/>
+            	<param name="-footer" value = "Copyright: (c) 2004-2006 Mayo Foundation for Medical Education and Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER."/>
+                <param name="-tag" value="y.precondition"/>
+                <param name="-tag" value="y.postcondition"/>
+                <param name="-tag" value="y.complexity"/>
+                <param name="-tag" value="param"/>
+                <param name="-tag" value="return"/>
+                <param name="-tag" value="see"/>
+                <param name="-tag" value="y.uml"/>
+            </doclet>
+        </javadoc>
+    </target>
+	
+ <!-- depends="lexbig.jar, javadoc" -->
+	<target name="pack"  description="generate the jar file" >
+		<!-- Create the izPack config file; alter to match version -->
+		<copy file="${file.dir}/izpack-lexbig.xml" tofile="${basedir}/izpack-install.xml" overwrite="true"/>
+		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPNAME@@" value="${prodTitle}"/>
+		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPSUBPATH@@" value="LexGrid/${prodID}/${vBuild}"/>
+		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPVERSION@@" value="${vBuild}"/>
+		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_INFO_URL@@"
+			value="http://informatics.mayo.edu/LexGrid/index.php?page=${prodID}"/>
+		<!-- Create the izPack installer -->
+		<izPack input="${basedir}/izpack-install.xml"
+			output="${out.file}"
+			installerType="standard" basedir="${basedir}"
+		/>
+		<!-- Set up the command-line file to drive izPack installation; alter to match version -->
+		<property name="cmdLineInstallFile" value="${prodID}-install-config-${vBuild}.xml"/>
+		<copy file="${file.dir}/izpack-lexbig-cmdline-install.xml" tofile="${dist.dir}/${cmdLineInstallFile}"/>
+		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_INSTALLPATH@@" value="/home/LexGrid/${prodID}/${vBuild}"/>
+		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_PRODID@@" value="${prodID}"/>
+		<!-- Copy the install/admin guide for separate upload -->
+		<!-- The guide is imbedded, but they also need the guide to -->
+		<!-- perform the initial installation. -->
+		<copy file="${file.dir}/LexBIG_Installation_Admin_Guide.pdf" tofile="${dist.dir}/LexBIG-install-admin-guide-${vBuild}.pdf"/>
+		<!-- Also copy the programmer guide for separate upload -->
+		<!-- The guide is imbedded, but they may want to reference the guide -->
+		<!-- to learn about the API before installation. -->
+		<copy file="${file.dir}/LexBIG_Programmer_Guide.pdf" tofile="${dist.dir}/LexBIG-programmer-guide-${vBuild}.pdf"/>
+	</target>
+
+	 <!-- depends="lexbig.jar, javadoc" -->
+		<target name="pack.for.bda"  description="generate the jar file" >
+			<!-- Create the izPack config file; alter to match version -->
+			<copy file="${file.dir}/izpack-lexbig.xml" tofile="${basedir}/izpack-install.xml" overwrite="true"/>
+			<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPNAME@@" value="${prodTitle}"/>
+			<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPSUBPATH@@" value="LexGrid/${prodID}/${vBuild}"/>
+			<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPVERSION@@" value="${vBuild}"/>
+			<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_INFO_URL@@"
+				value="http://informatics.mayo.edu/LexGrid/index.php?page=${prodID}"/>
+			
+			<replace file="${file.dir}/config-lexbig.props" token="DB_URL=jdbc:mysql://localhost/" value = "DB_URL=jdbc:mysql://ncias-c112-v.nci.nih.gov/"/>
+			<replace file="${file.dir}/config-lexbig.props" token="DB_USER=root" value = "DB_USER=hudson"/>
+			<replace file="${file.dir}/config-lexbig.props" token="DB_PASSWORD=" value = "DB_PASSWORD=hudson_mysql"/>
+			<!-- Create the izPack installer -->
+			<izPack input="${basedir}/izpack-install.xml"
+				output="${out.file}"
+				installerType="standard" basedir="${basedir}"
+			/>
+			<!-- Set up the command-line file to drive izPack installation; alter to match version -->
+			<property name="cmdLineInstallFile" value="${prodID}-install-config-${vBuild}.xml"/>
+			<copy file="${file.dir}/izpack-lexbig-cmdline-install.xml" tofile="${dist.dir}/${cmdLineInstallFile}"/>
+			<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_INSTALLPATH@@" value="/usr/local/hudson/LexGrid/${prodID}/${vBuild}"/>
+			<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_PRODID@@" value="${prodID}"/>
+		</target>
+	
+	<!-- package lexevs and it's dependencies seperately -->
+	<target name="lexevs.pack" depends="lexbig.jar">
+		<copy  file="${pkg-components}/lexbig.jar" tofile="${dist.dir}/LexEVS_localRuntime.jar"/>
+	</target>
+
+	<!-- ================================= 
+          target: pack gui           
+         ================================= -->
+    <target name="pack.gui" depends="build-lexbig,lexevs.pack" description="package the gui with dependencies">
+        <zip destfile="${pkg-components}/artifacts/LexEVS_localGUI.zip" basedir="${pkg-components}">
+  			<exclude name="${pkg-components}admin"/>
+        	<exclude name="${pkg-components}examples"/>
+        	<exclude name="${pkg-components}runtime-components"/>
+        	<exclude name="${pkg-components}source"/>
+        	<exclude name="${pkg-components}test"/>
+        </zip>
+    </target>
+
+   <!-- ================================= 
+          target: javancss              
+         ================================= -->
+    <target name="javancss1" depends="init" description="Produces code complexity report">
+
+		   <javancss srcdir="${basedir}/../lbImpl/src"
+		            generateReport="true"
+		            outputfile="../lbPackager/java_complexity/javancss_metrics.xml"
+		            format="xml"/>
+
+    </target>
+	   <!-- ================================= 
+	          target: javancss              
+	         ================================= -->
+	    <target name="javancss2" depends="init" description="Produces code complexity output">
+
+			   <javancss srcdir="${basedir}/../lbImpl/src"
+	            abortOnFail="false" ccnPerFuncMax="15"
+	            includes="**/*.java"/>
+
+	    </target>
+	
+	<!-- ================================= 
+          target: jdepends              
+         ================================= -->
+	<target name="jdepend">
+
+	  <jdepend format="xml" outputfile="docs/jdepend-report.xml">
+	      <exclude name="java.*"/>
+	      <exclude name="javax.*"/>
+	      <classespath>
+	        <pathelement location="${basedir}/../lbImpl/classes" />
+	      </classespath>
+	      <classpath location="${basedir}/../lbImpl/classes" />
+	  </jdepend>
+
+	  <style basedir="docs" destdir="docs"
+	         includes="jdepend-report.xml" 
+	         style="${ant.home}/etc/jdepend.xsl" />
+
+	</target>
+	
+	<!-- ================================= 
+          target: install-local-lexbig              
+         ================================= -->
+    <target name="install-local-lexbig" depends="" description="description">
+        <!--if package exists statement-->
+    	<!--replace configuration file for installer -->
+ 
+    	<!--placeholder for Gforge upload task -->
+        <java jar="dist/*.jar"
+            fork="true"
+            failonerror="true"
+            maxmemory="128m"
+            >
+         <arg value = "dist/*.xml"/>
+          <classpath>
+            <pathelement location="dist/*.jar"/>
+            <pathelement path="${java.class.path}"/>
+          </classpath>
+        </java>
+	<!-- replace configuration files for lexbig (lbconfig.props)-->
+    	
+    </target>
+
+	<!-- ============================================
+          target: jUnits-only CI server specific task           
+         ============================================ -->
+    <target name="junits-only" depends="init,run-junit" description="build, config-junit-resources, must be run first">    
+    </target>
+
+	<target name="build-lexbig" depends="
+		build-lexbig-jar, javadoc, javadocydoc, pack"/>
+	
+	<target name="build-lexbig-junit" depends="
+		build-lexbig-jar,config-junit-resources,run-junit"/>
+	
+	<target name="build-lexbig-bda" depends="
+		lexbig.jar, lexevs.pack, pack"/>
+		
+	<target name="build-lexbig-jar" depends="
+			init, clean, buildinfo, predef,
+			lexbig.jar"/>
+	
+	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve pattern="${ivy.repos.dir}/[type]/[artifact].[revision](-[classifier]).[ext]"/>
+    </target>
+	
+	<target name="publish" depends="resolve">	
+		<ivy:makepom ivyfile="ivy.xml" pomfile="antbuild/runtime-components/lexbig.pom">
+			 <mapping conf="*" scope="compile"/>
+		</ivy:makepom>
+        <ivy:publish resolver="nci-chain"
+        			 forcedeliver="true"
+                     pubrevision="${vMajor}.${vMinor}-SNAPSHOT"
+                     overwrite="true">
+        	<artifacts pattern="antbuild/runtime-components/[artifact].[ext]" />
+		</ivy:publish>
+    </target>
+
+</project>

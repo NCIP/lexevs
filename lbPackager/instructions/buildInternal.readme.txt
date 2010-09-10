@@ -1,0 +1,37 @@
+--------
+Optional...
+--------
+yDoc: Prints enhanced javadoc with UML-like graphics.
+  Available on /lexbig/internal/ydoc project, but
+  requires a license (multiple licensing options available).
+  If the license is detected, it will automatically use ydoc.
+  If the license is not detected, it will use a normal javadoc.
+  
+--------
+Required...
+--------
+
+izPack (included in this project)
+  http://www.izforge.com/izpack/
+  Used to build the installer.
+  Options are configured in the lexbig-install.xml file.
+  
+  
+-----
+Notes...
+-----
+Be sure to update the version number as appropriate before
+doing a build.  The version number is indicated in the
+build.xml file (vMajor, vMinor, vPatch vCStat properties).
+Changes to the version will be automatically carried over
+to other files.
+
+---------------------
+After build completes ...
+---------------------
+- Refresh the lbPackager and lbTest projects to get Eclipse
+  in sync with new or updated files.
+- Files to upload will be put to the lbPackager/dist directory
+- Runtime jar will be put to the lbTest/extlib directory
+- Impl test jar will be put to the lbTest/extlib directory
+- Commit changes to the lbTest project

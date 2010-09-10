@@ -1,0 +1,115 @@
+<!--
+Copyright: (c) 2004-2007 Mayo Foundation for Medical Education and 
+Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+triple-shield Mayo logo are trademarks and service marks of MFMER.
+
+Except as contained in the copyright notice above, or as used to identify 
+MFMER as the author of this software, the trade names, trademarks, service
+marks, or product names of the copyright holder shall not be used in
+advertising, promotion or otherwise in connection with this software without
+prior written authorization of the copyright holder.
+ 
+Licensed under the Eclipse Public License, Version 1.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at 
+
+ 		http://www.eclipse.org/legal/epl-v10.html
+-->
+<project name="LexBIG TestRunner" default="bvt-html" basedir=".">
+	<description>
+		Verification test suite for LexBIG packages.
+	</description>
+
+    <tstamp>
+		<format property="report.time" pattern="yyyy-MM-dd.HH-mm-ss"/>
+	</tstamp>
+	<property name="output.dir" location="${basedir}/report.${report.time}"/>
+		 	
+	<target name="init">
+		<path id="junit.path">
+			<fileset dir="${basedir}/extlib/ant">
+				<include name="ant-junit.jar"/>
+				<include name="ant-trax.jar"/>
+			</fileset>
+			<fileset dir="${basedir}/extlib/junit">
+				<include name="junit-4.4.jar"/>
+			</fileset>
+		</path>
+
+		<taskdef name="junit" classpathref="junit.path"
+			classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">
+		</taskdef>
+		<taskdef name="junitreport" classpathref="junit.path"
+			classname="org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator">
+		</taskdef>
+
+		<path id="test.classpath">
+			<fileset dir="${basedir}">
+				<include name="lbTest.jar"/>
+			</fileset>
+			<fileset dir="${basedir}/../runtime">
+				<include name="lbRuntime.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+	<target name="clean" depends="init" description="clean up">
+		<mkdir dir="${output.dir}"/>
+	</target>
+	
+	<!-- Brief format -->
+	<target name="bvt-brief" depends="clean" description="task to run the LexBIG test suite and produce a text report with overall statistics and details for failed tests only">
+		<junit printsummary="true" haltonfailure="false">
+			<classpath refid="test.classpath"/>
+			<formatter type="brief" usefile="false"/>
+			<formatter type="brief" usefile="true"/>
+			<test todir="${output.dir}" outfile="bvt"
+							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+			<test todir="${output.dir}" outfile="bvt"
+				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
+		</junit>
+		<echo message="Report (brief text) stored in ${output.dir}."/>
+	</target>
+			
+	<!-- Plain format -->
+	<target name="bvt-full" depends="clean" description="task to run the LexBIG test suite and produce an itemized list of all tests with indication of success/failure">
+		<junit printsummary="true" haltonfailure="false">
+			<classpath refid="test.classpath"/>
+			<formatter type="brief" usefile="false"/>
+			<formatter type="plain" usefile="true"/>
+			<test todir="${output.dir}" outfile="bvt"
+							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+			<test todir="${output.dir}" outfile="bvt"
+				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
+		</junit>
+		<echo message="Report (full text) stored in ${output.dir}."/>
+	</target>
+			
+	<!-- XML format -->
+	<target name="bvt-xml" depends="clean" description="task to run the LexBIG test suite and produce a report with extensive information for each test case in xml format">
+		<junit printsummary="true" haltonfailure="false">
+			<classpath refid="test.classpath"/>
+			<formatter type="brief" usefile="false"/>
+			<formatter type="xml" usefile="true"/>
+			<test todir="${output.dir}" outfile="bvt"
+							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+			<test todir="${output.dir}" outfile="bvt"
+				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
+		</junit>
+		<echo message="Report (xml format) stored in ${output.dir}."/>
+	</target>
+			
+	<!-- Html format -->
+	<target name="bvt-html" depends="bvt-xml" description="task to run the LexBIG test suite and produce a report suitable for view in a standard web browser">
+		<junitreport todir="${output.dir}">
+			<fileset dir="${output.dir}">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="${output.dir}"/>
+		</junitreport>
+		<echo message="Deleting intermediate xml."/>
+		<delete><fileset dir="${output.dir}"><include name="*.xml"/></fileset></delete>
+		<echo message="Report (html) stored in ${output.dir}."/>
+	</target>
+
+</project>

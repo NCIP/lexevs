@@ -1,0 +1,215 @@
+<!--
+
+Unless otherwise noted, content is provided to you under terms and conditions
+of the following agreement: 
+
+Copyright: (c) 2004-2007 Mayo Foundation for Medical Education and
+Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the
+triple-shield Mayo logo are trademarks and service marks of MFMER.
+
+Except as contained in the copyright notice above, or as used to
+identify MFMER as the author of this software, the trade names, trademarks,
+service marks, or product names of the copyright holder shall not be used
+in advertising, promotion or otherwise in connection of this software
+without prior written authorization of the copyright holder.
+
+Licensed under the Eclipse Public License, Version 1.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+ 
+              http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<!-- Instructions for the izPack install builder -->
+<!-- http://www.izforge.com/izpack -->
+<installation version="1.0">
+    <info>
+        <appname>@@REPLACED_BY_BUILD_APPNAME@@</appname>
+        <appsubpath>@@REPLACED_BY_BUILD_APPSUBPATH@@</appsubpath>
+        <appversion>@@REPLACED_BY_BUILD_APPVERSION@@</appversion>
+        <authors>
+            <author email="informatics@mayo.edu"
+                name="Mayo Clinic Division of Biomedical Informatics"/>
+        </authors>
+        <url>@@REPLACED_BY_BUILD_INFO_URL@@</url>
+        <javaversion>1.5</javaversion>
+    </info>
+    <guiprefs height="600" resizable="yes" width="800">
+        <laf name="liquid">
+            <os family="unix"/>
+            <os family="windows"/>
+            <param name="decorate.frames" value="no"/>
+            <param name="decorate.dialogs" value="no"/>
+        </laf>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="cat"/>
+        <langpack iso3="chn"/>
+        <langpack iso3="cze"/>
+        <langpack iso3="dan"/>
+        <langpack iso3="deu"/>
+        <langpack iso3="fra"/>
+        <langpack iso3="hun"/>
+        <langpack iso3="ita"/>
+        <langpack iso3="jpn"/>
+        <langpack iso3="mys"/>
+        <langpack iso3="ned"/>
+        <langpack iso3="nor"/>
+        <langpack iso3="pol"/>
+        <langpack iso3="por"/>
+        <langpack iso3="rom"/>
+        <langpack iso3="rus"/>
+        <langpack iso3="scg"/>
+        <langpack iso3="spa"/>
+        <langpack iso3="svk"/>
+        <langpack iso3="swe"/>
+        <langpack iso3="ukr"/>
+    </locale>
+    <resources>
+        <res id="InfoPanel.info" parse="yes" src="antbuild/root/readme.txt" type="plain"/>
+        <res id="LicencePanel.licence" parse="no" src="antbuild/root/license.txt" type="plain"/>
+        <res id="installer.langsel.img" src="langsel-image.png"/>
+    </resources>
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="InfoPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+    <packs>
+        <pack name="Product Information" preselected="yes" required="yes">
+            <description>Basic product information, including readme and license terms.</description>
+            <fileset dir="./antbuild/root" targetdir="$INSTALL_PATH" casesensitive="no">
+                <include name="*"/>
+            </fileset>
+        </pack>
+        <pack name="Runtime and Administration Toolkit" preselected="yes" required="yes">
+            <description>Installs a single non-redistributable Java archive containing all code required for invocation of the product API, and related administration tools.</description>
+            <fileset dir="./antbuild/runtime" targetdir="$INSTALL_PATH/runtime" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+            <fileset dir="./antbuild/resources" targetdir="$INSTALL_PATH/resources" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+            <fileset dir="./antbuild/admin" targetdir="$INSTALL_PATH/admin" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+        </pack>
+        <pack name="Runtime and Administration Components" preselected="yes" required="no">
+            <description>Installs individual redistributable components and associated terms and conditions for software components comprising the product API.</description>
+            <fileset dir="./antbuild/runtime-components"
+                targetdir="$INSTALL_PATH/runtime-components" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/admin/ActivateScheme.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/ClearOrphanedResources.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/DeactivateScheme.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/ExportLgXML.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/ExportOBO.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/ListExtensions.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/ListSchemes.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/LoadLgXML.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/LoadManifest.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadMetadata.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadNCIHistory.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/LoadNCIMeta.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/LoadOBO.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadOWL.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadRadLexProtegeFrames.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSDatabase.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSFiles.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSSemnet.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/RebuildIndex.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/RemoveIndex.sh" stage="never" keep="true"></executable>			
+			<executable targetfile="$INSTALL_PATH/admin/RemoveMetadata.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/RemoveScheme.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/admin/TagScheme.sh" stage="never" keep="true"></executable>
+			<executable targetfile="$INSTALL_PATH/admin/TransferScheme.sh" stage="never" keep="true"></executable>
+        </pack>
+        <pack name="Documentation" preselected="yes" required="no">
+            <description>Installs administration and programmer guides, including JavaDoc.</description>
+            <fileset dir="./antbuild/doc" targetdir="$INSTALL_PATH/doc" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+        </pack>
+        <pack name="Examples" preselected="yes" required="no">
+            <description>Installs example code for invocation of common tasks.</description>
+            <fileset dir="./antbuild/examples" targetdir="$INSTALL_PATH/examples" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/examples/BuildTreeForCode.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindCodesForDescription.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindDescriptionForCode.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindPropsAndAssocForCode.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindRelatedCodes.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindRelatedCodesWithPropertyLinks.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindRelatedNodesForTermAndAssoc.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindTreeForCodeAndAssoc.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/FindUMLSContextsForCUI.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/ListHierarchy.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/ListHierarchyByCode.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/ListHierarchyMetaBySource.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/ListHierarchyPathToRoot.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/LoadSampleData.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/MetaMatch.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/MetaDataSearch.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/ProfileScheme.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/ScoreTerm.sh" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/examples/SoundsLike.sh" stage="never" keep="true"></executable>
+        </pack>
+        <pack name="Source code" preselected="yes" required="no">
+            <description>Installs an archive containing source code for Java classes.</description>
+            <fileset dir="./antbuild/source" targetdir="$INSTALL_PATH/source" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+        </pack>
+        <pack name="Test Framework" preselected="yes" required="no">
+            <description>Installs programs for automated validation of the runtime environment.</description>
+            <fileset dir="./antbuild/test" targetdir="$INSTALL_PATH/test" casesensitive="no">
+                <include name="**"/>
+            </fileset>
+        </pack>
+        <pack name="Graphical Interface Common Files" preselected="yes" required="no">
+            <description>Installs core files required to provide graphical user interface display on all supported platforms.</description>
+            <fileset dir="./antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.jar"/>
+                <include name="*.txt"/>
+            </fileset>
+        </pack>
+        <pack name="Graphical Interface Platform Support - Windows" preselected="yes" required="no">
+            <description>Installs the graphical interface for Windows.</description>
+            <fileset dir="./antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.bat"/>
+                <include name="windows/*"/>
+            </fileset>
+        </pack>
+        <pack name="Graphical Interface Platform Support - Linux" preselected="yes" required="no">
+            <description>Installs the graphical interface for Linux.</description>
+            <fileset dir="antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="Linux-lbGUI.sh"/>
+                <include name="linux/*"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/gui/Linux-lbGUI.sh" stage="never" keep="true"></executable>
+        </pack>
+        <pack name="Graphical Interface Platform Support - Linux x86 64-bit" preselected="yes" required="no">
+            <description>Installs the graphical interface for 64-bit Linux on x86 processors.</description>
+            <fileset dir="antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="Linux_64-lbGUI.sh"/>
+                <include name="linux_x86_64/*"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/gui/Linux_64-lbGUI.sh" stage="never" keep="true"></executable>
+        </pack>
+        <pack name="Graphical Interface Platform Support - OSX" preselected="yes" required="no">
+            <description>Installs the graphical interface for OSX.</description>
+            <fileset dir="antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.command"/>
+                <include name="OSX/*"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/gui/OSX-lbGUI.command" stage="never" keep="true"></executable>
+        </pack>
+    </packs>
+</installation>
