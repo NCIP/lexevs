@@ -240,14 +240,20 @@ public class ProtegeOwl2LG {
             initSupportedDatatypeProperties();
             initSupportedObjectProperties();
             initSupportedAssociationAnnotationProperties();
-            initAssociationEntities();
-
-            // If we are streaming the LexGrid model to database, write
-            // the coding scheme metadata as defined so far.
-            if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-                databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null, null);
+            
+            try {
+                // If we are streaming the LexGrid model to database, write
+                // the coding scheme metadata as defined so far.
+                if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+                    databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null, null);
+                }
+            } catch (Exception e) {
+                // Exception logged by SQLReadWrite
+                return null;
             }
-
+            
+            initAssociationEntities();
+            
             // Populate the coding scheme from the OWL model
             initSubtypeRoot();
             processOWL();
