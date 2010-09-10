@@ -178,7 +178,6 @@ public class OBO2LGDynamicMapHolders {
                 Entity concept = new Entity();
                 concept.setEntityType(new String[] {EntityTypes.CONCEPT.toString()});
                 concept.setEntityCodeNamespace(csclass.getCodingSchemeName());
-                concept.setIsDefined(false);
                 
                 if (!OBO2LGUtils.isNull(oboTerm.getId()))
                     concept.setEntityCode(oboTerm.getId());
