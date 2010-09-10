@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xsd2ecore:XSD2EcoreMappingRoot xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsd2ecore="http://www.eclipse.org/emf/2002/XSD2Ecore" inputs="../master/builtins.xsd#/ ../master/codingSchemes.xsd#/ ../master/commonTypes.xsd#/ ../master/versions.xsd#/ ../master/naming.xsd#/ ../master/concepts.xsd#/ ../master/relations.xsd#/ ../master/valueDomains.xsd#/ ../master/NCIHistory.xsd#/"
+    outputs="builtins.ecore#/ schemes.ecore#/ types.ecore#/ versions.ecore#/ naming.ecore#/ concepts.ecore#/ relations.ecore#/ domains.ecore#/ history.ecore#/"
+    topToBottom="true">
+  <nested inputs="../master/builtins.xsd#//tsAnyType;XSDComplexTypeDefinition" outputs="builtins.ecore#//TsAnyType">
+    <nested inputs="../master/builtins.xsd#//tsAnyType;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="builtins.ecore#//TsAnyType/any"/>
+  </nested>
+  <nested inputs="bundleentry://536/cache/www.w3.org/2001/XMLSchema.xsd#//boolean;XSDSimpleTypeDefinition=10"
+      outputs="http://www.eclipse.org/emf/2003/XMLType#//Boolean"/>
+  <nested inputs="../master/builtins.xsd#//tsBoolean;XSDSimpleTypeDefinition" outputs="builtins.ecore#//TsBoolean"/>
+  <nested inputs="bundleentry://536/cache/www.w3.org/2001/XMLSchema.xsd#//string;XSDSimpleTypeDefinition=9"
+      outputs="http://www.eclipse.org/emf/2003/XMLType#//String"/>
+  <nested inputs="../master/builtins.xsd#//tsCaseIgnoreIA5String;XSDSimpleTypeDefinition=1"
+      outputs="builtins.ecore#//TsCaseIgnoreIA5String"/>
+  <nested inputs="../master/builtins.xsd#//tsCaseSensitiveDirectoryString;XSDSimpleTypeDefinition=2"
+      outputs="builtins.ecore#//TsCaseSensitiveDirectoryString"/>
+  <nested inputs="../master/builtins.xsd#//tsCaseSensitiveIA5String;XSDSimpleTypeDefinition=3"
+      outputs="builtins.ecore#//TsCaseSensitiveIA5String"/>
+  <nested inputs="bundleentry://536/cache/www.w3.org/2001/XMLSchema.xsd#//integer;XSDSimpleTypeDefinition=40"
+      outputs="http://www.eclipse.org/emf/2003/XMLType#//Integer"/>
+  <nested inputs="../master/builtins.xsd#//tsInteger;XSDSimpleTypeDefinition=4" outputs="builtins.ecore#//TsInteger"/>
+  <nested inputs="bundleentry://536/cache/www.w3.org/2001/XMLSchema.xsd#//token;XSDSimpleTypeDefinition=29"
+      outputs="http://www.eclipse.org/emf/2003/XMLType#//Token"/>
+  <nested inputs="../master/builtins.xsd#//tsLocalId;XSDSimpleTypeDefinition=7" outputs="builtins.ecore#//TsLocalId"/>
+  <nested inputs="bundleentry://536/cache/www.w3.org/2001/XMLSchema.xsd#//dateTime;XSDSimpleTypeDefinition=15"
+      outputs="http://www.eclipse.org/emf/2003/XMLType#//DateTime"/>
+  <nested inputs="../master/builtins.xsd#//tsTimestamp;XSDSimpleTypeDefinition=5"
+      outputs="builtins.ecore#//TsTimestamp"/>
+  <nested inputs="bundleentry://536/cache/www.w3.org/2001/XMLSchema.xsd#//anyURI;XSDSimpleTypeDefinition=25"
+      outputs="http://www.eclipse.org/emf/2003/XMLType#//AnyURI"/>
+  <nested inputs="../master/builtins.xsd#//tsURI;XSDSimpleTypeDefinition=6" outputs="builtins.ecore#//TsURI"/>
+  <nested inputs="../master/commonTypes.xsd#//sourceRole;XSDSimpleTypeDefinition=19"
+      outputs="types.ecore#//SourceRole"/>
+  <nested inputs="../master/commonTypes.xsd#//source;XSDComplexTypeDefinition" outputs="types.ecore#//Source">
+    <nested inputs="../master/commonTypes.xsd#//source;XSDComplexTypeDefinition/XSDAttributeUse=1"
+        outputs="types.ecore#//Source/role"/>
+    <nested inputs="../master/commonTypes.xsd#//source;XSDComplexTypeDefinition/XSDAttributeUse"
+        outputs="types.ecore#//Source/subRef"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//changeType;XSDSimpleTypeDefinition" outputs="versions.ecore#//ChangeType">
+    <nested inputs="../master/versions.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet"
+        outputs="versions.ecore#//ChangeType/NEW"/>
+    <nested inputs="../master/versions.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=1"
+        outputs="versions.ecore#//ChangeType/MODIFY"/>
+    <nested inputs="../master/versions.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=2"
+        outputs="versions.ecore#//ChangeType/VERSIONABLE"/>
+    <nested inputs="../master/versions.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=3"
+        outputs="versions.ecore#//ChangeType/DEPENDENT"/>
+    <nested inputs="../master/versions.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=4"
+        outputs="versions.ecore#//ChangeType/REMOVE"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//nodeId;XSDSimpleTypeDefinition=21" outputs="types.ecore#//NodeId"/>
+  <nested inputs="../master/commonTypes.xsd#//revisionId;XSDSimpleTypeDefinition=24"
+      outputs="types.ecore#//RevisionId"/>
+  <nested inputs="../master/commonTypes.xsd#//entryOrder;XSDSimpleTypeDefinition=26"
+      outputs="types.ecore#//EntryOrder"/>
+  <nested inputs="../master/versions.xsd#//entryState;XSDComplexTypeDefinition=3"
+      outputs="versions.ecore#//EntryState">
+    <nested inputs="../master/versions.xsd#//entryState;XSDComplexTypeDefinition=3/XSDAttributeUse=2"
+        outputs="versions.ecore#//EntryState/changeType"/>
+    <nested inputs="../master/versions.xsd#//entryState;XSDComplexTypeDefinition=3/XSDAttributeUse"
+        outputs="versions.ecore#//EntryState/containingRevision"/>
+    <nested inputs="../master/versions.xsd#//entryState;XSDComplexTypeDefinition=3/XSDAttributeUse=3"
+        outputs="versions.ecore#//EntryState/prevRevision"/>
+    <nested inputs="../master/versions.xsd#//entryState;XSDComplexTypeDefinition=3/XSDAttributeUse=1"
+        outputs="versions.ecore#//EntryState/relativeOrder"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//status;XSDSimpleTypeDefinition=8" outputs="types.ecore#//Status"/>
+  <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2"
+      outputs="types.ecore#//Versionable">
+    <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="types.ecore#//Versionable/owner"/>
+    <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="types.ecore#//Versionable/entryState"/>
+    <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2/XSDAttributeUse=2"
+        outputs="types.ecore#//Versionable/effectiveDate"/>
+    <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2/XSDAttributeUse=3"
+        outputs="types.ecore#//Versionable/expirationDate"/>
+    <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2/XSDAttributeUse"
+        outputs="types.ecore#//Versionable/isActive"/>
+    <nested inputs="../master/commonTypes.xsd#//versionable;XSDComplexTypeDefinition=2/XSDAttributeUse=1"
+        outputs="types.ecore#//Versionable/status"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//entityDescription;XSDComplexTypeDefinition=7"
+      outputs="types.ecore#//EntityDescription"/>
+  <nested inputs="../master/commonTypes.xsd#//versionableAndDescribable;XSDComplexTypeDefinition=3"
+      outputs="types.ecore#//VersionableAndDescribable">
+    <nested inputs="../master/commonTypes.xsd#//versionableAndDescribable;XSDComplexTypeDefinition=3/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="types.ecore#//VersionableAndDescribable/entityDescription"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//dataType;XSDSimpleTypeDefinition=6"
+      outputs="types.ecore#//DataType"/>
+  <nested inputs="../master/commonTypes.xsd#//text;XSDComplexTypeDefinition=8" outputs="types.ecore#//Text">
+    <nested inputs="../master/commonTypes.xsd#//text;XSDComplexTypeDefinition=8/XSDAttributeUse"
+        outputs="types.ecore#//Text/dataType"/>
+  </nested>
+  <nested inputs="../master/naming.xsd#//URIMap;XSDComplexTypeDefinition" outputs="naming.ecore#//URIMap">
+    <nested inputs="../master/naming.xsd#//URIMap;XSDComplexTypeDefinition/XSDAttributeUse"
+        outputs="naming.ecore#//URIMap/localId"/>
+    <nested inputs="../master/naming.xsd#//URIMap;XSDComplexTypeDefinition/XSDAttributeUse=1"
+        outputs="naming.ecore#//URIMap/uri"/>
+  </nested>
+  <nested inputs="../master/naming.xsd#//supportedAssociation;XSDComplexTypeDefinition=1"
+      outputs="naming.ecore#//SupportedAssociation"/>
+  <nested inputs="../master/naming.xsd#//supportedAssociationQualifier;XSDComplexTypeDefinition=2"
+      outputs="naming.ecore#//SupportedAssociationQualifier"/>
+  <nested inputs="../master/naming.xsd#//supportedCodingScheme;XSDComplexTypeDefinition=3"
+      outputs="naming.ecore#//SupportedCodingScheme">
+    <nested inputs="../master/naming.xsd#//supportedCodingScheme;XSDComplexTypeDefinition=3/XSDAttributeUse"
+        outputs="naming.ecore#//SupportedCodingScheme/isImported"/>
+  </nested>
+  <nested inputs="../master/naming.xsd#//supportedContainerName;XSDComplexTypeDefinition=4"
+      outputs="naming.ecore#//SupportedContainerName"/>
+  <nested inputs="../master/naming.xsd#//supportedContext;XSDComplexTypeDefinition=5"
+      outputs="naming.ecore#//SupportedContext"/>
+  <nested inputs="../master/naming.xsd#//supportedDataType;XSDComplexTypeDefinition=6"
+      outputs="naming.ecore#//SupportedDataType"/>
+  <nested inputs="../master/naming.xsd#//supportedDegreeOfFidelity;XSDComplexTypeDefinition=7"
+      outputs="naming.ecore#//SupportedDegreeOfFidelity"/>
+  <nested inputs="../master/naming.xsd#//supportedEntityType;XSDComplexTypeDefinition=8"
+      outputs="naming.ecore#//SupportedEntityType"/>
+  <nested inputs="../master/commonTypes.xsd#//associationName;XSDSimpleTypeDefinition=1"
+      outputs="types.ecore#//AssociationName"/>
+  <nested inputs="../master/naming.xsd#//associationList;XSDSimpleTypeDefinition"
+      outputs="naming.ecore#//AssociationList"/>
+  <nested inputs="../master/commonTypes.xsd#//entityCode;XSDSimpleTypeDefinition"
+      outputs="types.ecore#//EntityCode"/>
+  <nested inputs="../master/naming.xsd#//supportedHierarchy;XSDComplexTypeDefinition=21"
+      outputs="naming.ecore#//SupportedHierarchy">
+    <nested inputs="../master/naming.xsd#//supportedHierarchy;XSDComplexTypeDefinition=21/XSDAttributeUse"
+        outputs="naming.ecore#//SupportedHierarchy/associationNames"/>
+    <nested inputs="../master/naming.xsd#//supportedHierarchy;XSDComplexTypeDefinition=21/XSDAttributeUse=2"
+        outputs="naming.ecore#//SupportedHierarchy/isForwardNavigable"/>
+    <nested inputs="../master/naming.xsd#//supportedHierarchy;XSDComplexTypeDefinition=21/XSDAttributeUse=1"
+        outputs="naming.ecore#//SupportedHierarchy/rootCode"/>
+  </nested>
+  <nested inputs="../master/naming.xsd#//supportedLanguage;XSDComplexTypeDefinition=9"
+      outputs="naming.ecore#//SupportedLanguage"/>
+  <nested inputs="../master/commonTypes.xsd#//codingSchemeName;XSDSimpleTypeDefinition=3"
+      outputs="types.ecore#//CodingSchemeName"/>
+  <nested inputs="../master/naming.xsd#//supportedNamespace;XSDComplexTypeDefinition=10"
+      outputs="naming.ecore#//SupportedNamespace">
+    <nested inputs="../master/naming.xsd#//supportedNamespace;XSDComplexTypeDefinition=10/XSDAttributeUse"
+        outputs="naming.ecore#//SupportedNamespace/equivalentCodingScheme"/>
+  </nested>
+  <nested inputs="../master/naming.xsd#//supportedProperty;XSDComplexTypeDefinition=11"
+      outputs="naming.ecore#//SupportedProperty"/>
+  <nested inputs="../master/naming.xsd#//supportedPropertyType;XSDComplexTypeDefinition=15"
+      outputs="naming.ecore#//SupportedPropertyType"/>
+  <nested inputs="../master/naming.xsd#//supportedPropertyLink;XSDComplexTypeDefinition=12"
+      outputs="naming.ecore#//SupportedPropertyLink"/>
+  <nested inputs="../master/naming.xsd#//supportedPropertyQualifier;XSDComplexTypeDefinition=13"
+      outputs="naming.ecore#//SupportedPropertyQualifier"/>
+  <nested inputs="../master/naming.xsd#//supportedPropertyQualifierType;XSDComplexTypeDefinition=14"
+      outputs="naming.ecore#//SupportedPropertyQualifierType"/>
+  <nested inputs="../master/naming.xsd#//supportedRepresentationalForm;XSDComplexTypeDefinition=16"
+      outputs="naming.ecore#//SupportedRepresentationalForm"/>
+  <nested inputs="../master/naming.xsd#//supportedSortOrder;XSDComplexTypeDefinition=19"
+      outputs="naming.ecore#//SupportedSortOrder"/>
+  <nested inputs="../master/naming.xsd#//supportedSource;XSDComplexTypeDefinition=17"
+      outputs="naming.ecore#//SupportedSource">
+    <nested inputs="../master/naming.xsd#//supportedSource;XSDComplexTypeDefinition=17/XSDAttributeUse"
+        outputs="naming.ecore#//SupportedSource/assemblyRule"/>
+  </nested>
+  <nested inputs="../master/naming.xsd#//supportedSourceRole;XSDComplexTypeDefinition=18"
+      outputs="naming.ecore#//SupportedSourceRole"/>
+  <nested inputs="../master/naming.xsd#//supportedStatus;XSDComplexTypeDefinition=20"
+      outputs="naming.ecore#//SupportedStatus"/>
+  <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22" outputs="naming.ecore#//Mappings">
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="naming.ecore#//Mappings/supportedAssociation"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="naming.ecore#//Mappings/supportedAssociationQualifier"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="naming.ecore#//Mappings/supportedCodingScheme"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="naming.ecore#//Mappings/supportedContainer"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=4"
+        outputs="naming.ecore#//Mappings/supportedContext"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=5"
+        outputs="naming.ecore#//Mappings/supportedDataType"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=6"
+        outputs="naming.ecore#//Mappings/supportedDegreeOfFidelity"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=7"
+        outputs="naming.ecore#//Mappings/supportedEntityType"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=8"
+        outputs="naming.ecore#//Mappings/supportedHierarchy"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=9"
+        outputs="naming.ecore#//Mappings/supportedLanguage"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=10"
+        outputs="naming.ecore#//Mappings/supportedNamespace"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=11"
+        outputs="naming.ecore#//Mappings/supportedProperty"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=12"
+        outputs="naming.ecore#//Mappings/supportedPropertyType"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=13"
+        outputs="naming.ecore#//Mappings/supportedPropertyLink"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=14"
+        outputs="naming.ecore#//Mappings/supportedPropertyQualifier"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=15"
+        outputs="naming.ecore#//Mappings/supportedPropertyQualifierType"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=16"
+        outputs="naming.ecore#//Mappings/supportedRepresentationalForm"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=17"
+        outputs="naming.ecore#//Mappings/supportedSortOrder"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=18"
+        outputs="naming.ecore#//Mappings/supportedSource"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=19"
+        outputs="naming.ecore#//Mappings/supportedSourceRole"/>
+    <nested inputs="../master/naming.xsd#//mappings;XSDComplexTypeDefinition=22/XSDParticle/XSDModelGroup/XSDParticle=20"
+        outputs="naming.ecore#//Mappings/supportedStatus"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//context;XSDSimpleTypeDefinition=5" outputs="types.ecore#//Context"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyQualifierName;XSDSimpleTypeDefinition=16"
+      outputs="types.ecore#//PropertyQualifierName"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyQualifierType;XSDSimpleTypeDefinition=17"
+      outputs="types.ecore#//PropertyQualifierType"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyQualifier;XSDComplexTypeDefinition=4"
+      outputs="types.ecore#//PropertyQualifier">
+    <nested inputs="../master/commonTypes.xsd#//propertyQualifier;XSDComplexTypeDefinition=4/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="types.ecore#//PropertyQualifier/value"/>
+    <nested inputs="../master/commonTypes.xsd#//propertyQualifier;XSDComplexTypeDefinition=4/XSDAttributeUse"
+        outputs="types.ecore#//PropertyQualifier/propertyQualifierName"/>
+    <nested inputs="../master/commonTypes.xsd#//propertyQualifier;XSDComplexTypeDefinition=4/XSDAttributeUse=1"
+        outputs="types.ecore#//PropertyQualifier/propertyQualifierType"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//language;XSDSimpleTypeDefinition=11"
+      outputs="types.ecore#//Language"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyId;XSDSimpleTypeDefinition=22"
+      outputs="types.ecore#//PropertyId"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyName;XSDSimpleTypeDefinition=14"
+      outputs="types.ecore#//PropertyName"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyType;XSDSimpleTypeDefinition=15"
+      outputs="types.ecore#//PropertyType"/>
+  <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5"
+      outputs="types.ecore#//Property">
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="types.ecore#//Property/source"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="types.ecore#//Property/usageContext"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="types.ecore#//Property/propertyQualifier"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="types.ecore#//Property/value"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDAttributeUse=3"
+        outputs="types.ecore#//Property/language"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDAttributeUse=1"
+        outputs="types.ecore#//Property/propertyId"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDAttributeUse"
+        outputs="types.ecore#//Property/propertyName"/>
+    <nested inputs="../master/commonTypes.xsd#//property;XSDComplexTypeDefinition=5/XSDAttributeUse=2"
+        outputs="types.ecore#//Property/propertyType"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//properties;XSDComplexTypeDefinition=6"
+      outputs="types.ecore#//Properties">
+    <nested inputs="../master/commonTypes.xsd#//properties;XSDComplexTypeDefinition=6/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="types.ecore#//Properties/property"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//entityType;XSDSimpleTypeDefinition=9"
+      outputs="types.ecore#//EntityType"/>
+  <nested inputs="../master/commonTypes.xsd#//degreeOfFidelity;XSDSimpleTypeDefinition=7"
+      outputs="types.ecore#//DegreeOfFidelity"/>
+  <nested inputs="../master/commonTypes.xsd#//representationalForm;XSDSimpleTypeDefinition=18"
+      outputs="types.ecore#//RepresentationalForm"/>
+  <nested inputs="../master/concepts.xsd#//presentation;XSDComplexTypeDefinition=6"
+      outputs="concepts.ecore#//Presentation">
+    <nested inputs="../master/concepts.xsd#//presentation;XSDComplexTypeDefinition=6/XSDAttributeUse=1"
+        outputs="concepts.ecore#//Presentation/degreeOfFidelity"/>
+    <nested inputs="../master/concepts.xsd#//presentation;XSDComplexTypeDefinition=6/XSDAttributeUse"
+        outputs="concepts.ecore#//Presentation/isPreferred"/>
+    <nested inputs="../master/concepts.xsd#//presentation;XSDComplexTypeDefinition=6/XSDAttributeUse=2"
+        outputs="concepts.ecore#//Presentation/matchIfNoContext"/>
+    <nested inputs="../master/concepts.xsd#//presentation;XSDComplexTypeDefinition=6/XSDAttributeUse=3"
+        outputs="concepts.ecore#//Presentation/representationalForm"/>
+  </nested>
+  <nested inputs="../master/concepts.xsd#//definition;XSDComplexTypeDefinition=5"
+      outputs="concepts.ecore#//Definition">
+    <nested inputs="../master/concepts.xsd#//definition;XSDComplexTypeDefinition=5/XSDAttributeUse"
+        outputs="concepts.ecore#//Definition/isPreferred"/>
+  </nested>
+  <nested inputs="../master/concepts.xsd#//comment;XSDComplexTypeDefinition=4" outputs="concepts.ecore#//Comment"/>
+  <nested inputs="../master/commonTypes.xsd#//propertyLinkName;XSDSimpleTypeDefinition=13"
+      outputs="types.ecore#//PropertyLinkName"/>
+  <nested inputs="../master/concepts.xsd#//propertyLink;XSDComplexTypeDefinition=7"
+      outputs="concepts.ecore#//PropertyLink">
+    <nested inputs="../master/concepts.xsd#//propertyLink;XSDComplexTypeDefinition=7/XSDAttributeUse=1"
+        outputs="concepts.ecore#//PropertyLink/propertyLink"/>
+    <nested inputs="../master/concepts.xsd#//propertyLink;XSDComplexTypeDefinition=7/XSDAttributeUse"
+        outputs="concepts.ecore#//PropertyLink/sourceProperty"/>
+    <nested inputs="../master/concepts.xsd#//propertyLink;XSDComplexTypeDefinition=7/XSDAttributeUse=2"
+        outputs="concepts.ecore#//PropertyLink/targetProperty"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//namespaceName;XSDSimpleTypeDefinition=12"
+      outputs="types.ecore#//NamespaceName"/>
+  <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition" outputs="concepts.ecore#//Entity">
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="concepts.ecore#//Entity/entityType"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="concepts.ecore#//Entity/presentation"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="concepts.ecore#//Entity/definition"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="concepts.ecore#//Entity/comment"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=4"
+        outputs="concepts.ecore#//Entity/property"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=5"
+        outputs="concepts.ecore#//Entity/propertyLink"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDAttributeUse"
+        outputs="concepts.ecore#//Entity/entityCode"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDAttributeUse=1"
+        outputs="concepts.ecore#//Entity/entityCodeNamespace"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDAttributeUse=2"
+        outputs="concepts.ecore#//Entity/isAnonymous"/>
+    <nested inputs="../master/concepts.xsd#//entity;XSDComplexTypeDefinition/XSDAttributeUse=3"
+        outputs="concepts.ecore#//Entity/isDefined"/>
+  </nested>
+  <nested inputs="../master/concepts.xsd#//entities;XSDComplexTypeDefinition=1" outputs="concepts.ecore#//Entities">
+    <nested inputs="../master/concepts.xsd#//entities;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="concepts.ecore#//Entities/entity"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//describable;XSDComplexTypeDefinition=1"
+      outputs="types.ecore#//Describable">
+    <nested inputs="../master/commonTypes.xsd#//describable;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="types.ecore#//Describable/entityDescription"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//associationQualifierName;XSDSimpleTypeDefinition=2"
+      outputs="types.ecore#//AssociationQualifierName"/>
+  <nested inputs="../master/relations.xsd#//associationQualification;XSDComplexTypeDefinition=4"
+      outputs="relations.ecore#//AssociationQualification">
+    <nested inputs="../master/relations.xsd#//associationQualification;XSDComplexTypeDefinition=4/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="relations.ecore#//AssociationQualification/qualifierText"/>
+    <nested inputs="../master/relations.xsd#//associationQualification;XSDComplexTypeDefinition=4/XSDAttributeUse"
+        outputs="relations.ecore#//AssociationQualification/associationQualifier"/>
+  </nested>
+  <nested inputs="../master/relations.xsd#//associatableElement;XSDComplexTypeDefinition=3"
+      outputs="relations.ecore#//AssociatableElement">
+    <nested inputs="../master/relations.xsd#//associatableElement;XSDComplexTypeDefinition=3/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="relations.ecore#//AssociatableElement/usageContext"/>
+    <nested inputs="../master/relations.xsd#//associatableElement;XSDComplexTypeDefinition=3/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="relations.ecore#//AssociatableElement/associationQualification"/>
+    <nested inputs="../master/relations.xsd#//associatableElement;XSDComplexTypeDefinition=3/XSDAttributeUse"
+        outputs="relations.ecore#//AssociatableElement/associationInstanceId"/>
+    <nested inputs="../master/relations.xsd#//associatableElement;XSDComplexTypeDefinition=3/XSDAttributeUse=2"
+        outputs="relations.ecore#//AssociatableElement/isDefining"/>
+    <nested inputs="../master/relations.xsd#//associatableElement;XSDComplexTypeDefinition=3/XSDAttributeUse=1"
+        outputs="relations.ecore#//AssociatableElement/isInferred"/>
+  </nested>
+  <nested inputs="../master/relations.xsd#//associationTarget;XSDComplexTypeDefinition=5"
+      outputs="relations.ecore#//AssociationTarget">
+    <nested inputs="../master/relations.xsd#//associationTarget;XSDComplexTypeDefinition=5/XSDAttributeUse"
+        outputs="relations.ecore#//AssociationTarget/targetEntityCode"/>
+    <nested inputs="../master/relations.xsd#//associationTarget;XSDComplexTypeDefinition=5/XSDAttributeUse=1"
+        outputs="relations.ecore#//AssociationTarget/targetEntityCodeNamespace"/>
+  </nested>
+  <nested inputs="../master/relations.xsd#//associationData;XSDComplexTypeDefinition=1"
+      outputs="relations.ecore#//AssociationData">
+    <nested inputs="../master/relations.xsd#//associationData;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="relations.ecore#//AssociationData/associationDataText"/>
+  </nested>
+  <nested inputs="../master/relations.xsd#//associationSource;XSDComplexTypeDefinition=2"
+      outputs="relations.ecore#//AssociationSource">
+    <nested inputs="../master/relations.xsd#//associationSource;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="relations.ecore#//AssociationSource/target"/>
+    <nested inputs="../master/relations.xsd#//associationSource;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="relations.ecore#//AssociationSource/targetData"/>
+    <nested inputs="../master/relations.xsd#//associationSource;XSDComplexTypeDefinition=2/XSDAttributeUse=1"
+        outputs="relations.ecore#//AssociationSource/sourceEntityCode"/>
+    <nested inputs="../master/relations.xsd#//associationSource;XSDComplexTypeDefinition=2/XSDAttributeUse"
+        outputs="relations.ecore#//AssociationSource/sourceEntityCodeNamespace"/>
+  </nested>
+  <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition"
+      outputs="relations.ecore#//Association">
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="relations.ecore#//Association/source"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse"
+        outputs="relations.ecore#//Association/associationName"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=1"
+        outputs="relations.ecore#//Association/forwardName"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=3"
+        outputs="relations.ecore#//Association/inverse"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=10"
+        outputs="relations.ecore#//Association/isAntiReflexive"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=8"
+        outputs="relations.ecore#//Association/isAntiSymmetric"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=6"
+        outputs="relations.ecore#//Association/isAntiTransitive"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=11"
+        outputs="relations.ecore#//Association/isFunctional"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=4"
+        outputs="relations.ecore#//Association/isNavigable"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=9"
+        outputs="relations.ecore#//Association/isReflexive"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=12"
+        outputs="relations.ecore#//Association/isReverseFunctional"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=7"
+        outputs="relations.ecore#//Association/isSymmetric"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=5"
+        outputs="relations.ecore#//Association/isTransitive"/>
+    <nested inputs="../master/relations.xsd#//association;XSDComplexTypeDefinition/XSDAttributeUse=2"
+        outputs="relations.ecore#//Association/reverseName"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//containerName;XSDSimpleTypeDefinition=4"
+      outputs="types.ecore#//ContainerName"/>
+  <nested inputs="../master/relations.xsd#//relations;XSDComplexTypeDefinition=6"
+      outputs="relations.ecore#//Relations">
+    <nested inputs="../master/relations.xsd#//relations;XSDComplexTypeDefinition=6/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="relations.ecore#//Relations/source"/>
+    <nested inputs="../master/relations.xsd#//relations;XSDComplexTypeDefinition=6/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="relations.ecore#//Relations/association"/>
+    <nested inputs="../master/relations.xsd#//relations;XSDComplexTypeDefinition=6/XSDAttributeUse"
+        outputs="relations.ecore#//Relations/containerName"/>
+    <nested inputs="../master/relations.xsd#//relations;XSDComplexTypeDefinition=6/XSDAttributeUse=1"
+        outputs="relations.ecore#//Relations/isNative"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//URI;XSDSimpleTypeDefinition=27" outputs="types.ecore#//URI"/>
+  <nested inputs="../master/commonTypes.xsd#//version;XSDSimpleTypeDefinition=25"
+      outputs="types.ecore#//Version"/>
+  <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1"
+      outputs="schemes.ecore#//CodingScheme">
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="schemes.ecore#//CodingScheme/localName"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="schemes.ecore#//CodingScheme/source"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="schemes.ecore#//CodingScheme/copyright"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="schemes.ecore#//CodingScheme/mappings"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=4"
+        outputs="schemes.ecore#//CodingScheme/properties"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=5"
+        outputs="schemes.ecore#//CodingScheme/entities"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=6"
+        outputs="schemes.ecore#//CodingScheme/relations"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDAttributeUse=4"
+        outputs="schemes.ecore#//CodingScheme/approxNumConcepts"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDAttributeUse"
+        outputs="schemes.ecore#//CodingScheme/codingSchemeName"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDAttributeUse=1"
+        outputs="schemes.ecore#//CodingScheme/codingSchemeURI"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDAttributeUse=3"
+        outputs="schemes.ecore#//CodingScheme/defaultLanguage"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDAttributeUse=2"
+        outputs="schemes.ecore#//CodingScheme/formalName"/>
+    <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDComplexTypeDefinition=1/XSDAttributeUse=5"
+        outputs="schemes.ecore#//CodingScheme/representsVersion"/>
+  </nested>
+  <nested inputs="../master/codingSchemes.xsd#//codingScheme;XSDElementDeclaration=1"
+      outputs="schemes.ecore#//DocumentRoot/codingScheme"/>
+  <nested inputs="../master/codingSchemes.xsd#//codingSchemes;XSDComplexTypeDefinition"
+      outputs="schemes.ecore#//CodingSchemes">
+    <nested inputs="../master/codingSchemes.xsd#//codingSchemes;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="schemes.ecore#//CodingSchemes/codingScheme"/>
+  </nested>
+  <nested inputs="../master/codingSchemes.xsd#//codingSchemes;XSDElementDeclaration"
+      outputs="schemes.ecore#//DocumentRoot/codingSchemes"/>
+  <nested inputs="../master/valueDomains.xsd#//pickListEntryExclusion;XSDComplexTypeDefinition=9"
+      outputs="domains.ecore#//PickListEntryExclusion">
+    <nested inputs="../master/valueDomains.xsd#//pickListEntryExclusion;XSDComplexTypeDefinition=9/XSDAttributeUse"
+        outputs="domains.ecore#//PickListEntryExclusion/entityCode"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntryExclusion;XSDComplexTypeDefinition=9/XSDAttributeUse=1"
+        outputs="domains.ecore#//PickListEntryExclusion/entityCodeNamespace"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10"
+      outputs="domains.ecore#//PickListEntry">
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//PickListEntry/pickText"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//PickListEntry/pickContext"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse=1"
+        outputs="domains.ecore#//PickListEntry/entityCode"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse=2"
+        outputs="domains.ecore#//PickListEntry/entityCodeNamespace"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse"
+        outputs="domains.ecore#//PickListEntry/entryOrder"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse=4"
+        outputs="domains.ecore#//PickListEntry/isDefault"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse=6"
+        outputs="domains.ecore#//PickListEntry/language"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse=5"
+        outputs="domains.ecore#//PickListEntry/matchIfNoContext"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntry;XSDComplexTypeDefinition=10/XSDAttributeUse=3"
+        outputs="domains.ecore#//PickListEntry/propertyId"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//pickListEntryNode;XSDComplexTypeDefinition=8"
+      outputs="domains.ecore#//PickListEntryNode">
+    <nested inputs="../master/valueDomains.xsd#//pickListEntryNode;XSDComplexTypeDefinition=8/XSDParticle/XSDModelGroup/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//PickListEntryNode/exclusionEntry"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntryNode;XSDComplexTypeDefinition=8/XSDParticle/XSDModelGroup/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//PickListEntryNode/inclusionEntry"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntryNode;XSDComplexTypeDefinition=8/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//PickListEntryNode/properties"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListEntryNode;XSDComplexTypeDefinition=8/XSDAttributeUse"
+        outputs="domains.ecore#//PickListEntryNode/pickListEntryId"/>
+  </nested>
+  <nested inputs="../master/commonTypes.xsd#//sortOrder;XSDSimpleTypeDefinition=20"
+      outputs="types.ecore#//SortOrder"/>
+  <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7"
+      outputs="domains.ecore#//PickListDefinition">
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//PickListDefinition/mappings"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//PickListDefinition/pickListEntryNode"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="domains.ecore#//PickListDefinition/source"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="domains.ecore#//PickListDefinition/defaultPickContext"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDParticle/XSDModelGroup/XSDParticle=4"
+        outputs="domains.ecore#//PickListDefinition/properties"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDAttributeUse=5"
+        outputs="domains.ecore#//PickListDefinition/completeDomain"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDAttributeUse=2"
+        outputs="domains.ecore#//PickListDefinition/defaultEntityCodeNamespace"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDAttributeUse=3"
+        outputs="domains.ecore#//PickListDefinition/defaultLanguage"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDAttributeUse=4"
+        outputs="domains.ecore#//PickListDefinition/defaultSortOrder"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDAttributeUse"
+        outputs="domains.ecore#//PickListDefinition/pickListId"/>
+    <nested inputs="../master/valueDomains.xsd#//pickListDefinition;XSDComplexTypeDefinition=7/XSDAttributeUse=1"
+        outputs="domains.ecore#//PickListDefinition/representsValueDomain"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3"
+      outputs="domains.ecore#//EntityReference">
+    <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3/XSDAttributeUse"
+        outputs="domains.ecore#//EntityReference/entityCode"/>
+    <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3/XSDAttributeUse=1"
+        outputs="domains.ecore#//EntityReference/entityCodeNamespace"/>
+    <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3/XSDAttributeUse=4"
+        outputs="domains.ecore#//EntityReference/leafOnly"/>
+    <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3/XSDAttributeUse=2"
+        outputs="domains.ecore#//EntityReference/referenceAssociation"/>
+    <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3/XSDAttributeUse=5"
+        outputs="domains.ecore#//EntityReference/targetToSource"/>
+    <nested inputs="../master/valueDomains.xsd#//entityReference;XSDComplexTypeDefinition=3/XSDAttributeUse=3"
+        outputs="domains.ecore#//EntityReference/transitiveClosure"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//valueDomainReference;XSDComplexTypeDefinition=4"
+      outputs="domains.ecore#//ValueDomainReference">
+    <nested inputs="../master/valueDomains.xsd#//valueDomainReference;XSDComplexTypeDefinition=4/XSDAttributeUse"
+        outputs="domains.ecore#//ValueDomainReference/valueDomainURI"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//codingSchemeReference;XSDComplexTypeDefinition=5"
+      outputs="domains.ecore#//CodingSchemeReference">
+    <nested inputs="../master/valueDomains.xsd#//codingSchemeReference;XSDComplexTypeDefinition=5/XSDAttributeUse"
+        outputs="domains.ecore#//CodingSchemeReference/codingScheme"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//definitionOperator;XSDSimpleTypeDefinition"
+      outputs="domains.ecore#//DefinitionOperator">
+    <nested inputs="../master/valueDomains.xsd#//definitionOperator;XSDSimpleTypeDefinition/XSDEnumerationFacet"
+        outputs="domains.ecore#//DefinitionOperator/OR"/>
+    <nested inputs="../master/valueDomains.xsd#//definitionOperator;XSDSimpleTypeDefinition/XSDEnumerationFacet=1"
+        outputs="domains.ecore#//DefinitionOperator/SUBTRACT"/>
+    <nested inputs="../master/valueDomains.xsd#//definitionOperator;XSDSimpleTypeDefinition/XSDEnumerationFacet=2"
+        outputs="domains.ecore#//DefinitionOperator/AND"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//definitionEntry;XSDComplexTypeDefinition=2"
+      outputs="domains.ecore#//DefinitionEntry">
+    <nested inputs="../master/valueDomains.xsd#//definitionEntry;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//DefinitionEntry/entityReference"/>
+    <nested inputs="../master/valueDomains.xsd#//definitionEntry;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//DefinitionEntry/valueDomainReference"/>
+    <nested inputs="../master/valueDomains.xsd#//definitionEntry;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="domains.ecore#//DefinitionEntry/codingSchemeReference"/>
+    <nested inputs="../master/valueDomains.xsd#//definitionEntry;XSDComplexTypeDefinition=2/XSDAttributeUse=1"
+        outputs="domains.ecore#//DefinitionEntry/operator"/>
+    <nested inputs="../master/valueDomains.xsd#//definitionEntry;XSDComplexTypeDefinition=2/XSDAttributeUse"
+        outputs="domains.ecore#//DefinitionEntry/ruleOrder"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1"
+      outputs="domains.ecore#//ValueDomainDefinition">
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//ValueDomainDefinition/mappings"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//ValueDomainDefinition/source"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="domains.ecore#//ValueDomainDefinition/representsRealmOrContext"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="domains.ecore#//ValueDomainDefinition/properties"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=4"
+        outputs="domains.ecore#//ValueDomainDefinition/definitionEntry"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDAttributeUse=2"
+        outputs="domains.ecore#//ValueDomainDefinition/defaultCodingScheme"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDAttributeUse=1"
+        outputs="domains.ecore#//ValueDomainDefinition/valueDomainName"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomainDefinition;XSDComplexTypeDefinition=1/XSDAttributeUse"
+        outputs="domains.ecore#//ValueDomainDefinition/valueDomainURI"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//changedEntry;XSDComplexTypeDefinition=4"
+      outputs="versions.ecore#//ChangedEntry">
+    <nested inputs="../master/versions.xsd#//changedEntry;XSDComplexTypeDefinition=4/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="versions.ecore#//ChangedEntry/changedCodingSchemeEntry"/>
+    <nested inputs="../master/versions.xsd#//changedEntry;XSDComplexTypeDefinition=4/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="versions.ecore#//ChangedEntry/changedPickListDefinitionEntry"/>
+    <nested inputs="../master/versions.xsd#//changedEntry;XSDComplexTypeDefinition=4/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="versions.ecore#//ChangedEntry/changedValueDomainDefinitionEntry"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2" outputs="versions.ecore#//Revision">
+    <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="versions.ecore#//Revision/changeAgent"/>
+    <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="versions.ecore#//Revision/changeInstructions"/>
+    <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="versions.ecore#//Revision/changedEntry"/>
+    <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2/XSDAttributeUse=2"
+        outputs="versions.ecore#//Revision/editOrder"/>
+    <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2/XSDAttributeUse=1"
+        outputs="versions.ecore#//Revision/revisionDate"/>
+    <nested inputs="../master/versions.xsd#//revision;XSDComplexTypeDefinition=2/XSDAttributeUse"
+        outputs="versions.ecore#//Revision/revisionId"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//revision;XSDElementDeclaration=1" outputs="versions.ecore#//DocumentRoot/revision"/>
+  <nested inputs="../master/valueDomains.xsd#//valueDomains;XSDComplexTypeDefinition"
+      outputs="domains.ecore#//ValueDomains">
+    <nested inputs="../master/valueDomains.xsd#//valueDomains;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//ValueDomains/mappings"/>
+    <nested inputs="../master/valueDomains.xsd#//valueDomains;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//ValueDomains/valueDomainDefinition"/>
+  </nested>
+  <nested inputs="../master/valueDomains.xsd#//pickLists;XSDComplexTypeDefinition=6"
+      outputs="domains.ecore#//PickLists">
+    <nested inputs="../master/valueDomains.xsd#//pickLists;XSDComplexTypeDefinition=6/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="domains.ecore#//PickLists/mappings"/>
+    <nested inputs="../master/valueDomains.xsd#//pickLists;XSDComplexTypeDefinition=6/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="domains.ecore#//PickLists/pickListDefinition"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//editHistory;XSDComplexTypeDefinition=1"
+      outputs="versions.ecore#//EditHistory">
+    <nested inputs="../master/versions.xsd#//editHistory;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="versions.ecore#//EditHistory/revision"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition"
+      outputs="versions.ecore#//SystemRelease">
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="versions.ecore#//SystemRelease/codingSchemes"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="versions.ecore#//SystemRelease/valueDomains"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=2"
+        outputs="versions.ecore#//SystemRelease/pickLists"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDParticle/XSDModelGroup/XSDParticle=3"
+        outputs="versions.ecore#//SystemRelease/editHistory"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDAttributeUse=4"
+        outputs="versions.ecore#//SystemRelease/basedOnRelease"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDAttributeUse=3"
+        outputs="versions.ecore#//SystemRelease/releaseAgency"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDAttributeUse=2"
+        outputs="versions.ecore#//SystemRelease/releaseDate"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDAttributeUse"
+        outputs="versions.ecore#//SystemRelease/releaseId"/>
+    <nested inputs="../master/versions.xsd#//systemRelease;XSDComplexTypeDefinition/XSDAttributeUse=1"
+        outputs="versions.ecore#//SystemRelease/releaseURI"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//systemRelease;XSDElementDeclaration" outputs="versions.ecore#//DocumentRoot/systemRelease"/>
+  <nested inputs="../master/commonTypes.xsd#//changeSetId;XSDSimpleTypeDefinition=23"
+      outputs="types.ecore#//ChangeSetId"/>
+  <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5"
+      outputs="versions.ecore#//EntityVersion">
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDParticle/XSDModelGroup/XSDParticle"
+        outputs="versions.ecore#//EntityVersion/changeDocumentation"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDParticle/XSDModelGroup/XSDParticle=1"
+        outputs="versions.ecore#//EntityVersion/changeInstructions"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDAttributeUse=4"
+        outputs="versions.ecore#//EntityVersion/effectiveDate"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDAttributeUse"
+        outputs="versions.ecore#//EntityVersion/isComplete"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDAttributeUse=5"
+        outputs="versions.ecore#//EntityVersion/releaseURN"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDAttributeUse=1"
+        outputs="versions.ecore#//EntityVersion/version"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDAttributeUse=3"
+        outputs="versions.ecore#//EntityVersion/versionDate"/>
+    <nested inputs="../master/versions.xsd#//entityVersion;XSDComplexTypeDefinition=5/XSDAttributeUse=2"
+        outputs="versions.ecore#//EntityVersion/versionOrder"/>
+  </nested>
+  <nested inputs="../master/versions.xsd#//codingSchemeVersion;XSDComplexTypeDefinition=6"
+      outputs="versions.ecore#//CodingSchemeVersion"/>
+  <nested inputs="../master/concepts.xsd#//concept;XSDComplexTypeDefinition=2" outputs="concepts.ecore#//Concept"/>
+  <nested inputs="../master/commonTypes.xsd#//EntityTypes;XSDSimpleTypeDefinition=10"
+      outputs="types.ecore#//EntityTypes">
+    <nested inputs="../master/commonTypes.xsd#//EntityTypes;XSDSimpleTypeDefinition=10/XSDEnumerationFacet"
+        outputs="types.ecore#//EntityTypes/concept"/>
+    <nested inputs="../master/commonTypes.xsd#//EntityTypes;XSDSimpleTypeDefinition=10/XSDEnumerationFacet=1"
+        outputs="types.ecore#//EntityTypes/instance"/>
+    <nested inputs="../master/commonTypes.xsd#//EntityTypes;XSDSimpleTypeDefinition=10/XSDEnumerationFacet=2"
+        outputs="types.ecore#//EntityTypes/association"/>
+  </nested>
+  <nested inputs="../master/concepts.xsd#//instance;XSDComplexTypeDefinition=3" outputs="concepts.ecore#//Instance"/>
+  <nested inputs="../master/NCIHistory.xsd#//changeType;XSDSimpleTypeDefinition" outputs="history.ecore#//ChangeType">
+    <nested inputs="../master/NCIHistory.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet"
+        outputs="history.ecore#//ChangeType/create"/>
+    <nested inputs="../master/NCIHistory.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=1"
+        outputs="history.ecore#//ChangeType/retire"/>
+    <nested inputs="../master/NCIHistory.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=2"
+        outputs="history.ecore#//ChangeType/merge"/>
+    <nested inputs="../master/NCIHistory.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=3"
+        outputs="history.ecore#//ChangeType/split"/>
+    <nested inputs="../master/NCIHistory.xsd#//changeType;XSDSimpleTypeDefinition/XSDEnumerationFacet=4"
+        outputs="history.ecore#//ChangeType/modify"/>
+  </nested>
+  <nested inputs="../master/NCIHistory.xsd#//NCIChangeEvent;XSDComplexTypeDefinition"
+      outputs="history.ecore#//NCIChangeEvent">
+    <nested inputs="../master/NCIHistory.xsd#//NCIChangeEvent;XSDComplexTypeDefinition/XSDAttributeUse=1"
+        outputs="history.ecore#//NCIChangeEvent/conceptcode"/>
+    <nested inputs="../master/NCIHistory.xsd#//NCIChangeEvent;XSDComplexTypeDefinition/XSDAttributeUse=2"
+        outputs="history.ecore#//NCIChangeEvent/conceptName"/>
+    <nested inputs="../master/NCIHistory.xsd#//NCIChangeEvent;XSDComplexTypeDefinition/XSDAttributeUse"
+        outputs="history.ecore#//NCIChangeEvent/editaction"/>
+    <nested inputs="../master/NCIHistory.xsd#//NCIChangeEvent;XSDComplexTypeDefinition/XSDAttributeUse=3"
+        outputs="history.ecore#//NCIChangeEvent/referencecode"/>
+    <nested inputs="../master/NCIHistory.xsd#//NCIChangeEvent;XSDComplexTypeDefinition/XSDAttributeUse=4"
+        outputs="history.ecore#//NCIChangeEvent/referencename"/>
+  </nested>
+</xsd2ecore:XSD2EcoreMappingRoot>

@@ -1,0 +1,351 @@
+LexGrid Schema Changelog
+
+
+************************************
+* Changes committed on 05/13/2008  *
+* Schema Version        2008/01    *
+************************************
+* Added instances and instance to the concepts.xsd
+* Added Entity to the commonTypes.xsd
+* Allow for Associations to be defined between any two Entities.
+* Made Instance, Concept and Association subClasses of Entity.
+* Changed CodedEntry to Concept within the model.
+* Changed the property field in Property to PropertyName
+* Changed presentationFormat in property to format.
+* ConceptCode in CodedEntry now maps to id in Entity
+* Added isInferred and isDefined fields to the concept.
+* Added InstanceProperty and AssociationProperty to store properties 
+  of Instance and Association respectively.
+* Added EntityTypes which is an enumeration of the possible entity types.   
+ 
+
+
+************************************
+* Changes committed on 02/22/2007  *
+* Schema Version        2006/01    *
+************************************
+* Removed valueDomain from commonTypes.xsd
+
+************************************
+* Changes committed on 02/12/2007  *
+* Schema Version        2006/01    *
+************************************
+* Added supportedPropertyQualifier to mappings container in valueDomains branch.
+
+************************************
+* Changes committed on 12/08/2006  *
+* Schema Version        2006/01    *
+************************************
+* Added dc attribute to mappings container in valueDomains branch.
+* Changed cardinality of 'supportedXXX' attributes in valueDomains branch to
+  match CodingSchemes branch.
+* Change localID to extend 'xs:token' instead of 'xs:NCName'. The NCName was
+  overly restrictive and resulted in some valid content was being flagged as
+  errors on XML validation.
+
+************************************
+* Changes committed on 11/30/2006  *
+* Schema Version        2006/01    *
+************************************
+* Removed the propertySource - went back to just using source everywhere.
+  Property source only added a 'propertyQualifierId' that didn't make sense.
+* Changed the way usageContext is constructed - removed the propertyQualifierId
+  which also didn't make sense.  This was changed at the same time as the
+  source was changed - so it makes sense to undo them together too.
+* Changed the structure of the mappings container from a switch to a sequence,
+  because Castor was not generating reasonable code with the switch.
+* Grouped 'supportedXXX' mappings for ValueDomain under a 'Mappings' type to be
+  consistent with handling of generic properties and to match similar support
+  on CodingScheme.
+* Introduced 'conceptProperty' entity on CodedEntry as extension of common
+  property, so that generic properties can be clearly distinguished from
+  categorized properties (comments, definitions, instructions, presentations)
+  on assignment to a codedEntry.  For Castor and EMF generation, this removes
+  ability to add categorized properties in the generic property container,
+  which could lead to confusion (e.g. add Comment to generic properties,
+  then not see it returned by getComments() method).
+* Change SystemRelease releaseDate to be required; relying on this to determine
+  order since releaseOrder was previously removed from 2005 model.
+* Made mappings container required for both CodingScheme and ValueDomain.
+
+************************************
+* Changes committed on 11/22/2006  *
+* Schema Version        2006/01    *
+************************************
+* Introduced preliminary support for support of generic properties on value
+* domain entries.
+*
+************************************
+* Changes committed on  8/31/2006  *
+* Schema Version        2006/01    *
+************************************
+*    Primarily changes to satisfy CDC/PHIN requirements...
+* 1) Moved generic properties to common types for consistency with property
+     definition and common access by CodingScheme and ValueDomain nodes.
+* 2) Add generic properties container on ValueDomain.
+* 3) Add codedContext in commonTypes; integrate into pickListEntry.
+* 4) Add ability to specify source role (e.g. author, assigning authority, etc)
+* 5) Add effective/start date for EntityVersion.
+*
+************************************
+* Changes committed on  6/23/2006  *
+* Schema Version        2006/01    *
+************************************
+* 1) Backed out changes to directly include lgCommon and lgNaming schemas
+*   (originally introduced in support of backward compatibility in EMF code generation, but did not have desired effect).
+*
+************************************
+* Changes committed on  5/19/2006  *
+* Schema Version        2006/01    *
+************************************
+* commonTypes.xsd
+*	1) Moved "property", "propertySource" and "usageContext" to commonTypes from concepts.  This is to allow the assignment of 
+*	   properties to other entities (e.g. codingScheme) besides concepts.
+* concepts.xsd
+*   1) Moved "property", "propertySource" and usageContext to commonTypes.
+*   2) Changed the fixed value of the concepts "dc" node from "Concepts" to "concepts" for consistency with the rest of the nodes.
+*   3) Removed the unused "propertyQualifier" node, as it was already replicated in commonTypes
+* codingSchemes.xsd
+*   1) Added TODO: - need to get some sort of assertions (schemaTron?) into the mapping to require supportedLanguage, etc.
+*   2) Folded supportedXXX nodes into one repeating choice called "mappings".  The advantage of this approach is that these can
+*      now occur in any order and are all in a single container.  The drawback is that there is no enforcement for required types. 
+*      (see (1) above)
+*   3) Added a "properties" node to allow additional tag/value pairs to be added to a code system.  This is to support OBO, RDF, OWL and
+*      the like...  All properties have to be in supportedProperty.
+*   4) Changed the fixed value of the versions "dc" node from "version" to "versions" for consistency with the rest of the nodes.
+*	5) Added the mappings choice for supportedXXX and the properties group for the tag/value pairs.
+************************************
+* Changes committed on  2/20/2006  *
+* Schema Version        2006/01    *
+************************************
+* builtins.xsd
+*	1) Removed tsOctetString, as blob data type is being phased out in favor of base64 encoding and mime types
+*	2) Changed the localName type name to localId, which will allow us to differentiate truly local names
+*      with a relatively lax syntax from local references which have to be typed to NCName.  localId is the stronger
+*      typed entity.
+* codingSchemes.xsd
+*	1) Changed the type of the codingScheme local name to the more loosely typed "tsCaseIgnoreIA5String", as it 
+*      is intended to carry all sorts of synonyms
+*	2) Added supportedDegreeOfFidelity list - an accidental omission in the 2005 schema
+*	3) Added supportedPropertyQualifier list - for generic property qualifiers.
+*		ISSUE: Should this include source and usageContext? 
+*	4) Changed the type of codingScheme to localId, as it is the offical local name of the corresponding URN
+*   5) Corrected representsVersion documentation to make it clear that it references a codingSchemeVersion,
+*      not a system release
+*	6) Removed supportedDataType node, as data types are no longer used throughout.
+* commonTypes.xsd
+*	1) Changed the documentation and type of defaultCodingScheme to make it clear that it is a localId
+*	   not a URN.
+*	2) Added types for context and propertyQualifier because of multiple uses
+*	3) Changed the type of language to localId
+*	4) Constrained version to be non-blank
+*	   ISSUE: Need to make a complete pass over strings w/ tighter constraints in mind.
+*	5) Changed the definition of source to include an additional attribute, "subRef".  The subRef attribute
+*      allows page numbers, sections and other things of that sort to be identified when a source is referenced. This
+*	   change exists to prevent an explosion of "sources", any or all of which may just come from differnet
+*      parts of the same document or resource.  See also supportedSource changes in naming.xsd module
+*	6) Constrained the length of conceptCode to at least one char.  Should probably be tighter yet, but
+*	   needs further discussion.
+*	7) Removed blob type completely, as we will be using base64 text from here on out.
+*	8) Created an enhanced versionReference type - a URN map that also has a mandatory version attribute.
+*	   used to reference a specific version of a resource such as a coding scheme, value domain, etc.
+* concepts.xsd
+*	1) changed conceptStatus, degreeOfFidelity, representationalForm, usageContext, property
+*      presentationFormat, link from localName to localId
+*	2) Removed the textualPresentation class, as everything is now presentation, be it textual or binary
+*   3) Changed "source" reference to "propertySource", which allows it to be a subtype of propertyQualifier in spirit.
+*      In particular, it allows a qualifier attribute to be tacked on, which identifies the official name
+*      of the source.
+*	4) Changed usageContext to "usageContext - same reason as source above.
+*   5) Added propertyQualifier element to property for placing generic properties.
+*	6) Removed blob attribute for the property and made the text madatory.
+*	7) Removed the dataType attribute from the property, as it is really a function of
+*	   the metadata (e.g. the property could *be* a datatype, meaning that instances must
+*	   match).
+*	8) Added propertyQualifier - a generic qualifier for the concept/property association
+*	9) Added propertySource and usageContext - technically these should both be subtypes of propertyQualifier
+*	   XML Schema limitations (or my lack of skill in it) prevent this from happeneing, so they just *look* a
+*      lot like property qualifiers with specific names.
+*  10) (Documentation only) - the "property" identifier for presentation, comment, instruction and definition will
+*      no longer be fixed.  The type is taken from the element name - everything that is in the element "comment" is of
+*      type comment.  The actual "property" identifier will now be whatever the comment is called within the source. Note
+*	   that this will require some coding changes, as list all comments, presentations, definitions and/or instructions 
+* 	   will either require another parameter or a meta-tag.
+* naming.xsd
+*	1) Removed the ldap:oid property from the map, as the new definition no longer fits the ldap equivalent and
+*      a new oid needs to be defined.
+*   2) Changed the definition of URNMap, making the localName (now localId) an attribute rather than text value, and
+*      reserving the textual portion for a simple description of the intent of the map.
+*	3) Changed "local name" text to "local identifier" for all of the supportedXXX documentation.
+*   4) Removed supportedDataType as it is no longer used.  NOTE: may have to return this for OWL?
+*   5) Added supportedDegree of fidelity - oversight earlier on.
+*	6) Added supportedPropertyQualifier
+*   7) Changed definition of supportedSource to include "assemblyRule" attribute, which describes how
+*	   a source and its subRef can be combined to create a real URL and/or URN.
+* NCIHistory.xsd 
+*	This is a new schema that describes the layout of the NCI history node.  The NCIHistory type is
+*   one of the possible values that could be used in the entityVersion changeInstructions node.
+* relations.xsd
+*	1) Changed the type of association, inverse, targetCodingScheme, sourceCodingScheme, associationQualifier
+*	2) Changed the value of associationData so that the value falls directly under the associationData
+*      node rather than being embedded in a dataValue element.  Changed the type to xs:Any  and removed
+*      the dataType component.
+*	3) Moved the associationQualification value up so that it appears under the root node instead of
+*      in an embedded associationQualifierValue element.
+*   4) Removed datatype from associationQualifier
+* service.xsd
+*   1) Changed the type of the service name from localName to straight string.  ISSUE: Should really be
+*      constrained to be non-blank, but low priority
+* valueDomains.xsd
+*	1)Changed the type of usageContext, representsRealmOrContext, valueDomain, codingScheme
+*   2) Several documentation clarifications
+	3) Changed link from valueDomainVersion to valueDomainEntry to domainConcept to align w/ valueDomain
+
+************************************
+* Changes committed on  1/23/2006  *
+* Schema Version        2006/01    *
+************************************
+* CodingScheme - made supportedCodingScheme mandatory and required one entry for each localName
+
+************************************
+* Changes committed on  1/23/2006  *
+* Schema Version        2006/01    *
+************************************
+* builtins.xsd
+*	1) Changed schema version and URN's
+* codingSchemes.xsd
+*	1) Changed schema version and URN's
+*	2) Made codingScheme versionableAndDescribable rather than just describable.  This allows codingSchemes to be created (or entered), modified and removed
+*   3) Typo fix
+* commonTypes.xsd
+*	1) Changed schema version and URN's
+*   2) Changed definition of versionable.  Now countains firstRelease, modifiedInRelease, deprecated - three boolean fields.  Removed firstVersion,
+*      lastVersion and modVersion.  This represents the new philosophy of relase orientation vs. version orientation and the fact that minimal
+*      versioning information is supplied in the 'live' image and the details of what transpired is now in the codingScheme and valueDomain version
+*      portions.  Note that there are five versionable items - codingScheme, codedEntry, associatedElement, valueDomain and valueDomainEntry.
+*   3) Removed changeType, changeEvent and modifyHistory.  These all fold into the entityVersion changeInstructions node and are editor specific.
+*      The current changeType and changeEvent have been moved to NCIHistory
+* concepts.xsd
+*	1) Changed schema version and URN's
+* ldap.xsd
+*	1) Changed schema version and URN's
+* naming.xsd
+*	1) Changed schema version and URN's
+* NCIHistory.xsd
+*	1) Changed schema version and URN's
+* relations.xsd
+*	1) Changed schema version and URN's
+* service.xsd
+*	1) Changed schema version and URN's
+* valueDomains.xsd
+*	1) Changed schema version and URN's
+*	2) Made valueDomain versionableAndDescribable vs. just describable.  This allows value domains to be created (or entered), modified and removed.
+*   3) Made representsRealmOrContext a repeating field.  This is to simplify the definition of realms by not having to create artificial superclasses.
+*   4) Made conceptCode optional - allowing value domains to contain other domains w/ no reference codes
+*	5) Added a new qualfier - "testSubsumption", which, if true indicates that any concept expression that can be computed as subsumed by this
+*      code is considered part of the domain.
+* versions.xsd
+*	1) Changed schema version and URN's
+*	2) Added changeDocumentation and changeInstructions to entityVersion (mixin for codingSchemeVersion and valueDomainVersion).  ChangeDocumentation
+*      is an xs:any field that contains the actual documentation or references thereof.  Format is provider specific.  ChangeInstructions is an xs:any
+*      field where the actual (semi-)formal instructions for accomplishing the change are recorded.  Format is provider specific.  The first format
+*      defined for this is NCIHistory.xsd - see below
+*   3) Added versionOrder to entityVersion to define the relative order of creation
+*   4) Created entityReference - a reference to a URN, name, version and text for an entity and referenceSet, a set of entity references
+*      to codingSchemes and/or value domains
+*   5) Added releaseDefines, releaseContains and releaseReferences for the SystemRelease class, representing the set of codingschemes/valueDomains that
+*      are defined in the release, are carried in the release but are defined elsewhere and are referenced by, but not contained in the release.
+*   6) Removed releaseOrder and isLatest and put, in its place, basedOnRelease which any release to reference and build on a prior release
+
+**********************************
+Changes committed on	1/06/2006  *
+Schema Version 			  2005/01    *
+**********************************
+* commonTypes.xsd
+*	1) Added changeEvent, which is a combination of changeType and referenceCode.  Changed modifyHistory to reference it instead.
+**********************************
+Changes committed on	12/26/2005 *
+Schema Version 			  2005/01    *
+**********************************
+* valueDomains.xsd
+*       1) Added to valueDomainEntry:
+			Attributes
+				- isSelectable to allow a valueDomainEntry to be selected
+				- includeChildren to allow a valueDomainEntry to contain chile concepts
+			Relationships
+				- to valueDomain, to allow a valueDomainEntry to be another valueDomain
+**********************************
+Changes committed on	12/22/2005 *
+Schema Version 			  2005/01    *
+**********************************
+* valueDomains.xsd
+*		1) added an optional representsRealmOrContext to allow a value domain (aka value set in HL7)
+*          to be coupled with the set itself.
+
+**********************************
+Changes committed on	11/30/2005 *
+Schema Version 			  2005/01    *
+**********************************
+* concepts.xsd - Changed maximum cardinality of propertyLink from 1 to *
+* versions.xsd - Added versionDate to entityVersion to allow each edit to have its own timestamp, independent of the release date.
+* commonTypes.xsd - 1) added changeType - an enumeration of types of changes that may occur
+*                   2) added modifyHistory - a sequence of changeTypes coupled to a specific version
+*					3) changed the type of modVersion in the versionable mixin from "version" to "modifyHistory"
+*					4) changed the type of modVersion in the versionableAndDescribable mixin the same way
+
+
+
+**********************************
+Changes committed on	11/11/2005 *
+Schema Version 			  2005/01    *
+**********************************
+* Pulled the PropertyLinksList and put propertyLink directly under coded entry.
+
+**********************************
+Changes committed on	10/21/2005 *
+Schema Version 			  2005/01    *
+**********************************
+
+The latest, greatest LexGrid schema will be available in CVS by the end of today.  The changes include:
+--------------------
+EntityDescription, CopyRight and Text properties have been changed to support embedded XML.  The namespace restriction is set to "##other" which, ideally, would say that the namespace can't come from the LexGrid schema - it has to come from an external schema such as html.  Unfortunately, ##other is bound really early, which permits any namespace other than the one it was declared in (e.g. builtIns, lgCommon).  Nothing to worry about for now, but be aware that we'd really like to record those fields as:
+<copyRight xmlns:html="…">This is a <html:b>bold</html:b> field</copyRight>
+---------------------
+There is a new supportedXXX - supportedPropertyLink - in the codeSystem definition.  It is for recording property/property links within a code system (e.g. acronymFor, abbreviationOf, spellingVariantOf, translationOf, etc.)  The definition of supportedRepresentationalForm has been changed slightly to reflect that it is intended to represent the relationship of the property with the concept (e.g. noun, adjective, eponym, etc.).
+
+There is a new optional element in the codedEntry element - "links" where properties can be associated.  As an example:
+
+	<supportedPropertyLink>acronymFor</supportedPropertyLink>
+
+	<concepts dc="Concepts">
+		<concept xmlns="http://LexGrid.org/schema/2005/01/LexGrid/concepts" conceptCode="1">
+			<presentation property="textualPresentation" propertyId="123">
+				<text>Bunny Vacuum 9000</text>
+			</presentation>
+			<presentation property="textualPresentation" propertyId="124">
+				<text>BV9000</text>
+			</presentation>
+			<links>
+				<link sourceProperty="124" link="acronymFor" targetProperty="123"/>
+				...
+			</links>
+		</concept>
+	</concepts>
+------------------
+There have been a couple of tweaks in the relationships section.
+	a) reverseName is now optional.  Its use is still encouraged, but we no longer have to generate it for owly type things
+	b) there is a new association attribute called "inverse", which can be pointed at the local name of another association.  It is optional
+	c) There is a new association attribute called "isNavigable".  It is optional, and the default is "true", which reflects current semantics. In an Owl'esque or NCI'esque world, however, we would set this to false.
+
+=================
+To the best of my knowledge, all of these changes are backwards compatible.  I'm not on a network right now, so I can't test them extensively, but we'll need to re-parse them at some future point in time.
+
+Note that the schema "version" is still 2005/01, as we never really completed the rollout of the previous changes.
+
+
+
+
+
+
+************************************************************************
+Changes committed before this weren't documented in this file.

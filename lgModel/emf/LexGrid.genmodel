@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER.Except as contained in the copyright notice above, or as used to identify MFMER as the author of this software, the trade names, trademarks, service marks, or product names of the copyright holder shall not be used in advertising, promotion or otherwise in connection with this software without prior written authorization of the copyright holder. Licensed under the Eclipse Public License, Version 1.0 (the \\\&quot;License\\\&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.eclipse.org/legal/epl-v10.html"
+    modelDirectory="/lgModel.emf/src" editDirectory="/lgEditor.provider/src" editorDirectory="/lgEditor.ui/src"
+    modelPluginID="lgModel.emf" redirection="" modelName="LexGrid" modelPluginClass=""
+    editPluginClass="org.LexGrid.edit.plugin.LgEditorProviderPlugin" editorPluginClass="org.LexGrid.editor.ui.plugin.LgEditorUIPlugin"
+    rootExtendsInterface="org.LexGrid.emf.base.LgModelObj" rootExtendsClass="org.LexGrid.emf.base.impl.LgModelObjImpl"
+    rootImplementsInterface="org.LexGrid.emf.base.LgStagedObj" suppressEMFTypes="true"
+    featureMapWrapperInternalInterface="" featureMapWrapperClass="" reflectiveDelegation="true"
+    codeFormatting="true" testSuiteClass="org.LexGrid.tests.LexGridAllTests" importerID="org.eclipse.xsd.ecore.importer"
+    featureDelegation="Reflective" suppressUnsettable="true" tableProviders="true">
+  <foreignModel>../master/builtins.xsd</foreignModel>
+  <foreignModel>../master/codingSchemes.xsd</foreignModel>
+  <foreignModel>../master/commonTypes.xsd</foreignModel>
+  <foreignModel>../master/concepts.xsd</foreignModel>
+  <foreignModel>../master/naming.xsd</foreignModel>
+  <foreignModel>../master/NCIHistory.xsd</foreignModel>
+  <foreignModel>../master/relations.xsd</foreignModel>
+  <foreignModel>../master/valueDomains.xsd</foreignModel>
+  <foreignModel>../master/versions.xsd</foreignModel>
+  <genPackages prefix="Builtins" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="builtins.ecore#/">
+    <genDataTypes ecoreDataType="builtins.ecore#//TsBoolean"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsBooleanObject"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsCaseIgnoreIA5String"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsCaseSensitiveDirectoryString"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsCaseSensitiveIA5String"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsInteger"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsLocalId"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsTimestamp"/>
+    <genDataTypes ecoreDataType="builtins.ecore#//TsURI"/>
+    <genClasses ecoreClass="builtins.ecore#//TsAnyType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute builtins.ecore#//TsAnyType/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute builtins.ecore#//TsAnyType/any"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Codingschemes" basePackage="org.LexGrid.emf" resource="XML"
+      disposableProviderFactory="true" ecorePackage="schemes.ecore#/">
+    <genClasses ecoreClass="schemes.ecore#//CodingScheme">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/localName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingScheme/source"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingScheme/copyright"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingScheme/mappings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingScheme/properties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingScheme/entities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingScheme/relations"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/approxNumConcepts"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/codingSchemeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/codingSchemeURI"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/defaultLanguage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/formalName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//CodingScheme/representsVersion"/>
+    </genClasses>
+    <genClasses ecoreClass="schemes.ecore#//CodingSchemes">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//CodingSchemes/codingScheme"/>
+    </genClasses>
+    <genClasses ecoreClass="schemes.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute schemes.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference schemes.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference schemes.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//DocumentRoot/codingScheme"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference schemes.ecore#//DocumentRoot/codingSchemes"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Commontypes" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="types.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="types.ecore#//EntityTypes">
+      <genEnumLiterals ecoreEnumLiteral="types.ecore#//EntityTypes/concept"/>
+      <genEnumLiterals ecoreEnumLiteral="types.ecore#//EntityTypes/instance"/>
+      <genEnumLiterals ecoreEnumLiteral="types.ecore#//EntityTypes/association"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="types.ecore#//AssociationName"/>
+    <genDataTypes ecoreDataType="types.ecore#//AssociationQualifierName"/>
+    <genDataTypes ecoreDataType="types.ecore#//ChangeSetId"/>
+    <genDataTypes ecoreDataType="types.ecore#//CodingSchemeName"/>
+    <genDataTypes ecoreDataType="types.ecore#//ContainerName"/>
+    <genDataTypes ecoreDataType="types.ecore#//Context"/>
+    <genDataTypes ecoreDataType="types.ecore#//DataType"/>
+    <genDataTypes ecoreDataType="types.ecore#//DegreeOfFidelity"/>
+    <genDataTypes ecoreDataType="types.ecore#//EntityCode"/>
+    <genDataTypes ecoreDataType="types.ecore#//EntityType"/>
+    <genDataTypes ecoreDataType="types.ecore#//EntityTypesObject"/>
+    <genDataTypes ecoreDataType="types.ecore#//EntryOrder"/>
+    <genDataTypes ecoreDataType="types.ecore#//Language"/>
+    <genDataTypes ecoreDataType="types.ecore#//NamespaceName"/>
+    <genDataTypes ecoreDataType="types.ecore#//NodeId"/>
+    <genDataTypes ecoreDataType="types.ecore#//PropertyId"/>
+    <genDataTypes ecoreDataType="types.ecore#//PropertyLinkName"/>
+    <genDataTypes ecoreDataType="types.ecore#//PropertyName"/>
+    <genDataTypes ecoreDataType="types.ecore#//PropertyQualifierName"/>
+    <genDataTypes ecoreDataType="types.ecore#//PropertyQualifierType"/>
+    <genDataTypes ecoreDataType="types.ecore#//PropertyType"/>
+    <genDataTypes ecoreDataType="types.ecore#//RepresentationalForm"/>
+    <genDataTypes ecoreDataType="types.ecore#//RevisionId"/>
+    <genDataTypes ecoreDataType="types.ecore#//SortOrder"/>
+    <genDataTypes ecoreDataType="types.ecore#//SourceRole"/>
+    <genDataTypes ecoreDataType="types.ecore#//Status"/>
+    <genDataTypes ecoreDataType="types.ecore#//URI"/>
+    <genDataTypes ecoreDataType="types.ecore#//Version"/>
+    <genClasses ecoreClass="types.ecore#//Describable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Describable/entityDescription"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//EntityDescription"/>
+    <genClasses ecoreClass="types.ecore#//Properties">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Properties/property"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//Property">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Property/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Property/usageContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Property/propertyQualifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Property/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Property/language"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Property/propertyId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Property/propertyName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Property/propertyType"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//PropertyQualifier">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//PropertyQualifier/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//PropertyQualifier/propertyQualifierName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//PropertyQualifier/propertyQualifierType"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//Source">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Source/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Source/role"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Source/subRef"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//Text">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Text/dataType"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//Versionable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Versionable/owner"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//Versionable/entryState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Versionable/effectiveDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Versionable/expirationDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Versionable/isActive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute types.ecore#//Versionable/status"/>
+    </genClasses>
+    <genClasses ecoreClass="types.ecore#//VersionableAndDescribable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference types.ecore#//VersionableAndDescribable/entityDescription"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Versions" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="versions.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="versions.ecore#//ChangeType">
+      <genEnumLiterals ecoreEnumLiteral="versions.ecore#//ChangeType/NEW"/>
+      <genEnumLiterals ecoreEnumLiteral="versions.ecore#//ChangeType/MODIFY"/>
+      <genEnumLiterals ecoreEnumLiteral="versions.ecore#//ChangeType/VERSIONABLE"/>
+      <genEnumLiterals ecoreEnumLiteral="versions.ecore#//ChangeType/DEPENDENT"/>
+      <genEnumLiterals ecoreEnumLiteral="versions.ecore#//ChangeType/REMOVE"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="versions.ecore#//ChangeTypeObject"/>
+    <genClasses ecoreClass="versions.ecore#//ChangedEntry">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//ChangedEntry/changedCodingSchemeEntry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//ChangedEntry/changedPickListDefinitionEntry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//ChangedEntry/changedValueDomainDefinitionEntry"/>
+    </genClasses>
+    <genClasses ecoreClass="versions.ecore#//CodingSchemeVersion"/>
+    <genClasses ecoreClass="versions.ecore#//EditHistory">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//EditHistory/revision"/>
+    </genClasses>
+    <genClasses ecoreClass="versions.ecore#//EntryState">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntryState/changeType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntryState/containingRevision"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntryState/prevRevision"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntryState/relativeOrder"/>
+    </genClasses>
+    <genClasses ecoreClass="versions.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference versions.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference versions.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//DocumentRoot/revision"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//DocumentRoot/systemRelease"/>
+    </genClasses>
+    <genClasses ecoreClass="versions.ecore#//EntityVersion">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//EntityVersion/changeDocumentation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//EntityVersion/changeInstructions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntityVersion/effectiveDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntityVersion/isComplete"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntityVersion/releaseURN"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntityVersion/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntityVersion/versionDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//EntityVersion/versionOrder"/>
+    </genClasses>
+    <genClasses ecoreClass="versions.ecore#//Revision">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//Revision/changeAgent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//Revision/changeInstructions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//Revision/changedEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//Revision/editOrder"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//Revision/revisionDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//Revision/revisionId"/>
+    </genClasses>
+    <genClasses ecoreClass="versions.ecore#//SystemRelease">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//SystemRelease/codingSchemes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//SystemRelease/valueDomains"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//SystemRelease/pickLists"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference versions.ecore#//SystemRelease/editHistory"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//SystemRelease/basedOnRelease"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//SystemRelease/releaseAgency"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//SystemRelease/releaseDate"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//SystemRelease/releaseId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute versions.ecore#//SystemRelease/releaseURI"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Naming" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="naming.ecore#/">
+    <genDataTypes ecoreDataType="naming.ecore#//AssociationList"/>
+    <genClasses ecoreClass="naming.ecore#//Mappings">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedAssociation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedAssociationQualifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedCodingScheme"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedContainer"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedDataType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedDegreeOfFidelity"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedEntityType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedHierarchy"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedLanguage"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedNamespace"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedProperty"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedPropertyType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedPropertyLink"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedPropertyQualifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedPropertyQualifierType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedRepresentationalForm"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedSortOrder"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedSource"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedSourceRole"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference naming.ecore#//Mappings/supportedStatus"/>
+    </genClasses>
+    <genClasses ecoreClass="naming.ecore#//SupportedAssociation"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedAssociationQualifier"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedCodingScheme">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//SupportedCodingScheme/isImported"/>
+    </genClasses>
+    <genClasses ecoreClass="naming.ecore#//SupportedContainerName"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedContext"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedDataType"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedDegreeOfFidelity"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedEntityType"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedHierarchy">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//SupportedHierarchy/associationNames"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//SupportedHierarchy/isForwardNavigable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//SupportedHierarchy/rootCode"/>
+    </genClasses>
+    <genClasses ecoreClass="naming.ecore#//SupportedLanguage"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedNamespace">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//SupportedNamespace/equivalentCodingScheme"/>
+    </genClasses>
+    <genClasses ecoreClass="naming.ecore#//SupportedProperty"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedPropertyLink"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedPropertyQualifier"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedPropertyQualifierType"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedPropertyType"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedRepresentationalForm"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedSortOrder"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedSource">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//SupportedSource/assemblyRule"/>
+    </genClasses>
+    <genClasses ecoreClass="naming.ecore#//SupportedSourceRole"/>
+    <genClasses ecoreClass="naming.ecore#//SupportedStatus"/>
+    <genClasses ecoreClass="naming.ecore#//URIMap">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//URIMap/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//URIMap/localId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute naming.ecore#//URIMap/uri"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Concepts" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="concepts.ecore#/">
+    <genClasses ecoreClass="concepts.ecore#//Comment"/>
+    <genClasses ecoreClass="concepts.ecore#//Concept"/>
+    <genClasses ecoreClass="concepts.ecore#//Definition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Definition/isPreferred"/>
+    </genClasses>
+    <genClasses ecoreClass="concepts.ecore#//Entities">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference concepts.ecore#//Entities/entity"/>
+    </genClasses>
+    <genClasses ecoreClass="concepts.ecore#//Entity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Entity/entityType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference concepts.ecore#//Entity/presentation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference concepts.ecore#//Entity/definition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference concepts.ecore#//Entity/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference concepts.ecore#//Entity/property"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference concepts.ecore#//Entity/propertyLink"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Entity/entityCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Entity/entityCodeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Entity/isAnonymous"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Entity/isDefined"/>
+    </genClasses>
+    <genClasses ecoreClass="concepts.ecore#//Instance"/>
+    <genClasses ecoreClass="concepts.ecore#//Presentation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Presentation/degreeOfFidelity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Presentation/isPreferred"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Presentation/matchIfNoContext"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//Presentation/representationalForm"/>
+    </genClasses>
+    <genClasses ecoreClass="concepts.ecore#//PropertyLink">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//PropertyLink/propertyLink"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//PropertyLink/sourceProperty"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute concepts.ecore#//PropertyLink/targetProperty"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Relations" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="relations.ecore#/">
+    <genClasses ecoreClass="relations.ecore#//AssociatableElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociatableElement/usageContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//AssociatableElement/associationQualification"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociatableElement/associationInstanceId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociatableElement/isDefining"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociatableElement/isInferred"/>
+    </genClasses>
+    <genClasses ecoreClass="relations.ecore#//Association">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//Association/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/associationName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/forwardName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/inverse"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isAntiReflexive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isAntiSymmetric"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isAntiTransitive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isFunctional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isNavigable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isReflexive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isReverseFunctional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isSymmetric"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/isTransitive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Association/reverseName"/>
+    </genClasses>
+    <genClasses ecoreClass="relations.ecore#//AssociationData">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//AssociationData/associationDataText"/>
+    </genClasses>
+    <genClasses ecoreClass="relations.ecore#//AssociationQualification">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference relations.ecore#//AssociationQualification/qualifierText"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociationQualification/associationQualifier"/>
+    </genClasses>
+    <genClasses ecoreClass="relations.ecore#//AssociationSource">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//AssociationSource/target"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//AssociationSource/targetData"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociationSource/sourceEntityCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociationSource/sourceEntityCodeNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="relations.ecore#//AssociationTarget">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociationTarget/targetEntityCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//AssociationTarget/targetEntityCodeNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="relations.ecore#//Relations">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//Relations/source"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference relations.ecore#//Relations/association"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Relations/containerName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute relations.ecore#//Relations/isNative"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Valuedomains" basePackage="org.LexGrid.emf" resource="XML"
+      disposableProviderFactory="true" ecorePackage="domains.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="domains.ecore#//DefinitionOperator">
+      <genEnumLiterals ecoreEnumLiteral="domains.ecore#//DefinitionOperator/OR"/>
+      <genEnumLiterals ecoreEnumLiteral="domains.ecore#//DefinitionOperator/SUBTRACT"/>
+      <genEnumLiterals ecoreEnumLiteral="domains.ecore#//DefinitionOperator/AND"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="domains.ecore#//DefinitionOperatorObject"/>
+    <genClasses ecoreClass="domains.ecore#//CodingSchemeReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//CodingSchemeReference/codingScheme"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//DefinitionEntry">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//DefinitionEntry/entityReference"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//DefinitionEntry/valueDomainReference"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//DefinitionEntry/codingSchemeReference"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//DefinitionEntry/operator"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//DefinitionEntry/ruleOrder"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//EntityReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//EntityReference/entityCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//EntityReference/entityCodeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//EntityReference/leafOnly"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//EntityReference/referenceAssociation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//EntityReference/targetToSource"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//EntityReference/transitiveClosure"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//PickListDefinition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListDefinition/mappings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListDefinition/pickListEntryNode"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListDefinition/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/defaultPickContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListDefinition/properties"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/completeDomain"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/defaultEntityCodeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/defaultLanguage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/defaultSortOrder"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/pickListId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListDefinition/representsValueDomain"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//PickListEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/pickText"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/pickContext"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/entityCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/entityCodeNamespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/entryOrder"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/isDefault"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/language"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/matchIfNoContext"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntry/propertyId"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//PickListEntryExclusion">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntryExclusion/entityCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntryExclusion/entityCodeNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//PickListEntryNode">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListEntryNode/exclusionEntry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListEntryNode/inclusionEntry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickListEntryNode/properties"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//PickListEntryNode/pickListEntryId"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//PickLists">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickLists/mappings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//PickLists/pickListDefinition"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//ValueDomainDefinition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//ValueDomainDefinition/mappings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//ValueDomainDefinition/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//ValueDomainDefinition/representsRealmOrContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//ValueDomainDefinition/properties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//ValueDomainDefinition/definitionEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//ValueDomainDefinition/defaultCodingScheme"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//ValueDomainDefinition/valueDomainName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//ValueDomainDefinition/valueDomainURI"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//ValueDomainReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute domains.ecore#//ValueDomainReference/valueDomainURI"/>
+    </genClasses>
+    <genClasses ecoreClass="domains.ecore#//ValueDomains">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//ValueDomains/mappings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference domains.ecore#//ValueDomains/valueDomainDefinition"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="NCIHistory" basePackage="org.LexGrid.emf" resource="XML" disposableProviderFactory="true"
+      ecorePackage="history.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="history.ecore#//ChangeType">
+      <genEnumLiterals ecoreEnumLiteral="history.ecore#//ChangeType/create"/>
+      <genEnumLiterals ecoreEnumLiteral="history.ecore#//ChangeType/retire"/>
+      <genEnumLiterals ecoreEnumLiteral="history.ecore#//ChangeType/merge"/>
+      <genEnumLiterals ecoreEnumLiteral="history.ecore#//ChangeType/split"/>
+      <genEnumLiterals ecoreEnumLiteral="history.ecore#//ChangeType/modify"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="history.ecore#//ChangeTypeObject"/>
+    <genClasses ecoreClass="history.ecore#//NCIChangeEvent">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute history.ecore#//NCIChangeEvent/conceptcode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute history.ecore#//NCIChangeEvent/conceptName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute history.ecore#//NCIChangeEvent/editaction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute history.ecore#//NCIChangeEvent/referencecode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute history.ecore#//NCIChangeEvent/referencename"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

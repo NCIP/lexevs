@@ -1,0 +1,71 @@
+Instructions for building the various parts of the LexGrid master model.
+NOTE:  ***** The instructions below are out of date.  Do not use them until revisions have been made!!! ***
+Prerequisites:
+
+Enterprise Architect (EA Version 7.1 or later)
+Eclipse Ganymede package (Eclipse 3.4). Pick the package that includes the modelling tools.
+
+1) Make the edits in the XML Schema part of the master directory.  Include a list of changes in ChangeLog.txt
+2) Create a new EA project in a scratch directory
+3) Import all of .xsd's in the master directory into the root package of the new EA Project
+      Options: NO Import global elements
+               YES Import referenced XML Schema(s)
+               NO  Create Diagram for XML Schema(s)
+               UML Attribute
+4) Export the resulting model to xmi\LexGrid200901_xsd.xmi
+			Select root node, Export Package to XMI
+			Filename (above)
+			Enable full EA Roundtrip
+			XMI Type: XMI 2.1
+			NO Export ALternate Images
+			YES Format XMI Output
+			NO Write Log File
+			NO Generate Diagram Images
+5) Make the corresponding edits to the UML model (We used to synchronize these automatically by going through Hypermodel, but there were just too many issues...)
+6) Export the resulting model to xmi\LexGrid200901.xmi 
+      Select root node, Export Package to XMI
+			Filename (above)
+			Enable full EA Roundtrip
+			XMI Type: XMI 2.1
+			NO Export ALternate Images
+			YES Format XMI Output
+			NO Write Log File
+			NO Generate Diagram Images
+7) Compare the two models
+		  cd  xmi\tools
+		  java -jar saxon8.jar Compare_models.xsl Compare_models.xsl > ..\ModelCompare.html
+		  Open ..\ModelCompare.html in a browser and look for disparities.  At the moment, there are a number of flaws in the XML Schema import tool for EA, 
+		  so there will be disparities.  Many of these are documented in the heading of Compare_models.xsl.  In particular:
+		  	1) The EA XML Schema importer doesn't pay attention to the optional/required property on attributes, meaning that they all have a cardinality of
+		  	    [1:1].  These will have to be checked manually
+		  	2) EA doesn't get superclasses right
+		  Refer to ..\ModelCompare_baseline.html if there are any questions - this is the result of the last proven good comparison.
+8) Resolve any issues, repeating the steps above.
+9) Once all the differences are resolved, move ModelCompare.html to ModelCompare_baseline.html, to serve as the baseline for the next comparison exercise
+
+10) Transfer all of the documentation from the Schema to the UML model. (NOTE: This is assuming that the documentation "master" is in the XML Schema)
+      cd xmi\tools
+      java -jar saxon8.jar Transfer_Documentation.xsl Transfer_Documentation.xsl > ..\LexGrid200901_updated.xmi
+      Edit the output and check for "ERROR".  As of the last run, there should be exactly one - on editAction in NCIChangeEvent
+      	NOTE: Be careful not to pull this file into UltraEdit in r/w mode.  It changes the encoding type, which angers EA
+      	
+11) Open LexGrid200901.eap in EA. Delete the existing <<SchemaGen>> LexGrid200901 branch.  Then select Import model from XMI...
+		YES Import Diagrams
+		NO Strip GUID's
+		Import LexGrid200901_updated.xmi
+		Double check that the diagrams look good and that the documentation appears consistent.
+
+
+
+-------------
+Generating outputs:
+1) Use TortoiseSVN to delete everything except the .svn part of the html/EA directory.  Commit the changes (!)
+2) Select the LexGrid200901 part of the model, select "Generate HTML Report".  Preserve white spaces, .png, all other options unselected.
+3) Use TortoiseSVN to add and commit all the new model information.
+2) Remove everything except the .svn part of the html/oXygen directory.  Open oXygen and select tools/schema documentation... - fill out as follows:
+
+		(oXygen.bmp)
+		
+------------
+Publishing
+1) Zip up the XML schema

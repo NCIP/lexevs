@@ -1,0 +1,198 @@
+To regenerate for model updates (using EMF version 2.2) ...
+
+================================
+Modifying XSD for EMF generation
+================================
+For the most part, the XSD remains untouched in our EMF generation process.  However,
+there are 3 types (text, entityDescription, and tsCaseSensitiveIA5String) that are best
+modified in the XSD prior to EMF generation.  These types were created to enable
+support for embedded XML.  However, defining them as complex types results in EMF
+generation of associated items as class references instead of attributes.  This has a nasty
+ripple effect into child/parent relations and ultimately user interface generation.
+Since the Java runtime will deal with these items as Strings anyway, the XSD is
+modified to enhance the generated code.  Support for embedded XML will need to be
+handled programmatically for these types when writing the attribute values.
+
+Note: These changes should be made prior to EMF generation, but should not be commited
+back to the repository.  Officially, the master remains unchanged.
+
+Changes to commonTypes.xsd ...
+       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<XSDsimpleType>> entityDescription  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="entityDescription">
+                <xs:annotation>
+                        <xs:documentation> The textual description of an entity </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: text  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType mixed="true" name="text">
+                <xs:annotation>
+                        <xs:documentation>The value of an entityDescription, property, etc.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                                <xs:attribute name="dataType" type="dataType">
+                                        <xs:annotation>
+                                                <xs:documentation>The local identifier of the format or data type of the text. Must match a local id of a supportedDataType in the corresponding mappings section.  Default: tsCaseSensitiveIA5String</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:simpleContent>
+        </xs:complexType>
+ 
+		
+=======================================
+Running the EMF model generation wizard
+=======================================
+1. Right-click on the LexGrid.genmodel file, select the reload option.
+2. If you get an error, you may have to erase the copyright text in the root section leaving "" only.
+	- In the latest emf/eclipse versions (eclipse 3.3) all attributes may need to have a " " instead of "".
+	If a null pointer exception occurs in the SAX parser.  Try changing all attributes as above.
+3. Select XML Schema, then next
+4. Choose all xsd files in the project '/master' directory (except vocabularyRevision, if present)
+5. Select the option to generate the xsd to ecore model
+6. Click finish
+
+==================================
+Editing the LexGrid.xsd2ecore file
+==================================
+- In the 'Ecore' panel (upper right), select each package and set
+  properties (displayed in the property view) as follows:
+  (Note:  The properties tab may not come up automatically and
+   you don't get a menu option for it right clicking from the 
+   xsd2ecore tab so you'll need to bring the focus to the .genmodel
+   file and open the properties on some element there before the 
+   properties tab will display what you want for the xsd2ecore tab.)
+  
+     builtins.............: ns prefix -> lgBuiltin
+     relations............: ns prefix -> lgRel
+     types (common).......: ns prefix -> lgCommon
+                            name      -> commonTypes
+     schemes..............: ns prefix -> lgCS
+                            name      -> codingSchemes
+     naming...............: ns prefix -> lgNaming
+     concepts.............: ns prefix -> lgCon
+     versions.............: ns prefix -> lgVer
+     history (nci history): ns prefix -> NCIHistory
+     domains..............: ns prefix -> lgVD
+                            name      -> valueDomains
+
+  Also in 'Ecore' panel, change the following values.
+  Note: Process packages in order as described.
+
+  builtins package
+  ----------------
+  o TsInteger:
+    - change instance type name to 'int'
+  o TsTimestamp:
+    - change instance type name to java.util.Date
+
+
+  commonTypes package
+  -------------------
+  o EntryOrder:
+    - change instance type name to 'int'
+	
+  o Versionable
+    - change the eType property for all boolean values to TsBooleanObject (not TsBoolean)
+
+  relations package
+  -----------------
+  o Association:
+    - change the eType property for all boolean values to TsBooleanObject
+        
+  o Relations:
+    - change the eType property for all boolean values to TsBooleanObject
+  
+  concepts package
+  ----------------
+  o Entity:
+    - change the eType property for all boolean values to TsBooleanObject
+  o Definition:
+    - change the eType property for all boolean values to TsBooleanObject
+  o Presentation:
+    - change the eType property for all boolean values to TsBooleanObject
+  
+=================================
+Editing the LexGrid.genmodel file
+=================================
+The following changes are used to force generation of code with characteristics that
+allow extension points for LexGrid-specific code and promote consistency and
+backward compatibility with previous generations.
+
+- For each package (top level node under the 'LexGrid' root)
+  set the 'Ecore->package' in the properties view as follows:
+
+  o Set the base package to 'org.LexGrid.emf'
+
+- For the 'LexGrid' root item, set the following values in the Properties view:
+  Section 'All'
+  o Model Plug-in ID -> lgModel.emf
+  o Set 'Copyright' to the following text (correct the years if appropriate)
+    Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER.Except as contained in the copyright notice above, or as used to identify MFMER as the author of this software, the trade names, trademarks, service marks, or product names of the copyright holder shall not be used in advertising, promotion or otherwise in connection with this software without prior written authorization of the copyright holder. Licensed under the Eclipse Public License, Version 1.0 (the \\\"License\\\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.eclipse.org/legal/epl-v10.html
+	
+  Section 'Edit'
+  o Edit Directory  -> /lgEditor.provider/src
+  o Edit Plug-in Class -> org.LexGrid.edit.plugin.LgEditorProviderPlugin
+
+  Section 'Editor'
+  o Editor Directory -> /lgEditor.ui/src
+  o Editor Plug-in Class -> org.LexGrid.editor.ui.plugin.LgEditorUIPlugin
+
+  Section 'Model'
+  o Model Directory -> /lgModel.emf/src
+  o Feature delegation -> Reflective
+
+  Section 'Model Class Defaults'
+  /*This is incorrect*/
+  // o Root Extends Class -> org.LexGrid.emf.base.LgModelObj  
+  // o Root Extends Interface -> org.LexGrid.emf.base.impl.LgModelObjImpl
+  o Root Extends Class -> org.LexGrid.emf.base.impl.LgModelObjImpl (Updated: 04/29/08)
+  o Root Extends Interface -> org.LexGrid.emf.base.LgModelObj (Updated: 04/29/08)
+  o Root Implements Interface -> org.LexGrid.emf.base.LgStagedObj
+  o Suppress EMF types -> true  <!-- mcturk 12.3.2008: this field was not present for this item  -->
+
+  Section 'Model Feature Defaults'
+  o Suppress EMF Types -> true
+		
+  Section 'Templates & Merge'
+  o Code Formatting -> true
+		
+  Section 'Tests'
+  o Test Suite Class -> org.LexGrid.tests.LexGridAllTests
+
+- Also using the properties view, set the 'All->Prefix' property for the following nodes:
+
+  o For package 'Types (common)', set the prefix to 'Commontypes'
+  o For package 'History (nci history)', set the prefix to 'NCIHistory'
+  o For package 'Domains', set the prefix to 'Valuedomains'
+  o For package 'Schemes', set the prefix to 'Codingschemes'
+  o For package 'Service', set the prefix to 'ServiceType'  <!-- mcturk 12.3.2008: node 'Service' was not present.  -->
+
+===============
+Code Generation
+===============
+- Open the genmodel file
+- Right-click on top node and generate to desired level (model/edit/editor/etc)
+
+================
+After generation
+================
+- You may need to re-add 'lgUtil' to the required projects for the lgModel.emf project;
+  add and make it exportable.
+- Remove the plug-in dependencies from the Java build libraries and delete the generated
+  plugin.properties and plugin.xml files.
+- Right click on the root of the generated source tree, and select 'Source->Organize Imports'
+
+/* This is incorrect for the new model changes */ (Updated: 04/29/2008)
+// - For the CodedEntry, Association, AssociationInstance, and AssociationTarget interfaces,
+//  add LgCodedObj as an extended interface (in addition to any already listed).
+- For the Concept, Association, Instance, AssociationInstance, and AssociationTarget interfaces,
+add LgModelObj as an extended interface, if not already present (in addition to any already listed).
+This will allow us to use the method getId() instead of getConceptCode(), which was initially
+present in LgCodedObj.
+  

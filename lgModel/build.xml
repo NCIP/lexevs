@@ -1,0 +1,376 @@
+<project name="LexGrid" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>
+		Buildfile for the LexGrid and Manifest Castor Rendering
+	</description>
+
+	<!-- set global properties for this build -->
+	<property name="CastorFull"		location="CastorFull"/>
+	<property name="CastorGen" 		value="src"/>
+	<property name="dist"			location="lib"/>
+	<property name="CastorClass"	value="classes"/>
+	<property name="CastorDocs"  	value="JavaDocs"/>
+	<property name="lib.dir" value="build/lib"/>
+	<property name="lbPackager.dir" value="../lbPackager"/>
+	
+	<!-- annotation directories -->
+	<property name="annotate.builtins"   location="${CastorFull}/src/org/LexGrid/builtins"/>
+	<property name="annotate.codingSchemes"   location="${CastorFull}/src/org/LexGrid/codingSchemes"/>
+	<property name="annotate.commonTypes"   location="${CastorFull}/src/org/LexGrid/commonTypes"/>
+	<property name="annotate.concepts"   location="${CastorFull}/src/org/LexGrid/concepts"/>
+	<property name="annotate.naming"   location="${CastorFull}/src/org/LexGrid/naming"/>
+	<property name="annotate.relations"   location="${CastorFull}/src/org/LexGrid/relations"/>
+	<property name="annotate.valueSets"   location="${CastorFull}/src/org/LexGrid/valueSets"/>
+	<property name="annotate.versions"   location="${CastorFull}/src/org/LexGrid/versions"/>
+	<property name="annotations.src"   location="org/LexGrid/annotations/**"/>
+	<property name="super.class.src"   location="org/mayo/edu/lgModel/**"/>
+	<property name="src"   location="src"/>
+
+	<!--*******************************************************************-->
+	<!--** IVY TARGETS AND DEPENDENCY PATHS **-->
+	<!--*******************************************************************-->
+	<property name="ivy.settings.file" location="${lbPackager.dir}/ivysettings.xml" />
+	<property name="ivy.def.file" location="ivy.xml" />
+
+	<property name="ivy.jar.dir" value="${lbPackager.dir}/ivy/lib" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.1.0-rc1.jar" />
+
+	<target name="ivy:init">
+
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"
+			classpathref="ivy.lib.path" />
+		<ivy:settings file="${ivy.settings.file}" />
+	</target>
+
+	<target name="ivy:clean" depends="clean:dependencies"
+		description="Clean">
+		<ivy:settings file="${ivy.settings.file}" />
+		<ivy:cleancache />
+		<delete dir="${lib.dir}" />
+	</target>
+
+	<target name="clean:dependencies">
+		<delete dir="${genepattern-service.jar.compile.lib.dir}" />
+	</target>
+
+	<target name="ivy:setup" depends="ivy:setup-compile"
+		description="Updates the local ivy repository for all build and test dependencies." />
+
+	<target name="ivy:setup-compile" depends="ivy:init">
+		<ivy:cachepath pathid="compile.classpath" />
+		<ivy:resolve refresh="true" conf="compile" />
+		<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]"
+			conf="compile" />
+	</target>
+	<!--*******************************************************************-->
+	<!--** END IVY TARGETS AND DEPENDENCY PATHS **-->
+	<!--*******************************************************************-->
+	
+	<!-- bda related properties -->
+	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
+	<property file="bda.properties"/>
+	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
+
+
+	<!-- added methods -->
+	<property name="extraMethodsDir" location="extraMethods"/>
+	<property name="entityExtraMethods" location="${extraMethodsDir}/Entity.custom"/>
+	<property name="entitySource" location="${annotate.concepts}/Entity.java"/>
+	
+	<target name="init" depends="ivy:setup">
+		<path id="classpath">
+			<fileset dir="${lib.dir}/compile">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+
+	<target name="clean" depends="init" description="clean up" >
+		<!-- Delete the ${generated} and ${docs} directory trees -->
+		<delete dir="${CastorFull}/${CastorDocs}"/>
+		<delete dir="${CastorFull}/${CastorGen}"/>
+		<delete dir="${CastorFull}/${CastorClass}"/>
+	</target>
+	
+	<target name="genCastorFromXSD" depends="init" description="generate the Castor representation of the schema">
+		<echo>Generate Castor Java</echo>
+		<delete dir="${CastorFull}/${CastorGen}"/>
+		<mkdir dir="${CastorFull}/${CastorGen}"/>
+		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="builtins"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="codingSchemes"/>
+  		</antcall>
+		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="commonTypes"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="concepts"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="naming"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="relations"/>
+  		</antcall>
+		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="valueSets"/>
+  		</antcall>
+  		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="versions"/>
+  		</antcall>
+  	</target>
+	
+	<target name="genCastorRESTFromXSD" depends="init" description="generate the Castor REST representation of the schema">
+		<echo>Generate Castor Java</echo>
+		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="builtins"/>
+  		</antcall>
+  		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="codingSchemes"/>
+  		</antcall>
+		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="commonTypes"/>
+  		</antcall>
+  		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="concepts"/>
+  		</antcall>
+  		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="naming"/>
+  		</antcall>
+  		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="relations"/>
+  		</antcall>
+		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="valueSets"/>
+  		</antcall>
+  		<antcall target="genCastorRESTJava">
+   			<param name="xsdFile" value="versions"/>
+  		</antcall>
+  	</target>
+  	
+	<target name="add.methods">
+		<replaceregexp file="${entitySource}"
+		                         match="}*.$$"
+		                         replace=""/>
+		  <concat destfile="${entitySource}" append="true">
+		    <filelist dir="${extraMethodsDir}" files="${entityExtraMethods}"/>
+		  </concat>
+		  <concat 
+		  	destfile="${entitySource}" 
+		  	append="true">${line.separator}}</concat>
+	</target>
+  	
+	<target name="genCastorJava" depends="init">
+		<echo>Generating Full Castor Java from Schema ${xsdFile}</echo>
+				
+		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
+			<classpath refid="classpath"/>
+			<!--arg line="-f"/-->
+			<arg line="-i master/${xsdFile}.xsd"/>
+			<arg line="-package org.LexGrid.${xsdFile}"/>
+			<arg line="-dest '${CastorFull}/${CastorGen}'"/>
+			<arg line="-line-separator win"/>
+			<!--arg line="-generateImportedSchemas"/-->			
+			<arg line="-types j2"/>
+			<arg line="-verbose"/>
+		</java>
+	</target>
+	
+	<target name="genCastorRESTJava" depends="init">
+		<echo>Generating Full Castor Java from Schema REST/${xsdFile}</echo>
+				
+		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
+			<classpath refid="classpath"/>
+			<!--arg line="-f"/-->
+			<arg line="-i master/REST/${xsdFile}.xsd"/>
+			<arg line="-package org.LexGrid.REST.${xsdFile}"/>
+			<arg line="-dest '${CastorFull}/${CastorGen}'"/>
+			<arg line="-line-separator win"/>
+			<!--arg line="-generateImportedSchemas"/-->			
+			<arg line="-types j2"/>
+			<arg line="-verbose"/>
+		</java>
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${CastorFull}/${CastorClass}"/>
+		<!-- We need to compile the annotations first   -->
+		<javac source="1.6" target="1.6" srcdir="${src}" includes="org/LexGrid/annotations/**"
+                    destdir="${CastorFull}/${CastorClass}" debug="yes">
+					<classpath refid="classpath"/>
+		</javac>
+		<javac source="1.6" target="1.6" srcdir="${src}" includes="org/mayo/edu/lgModel/**"
+                    destdir="${CastorFull}/${CastorClass}" debug="yes">
+					<classpath refid="classpath"/>
+		</javac>
+		<javac source="1.6" target="1.6" srcdir="${CastorFull}/${CastorGen}" destdir="${CastorFull}/${CastorClass}" debug="yes">
+			<classpath refid="classpath"/>
+		</javac>
+		<!-- We need to compile the src last as this uses the Castor generated code   -->
+		<javac source="1.6" target="1.6" srcdir="${src}" destdir="${CastorFull}/${CastorClass}" debug="yes">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+<target name="annotate.class" description="annotate for remote classes" >
+			<replace dir="${annotate.builtins}" token="package org.LexGrid.builtins;">
+				<include name="*.java"/>
+				<replacevalue><![CDATA[package org.LexGrid.builtins; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+			</replace>
+			<replace dir="${annotate.builtins}" token="public class">
+				<include name="*.java"/>
+				<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+			</replace>
+		<replace dir="${annotate.codingSchemes}" token="package org.LexGrid.codingSchemes;">
+			<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.codingSchemes; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+		</replace>
+		<replace dir="${annotate.codingSchemes}" token="public class">
+			<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+		</replace>
+		<replace dir="${annotate.commonTypes}" token="package org.LexGrid.commonTypes;">
+			<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.commonTypes; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+		</replace>
+		<replace dir="${annotate.commonTypes}" token="public class">
+			<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+		</replace>
+	<replace dir="${annotate.concepts}" token="package org.LexGrid.concepts;">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.concepts; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.concepts}" token="public class">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.naming}" token="package org.LexGrid.naming;">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.naming; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.naming}" token="public class">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.relations}" token="package org.LexGrid.relations;">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.relations; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.relations}" token="public class">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.valueSets}" token="package org.LexGrid.valueSets;">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.valueSets; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.valueSets}" token="public class">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.versions}" token="package org.LexGrid.versions;">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[package org.LexGrid.versions; 
+import org.LexGrid.annotations.LgClientSideSafe;]]></replacevalue>
+	</replace>
+	<replace dir="${annotate.versions}" token="public class">
+		<include name="*.java"/>
+		<replacevalue><![CDATA[@LgClientSideSafe 
+public class]]></replacevalue>
+	</replace>
+	</target>
+	
+	
+	<target name="manifest:gen:src" depends="init" description="Generate Java source files from XSD.">
+		
+		<echo>Generate Manifest Castor Java</echo>
+		
+		<taskdef name="castor-srcgen" classname="org.exolab.castor.tools.ant.taskdefs.CastorSourceGenTask" classpathref="classpath" />
+		<!--castor-srcgen file="master/manifest/CodingSchemeManifest.xsd"
+            todir="${CastorFull}/${CastorGen}"
+            package="org.LexGrid.LexOnt"
+            types="j2"
+            warnings="true" 
+		    verbose="yes"/-->
+
+
+		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
+			<classpath refid="classpath" />
+			<arg line="-f" />
+			<arg line="-i master/manifest/CodingSchemeManifest.xsd" />
+			<arg line="-package org.LexGrid.LexOnt" />
+			<arg line="-dest ${CastorFull}/${CastorGen}" />
+			<arg line="-line-separator win" />
+			<!--arg line="-generateImportedSchemas"/-->
+			<arg line="-types j2" />
+			<arg line="-verbose"/>
+		</java>
+	</target>
+	
+
+	<target name="jar" depends="init, compile" description="generate the jar file" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/>
+		<!-- Put everything in ${build} into .jar file -->
+		<jar jarfile="${dist}/lgModelCastor.jar" basedir="${CastorFull}/${CastorClass}">
+		</jar>
+		<!-- Put everything in ${build} and source into .jar file -->
+		<jar jarfile="${dist}/lgModelCastorWithSource.jar" basedir="${CastorFull}/${CastorClass}">
+			<fileset dir="${CastorFull}">
+				<include name="src/**/*"/>
+			</fileset>
+		</jar>
+		
+	</target>
+
+
+	<target name="docs" depends="init, compile" description="Generate the javadocs">
+		<mkdir dir="${CastorFull}/${CastorDocs}"/>
+		<!--Create the javadocs-->
+		<javadoc destdir="${CastorFull}/${CastorDocs}" windowtitle="LexGrid" additionalparam="-breakiterator">
+			<package name="*"/>
+			<classpath>
+			     <path refid="classpath"/>
+			     <pathelement location="${dist}/lgModelCastor.jar"/>
+			</classpath>
+
+			<sourcepath location="${CastorFull}/${CastorGen}"/>
+		</javadoc>
+	</target>
+	
+	<!--target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
+	</target-->	
+	<target name="genModelAndAnnotate" depends="genCastorFromXSD, annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
+	</target>	
+	
+	<target name="all" depends="init, clean, genCastorFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs, ivy:">	
+		<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}.pom">
+   			<mapping conf="*" scope="compile"/>
+   		</ivy:makepom>
+		<ivy:publish resolver="nci-chain" pubrevision="6.0.0-SNAPSHOT" forcedeliver="true" overwrite="true">
+	  	 	<artifacts pattern="${dist}/[artifact].[ext]" />
+	  	 	<artifacts pattern="${dist}/[artifact]Castor.[ext]" />
+			<artifacts pattern="${dist}/[artifact]CastorWithSource.[ext]" />
+		</ivy:publish>
+	</target>
+    <!--target name="all" depends="init, clean, genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs"/-->
+</project>

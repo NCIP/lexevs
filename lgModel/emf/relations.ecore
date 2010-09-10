@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="relations"
+    nsURI="http://LexGrid.org/schema/2009/01/LexGrid/relations" nsPrefix="lgRel">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/relations&quot;>Semantic relationships package&lt;/h2>&#xD;&#xA;                &#xD;&#xA;The definition of the &quot;semantic relationships&quot; that are defined in a coding scheme.&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/commonTypes&quot;>Shared types for the LexGrid package&lt;/h2>&#xD;&#xA;                &#xD;&#xA;Type definitions that are shared by more than one LexGrid module&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/builtins&quot;>Core data types for the LexGrid package&lt;/h2>&#xD;&#xA;                &#xD;&#xA;These are the basic types used in the construction of the rest of the LexGrid model. They need to be mapped to the appropriate implementation specific data types. The mapping in this package represents the XML Schema data types mapping&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/versions&quot;>Revision and history package&lt;/h2>&#xD;&#xA;                &#xD;&#xA;The LexGrid model of revisions, history and releases.&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/codingSchemes&quot;>Coding Scheme Definitions&lt;/h2>&#xD;&#xA;                &#xD;&#xA;The definition of the Coding Scheme resource.&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/valueDomains&quot;>Value domains and pick list packages&lt;/h2>&#xD;&#xA;                &#xD;&#xA;The LexGrid model of value domains and associated pick lists.&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/naming&quot;>Local identifier to URI mapping resource definition&lt;/h2>&#xD;&#xA;                &#xD;&#xA;This package supports the local id to URI mappings.&#xD;&#xA;&#xD;&#xA;                        &lt;h2 xmlns=&quot;http://LexGrid.org/schema/2009/01/LexGrid/concepts&quot;>Lexical definitions package&lt;/h2>&#xD;&#xA;                &#xD;&#xA;The LexGrid model  of the lexical portion of an entity description."/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociatableElement" eSuperTypes="types.ecore#//Versionable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Information common to both the entity and data form of the &quot;to&quot; (or right hand) side of an association."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="associatableElement"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="usageContext" unique="false"
+        upperBound="-1" eType="ecore:EDataType types.ecore#//Context">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The local identifiers of the context(s) in which this association instance applies. Must match a local id of a supportedContext in the corresponding mappings section."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="usageContext"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associationQualification"
+        upperBound="-1" eType="#//AssociationQualification" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A set of qualifers that server to modify or qualify this association instance."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="associationQualification"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="associationInstanceId"
+        eType="ecore:EDataType types.ecore#//NodeId">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The unique identifier assigned to the particular relation, from, to triple."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="associationInstanceId"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isDefining" eType="ecore:EDataType builtins.ecore#//TsBoolean"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that this association instance is considered to be part of the definition of source entity, false means that it is an &quot;accidental&quot; characteristic. If omitted, this information is not known. "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isDefining"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isInferred" eType="ecore:EDataType builtins.ecore#//TsBoolean"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false"/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isInferred"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Association" eSuperTypes="concepts.ecore#//Entity">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A binary relation from a set of entities to a set of entities and/or data. The entityType for the class concept must be &quot;association&quot;."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="association"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1"
+        eType="#//AssociationSource" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The &quot;from&quot; set of entities that appear in this relation"/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="source"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="associationName" lowerBound="1"
+        eType="ecore:EDataType types.ecore#//AssociationName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The local identifier of the relation itself.  associationName must match a local id of a supportedAssociationName in the corresponding mappings section."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="associationName"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="forwardName" lowerBound="1"
+        eType="ecore:EDataType builtins.ecore#//TsCaseIgnoreIA5String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name or role that the &quot;from&quot; entity plays with respect to the &quot;to&quot; entry.  Should be phrased in terms of the default language of the association and imply direction."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="forwardName"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inverse" eType="ecore:EDataType types.ecore#//AssociationName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The associationName of the inverse of this association. inverse must match a local id of a supportedAssociationName in the corresponding mappings section."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="inverse"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAntiReflexive" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="TRUE means that the association is antiReflexive ( for all a in domain, not r(a,a) ), false means not antiReflexive. If absent, reflexivity is unknown or not applicable."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isAntiReflexive"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAntiSymmetric" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that the association is antiSymmetric ( r(a,b) -&amp;gt; not r(b,a)) , false means not antitransitive. If absent, symmetricity is unknown or not applicable."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isAntiSymmetric"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAntiTransitive" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that the association is antiTransitive ( r(a,b), r(b,c) -&amp;gt; not r(a,c)). False means not antitransitive. If absent, transitivity is unknown or not applicable."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isAntiTransitive"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isFunctional" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="TRUE means that the association is injective(for all a in domain, there exists exactly one b in the range such that r(a,b) )."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isFunctional"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNavigable" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        defaultValueLiteral="true" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that the reverse direction of the associaton is &quot;navigable&quot;, meaning that it is makes sense to represent the target to source side of the association."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isNavigable"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReflexive" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that association is reflexive (for all a in domain, r(a,a) ). False means not reflexive. If absent, reflexivity is unknown or not applicable."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isReflexive"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReverseFunctional" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="TRUE means that the association is surjective (for all b in range, there exists exactly one a in range such that r(a,b) )."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isReverseFunctional"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSymmetric" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that association is symmetric ( r(a,b) -&amp;gt; r(b, a)). False means not symmetric. If absent, symmetricity is unknown or not applicable."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isSymmetric"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isTransitive" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that association is transitive ( r(a,b), r(b,c) -&amp;gt; r(a,c)). False means not transitive. If absent, transitivity is unknown or not applicable."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isTransitive"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reverseName" eType="ecore:EDataType builtins.ecore#//TsCaseIgnoreIA5String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name or role that the &quot;to&quot; entity plays with respect to the &quot;from&quot; entry.  Should be phrased in terms of the default language of the association and imply direction."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="reverseName"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociationData" eSuperTypes="#//AssociatableElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of a target or RHS data value of an association."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="associationData"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associationDataText" eType="ecore:EClass types.ecore#//Text"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="associationDataText"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociationQualification">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A modifier that further qualifies the particular association instance."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="associationQualification"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="qualifierText" eType="ecore:EClass types.ecore#//Text"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value associated with this qualifier, if any."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="qualifierText"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="associationQualifier" lowerBound="1"
+        eType="ecore:EDataType types.ecore#//AssociationQualifierName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The local name of the association qualifier. codingSchemeName must match a local id of a supportedAssociationQualifier in the mappings section."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="associationQualifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociationSource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An entity that occurs in one or more instances of a relation on the &quot;from&quot; (or left hand) side of a particular relation."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="associationSource"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" upperBound="-1"
+        eType="#//AssociationTarget" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The set of all entities  that appear on the &quot;to&quot; (or right hand) side of a particular relation."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="target"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetData" upperBound="-1"
+        eType="#//AssociationData" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The set of data instances  that appear on the &quot;to&quot; (or right hand) side of a particular relation."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="targetData"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceEntityCode" lowerBound="1"
+        eType="ecore:EDataType types.ecore#//EntityCode">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The entity code of the source entity."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="sourceEntityCode"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceEntityCodeNamespace"
+        eType="ecore:EDataType types.ecore#//NamespaceName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Local name of the namespace of the sourceEntityCode. sourceEntityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of sourceEntityCode namespace is the codingSchemeURI of the containing coding scheme."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="sourceEntityCodeNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociationTarget" eSuperTypes="#//AssociatableElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An entity  on the &quot;to&quot; (or right hand) side of a relation."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="associationTarget"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetEntityCode" lowerBound="1"
+        eType="ecore:EDataType types.ecore#//EntityCode">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The entity code of the target entity."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="targetEntityCode"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetEntityCodeNamespace"
+        eType="ecore:EDataType types.ecore#//NamespaceName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Local name of the namespace of the targetEntityCode. targetEntityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of targetEntityCode namespace is the codingSchemeURI of the containing coding scheme."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="targetEntityCodeNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Relations" eSuperTypes="types.ecore#//Describable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A collection of relations that represent a particular point of view or community."/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="relations"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1"
+        eType="ecore:EClass types.ecore#//Source" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The local identifiers of the source(s) of this collection. Must match a local id of a supportedSource in the corresponding mappings section."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="source"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="association" lowerBound="1"
+        upperBound="-1" eType="#//Association" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The collection of relations that are represented."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="association"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="containerName" eType="ecore:EDataType types.ecore#//ContainerName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The unique identifier of this collection. Required if there is more than one collection of relations in a coding scheme"/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="containerName"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNative" eType="ecore:EDataType builtins.ecore#//TsBooleanObject"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True means that this set of relations are considered native to the coding scheme itself."/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="isNative"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

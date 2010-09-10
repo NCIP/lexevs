@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <meta>
+        <filters directoryPatterns="" filePatterns=""
+            positiveFilePatterns=""/>
+    </meta>
+    <projectTree name="oxygen_project.xpr">
+        <file name="../master/NCIHistory.xsd"/>
+        <file name="../master/builtins.xsd"/>
+        <file name="../master/codingSchemes.xsd"/>
+        <file name="../master/commonTypes.xsd"/>
+        <file name="../master/concepts.xsd"/>
+        <file name="../master/ldap.xsd"/>
+        <file name="../master/naming.xsd"/>
+        <file name="../master/relations.xsd"/>
+        <file name="../master/service.xsd"/>
+        <file name="../master/valueDomains.xsd"/>
+        <file name="../master/versions.xsd"/>
+    </projectTree>
+</project>

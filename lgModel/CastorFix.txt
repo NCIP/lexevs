@@ -1,0 +1,18 @@
+Notes on the Castor build
+
+-- There is a bug that has to be fixed in Castor to generate this stuff.
+
+In Version 1.0.2 of org.exolab.castor.builder.SchemaGenerator, the following line needs to be inserted at line 925!
+
+                   if (!_schemasProcessed.contains(importedSchema)) {
+                        SGStateInfo importedSInfo = new SGStateInfo(importedSchema, this);
+           -->           // HRS - fix to prevent includes from causing grief
+           -->          importedSInfo.setPromptForOverwrite(sInfo.promptForOverwrite());
+                        importedSInfo.packageName = sInfo.packageName;
+                        createClasses(importedSchema, importedSInfo);
+                        //--discard the SGStateInfo
+                        importedSInfo = null;
+                        
+
+
+Note that building the thing requires main.opt followed by jar

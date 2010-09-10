@@ -1,0 +1,55 @@
+	/**
+     * Returns all of the Properties (and subclasses of Property) contained by this Entity.
+     * 
+     * @return All of the Properties of this Entity.
+     */
+	public org.LexGrid.commonTypes.Property[] getAllProperties(){
+		org.LexGrid.concepts.Definition[] definitions = this.getDefinition();
+		org.LexGrid.concepts.Presentation[] presentations = this.getPresentation();
+		org.LexGrid.concepts.Comment[] comments = this.getComment();
+		org.LexGrid.commonTypes.Property[] properties = this.getProperty();
+	
+		java.util.List<org.LexGrid.commonTypes.Property> allProperties = 
+			new java.util.ArrayList<org.LexGrid.commonTypes.Property>();
+		allProperties.addAll(java.util.Arrays.asList(definitions));
+		allProperties.addAll(java.util.Arrays.asList(presentations));
+		allProperties.addAll(java.util.Arrays.asList(comments));
+		allProperties.addAll(java.util.Arrays.asList(properties));
+	
+		org.LexGrid.commonTypes.Property[] array = new org.LexGrid.commonTypes.Property[0];
+		return (org.LexGrid.commonTypes.Property[]) allProperties.toArray(array);
+	}
+	
+	/**
+     * Adds all of the Properties (or subclasses of Property) in a given List to this Entity. 
+     * Used for batch-type Property insertion.
+     * Subclasses of Property are accepted and directed to the correct Collection.
+     * 
+     * @param property The List of Properties to be added (List may contain subclass of Property).
+     */
+	public void addAnyProperties(java.util.List<org.LexGrid.commonTypes.Property> properties){
+		for(org.LexGrid.commonTypes.Property property : properties){
+		   if(property instanceof org.LexGrid.concepts.Presentation){
+                this.addPresentation((org.LexGrid.concepts.Presentation)property);
+            } else if (property instanceof org.LexGrid.concepts.Definition) {
+                this.addDefinition((org.LexGrid.concepts.Definition)property);
+            } else if (property instanceof org.LexGrid.concepts.Comment) {
+                this.addComment((org.LexGrid.concepts.Comment)property);
+            } else {
+                this.addProperty(property);
+            }
+		}
+	}	
+	
+	/**
+     * Adds any Property to this Entity. Subclasses of Property are accepted
+     * and directed to the correct Collection.
+     * 
+     * @param property The Property to be added (may be a subclass of Property).
+     */
+	public void addAnyProperty(org.LexGrid.commonTypes.Property property){
+		java.util.List<org.LexGrid.commonTypes.Property> propertyList =
+			new java.util.ArrayList<org.LexGrid.commonTypes.Property>();
+		propertyList.add(property);
+		this.addAnyProperties(propertyList);
+	}
