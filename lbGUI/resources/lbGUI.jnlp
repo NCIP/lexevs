@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for the LexGrid Converter -->
+<jnlp
+  spec="1.0+"
+  codebase="http://mir04.mayo.edu/LexGrid/downloads/LexGUI/webstart/"
+  href="lbGUI.jnlp">
+  <information>
+    <title>LexGUI</title>
+    <vendor>Biomedical Informatics</vendor>
+    <!--homepage href="http://mir04.mayo.edu/LexGrid/index.php?page=convert"/-->
+    <description>A GUI application for LexBIG based APIs</description>
+    <icon href="icon.gif"/>
+    <!--icon kind="splash" href="images/splash.gif"/-->
+    <offline-allowed/>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.5+" max-heap-size="500m"/>
+    <jar href="lbGUI.jar"/>
+    <jar href="lbRuntime.jar"/>
+  </resources>
+  <resources os="Windows">
+    <nativelib href="swt-windowsNatives.jar"/> 
+    <jar href="swt-windows.jar"/>
+   </resources>
+  <resources os="Linux" arch="x86">
+    <nativelib href="swt-linuxNatives.jar"/> 
+    <jar href="swt-linux.jar"/>
+  </resources>
+  <resources os="Linux" arch="i386">
+    <nativelib href="swt-linuxNatives.jar"/> 
+    <jar href="swt-linux.jar"/>
+  </resources>
+  <resources os="Linux" arch="i686">
+    <nativelib href="swt-linuxNatives.jar"/> 
+    <jar href="swt-linux.jar"/>
+  </resources>
+  <resources os="Linux" arch="amd64">
+    <nativelib href="swt-linuxNatives_x86_64.jar"/> 
+    <jar href="swt-linux_x86_64.jar"/>
+  </resources>
+  <resources os="OSX" arch="*">
+    <nativelib href="swt-OSXNatives.jar"/> 
+    <jar href="swt-OSX.jar"/>
+  </resources>
+  <application-desc main-class="org.LexGrid.LexBIG.gui.LB_GUI"/>
+</jnlp> 

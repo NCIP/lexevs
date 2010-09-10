@@ -1,0 +1,9 @@
+#Wed Mar 25 13:44:35 CDT 2009
+eclipse.preferences.version=1
+formatter_profile=_LexStyle
+formatter_settings_version=11
+internal.default.compliance=default
+org.eclipse.jdt.ui.exception.name=e
+org.eclipse.jdt.ui.gettersetter.use.is=true
+org.eclipse.jdt.ui.keywordthis=false
+org.eclipse.jdt.ui.overrideannotation=true

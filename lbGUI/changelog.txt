@@ -1,0 +1,171 @@
+lbGUI changelog. 
+* 7/01/08
+* A column was added to lbGUI indicating which database or table
+* group a coding scheme resided in.  Implemented in response to Gforge
+* item # 12995.
+*
+* 1/22/08
+* Enabled viewing of Property Links in the graph.
+*
+* 1/14/08
+* Added a MRIER option to the Metathesaurus load.
+*
+* 12/14/07
+* Added parameter for using Protege database load to NCI OWL loader
+
+*************************
+Released with build 2.1 *
+*************************
+* 10/08/07
+* Add option for recalculation of root nodes to NCI Meta load.
+
+* 09/20/07
+* Remove MRHIER option to build from all context entries; not required
+* and yields poor performance on UMLS loads.  Also, change the default
+* to '0' to enable most performant option.
+
+* 09/07/07
+* Prevent error and GUI exit on default resolution of reverse hierarchy
+* from '@@', and change error message text used for GUI exit. 
+
+* 08/30/07
+* For code set display, change label of top or end node to '@' and '@@'
+* instead of 'top-thing' and 'leaf-thing'.  Also remove the hasSubtype and
+* isa labels from top/end node connections; can be confusing since often
+* the subsumption relation for the ontology uses a different name.
+
+* 08/22/07
+* Fixed Gforge item #6971.  Logging options now generate logging specific to the 
+* choice checked.  Previously, these option checks produced no new results
+* unless user checked the option to log everything.
+
+* 05/04/07
+* Prevent the load dialogs from closing while a load is in progress
+* Add a tree view to allow for easier navigation of concepts within a large
+  ontology.
+
+* 06/24/07
+* Allow CodedNodeGraph's to be restricted based on directionalName.
+
+* 07/18/07
+* On display of coded node set, allow resolution of graph for the selected
+  entry to contain items up to the number allowed by the config.props.
+  Previously this had a hard coded max of 500, which had a greater tendency
+  to truncate display of associations for some nodes.
+* Added informational log entry instead of System.out for tree view.
+
+*************************
+Released with build 2.x *
+*************************
+* 04/22/07
+* Allow instantiation of LB_GUI class with specific LexBIGService instance,
+  per NCI requirement for remote service invocation.
+
+* 04/14/07
+* Add association qualifier(s) to edge text when available.
+* Display [R] in edge label (with association name) if association directional
+  name is not available and navigation direction is reversed.
+* Tweaks to help improve spacing and visualization of graphs with many items:
+  Bump space between items for improved readability of relation text.
+  Limit maximum number of characters displayed for secondary nodes.
+  Left-align multi-line text.
+* Change preferred font in graph view to 'Arial Unicode MS' to assist with
+  display of multilingual characters (when available).
+  
+* 04/18/07
+* Fix handling of resolved list expansion.  As part of selection/expansion,
+  a 'trail of breadcrumbs' will be maintained by listing in blue all items
+  that have been visited.  In addition, items that have been automatically
+  added to the graph will be italicized to help differentiate (until paged
+  in normally).  If paged in as part of query results, italicized items
+  will be unitalicized and relocated in the list to match any sort options
+  that may have been set.
+  
+* 04/19/07
+* Provide visibility of relations between secondary nodes in graph views.
+
+* 04/20/07
+* Allow conditional display of codes and of relations between secondary
+  nodes, to allow mimic of viewer behavior in previous release and required
+  to prevent graph complexity from hindering readability in some situations
+  (e.g. default graph of UMLS semantic net).
+
+****************************************
+Released with lbImpl 2.x   02/15/07    *
+****************************************
+* Add support to display associations from all relation containers defined to a
+  code system; native or non-native.
+
+****************************************
+Released with lbImpl 2.x   01/??/07    *
+****************************************
+* Added the ability to restrict on property qualifiers.
+* minor corrections and cleanup of display of sources, property qualifiers.
+* Added a viewer for code system details (double click on a code system)
+* Fixed a bug that was populating the sources and qualifiers lists incorrectly 
+  when code systems were unioned.
+* Fixed a bug that caused the gui to crash if you clicked on whitespace below the end 
+  of the resolved concept list.
+* Made the graph resolve nodes from all relations containers instead of just the default
+  relations container when clicking on individual concepts in a resolved coded node set.
+
+****************************************
+Released with lbImpl 2.0   12/15/06    *
+****************************************
+* Added a box to set maximum nodes to resolve in graph.
+* Organized the load and export menus
+* Fixed a bug that caused a GUI crash when multiple association restrictions were attempted.
+* Fixed a bug that threw errors when displaying instructions.
+* Added support restricting to the special properties 'conceptCode' and 'conceptStatus'
+* Added ability to remove all admin functions from display with command line parameter
+* Added support for new API calls in LexBIG API.
+* Removed calls to deprecated methods.
+
+****************************************
+Released with lbImpl 1.0.2 10/30/06    *
+Version 1.0							   *
+****************************************
+* code cleanup
+* Removed Norm configuration options.
+* Fixed wrong dialog title.  Versioned to 1.0
+
+****************************************
+Released with lbImpl 1.0.0RC9 09/22/06 *
+****************************************
+* Gui now reselects the selected code system after a refresh event.
+* Better message for code sets with no graphs
+* Improved error messages.
+* Better handling of reversed obo graphs.
+* Fixed bug that happened if you removed a code set or graph from the lower left, and then clicked on 
+  buttons in the lower right.
+
+****************************************
+Released with lbImpl 1.0.0RC8 09/08/06 *
+****************************************
+* Added confirm to reindex button.
+* Fixed to make it deal with patched in (unregistered) code systems better
+* Sorted the code systems
+* Disabled all admin funtions by default - added a toggle for admin functions.
+* Added UMLS Loaders.
+* Beta History Browser added.
+* Added button to remove history.
+* Added exporters for LexGrid XML and OBO.
+
+****************************************
+Released with lbImpl 1.0.0RC7 08/16/06 *
+****************************************
+
+(This change log does not document all of the changes for this release)
+
+* Speed optimizations in bringing up the result window
+* Fixed bug that allowed you try to edit a restriction when no restriction was selected, causing a crash.
+* Focus node updates (no longer required to set the code system)
+* Changed the relation text box to a combo that lists the choices
+* Added support for restricting properties based on sources or usage contexts.
+* Added number remaining count to result browser
+* Added Ctrl + '+' and Ctrl + '-' to push the graph viewer closer and farther apart.
+* Updated handling of relationships in graph browser.
+* Added confirm to remove button.
+* sorted all the drop down lists.
+* After resolving a coded node set - clicking on nodes in the graph will allow you to get to nodes
+  that were not part of the resolved coded node set.

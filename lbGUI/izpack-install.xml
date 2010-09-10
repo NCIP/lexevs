@@ -1,0 +1,117 @@
+<!--
+Copyright: (c) 2004-2007 Mayo Foundation for Medical Education and 
+Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+triple-shield Mayo logo are trademarks and service marks of MFMER.
+
+Except as contained in the copyright notice above, or as used to identify 
+MFMER as the author of this software, the trade names, trademarks, service
+marks, or product names of the copyright holder shall not be used in
+advertising, promotion or otherwise in connection with this software without
+prior written authorization of the copyright holder.
+ 
+Licensed under the Eclipse Public License, Version 1.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at 
+
+ 		http://www.eclipse.org/legal/epl-v10.html
+-->
+<!-- Instructions for the izPack install builder -->
+<!-- http://www.izforge.com/izpack -->
+<installation version="1.0">
+    <info>
+        <appname>LexGrid GUI</appname>
+        <appsubpath>LexGrid/LexBIG/</appsubpath>
+        <appversion>.9 alpha</appversion>
+        <authors>
+            <author email="informatics@mayo.edu"
+                name="Mayo Clinic Division of Biomedical Informatics"/>
+        </authors>
+        <url>http://informatics.mayo.edu/LexGrid/index.php?page=</url>
+        <javaversion>1.5</javaversion>
+        <uninstaller name="lbGUI_Uninstaller.jar"></uninstaller>
+    </info>
+    <guiprefs height="600" resizable="yes" width="800">
+        <laf name="liquid">
+            <os family="unix"/>
+            <os family="windows"/>
+            <param name="decorate.frames" value="no"/>
+            <param name="decorate.dialogs" value="no"/>
+        </laf>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="cat"/>
+        <langpack iso3="chn"/>
+        <langpack iso3="cze"/>
+        <langpack iso3="dan"/>
+        <langpack iso3="deu"/>
+        <langpack iso3="fra"/>
+        <langpack iso3="hun"/>
+        <langpack iso3="ita"/>
+        <langpack iso3="jpn"/>
+        <langpack iso3="mys"/>
+        <langpack iso3="ned"/>
+        <langpack iso3="nor"/>
+        <langpack iso3="pol"/>
+        <langpack iso3="por"/>
+        <langpack iso3="rom"/>
+        <langpack iso3="rus"/>
+        <langpack iso3="scg"/>
+        <langpack iso3="spa"/>
+        <langpack iso3="svk"/>
+        <langpack iso3="swe"/>
+        <langpack iso3="ukr"/>
+    </locale>
+    <resources>
+        <res id="InfoPanel.info" parse="no" src="readme.txt" type="plain"/>
+        <res id="LicencePanel.licence" parse="no" src="license.txt" type="plain"/>
+        <!--res id="installer.langsel.img" src="langsel-image.png"/-->
+    </resources>
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="InfoPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+    <packs>
+    	<pack name="Base Files " preselected="yes" required="yes">
+            <description>Base files required for all platforms</description>
+            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.jar"/>
+            </fileset>
+        </pack>
+        <pack name="Windows Runtime" preselected="yes" required="no">
+            <description>GUI Installation for the Windows platform</description>
+            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.bat"/>
+                <include name="windows/*"/>
+            </fileset>
+        </pack>
+        <pack name="Linux Runtime" preselected="yes" required="no">
+            <description>GUI Installation for the Linux platform</description>
+            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="Linux-lbGUI.sh"/>
+                <include name="linux/*"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/gui/Linux-lbGUI.sh" stage="never" keep="true"></executable>
+        </pack>
+        <pack name="Linux x86_64 Runtime" preselected="yes" required="no">
+            <description>GUI Installation for the Linux x86_64 bit platform</description>
+            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="Linux_64-lbGUI.sh"/>
+                <include name="linux_x86_64/*"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/gui/Linux_64-lbGUI.sh" stage="never" keep="true"></executable>
+        </pack>
+        <pack name="OSX Runtime" preselected="yes" required="no">
+            <description>GUI Installation for the OSX platform</description>
+            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.command"/>
+                <include name="OSX/*"/>
+            </fileset>
+        </pack>
+    </packs>
+</installation>
