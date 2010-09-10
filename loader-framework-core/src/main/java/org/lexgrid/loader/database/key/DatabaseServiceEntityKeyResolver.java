@@ -1,5 +1,6 @@
 package org.lexgrid.loader.database.key;
 
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.DaoManager;
@@ -16,8 +17,8 @@ public class DatabaseServiceEntityKeyResolver implements EntityKeyResolver {
 			final String uri,
 			final String version, 
 			final String entityCode,
-			final String entityCodeNamespace) {
-		return databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
+			final String entityCodeNamespace) throws KeyNotFoundException {
+		String entityId = databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<String>() {
 
 			public String execute(DaoManager daoManager) {
 				String codingSchemeId = daoManager.
@@ -29,6 +30,12 @@ public class DatabaseServiceEntityKeyResolver implements EntityKeyResolver {
 				return entityId;
 			}	
 		});
+		
+		if(StringUtils.isBlank(entityId)) {
+			throw new KeyNotFoundException(entityCode, entityCodeNamespace);
+		}
+		
+		return entityId;
 	}
 
 	public DatabaseServiceManager getDatabaseServiceManager() {
