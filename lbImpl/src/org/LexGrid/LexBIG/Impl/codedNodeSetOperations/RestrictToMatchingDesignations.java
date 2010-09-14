@@ -90,4 +90,40 @@ public class RestrictToMatchingDesignations implements Restriction, Operation {
         return this.preferredOnly_;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((language_ == null) ? 0 : language_.hashCode());
+        result = prime * result + ((preferredOnly_ == null) ? 0 : preferredOnly_.hashCode());
+        result = prime * result + ((textQuery_ == null) ? 0 : textQuery_.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RestrictToMatchingDesignations other = (RestrictToMatchingDesignations) obj;
+        if (language_ == null) {
+            if (other.language_ != null)
+                return false;
+        } else if (!language_.equals(other.language_))
+            return false;
+        if (preferredOnly_ == null) {
+            if (other.preferredOnly_ != null)
+                return false;
+        } else if (!preferredOnly_.equals(other.preferredOnly_))
+            return false;
+        if (textQuery_ == null) {
+            if (other.textQuery_ != null)
+                return false;
+        } else if (!textQuery_.equals(other.textQuery_))
+            return false;
+        return true;
+    }
 }
