@@ -38,6 +38,7 @@ import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
 
@@ -62,7 +63,7 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	}
 	
 	@Override
-	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes) {
+	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes, boolean reindexMissing) {
 		
 		final Map<String,AbsoluteCodingSchemeVersionReference> expectedMap = 
 			new HashMap<String,AbsoluteCodingSchemeVersionReference>();
@@ -84,18 +85,21 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 				TermEnum termEnum = indexReader.terms(term);
 				
 				while(termEnum.next() && termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
-					indexSet.add(termEnum.term().text());
+					String key = termEnum.term().text();
+					System.out.println("Found: " + key);
+					indexSet.add(key);
 				}
 				
-				indexSet.removeAll(expectedMap.keySet());
-				
-				if(indexSet.size() == 0) {
+				Set<String> foundIndexSet = new HashSet<String>(indexSet);
+				foundIndexSet.removeAll(expectedMap.keySet());
+	
+				if(foundIndexSet.size() == 0) {
 					getLogger().warn("No extra Lucene artifacts found.");
 				} else {
-					getLogger().warn(indexSet.size() + " extra Lucene artifacts found.");
+					getLogger().warn(foundIndexSet.size() + " extra Lucene artifacts found.");
 				}
 				
-				for(String additional : indexSet) {
+				for(String additional : foundIndexSet) {
 				
 					BooleanQuery query = new BooleanQuery();
 					query.add(new TermQuery(
@@ -134,6 +138,27 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 					
 					getLogger().warn("Extra Lucene Index for URI: " + uri + " Version: " + version + 
 						" Successfully removed.");
+				}
+				
+				expectedMap.keySet().removeAll(indexSet);
+				
+				if(expectedMap.size() == 0) {
+					getLogger().warn("No missing Lucene artifacts found.");
+				} else {
+					getLogger().warn(expectedMap.size() + " missing Lucene artifacts found.");
+				}
+				
+				for(String key : expectedMap.keySet()) {
+					AbsoluteCodingSchemeVersionReference ref = 
+						expectedMap.get(key);
+					getLogger().warn("Re-creating missing Lucene index for URI: " +
+							ref.getCodingSchemeURN() +
+							" Version: " + ref.getCodingSchemeVersion());
+					
+					LexEvsServiceLocator.getInstance().
+						getIndexServiceManager().
+							getEntityIndexService().
+								createIndex(ref);
 				}
 				
 				if(! indexReader.isOptimized()) {

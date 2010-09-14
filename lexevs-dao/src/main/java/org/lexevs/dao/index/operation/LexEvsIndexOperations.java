@@ -38,5 +38,5 @@ public interface LexEvsIndexOperations {
 	 */
 	public void registerCodingSchemeEntityIndex(String codingSchemeUri, String version);
 	
-	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes);
+	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes, boolean reindexMissing);
 }

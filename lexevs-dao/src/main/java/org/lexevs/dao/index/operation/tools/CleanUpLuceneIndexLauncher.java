@@ -18,6 +18,9 @@ public class CleanUpLuceneIndexLauncher {
 
 	@Option(name="-h", aliases={"--help"}, usage="Prints usage information.") 
 	private boolean help;
+	
+	@Option(name="-r", aliases={"--reindex"}, usage="Reindex any missing indicies.") 
+	private boolean reindexMissing;
 
 	private void execute() {
 		try {
@@ -34,7 +37,7 @@ public class CleanUpLuceneIndexLauncher {
 				expectedList.add(ref);
 			}
 			
-			LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().cleanUp(expectedList);
+			LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().cleanUp(expectedList, reindexMissing);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
