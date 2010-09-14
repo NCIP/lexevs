@@ -524,6 +524,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<String> getTripleUidsForMappingRelationsContainer(
 			String mappingCodingSchemeUid, 
 			String sourceCodingSchemeUid,
@@ -564,6 +565,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	@CacheMethod
 	public List<? extends ResolvedConceptReference> getTriplesForMappingRelationsContainer(
 			String mappingCodingSchemeUid, 
 			String sourceCodingSchemeUid,
