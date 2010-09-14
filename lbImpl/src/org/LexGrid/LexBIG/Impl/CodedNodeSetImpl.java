@@ -285,8 +285,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(new Object[] { matchText, option, matchAlgorithm, language });
         try {
             this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToMatchingDesignations(matchText, option, matchAlgorithm, language,
-                    getInternalCodeSystemName(), getInternalVersionString()));
+            RestrictToMatchingDesignations op = new RestrictToMatchingDesignations(matchText, option, matchAlgorithm, language,
+                    getInternalCodeSystemName(), getInternalVersionString());
+            
+           if(!this.pendingOperations_.contains(op)) {
+                this.pendingOperations_.add(op);
+           }
+                    
             return this;
         } catch (LBInvocationException e) {
             throw e;
