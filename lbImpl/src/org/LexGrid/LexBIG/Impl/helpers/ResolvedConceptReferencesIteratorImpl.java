@@ -32,8 +32,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.LexGrid.annotations.LgHasRemoteDependencies;
-import org.LexGrid.annotations.LgProxyField;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
@@ -45,7 +43,6 @@ import org.lexevs.logging.LoggerFactory;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-@LgHasRemoteDependencies
 @LgClientSideSafe
 public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptReferencesIterator {
     private static final long serialVersionUID = 5609297086069631237L;
@@ -61,7 +58,6 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
     private boolean resolveEntities_;
     int maxSizeSystemLimit = 0;
     
-    @LgProxyField
     private CodeToReturnResolver codeToReturnResolver = new DefaultCodeToReturnResolver();
 
     private LgLoggerIF getLogger() {
