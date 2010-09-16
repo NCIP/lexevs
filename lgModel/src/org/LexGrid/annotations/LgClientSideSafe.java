@@ -10,5 +10,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LgClientSideSafe {
+	
+	boolean force() default false;
 
 }
