@@ -77,7 +77,6 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.relations.AssociationEntity;
-import org.LexGrid.util.PrintUtility;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
@@ -1904,7 +1903,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         // TODO Auto-generated method stub
         String internalCodingSchemeName = null;
         String version = null;
-        long startTime = System.currentTimeMillis();
+
         if (versionOrTag == null) {
             version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
         } else {
@@ -1971,7 +1970,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     }
 
-    @SuppressWarnings("unchecked")
     public List<SupportedProperty> getSupportedPropertiesOfTypeComment(String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
         String internalCodingSchemeName = null;
@@ -1989,7 +1987,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 internalCodingSchemeName, version, PropertyTypes.COMMENT);
     }
 
-    @SuppressWarnings("unchecked")
     public List<SupportedProperty> getSupportedPropertiesOfTypeDefinition(String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
         String internalCodingSchemeName = null;
@@ -2007,7 +2004,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 internalCodingSchemeName, version, PropertyTypes.DEFINITION);
     }
 
-    @SuppressWarnings("unchecked")
     public List<SupportedProperty> getSupportedPropertiesOfTypePresentation(String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
         String internalCodingSchemeName = null;
@@ -2024,7 +2020,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 internalCodingSchemeName, version, PropertyTypes.PRESENTATION);
     }
 
-    @SuppressWarnings("unchecked")
     public List<SupportedProperty> getSupportedPropertiesOfTypeProperty(String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
         String internalCodingSchemeName = null;
