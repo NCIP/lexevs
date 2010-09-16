@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test/java"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbInterfaces"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Indexer"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgResourceReader"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -20,13 +20,11 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/jdom/jaxen-core-1.1.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jdom/jaxen-jdom-1.1.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/looks-2.1.3.jar"/>
-	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.5.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/db2jcc_license_cu.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/mysql-connector-java-5.1.6-bin.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/orphanNodesAlg.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/iri.jar"/>
-	<classpathentry kind="lib" path="/lgModel/lib/lgModelCastor.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-logging-1.1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-2.5.6.jar"/>
@@ -37,7 +35,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.3.1-core.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/claml/claml-model.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jexcelapi/jxl.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-3.4.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/protege-owl-3.4.4.jar"/>
