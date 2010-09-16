@@ -1696,7 +1696,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * to set the service to an EVSApplicationService object, allowing client
      * side implementations to use these convenience methods.
      */
-    @LgClientSideSafe
+    @LgClientSideSafe(force=true)
     public void setLexBIGService(LexBIGService lbs) {
         lbs_ = lbs;
     }
