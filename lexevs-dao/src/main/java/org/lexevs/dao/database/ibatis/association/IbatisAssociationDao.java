@@ -385,7 +385,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertRelations(java.lang.String, org.LexGrid.relations.Relations)
 	 */
-	@ClearCache
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache"})
 	public String insertRelations(
 			String codingSchemeId,
 			Relations relations,
@@ -861,6 +861,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache"})
 	public String updateRelation(String codingSchemeUId, String relationUId,
 			Relations relation) {
 
@@ -905,6 +906,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache"})
 	public void removeRelationByUId(String codingSchemeUId, String relationUId) {
 
 		String prefix = 
@@ -915,6 +917,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache"})
 	public String updateRelationVersionableChanges(String codingSchemeUId,
 			String relationUId, Relations relation) {
 
@@ -934,6 +937,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 
 	@Override
+	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache"})
 	public void updateRelationEntryStateUId(String codingSchemeUId,
 			String relationUId, String entryStateUId) {
 
