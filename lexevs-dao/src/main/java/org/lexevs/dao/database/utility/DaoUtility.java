@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionName;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
@@ -376,6 +377,24 @@ public class DaoUtility {
 			string = StringUtils.removeEnd(string, "List");
 		}
 		return string;
+	}
+	/*
+	 * Return the URIMap(a supported item in mapping section) according the a given localId
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends URIMap> T getURIMap(CodingScheme cs, Class<T> uriMapClass, String localId) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		final String getPrefix = "get";
+		final String getSuffix = "AsReference";
+		
+		Mappings mappings = cs.getMappings();
+		Method m = mappings.getClass().getMethod(getPrefix+uriMapClass.getSimpleName()+getSuffix, null);
+		m.setAccessible(true);
+		List<T> list = (List<T>) m.invoke(mappings, null);
+		for (URIMap map : list) {
+			if (map.getLocalId().equalsIgnoreCase(localId))
+				return (T) map;
+		}
+		return null;
 	}
 	
 	/**
