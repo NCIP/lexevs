@@ -313,7 +313,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 
                         @Override
                         public void widgetSelected(SelectionEvent event) {
-                            String[] options =  multi.getItems();
+                            String[] options =  multi.getSelection();
                             stringArrayOption.setOptionValue(Arrays.asList(options));
                         }  
                     });
@@ -362,7 +362,9 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 					}
 				}
 
+				setLoading(true);
 				loader.load(uri);
+				setLoading(false);
                 load.setEnabled(false);
 			}
 
