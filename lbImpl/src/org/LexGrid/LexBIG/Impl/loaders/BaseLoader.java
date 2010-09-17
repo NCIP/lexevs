@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
+import org.LexGrid.LexBIG.Extensions.Load.options.BaseOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -65,7 +66,6 @@ import org.lexevs.system.service.SystemResourceService;
 import org.lexevs.system.utility.MyClassLoader;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
-import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.inserter.CodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.inserter.DefaultPagingCodingSchemeInserter;
 import edu.mayo.informatics.lexgrid.convert.inserter.PreValidatingInserterDecorator;
@@ -109,7 +109,8 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     public static String MANIFEST_FILE_OPTION = "Manifest File";
     public static String LOADER_PREFERENCE_FILE_OPTION = "Loader Preferences File";
     public static String ASYNC_OPTION = "Async Load";
-    public static String FAIL_ON_ERROR_OPTION = Option.getNameForType(Option.FAIL_ON_ERROR);
+    public static String FAIL_ON_ERROR_OPTION = 
+        edu.mayo.informatics.lexgrid.convert.formats.Option.getNameForType(edu.mayo.informatics.lexgrid.convert.formats.Option.FAIL_ON_ERROR);
     
     private AbsoluteCodingSchemeVersionReference[] codingSchemeReferences
         = new AbsoluteCodingSchemeVersionReference[0];
@@ -129,6 +130,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     private boolean doComputeTransitiveClosure = true;
     private boolean doRegister = true;
     private boolean doApplyPostLoadManifest = true;
+    private boolean doRemoveOnFailure = true;
     
     private boolean hasSupplementOptionsBeenInitialized = false;
     
@@ -316,24 +318,26 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                         register(loadedCodingSchemes);
                     }
                     
-                    String parentSupplementString = getOptions().getStringOption(SUPPLEMENT_OPTION).getOptionValue();
-                    if(StringUtils.isNotBlank(parentSupplementString)) {
-                        try {
-                            AbsoluteCodingSchemeVersionReference parent = 
-                                getAbsoluteCodingSchemeVersionReferenceFromOptionString(parentSupplementString);
-                            
-                            md_.info("Registering as a supplement to URI: " + 
-                                    parent.getCodingSchemeURN() + ", Version: " + parent.getCodingSchemeVersion());
-                            
-                            for(AbsoluteCodingSchemeVersionReference supplement : getCodingSchemeReferences()) {
-                                LexEvsServiceLocator.getInstance().getSystemResourceService().
+                    if(doesOptionExist(getOptions().getStringOptions(), SUPPLEMENT_OPTION)) {
+                        String parentSupplementString = getOptions().getStringOption(SUPPLEMENT_OPTION).getOptionValue();
+                        if(StringUtils.isNotBlank(parentSupplementString)) {
+                            try {
+                                AbsoluteCodingSchemeVersionReference parent = 
+                                    getAbsoluteCodingSchemeVersionReferenceFromOptionString(parentSupplementString);
+
+                                md_.info("Registering as a supplement to URI: " + 
+                                        parent.getCodingSchemeURN() + ", Version: " + parent.getCodingSchemeVersion());
+
+                                for(AbsoluteCodingSchemeVersionReference supplement : getCodingSchemeReferences()) {
+                                    LexEvsServiceLocator.getInstance().getSystemResourceService().
                                     registerCodingSchemeSupplement(parent, supplement);
+                                }
+                            } catch (Exception e) {
+                                md_.warn("Error registring supplements, none will be registered.", e);
                             }
-                        } catch (Exception e) {
-                            md_.warn("Error registring supplements, none will be registered.", e);
+                        } else {
+                            md_.info("Not registering as a supplement.");
                         }
-                    } else {
-                        md_.info("Not registering as a supplement.");
                     }
                 }
             } catch (CodingSchemeAlreadyLoadedException e) {
@@ -359,12 +363,14 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             }
                         }
 
-                        getLogger().warn("Load failed.  Removing temporary resources...");
-                        SystemResourceService service = 
-                               LexEvsServiceLocator.getInstance().getSystemResourceService();
-                        
-                        for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
-                            service.removeCodingSchemeResourceFromSystem(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+                        if(doRemoveOnFailure) {
+                            getLogger().warn("Load failed.  Removing temporary resources...");
+                            SystemResourceService service = 
+                                   LexEvsServiceLocator.getInstance().getSystemResourceService();
+                            
+                            for(AbsoluteCodingSchemeVersionReference ref : codingSchemeReferences) {
+                                service.removeCodingSchemeResourceFromSystem(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+                            }
                         }
 
                     } catch (LBParameterException e) {
@@ -385,7 +391,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     
     }
     
-    private AbsoluteCodingSchemeVersionReference getAbsoluteCodingSchemeVersionReferenceFromOptionString(String optionString) throws LBParameterException, LBInvocationException {
+    protected AbsoluteCodingSchemeVersionReference getAbsoluteCodingSchemeVersionReferenceFromOptionString(String optionString) throws LBParameterException, LBInvocationException {
         return CodingSchemeReferencesStringArrayPickListOption.getAbsoluteCodingSchemeVersionReference(
                 optionString,
                 LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes()
@@ -402,16 +408,18 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     }
     
     protected void doPostProcessing(OptionHolder options, AbsoluteCodingSchemeVersionReference[] references) throws LBParameterException {
-        List<String> postProcessors =
-            options.getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue();
-        
-        if (postProcessors != null)
-        {
-            for(String postProcessor : postProcessors) {
-                md_.info("Running PostProcessor:" + postProcessor);
-                
-                for(AbsoluteCodingSchemeVersionReference ref : references) {
-                    getPostProcessor(postProcessor).runPostProcess(ref);
+        if(doesOptionExist(options.getStringArrayOptions(), LOADER_POST_PROCESSOR_OPTION)) {
+            List<String> postProcessors =
+                options.getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue();
+
+            if (postProcessors != null)
+            {
+                for(String postProcessor : postProcessors) {
+                    md_.info("Running PostProcessor:" + postProcessor);
+
+                    for(AbsoluteCodingSchemeVersionReference ref : references) {
+                        getPostProcessor(postProcessor).runPostProcess(ref);
+                    }
                 }
             }
         }
@@ -745,12 +753,25 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         this.resourceUri = resource;
         try {
             boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
-            this.setCodingSchemeManifestURI(this.getOptions().getURIOption(MANIFEST_FILE_OPTION).getOptionValue());
-            this.setLoaderPreferences(this.getOptions().getURIOption(LOADER_PREFERENCE_FILE_OPTION).getOptionValue());
+            if(doesOptionExist(this.getOptions().getURIOptions(), MANIFEST_FILE_OPTION)){
+                this.setCodingSchemeManifestURI(this.getOptions().getURIOption(MANIFEST_FILE_OPTION).getOptionValue());
+            } 
+            if(doesOptionExist(this.getOptions().getURIOptions(), LOADER_PREFERENCE_FILE_OPTION)){
+                this.setLoaderPreferences(this.getOptions().getURIOption(LOADER_PREFERENCE_FILE_OPTION).getOptionValue());
+            }
             baseLoad(async);
         } catch (LBException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    protected boolean doesOptionExist(List<? extends BaseOption<?>> options, String optionName) {
+        for(BaseOption<?> option : options) {
+            if(option.getOptionName().equals(optionName)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     protected abstract OptionHolder declareAllowedOptions(OptionHolder holder);
@@ -892,5 +913,13 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     public ManifestUtil getManifestUtil() {
         return this.manifestUtil;
+    }
+
+    public void setDoRemoveOnFailure(boolean doRemoveOnFailure) {
+        this.doRemoveOnFailure = doRemoveOnFailure;
+    }
+
+    public boolean isDoRemoveOnFailure() {
+        return doRemoveOnFailure;
     }
 }

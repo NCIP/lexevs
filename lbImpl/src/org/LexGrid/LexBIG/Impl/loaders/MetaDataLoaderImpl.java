@@ -33,6 +33,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.jdom.input.SAXBuilder;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -40,8 +41,9 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
+import edu.mayo.informatics.lexgrid.convert.options.CodingSchemeReferencesStringArrayPickListOption;
+import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringOption;
-import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -54,10 +56,9 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
     private static final long serialVersionUID = -205479865592766865L;
     public final static String name = "MetaDataLoader";
     private final static String description = "This loader loads metadata xml files into the system.";
-    
-    private static String URI_OPTION = "URI";
-    private static String VERSION_OPTION = "Version";
+
     private static String OVERWRITE_OPTION = "Overwrite Existing";
+    private static String SCHEME_OPTION = "Coding Scheme";
     
 
     public MetaDataLoaderImpl() {
@@ -65,7 +66,8 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
        this.setDoComputeTransitiveClosure(false);
        this.setDoIndexing(false);
        this.setDoRegister(false);
-       this.getOptions().getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).getOptionValue().clear();
+       this.setDoRemoveOnFailure(false);
+       this.setDoApplyPostLoadManifest(false);
     }
 
     protected ExtensionDescription buildExtensionDescription(){
@@ -124,8 +126,13 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     public void loadAuxiliaryData(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
             boolean overwrite, boolean stopOnErrors, boolean async) throws LBParameterException, LBInvocationException {
-        this.getOptions().getStringOption(URI_OPTION).setOptionValue(codingSchemeVersion.getCodingSchemeURN());
-        this.getOptions().getStringOption(VERSION_OPTION).setOptionValue(codingSchemeVersion.getCodingSchemeVersion());
+      
+        String optionValue = 
+               CodingSchemeReferencesStringArrayPickListOption.buildOptionValue(
+                       codingSchemeVersion.getCodingSchemeURN(), 
+                       codingSchemeVersion.getCodingSchemeVersion());
+        
+        this.getOptions().getStringOption(SCHEME_OPTION).setOptionValue(optionValue);
         this.getOptions().getBooleanOption(OVERWRITE_OPTION).setOptionValue(overwrite);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
@@ -156,8 +163,24 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        holder.getStringOptions().add(new StringOption(URI_OPTION));
-        holder.getStringOptions().add(new StringOption(VERSION_OPTION));
+        holder = new DefaultOptionHolder();
+        
+        BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
+        holder.getBooleanOptions().add(asyncOption);
+        
+        BooleanOption failOnErrorOption = new BooleanOption(FAIL_ON_ERROR_OPTION, false);
+        holder.getBooleanOptions().add(failOnErrorOption);
+        
+        StringOption schemeOption;
+        try {
+            schemeOption = new CodingSchemeReferencesStringArrayPickListOption(
+                    SCHEME_OPTION, 
+                    LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes());
+        } catch (LBInvocationException e) {
+            throw new RuntimeException(e);
+        }
+        
+        holder.getStringOptions().add(schemeOption);
         
         holder.getBooleanOptions().add(new BooleanOption(OVERWRITE_OPTION, false));
         return holder;
@@ -165,12 +188,18 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
 
     @Override
     protected URNVersionPair[] doLoad() throws CodingSchemeAlreadyLoadedException {
+        AbsoluteCodingSchemeVersionReference scheme;
+        try {
+            scheme = getAbsoluteCodingSchemeVersionReferenceFromOptionString(this.getOptions().getStringOption(SCHEME_OPTION).getOptionValue());
+        } catch (LBException e1) {
+           throw new RuntimeException(e1);
+        }
         try {
             LexEvsServiceLocator.getInstance().
             getIndexServiceManager().
             getMetadataIndexService().indexMetadata(
-                    this.getOptions().getStringOption(URI_OPTION).getOptionValue(), 
-                    this.getOptions().getStringOption(VERSION_OPTION).getOptionValue(), 
+                    scheme.getCodingSchemeURN(),
+                    scheme.getCodingSchemeVersion(),
                     this.getResourceUri(), 
                     !this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue());
         } catch (Exception e) {
@@ -178,8 +207,8 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
         }
         
         return new URNVersionPair[] {new URNVersionPair(
-                    this.getOptions().getStringOption(URI_OPTION).getOptionValue(),
-                    this.getOptions().getStringOption(VERSION_OPTION).getOptionValue()
+                scheme.getCodingSchemeURN(),
+                scheme.getCodingSchemeVersion()
         )};
     }
 }
