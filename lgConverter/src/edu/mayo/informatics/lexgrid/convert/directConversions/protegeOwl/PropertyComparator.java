@@ -52,8 +52,8 @@ public class PropertyComparator implements Comparator<Property>{
 
     public int compare(Property o1, Property o2) {
         if (o1 instanceof Property && o2 instanceof Property) {
-            Property p1 = (Property) o1;
-            Property p2 = (Property) o2;
+            Property p1 = o1;
+            Property p2 = o2;
             int i = prioritizedPropertyClasses.indexOf(p1.getClass()) - prioritizedPropertyClasses.indexOf(p2.getClass());
             if (i != 0)
                 return i;

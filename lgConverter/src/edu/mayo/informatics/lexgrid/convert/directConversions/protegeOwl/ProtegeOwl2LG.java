@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -136,10 +135,7 @@ public class ProtegeOwl2LG {
     private CodingSchemeManifest manifest_ = null;
     private LgMessageDirectorIF messages_ = null;
 
-    private Connection sqlConnection_ = null;
-    private String dbType_ = null;
     private String dbDriver_ = null, dbUrl_ = null, dbProtegeTempTable_ = null, dbUser_ = null, dbPassword_ = null;
-    private StringBuffer whereClause_ = null;
 
     // Memory profile option ...
     private int memoryProfile_ = ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB;

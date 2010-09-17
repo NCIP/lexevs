@@ -155,7 +155,7 @@ public class ProtegeOwl2LGMain {
                     new CommandLineMessageDirector());
 
             CodingScheme cst = moem.map();
-            SupportedCodingScheme scs = (SupportedCodingScheme) cst.getMappings().getSupportedCodingScheme()[0];
+            SupportedCodingScheme scs = cst.getMappings().getSupportedCodingScheme()[0];
             scs.setIsImported(false);
             // URI output_filename = URI
             // .create("file:///c:/fma-owl-dl.xml");

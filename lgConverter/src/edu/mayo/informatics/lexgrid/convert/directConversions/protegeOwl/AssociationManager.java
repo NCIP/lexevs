@@ -19,9 +19,7 @@
 
 package edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.custom.relations.RelationsUtil;
@@ -95,9 +93,9 @@ public class AssociationManager {
     protected AssociationWrapper getAssociation(String assocName) {
         AssociationWrapper assoc = null;
         if (owlRelName2lgAssoc_.containsKey(assocName)) {
-            assoc = (AssociationWrapper) owlRelName2lgAssoc_.get(assocName);
+            assoc = owlRelName2lgAssoc_.get(assocName);
         } else if (owlRelName2lgRoles_.containsKey(assocName)) {
-            assoc = (AssociationWrapper) owlRelName2lgRoles_.get(assocName);
+            assoc = owlRelName2lgRoles_.get(assocName);
         }
         return assoc;
     }
