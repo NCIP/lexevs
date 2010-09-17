@@ -19,7 +19,6 @@ package org.lexevs.cts2.query;
 
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
@@ -35,11 +34,11 @@ public interface UsageContextQueryOperation {
 	/**
 	 * Gets the Usage Context coding scheme.
 	 * @param codeSystemNameOrURI usageContext code system name or URI
-	 * @param versionOrTag usageContext coding scheme version or tag
+	 * @param codeSystemVersion usageContext coding scheme version
 	 * @return the usage context coding scheme
 	 * @throws LBException
 	 */
-	public CodingScheme getUsageContextCodingScheme(String codeSystemNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	public CodingScheme getUsageContextCodingScheme(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
 	
 	/**
 	 * Returns UsageContext entity object with usageContextId.
@@ -47,11 +46,11 @@ public interface UsageContextQueryOperation {
 	 * @param usageContextId  id of usage context
 	 * @param namespace of usage context
 	 * @param codeSystemNameOrURI usageContext code system name or URI
-	 * @param versionOrTag usageContext coding scheme version or tag
+	 * @param codeSystemVersion usageContext coding scheme version
 	 * @return usage context entity object
 	 * @throws LBException
 	 */
-	public Entity getUsageContextEntity(String usageContextId, String namespace, String codeSystemNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	public Entity getUsageContextEntity(String usageContextId, String namespace, String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
 	
 	/**
 	 * Returns list of usage context entities matching the name provided.
@@ -59,8 +58,8 @@ public interface UsageContextQueryOperation {
 	 * 			  match name of usage context
 	 * @param codeSystemNameOrURI 
 	 * 			  usageContext code system name or URI
-	 * @param versionOrTag 
-	 * 			  usage context coding scheme version or tag
+	 * @param codeSystemVersion 
+	 * 			  usageContext code system version
 	 * @param option 
 	 *            Indicates the designations to search (one of the enumerated
 	 *            type SearchDesignationOption).
@@ -70,44 +69,44 @@ public interface UsageContextQueryOperation {
 	 * @param language
 	 *            Language of search string. If missing, use the default
 	 *            language specified in the context.
-	 * @return list of entities containing matching usage context name
+	 * @return list of entities containing matching concept domain name
 	 * @throws LBException
 	 */
-	public List<Entity> getUsageContextEntitisWithName(String usageContextName, String codeSystemNameOrURI, CodingSchemeVersionOrTag versionOrTag, SearchDesignationOption option, String matchAlgorithm, String language) throws LBException;
+	public List<Entity> getUsageContextEntitisWithName(String usageContextName, String codeSystemNameOrURI, String codeSystemVersion, SearchDesignationOption option, String matchAlgorithm, String language) throws LBException;
 	
 	/**
 	 * Returns coded node set for usage context entities.
 	 * 
 	 * @param codeSystemNameOrURI 
 	 * 			  usageContext code system name or URI
-	 * @param versionOrTag 
-	 * 			  usage context coding scheme version or tag
-	 * @return codedNodeSet of usage context entities
+	 * @param codeSystemVersion 
+	 * 			  usageContext coding scheme version
+	 * @return codedNodeSet of usageContext entities
 	 * @throws LBException
 	 */
-	public CodedNodeSet getUsageContextCodedNodeSet(String codeSystemNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	public CodedNodeSet getUsageContextCodedNodeSet(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
 	
 	/**
 	 * Gets all the usage context found in the system as entities.
 	 * 
 	 * @param codeSystemNameOrURI 
 	 * 			  usageContext code system name or URI
-	 * @param versionOrTag 
-	 * 			  usage context coding scheme version or tag
+	 * @param codeSystemVersion 
+	 * 			  usageContext coding scheme version
 	 * @return List of usage context entities
 	 * @throws LBException
 	 */
-	public List<Entity> listAllUsageContextEntities(String codeSystemNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	public List<Entity> listAllUsageContextEntities(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
 	
 	/**
 	 * Returns all the usage context identifiers found in the system.
 	 * 
 	 * @param codeSystemNameOrURI 
 	 * 	 		  usageContext code system name or URI
-	 * @param versionOrTag 
-	 * 			  usage context coding scheme version or tag
+	 * @param codeSystemVersion 
+	 * 			  usageContext coding scheme version
 	 * @return List of usage context identifiers
 	 * @throws LBException
 	 */
-	public List<String> listAllUsageContextIds(String codeSystemNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException;
+	public List<String> listAllUsageContextIds(String codeSystemNameOrURI, String codeSystemVersion) throws LBException;
 }
