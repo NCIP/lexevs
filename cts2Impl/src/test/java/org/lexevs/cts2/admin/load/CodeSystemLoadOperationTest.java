@@ -103,7 +103,7 @@ public class CodeSystemLoadOperationTest {
         
         cs.addRelations(rels);
         
-        csLoadOp_.load(cs, null, true, true, true, "DEV", true);
+        csLoadOp_.load(cs, null, true, false, true, "DEV", true);
         
         CodingScheme loadedCS = lbs_.resolveCodingScheme("miniautomobiles", Constructors.createCodingSchemeVersionOrTag(null, Constants.VALUE_CODING_SCHEME_VERSION));
 		
