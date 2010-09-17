@@ -20,10 +20,9 @@ package org.LexGrid.LexBIG.Impl.function.metadata;
 
 import java.util.HashSet;
 
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
+import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -34,15 +33,21 @@ import org.LexGrid.LexBIG.Utility.Constructors;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class TestMetaDataSearch extends TestCase {
+public class TestMetaDataSearch extends LexBIGServiceTestCase {
+	
+	@Override
+	protected String getTestID() {
+		return TestMetaDataSearch.class.getName();
+	}
+	
     public void testListCodingSchemes() throws Exception {
         LexBIGServiceMetadata md = ServiceHolder.instance().getLexBIGService().getServiceMetadata();
         AbsoluteCodingSchemeVersionReference[] acsvrl = md.listCodingSchemes()
                 .getAbsoluteCodingSchemeVersionReference();
 
         assertTrue(acsvrl.length >= 2);
-        assertTrue(contains(acsvrl, Constructors.createAbsoluteCodingSchemeVersionReference("test.1", "1.0")));
-        assertTrue(contains(acsvrl, Constructors.createAbsoluteCodingSchemeVersionReference("test.2", "2.0")));
+        assertTrue(contains(acsvrl, Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION)));
+        assertTrue(contains(acsvrl, Constructors.createAbsoluteCodingSchemeVersionReference(PARTS_URN, PARTS_VERSION)));
     }
 
     private boolean contains(AbsoluteCodingSchemeVersionReference[] acsvr, AbsoluteCodingSchemeVersionReference acsvr2) {
@@ -68,40 +73,40 @@ public class TestMetaDataSearch extends TestCase {
     public void testContainerRestrictionSearch() throws Exception {
         LexBIGServiceMetadata md = ServiceHolder.instance().getLexBIGService().getServiceMetadata();
         md.restrictToValue("obo-text", "LuceneQuery");
-        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference("test.1", "1.0"));
+        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION));
 
         MetadataProperty[] result = md.resolve().getMetadataProperty();
         assertTrue(result.length == 2);
-        assertTrue(contains(result, "test.1", "1.0", "format", "OBO-TEXT"));
-        assertTrue(contains(result, "test.1", "1.0", "download_format", "OBO-TEXT"));
+        assertTrue(contains(result, AUTO_URN, AUTO_VERSION, "format", "OBO-TEXT"));
+        assertTrue(contains(result, AUTO_URN, AUTO_VERSION, "download_format", "OBO-TEXT"));
 
         md = ServiceHolder.instance().getLexBIGService().getServiceMetadata();
-        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference("test.1", "1.0"));
+        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION));
         md.restrictToPropertyParents(new String[] { "core_format" });
         md.restrictToValue("obo-text", "LuceneQuery");
         result = md.resolve().getMetadataProperty();
         assertEquals(1,result.length);
-        assertTrue(contains(result, "test.1", "1.0", "format", "OBO-TEXT"));
+        assertTrue(contains(result, AUTO_URN, AUTO_VERSION, "format", "OBO-TEXT"));
 
     }
 
     public void testPropertyRestrictionSearch() throws Exception {
         LexBIGServiceMetadata md = ServiceHolder.instance().getLexBIGService().getServiceMetadata();
         md.restrictToValue("obo-text", "LuceneQuery");
-        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference("test.1", "1.0"));
+        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION));
 
         MetadataProperty[] result = md.resolve().getMetadataProperty();
         assertTrue(result.length == 2);
-        assertTrue(contains(result, "test.1", "1.0", "format", "OBO-TEXT"));
-        assertTrue(contains(result, "test.1", "1.0", "download_format", "OBO-TEXT"));
+        assertTrue(contains(result, AUTO_URN, AUTO_VERSION, "format", "OBO-TEXT"));
+        assertTrue(contains(result, AUTO_URN, AUTO_VERSION, "download_format", "OBO-TEXT"));
 
         md = ServiceHolder.instance().getLexBIGService().getServiceMetadata();
-        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference("test.1", "1.0"));
+        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION));
         md.restrictToProperties(new String[] { "format" });
         md.restrictToValue("obo-text", "LuceneQuery");
         result = md.resolve().getMetadataProperty();
         assertTrue(result.length == 1);
-        assertTrue(contains(result, "test.1", "1.0", "format", "OBO-TEXT"));
+        assertTrue(contains(result, AUTO_URN, AUTO_VERSION, "format", "OBO-TEXT"));
 
     }
 
@@ -119,13 +124,13 @@ public class TestMetaDataSearch extends TestCase {
         assertTrue(temp.size() >= 2);
 
         // should contain this
-        assertTrue(temp.contains("test.2:2.0"));
+        assertTrue(temp.contains(PARTS_URN + ":" + PARTS_VERSION));
 
         // now do the restriction, and retest.
 
         md = ServiceHolder.instance().getLexBIGService().getServiceMetadata();
         md.restrictToValue("English", "LuceneQuery");
-        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference("test.2", "2.0"));
+        md.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference(PARTS_URN, PARTS_VERSION));
         result = md.resolve().getMetadataProperty();
 
         temp = new HashSet<String>();
@@ -137,7 +142,7 @@ public class TestMetaDataSearch extends TestCase {
         assertTrue(temp.size() == 1);
 
         // should contain this
-        assertTrue(temp.contains("test.2:2.0"));
+        assertTrue(temp.contains(PARTS_URN + ":" + PARTS_VERSION));
     }
 
     public void testValueRestriction() throws Exception {
@@ -146,6 +151,6 @@ public class TestMetaDataSearch extends TestCase {
 
         MetadataProperty[] result = md.resolve().getMetadataProperty();
         assertTrue(result.length >= 3);
-        assertTrue(contains(result, "test.2", "2.0", "homepage", "http://www.animaldiversity.org"));
+        assertTrue(contains(result, PARTS_URN, PARTS_VERSION, "homepage", "http://www.animaldiversity.org"));
     }
 }

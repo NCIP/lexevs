@@ -22,8 +22,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -37,6 +35,7 @@ import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
+import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
@@ -62,10 +61,12 @@ import org.LexGrid.relations.AssociationTarget;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class LoadTestDataTest extends TestCase {
-    public LoadTestDataTest(String serverName) {
-        super(serverName);
-    }
+public class LoadTestDataTest extends LexBIGServiceTestCase {
+    
+    @Override
+	protected String getTestID() {
+		return LoadTestDataTest.class.getName();
+	}
 
     public void testLoadAutombiles() throws LBParameterException, LBInvocationException, InterruptedException,
             LBException {
@@ -311,7 +312,7 @@ public class LoadTestDataTest extends TestCase {
 
         metaLoader.loadAuxiliaryData(
             new File("resources/testData/metadata1.xml").toURI(),
-            Constructors.createAbsoluteCodingSchemeVersionReference("test.1", "1.0"),
+            Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION),
             true, false, true);
 
         while (metaLoader.getStatus().getEndTime() == null) {
@@ -328,7 +329,7 @@ public class LoadTestDataTest extends TestCase {
 
         metaLoader.loadAuxiliaryData(
             new File("resources/testData/metadata2.xml").toURI(),
-            Constructors.createAbsoluteCodingSchemeVersionReference("test.2", "2.0"),
+            Constructors.createAbsoluteCodingSchemeVersionReference(PARTS_URN, PARTS_VERSION),
             true, true, true);
 
         while (metaLoader.getStatus().getEndTime() == null) {
@@ -483,4 +484,6 @@ public class LoadTestDataTest extends TestCase {
     private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
     	return LexBIGServiceImpl.defaultInstance().getServiceManager(null);
     }
+
+	
 }
