@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -61,6 +62,9 @@ import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.Utility;
+import org.LexGrid.versions.ChangedEntry;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.exolab.castor.xml.Marshaller;
@@ -223,7 +227,9 @@ public class ManifestUtil {
         // Transfer Mappings
         preLoadAddSupportedMappings(codingScheme, manifest.getMappings());
         
-        preLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
+        if(!postLoad) {
+            preLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
+        }
     } 
     
     public void applyManifest(
@@ -272,22 +278,35 @@ public class ManifestUtil {
         CodingSchemeService codingSchemeService = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
 
-        String uri = versionPair.getUrn();
-        String version = versionPair.getVersion();
+        final String uri = versionPair.getUrn();
+        final String version = versionPair.getVersion();
 
-        CodingScheme codingScheme = DaoUtility.deepClone(codingSchemeService.getCodingSchemeByUriAndVersion(uri, version));
+        final CodingScheme codingScheme = DaoUtility.deepClone(codingSchemeService.getCodingSchemeByUriAndVersion(uri, version));
         
         codingScheme.setRelations(new Relations[0]);
         codingScheme.setProperties(new Properties());
+        codingScheme.setEntities(new Entities());
+
+        String revisionId = UUID.randomUUID().toString();
         
-        codingScheme.getEntryState().setChangeType(ChangeType.MODIFY);
+        EntryState es = new EntryState();
+        es.setChangeType(ChangeType.MODIFY);
+        es.setContainingRevision(revisionId);
+        
+        codingScheme.setEntryState(es);
 
         try {
             
             this.doApplyCommonManifestElements(manifest, codingScheme, true);
             this.postLoadAssociationDefinitions(codingScheme, manifest.getAssociationDefinitions());
+            
+            Revision revision = new Revision();
+            revision.setRevisionId(revisionId);
+            ChangedEntry ce = new ChangedEntry();
+            ce.setChangedCodingSchemeEntry(codingScheme);
+            revision.addChangedEntry(ce);
        
-            codingSchemeService.revise(codingScheme, null, null);
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService().loadRevision(revision, null, false);
         } catch (LBException e) {
            throw new RuntimeException(e);
         }
@@ -533,6 +552,13 @@ public class ManifestUtil {
             AssociationEntity originalAssocEntity = 
                 findAssociationEntityInDatabase(
                         uri, version, code, namespace);
+            
+            if(originalAssocEntity == null) {
+                LoggerFactory.getLogger().warn(
+                        "No AssociationEntity was found for the Code: " + code + " Namespace: " + namespace + ". No changes will be made.");
+                continue;
+            }
+            
             originalAssocEntity.setComment(new Comment[0]);
             originalAssocEntity.setPresentation(new Presentation[0]);
             originalAssocEntity.setProperty(new Property[0]);
@@ -544,6 +570,12 @@ public class ManifestUtil {
             } else {
                 if(assocDefinitions.getToUpdate()) {
                     DaoUtility.updateBean(manifestEntity, originalAssocEntity);
+                    if(originalAssocEntity.getEntryState() == null) {
+                        EntryState es = new EntryState();
+                        es.setChangeType(ChangeType.MODIFY);
+                        es.setContainingRevision(UUID.randomUUID().toString());
+                        originalAssocEntity.setEntryState(es);
+                    }
                     entityService.updateEntity(uri, version, (Entity)originalAssocEntity);
                 }
             }
@@ -563,7 +595,7 @@ public class ManifestUtil {
                 if(codingScheme.getEntities() == null) {
                     codingScheme.setEntities(new Entities());
                 }
-                codingScheme.getEntities().addEntity(manifestEntity);
+                codingScheme.getEntities().addAssociationEntity(manifestEntity);
             } else {
                 if(assocDefinitions.getToUpdate()) {
                     DaoUtility.updateBean(manifestEntity, originalAssocEntity);
