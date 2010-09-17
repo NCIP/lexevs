@@ -97,8 +97,8 @@ public class OBOSynonym {
             currentTag = OBOConstants.TAG_SYNONYM_RELATED;
         }
         String aVal = StringUtils.parseAsSimpleKeyValue(obo_synonym_text, currentTag);
-        Vector vec = StringUtils.makeWordVectorOfSentence(aVal);
-        Iterator items = vec.iterator();
+        Vector<String> vec = StringUtils.makeWordVectorOfSentence(aVal);
+        Iterator<String> items = vec.iterator();
         if (items.hasNext()) {
             // First item in the vector is the synonym text
             String synonym= items.next().toString();

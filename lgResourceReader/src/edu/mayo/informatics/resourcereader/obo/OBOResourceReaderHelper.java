@@ -484,12 +484,10 @@ public class OBOResourceReaderHelper extends OBO {
 
                                 if (!StringUtils.isNull(aVal)) {
                                     String prefix = null;
-                                    String id = aVal;
-
+                                    
                                     if (aVal.indexOf(":") != -1) {
                                         String[] tokens = aVal.split(":");
-                                        prefix = tokens[0];
-                                        id = tokens[1];
+                                        prefix = tokens[0];                                       
                                     }
 
                                     if (OBOConstants.TERM_CTX == ctx) {
@@ -625,7 +623,7 @@ public class OBOResourceReaderHelper extends OBO {
                                 }
                             } else if (line.startsWith(OBOConstants.TAG_DEF)) {
                                 currentTag = OBOConstants.TAG_DEF;
-                                ArrayList def = parseLineWithXRefs(line);
+                                ArrayList<String> def = parseLineWithXRefs(line);
 
                                 String definition = null;
                                 String definitionSource = null;
