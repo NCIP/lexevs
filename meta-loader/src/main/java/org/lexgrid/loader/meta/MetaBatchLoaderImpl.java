@@ -37,7 +37,6 @@ import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.lexgrid.loader.staging.StagingManager;
 import org.springframework.context.ApplicationContext;
 
-import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -46,7 +45,9 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements MetaBatchLoader {
-	
+
+	private static final long serialVersionUID = 1679334464081067538L;
+
 	/** The connection properties factory. */
 	private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLexEVSPropertiesFactory();
 
@@ -102,7 +103,7 @@ public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements Me
 	public static void main(String[] args) throws Exception { 
 		 MetaBatchLoader mbl = (MetaBatchLoader) LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(
 					"MetaBatchLoader");
-		 mbl.loadMeta(new File("src/test/resources/data/SAMPLEMETA").toURI());
+		 mbl.loadMeta(new File("../lbTest/resources/testData/SAMPLEMETA").toURI());
 	 }
 
 	  @Override
