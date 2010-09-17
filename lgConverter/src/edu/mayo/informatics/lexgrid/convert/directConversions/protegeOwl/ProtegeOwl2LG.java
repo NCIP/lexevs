@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
@@ -64,6 +65,10 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
+import org.LexGrid.versions.ChangedEntry;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.Revision;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -2949,15 +2954,27 @@ public class ProtegeOwl2LG {
                     .getCodingSchemeService();
             lgScheme_.setApproxNumConcepts(new Long(conceptCount_));
             
+            String revisionId = UUID.randomUUID().toString();
+            
             CodingScheme csToUpdate = DaoUtility.deepClone(lgScheme_);
             csToUpdate.setEntities(new Entities());
             csToUpdate.setProperties(new Properties());
             csToUpdate.setRelations(new ArrayList<Relations>());
+            EntryState es = new EntryState();
+            es.setChangeType(ChangeType.MODIFY);
+            es.setContainingRevision(revisionId);
+            csToUpdate.setEntryState(es);
             
+            Revision revision = new Revision();
+            revision.setRevisionId(revisionId);
+            ChangedEntry ce = new ChangedEntry();
+            ce.setChangedCodingSchemeEntry(csToUpdate);
+            revision.addChangedEntry(ce);
+ 
             try {
-                service.updateCodingScheme(lgScheme_);
+                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService().loadRevision(revision, null, false);
             } catch (Exception e) {
-                this.messages_.warn("Failed to update the Approximate Number of Concepts.");
+                this.messages_.warn("Failed to update the Approximate Number of Concepts.", e);
             }
         }
     }
