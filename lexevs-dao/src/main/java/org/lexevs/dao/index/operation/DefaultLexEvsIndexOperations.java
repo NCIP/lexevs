@@ -84,10 +84,15 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
 				TermEnum termEnum = indexReader.terms(term);
 				
-				while(termEnum.next() && termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
+				boolean hasNext = true;
+				while(hasNext && 
+						termEnum.term() != null && 
+						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
 					String key = termEnum.term().text();
 					System.out.println("Found: " + key);
 					indexSet.add(key);
+					
+					hasNext = termEnum.next();
 				}
 				
 				Set<String> foundIndexSet = new HashSet<String>(indexSet);

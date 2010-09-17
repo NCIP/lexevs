@@ -696,6 +696,7 @@
 		<property name="myClassLoader" ref="myClassLoader"/>
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
 		<property name="entityIndexService" ref="luceneEntityIndexService"/>
+		<property name="metadataIndexService" ref="luceneMetadataIndexService"/>
 	</bean>
 	
 	<bean id="lexEvsSchemaInstallationSetup" class="org.lexevs.registry.setup.LexEvsSchemaInstallationSetup"

@@ -48,7 +48,7 @@ public class LuceneMetadataDao implements MetadataDao {
         	   });
 
 			   boolean hasNext = true;
-			   while (hasNext && te.term().field().equals("codingSchemeNameVersion")) {
+			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
 			       Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
 
 			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);

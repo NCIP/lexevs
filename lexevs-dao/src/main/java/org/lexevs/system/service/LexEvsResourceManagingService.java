@@ -36,6 +36,7 @@ import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.scheme.PersistenceScheme;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.dao.index.service.metadata.MetadataIndexService;
 import org.lexevs.exceptions.CodingSchemeParameterException;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -71,6 +72,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	
 	/** The entity index service. */
 	private EntityIndexService entityIndexService;
+	
+	private MetadataIndexService metadataIndexService;
 	
 	/** The my class loader. */
 	private MyClassLoader myClassLoader;
@@ -185,6 +188,12 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			entityIndexService.dropIndex(ref);
 		} catch (Exception e) {
 			this.getLogger().warn("Index could not be dropped.");
+		}
+		
+		try {
+			metadataIndexService.removeMetadata(uri, version);
+		} catch (Exception e) {
+			this.getLogger().warn("No Coding Scheme Metadata to drop.");
 		}
 		this.readCodingSchemeAliasesFromServer();
 	}
@@ -749,6 +758,13 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 
 	public PersistenceScheme getPersistenceScheme() {
 		return persistenceScheme;
+	}
+	public void setMetadataIndexService(MetadataIndexService metadataIndexService) {
+		this.metadataIndexService = metadataIndexService;
+	}
+
+	public MetadataIndexService getMetadataIndexService() {
+		return metadataIndexService;
 	}
 	/**
 	 * The Class CodingSchemeAliasHolder.
