@@ -150,8 +150,6 @@ public class CodeSystemQueryOperationImplTest {
 							new Boolean[] { new Boolean(true) }));
 			while(conceptIterator.hasNext()) {
 				ResolvedConceptReference conRef = conceptIterator.next();
-				System.out.println(conRef.getCode());
-				
 			}
 		} catch (LBParameterException e) {
 			// TODO Auto-generated catch block

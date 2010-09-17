@@ -9,6 +9,7 @@ import org.lexevs.cts2.admin.load.CodeSystemLoadOperationTest;
 import org.lexevs.cts2.admin.load.ValueSetLoadOperationImplTest;
 import org.lexevs.cts2.author.CodeSystemAuthoringOperationImplTest;
 import org.lexevs.cts2.author.ConceptDomainAuthoringOperationImplTest;
+import org.lexevs.cts2.author.UsageContextAuthoringOperationImplTest;
 import org.lexevs.cts2.author.ValueSetAuthoringOperationImplTest;
 import org.lexevs.cts2.author.association.TestAssocAuthoringAll;
 import org.lexevs.cts2.query.AssociationQueryOperationImplTest;
@@ -29,9 +30,11 @@ import org.lexevs.cts2.query.ValueSetQueryOperationImplTest;
 	ValueSetQueryOperationImplTest.class,
 	// authoring operations
 	CodeSystemAuthoringOperationImplTest.class,
-	ConceptDomainAuthoringOperationImplTest.class,
 	TestAssocAuthoringAll.class,
-	ValueSetAuthoringOperationImplTest.class
+	ValueSetAuthoringOperationImplTest.class,
+	
+	ConceptDomainAuthoringOperationImplTest.class, //load, authoring and query
+	UsageContextAuthoringOperationImplTest.class //load, authoring and query	
 	})
 public class Cts2IntegrationTestRunner {
 	
