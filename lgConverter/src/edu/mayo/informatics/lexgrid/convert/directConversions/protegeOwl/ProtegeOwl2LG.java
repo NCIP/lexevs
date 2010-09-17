@@ -45,6 +45,7 @@ import org.LexGrid.LexOnt.CsmfMappings;
 import org.LexGrid.LexOnt.CsmfVersion;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.commonTypes.types.PropertyTypes;
@@ -65,10 +66,10 @@ import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
+import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
@@ -2940,35 +2941,23 @@ public class ProtegeOwl2LG {
         }
     }
 
-    protected void updateApproximateConceptNumber() {
+     protected void updateApproximateConceptNumber() {
         if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.setApproxNumConcepts(new Long(lgScheme_.getEntities().getEntity().length));
         } else {
-            DaoCallbackService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
-                    .getDaoCallbackService();
+            CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                    .getCodingSchemeService();
             lgScheme_.setApproxNumConcepts(new Long(conceptCount_));
             
-            final CodingScheme csToUpdate = new CodingScheme();
-            csToUpdate.setCodingSchemeURI(lgScheme_.getCodingSchemeURI());
-            csToUpdate.setRepresentsVersion(lgScheme_.getRepresentsVersion());
-            csToUpdate.setApproxNumConcepts(new Long(conceptCount_));
+            CodingScheme csToUpdate = DaoUtility.deepClone(lgScheme_);
+            csToUpdate.setEntities(new Entities());
+            csToUpdate.setProperties(new Properties());
+            csToUpdate.setRelations(new ArrayList<Relations>());
             
             try {
-                service.executeInDaoLayer(new DaoCallback<Void>() {
-
-                    @Override
-                    public Void execute(DaoManager daoManager) {
-                        CodingSchemeDao dao = 
-                            daoManager.getCodingSchemeDao(csToUpdate.getCodingSchemeURI(), csToUpdate.getRepresentsVersion());
-                        String csUid = dao.getCodingSchemeUIdByUriAndVersion(csToUpdate.getCodingSchemeURI(), csToUpdate.getRepresentsVersion());
-
-                        dao.updateCodingScheme(csUid, csToUpdate);
-                        return null;
-                    }
-                });
+                service.updateCodingScheme(lgScheme_);
             } catch (Exception e) {
                 this.messages_.warn("Failed to update the Approximate Number of Concepts.");
-                e.printStackTrace();
             }
         }
     }
