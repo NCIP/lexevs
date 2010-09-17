@@ -7,4 +7,4 @@ Then choose the 1.0.0rc4 folder.
 
 This will create a 'gui' subfolder in your LexBIG / LexBIO installation.
 
-You will get a warning about installing into a location that already exists - this is expected.
+You will get a warning about installing into a location that already exists - this is expected. 
