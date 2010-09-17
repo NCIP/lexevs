@@ -211,7 +211,7 @@ public class OBO2LGDynamicMapHolders {
                 if (!OBO2LGUtils.isNull(oboTerm.getComment())) {
                     Comment comment = new Comment();
                     txt = new Text();
-                    txt.setContent((String) OBO2LGUtils.removeInvalidXMLCharacters(oboTerm.getComment(), null));
+                    txt.setContent(OBO2LGUtils.removeInvalidXMLCharacters(oboTerm.getComment(), null));
                     comment.setValue(txt);
                     comment.setPropertyName(OBO2LGConstants.PROPERTY_COMMENT);
                     comment.setPropertyId(OBO2LGConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -221,7 +221,7 @@ public class OBO2LGDynamicMapHolders {
                 if (!OBO2LGUtils.isNull(oboTerm.getDefinition())) {
                     Definition defn = new Definition();
                     txt = new Text();
-                    txt.setContent((String) OBO2LGUtils.removeInvalidXMLCharacters(oboTerm.getDefinition(), null));
+                    txt.setContent(OBO2LGUtils.removeInvalidXMLCharacters(oboTerm.getDefinition(), null));
                     defn.setValue(txt);
                     defn.setPropertyName(OBO2LGConstants.PROPERTY_DEFINITION);
                     defn.setPropertyId(OBO2LGConstants.PROPERTY_ID_PREFIX + (++propertyCounter));
@@ -242,7 +242,7 @@ public class OBO2LGDynamicMapHolders {
                     for (OBOSynonym synonym : synonyms) {
                         Presentation ip = new Presentation();
                         txt = new Text();
-                        txt.setContent((String) synonym.getText());
+                        txt.setContent(synonym.getText());
                         ip.setValue(txt);
                         ip.setPropertyName(OBO2LGConstants.PROPERTY_SYNONYM);
                         String synPresID = OBO2LGConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
@@ -321,8 +321,8 @@ public class OBO2LGDynamicMapHolders {
     private void addOBODbxrefAsSource(Property prop, Vector<OBODbxref> srcVector, OBOAbbreviations abbreviations) {
         if ((srcVector != null) && (srcVector.size() > 0)) {
             for (int i = 0; i < srcVector.size(); i++) {
-                OBODbxref dbxref = (OBODbxref) srcVector.elementAt(i);
-                String src = (String) dbxref.getSource();
+                OBODbxref dbxref = srcVector.elementAt(i);
+                String src = dbxref.getSource();
                 OBOAbbreviation abb = null;
                 if (!OBO2LGUtils.isNull(src)) {
                     String srcVal = src;
@@ -384,7 +384,7 @@ public class OBO2LGDynamicMapHolders {
                         propertyID = OBO2LGConstants.PROPERTY_ID_PREFIX + (++propertyCounter);
                         pc.setPropertyId(propertyID);
                         Text txt = new Text();
-                        txt.setContent((String) value);
+                        txt.setContent(value);
                         pc.setValue(txt);
                         concept.getPropertyAsReference().add(pc);
                     }
@@ -703,7 +703,7 @@ public class OBO2LGDynamicMapHolders {
                     String prp = kI.next();
 
                     if (!OBO2LGUtils.isNull(prp)) {
-                        prpCode = (String) properties_.get(prp);
+                        prpCode = properties_.get(prp);
 
                         SupportedProperty suppProp = new SupportedProperty();
 
@@ -766,7 +766,7 @@ public class OBO2LGDynamicMapHolders {
             }
 
             for (Enumeration<String> e = supportedAssociationHashtable.keys(); e.hasMoreElements();) {
-                String prpCode = (String) e.nextElement();
+                String prpCode = e.nextElement();
 
                 if (prpCode.equals(OBO2LGConstants.ASSOCIATION_DEVELOPS_FROM))
                     hier.getAssociationNamesAsReference().add(OBO2LGConstants.ASSOCIATION_DEVELOPS_FROM);
@@ -832,7 +832,7 @@ public class OBO2LGDynamicMapHolders {
                     String prp = kI.next();
 
                     if (!OBO2LGUtils.isNull(prp)) {
-                        prpCode = (String) sources_.get(prp);
+                        prpCode = sources_.get(prp);
 
                         SupportedSource suppCSs = new SupportedSource();
 
