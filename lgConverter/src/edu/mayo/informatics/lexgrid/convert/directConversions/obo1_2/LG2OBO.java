@@ -35,16 +35,13 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.custom.concepts.EntitiesUtil;
-import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedAssociation;
-import org.LexGrid.naming.SupportedAssociationQualifier;
+import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.custom.relations.RelationsUtil;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.logging.LoggerFactory;
 

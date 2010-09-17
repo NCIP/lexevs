@@ -115,7 +115,6 @@ public class OBO2LGDynamicMapHolders {
             sources_ = OBO2LGStaticMapHolders.getFixedSources();
             supportedAssociationHashtable = OBO2LGStaticMapHolders.getFixedAssociations();
             OBOContents contents = oboReader.getContents(false, false);
-            OBORelations relations = contents.getOBORelations();
 
             allConcepts_ = csclass.getEntities();
 
@@ -411,10 +410,11 @@ public class OBO2LGDynamicMapHolders {
             String anon_concept_label= createAnonymousConceptLabel(relation_name,  targets);
             Entity anon_eq = createAnonymousConcept(anon_concept_label);
             addAssociation(concept, "equivalentClass", null, null, null, anon_eq);
-
-            for (String target: targets) {
-              processAnonListTarget(anon_eq, target);
-            }
+//   Removing this as this causes problems with how the anonymous concepts show up in
+//   the GUI. We create a lot of anonymous concepts with limited value         
+//            for (String target: targets) {
+//              processAnonListTarget(anon_eq, target);
+//            }
 
         }
         return processed;
