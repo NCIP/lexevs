@@ -50,8 +50,6 @@ public class ConceptDomainAuthoringOperationImplTest extends TestCase{
 	private static List<String> revIds_ = new ArrayList<String>();
 	private static LexEVSValueSetDefinitionServices vds_ = null;
 	
-//	@BeforeClass
-//	public static void runBeforeClass(){
 	@Test
 	public void testSetUp() throws Exception {
 		super.setUp();
@@ -66,43 +64,7 @@ public class ConceptDomainAuthoringOperationImplTest extends TestCase{
 			e.printStackTrace();
 		}
 		
-//		createConceptDomainCodeSystem();
-//		createConceptDomainFromFile();
 	}
-	
-//	@AfterClass
-//	public static void runAfterClass() throws LBException, URISyntaxException{
-//	protected void tearDown() throws Exception {
-//		super.tearDown();
-//		CD_AUTH_OP = null;
-//		CD_QUERY_OP = null;
-//		
-//		List<String> uris = vds_.listValueSetDefinitions(null);
-//		assertTrue(uris.size() > 0);
-//		
-//		for (String uri : uris)
-//		{
-//			if (uri.startsWith("SRITEST:"))
-//				vds_.removeValueSetDefinition(new URI(uri));
-//		}
-//		
-//		// check if we missed any test valueDomains
-//		uris = vds_.listValueSetDefinitions(null);
-//		
-//		for (String uri : uris)
-//		{
-//			if (uri.toString().startsWith("SRITEST:"))
-//				assertTrue("Not all test value domains were deleted.",false);
-//		}
-//		
-//		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-//		for (String revId : revIds_)
-//		{
-//			assertTrue(authServ.removeRevisionRecordbyId(revId));
-//		}
-//		
-//		vds_ = null;
-//	}
 	
 	@Test
 	public void testCreateConceptDomainCodeSystem() throws LBException {
