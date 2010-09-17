@@ -97,8 +97,7 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
 
 		// load code system meta data if provided
 		if (metadata != null)
-		{
-			
+		{			
 			loadCSMetaData(codeSystem.getCodingSchemeURI(), codeSystem.getRepresentsVersion(), metadata, overwriteMetadata, stopOnErrors, async);
 		}
 		
@@ -246,6 +245,12 @@ public class CodeSystemLoadOperationImpl extends AuthoringCore implements CodeSy
             AbsoluteCodingSchemeVersionReference ref = refs[i];
             MetaData_Loader metaLoader = (MetaData_Loader) getLexBIGServiceManager().getLoader("MetaDataLoader");
             metaLoader.loadAuxiliaryData(metadata, ref, overwriteMetadata, stopOnErrors, async);
+            while (metaLoader.getStatus().getEndTime() == null) {
+    			try {
+    				Thread.sleep(1000);
+    			} catch (InterruptedException e) {				
+    			}
+    		}
 		}
 	}
 	
