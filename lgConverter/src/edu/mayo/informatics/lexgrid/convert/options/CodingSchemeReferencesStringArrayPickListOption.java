@@ -49,10 +49,16 @@ public class CodingSchemeReferencesStringArrayPickListOption extends StringOptio
         List<String> returnList = new ArrayList<String>();
         for(CodingSchemeRendering csr : schemes.getCodingSchemeRendering()) {
             returnList.add(
-                    csr.getCodingSchemeSummary().getCodingSchemeURI() + " - " + csr.getCodingSchemeSummary().getRepresentsVersion());
+                    buildOptionValue(
+                            csr.getCodingSchemeSummary().getCodingSchemeURI(),
+                            csr.getCodingSchemeSummary().getRepresentsVersion()));
         }
         
         return returnList;
+    }
+    
+    public static String buildOptionValue(String uri, String version){  
+        return uri + " - " + version;
     }
     
     public static AbsoluteCodingSchemeVersionReference getAbsoluteCodingSchemeVersionReference(String value, CodingSchemeRenderingList schemes) throws LBParameterException{
