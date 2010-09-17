@@ -14,6 +14,7 @@ public class TestAssocAuthoringAll {
 			suite.addTestSuite(TestCTS2AssociationAuthoring.class);
 			suite.addTestSuite(TestRemoveAutoTerms.class);
 			suite.addTestSuite(TestRemoveCreatedMapping.class);
+			suite.addTestSuite(TestRemoveRevisions.class);
 			//$JUnit-END$
 			return suite;
 		}

@@ -33,7 +33,8 @@ public class TestRemoveCreatedMapping extends TestCase {
 		
 		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
 
-		
+		//AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+		//assertTrue(authServ.removeRevisionRecordbyId("NEW_MAPPING"));
 	}	
 
 }

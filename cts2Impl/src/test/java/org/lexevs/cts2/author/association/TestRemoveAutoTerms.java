@@ -32,11 +32,11 @@ public class TestRemoveAutoTerms extends TestCase {
 		
 		lbs.getServiceManager(null).removeCodingSchemeVersion(ref);
 		
-		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-		assertTrue(authServ.removeRevisionRecordbyId("NEW_MAPPING"));
-		assertTrue(authServ.removeRevisionRecordbyId("TestNewForExistingCTSMapping"));
-		assertTrue(authServ.removeRevisionRecordbyId("TestModifyForUpdatePredicate"));
-		assertTrue(authServ.removeRevisionRecordbyId("TestNewForExistingScheme"));
+//		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
+//		assertTrue(authServ.removeRevisionRecordbyId("NEW_MAPPING"));
+//		assertTrue(authServ.removeRevisionRecordbyId("TestNewForExistingCTSMapping"));
+//		assertTrue(authServ.removeRevisionRecordbyId("TestModifyForUpdatePredicate"));
+//		assertTrue(authServ.removeRevisionRecordbyId("TestNewForExistingScheme"));
 		
 	}
 
