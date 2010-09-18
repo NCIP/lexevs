@@ -265,7 +265,7 @@ public abstract class LuceneLoaderCode {
         generator_.addTextField(propertyFieldName, propertyName, store(), true, false);
         fields.append(propertyFieldName + " ");
 
-        if (propertyValue != null && propertyValue.length() > 0) {
+        if (StringUtils.isNotBlank(propertyValue)) {
             generator_.addTextField(PROPERTY_VALUE_FIELD, propertyValue, store(), true, true);
             fields.append(PROPERTY_VALUE_FIELD + " ");
             
