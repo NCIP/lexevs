@@ -62,7 +62,7 @@ public class DefaultCodeHolder implements AdditiveCodeHolder, Serializable {
 
     @LgClientSideSafe
     public void remove(CodeToReturn code) {
-        codes_.remove(code);
+        while(codes_.remove(code));
     }
 
     @LgClientSideSafe
