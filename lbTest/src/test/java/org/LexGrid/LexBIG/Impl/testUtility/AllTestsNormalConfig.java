@@ -179,9 +179,9 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
         mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
         mainSuite.addTestSuite(CodedNodeSetImplTest.class);
+        mainSuite.addTestSuite(TestMetaDataSearch.class);
         mainSuite.addTestSuite(ServiceManagerTest.class);
         mainSuite.addTestSuite(RegistryTest.class);
-        mainSuite.addTestSuite(TestMetaDataSearch.class);
         mainSuite.addTestSuite(TestNCIThesMetadata.class);
         mainSuite.addTestSuite(ResourceManagerTest.class); 
         mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
