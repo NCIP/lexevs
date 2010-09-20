@@ -58,7 +58,7 @@ public class DefaultLexEVSPropertiesFactory extends PropertiesFactory implements
 				prefix = registry.getCodingSchemeEntry(DaoUtility.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version)).getStagingPrefix();
 			
 			if(StringUtils.isBlank(prefix)) {
-				throw new LBParameterException("URI: " + codingSchemeUri + "Version:" + version + " does not have any Batch loaded artifacts to remove.");
+				throw new LBParameterException("URI: " + codingSchemeUri + " Version: " + version + " does not have any Batch loaded artifacts to remove.");
 			}
 			return getProperties(prefix);
 	
