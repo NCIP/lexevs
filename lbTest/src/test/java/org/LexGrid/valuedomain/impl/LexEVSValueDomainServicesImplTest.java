@@ -494,7 +494,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	@Test
 	public void testGetValueSetURIsForSupportedTagAndValue(){
-		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos", null);
+		List<String> uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("ConceptDomain", "Autos", null);
 		
 		assertTrue("vsdURIs.size() : " + uris.size(), uris.size() >= 3);
 	
@@ -505,7 +505,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 					uri.equalsIgnoreCase("SRITEST:AUTO:EveryThing"));
 		}
 		
-		uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("conceptDomain", "Autos1231231", null);
+		uris = getValueSetDefinitionService().getValueSetDefinitionURIsForSupportedTagAndValue("ConceptDomain", "Autos1231231", null);
 		assertTrue(uris.size() == 0);
 	}
 	
