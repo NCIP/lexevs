@@ -6,6 +6,7 @@ import org.LexGrid.relations.AssociationSource;
 public interface AssociationSourceCache {
     
     void add(AssociationSource associationSource);
+    void add(ResolvedConceptReference associationSource);
     boolean exists(ResolvedConceptReference rcr);
     void clear();
     public void dumpCacheContentsToStdOut();
