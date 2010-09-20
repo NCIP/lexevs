@@ -1086,7 +1086,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return (List<SupportedProperty>) this.getSqlMapClientTemplate().queryForList(	
 				GET_PROPERTY_URIMAP_FOR_PROPERTYTYPE_SQL, 
-				new PrefixedParameterTriple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, propertyType.toString()));
+				new PrefixedParameterTriple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, propertyType.name()));
 	}
 
 	@Override
