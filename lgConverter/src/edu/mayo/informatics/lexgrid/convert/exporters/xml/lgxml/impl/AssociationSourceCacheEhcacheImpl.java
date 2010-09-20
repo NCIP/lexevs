@@ -61,6 +61,13 @@ public class AssociationSourceCacheEhcacheImpl implements AssociationSourceCache
         return key;
     }
     
+    public void add(ResolvedConceptReference conRef) {
+        String key = this.makeKey(conRef);
+        
+        // note, we don't really care about the values in the cache, just the keys.
+        Element element = new Element(key, "<blank>");
+        this.theCache.put(element);
+    }
     
     @Override
     public void add(AssociationSource associationSource) {
