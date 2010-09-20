@@ -5,6 +5,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 
@@ -94,7 +95,7 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
     public boolean hasNext() throws LBResourceUnavailableException {
         boolean delegateHasNext;
         try {
-            delegateHasNext = !delegate.hasNext();
+            delegateHasNext = delegate.hasNext();
         } catch (LBResourceUnavailableException e) {
             delegateHasNext = false;
         }
@@ -119,7 +120,21 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
         ResolvedConceptReference returnRef = new ResolvedConceptReference();
         returnRef.setCode(codeToReturn.getCode());
         returnRef.setCodeNamespace(codeToReturn.getNamespace());
+        returnRef.setCodingSchemeURI(codeToReturn.getUri());
+        returnRef.setCodingSchemeVersion(codeToReturn.getVersion());
+        
+        String codingSchemeName = null;
+        try {
+            codingSchemeName = ServiceUtility.getCodingSchemeName(
+                    codeToReturn.getUri(), 
+                    codeToReturn.getVersion());
+        } catch (LBParameterException e) {
+            //no-op -- don't assing coding scheme name
+            //if we can't find it anywhere.
+        }
+        
+        returnRef.setCodingSchemeName(codingSchemeName);
+        
         return returnRef;
     }
-
 }
