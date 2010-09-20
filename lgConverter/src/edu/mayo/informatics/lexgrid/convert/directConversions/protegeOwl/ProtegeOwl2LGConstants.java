@@ -57,11 +57,9 @@ public class ProtegeOwl2LGConstants {
 
     /* Property names */
     public static final String PROPNAME_ANNOTATIONPROPERTY = "isAnnotationProperty";
-    public static final String PROPNAME_DATATYPEPROPERTY = "isDatatypeProperty";
     public static final String PROPNAME_ENUMERATION = "isEnumeration";
     public static final String PROPNAME_INTERSECTION = "isIntersection";
     public static final String PROPNAME_PRIMITIVE = "primitive";
-    public static final String PROPNAME_OBJECTPROPERTY = "isObjectProperty";
     public static final String PROPNAME_RDF_ID = RDFNames.RDF_PREFIX +':'+"id";
     public static final String PROPNAME_RDFS_LABEL = RDFSNames.RDFS_PREFIX +':'+"label";
     public static final String PROPNAME_TYPE = "type";

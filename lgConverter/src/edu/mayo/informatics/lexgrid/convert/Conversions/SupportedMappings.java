@@ -24,6 +24,7 @@ import java.util.TreeMap;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
@@ -47,6 +48,7 @@ import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.SupportedSourceRole;
 import org.LexGrid.naming.SupportedStatus;
 import org.LexGrid.naming.URIMap;
+import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 
 
 /**
@@ -450,13 +452,14 @@ public class SupportedMappings {
      * the existing item is replaced if overwrite is specified.
      * @return The item registered for the given local id.
      */
-    public SupportedProperty registerSupportedProperty(String localId, String uri, String value, boolean overwrite) {
+    public SupportedProperty registerSupportedProperty(String localId, String uri, String value, PropertyTypes propertyType, boolean overwrite) {
         Map<String, SupportedProperty> registry = getSupportedProperties();
         String key = localId.toLowerCase();
         SupportedProperty emfObj = registry.get(key);
         if (emfObj == null || overwrite) {
             emfObj = new SupportedProperty();
             setBaseAttributes(emfObj, localId, uri, value);
+            emfObj.setPropertyType(propertyType);
             registry.put(key, emfObj);
         }
         return emfObj;

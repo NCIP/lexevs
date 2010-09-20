@@ -24,6 +24,7 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
@@ -80,43 +81,45 @@ public class CreateUtils {
         return lgTgt;
     }
 
-    public static Comment createComment(String propID, String propName, String text, SupportedMappings lgSupportedMappings_) {
+    public static Comment createComment(String propID, String propName, String text, SupportedMappings lgSupportedMappings_, String propURI) {
         Comment lgComment = new Comment();
         lgComment.setPropertyId(propID);
         lgComment.setPropertyName(propName);
         lgComment.setValue(createText(text));
-        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        lgSupportedMappings_.registerSupportedProperty(propName, propURI, propName, PropertyTypes.COMMENT, false);
         return lgComment;
     }
 
-    public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, SupportedMappings lgSupportedMappings_) {
+    public static Definition createDefinition(String propID, String propName, String text, Boolean isPreferred, SupportedMappings lgSupportedMappings_, String propURI) {
         Definition lgDefn = new Definition();
         lgDefn.setPropertyId(propID);
         lgDefn.setPropertyName(propName);
         lgDefn.setValue(createText(text));
         if (isPreferred != null)
             lgDefn.setIsPreferred(isPreferred);
-        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        lgSupportedMappings_.registerSupportedProperty(propName, propURI, propName, PropertyTypes.DEFINITION, false);
         return lgDefn;
     }
 
-    public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, SupportedMappings lgSupportedMappings_) {
+    public static Presentation createPresentation(String propID, String propName, String text, Boolean isPreferred, SupportedMappings lgSupportedMappings_, String propURI) {
+        
         Presentation lgPres = new Presentation();
         lgPres.setPropertyId(propID);
         lgPres.setPropertyName(propName);
         lgPres.setValue(createText(text));
         if (isPreferred != null)
             lgPres.setIsPreferred(isPreferred);
-        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        lgSupportedMappings_.registerSupportedProperty(propName, propURI, propName, PropertyTypes.PRESENTATION, false);
         return lgPres;
     }
 
-    public static Property createProperty(String propID, String propName, String text, SupportedMappings lgSupportedMappings_) {
+    public static Property createProperty(String propID, String propName, String text, SupportedMappings lgSupportedMappings_, String propURI) {
+        
         Property lgProp = new Property();
         lgProp.setPropertyName(propName);
         lgProp.setPropertyId(propID);
         lgProp.setValue(createText(text));
-        lgSupportedMappings_.registerSupportedProperty(propName, null, propName, false);
+        lgSupportedMappings_.registerSupportedProperty(propName, propURI, propName, PropertyTypes.PROPERTY, false);
         return lgProp;
     }
 

@@ -1043,6 +1043,10 @@ public class ProtegeOwl2LG {
                 // not match a defined association ...
                 String relationName = getRDFResourceLocalName(rdfProp);
                 AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
+                
+                if( lgAssoc == null )
+                    return;
+                
                 // Determine the targets ...
                 Collection propVals = rdfResource.getPropertyValues(rdfProp);
                 if (propVals != null) {
@@ -1173,11 +1177,11 @@ public class ProtegeOwl2LG {
         Collection values = rdfResource.getPropertyValues(rdfResource.getOWLModel().getOWLEquivalentClassProperty());
         if (values == null || values.isEmpty()) {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "true", lgSupportedMappings_);
+                    .getPropertyName_primitive(), "true", lgSupportedMappings_, null);
             sortedProps.add(lgProp);
         } else {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "false", lgSupportedMappings_);
+                    .getPropertyName_primitive(), "false", lgSupportedMappings_, null);
             sortedProps.add(lgProp);
         }
 
@@ -1193,7 +1197,7 @@ public class ProtegeOwl2LG {
             String entityDesc = lgEntity.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_));
+                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1253,7 +1257,7 @@ public class ProtegeOwl2LG {
                     if (range != null) {
                         String propertyRangeName = getRDFResourceLocalName(range);
                         Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), propertyName,
-                                propertyRangeName, lgSupportedMappings_);
+                                propertyRangeName, lgSupportedMappings_, prop.getURI());
                         sortedProps.add(lgProp);
                     }
                 }
@@ -1273,7 +1277,8 @@ public class ProtegeOwl2LG {
      */
     protected Entity resolveIndividual(RDFResource rdfResource) {
         String rdfName = getRDFResourceLocalName(rdfResource);
-
+        messages_.info("indivisual = " + rdfName);
+        
         if (isNoopNamespace(rdfName))
             return null;
 
@@ -1341,7 +1346,7 @@ public class ProtegeOwl2LG {
 
                 // Add this information as an instanceProperty.
                 Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), "isInstanceOf", className,
-                        lgSupportedMappings_);
+                        lgSupportedMappings_, null);
                 sortedProps.add(lgProp);
 
                 break;
@@ -1402,11 +1407,11 @@ public class ProtegeOwl2LG {
         Collection values = rdfResource.getPropertyValues(rdfResource.getOWLModel().getOWLEquivalentClassProperty());
         if (values == null || values.isEmpty()) {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "true", lgSupportedMappings_);
+                    .getPropertyName_primitive(), "true", lgSupportedMappings_, null);
             sortedProps.add(lgProp);
         } else {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "false", lgSupportedMappings_);
+                    .getPropertyName_primitive(), "false", lgSupportedMappings_, null);
             sortedProps.add(lgProp);
         }
 
@@ -1422,7 +1427,7 @@ public class ProtegeOwl2LG {
             String entityDesc = lgInstance.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_));
+                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1519,13 +1524,13 @@ public class ProtegeOwl2LG {
         Property lgProp;
         String propName = prop.getName();
         if (RDFSNames.Slot.LABEL.equals(propName) || lgClass == PropertyTypes.PRESENTATION.toString())
-            lgProp = CreateUtils.createPresentation(lgID, lgLabel, rdfText, null, lgSupportedMappings_);
+            lgProp = CreateUtils.createPresentation(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI());
         else if (RDFSNames.Slot.COMMENT.equals(propName) || lgClass == PropertyTypes.COMMENT.toString())
-            lgProp = CreateUtils.createComment(lgID, lgLabel, rdfText, lgSupportedMappings_);
+            lgProp = CreateUtils.createComment(lgID, lgLabel, rdfText, lgSupportedMappings_, prop.getURI());
         else if (lgClass == PropertyTypes.DEFINITION.toString())
-            lgProp = CreateUtils.createDefinition(lgID, lgLabel, rdfText, null, lgSupportedMappings_);
+            lgProp = CreateUtils.createDefinition(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI());
         else {
-            lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_);
+            lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_, prop.getURI());
             if (prop.getLabels().isEmpty() == false) {
                 for(Iterator in = prop.getLabels().iterator(); in.hasNext();) {
                     Object obj = in.next();
@@ -1665,7 +1670,7 @@ public class ProtegeOwl2LG {
             // Add the type prop ...
             RDFProperty opProp = logicalClass.getOperandsProperty();
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
-                    .getPropertyName_type(), opProp.getLocalName(), lgSupportedMappings_);
+                    .getPropertyName_type(), opProp.getLocalName(), lgSupportedMappings_, null);
             lgClass.addProperty(lgProp);
 
             // Evaluate the operands defined for the anonymous node to determine
@@ -1720,14 +1725,14 @@ public class ProtegeOwl2LG {
 
         if (owlClass instanceof OWLEnumeratedClass) {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
-                    .getPropertyName_type(), "owl:oneOf", lgSupportedMappings_);
+                    .getPropertyName_type(), "owl:oneOf", lgSupportedMappings_, null);
             lgClass.addProperty(lgProp);
         }
 
         if (owlClass instanceof OWLRestriction) {
             OWLRestriction restriction = (OWLRestriction) owlClass;
             Property lgProperty = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
-                    .getPropertyName_type(), "owl:Restriction", lgSupportedMappings_);
+                    .getPropertyName_type(), "owl:Restriction", lgSupportedMappings_, null);
             lgClass.addProperty(lgProperty);
             processRestriction(restriction, assocSource, source);
         }
@@ -1747,7 +1752,7 @@ public class ProtegeOwl2LG {
         // Note: text was derived from the browser text. Since it is unclear
         // what property it was derived from, we document as 'label'.
         Presentation pres = CreateUtils.createPresentation(generatePropertyID(++lgPropNum), "label", lgClass
-                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_);
+                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_, null);
         lgClass.addPresentation(pres);
         // Add to the concept container or write to db...
         addEntity(lgClass);
@@ -2256,15 +2261,6 @@ public class ProtegeOwl2LG {
                     lgSupportedMappings_.registerSupportedAssociation(propertyName, prop.getNamespace() + propertyName,
                             propertyName, propertyName, nameSpace, true);
 
-                    // Add the information that this is an datatype
-                    // association, and not an objectType property.
-                    Property assocDataProp = CreateUtils.createProperty(generatePropertyID(++dataTypePropertyCounter),
-                            ProtegeOwl2LGConstants.PROPNAME_DATATYPEPROPERTY, "true", lgSupportedMappings_);
-                    aw.addProperty(assocDataProp);
-                    Property assocObjectProp = CreateUtils.createProperty(
-                            generatePropertyID(++dataTypePropertyCounter),
-                            ProtegeOwl2LGConstants.PROPNAME_OBJECTPROPERTY, "false", lgSupportedMappings_);
-                    aw.addProperty(assocObjectProp);
                     resolveAssociationProperty(aw.getAssociationEntity(), prop);
                 }
 
@@ -2286,23 +2282,23 @@ public class ProtegeOwl2LG {
          * later based on rule-based approach. Refer to email thread with Tom,
          * Deepak and Pradip on 05/01/2008.
          */
-        String lgClass = null;
+        PropertyTypes lgClass = null;
         if (prefManager.getPrioritized_presentation_names().contains(label))
-            lgClass = PropertyTypes.PRESENTATION.value();
+            lgClass = PropertyTypes.PRESENTATION;
         else if (prefManager.getPrioritized_definition_names().contains(label))
-            lgClass = PropertyTypes.DEFINITION.value();
+            lgClass = PropertyTypes.DEFINITION;
         else if (prefManager.getPrioritized_comment_names().contains(label))
-            lgClass = PropertyTypes.COMMENT.value();
+            lgClass = PropertyTypes.COMMENT;
         else
-            lgClass = PropertyTypes.PROPERTY.value();
+            lgClass = PropertyTypes.PROPERTY;
 
         // Register in supported properties
         lgSupportedMappings_.registerSupportedProperty(propertyName, rdfProp.getNamespace() + propertyName,
-                propertyName, false);
+                propertyName, lgClass, false);
 
         // Register the ID to EMF class mapping; default to
         // generic property class if not mapped above.
-        owlDatatypeName2lgPropClass_.put(propertyName, lgClass);
+        owlDatatypeName2lgPropClass_.put(propertyName, lgClass.value());
     }
 
     protected void initAssociationEntities() {
@@ -2411,14 +2407,6 @@ public class ProtegeOwl2LG {
             // prop.getNamespace() + propertyName,
             // propertyName, false);
 
-            // Add the information that this is an object property
-            // association, and not an datatype property.
-            Property assocDataProp = CreateUtils.createProperty(generatePropertyID(++objectPropertyCounter),
-                    ProtegeOwl2LGConstants.PROPNAME_DATATYPEPROPERTY, "false", lgSupportedMappings_);
-            aw.addProperty(assocDataProp);
-            Property assocObjectProp = CreateUtils.createProperty(generatePropertyID(++objectPropertyCounter),
-                    ProtegeOwl2LGConstants.PROPNAME_OBJECTPROPERTY, "true", lgSupportedMappings_);
-            aw.addProperty(assocObjectProp);
             resolveAssociationProperty(aw.getAssociationEntity(), owlProp);
         }
     }
@@ -2516,7 +2504,7 @@ public class ProtegeOwl2LG {
         topThing.setEntityDescription(ed);
         topThing.setIsAnonymous(Boolean.TRUE);
         Presentation p = CreateUtils.createPresentation(generatePropertyID(1), ProtegeOwl2LGConstants.ROOT_NAME,
-                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_);
+                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_, null);
         topThing.addPresentation(p);
         addEntity(topThing);
         return topThing;
@@ -2621,8 +2609,15 @@ public class ProtegeOwl2LG {
             RDFProperty property = (RDFProperty) itr.next();
             String propName = getRDFResourceLocalName(property);
             String resolvedText = resolveRDFText(rdfProp, property);
-            Property pro = CreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
-                    lgSupportedMappings_);
+            Property pro = null;
+            
+            if( propName != null && propName.equals(PropertyTypes.COMMENT.value())) {
+                pro = CreateUtils.createComment(generatePropertyID(++i), propName, resolvedText,
+                        lgSupportedMappings_, property.getURI());
+            } else {
+                pro = CreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
+                        lgSupportedMappings_, property.getURI());
+            }
             assocEntity.addProperty(pro);
         }
     }
@@ -2909,7 +2904,7 @@ public class ProtegeOwl2LG {
                 messages_.warn("Unable to write sourceTarget relationship: Source entity code not assigned.");
                 return;
             }
-
+            
             // If writing only source with target data, the association
             // target will be null. There is also a chance that the
             // targetEntityCode is null. This is possible and is valid
