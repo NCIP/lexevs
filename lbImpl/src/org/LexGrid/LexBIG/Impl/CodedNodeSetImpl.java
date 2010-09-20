@@ -99,6 +99,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
     
     private CodeHolder toNodeListCodes = new DefaultCodeHolder();
+    
+    private ActiveOption currentActiveOption;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -123,6 +125,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             pendingOperations_.add(new GetAllConcepts(codingScheme, tagOrVersion));
             if (activeOnly != null && activeOnly.booleanValue()) {
                 pendingOperations_.add(new RestrictToStatus(ActiveOption.ACTIVE_ONLY, null));
+                currentActiveOption = ActiveOption.ACTIVE_ONLY;
             }
             
             if(entityTypes != null && entityTypes.getEntryCount() > 0 ) {
@@ -663,6 +666,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { activeOption, conceptStatus });
         try {
+            this.currentActiveOption = activeOption;
             pendingOperations_.add(new RestrictToStatus(activeOption, conceptStatus));
             return this;
         } catch (LBParameterException e) {
@@ -811,7 +815,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 codesToInclude, restrictToProperties, restrictToPropertyTypes, filters, resolveObjects);
         
         if(this.getToNodeListCodes().getAllCodes().size() > 0) {
-            return new ToNodeListResolvedConceptReferencesIteratorDecorator(itr, this.getToNodeListCodes());
+            return new ToNodeListResolvedConceptReferencesIteratorDecorator(itr, this.getToNodeListCodes(), this.currentActiveOption);
         } else {
             return itr;
         }  
