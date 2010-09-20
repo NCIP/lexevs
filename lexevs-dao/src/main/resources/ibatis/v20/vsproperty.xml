@@ -127,8 +127,8 @@
   			entryState.relativeOrder,
   			entryState.relativeOrder,
   			
-  			currentRevision.revisionId currentRevisionId,
-  			previousRevision.revisionId previousRevisionId  			
+  			currentRevision.revisionId AS currentRevisionId,
+  			previousRevision.revisionId AS previousRevisionId  			
   		FROM
   			$prefix$vsProperty property
   		LEFT JOIN
@@ -482,7 +482,7 @@
 			multiAttrib.subRef,
 			multiAttrib.role,
 			multiAttrib.qualifierType,
-			multiAttrib.entryStateGuid esGuid
+			multiAttrib.entryStateGuid AS esGuid
 		FROM 
 			$prefix$vsProperty	prop		
 		LEFT JOIN
@@ -572,7 +572,7 @@
 				prop.effectiveDate,
 				prop.expirationDate,
 				prop.entryStateGuid,
-				r1.revAppliedDate revAppliedDate
+				r1.revAppliedDate AS revAppliedDate
 			FROM 
 				$prefix$vsProperty prop,
 				$prefix$vsEntryState es,
@@ -622,7 +622,7 @@
 				prop.effectiveDate,
 				prop.expirationDate,
 				prop.entryStateGuid,
-				rev.revAppliedDate revAppliedDate
+				rev.revAppliedDate AS revAppliedDate
 			FROM 
 				$prefix$h_vsProperty prop,
 				$prefix$vsEntryState es,
