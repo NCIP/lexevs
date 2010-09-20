@@ -1,13 +1,19 @@
 package org.LexGrid.LexBIG.Impl.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.concepts.Entity;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 @LgClientSideSafe
 public class ToNodeListResolvedConceptReferencesIteratorDecorator implements ResolvedConceptReferencesIterator {
@@ -16,10 +22,16 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
     
     private CodeHolder toNodeListCodes;
     private ResolvedConceptReferencesIterator delegate;
+    private ActiveOption activeOption;
+    private boolean haveInactivesBeenRemoved = false;
     
-    public ToNodeListResolvedConceptReferencesIteratorDecorator(ResolvedConceptReferencesIterator delegate, CodeHolder toNodeListCodes) {
+    public ToNodeListResolvedConceptReferencesIteratorDecorator(
+            ResolvedConceptReferencesIterator delegate, 
+            CodeHolder toNodeListCodes, 
+            ActiveOption activeOption) {
         this.toNodeListCodes = toNodeListCodes;
         this.delegate = delegate;
+        this.activeOption = activeOption;
     }
     
     @Override
@@ -44,6 +56,8 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
         if(ref != null) {
             toNodeListCodes.remove(new CodeToReturn(ref.getCode(), ref.getCodeNamespace()));
         } else {
+            removeInactive();
+            
             if(toNodeListCodes.getAllCodes().size() > 0) {
                 
                 CodeToReturn codeToReturn = toNodeListCodes.getAllCodes().get(0);
@@ -55,7 +69,7 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
         
         return ref;
     }
-
+    
     @Override
     public ResolvedConceptReferenceList next(int arg0) throws LBResourceUnavailableException, LBInvocationException {
         ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
@@ -72,6 +86,8 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
         }
         
         if(list.getResolvedConceptReferenceCount() < arg0) {
+            removeInactive();
+            
             int deficit = arg0 - list.getResolvedConceptReferenceCount();
             
             while(deficit > 0 && this.toNodeListCodes.getAllCodes().size() > 0) {
@@ -100,6 +116,8 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             delegateHasNext = false;
         }
         if(! delegateHasNext ) {
+           this.removeInactive();
+           
            return toNodeListCodes.getAllCodes().size() > 0;
         } else {
             return true;
@@ -116,6 +134,44 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
         delegate.release();
     }
     
+    private void removeInactive() {
+        if(! this.haveInactivesBeenRemoved 
+                && 
+                this.activeOption != null
+                &&
+                !this.activeOption.equals(ActiveOption.ALL)) {
+            List<CodeToReturn> activeList = new ArrayList<CodeToReturn>();
+
+            for(CodeToReturn codeToReturn : this.toNodeListCodes.getAllCodes()) {
+                String uri = codeToReturn.getUri();
+                String version = codeToReturn.getVersion();
+                String code = codeToReturn.getCode();
+                String namespace = codeToReturn.getNamespace();
+
+                Entity entity = null;
+                try {
+                    entity = LexEvsServiceLocator.getInstance().
+                        getDatabaseServiceManager().
+                            getEntityService().getEntity(uri, version, code, namespace, null, null);
+                } catch (Exception e) {
+                    //
+                }
+
+                if(entity != null) {
+                    if(entity.getIsActive() == (this.activeOption.equals(ActiveOption.ACTIVE_ONLY) ? false : true)) {
+                        continue;
+                    }
+                }
+                
+                activeList.add(codeToReturn);
+            }
+            this.toNodeListCodes.getAllCodes().clear();
+            this.toNodeListCodes.getAllCodes().addAll(activeList);
+            
+            this.haveInactivesBeenRemoved = true;
+        }
+    }
+
     private ResolvedConceptReference toResolvedConceptReference(CodeToReturn codeToReturn) {
         ResolvedConceptReference returnRef = new ResolvedConceptReference();
         returnRef.setCode(codeToReturn.getCode());
