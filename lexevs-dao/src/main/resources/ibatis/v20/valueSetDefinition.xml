@@ -191,8 +191,8 @@
   			entryState.relativeOrder,
   			entryState.relativeOrder,
   			
-  			currentRevision.revisionId currentRevisionId,
-  			previousRevision.revisionId previousRevisionId
+  			currentRevision.revisionId AS currentRevisionId,
+  			previousRevision.revisionId AS previousRevisionId
 		FROM
 			$prefix$vsdEntry vsdEntry
 		LEFT JOIN
