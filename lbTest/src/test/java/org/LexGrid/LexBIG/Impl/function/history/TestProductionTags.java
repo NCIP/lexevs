@@ -42,6 +42,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.LBConstants.KnownTags;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -288,7 +289,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
         ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref2, KnownTags.PRODUCTION.toString());
         
         // validate change - this is using a non api method
-        assertEquals("", LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref1).getTag());
+        assertTrue(StringUtils.isBlank(
+        		LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref1).getTag()));
         assertEquals(KnownTags.PRODUCTION.toString(), LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref2).getTag());
 
     }
@@ -443,7 +445,9 @@ public void testProductionTags01() throws InterruptedException, LBException {
         assertNotNull(ref);
         ServiceHolder.instance().getLexBIGService().getServiceManager(null).setVersionTag(ref, tag.getTag().toString());
         // validate change
-        assertEquals(LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getTag(), tag.getTag());
+        assertTrue(
+        		StringUtils.isBlank(
+        				LexEvsServiceLocator.getInstance().getRegistry().getCodingSchemeEntry(ref).getTag()));
 
     }
 
