@@ -174,6 +174,26 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(uri);
 		ref.setCodingSchemeVersion(version);
+		
+		for(RegistryEntry entry : registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
+			String supplementsUri = entry.getSupplementsUri();
+			String supplementsVersion = entry.getSupplementsVersion();
+			
+			if(StringUtils.equals(supplementsUri, uri)
+					&&
+					StringUtils.equals(supplementsVersion, version)){
+				throw new LBParameterException("The Coding Scheme Resource URI: " +
+						uri +
+						" Version: " + 
+						version +
+						" is supplemented by: " +
+						" URI: " +
+						entry.getResourceUri() +
+						" Version: " + 
+						entry.getResourceVersion() +
+						". Unregister the supplement before removing.");
+			}
+		}
 
 		if(! isSingleTableMode() ){
 			lexEvsDatabaseOperations.dropCodingSchemeTables(uri, version);
