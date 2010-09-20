@@ -1277,7 +1277,6 @@ public class ProtegeOwl2LG {
      */
     protected Entity resolveIndividual(RDFResource rdfResource) {
         String rdfName = getRDFResourceLocalName(rdfResource);
-        messages_.info("indivisual = " + rdfName);
         
         if (isNoopNamespace(rdfName))
             return null;
