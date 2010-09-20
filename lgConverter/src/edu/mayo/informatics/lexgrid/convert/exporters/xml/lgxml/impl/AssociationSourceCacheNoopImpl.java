@@ -42,4 +42,9 @@ public class AssociationSourceCacheNoopImpl implements AssociationSourceCache {
         
     }
 
+    @Override
+    public void add(ResolvedConceptReference associationSource) {
+        //
+    }
+
 }
