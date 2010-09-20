@@ -71,7 +71,7 @@ public class SingleLuceneIndexCodedNodeSet extends CodedNodeSetImpl {
             
             return new IntersectSingleLuceneIndexCodedNodeSet(this, intersected);
         } else {
-           return super.union(codes);
+           return super.intersect(codes);
         }
     }
     
@@ -81,7 +81,7 @@ public class SingleLuceneIndexCodedNodeSet extends CodedNodeSetImpl {
             
             return new DifferenceSingleLuceneIndexCodedNodeSet(this, diffed);
         } else {
-           return super.union(codes);
+           return super.difference(codes);
         }
     }
     
