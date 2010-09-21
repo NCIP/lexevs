@@ -1038,7 +1038,7 @@ public class ProtegeOwl2LG {
     protected void resolveOWLObjectPropertyRelations(AssociationSource source, RDFResource rdfResource) {
         for (Iterator rdfProps = rdfResource.getRDFProperties().iterator(); rdfProps.hasNext();) {
             RDFProperty rdfProp = (RDFProperty) rdfProps.next();
-            if (rdfProp instanceof OWLObjectProperty) {
+            if (rdfProp instanceof OWLObjectProperty && !rdfProp.isAnnotationProperty()){
                 // Lookup the LexGrid association; ignore if this property does
                 // not match a defined association ...
                 String relationName = getRDFResourceLocalName(rdfProp);
