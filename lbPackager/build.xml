@@ -681,7 +681,7 @@ You may obtain a copy of the License at
 		<antcall target="temp-clean"/>
 		<copy todir="${temp.src}">
 			<fileset dir="${lexevs.api.dir}/lgConverter/test/java">
-				<include name="**/*.java"/>
+				<include name="**/constants/*.java"/>
 			</fileset>
 			<fileset dir="${lexevs.api.dir}/lbTest/src/test/java/" includes="**/*"/>
 			<fileset dir="${basedir}/bvt" includes="**/*.java"/>
