@@ -23,7 +23,8 @@ import java.util.Properties;
 
 import org.lexgrid.loader.constants.LoaderConstants;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
-import org.lexgrid.loader.rrf.data.codingscheme.MrsabUtility;
+import org.lexgrid.loader.rrf.model.Mrdoc;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -32,25 +33,50 @@ import org.springframework.beans.factory.InitializingBean;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter, InitializingBean  {
-
-	private static String META_SAB = "NCIMTH";
 	
 	/** The coding scheme properties. */
 	private Properties codingSchemeProperties;
-	
-	private MrsabUtility mrsabUtility;
 	
 	private String codingSchemeVersion;
 	
 	private String codingSchemeUri;
 	
 	private Map<String,String> isoMap;
-
 	
+	private ItemReader<Mrdoc> mrdocReader;
+
+	private String DOCKEY = "RELEASE";
+	
+	private String VALUE = "umls.release.name";
+	
+	private String TYPE = "release_info";
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		codingSchemeVersion = mrsabUtility.getMrsabRowFromRsab(META_SAB).getImeta();
+		codingSchemeVersion = getVersion();
 		codingSchemeUri = isoMap.get(codingSchemeProperties.getProperty(LoaderConstants.CODING_SCHEME_NAME_PROPERTY));
+	}
+	
+	protected String getVersion() {
+		Mrdoc mrdoc;
+		do {
+			try {
+				mrdoc = mrdocReader.read();
+				if(mrdoc.getDockey().equals(DOCKEY)
+					&&
+					mrdoc.getValue().equals(VALUE)
+					&&
+					mrdoc.getType().endsWith(TYPE)){
+					
+					return mrdoc.getExpl();
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} 
+			
+		} while(mrdoc != null);
+		
+		throw new RuntimeException("Cound not find Meta Version.");
 	}
 
 	/* (non-Javadoc)
@@ -85,20 +111,20 @@ public class MetaCodingSchemeIdSetter implements CodingSchemeIdSetter, Initializ
 	public void setCodingSchemeProperties(Properties codingSchemeProperties) {
 		this.codingSchemeProperties = codingSchemeProperties;
 	}
-
-	public MrsabUtility getMrsabUtility() {
-		return mrsabUtility;
-	}
-
-	public void setMrsabUtility(MrsabUtility mrsabUtility) {
-		this.mrsabUtility = mrsabUtility;
-	}
-
+	
 	public Map<String, String> getIsoMap() {
 		return isoMap;
 	}
 
 	public void setIsoMap(Map<String, String> isoMap) {
 		this.isoMap = isoMap;
+	}
+
+	public void setMrdocReader(ItemReader<Mrdoc> mrdocReader) {
+		this.mrdocReader = mrdocReader;
+	}
+
+	public ItemReader<Mrdoc> getMrdocReader() {
+		return mrdocReader;
 	}
 }
