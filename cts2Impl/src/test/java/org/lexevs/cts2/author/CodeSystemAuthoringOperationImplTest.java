@@ -13,14 +13,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-
-
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -35,7 +32,6 @@ import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedLanguage;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -539,7 +535,7 @@ private static List<String> revIds_ = new ArrayList<String>();
 		
 		ResolvedConceptReference ref = refList.getResolvedConceptReference(0);
 		
-		Property foundProp = DataTestUtils.getPropertyWithId(ref.getEntity().getAllProperties(), "p1");
+		Property foundProp = getPropertyWithId(ref.getEntity().getAllProperties(), "p1");
 		
 		assertEquals("Modded text",foundProp.getValue().getContent());
 	}
@@ -574,7 +570,7 @@ private static List<String> revIds_ = new ArrayList<String>();
 		Property foundProp = null;
 		
 		try {
-			foundProp = DataTestUtils.getPropertyWithId(refList
+			foundProp = getPropertyWithId(refList
 					.getResolvedConceptReference(0).getEntity()
 					.getAllProperties(), "p1");
 		} catch (RuntimeException e) {
@@ -676,5 +672,15 @@ private static List<String> revIds_ = new ArrayList<String>();
 		revIds_.add(revId);
 		
 		return revId;
+	}
+	
+	private static Property getPropertyWithId(Property[] properties, String id) {
+		for(Property prop : properties){
+			if(prop.getPropertyId().equals(id)){
+				return prop;
+			}
+		}
+		
+		throw new RuntimeException("Property Not Found.");
 	}
 }
