@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -70,6 +71,7 @@ import org.LexGrid.LexBIG.Impl.function.codednodeset.RestrictToMatchingPropertie
 import org.LexGrid.LexBIG.Impl.function.codednodeset.RestrictToPropertiesTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.UnionTest;
 import org.LexGrid.LexBIG.Impl.function.history.TestProductionTags;
+import org.LexGrid.LexBIG.Impl.function.mapping.MappingToNodeListTest;
 import org.LexGrid.LexBIG.Impl.function.metadata.TestMetaDataSearch;
 import org.LexGrid.LexBIG.Impl.function.metadata.TestNCIThesMetadata;
 import org.LexGrid.LexBIG.Impl.function.query.TestApproximateStringMatch;
@@ -153,6 +155,9 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.lexevs.cts2.test.Cts2IntegrationTestRunner;
+import org.lexevs.cts2.test.integration.SetupCts2IntegrationTests;
+import org.lexevs.cts2.test.integration.TearDownCts2IntegrationTests;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
@@ -378,6 +383,11 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(GForge17019.class);
         featureRequestTests.addTestSuite(GForge24191.class);
         mainSuite.addTest(featureRequestTests);
+        
+        //Mapping tests
+        TestSuite mappingTests = new TestSuite("Mapping Tests");
+        mappingTests.addTestSuite(MappingToNodeListTest.class);
+        mainSuite.addTest(mappingTests);
       
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
@@ -395,6 +405,11 @@ public class AllTestsNormalConfig {
         
         //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
+        
+        //CTS2 tests
+        mainSuite.addTest(new JUnit4TestAdapter(SetupCts2IntegrationTests.class));
+        mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
+        mainSuite.addTest(new JUnit4TestAdapter(TearDownCts2IntegrationTests.class));
         // $JUnit-END$
 
         return mainSuite;
