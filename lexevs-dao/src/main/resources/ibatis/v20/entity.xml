@@ -371,7 +371,12 @@
 			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
 			#entity.entityCode#, 
 			#entity.entityCodeNamespace#, 
-			#entity.isDefined,handler=numericBooleanTypeHandler#,
+			<isNotNull property="entity.isDefined">
+				#entity.isDefined,handler=numericBooleanTypeHandler#,
+			</isNotNull>
+			<isNull property="entity.isDefined">
+				'0',
+			</isNull>
 			#entity.isAnonymous,handler=numericBooleanTypeHandler#,
 			#entity.entityDescription.content:VARCHAR#,
 			
