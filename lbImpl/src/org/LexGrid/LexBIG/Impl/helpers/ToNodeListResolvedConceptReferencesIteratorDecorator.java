@@ -29,7 +29,11 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             ResolvedConceptReferencesIterator delegate, 
             CodeHolder toNodeListCodes, 
             ActiveOption activeOption) {
-        this.toNodeListCodes = toNodeListCodes;
+        try {
+            this.toNodeListCodes = toNodeListCodes.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
         this.delegate = delegate;
         this.activeOption = activeOption;
     }
