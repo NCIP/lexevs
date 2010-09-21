@@ -572,6 +572,9 @@ You may obtain a copy of the License at
 				<exclude name="*swt*/*"/>
 				<exclude name="**/*SWT*"/>
 			</fileset>
+			<fileset dir="${lexevs.api.dir}/lgConverter/test/java">
+				<include name="**/*.java"/>
+			</fileset>
 		</copy>
 		
 		<copy todir="${temp.bin}">
