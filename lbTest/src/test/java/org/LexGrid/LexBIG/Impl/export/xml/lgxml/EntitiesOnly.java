@@ -33,37 +33,39 @@ public class EntitiesOnly extends TestCase {
             "<lgRel:target targetEntityCode=\"Tires\" targetEntityCodeNamespace=\"ExpendableParts\"/>",
         "</lgRel:source>"};
 
-	private final String[] entity1 = {    
-			"<lgCon:entity",
-			"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-			"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
-			"isActive=\"true\" status=\"asfd\" entityCode=\"A0001\" entityCodeNamespace=\"Automobiles\">",
-			"<lgCommon:entityDescription>Automobile</lgCommon:entityDescription>",
-			"<lgCon:entityType>concept</lgCon:entityType>",
-			"<lgCon:presentation propertyName=\"textualPresentation\"",
-			"propertyId=\"t1\" propertyType=\"presentation\"", 
-			"language=\"en\" isPreferred=\"true\" matchIfNoContext=\"true\">",
-			"<lgCommon:source>A0001</lgCommon:source>",
-			"<lgCommon:value dataType=\"textplain\">Automobile</lgCommon:value>",
-			"</lgCon:presentation>",
-			"<lgCon:definition propertyName=\"definition\" propertyId=\"p1\"",
-			"propertyType=\"definition\" language=\"en\" isPreferred=\"true\">",
-			"<lgCommon:source>A0001</lgCommon:source>",
-			"<lgCommon:value dataType=\"textplain\">An automobile</lgCommon:value>",
-			"</lgCon:definition>",
-			"</lgCon:entity>"
-	};
-	
-	private final String[] entity2 = {
-		"<lgCon:associationEntity", 
-			"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-		    "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
-		    "isActive=\"true\" entityCode=\"uses\"",
-	        "entityCodeNamespace=\"Automobiles\" forwardName=\"uses\" isNavigable=\"true\">",
-		    "<lgCommon:entityDescription>uses</lgCommon:entityDescription>",
-		    "<lgCon:entityType>association</lgCon:entityType>",
-		"</lgCon:associationEntity>"
-	};
+    private final String[] entity1 = {    
+    		"<lgCon:entity",
+    		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    		"isActive=\"true\" status=\"asfd\" entityCode=\"A0001\"",
+    		"entityCodeNamespace=\"Automobiles\" isDefined=\"false\">",
+    		"<lgCommon:entityDescription>Automobile</lgCommon:entityDescription>",
+    		"<lgCon:entityType>concept</lgCon:entityType>",
+    		"<lgCon:presentation propertyName=\"textualPresentation\"",
+    		"propertyId=\"t1\" propertyType=\"presentation\"", 
+    		"language=\"en\" isPreferred=\"true\" matchIfNoContext=\"true\">",
+    		"<lgCommon:source>A0001</lgCommon:source>",
+    		"<lgCommon:value dataType=\"textplain\">Automobile</lgCommon:value>",
+    		"</lgCon:presentation>",
+    		"<lgCon:definition propertyName=\"definition\" propertyId=\"p1\"",
+    		"propertyType=\"definition\" language=\"en\" isPreferred=\"true\">",
+    		"<lgCommon:source>A0001</lgCommon:source>",
+    		"<lgCommon:value dataType=\"textplain\">An automobile</lgCommon:value>",
+    		"</lgCon:definition>",
+    		"</lgCon:entity>"
+    };
+    
+    private final String[] entity2 = {
+    		"<lgCon:associationEntity", 
+    		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    		"isActive=\"true\" entityCode=\"uses\"",
+    		"entityCodeNamespace=\"Automobiles\" isDefined=\"false\"",
+    		"forwardName=\"uses\" isNavigable=\"true\">",
+    		"<lgCommon:entityDescription>uses</lgCommon:entityDescription>",
+    		"<lgCon:entityType>association</lgCon:entityType>",
+    		"</lgCon:associationEntity>"
+    };
         
     public void testLexGridExportEntitiesOnly() {
     	Logger.log("EntitiesOnly: testLexGridExportEntitiesOnly: entry");
