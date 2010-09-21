@@ -51,8 +51,13 @@ public class ReflectionValidationProcessor<T> implements ValidationProcessor<T>{
      * @see edu.mayo.informatics.lexgrid.convert.validator.processor.ValidationProcessor#validate(java.lang.Object)
      */
     public List<LoadValidationError> validate(final Object obj) {
-
+        
         List<LoadValidationError> errorList = new ArrayList<LoadValidationError>();
+        
+        if(obj.getClass().isPrimitive() ||
+                obj.getClass().isEnum()) {
+            return errorList;
+        }
         
         for(Validator validator : validators) {
             if(validator.isValidClassForValidator(obj.getClass())) {
