@@ -145,6 +145,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.DefinitionQualifiersDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityAssnsToEntityDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityAssnsToEntityQualsDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityDataTestIT;
+import org.LexGrid.LexBIG.Impl.load.meta.MetaVersionTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MetadataLoadTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrhierAssocQualifierTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrhierPropertyQualifierTestIT;
@@ -203,6 +204,8 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(MrrankQualifierDataTestIT.class);
         metaLoaderSuite.addTestSuite(PresentationPropertyDataTestIT.class);
         metaLoaderSuite.addTestSuite(PresentationQualifiersDataTestIT.class);
+        metaLoaderSuite.addTestSuite(MetaVersionTestIT.class);
+
         mainSuite.addTest(metaLoaderSuite);
         
         TestSuite umlsLoaderSuite = new TestSuite("UmlsLoader Tests");
