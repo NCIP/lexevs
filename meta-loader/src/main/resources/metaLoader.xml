@@ -23,9 +23,6 @@
 			<listener ref="cleanupListener" />
 		</listeners>
 
-<!--		<step id="populateStagingTable" parent="stagingTablePopulatorStepFactory"-->
-<!--			next="loadCodingScheme" />-->
-
 		<step id="loadCodingScheme" next="registerCodingScheme">
 			<tasklet ref="metaCodingSchemeLoadingTasklet" />
 		</step>
@@ -728,10 +725,12 @@
 		<beans:property name="isoMap">
 			<beans:ref bean="isoMap" />
 		</beans:property>
-		<beans:property name="mrsabUtility">
-			<beans:ref bean="mrsabUtility" />
+		<beans:property name="mrdocReader">
+			<beans:ref bean="mrdocCodingSchemeIdReader" />
 		</beans:property>
 	</beans:bean>
+	
+	<beans:bean id="mrdocCodingSchemeIdReader" parent="mrdocReader"/>
 
     <!--  Start MRSAT qualifiers -->
 	<beans:bean id="metaMrsatSourceResolver"
