@@ -41,19 +41,23 @@ public class LuceneOnlyToNodeListCodedNodeSet extends SingleLuceneIndexCodedNode
     public LuceneOnlyToNodeListCodedNodeSet(String uri, String version, ConceptReferenceList codeList) throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         super(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version), null, null);
         
+        boolean emptyCodeList = false;
         if(codeList == null || codeList.getConceptReferenceCount() == 0) {
             codeList = Constructors.createConceptReferenceList("NO-MATCH-CODE", "NO-MATCH-NAMESPACE", "NO-MATCH-CODINGSCHEME");
+            emptyCodeList = true;
         }
         
         Filter filter = CodeListFilterRegistry.defaultInstance().getConceptReferenceListFilter(uri, version, codeList);
         
         this.getFilters().add(filter);
         
-        AdditiveCodeHolder holder = new DefaultCodeHolder();
-        for(ConceptReference ref : codeList.getConceptReference()) {
-            holder.add(new CodeToReturn(uri, version, ref));
+        if(!emptyCodeList) {
+            AdditiveCodeHolder holder = new DefaultCodeHolder();
+            for(ConceptReference ref : codeList.getConceptReference()) {
+                holder.add(new CodeToReturn(uri, version, ref));
+            }
+            
+            this.setToNodeListCodes(holder);
         }
-        
-        this.setToNodeListCodes(holder);
     }
 }
