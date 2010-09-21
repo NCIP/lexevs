@@ -572,9 +572,6 @@ You may obtain a copy of the License at
 				<exclude name="*swt*/*"/>
 				<exclude name="**/*SWT*"/>
 			</fileset>
-			<fileset dir="${lexevs.api.dir}/lgConverter/test/java">
-				<include name="**/*.java"/>
-			</fileset>
 		</copy>
 		
 		<copy todir="${temp.bin}">
@@ -683,6 +680,9 @@ You may obtain a copy of the License at
 		<!-- Build impl tests for integration with test project -->
 		<antcall target="temp-clean"/>
 		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lgConverter/test/java">
+				<include name="**/*.java"/>
+			</fileset>
 			<fileset dir="${lexevs.api.dir}/lbTest/src/test/java/" includes="**/*"/>
 			<fileset dir="${basedir}/bvt" includes="**/*.java"/>
 		</copy>
