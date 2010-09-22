@@ -64,9 +64,9 @@ You may obtain a copy of the License at
 			<formatter type="brief" usefile="false"/>
 			<formatter type="brief" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
-							name="org.LexGrid.valuedomain.test.VDAllTests"/>
-			<test todir="${output.dir}" outfile="vs-bvt"
 				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
+			<test todir="${output.dir}" outfile="vs-bvt"
+							name="org.LexGrid.valuedomain.test.VDAllTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
 							name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
 		</junit>
@@ -80,9 +80,9 @@ You may obtain a copy of the License at
 			<formatter type="brief" usefile="false"/>
 			<formatter type="plain" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
-							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+							name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 			<test todir="${output.dir}" outfile="vs-bvt"
-				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
+							name="org.LexGrid.valuedomain.test.VDAllTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
 							name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
 		</junit>
@@ -96,9 +96,9 @@ You may obtain a copy of the License at
 			<formatter type="brief" usefile="false"/>
 			<formatter type="xml" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
-							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+							name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 			<test todir="${output.dir}" outfile="vs-bvt"
-				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
+							name="org.LexGrid.valuedomain.test.VDAllTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
 							name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
 		</junit>
@@ -109,7 +109,7 @@ You may obtain a copy of the License at
 	<target name="bvt-html" depends="bvt-xml" description="task to run the LexBIG test suite and produce a report suitable for view in a standard web browser">
 		<junitreport todir="${output.dir}">
 			<fileset dir="${output.dir}">
-				<include name="TEST-*.xml"/>
+				<include name="*.xml"/>
 			</fileset>
 			<report format="frames" todir="${output.dir}"/>
 		</junitreport>
