@@ -1,6 +1,7 @@
 package org.lexevs.cts2.query;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -76,7 +77,9 @@ public class AssociationQueryOperationImplTest {
 		ResolvedConceptReferenceList list3 = query.listAssociations(
 				"Automobiles", versionOrTag, "Automobiles", "005",
 				"associationName", false, -1, -1);
-		assertEquals(0, list3.getResolvedConceptReferenceCount());
+		assertEquals(1, list3.getResolvedConceptReferenceCount());
+		assertTrue(list3.getResolvedConceptReference(0).getSourceOf() == null);
+		assertTrue(list3.getResolvedConceptReference(0).getTargetOf() == null);
 
 		// an association name is specified.
 		ResolvedConceptReferenceList list4 = query.listAssociations(
@@ -140,7 +143,7 @@ public class AssociationQueryOperationImplTest {
 		ResolvedConceptReference assnCon = assnConList.getAssociatedConcept(0);
 		assertEquals("A", assnCon.getCode());
 		assertEquals("Automobiles", assnCon.getCodeNamespace());
-		assertEquals("urn:oid:11.11.0.1", assnCon.getCodingSchemeURI());
+		assertEquals("urn:oid:cts:1.1.1", assnCon.getCodingSchemeURI());
 		assertEquals("1.0", assnCon.getCodingSchemeVersion());
 
 		assnList = assnCon.getSourceOf();
@@ -158,7 +161,7 @@ public class AssociationQueryOperationImplTest {
 		assnCon = assnConList.getAssociatedConcept(0);
 		assertEquals("B", assnCon.getCode());
 		assertEquals("Automobiles", assnCon.getCodeNamespace());
-		assertEquals("urn:oid:11.11.0.1", assnCon.getCodingSchemeURI());
+		assertEquals("urn:oid:cts:1.1.1", assnCon.getCodingSchemeURI());
 		assertEquals("1.0", assnCon.getCodingSchemeVersion());
 
 		assnList = assnCon.getSourceOf();
@@ -176,7 +179,7 @@ public class AssociationQueryOperationImplTest {
 		assnCon = assnConList.getAssociatedConcept(0);
 		assertEquals("C", assnCon.getCode());
 		assertEquals("Automobiles", assnCon.getCodeNamespace());
-		assertEquals("urn:oid:11.11.0.1", assnCon.getCodingSchemeURI());
+		assertEquals("urn:oid:cts:1.1.1", assnCon.getCodingSchemeURI());
 		assertEquals("1.0", assnCon.getCodingSchemeVersion());
 	}
 
@@ -204,28 +207,6 @@ public class AssociationQueryOperationImplTest {
 		assertEquals("A", associationTriple.getAssociationSource().getTarget(0)
 				.getTargetEntityCode());
 		assertEquals("Automobiles", associationTriple.getAssociationSource()
-				.getTarget(0).getTargetEntityCodeNamespace());
-
-		
-		// target data
-		codingSchemeUri = "CameraRegisteredName";
-		versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("CameraV1");
-
-		associationTriple = query.getAssociationDetails(codingSchemeUri,
-				versionOrTag, "_@cff6b89f-2da0-4706-8649-e08af164e682");
-		assertEquals("domain", associationTriple.getAssociationPredicateName());
-		assertEquals("associations", associationTriple.getRelationContainerName());
-		assertEquals("aperture", associationTriple.getAssociationSource()
-				.getSourceEntityCode());
-		assertEquals("camera", associationTriple.getAssociationSource()
-				.getSourceEntityCodeNamespace());
-		assertEquals(1, associationTriple.getAssociationSource()
-				.getTargetDataCount());
-		assertEquals(0, associationTriple.getAssociationSource()
-				.getTargetCount());
-		assertEquals("string", associationTriple.getAssociationSource()
-				.getTargetData(0).getAssociationDataText().getContent());
-
+				.getTarget(0).getTargetEntityCodeNamespace());	
 	}
 }
