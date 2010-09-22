@@ -407,9 +407,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
         //CTS2 tests
-        mainSuite.addTest(new JUnit4TestAdapter(SetupCts2IntegrationTests.class));
         mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
-        mainSuite.addTest(new JUnit4TestAdapter(TearDownCts2IntegrationTests.class));
         // $JUnit-END$
 
         return mainSuite;
