@@ -41,6 +41,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -247,6 +248,9 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             } else {
 
 	        final Text text = new Text(group3, SWT.BORDER);
+	        RowData textGd = new RowData();
+	        textGd.width = 25;
+	        text.setLayoutData(textGd);
 	        
 	        text.addModifyListener(new ModifyListener(){
 
