@@ -66,9 +66,13 @@ You may obtain a copy of the License at
 			<test todir="${output.dir}" outfile="bvt"
 				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 			<test todir="${output.dir}" outfile="vs-bvt"
-							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+				name="org.LexGrid.valuedomain.test.VDAllTests"/>
+			<test todir="${output.dir}" outfile="cts2-setup-bvt"
+				name="org.lexevs.cts2.test.integration.SetupCts2IntegrationTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
-							name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
+				name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
+			<test todir="${output.dir}" outfile="cts2-teardown-bvt"
+				name="org.lexevs.cts2.test.integration.TearDownCts2IntegrationTests"/>
 		</junit>
 		<echo message="Report (brief text) stored in ${output.dir}."/>
 	</target>
@@ -83,8 +87,12 @@ You may obtain a copy of the License at
 							name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 			<test todir="${output.dir}" outfile="vs-bvt"
 							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+			<test todir="${output.dir}" outfile="cts2-setup-bvt"
+							name="org.lexevs.cts2.test.integration.SetupCts2IntegrationTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
 							name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
+			<test todir="${output.dir}" outfile="cts2-teardown-bvt"
+							name="org.lexevs.cts2.test.integration.TearDownCts2IntegrationTests"/>
 		</junit>
 		<echo message="Report (full text) stored in ${output.dir}."/>
 	</target>
@@ -99,8 +107,12 @@ You may obtain a copy of the License at
 							name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 			<test todir="${output.dir}" outfile="vs-bvt"
 							name="org.LexGrid.valuedomain.test.VDAllTests"/>
+			<test todir="${output.dir}" outfile="cts2-setup-bvt"
+							name="org.lexevs.cts2.test.integration.SetupCts2IntegrationTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
 							name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
+			<test todir="${output.dir}" outfile="cts2-teardown-bvt"
+							name="org.lexevs.cts2.test.integration.TearDownCts2IntegrationTests"/>
 		</junit>
 		<echo message="Report (xml format) stored in ${output.dir}."/>
 	</target>
