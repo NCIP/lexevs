@@ -209,17 +209,20 @@
 		</isNotEmpty>
 	</select>
 
-	<select id="getAccociationInstanceKey" remapResults="true" resultClass="string">
+	<select id="getAccociationInstanceKey" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" 
+		resultMap="Common.uidResult">
 		SELECT
-			eae.entityAssnsGuid
+			eae.entityAssnsGuid AS uidKey
 		FROM 
 			$prefix$entityAssnsToEntity eae
-		JOIN
+		INNER JOIN
 			$prefix$associationPredicate ap
 		ON 
 			eae.associationPredicateGuid =
 			ap.associationPredicateGuid
-		JOIN
+		INNER JOIN
 			$prefix$relation rel
 		ON
 			ap.relationGuid =
@@ -229,7 +232,7 @@
 			#param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			eae.associationInstanceId = 
-			#param2,handler=variablePrimaryKeyTypeHandler#
+			#param2#
 	</select>
 	
 	<select id="getAllTriplesOfCodingScheme" remapResults="true"
