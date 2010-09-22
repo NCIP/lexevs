@@ -31,7 +31,7 @@ You may obtain a copy of the License at
 	<property name="vMajor" value="6"/> <!-- Product version - major release -->
 	<property name="vMinor" value="0"/> <!-- Product version - minor release -->
 	<property name="vPatch" value=""/> <!-- Product version - patch level -->
-	<property name="vCStat" value=""/> <!--Product version - candidate status (e.g. a= alpha, b=beta, rc=release candidate ) -->
+	<property name="vCStat" value="rc"/> <!--Product version - candidate status (e.g. a= alpha, b=beta, rc=release candidate ) -->
 	<property name="vBuild" value="${vMajor}.${vMinor}${vPatch}${vCStat}"/> <!-- Product build id -->
 	
 	
