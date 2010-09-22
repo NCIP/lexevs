@@ -58,7 +58,7 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 		ValueSetLoadOperation vsLoadOp = cts2.getAdminOperation().getValueSetLoadOperation();
 		
 		URNVersionPair[] urns = vsLoadOp.load(new File(
-						"src/test/resources/testData/valueSets/vdTestData.xml").toURI(), 
+						"resources/testData/cts2/valueSets/vdTestData.xml").toURI(), 
 						null, "LexGrid_Loader", true);
 		
 		assertTrue("Number of VSD loaded : " + urns.length, urns.length == 18);
