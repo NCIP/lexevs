@@ -18,4 +18,4 @@ REM      if no other option is specified.
 REM 
 REM Example: TestRunner -h
 REM
-java -Xmx1000m -cp .\lbTest.jar;..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar;.\extlib\ant\ant.jar;.\extlib\ant\ant-junit.jar;.\extlib\ant\ant-trax.jar;.\extlib\ant\ant-launcher.jar;.\extlib\junit\junit-4.4.jar bvt.TestRunner %*
+java -Xmx1000m -cp .\lbTest.jar;..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar;.\extlib\ant\ant-1.7.0.jar;.\extlib\ant\ant-junit-1.7.0.jar;.\extlib\ant\ant-trax-1.7.0.jar;.\extlib\ant\ant-launcher-1.7.0.jar;.\extlib\junit\junit-4.4.jar bvt.TestRunner %*

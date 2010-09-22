@@ -28,11 +28,11 @@ You may obtain a copy of the License at
 	<target name="init">
 		<path id="junit.path">
 			<fileset dir="${basedir}/extlib/ant">
-				<include name="ant-junit.jar"/>
-				<include name="ant-trax.jar"/>
+				<include name="ant-junit-*.jar"/>
+				<include name="ant-trax-*.jar"/>
 			</fileset>
 			<fileset dir="${basedir}/extlib/junit">
-				<include name="junit-4.4.jar"/>
+				<include name="junit-*.jar"/>
 			</fileset>
 		</path>
 
