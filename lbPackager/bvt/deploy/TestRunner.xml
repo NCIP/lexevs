@@ -65,8 +65,6 @@ You may obtain a copy of the License at
 			<formatter type="brief" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
 				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
-			<test todir="${output.dir}" outfile="vs-bvt"
-				name="org.LexGrid.valuedomain.test.VDAllTests"/>
 			<test todir="${output.dir}" outfile="cts2-setup-bvt"
 				name="org.lexevs.cts2.test.integration.SetupCts2IntegrationTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
@@ -85,8 +83,6 @@ You may obtain a copy of the License at
 			<formatter type="plain" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
 							name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
-			<test todir="${output.dir}" outfile="vs-bvt"
-							name="org.LexGrid.valuedomain.test.VDAllTests"/>
 			<test todir="${output.dir}" outfile="cts2-setup-bvt"
 							name="org.lexevs.cts2.test.integration.SetupCts2IntegrationTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
@@ -105,8 +101,6 @@ You may obtain a copy of the License at
 			<formatter type="xml" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
 							name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
-			<test todir="${output.dir}" outfile="vs-bvt"
-							name="org.LexGrid.valuedomain.test.VDAllTests"/>
 			<test todir="${output.dir}" outfile="cts2-setup-bvt"
 							name="org.lexevs.cts2.test.integration.SetupCts2IntegrationTests"/>
 			<test todir="${output.dir}" outfile="cts2-bvt"
