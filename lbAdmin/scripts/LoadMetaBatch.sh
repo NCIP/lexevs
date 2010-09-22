@@ -6,4 +6,4 @@
 #
 # Example: LoadMetaBatch -in "file:///path/to/directory/"
 #
-java -Xmx800m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.loader.meta.launch.MetaBatchLoaderLauncher $@
+java -Xmx2000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.loader.meta.launch.MetaBatchLoaderLauncher $@
