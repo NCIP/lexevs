@@ -3,6 +3,8 @@
  */
 package org.lexevs.cts2.author;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,8 +17,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
@@ -26,6 +26,8 @@ import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
@@ -42,7 +44,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * @author m004181
  *
  */
-public class ConceptDomainAuthoringOperationImplTest extends TestCase{
+public class ConceptDomainAuthoringOperationImplTest {
 
 	private static ConceptDomainAuthoringOperation CD_AUTH_OP;
 	private static ConceptDomainQueryOperation CD_QUERY_OP;
@@ -50,9 +52,8 @@ public class ConceptDomainAuthoringOperationImplTest extends TestCase{
 	private static List<String> revIds_ = new ArrayList<String>();
 	private static LexEVSValueSetDefinitionServices vds_ = null;
 	
-	@Test
-	public void testSetUp() throws Exception {
-		super.setUp();
+	@BeforeClass
+	public static void testSetUp() throws Exception {
 		CD_AUTH_OP = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getConceptDomainAuthoringOperation();
 		CD_QUERY_OP = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getConceptDomainQueryOperation();
 		vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
@@ -480,8 +481,8 @@ public class ConceptDomainAuthoringOperationImplTest extends TestCase{
 		return revId;
 	}
 
-	@Test
-	public void testTearDown() throws Exception {
+	@AfterClass
+	public static void testTearDown() throws Exception {
 		CD_AUTH_OP = null;
 		CD_QUERY_OP = null;
 		
