@@ -90,6 +90,23 @@ public class PresentationPropertyDataTestIT extends DataLoadTestBase {
 	}
 	
 	@Test
+	public void testRepForm() throws Exception {	
+		Presentation[] preses = testEntity.getPresentation();
+		
+		List<Presentation> preferredPres = new ArrayList<Presentation>();
+		
+		for(Presentation pres : preses) {
+			if(pres.getIsPreferred() != null && pres.getIsPreferred()) {
+				preferredPres.add(pres);
+			}
+		}
+		
+		assertTrue(preferredPres.size() == 1);
+		
+		assertEquals("PF",preferredPres.get(0).getRepresentationalForm());
+	}
+	
+	@Test
 	public void testNonPreferredPresentation() throws Exception {	
 		Presentation[] preses = testEntity.getPresentation();
 		
