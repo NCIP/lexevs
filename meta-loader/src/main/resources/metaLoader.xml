@@ -76,7 +76,7 @@
 			</flow>
 	
 			<flow>
-				<step id="loadAssociations" parent="listenerStep">
+				<step id="loadAssociations" parent="listenerStep" next="processAssociations">
 					<tasklet>
 						<listeners>
 							<listener ref="stepCompletionListener" />
@@ -89,8 +89,17 @@
 						</chunk>
 					</tasklet>
 				</step>
+				<step id="processAssociations">
+						<tasklet>
+							<chunk reader="mrdocAssociationGroupReader" processor="metaAssociationProcessor"
+								writer="entityListWriter" commit-interval="1">
+								<streams>
+									<stream ref="mrdocReader" />
+								</streams>
+							</chunk>
+						</tasklet>
+					</step>		
 			</flow>
-		
 		</split>
 		
 	</job>
