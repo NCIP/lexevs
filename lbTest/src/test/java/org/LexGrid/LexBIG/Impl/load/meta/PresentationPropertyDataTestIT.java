@@ -18,9 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.load.meta;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +100,7 @@ public class PresentationPropertyDataTestIT extends DataLoadTestBase {
 		
 		assertTrue(preferredPres.size() == 1);
 		
-		assertEquals("PF",preferredPres.get(0).getRepresentationalForm());
+		assertEquals("EN",preferredPres.get(0).getRepresentationalForm());
 	}
 	
 	@Test
