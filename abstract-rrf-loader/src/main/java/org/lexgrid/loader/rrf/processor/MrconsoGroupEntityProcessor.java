@@ -105,6 +105,7 @@ public class MrconsoGroupEntityProcessor extends HighestRankingListProcessor<Mrc
 		pres.setPropertyName(presentationResolver.getPropertyName(mrconso));
 		pres.setPropertyType(presentationResolver.getPropertyType(mrconso));
 		pres.setValue(DaoUtility.createText(presentationResolver.getPropertyValue(mrconso)));
+		pres.setRepresentationalForm(presentationResolver.getRepresentationalForm(mrconso));
 		pres.setIsPreferred(preferred);
 		
 		addSourcesAndQualifiers(uri, version, mrconso, pres);
