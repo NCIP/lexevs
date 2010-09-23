@@ -19,10 +19,17 @@
 package org.lexgrid.loader.rrf.processor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationPredicate;
+import org.LexGrid.relations.Relations;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
 import org.lexgrid.loader.processor.CodingSchemeIdAwareProcessor;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
@@ -37,9 +44,6 @@ import org.springframework.util.Assert;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class MrdocAssociationProcessor extends CodingSchemeIdAwareProcessor implements ItemProcessor<List<Mrdoc>,List<CodingSchemeIdHolder<AssociationEntity>>> {
-
-	/** The rrf post processing dao. */
-	//private RrfPostProcessingDao rrfPostProcessingDao;
 	
 	/** The supported attribute template. */
 	private SupportedAttributeTemplate supportedAttributeTemplate;
@@ -54,9 +58,22 @@ public class MrdocAssociationProcessor extends CodingSchemeIdAwareProcessor impl
 		String reverseName = getReverseName(items);
 		String expandedName = getExpandedName(items);
 		
-		//boolean isRelationLoaded = rrfPostProcessingDao.doesRelationExistInEntityAssnToEntity(relationName);
-	//	if(isRelationLoaded){
-			
+		CodingScheme cs = LexEvsServiceLocator.getInstance().
+			getDatabaseServiceManager().
+				getCodingSchemeService().
+					getCodingSchemeByUriAndVersion(
+							this.getCodingSchemeIdSetter().getCodingSchemeUri(),
+							this.getCodingSchemeIdSetter().getCodingSchemeVersion());
+		
+		Set<String> loadedAssociations = new HashSet<String>();
+		
+		for(Relations relations : cs.getRelations()) {
+			for(AssociationPredicate predicate : relations.getAssociationPredicate()) {
+				loadedAssociations.add(predicate.getAssociationName());
+			}
+		}
+		
+		if(loadedAssociations.contains(relationName)) {
 			supportedAttributeTemplate.addSupportedAssociation(
 					getCodingSchemeIdSetter().getCodingSchemeUri(), 
 					getCodingSchemeIdSetter().getCodingSchemeVersion(), 
@@ -67,8 +84,8 @@ public class MrdocAssociationProcessor extends CodingSchemeIdAwareProcessor impl
 					new CodingSchemeIdHolder<AssociationEntity>(
 							this.getCodingSchemeIdSetter(), 
 							buildAssociationEntity(relationName, reverseName, expandedName)));
-
-	//	} 
+		}
+		
 		return returnList;
 	}
 	
@@ -83,7 +100,7 @@ public class MrdocAssociationProcessor extends CodingSchemeIdAwareProcessor impl
 	 * @return the association
 	 */
 	protected AssociationEntity buildAssociationEntity(String relationName, String reverseName, String expandedName){
-		AssociationEntity assoc = new AssociationEntity();
+		AssociationEntity assoc = EntityFactory.createAssociation();
 		assoc.setForwardName(relationName);
 		assoc.setReverseName(reverseName);
 		assoc.setIsTransitive(isTransitive(relationName));
