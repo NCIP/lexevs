@@ -32,5 +32,9 @@
 	<beans:bean name="entityPropertyListWriter" class="org.lexgrid.loader.writer.ListWriter">
 		<beans:property name="delegate" ref="entityPropertyWriter"/>
 	</beans:bean>
+	
+	<beans:bean name="entityListWriter" class="org.lexgrid.loader.writer.ListWriter">
+		<beans:property name="delegate" ref="entityWriter"/>
+	</beans:bean>
 
 </beans:beans>
