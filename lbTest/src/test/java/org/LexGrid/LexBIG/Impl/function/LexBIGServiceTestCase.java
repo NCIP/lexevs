@@ -64,6 +64,8 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String OVARIANMASS_SCHEME_VERSION = "UNASSIGNED";
     protected final static String MAPPING_SCHEME_URI = "urn:oid:mapping:sample";
     protected final static String MAPPING_SCHEME_VERSION = "1.0";
+    protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
+    protected final static String PIZZA_SCHEME_VERSION = "version 1.2";
  
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
     /**
