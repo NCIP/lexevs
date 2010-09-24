@@ -730,6 +730,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
 
             this.queries.add(new MatchAllDocsQuery());
+            Query codingSchemeQuery = 
+                entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
+                
+            this.queries.add(codingSchemeQuery);
             
             for (int i = 1; i < pendingOperations_.size(); i++) {
                 Operation operation = pendingOperations_.get(i);

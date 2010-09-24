@@ -36,7 +36,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback
 import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
-import org.LexGrid.annotations.LgProxyClass;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -52,7 +52,7 @@ import org.lexevs.paging.codednodegraph.TripleUidIterator;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@LgProxyClass
+@LgClientSideSafe
 public class AssociatedConceptIterator extends AbstractPageableIterator<AssociatedConcept> {
 
     private static final long serialVersionUID = 8499054225802045957L;
@@ -181,16 +181,12 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.filterOptions = filterOptions;
 		this.propertyNames = propertyNames;
 		this.propertyTypes = propertyTypes;
+		
+		this.setDecorateNext(true);
 	}
 
-    /* (non-Javadoc)
-	 * @see org.lexevs.paging.AbstractPageableIterator#next()
-	 */
-	@Override
-	public AssociatedConcept next() {
-	    AssociatedConcept associatedConcept = super.next();
-	    
-	    String adjustedCodingSchemeUri;
+	protected AssociatedConcept decorateNext(AssociatedConcept associatedConcept) {
+        String adjustedCodingSchemeUri;
         String adjustedCodingSchemeVersion;
         String adjustedRelationsContainer;
         
@@ -293,7 +289,7 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	    cycleDetectingCallback.addAssociatedConceptToGraph(associationPredicateName, associatedConcept);
 	    
 	    return associatedConcept;
-	}
+    }
 	
 	/**
 	 * Should resolve next level.

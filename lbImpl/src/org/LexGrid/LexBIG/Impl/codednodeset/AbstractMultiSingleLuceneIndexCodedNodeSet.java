@@ -153,7 +153,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     
     public CodedNodeSet union(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         if(codes instanceof CodedNodeSetImpl) {
-            return new UnionSingleLuceneIndexCodedNodeSet((CodedNodeSetImpl)codes,this);
+            return new UnionSingleLuceneIndexCodedNodeSet(this,(CodedNodeSetImpl)codes);
         } else {
             return super.union(codes);
         }
@@ -161,7 +161,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     
     public CodedNodeSet intersect(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         if(codes instanceof CodedNodeSetImpl) {
-            return new IntersectSingleLuceneIndexCodedNodeSet((CodedNodeSetImpl)codes,this);
+            return new IntersectSingleLuceneIndexCodedNodeSet(this,(CodedNodeSetImpl)codes);
         } else {
             return super.intersect(codes);
         }
@@ -169,7 +169,7 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     
     public CodedNodeSet difference(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         if(codes instanceof CodedNodeSetImpl) {
-            return new DifferenceSingleLuceneIndexCodedNodeSet((CodedNodeSetImpl)codes,this);
+            return new DifferenceSingleLuceneIndexCodedNodeSet(this,(CodedNodeSetImpl)codes);
         } else {
             return super.difference(codes);
         }
