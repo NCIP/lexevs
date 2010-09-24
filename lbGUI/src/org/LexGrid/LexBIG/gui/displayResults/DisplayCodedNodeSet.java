@@ -1020,7 +1020,7 @@ public class DisplayCodedNodeSet {
 			try {
 				if (!flat_) {
 					graphRcr_ = cng_.resolveAsList(focus_, forward_, backward_,
-							Integer.MAX_VALUE, depth_, null, null,
+							0, depth_, null, null,
 							sortOptions_, maxToReturn_)
 							.getResolvedConceptReference();
 					try {

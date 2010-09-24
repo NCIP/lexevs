@@ -114,7 +114,7 @@ public class Graph extends prefuse.data.Graph {
 		String code = showCode ? rcr.getConceptCode() : null;
 		String desc = rcr.getEntityDescription() != null ? rcr
 				.getEntityDescription().getContent() : null;
-		String nodeName = getNodeName(code, desc, allNodes.size() > 0, "\n");
+		String nodeName = getNodeName(code, desc, false, "\n");
 
 		if (allNodes.containsKey(nodeName)) {
 			return allNodes.get(nodeName);
