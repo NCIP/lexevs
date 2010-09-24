@@ -159,6 +159,33 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
  
         CodingSchemeManifest csm = new CodingSchemeManifest();
         CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
+        csm.setId("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
+        uri.setContent("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
+        uri.setToOverride(true);
+        csm.setCodingSchemeURI(uri);
+        loader.setCodingSchemeManifest(csm);
+        
+        loader.load(new File("resources/testData/pizza.owl").toURI(), null, 1, false, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(1000);
+        }
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+
+    }
+    
+    public void testLoadOwl2() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+ 
+        CodingSchemeManifest csm = new CodingSchemeManifest();
+        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
         csm.setId("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
         uri.setContent("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
         uri.setToOverride(true);
@@ -178,6 +205,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 
     }
+
 
     public void testLoadOwlLoaderPreferences() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();

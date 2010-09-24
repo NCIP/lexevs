@@ -86,6 +86,17 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
 
     }
+    
+    public void testRemoveOwl2() throws LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#", "version 1.2");
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+
+    }
 
     public void testRemoveOwlLoaderPreferences() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
