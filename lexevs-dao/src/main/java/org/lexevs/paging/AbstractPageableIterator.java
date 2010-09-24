@@ -24,6 +24,10 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	
 	private Pager<T> pager;
 	
+	private NextDecorator<T> nextDecorator;
+	
+	private boolean decorateNext = false;
+	
 	protected AbstractPageableIterator(){
 		this(DEFAULT_PAGE_SIZE);
 	}
@@ -38,6 +42,7 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		this.pageSize = pageSize;
 		
 		this.pager = new Pager<T>();
+		this.nextDecorator = new NextDecorator<T>();
 	}
 	
 	@Override
@@ -59,7 +64,12 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		pageIfNecessary();
 		T returnItem = cache.get( calculateCachePosition() );
 		globalPosition++;
-		return returnItem;
+		
+		if(this.decorateNext) {
+			return this.nextDecorator.decorateNext(this, returnItem);
+		} else {
+			return returnItem;
+		}
 	}
 	
 	protected void pageIfNecessary() {
@@ -89,6 +99,19 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
 	
+	protected T decorateNext(T item) {
+		//no-op -- for sublcasses
+		return item;
+	}
+	
+	protected void setDecorateNext(boolean decorateNext) {
+		this.decorateNext = decorateNext;
+	}
+
+	protected boolean isDecorateNext() {
+		return decorateNext;
+	}
+
 	@LgProxyClass
 	public static class Pager<T> implements Serializable {
 
@@ -100,6 +123,20 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		
 		public List<? extends T> doPage(AbstractPageableIterator<T> abstractPageableIterator, int currentPosition, int pageSize){
 			return abstractPageableIterator.doPage(currentPosition, pageSize);
+		}
+	}
+	
+	@LgProxyClass
+	public static class NextDecorator<T> implements Serializable {
+
+		private static final long serialVersionUID = 6142588013131141095L;
+
+		public NextDecorator() {
+			super();
+		}
+		
+		public T decorateNext(AbstractPageableIterator<T> abstractPageableIterator, T item){
+			return abstractPageableIterator.decorateNext(item);
 		}
 	}
 }

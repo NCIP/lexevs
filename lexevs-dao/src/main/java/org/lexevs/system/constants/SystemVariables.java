@@ -79,6 +79,8 @@ public class SystemVariables {
     
     private boolean singleTableMode = true;
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
+    
+    private boolean isSingleIndex = true;
 
     private String configFileLocation_;
     
@@ -674,5 +676,8 @@ public class SystemVariables {
 	public String getCurrentPersistenceScheme() {
 		return this.currentPersistenceScheme;
 	}
-	
+
+	public boolean getIsSingleIndex() {
+		return this.isSingleIndex;
+	}
 }

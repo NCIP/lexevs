@@ -38,6 +38,7 @@ import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
@@ -61,7 +62,8 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
 	
-	
+	private IndexRegistry indexRegistry;
+
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
 			List<Document> documents, Analyzer analyzer) {
@@ -331,10 +333,14 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	 */
 	public Query getMatchAllDocsQuery(
 			String codingSchemeUri, String version) {
-		return new TermQuery(
+		TermQuery query = new TermQuery(
 				new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
 						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, 
 								version)));
+		
+		query.setBoost(0);
+		
+		return query;
 	}
 
 	/**
@@ -376,7 +382,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return this.luceneIndexTemplate;
+		return this.indexRegistry.getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
@@ -385,5 +391,13 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
 		return luceneIndexTemplate;
+	}
+
+	public void setIndexRegistry(IndexRegistry indexRegistry) {
+		this.indexRegistry = indexRegistry;
+	}
+
+	public IndexRegistry getIndexRegistry() {
+		return indexRegistry;
 	}
 }

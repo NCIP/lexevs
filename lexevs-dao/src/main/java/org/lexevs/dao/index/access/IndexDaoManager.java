@@ -68,20 +68,10 @@ public class IndexDaoManager {
 	}
 	
 	public CommonEntityDao getCommonEntityDao(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-		LuceneIndexTemplate template = null;
-		for(AbsoluteCodingSchemeVersionReference ref : codingSchemes) {
-			LuceneIndexTemplate foundTemplate = 
-				indexRegistry.getLuceneIndexTemplate(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
-			if(template == null) {
-				template = foundTemplate;
-			} else {
-				if(! foundTemplate.equals(template)) {
-					throw new RuntimeException("Cannot find a Common Index for the Coding Schemes Requested");
-				}
-			}
-		}
-		Assert.notNull(template);
-		
+
+		LuceneIndexTemplate template = 
+			indexRegistry.getCommonLuceneIndexTemplate(codingSchemes);
+
 		return new SingleTemplateDisposableLuceneCommonEntityDao(template, codingSchemes);
 	}
 	

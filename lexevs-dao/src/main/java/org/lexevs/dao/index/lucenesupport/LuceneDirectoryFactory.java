@@ -1,9 +1,14 @@
 package org.lexevs.dao.index.lucenesupport;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.LockObtainFailedException;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
@@ -18,7 +23,16 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	public Object getObject() throws Exception {
 		Directory directory = FSDirectory.getDirectory(this.indexDirectory.getFile());
 		
-		if(!IndexReader.indexExists(this.indexDirectory.getFile())){
+		initIndexDirectory(directory, this.indexDirectory.getFile());
+
+		return new NamedDirectory(
+				directory, indexName);
+	}
+
+	public static void initIndexDirectory(Directory directory, File directoryDir) throws IOException,
+			CorruptIndexException, LockObtainFailedException {
+		
+		if(!IndexReader.indexExists(directoryDir)){
 			IndexWriter writer = new IndexWriter(
 					directory, 
 					LuceneLoaderCode.getAnaylzer(), 
@@ -26,9 +40,6 @@ public class LuceneDirectoryFactory implements FactoryBean {
 
 			writer.close();
 		}
-
-		return new NamedDirectory(
-				directory, indexName);
 	}
 
 	@Override

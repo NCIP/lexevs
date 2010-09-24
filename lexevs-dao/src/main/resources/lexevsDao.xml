@@ -818,6 +818,7 @@
 
 	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao">
 		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
+		<property name="indexRegistry" ref="indexRegistry"/>
 	</bean>
 	
 	<bean id="luceneEntity2009Dao" class="org.lexevs.dao.index.lucene.v2009.entity.LuceneEntity2009Dao">

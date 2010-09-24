@@ -14,6 +14,7 @@ import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Searcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.springframework.beans.factory.DisposableBean;
@@ -23,7 +24,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	private NamedDirectory namedDirectory;
 	
-	private IndexSearcher indexSearcher;
+	private Searcher indexSearcher;
 	private IndexReader indexReader;
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
@@ -37,6 +38,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		try {
 			indexSearcher = this.createIndexSearcher(namedDirectory);
 			indexReader = this.createIndexReader(namedDirectory);
+			this.namedDirectory = namedDirectory;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -123,7 +125,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		this.doInIndexSearcher(new IndexSearcherCallback<Void>() {
 
 			@Override
-			public Void doInIndexSearcher(IndexSearcher indexSearcher)
+			public Void doInIndexSearcher(Searcher indexSearcher)
 					throws Exception {
 				indexSearcher.search(query, filter, hitCollector);
 				return null;
@@ -135,7 +137,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.doInIndexSearcher(new IndexSearcherCallback<List<ScoreDoc>>() {
 
 			@Override
-			public List<ScoreDoc> doInIndexSearcher(IndexSearcher indexSearcher)
+			public List<ScoreDoc> doInIndexSearcher(Searcher indexSearcher)
 					throws Exception {
 				
 				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
@@ -161,7 +163,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.doInIndexSearcher(new IndexSearcherCallback<Document>() {
 
 			@Override
-			public Document doInIndexSearcher(IndexSearcher indexSearcher)
+			public Document doInIndexSearcher(Searcher indexSearcher)
 					throws Exception {
 				return indexSearcher.doc(id);
 			}
@@ -184,7 +186,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.doInIndexSearcher(new IndexSearcherCallback<Integer>() {
 
 			@Override
-			public Integer doInIndexSearcher(IndexSearcher indexSearcher)
+			public Integer doInIndexSearcher(Searcher indexSearcher)
 					throws Exception {
 				return indexSearcher.maxDoc();
 			}
@@ -236,7 +238,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	public interface IndexSearcherCallback<T> {
 		
-		public T doInIndexSearcher(IndexSearcher indexSearcher) throws Exception;
+		public T doInIndexSearcher(Searcher indexSearcher) throws Exception;
 	}
 	
 	public interface IndexWriterCallback<T> {
@@ -282,5 +284,27 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	public Analyzer getAnalyzer() {
 		return analyzer;
+	}
+
+	protected Searcher getIndexSearcher() {
+		return indexSearcher;
+	}
+
+	protected void setIndexSearcher(Searcher indexSearcher) {
+		this.indexSearcher = indexSearcher;
+	}
+
+	protected IndexReader getIndexReader() {
+		return indexReader;
+	}
+
+	protected void setIndexReader(IndexReader indexReader) {
+		this.indexReader = indexReader;
+	}
+	
+	public void finalize() throws Throwable {
+		super.finalize();
+		this.indexReader.close();
+		this.indexSearcher.close();
 	}
 }

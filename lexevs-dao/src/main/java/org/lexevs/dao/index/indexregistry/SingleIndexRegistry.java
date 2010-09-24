@@ -2,15 +2,21 @@ package org.lexevs.dao.index.indexregistry;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
@@ -36,6 +42,10 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	private Map<String,LuceneIndexTemplate> luceneIndexNameToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
 	
+	private Map<String,LuceneIndexTemplate> multiCodingSchemeKeyToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
+	
+	private Map<String,Directory> luceneIndexNameToDirctoryMap = new HashMap<String,Directory>();
+	
 	private Map<CodingSchemeUriVersionPair,String> luceneCodingSchemeToIndexNameMap = 
 		new HashMap<CodingSchemeUriVersionPair,String>();
 	
@@ -60,7 +70,14 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	protected Directory createIndexDirectory(String indexName) {
 		String baseIndexPath = systemVariables.getAutoLoadIndexLocation();
 		try {
-			return FSDirectory.getDirectory(baseIndexPath + File.separator + indexName);
+			FSDirectory directory =
+				FSDirectory.getDirectory(baseIndexPath + File.separator + indexName);
+			
+			LuceneDirectoryFactory.initIndexDirectory(directory, directory.getFile());
+			
+			luceneIndexNameToDirctoryMap.put(indexName, directory);
+			
+			return directory;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -106,6 +123,38 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 		return luceneIndexTemplate;
 	}
 	
+	@Override
+	public LuceneIndexTemplate getCommonLuceneIndexTemplate(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+		if(this.systemVariables.getIsSingleIndex()) {
+			return this.luceneIndexTemplate;
+		} else {
+
+			String key = DaoUtility.createKey(codingSchemes);
+
+			if(! this.multiCodingSchemeKeyToTemplateMap.containsKey(key)) {
+
+				List<NamedDirectory> directories = new ArrayList<NamedDirectory>();
+
+				for(AbsoluteCodingSchemeVersionReference ref : codingSchemes) {
+					String uri = ref.getCodingSchemeURN();
+					String version = ref.getCodingSchemeVersion();
+
+					String indexName = this.getCodingSchemeIndexName(uri, version);
+
+					directories.add(
+							new NamedDirectory(
+									this.luceneIndexNameToDirctoryMap.get(indexName),
+									indexName));
+				}
+
+				this.multiCodingSchemeKeyToTemplateMap.put(key, new MultiBaseLuceneIndexTemplate(directories));
+			}
+
+			return this.multiCodingSchemeKeyToTemplateMap.get(key);
+		}
+	}
+
 	protected void autoRegisterIndex(String codingSchemeUri, String version) {
 		String codingSchemeName;
 		try {
@@ -176,7 +225,7 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 		this.systemResourceService = systemResourceService;
 	}
 
-	private static class CodingSchemeUriVersionPair {
+	protected static class CodingSchemeUriVersionPair {
 		private String uri;
 		private String version;
 		

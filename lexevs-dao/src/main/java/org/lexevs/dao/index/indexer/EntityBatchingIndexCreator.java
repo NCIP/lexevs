@@ -20,6 +20,7 @@ package org.lexevs.dao.index.indexer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -156,7 +157,11 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	}
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
-		return SingleIndexRegistry.DEFAULT_SINGLE_INDEX_NAME;
+		if(systemVariables.getIsSingleIndex()){
+			return SingleIndexRegistry.DEFAULT_SINGLE_INDEX_NAME;
+		} else {
+			return UUID.randomUUID().toString();
+		}
 	}
 
 	/**
