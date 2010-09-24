@@ -18,6 +18,7 @@
  */
 package org.lexgrid.loader.umls.reader.support;
 
+import org.apache.commons.lang.StringUtils;
 import org.lexgrid.loader.rrf.data.property.MrsatUtility;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
@@ -35,6 +36,10 @@ public class MrsatSkipPolicy extends AbstractSabSkippingPolicy<Mrsat> {
 	 * @see org.lexgrid.loader.umls.reader.support.AbstractSabSkippingPolicy#toSkip(java.lang.Object)
 	 */
 	public boolean toSkip(Mrsat item) {
+		if(StringUtils.isBlank(item.getCode())) {
+			return true;
+		}
+		
 		if(super.toSkip(item)){
 			return true;
 		}
