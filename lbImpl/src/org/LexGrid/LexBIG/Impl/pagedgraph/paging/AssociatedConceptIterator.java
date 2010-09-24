@@ -106,6 +106,10 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
     private LocalNameList filterOptions;
     
     private PropertyType[] propertyTypes;
+    
+    public AssociatedConceptIterator() {
+        super();
+    }
 	
 	/**
 	 * Instantiates a new associated concept iterator.
