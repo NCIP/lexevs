@@ -2,6 +2,7 @@ package org.LexGrid.LexBIG.Impl.bugs;
 
 import java.util.Iterator;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -61,14 +62,17 @@ public class GForge29767 extends LexBIGServiceTestCase {
         	return null;
     	AssociationList al = l.getResolvedConceptReference(0).getSourceOf();
     	Iterator<? extends Association> ia = al.iterateAssociation();
-    	
-//        Iterator<? extends ResolvedConceptReference> i = l.getResolvedConceptReference()[0].iterateResolvedConceptReference();
-//        while(i.hasNext()) {
-//        	ResolvedConceptReference con = i.next();
-//        	if (con.getCode().startsWith("@")) {
-//        		return con;
-//        	}
-//        }
+    	while(ia.hasNext()) {
+    		Association a = ia.next();
+    		AssociatedConceptList cl = a.getAssociatedConcepts();
+    		Iterator<? extends AssociatedConcept> iCon = cl.iterateAssociatedConcept();
+    		while(iCon.hasNext()) {
+    			AssociatedConcept con = iCon.next();
+    			if (con.getCode().startsWith("@")) {
+            		return con;
+            	}
+    		}
+    	}
     	return null;
     }
    
