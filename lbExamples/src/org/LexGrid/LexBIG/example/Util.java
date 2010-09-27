@@ -22,9 +22,10 @@ import java.io.PrintWriter;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 
 /**
  * Utility functions to support the examples.
@@ -33,7 +34,8 @@ import org.lexevs.system.ResourceManager;
  */
 class Util {
     static final private String _lineReturn = System.getProperty("line.separator");
-    static final private LgLoggerIF _logger = ResourceManager.instance().getLogger();
+    static private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
+    static final private LgLoggerIF _logger = service.getLogger();
     static final private PrintWriter _printWriter = new PrintWriter(System.out);
 
     /**
@@ -150,6 +152,16 @@ class Util {
      */
     static CodingSchemeSummary promptForCodeSystem() {
         return new CodingSchemeSelectionMenu().displayAndGetSelection();
+    }
+    
+    /**
+     * Display a list of available value set definitions and
+     * 
+     * @return The selected value set definition; null if
+     *         no valid selection was made.
+     */
+    static ValueSetDefinition promptForValueSetDefinition() {
+        return new ValueSetDefinitionSelectionMenu().displayAndGetSelection();
     }
 
     /**
