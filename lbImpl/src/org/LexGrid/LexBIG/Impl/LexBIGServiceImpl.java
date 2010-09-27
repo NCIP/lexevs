@@ -75,6 +75,7 @@ import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
 import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
+import org.LexGrid.LexBIG.Impl.helpers.LuceneWarmUpThread;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
@@ -148,6 +149,8 @@ public class LexBIGServiceImpl implements LexBIGService {
             try {
                 lexbigService_ = new LexBIGServiceImpl();
                 lexbigService_.registerExtensions();
+                
+                new LuceneWarmUpThread().start();
             } catch (LBException e) {
                 LoggerFactory.getLogger().error("Error initializing service", e);
             }
