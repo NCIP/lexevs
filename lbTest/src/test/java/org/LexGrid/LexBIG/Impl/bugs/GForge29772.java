@@ -8,15 +8,14 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 
-public class GForge29767 extends LexBIGServiceTestCase {
-    final static String testID = "GForge29767";
+public class GForge29772 extends LexBIGServiceTestCase {
+    final static String testID = "GForge29772";
     
     @Override
     protected String getTestID() {
@@ -26,8 +25,8 @@ public class GForge29767 extends LexBIGServiceTestCase {
     /**
      * 
      * 
-     * GForge #29767
-     * https://gforge.nci.nih.gov/tracker/index.php?func=detail&aid=29767&group_id=491&atid=1850
+     * GForge #29772
+     * https://gforge.nci.nih.gov/tracker/index.php?func=detail&aid=29772&group_id=491&atid=1850
      * 
      * @throws Throwable
      */
@@ -39,40 +38,35 @@ public class GForge29767 extends LexBIGServiceTestCase {
         CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_URI, csvt, null);
         
         AssociatedConcept focus = new AssociatedConcept();
-        focus.setCode("NonVegetarianPizza");
+        focus.setCode("American");
         focus.setCodeNamespace("pizza.owl");
         
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         
-        ResolvedConceptReference con = getAnonymousClass(list);
-        if (con == null)
-        	fail("the 1st anonymous class not found");
-        
-        list = cng.resolveAsList(con, true, false, 1, -1, null, null, null, null, -1);
-        con = getAnonymousClass(list);
-        if (con == null) {
-        	fail("the anonymous class's anonymou class not found");
-        }
+        boolean t = existAnonymousClassSubClass(list);
+        assertEquals(t, "true");
 
     }
     
-    private ResolvedConceptReference getAnonymousClass(ResolvedConceptReferenceList l) {
+    private boolean existAnonymousClassSubClass(ResolvedConceptReferenceList l) {
     	if (l.getResolvedConceptReferenceCount() != 1)
-        	return null;
+        	return false;
     	AssociationList al = l.getResolvedConceptReference(0).getSourceOf();
     	Iterator<? extends Association> ia = al.iterateAssociation();
     	while(ia.hasNext()) {
     		Association a = ia.next();
+    		if (a.getAssociationName().equalsIgnoreCase("subClassOf") == false)
+    			continue;
     		AssociatedConceptList cl = a.getAssociatedConcepts();
     		Iterator<? extends AssociatedConcept> iCon = cl.iterateAssociatedConcept();
     		while(iCon.hasNext()) {
     			AssociatedConcept con = iCon.next();
     			if (con.getCode().startsWith("@")) {
-            		return con;
+            		return true;
             	}
     		}
     	}
-    	return null;
+    	return false;
     }
    
 }
