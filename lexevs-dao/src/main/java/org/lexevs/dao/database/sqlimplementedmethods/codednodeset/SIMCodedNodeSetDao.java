@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.sqlimplementedmethods.codednodeset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -27,7 +28,6 @@ import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.AbstractBaseDao;
 import org.lexevs.dao.database.access.codednodeset.CodedNodeSetDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.dao.database.utility.DaoUtility;
 
 /**
  * The Class SIMCodedNodeSetDao.
@@ -37,7 +37,8 @@ import org.lexevs.dao.database.utility.DaoUtility;
 public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetDao {
 	
 	/** The supported datebase version. */
-	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
+	private LexGridSchemaVersion supportedDatebaseVersionNMinus1 = LexGridSchemaVersion.parseStringToVersion("1.8");
+	private LexGridSchemaVersion supportedDatebaseVersionNMinus2 = LexGridSchemaVersion.parseStringToVersion("1.7");
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codednodeset.CodedNodeSetDao#buildCodedEntry(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.lexevs.dao.database.access.property.PropertyDao.PropertyType[])
@@ -84,7 +85,11 @@ public class SIMCodedNodeSetDao extends AbstractBaseDao implements CodedNodeSetD
 	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
+		List<LexGridSchemaVersion> supportedDBVersions = new ArrayList<LexGridSchemaVersion>();
+		supportedDBVersions.add(supportedDatebaseVersionNMinus1);
+		supportedDBVersions.add(supportedDatebaseVersionNMinus2);
+		return supportedDBVersions;
+//		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	/* (non-Javadoc)
