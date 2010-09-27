@@ -5,6 +5,7 @@ REM
 REM Options:
 REM   -in,--input <uri> URI or path specifying location of the source file
 REM   -mf,--manifest <uri> URI or path specifying location of the manifest file
+REM   -lp,--loaderPrefs<uri> URI or path specifying location of the loader preference file
 REM   -ms,--memorySetting <int> If specified, indicates the profile
 REM         used to tune memory/performance tradeoffs. Options are:
 REM         1 = Faster/more memory (holds OWL in memory)
