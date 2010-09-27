@@ -35,6 +35,7 @@ import org.lexevs.registry.service.Registry;
  */
 public class CodedNodeGraphFactory {
 
+    private static String VERSION_17 = "1.7";
     private static String VERSION_18 = "1.8";
     private static String VERSION_20 = "2.0";
 
@@ -59,7 +60,7 @@ public class CodedNodeGraphFactory {
         RegistryEntry entry = 
             registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
 
-        if(entry.getDbSchemaVersion().equals(VERSION_18)){
+        if(entry.getDbSchemaVersion().equals(VERSION_18) || entry.getDbSchemaVersion().equals(VERSION_17)){
             try {
                 return new CodedNodeGraphImpl(uri, version, relationContainerName);
             } catch (LBException e) {

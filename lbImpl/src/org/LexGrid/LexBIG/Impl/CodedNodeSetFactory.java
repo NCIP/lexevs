@@ -43,6 +43,7 @@ import org.lexevs.registry.service.Registry;
  */
 public class CodedNodeSetFactory {
 
+    private static String VERSION_17 = "1.7";
     private static String VERSION_18 = "1.8";
     private static String VERSION_20 = "2.0";
 
@@ -67,7 +68,7 @@ public class CodedNodeSetFactory {
         RegistryEntry entry = 
             registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
 
-        if(entry.getDbSchemaVersion().equals(VERSION_18)){
+        if(entry.getDbSchemaVersion().equals(VERSION_18) || entry.getDbSchemaVersion().equals(VERSION_17)){
 
             return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
 
