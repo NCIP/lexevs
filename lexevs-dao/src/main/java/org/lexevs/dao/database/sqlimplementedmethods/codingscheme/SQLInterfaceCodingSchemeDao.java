@@ -20,6 +20,7 @@ package org.lexevs.dao.database.sqlimplementedmethods.codingscheme;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -50,8 +51,9 @@ import org.springframework.util.StringUtils;
  */
 public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDao implements CodingSchemeDao {
 	
-	/** The supported datebase version. */
-	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
+	/** The supported datebase versions. */
+	private LexGridSchemaVersion supportedDatebaseVersionNMinus2 = LexGridSchemaVersion.parseStringToVersion("1.7");
+	private LexGridSchemaVersion supportedDatebaseVersionNMinus1 = LexGridSchemaVersion.parseStringToVersion("1.8");
 	
 	/**
 	 * Delete coding scheme.
@@ -280,7 +282,11 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	 */
 	@Override
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
+		List<LexGridSchemaVersion> supportedDBVersions = new ArrayList<LexGridSchemaVersion>();
+		supportedDBVersions.add(supportedDatebaseVersionNMinus2);
+		supportedDBVersions.add(supportedDatebaseVersionNMinus1);
+		return supportedDBVersions;
+//		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 
 	/* (non-Javadoc)
