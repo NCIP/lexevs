@@ -402,12 +402,6 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 		} 
 		
 		assertTrue(removeStatus);
-		
-		AuthoringService authServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAuthoringService();
-		for (String revId : revIds_)
-		{
-			assertTrue(authServ.removeRevisionRecordbyId(revId));
-		}
 	}
 
 	private String getRevId(){
