@@ -81,7 +81,7 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 	@Test
 	public void testCreateUsageContextFromFile() throws LBException, IOException {
 		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
-		File file = new File("resources/testData/cts2/UsageContextCodingScheme_1.0.xml");
+		File file = new File("resources/testData/cts2/usageContextCodingScheme_1.0.xml");
 		
 		csLoadOp.load(file.toURI(), null, null, "LexGrid_Loader", true, true, false, "test", true);
 		
@@ -372,35 +372,7 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 		
 		assertTrue(uc == null);
 	}
-	
-	@Test
-	public void testRemoveUsageContextCodeSystem() throws LBException{
-		RevisionInfo revInfo = new RevisionInfo();
-		revInfo.setChangeAgent("changeAgent");
-		revInfo.setChangeInstruction("changeInstruction");
-		revInfo.setDescription("description");
-		revInfo.setEditOrder(1L);
-		revInfo.setRevisionDate(new Date());
-		revInfo.setRevisionId(getRevId());
-		
-	    
-	    String codingSchemeURI = UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_URI;
-		String representsVersion = UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_VERSION;
-		
-		Boolean removeStatus = false;
-	    
-	    CodeSystemAuthoringOperation codeSystemAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
-	
-	    try {
-			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
-		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		assertTrue(removeStatus);
-	}
-	
+
 	@Test
 	public void testCleanup() throws Exception {
 		UC_AUTH_OP = null;
