@@ -3,6 +3,7 @@ REM Loads a file specified in the Open Biomedical Ontologies (OBO) format.
 REM
 REM Options:
 REM   -in,--input <uri> URI or path specifying location of the source file
+REM   -mf,--manifest <uri> URI or path specifying location of the manifest file
 REM   -v, --validate <int> Perform validation of the candidate
 REM         resource without loading data.  If specified, the '-a' and '-t'
 REM         options are ignored.  Supported levels of validation include:

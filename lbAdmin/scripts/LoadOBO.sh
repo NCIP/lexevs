@@ -2,6 +2,7 @@
 #
 # Options:
 #   -in,--input <uri> URI or path specifying location of the source file
+#   -mf,--manifest <uri> URI or path specifying location of the manifest file
 #   -v, --validate <int> Perform validation of the candidate
 #         resource without loading data.  If specified, the '-a' and '-t'
 #         options are ignored.  Supported levels of validation include:
