@@ -18,26 +18,21 @@
  */
 package org.lexevs.dao.database.sqlimplementedmethods.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.entity.EntityDao;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.sqlimplementedmethods.AbstraceSqlImplementedMethodsDao;
 import org.lexevs.dao.database.sqlimplementedmethods.codingscheme.SQLInterfaceCodingSchemeDao;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.exceptions.UnexpectedInternalError;
 
 /**
  * The Class SQLInterfaceEntityDao.
@@ -46,8 +41,9 @@ import org.lexevs.exceptions.UnexpectedInternalError;
  */
 public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao implements EntityDao {
 		
-		/** The supported datebase version. */
-		private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("1.8");
+		/** The supported datebase versions. */
+		private LexGridSchemaVersion supportedDatebaseVersionNMinus2 = LexGridSchemaVersion.parseStringToVersion("1.7");
+		private LexGridSchemaVersion supportedDatebaseVersionNMinus1 = LexGridSchemaVersion.parseStringToVersion("1.8");
 
 		/* (non-Javadoc)
 		 * @see org.lexevs.dao.database.access.entity.EntityDao#getAllEntitiesOfCodingScheme(java.lang.String, int, int)
@@ -130,7 +126,11 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		 */
 		@Override
 		public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-			return DaoUtility.createNonTypedList(supportedDatebaseVersion);
+			List<LexGridSchemaVersion> supportedDBVersions = new ArrayList<LexGridSchemaVersion>();
+			supportedDBVersions.add(supportedDatebaseVersionNMinus2);
+			supportedDBVersions.add(supportedDatebaseVersionNMinus1);
+			return supportedDBVersions;
+//			return DaoUtility.createNonTypedList(supportedDatebaseVersionN);
 		}
 
 		/* (non-Javadoc)
