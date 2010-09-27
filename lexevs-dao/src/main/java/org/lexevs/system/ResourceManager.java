@@ -1068,25 +1068,13 @@ public class ResourceManager implements SystemResourceService {
                 // map.
                 SQLInterface si = sqlServerInterfaces_.get(serverId);
                 
-                /* TODO:
-                String connectionKey = si.getConnectionKey();
                 sqlServerInterfaces_.remove(serverId);
 
                 // drop the tables if we are in single db mode.
                 if (singleDBMode) {
                     si.dropTables();
                 }
-
-                // close the connection
-                boolean closedConnection = si.close();
-
-                // if we closed the underlying connection, we need to remove
-                // this from the sqlServerBaseInterfaces map.
-                if (closedConnection) {
-                    sqlServerBaseInterfaces_.remove(connectionKey);
-                }
-                 */
-                
+ 
                 String dbName = registry_.getDBCodingSchemeEntry(codingSchemeReference).dbName;
                 
                 //This is for backwards compatiblity. Since multi-db mode is now deprecated,
