@@ -36,8 +36,8 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	public BaseLuceneIndexTemplate(NamedDirectory namedDirectory){
 		super();
 		try {
-			indexSearcher = this.createIndexSearcher(namedDirectory);
-			indexReader = this.createIndexReader(namedDirectory);
+			indexReader = namedDirectory.getIndexReader();
+			indexSearcher = namedDirectory.getIndexSearcher();
 			this.namedDirectory = namedDirectory;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -46,16 +46,8 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		indexSearcher = this.createIndexSearcher(namedDirectory);
-		indexReader = this.createIndexReader(namedDirectory);
-	}
-	
-	protected IndexSearcher createIndexSearcher(NamedDirectory namedDirectory) throws Exception {
-		return new IndexSearcher(namedDirectory.getDirectory());
-	}
-	
-	protected IndexReader createIndexReader(NamedDirectory namedDirectory) throws Exception {
-		return IndexReader.open(namedDirectory.getDirectory(), true);
+		indexReader = namedDirectory.getIndexReader();
+		indexSearcher = namedDirectory.getIndexSearcher();
 	}
 
 	@Override

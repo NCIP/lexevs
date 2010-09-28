@@ -1,11 +1,11 @@
 package org.lexevs.dao.index.lucenesupport;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
@@ -22,24 +22,9 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	@Override
 	public Object getObject() throws Exception {
 		Directory directory = FSDirectory.getDirectory(this.indexDirectory.getFile());
-		
-		initIndexDirectory(directory, this.indexDirectory.getFile());
 
 		return new NamedDirectory(
 				directory, indexName);
-	}
-
-	public static void initIndexDirectory(Directory directory, File directoryDir) throws IOException,
-			CorruptIndexException, LockObtainFailedException {
-		
-		if(!IndexReader.indexExists(directoryDir)){
-			IndexWriter writer = new IndexWriter(
-					directory, 
-					LuceneLoaderCode.getAnaylzer(), 
-					IndexWriter.MaxFieldLength.UNLIMITED);
-
-			writer.close();
-		}
 	}
 
 	@Override
@@ -71,11 +56,20 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	public static class NamedDirectory {
 		private Directory directory;
 		private String indexName;
-		
+		private IndexSearcher indexSearcher;
+		private IndexReader indexReader;
+
 		public NamedDirectory(Directory directory, String indexName) {
 			super();
 			this.directory = directory;
 			this.indexName = indexName;
+			try {
+				this.initIndexDirectory(directory);
+				this.indexReader = this.createIndexReader(directory);
+				this.indexSearcher = this.createIndexSearcher(this.indexReader);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 		public Directory getDirectory() {
 			return directory;
@@ -88,6 +82,51 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		}
 		public void setIndexName(String indexName) {
 			this.indexName = indexName;
+		}
+		
+		public IndexSearcher getIndexSearcher() {
+			return indexSearcher;
+		}
+		public void setIndexSearcher(IndexSearcher indexSearcher) {
+			this.indexSearcher = indexSearcher;
+		}
+		public IndexReader getIndexReader() {
+			return indexReader;
+		}
+		public void setIndexReader(IndexReader indexReader) {
+			this.indexReader = indexReader;
+		}
+		
+		protected IndexSearcher createIndexSearcher(IndexReader indexReader) throws Exception {
+			return new IndexSearcher(indexReader);
+		}
+
+		protected IndexReader createIndexReader(Directory directory) throws Exception {
+			IndexReader reader = IndexReader.open(directory, true);
+			return reader;
+		}
+
+		private void initIndexDirectory(Directory directory) throws IOException,
+			CorruptIndexException, LockObtainFailedException {
+
+			if(!IndexReader.indexExists(directory)){
+				IndexWriter writer = new IndexWriter(
+						directory, 
+						LuceneLoaderCode.getAnaylzer(), 
+						IndexWriter.MaxFieldLength.UNLIMITED);
+
+				writer.close();
+			}
+		}
+		
+		public void refresh() {
+			try {
+				this.indexReader.reopen();
+				this.indexSearcher.close();
+				this.indexSearcher = this.createIndexSearcher(this.indexReader);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 }

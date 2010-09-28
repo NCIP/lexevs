@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.util.config.PropertiesUtility;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.logging.Logger;
@@ -79,6 +80,9 @@ public class SystemVariables {
     
     private boolean singleTableMode = true;
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
+    
+    private static String LUCENE_SINGLE_INDEX_PROP = "LUCENE_SINGLE_INDEX";
+    private static String LUCENE_SINGLE_INDEX_DEFAULT = "true";
     
     private boolean isSingleIndex = true;
 
@@ -354,6 +358,9 @@ public class SystemVariables {
                     logger.error("INVALID VALUE in config file for " + LUCENE_MAX_CLAUSE_COUNT_PROP);
                 }
             }
+            
+            
+            this.isSingleIndex = BooleanUtils.toBoolean(getNullableProperty(props, LUCENE_SINGLE_INDEX_PROP, LUCENE_SINGLE_INDEX_DEFAULT));
             
             this.primaryKeyStrategy = getNullableProperty(props, PRIMARY_KEY_STRATEGY_PROP, DEFAULT_PRIMARY_KEY_STRATEGY);
             
