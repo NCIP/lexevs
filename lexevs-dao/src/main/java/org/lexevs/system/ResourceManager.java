@@ -330,8 +330,7 @@ public class ResourceManager implements SystemResourceService {
         HistoryEntry[] histories = registry_.getHistoryEntries();
         for (int i = 0; i < histories.length; i++) {
             try {
-            	//TODO:
-                //temp.put(histories[i].urn, new SQLHistoryInterface(dataSource), histories[i].prefix));
+                temp.put(histories[i].urn, new SQLHistoryInterface(dataSource, this.getDatabaseType(), histories[i].prefix));
             } catch (Throwable e) {
                 logger_.error("Skipping an invalid History configuration due to previous errors.", e);
             }

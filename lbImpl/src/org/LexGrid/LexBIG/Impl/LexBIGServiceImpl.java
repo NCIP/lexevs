@@ -71,8 +71,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.Sort.EntityDescriptionSort;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.NumberOfChildrenSort;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.isActiveSort;
-import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistorySQLQueries;
-import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
+import org.LexGrid.LexBIG.Impl.History.HistoryServiceFactory;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
 import org.LexGrid.LexBIG.Impl.helpers.LuceneWarmUpThread;
@@ -128,6 +127,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
     private CodedNodeGraphFactory codedNodeGraphFactory = new CodedNodeGraphFactory();
     private CodedNodeSetFactory codedNodeSetFactory = new CodedNodeSetFactory();
+    private HistoryServiceFactory historyServiceFactory = new HistoryServiceFactory();
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -381,26 +381,10 @@ public class LexBIGServiceImpl implements LexBIGService {
      * org.LexGrid.LexBIG.LexBIGService.LexBIGService#getHistoryService(String)
      */
     @LgClientSideSafe
-    public HistoryService getHistoryService(String codingScheme) throws LBParameterException {
+    public HistoryService getHistoryService(String codingScheme) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme });
-        String urn;
-        try {
-            urn = systemResourceService.getUriForUserCodingSchemeName(codingScheme);
-        } catch (LBParameterException e) {
-            // this means that no coding scheme that was loaded could map to a
-            // URN - but
-            // we could still work right iff they provided a urn as the coding
-            // scheme.
-            urn = codingScheme;
-        }
 
-        if (urn.equals(NCIThesaurusHistorySQLQueries.NCIThesaurusURN)) {
-            return new UriBasedHistoryServiceImpl(urn);
-        } else if (urn.equals(HistoryService.metaURN)) {
-            return new UriBasedHistoryServiceImpl(urn);
-        } else {
-            throw new LBParameterException("No history service could be located for", "codingScheme", codingScheme);
-        }
+        return this.historyServiceFactory.getHistoryService(codingScheme);
     }
 
     /*

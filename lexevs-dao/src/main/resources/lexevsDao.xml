@@ -115,6 +115,9 @@
 	 <bean id="sqlInterfaceEntityDao" class="org.lexevs.dao.database.sqlimplementedmethods.entity.SQLInterfaceEntityDao"
 		 parent="abstractSqlInterfaceDao"/>
 
+	<bean id="sqlInterfaceNciHistoryDao" class="org.lexevs.dao.database.sqlimplementedmethods.ncihistory.SQLInterfaceNciHistoryDao"
+		 parent="abstractSqlInterfaceDao"/>
+
 	<bean id="daoManager" class="org.lexevs.dao.database.access.DaoManager">
 		<property name="codingSchemeDaos">
 			<list>
@@ -201,6 +204,7 @@
 		<property name="nciHistoryDaos">
 			<list>
 				<ref bean="ibatisNciHistoryDao" />
+				<ref bean="sqlInterfaceNciHistoryDao"/>
 			</list>
 		</property>
 	
