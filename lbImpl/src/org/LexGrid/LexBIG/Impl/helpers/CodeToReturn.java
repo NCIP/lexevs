@@ -122,6 +122,16 @@ public class CodeToReturn implements Serializable {
         return false;
     }
 
+    @Override
+    @LgClientSideSafe
+    public int hashCode() {
+        if(this.getCode()!= null && this.getNamespace() != null) {
+            return this.getCode().hashCode() + this.getNamespace().hashCode();
+        } else {
+            return super.hashCode();
+        }
+    }
+    
     @LgClientSideSafe
     public String getCode() {
         return this.code_;
