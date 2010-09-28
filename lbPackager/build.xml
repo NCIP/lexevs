@@ -945,7 +945,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 	<!-- Normal javadoc -->
 	<!-- This task is used if the ydoc license is not detected. -->
 	<target name="javadoc" depends="lexbig.jar" description="Generate the javadocs" unless="ydoc.present">
-		<javadoc destdir="${pkg-doc}/javadoc" 
+		<javadoc destdir="${pkg-doc}/javadoc" useexternalfile="true"
 			windowtitle="LexGrid Vocabulary Services for caBIG (LexBIG)"
 			footer="Copyright: (c) 2004-2006 Mayo Foundation for Medical Education and Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER."
 			additionalparam="-breakiterator">
