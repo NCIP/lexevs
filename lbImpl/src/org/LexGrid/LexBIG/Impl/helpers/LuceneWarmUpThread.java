@@ -52,7 +52,7 @@ public class LuceneWarmUpThread extends Thread {
         try {
             csrl = lbs.getSupportedCodingSchemes();
         } catch (LBInvocationException e) {
-           LoggerFactory.getLogger().warn("Error warming up Lucene Index.", e);
+           LoggerFactory.getLogger().warn("Error warming up Lucene Index.");
            return;
         }
         
@@ -76,7 +76,7 @@ public class LuceneWarmUpThread extends Thread {
                 
             } catch (Exception e) {
                 LoggerFactory.getLogger().warn(
-                        "Error warming up Lucene Index for URI: " + uri + " Version: " + version + ".", e);
+                        "Error warming up Lucene Index for URI: " + uri + " Version: " + version + ".");
                 continue;
             }
         }
