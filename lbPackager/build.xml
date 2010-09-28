@@ -812,8 +812,8 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 
 	
 	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
-	<target name="lexbig.jar" depends="lbModel, lbInterfaces, lexevs-dao, lgConverter, lbImpl, lbAdmin, lbExamples,
-		Indexer, lgResourceReader, lgValueSets,
+	<target name="lexbig.jar" depends="lbModel, lbInterfaces, lexevs-dao, lgConverter, lbImpl, lbAdmin, 
+		Indexer, lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
 		umls-loader, meta-loader, cts2, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
