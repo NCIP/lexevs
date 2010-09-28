@@ -74,6 +74,7 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.system.ResourceManager;
@@ -868,8 +869,8 @@ public class SQLImplementedMethodsDao {
 				}
 				if (restrictToPropertyTypes != null && restrictToPropertyTypes.length > 0) {
 					for (int j = 0; j < restrictToPropertyTypes.length; j++) {
-						//String pts = RestrictionImplementations.mapPropertyType(restrictToPropertyTypes[j]);
-						//getEntityProperties.setString(i++, pts);
+						String pts = DaoUtility.propertyTypeToStringMap.get(restrictToPropertyTypes[j]);
+						getEntityProperties.setString(i++, pts);
 					}
 				}
 

@@ -33,7 +33,11 @@ import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedContext;
+import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedPropertyQualifier;
+import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -413,8 +417,46 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	@Override
 	public <T extends URIMap> boolean validateSupportedAttribute(
 			String codingSchemeId, String localId, Class<T> uriMap) {
-		// TODO Auto-generated method stub (IMPLEMENT!)
-		throw new UnsupportedOperationException();
+		AbsoluteCodingSchemeVersionReference reference = 
+			SQLInterfaceCodingSchemeDao.resolveCodingSchemeKey(codingSchemeId);
+
+		try {
+			String internalCodingSchemeName = this.getResourceManager().
+			getInternalCodingSchemeNameForUserCodingSchemeName(
+					reference.getCodingSchemeURN(), 
+					reference.getCodingSchemeVersion());
+
+			if(uriMap.equals(SupportedSource.class)) {
+				return this.getSqlImplementedMethodsDao().validateSource(
+						internalCodingSchemeName, 
+						reference.getCodingSchemeVersion(), 
+						localId);
+			} else if(uriMap.equals(SupportedLanguage.class)) {
+				return this.getSqlImplementedMethodsDao().validateLanguage(
+						internalCodingSchemeName, 
+						reference.getCodingSchemeVersion(), 
+						localId);
+			} else if(uriMap.equals(SupportedProperty.class)) {
+				return this.getSqlImplementedMethodsDao().validateProperty(
+						internalCodingSchemeName, 
+						reference.getCodingSchemeVersion(), 
+						localId);
+			} else if(uriMap.equals(SupportedContext.class)) {
+				return this.getSqlImplementedMethodsDao().validateContext(
+						internalCodingSchemeName, 
+						reference.getCodingSchemeVersion(), 
+						localId);
+			} else if(uriMap.equals(SupportedPropertyQualifier.class)) {
+				return this.getSqlImplementedMethodsDao().validatePropertyQualifier(
+						internalCodingSchemeName, 
+						reference.getCodingSchemeVersion(), 
+						localId);
+			} else {
+				throw new RuntimeException(uriMap + " cannot be mapped to a URIMap.");
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 	}
 
 	/* (non-Javadoc)
