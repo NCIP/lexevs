@@ -17,4 +17,8 @@ public interface IndexRegistry {
 	public LuceneIndexTemplate getCommonLuceneIndexTemplate();
 	
 	public LuceneIndexTemplate getCommonLuceneIndexTemplate(List<AbsoluteCodingSchemeVersionReference> codingSchemes);
+	
+	public void destroyIndex(String indexName);
+	
+	public String getCommonIndexName();
 }

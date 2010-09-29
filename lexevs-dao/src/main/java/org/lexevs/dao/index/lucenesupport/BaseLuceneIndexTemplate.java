@@ -11,7 +11,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.HitCollector;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
@@ -204,23 +203,32 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
 		try {
 		IndexWriter writer = 
-			new IndexWriter(namedDirectory.getDirectory(), analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-		
-		writer.setMergeFactor(20);
-		writer.setRAMBufferSizeMB(500);
+			createIndexWriter(namedDirectory);
 		
 		T result = callback.doInIndexWriter(writer);
 		
 		writer.close();
 		
-		indexReader = indexReader.reopen();
-		indexSearcher = new IndexSearcher(indexReader);
+		namedDirectory.refresh();
+		
+		this.indexReader = namedDirectory.getIndexReader();
+		this.indexSearcher = namedDirectory.getIndexSearcher();
 		
 		return result;
 		
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
+	}
+	
+	protected IndexWriter createIndexWriter(NamedDirectory namedDirectory) throws Exception {
+		IndexWriter writer = 
+			new IndexWriter(namedDirectory.getDirectory(), analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+		
+		writer.setMergeFactor(20);
+		writer.setRAMBufferSizeMB(500);
+		
+		return writer;
 	}
 	
 	public interface IndexReaderCallback<T> {
@@ -237,9 +245,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		
 		public T doInIndexWriter(IndexWriter indexWriter) throws Exception;
 	}
-	
-	
-	
+
 	@Override
 	public <T> T executeInIndexReader(IndexReaderCallback<T> callback) {
 		return this.doInIndexReader(callback);
@@ -296,7 +302,11 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	public void finalize() throws Throwable {
 		super.finalize();
-		this.indexReader.close();
-		this.indexSearcher.close();
+		if(this.indexReader != null) {
+			this.indexReader.close();
+		}
+		if(this.indexSearcher != null) {
+			this.indexSearcher.close();
+		}
 	}
 }

@@ -102,7 +102,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	
 	public void createIndex(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {
 		String indexName = indexCreator.index(reference, callback);
-		
+
 		indexRegistry.registerCodingSchemeIndex(
 				reference.getCodingSchemeURN(), 
 				reference.getCodingSchemeVersion(), 
@@ -113,7 +113,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 			String codingSchemeUri,
 			String codingSchemeVersion, 
 			Entity entity) {
-		
+
 		Term term = new Term(
 					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
 					LuceneLoaderCode.
@@ -231,16 +231,22 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		String codingSchemeUri = reference.getCodingSchemeURN();
 		String codingSchemeVersion = reference.getCodingSchemeVersion();
 		
-		Term term = new Term(
-				LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-				LuceneLoaderCode.createCodingSchemeUriVersionKey(
-						codingSchemeUri, codingSchemeVersion));
+		String indexName = this.getIndexName(codingSchemeUri, codingSchemeVersion);
 		
-		indexDaoManager.getEntityDao(
-				codingSchemeUri, 
-				codingSchemeVersion).deleteDocuments(codingSchemeUri, codingSchemeVersion, term);
-		
-		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		if(indexName.equals(this.indexRegistry.getCommonIndexName())) {
+			Term term = new Term(
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+							codingSchemeUri, codingSchemeVersion));
+			
+			indexDaoManager.getEntityDao(
+					codingSchemeUri, 
+					codingSchemeVersion).deleteDocuments(codingSchemeUri, codingSchemeVersion, term);
+			
+			this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		} else {
+			this.indexRegistry.destroyIndex(indexName);
+		}	
 	}
 
 	@Override

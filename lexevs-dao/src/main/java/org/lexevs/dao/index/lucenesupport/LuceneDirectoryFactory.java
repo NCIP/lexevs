@@ -2,6 +2,7 @@ package org.lexevs.dao.index.lucenesupport;
 
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -125,6 +126,20 @@ public class LuceneDirectoryFactory implements FactoryBean {
 				this.indexSearcher.close();
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
 			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public void remove() {
+			try {
+				this.indexSearcher.close();
+				this.indexReader.close();
+
+				if(this.directory instanceof FSDirectory) {
+					FSDirectory dir = (FSDirectory)this.directory;
+					FileUtils.deleteDirectory(dir.getFile());
+				}
+			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}

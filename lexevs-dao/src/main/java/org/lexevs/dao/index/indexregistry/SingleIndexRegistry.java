@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.store.FSDirectory;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.index.factory.IndexLocationFactory;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
@@ -25,10 +27,8 @@ import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.utility.MetaData;
 
 public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
-	
-	public static String DEFAULT_SINGLE_INDEX_NAME = "commonIndex";
-	
-	public String singleIndexName = DEFAULT_SINGLE_INDEX_NAME;
+		
+	public String singleIndexName = IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
 	
@@ -100,7 +100,21 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 			}
 
 			luceneCodingSchemeToIndexNameMap.remove(key);
-
+		}
+	}
+	
+	@Override
+	public void destroyIndex(String indexName) {
+		for(Entry<CodingSchemeUriVersionPair, String> entry : this.luceneCodingSchemeToIndexNameMap.entrySet()) {
+			if(entry.getValue().equals(indexName)) {
+				NamedDirectory namedDirectory = this.luceneIndexNameToDirctoryMap.get(entry.getValue());
+				namedDirectory.remove();
+				
+				CodingSchemeUriVersionPair key = entry.getKey();
+				this.unRegisterCodingSchemeIndex(
+						key.uri, 
+						key.version);
+			}
 		}
 	}
 	
@@ -181,6 +195,11 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public String getCommonIndexName() {
+		return this.getSingleIndexName();
+	}
 
 	public MetaData getMetaData() {
 		return metaData;
@@ -196,10 +215,6 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 
 	public String getSingleIndexName() {
 		return singleIndexName;
-	}
-
-	public void setSingleIndexName(String singleIndexName) {
-		this.singleIndexName = singleIndexName;
 	}
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {

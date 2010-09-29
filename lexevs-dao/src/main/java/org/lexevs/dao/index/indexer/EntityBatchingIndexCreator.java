@@ -30,7 +30,7 @@ import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
-import org.lexevs.dao.index.indexregistry.SingleIndexRegistry;
+import org.lexevs.dao.index.factory.IndexLocationFactory;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -124,6 +124,15 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			}
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
+			
+			if(! this.systemVariables.getIsSingleIndex()) {
+				EntityDao entityIndexDao = 
+					this.indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+				
+				this.getLogger().info("In multi-directory index mode, optimizing...");
+				entityIndexDao.optimizeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+				this.getLogger().info("Optimizing complete.");
+			}
 		}
 		
 		return indexName;
@@ -158,7 +167,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
 		if(systemVariables.getIsSingleIndex()){
-			return SingleIndexRegistry.DEFAULT_SINGLE_INDEX_NAME;
+			return IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
 		} else {
 			return UUID.randomUUID().toString();
 		}

@@ -2,7 +2,9 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:aop="http://www.springframework.org/schema/aop"
    xmlns:tx="http://www.springframework.org/schema/tx"
+   xmlns:util="http://www.springframework.org/schema/util"
    xsi:schemaLocation="
+   http://www.springframework.org/schema/util classpath:springxsds/spring-util-2.0.xsd
    http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-2.0.xsd
    http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd
    http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd">
@@ -834,11 +836,17 @@
 	<bean id="commonIndexDirectory"
 		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory">
 		<property name="indexDirectory" ref="commonIndexLocation" />
+		<property name="indexName">
+			<util:constant static-field="org.lexevs.dao.index.factory.IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME"/>
+		</property>
 	</bean>
 	
 	<bean id="commonIndexLocation" 
 		class="org.lexevs.dao.index.factory.IndexLocationFactory">
 		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="indexName">
+			<util:constant static-field="org.lexevs.dao.index.factory.IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME"/>
+		</property>
 	</bean>
 	
 	<bean id="metadataIndexDirectory"

@@ -10,6 +10,8 @@ import org.springframework.util.Assert;
 
 public class IndexLocationFactory implements FactoryBean {
 
+	public static String DEFAULT_SINGLE_INDEX_NAME = "commonIndex";
+	
 	private String indexName;
 	
 	private SystemVariables systemVariables;

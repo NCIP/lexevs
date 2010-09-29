@@ -3,8 +3,6 @@ package org.lexevs.dao.index.lucenesupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.MultiReader;
@@ -49,28 +47,26 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 		return new MultiReader(readers.toArray(new IndexReader[readers.size()]));
 	}
 
-	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
+	@Override
+	public void optimize() {
 		for(NamedDirectory namedDirectory : this.namedDirectories) {
-			try {
-				IndexWriter writer = 
-					new IndexWriter(namedDirectory.getDirectory(), getAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
-
-				writer.setMergeFactor(20);
-				writer.setRAMBufferSizeMB(500);
-
-				T result = callback.doInIndexWriter(writer);
-				
-				Assert.assertNull(result);
-
-				writer.close();
-
-				namedDirectory.refresh();
-
+		try {
+			IndexWriter writer = 
+				createIndexWriter(namedDirectory);
+			
+			if(! namedDirectory.getIndexReader().isOptimized()){
+				writer.optimize();
+			}
+			
+			namedDirectory.refresh();
+			
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			} 
 		}
-		
-		return null;
+	}
+
+	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
+		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 	}
 }
