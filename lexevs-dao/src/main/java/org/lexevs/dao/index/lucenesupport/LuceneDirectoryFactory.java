@@ -122,7 +122,13 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		
 		public void refresh() {
 			try {
-				this.indexReader.reopen();
+				IndexReader reopenedReader = this.indexReader.reopen();
+				
+				if(reopenedReader != this.indexReader){
+					this.indexReader.close();
+					this.indexReader = this.createIndexReader(this.directory);
+				}
+				
 				this.indexSearcher.close();
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
 			} catch (Exception e) {
