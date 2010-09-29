@@ -710,8 +710,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     public void runPendingOps() throws LBInvocationException, LBParameterException {
         try {
-            if(this.codesToInclude_ != null) {return;}
-            
+        
             boolean areMultipleDesignationQueries = areMultipleDesignationQueries();
             
             BooleanQuery combinedQuery = new BooleanQuery();
