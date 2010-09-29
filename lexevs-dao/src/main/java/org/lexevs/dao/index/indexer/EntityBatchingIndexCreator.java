@@ -125,7 +125,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
 			
-			if(! this.systemVariables.getIsSingleIndex()) {
+			if(! indexName.equals(IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME)) {
 				EntityDao entityIndexDao = 
 					this.indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 				
