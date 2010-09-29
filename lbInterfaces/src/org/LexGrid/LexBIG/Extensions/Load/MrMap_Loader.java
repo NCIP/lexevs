@@ -30,6 +30,10 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
  */
 public interface MrMap_Loader extends Loader {
 
+    public final static String name = "MrMap_Loader";
+    
+    public final static String description = "This loader loads MRMAP.RRF and MRSAT.RRF" +
+    		" files into the LexGrid database as a mapping coding scheme.";
 
 
 

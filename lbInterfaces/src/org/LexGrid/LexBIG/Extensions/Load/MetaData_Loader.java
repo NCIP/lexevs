@@ -69,6 +69,8 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
  * of a special service metadata index.
  */
 public interface MetaData_Loader extends Loader {
+    public final static String name = "MetaDataLoader";
+    public final static String description = "This loader loads metadata xml files into the system.";
 
 	/**
 	 * Loads metadata specified by the given manifest to a previously loaded

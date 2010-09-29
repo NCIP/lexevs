@@ -26,6 +26,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
  * Validates and/or loads content provided in OWL XML format.
  */
 public interface OWL_Loader extends Loader {
+    public final static String name = "OWLLoader";
+    public final static String description = "This loader loads 'OWL Full' files into the LexGrid format.";
 
 	/**
 	 * Load content from a candidate resource. This will also result in implicit

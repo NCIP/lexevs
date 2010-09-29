@@ -37,6 +37,9 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
  *
  */
 public interface HL7_Loader extends Loader {
+	   public static final String name = "HL7Loader";
+	   public static final String description = "This loader loads coding schemes from the HL7 RIM database"
+	            + " into a LexGrid database.";
 
 		/**
 		 * Not implemented

@@ -35,6 +35,9 @@ public interface OBO_Loader extends Loader {
 	 * Return the OBO text file version that is supported by the loader. (e.g.
 	 * 1.0, 1.2, etc.).
 	 */
+    public final static String name = "OBOLoader";
+    public final static String description = "This loader loads version 1.2 OBO files into the LexGrid format.";
+
 	public String getOBOVersion();
 
 	/**

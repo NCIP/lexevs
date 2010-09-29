@@ -31,6 +31,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
  * @updated 28-Feb-2006 12:25:56 PM
  */
 public interface LexGrid_Loader extends Loader {
+    public final static String name = "LexGrid_Loader";
+    public final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
 
 	/**
 	 * Return a reference to the XML Schema that this loader supports.

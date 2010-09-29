@@ -35,6 +35,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
  * @created 09-Feb-2006 10:22:07 PM
  */
 public interface Text_Loader extends Loader {
+    public static final String name = "TextLoader";
+    public static final String description = "This loader loads LexGrid Text files into the LexGrid database.";
 
 	/**
 	 * Load content from a candidate resource. This will also result in implicit
