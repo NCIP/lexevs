@@ -155,7 +155,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return cns;
     }
 
-    @LgClientSideSafe
     public Association getAssociationForwardOneLevel(String conceptCode, String relationContainerName,
             String association, String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             boolean buildReferencedEntries, NameAndValueList associationQualifiers) throws LBException {
@@ -182,7 +181,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return null;
     }
 
-    @LgClientSideSafe
     public Association getAssociationReverseOneLevel(String conceptCode, String relationContainerName,
             String association, String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             boolean buildReferencedEntries, NameAndValueList associationQualifiers) throws LBException {
@@ -209,7 +207,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return null;
     }
 
-    @LgClientSideSafe
     public boolean isCodeRetired(String code, String codingSchemeName, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
         getLogger().logMethod(new Object[] { code, codingSchemeName, versionOrTag });
@@ -284,7 +281,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         throw new LBInvocationException("Unexpected internal error", id);
     }
 
-    @LgClientSideSafe
     public CodingSchemeRenderingList getCodingSchemesWithSupportedAssociation(String associationName)
             throws LBException {
         CodingSchemeRenderingList resolvedCodingSchemes = new CodingSchemeRenderingList();
@@ -327,7 +323,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         throw new LBInvocationException("Unexpected internal error", id);
     }
 
-    @LgClientSideSafe
     public String getAssociationCodeFromAssociationName(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String associationName) throws LBException {
         getLogger().logMethod(new Object[] { codingScheme, versionOrTag, associationName });
@@ -335,15 +330,20 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         for (SupportedAssociation foundSupportedAssociation : resolvedCodingScheme.getMappings()
                 .getSupportedAssociation()) {
-            if (foundSupportedAssociation.getLocalId().equals(associationName)) {
-                return foundSupportedAssociation.getEntityCode();
+            if(this.useBackwardCompatMethods(codingScheme, versionOrTag)) {
+                if (foundSupportedAssociation.getContent().equals(associationName)) {
+                    return foundSupportedAssociation.getEntityCode();
+                }
+            } else {
+                if (foundSupportedAssociation.getLocalId().equals(associationName)) {
+                    return foundSupportedAssociation.getEntityCode();
+                }
             }
         }
 
         throw new LBParameterException("Cound not find an EntityCode for AssociationName: " + associationName);
     }
 
-    @LgClientSideSafe
     public String getAssociationNameFromAssociationCode(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String entityCode) throws LBException {
         CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
@@ -353,14 +353,17 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
             String foundEntityCode = foundSupportedAssociation.getEntityCode();
             if (foundEntityCode != null && foundEntityCode.equals(entityCode)) {
-                return foundSupportedAssociation.getLocalId();
+                if(this.useBackwardCompatMethods(codingScheme, versionOrTag)) {
+                    return foundSupportedAssociation.getContent();
+                } else {
+                    return foundSupportedAssociation.getLocalId();
+                }
             }
         }
 
         throw new LBParameterException("Cound not find an AssociationName for EntityCode: " + entityCode);
     }
 
-    @LgClientSideSafe
     public String[] getAssociationNameForDirectionalName(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String directionalName) throws LBException {
         List<String> returnList = new ArrayList<String>();
@@ -387,7 +390,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return returnList.toArray(new String[returnList.size()]);
     }
 
-    @LgClientSideSafe
     public String getAssociationForwardName(String associationName, String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
 
@@ -396,7 +398,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     protected String doGetAssociationDirectionalName(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String associationName, DirectionalName direction) throws LBException {
-
+        
         CodingScheme resolvedCodingScheme = this.getCodingScheme(codingScheme, versionOrTag);
 
         SupportedAssociation supportedAssociation = null;
@@ -412,11 +414,25 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         if (supportedAssociation == null) {
             throw new LBParameterException("No SupportedAssociation with name: " + associationName + " was found.");
         }
+        
+        if(this.useBackwardCompatMethods(codingScheme, versionOrTag)) {
+            if(resolvedCodingScheme.getEntities() != null) {
+                for(AssociationEntity ae : resolvedCodingScheme.getEntities().getAssociationEntity()) {
+                    if(ae.getEntityCode().equals(supportedAssociation.getContent())){
+                        if(direction.equals(DirectionalName.FORWARD)) {
+                            return ae.getForwardName();
+                        } else {
+                            return ae.getReverseName();
+                        }
+                    }
+                }
+            } 
+        }
 
         String containingCodingScheme = supportedAssociation.getCodingScheme();
         String containingEntityCode = supportedAssociation.getEntityCode();
         String containingEntityCodeNamespace = supportedAssociation.getEntityCodeNamespace();
-
+        
         // if there's no entityCode, assume the AssociationName
         if (StringUtils.isBlank(containingEntityCode)) {
             containingEntityCode = supportedAssociation.getLocalId();
@@ -458,7 +474,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
     }
 
-    @LgClientSideSafe
     protected String[] doGetAssociationNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             DirectionalName direction) throws LBException {
 
@@ -475,26 +490,22 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
         return names.toArray(new String[names.size()]);
     }
-
-    @LgClientSideSafe
+    
     public String[] getAssociationForwardNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
         return this.doGetAssociationNames(codingScheme, versionOrTag, DirectionalName.FORWARD);
     }
 
-    @LgClientSideSafe
     public String getAssociationReverseName(String associationName, String codingScheme,
             CodingSchemeVersionOrTag versionOrTag) throws LBException {
         return doGetAssociationDirectionalName(codingScheme, versionOrTag, associationName, DirectionalName.REVERSE);
     }
 
-    @LgClientSideSafe
     public String[] getAssociationReverseNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
         return this.doGetAssociationNames(codingScheme, versionOrTag, DirectionalName.REVERSE);
     }
 
-    @LgClientSideSafe
     public String[] getAssociationForwardAndReverseNames(String codingScheme, CodingSchemeVersionOrTag versionOrTag)
             throws LBException {
         String[] forward_names = getAssociationForwardNames(codingScheme, versionOrTag);
@@ -520,7 +531,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      *            The directionalName string
      * @throws LBException
      */
-    @LgClientSideSafe
     public boolean isForwardName(String codingScheme, CodingSchemeVersionOrTag versionOrTag, String directionalName)
             throws LBException {
         if (directionalName == null || directionalName.trim().length() == 0) {
@@ -548,7 +558,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      *            The directionalName string
      * @throws LBException
      */
-    @LgClientSideSafe
     public boolean isReverseName(String codingScheme, CodingSchemeVersionOrTag versionOrTag, String directionalName)
             throws LBException {
         if (directionalName == null || directionalName.trim().length() == 0) {
@@ -1546,7 +1555,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * @return boolean
      * @throws LBException
      */
-    @LgClientSideSafe
     protected boolean hasHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String[] assocNames, boolean fwd, String conceptCode, String[] rootCodes, NameAndValueList assocQuals)
             throws LBException {
@@ -1585,7 +1593,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * @return boolean
      * @throws LBException
      */
-    @LgClientSideSafe
     protected boolean hasHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String[] assocNames, boolean fwd, String conceptCode, String rootCode, NameAndValueList assocQuals)
             throws LBException {
@@ -1630,7 +1637,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * @return boolean
      * @throws LBException
      */
-    @LgClientSideSafe
     protected boolean hasHierarchyPathToRootSingleAxis(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String assocName, boolean fwd, String conceptCode, String rootCode, NameAndValueList assocQuals)
             throws LBException {
@@ -1666,7 +1672,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * @return boolean
      * @throws LBException
      */
-    @LgClientSideSafe
     protected boolean hasHierarchyPathToRootMultiAxis(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String[] assocNames, boolean fwd, String conceptCode, String rootCode, NameAndValueList assocQuals)
             throws LBException {
@@ -2096,6 +2101,17 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             return rootConRef;
         }
 
+    }
+    
+    private boolean useBackwardCompatMethods(String codingScheme, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
+        String VERSION_17 = "1.7";
+        String VERSION_18 = "1.8";
+        
+        String schemaVersion = 
+            ServiceUtility.getSchemaVersionForCodingScheme(codingScheme, versionOrTag);
+        
+        return schemaVersion.equals(VERSION_17) || schemaVersion.equals(VERSION_18);
+        
     }
 
     private AssociatedConcept createConRef(String[] node, String uri, String version) {
