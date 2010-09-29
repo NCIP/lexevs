@@ -54,8 +54,6 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  */
 public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
     private static final long serialVersionUID = -205479865592766865L;
-    public final static String name = "MetaDataLoader";
-    private final static String description = "This loader loads metadata xml files into the system.";
 
     private static String OVERWRITE_OPTION = "Overwrite Existing";
     private static String SCHEME_OPTION = "Coding Scheme";

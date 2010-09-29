@@ -59,10 +59,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
 
     private static final long serialVersionUID = 8781875750618588633L;
-    public static final String name = "HL7Loader";
-    private static final String description = "This loader loads coding schemes from the HL7 RIM database"
-            + " into a LexGrid database.";
-    // local constants
+     // local constants
     private static final String HL7_DESIGNATION = "HL7 Reference Information Model";
     private static final String MSACCESS_SERVER = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=";
     private static final String MSACCESS_DRIVER = "sun.jdbc.odbc.JdbcOdbcDriver";

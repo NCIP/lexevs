@@ -44,8 +44,6 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  */
 public class TextLoaderImpl extends BaseLoader implements Text_Loader {
     private static final long serialVersionUID = -4164433097047462000L;
-    public static final String name = "TextLoader";
-    private static final String description = "This loader loads LexGrid Text files into the LexGrid database.";
     
     public static final String DELIMITER_OPTION = "Delimiter";
     public static String FORCE_FORMAT_B_OPTION = "Force Format B";

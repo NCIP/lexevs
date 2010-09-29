@@ -53,8 +53,6 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  */
 public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
     private static final long serialVersionUID = 8418561158634673381L;
-    public final static String name = "OBOLoader";
-    private final static String description = "This loader loads version 1.2 OBO files into the LexGrid format.";
 
     public OBOLoaderImpl() {
         super();

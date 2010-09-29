@@ -41,10 +41,6 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     
     private static final long serialVersionUID = -689653003698478622L;
     
-    public final static String name = "MrMap_Loader";
-    
-    private final static String description = "This loader loads MRMAP.RRF and MRSAT.RRF" +
-    		" files into the LexGrid database as a mapping coding scheme.";
 
     public final static String VALIDATE = "Validate";
       public final static String MRSAT_URI = "MRSAT file path";

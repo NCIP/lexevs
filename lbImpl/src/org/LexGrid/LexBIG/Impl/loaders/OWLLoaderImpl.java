@@ -49,8 +49,6 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  */
 public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
     private static final long serialVersionUID = -6601893851902189345L;
-    public final static String name = "OWLLoader";
-    private final static String description = "This loader loads 'OWL Full' files into the LexGrid format.";
 
     public OWLLoaderImpl() {
         super();
