@@ -74,7 +74,7 @@ public class SearchByRelationshipTest extends BaseCodedNodeGraphTest {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
         cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", null);
-        PrintUtility.print(cns);
+
         cng = cng.restrictToTargetCodes(cns);
         
         ResolvedConceptReference[] rcr = 
