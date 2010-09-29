@@ -73,7 +73,11 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeById(java.lang.String)
 	 */
 	public CodingScheme getCodingSchemeByUId(String codingSchemeUId) {
-		throw new UnsupportedOperationException();
+		AbsoluteCodingSchemeVersionReference ref = resolveCodingSchemeKey(codingSchemeUId);
+		
+		return this.getCodingSchemeByUriAndVersion(
+				ref.getCodingSchemeURN(), 
+				ref.getCodingSchemeVersion());
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +85,11 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	 */
 	public CodingScheme getCodingSchemeByNameAndVersion(
 			String codingSchemeName, String version) {
-		throw new UnsupportedOperationException();
+		try {
+			return this.getSqlImplementedMethodsDao().buildCodingScheme(codingSchemeName, version);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 	}
 
 	/* (non-Javadoc)
@@ -95,6 +103,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeByUriAndVersion(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("deprecation")
 	public CodingScheme getCodingSchemeByUriAndVersion(String codingSchemeUri,
 			String version) {
 		try {
@@ -125,6 +134,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#getCodingSchemeSummaryByUriAndVersion(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("deprecation")
 	public CodingSchemeSummary getCodingSchemeSummaryByUriAndVersion(
 			String codingSchemeUri, String version) {
 		String codingSchemeInternalName;
@@ -414,6 +424,7 @@ public class SQLInterfaceCodingSchemeDao extends AbstraceSqlImplementedMethodsDa
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.codingscheme.CodingSchemeDao#validateSupportedAttribute(java.lang.String, java.lang.String, java.lang.Class)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public <T extends URIMap> boolean validateSupportedAttribute(
 			String codingSchemeId, String localId, Class<T> uriMap) {

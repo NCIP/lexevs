@@ -43,9 +43,11 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
+import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
@@ -68,10 +70,13 @@ import org.LexGrid.naming.SupportedSortOrder;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.SupportedSourceRole;
 import org.LexGrid.naming.SupportedStatus;
+import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -90,6 +95,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+@SuppressWarnings( {"deprecation", "unchecked"} )
 public class SQLImplementedMethodsDao {
 	
 	/** The cs namespace to name_. */
@@ -457,7 +463,7 @@ public class SQLImplementedMethodsDao {
 
 				// populate the associations.
 				// TODO: Fix this for the new model
-				/*
+
         getAssociations = si.modifyAndCheckOutPreparedStatement("Select * " + " from "
                 + si.getTableName(SQLTableConstants.ASSOCIATION) + " where " + cdSchName + " = ? and "
                 + relDcName + " = ?");
@@ -469,87 +475,87 @@ public class SQLImplementedMethodsDao {
             results = getAssociations.executeQuery();
 
             while (results.next()) {
-                Association as = new Association();
+            	AssociationPredicate as = new AssociationPredicate();
+            	AssociationEntity ae = EntityFactory.createAssociation();
 
-                if(si.supports2009Model()){
-                    as.setEntityCode(results.getString(SQLTableConstants.TBLCOL_ENTITYCODE));     
-                } else {
-                    as.setEntityCode(results.getString(si.getSQLTableConstants().associationNameOrId));
-                }
-                as.setAssociationName(results.getString(si.getSQLTableConstants().associationNameOrId));
+            	if(si.supports2009Model()){
+            		ae.setEntityCode(results.getString(SQLTableConstants.TBLCOL_ENTITYCODE));  
+            		ae.setEntityCodeNamespace(results.getString(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE));     
+            	} else {
+            		ae.setEntityCode(results.getString(si.getSQLTableConstants().associationNameOrId));
+            		ae.setEntityCodeNamespace(internalCodingSchemeName);
+            	}
+            	as.setAssociationName(results.getString(si.getSQLTableConstants().associationNameOrId));
 
-                as.setEntityDescription(Constructors.createEntityDescription(results
-                        .getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION)));
-                as.setForwardName(results.getString(SQLTableConstants.TBLCOL_FORWARDNAME));
-                as.setInverse(results.getString(si.getSQLTableConstants().inverseOrInverseId));
-                as.setIsAntiReflexive(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISANTIREFLEXIVE));
-                as.setIsAntiSymmetric(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISANTISYMMETRIC));
-                as.setIsAntiTransitive(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISANTITRANSITIVE));
-                as.setIsFunctional(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISFUNCTIONAL));
-                as.setIsNavigable(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISNAVIGABLE));
-                as.setIsReflexive(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISREFLEXIVE));
-                as.setIsReverseFunctional(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISREVERSEFUNCTIONAL));
-                as.setIsSymmetric(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISSYMMETRIC));
-                as.setIsTransitive(DBUtility.getBooleanFromResultSet(results,
-                        SQLTableConstants.TBLCOL_ISTRANSITIVE));
-                as.setReverseName(results.getString(SQLTableConstants.TBLCOL_REVERSENAME));
+            	EntityDescription ed = new EntityDescription();
+            	ed.setContent(results
+            			.getString(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION));
+            	ae.setEntityDescription(ed);
+     
+            	ae.setForwardName(results.getString(SQLTableConstants.TBLCOL_FORWARDNAME));
+            	ae.setIsTransitive(DBUtility.getBooleanFromResultSet(results,
+            			SQLTableConstants.TBLCOL_ISTRANSITIVE));
+            	ae.setReverseName(results.getString(SQLTableConstants.TBLCOL_REVERSENAME));
+            	
+            	//Put the entity code/namespace in the supported association
+            	for(SupportedAssociation assoc : supportedAssociations){
+            		if(assoc.getLocalId().equals(ae.getEntityCode())){
+            			assoc.setContent(as.getAssociationName());
+            			assoc.setEntityCode(ae.getEntityCode());
+            			assoc.setEntityCodeNamespace(ae.getEntityCodeNamespace());
+            		}
+            	}
 
-                if( isEntryStateIdInAssociationTable(si) ) {
-                    int entryStateId = results.getInt(SQLTableConstants.TBLCOL_ENTRYSTATEID);
+            	if( isEntryStateIdInAssociationTable(si) ) {
+            		int entryStateId = results.getInt(SQLTableConstants.TBLCOL_ENTRYSTATEID);
 
-                    StringBuffer query = new StringBuffer();
-                    query.append("SELECT * FROM ");
-                    query.append(si.getTableName(SQLTableConstants.ENTRY_STATE));
-                    query.append(" WHERE entryStateId = ?");
+            		StringBuffer query = new StringBuffer();
+            		query.append("SELECT * FROM ");
+            		query.append(si.getTableName(SQLTableConstants.ENTRY_STATE));
+            		query.append(" WHERE entryStateId = ?");
 
-                    getEntryState = si.checkOutPreparedStatement(query.toString());
-                    getEntryState.setInt(1, entryStateId);
+            		getEntryState = si.checkOutPreparedStatement(query.toString());
+            		getEntryState.setInt(1, entryStateId);
 
-                    ResultSet entryResult = getEntryState.executeQuery();
+            		ResultSet entryResult = getEntryState.executeQuery();
 
-                    if( entryResult.next() ) {
+            		if( entryResult.next() ) {
 
-                        String sOwner = entryResult.getString(SQLTableConstants.TBLCOL_OWNER);
-                        Source owner = new Source();
-                        owner.setContent(sOwner);
+            			String sOwner = entryResult.getString(SQLTableConstants.TBLCOL_OWNER);
 
-                        as.setOwner(owner);
-                        as.setStatus(entryResult.getString(SQLTableConstants.TBLCOL_STATUS));
-                        as.setEffectiveDate(entryResult.getTimestamp(SQLTableConstants.TBLCOL_EFFECTIVEDATE));
-                        as.setExpirationDate(entryResult.getTimestamp(SQLTableConstants.TBLCOL_EXPIRATIONDATE));
+            			ae.setOwner(sOwner);
+            			ae.setStatus(entryResult.getString(SQLTableConstants.TBLCOL_STATUS));
+            			ae.setEffectiveDate(entryResult.getTimestamp(SQLTableConstants.TBLCOL_EFFECTIVEDATE));
+            			ae.setExpirationDate(entryResult.getTimestamp(SQLTableConstants.TBLCOL_EXPIRATIONDATE));
 
-                        EntryState entryState = new EntryState();
-                        String sChangeType = entryResult.getString(SQLTableConstants.TBLCOL_CHANGETYPE);
+            			EntryState entryState = new EntryState();
+            			String sChangeType = entryResult.getString(SQLTableConstants.TBLCOL_CHANGETYPE);
 
-                        if (!StringUtils.isBlank(sChangeType)) {
-                            entryState.setChangeType(ChangeType.valueOf(sChangeType));
-                        }
-                        entryState.setContainingRevision(entryResult.getString(SQLTableConstants.TBLCOL_REVISIONID));
-                        entryState.setPrevRevision(entryResult.getString(SQLTableConstants.TBLCOL_PREVREVISIONID));
-                        entryState.setRelativeOrder(entryResult.getLong(SQLTableConstants.TBLCOL_RELATIVEORDER));
+            			if (!StringUtils.isBlank(sChangeType)) {
+            				entryState.setChangeType(ChangeType.valueOf(sChangeType));
+            			}
+            			entryState.setContainingRevision(entryResult.getString(SQLTableConstants.TBLCOL_REVISIONID));
+            			entryState.setPrevRevision(entryResult.getString(SQLTableConstants.TBLCOL_PREVREVISIONID));
+            			entryState.setRelativeOrder(entryResult.getLong(SQLTableConstants.TBLCOL_RELATIVEORDER));
 
-                        as.setEntryState(entryState);
-                    }
+            			ae.setEntryState(entryState);
+            		}
 
-                    if( entryResult != null )
-                        entryResult.close();
+            		if( entryResult != null )
+            			entryResult.close();
 
-                    si.checkInPreparedStatement(getEntryState);
-                }
-                relations.get(i).addAssociation(as);
+            		si.checkInPreparedStatement(getEntryState);
+            	}
+            	relations.get(i).addAssociationPredicate(as);
+            	if(cs.getEntities() == null) {
+            		cs.setEntities(new Entities());
+            	}
+            	cs.getEntities().addAssociationEntity(ae);
             }
             results.close();
         }
-				 */
-				si.checkInPreparedStatement(getAssociations);
+
+        si.checkInPreparedStatement(getAssociations);
 			} finally {
 				si.checkInPreparedStatement(getCodingSchemeDetails);
 				si.checkInPreparedStatement(getCodingSchemeMultiDetails);
