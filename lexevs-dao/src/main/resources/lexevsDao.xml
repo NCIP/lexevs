@@ -838,7 +838,6 @@
 	
 	<bean id="commonIndexLocation" 
 		class="org.lexevs.dao.index.factory.IndexLocationFactory">
-		<property name="indexName" value="commonIndex"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
