@@ -150,7 +150,7 @@ public class LexBIGServiceImpl implements LexBIGService {
                 lexbigService_ = new LexBIGServiceImpl();
                 lexbigService_.registerExtensions();
                 
-                new LuceneWarmUpThread().start();
+                //new LuceneWarmUpThread().start();
             } catch (LBException e) {
                 LoggerFactory.getLogger().error("Error initializing service", e);
             }
