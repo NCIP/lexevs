@@ -35,6 +35,11 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             throw new RuntimeException(e);
         }
         this.delegate = delegate;
+        
+        if(activeOption == null) {
+            activeOption = ActiveOption.ACTIVE_ONLY;
+        }
+        
         this.activeOption = activeOption;
     }
     
