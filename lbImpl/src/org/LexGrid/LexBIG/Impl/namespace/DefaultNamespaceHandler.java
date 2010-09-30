@@ -8,6 +8,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.cache.annotation.CacheMethod;
@@ -66,14 +67,20 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
                 namespace.equals(cs.getCodingSchemeName())){
             return Constructors.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version);
         }
-        
         String uri;
-        try {
-            uri = LexEvsServiceLocator.getInstance().
-                getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme());
-        } catch (Exception e) {
-            LoggerFactory.getLogger().info("The Equivalent Coding Scheme:" + sns.getEquivalentCodingScheme() + " was not found in the system.");
-            return null;
+        
+        SupportedCodingScheme scs = this.getSupportedCodingScheme(cs, sns.getEquivalentCodingScheme());
+        
+        if(scs != null && StringUtils.isNotBlank(scs.getUri())){
+            uri = scs.getUri();
+        } else {
+            try {
+                uri = LexEvsServiceLocator.getInstance().
+                    getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme());
+            } catch (Exception e) {
+                LoggerFactory.getLogger().info("The Equivalent Coding Scheme:" + sns.getEquivalentCodingScheme() + " was not found in the system.");
+                return null;
+            }
         }
         
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
@@ -114,6 +121,15 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
         for(SupportedNamespace sn : cs.getMappings().getSupportedNamespace()) {
             if(StringUtils.equals(sn.getLocalId(), namespace)) {
                 return sn;
+            }
+        }
+        return null;
+    }
+    
+    private SupportedCodingScheme getSupportedCodingScheme(CodingScheme cs, String codingSchemeName) {
+        for(SupportedCodingScheme scs : cs.getMappings().getSupportedCodingScheme()) {
+            if(StringUtils.equals(scs.getLocalId(), codingSchemeName)) {
+                return scs;
             }
         }
         return null;
