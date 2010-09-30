@@ -330,7 +330,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         for (SupportedAssociation foundSupportedAssociation : resolvedCodingScheme.getMappings()
                 .getSupportedAssociation()) {
-            if(this.useBackwardCompatMethods(codingScheme, versionOrTag)) {
+            if(this.useBackwardCompatibleMethods(codingScheme, versionOrTag)) {
                 if (foundSupportedAssociation.getContent().equals(associationName)) {
                     return foundSupportedAssociation.getEntityCode();
                 }
@@ -353,7 +353,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
             String foundEntityCode = foundSupportedAssociation.getEntityCode();
             if (foundEntityCode != null && foundEntityCode.equals(entityCode)) {
-                if(this.useBackwardCompatMethods(codingScheme, versionOrTag)) {
+                if(this.useBackwardCompatibleMethods(codingScheme, versionOrTag)) {
                     return foundSupportedAssociation.getContent();
                 } else {
                     return foundSupportedAssociation.getLocalId();
@@ -415,7 +415,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             throw new LBParameterException("No SupportedAssociation with name: " + associationName + " was found.");
         }
         
-        if(this.useBackwardCompatMethods(codingScheme, versionOrTag)) {
+        if(this.useBackwardCompatibleMethods(codingScheme, versionOrTag)) {
             if(resolvedCodingScheme.getEntities() != null) {
                 for(AssociationEntity ae : resolvedCodingScheme.getEntities().getAssociationEntity()) {
                     if(ae.getEntityCode().equals(supportedAssociation.getContent())){
@@ -608,14 +608,22 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             CodingSchemeVersionOrTag versionOrTag, String hierarchyID, ConceptReferenceList conceptCodes)
             throws LBException {
         getLogger().logMethod(new Object[] { codingSchemeName, versionOrTag, hierarchyID, conceptCodes });
-        return getHierarchyLevelNextCount(codingSchemeName, versionOrTag, hierarchyID, conceptCodes, true);
+        if(this.useBackwardCompatibleMethods(codingSchemeName, versionOrTag)) {
+            return getHierarchyLevelNextCountBackwardCompatible(codingSchemeName, versionOrTag, hierarchyID, conceptCodes, true);
+        } else {
+            return getHierarchyLevelNextCount(codingSchemeName, versionOrTag, hierarchyID, conceptCodes, true);
+        }
     }
 
     public ConceptReferenceList getHierarchyLevelPrevCount(String codingSchemeName,
             CodingSchemeVersionOrTag versionOrTag, String hierarchyID, ConceptReferenceList conceptCodes)
             throws LBException {
         getLogger().logMethod(new Object[] { codingSchemeName, versionOrTag, hierarchyID, conceptCodes });
-        return getHierarchyLevelNextCount(codingSchemeName, versionOrTag, hierarchyID, conceptCodes, false);
+        if(this.useBackwardCompatibleMethods(codingSchemeName, versionOrTag)) {
+            return getHierarchyLevelNextCountBackwardCompatible(codingSchemeName, versionOrTag, hierarchyID, conceptCodes, false);
+        } else {
+            return getHierarchyLevelNextCount(codingSchemeName, versionOrTag, hierarchyID, conceptCodes, false);
+        }
     }
 
     public int getHierarchyLevelNextCount(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
@@ -649,6 +657,78 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return count;
     }
 
+    @SuppressWarnings("deprecation")
+    protected ConceptReferenceList getHierarchyLevelNextCountBackwardCompatible(String codingSchemeName,
+            CodingSchemeVersionOrTag versionOrTag, String hierarchyID, ConceptReferenceList conceptCodes,
+            boolean forward) throws LBException {
+        String internalCodingSchemeName = null;
+        String version = null;
+
+        if (versionOrTag == null) {
+            version = ResourceManager.instance().getInternalVersionStringForTag(codingSchemeName, null);
+        } else {
+            version = versionOrTag.getVersion();
+        }
+
+        internalCodingSchemeName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(
+                codingSchemeName, version);
+        try {
+            // If we are searching for the child count of concept C1 and C1 has
+            // no children, it would not be in the list. Add C1 to the list with count 0,
+            // indicating we couldn't find  a match in the database. 
+            // It also takes care of the case where there is no hierarchy defined.
+            HashMap<String, ConceptReference> lookup = new HashMap<String, ConceptReference>();
+            ConceptReferenceList crl = new ConceptReferenceList();
+            SupportedHierarchy[] shs = getSupportedHierarchies(codingSchemeName, versionOrTag, hierarchyID);
+            //We have a hierarchy
+            if (shs.length != 0) {
+                SupportedHierarchy sh = shs[0];
+                String assocs[] = sh.getAssociationNames();
+                ArrayList<Operation> pendingOperations = new ArrayList<Operation>();
+
+                RestrictToAssociations rta = new RestrictToAssociations(ConvenienceMethods
+                        .createNameAndValueList(assocs), null);
+                pendingOperations.add(rta);
+                boolean resolveFwd = sh.isIsForwardNavigable();
+                // If we want to get the prev level, we need to flip the resolve
+                // direction
+                if (!forward) {
+                    resolveFwd = !resolveFwd;
+                }
+                if (resolveFwd) {
+                    RestrictToSourceCodes rsc = new RestrictToSourceCodes(conceptCodes);
+                    pendingOperations.add(rsc);
+                } else {
+                    RestrictToTargetCodes rtc = new RestrictToTargetCodes(conceptCodes);
+                    pendingOperations.add(rtc);
+                }
+
+                SQLInterface si = ResourceManager.instance().getSQLInterface(internalCodingSchemeName, version);
+                crl = SQLImplementedMethods.countQuery(si, pendingOperations, resolveFwd, internalCodingSchemeName,
+                        version, null);
+
+                for (ConceptReference cr : crl.getConceptReference()) {
+                    lookup.put(cr.getConceptCode(), cr);
+                }
+            }
+            // If we do not find the concept in the list, we assume it is
+            // because it has no children.
+            for (ConceptReference cr : conceptCodes.getConceptReference()) {
+                if (!lookup.containsKey(cr.getConceptCode())) {
+                    CountConceptReference ccr = new CountConceptReference(cr, 0);
+                    crl.addConceptReference(ccr);
+                }
+            }
+            // getLogger().debug("Time to execute getHierarchyLevelNextCount=" +
+            // (System.currentTimeMillis() - startTime));
+            return crl;
+
+        } catch (MissingResourceException e) {
+            throw new LBException(e.getMessage(), e);
+        }
+
+    }
+    
     protected ConceptReferenceList getHierarchyLevelNextCount(String codingSchemeName,
             CodingSchemeVersionOrTag versionOrTag, String hierarchyID, final ConceptReferenceList conceptCodes,
             boolean forward) throws LBException {
@@ -2103,7 +2183,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     }
     
-    private boolean useBackwardCompatMethods(String codingScheme, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
+    private boolean useBackwardCompatibleMethods(String codingScheme, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
         String VERSION_17 = "1.7";
         String VERSION_18 = "1.8";
         
