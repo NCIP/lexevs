@@ -324,7 +324,7 @@ public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedN
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
 		
 		SequentialMappedParameterBean bean = 
-			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts);
+			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts, codingSchemeUid);
 		bean.setPrefix(prefix);
 		
 		return this.getSqlMapClientTemplate().queryForList(

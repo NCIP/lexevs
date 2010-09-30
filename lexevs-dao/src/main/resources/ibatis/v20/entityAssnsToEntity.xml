@@ -190,6 +190,8 @@
 				AND
 				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
 			</isEqual>
+				AND
+				entity.codingSchemeGuid = #param4#
 			)
 		
 		WHERE
