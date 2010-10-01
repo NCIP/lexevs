@@ -295,6 +295,7 @@
 				<bean class="org.lexevs.dao.database.service.listener.NullAssociationNamespaceListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.InvalidPropertyLinkListener"/>
 				<bean class="org.lexevs.dao.database.service.listener.DuplicatePropertyIdListener"/>
+				<bean class="org.lexevs.dao.database.service.listener.DefaultLanguageAddingListener"/>
 			</list>
 		</property>
 	</bean>
