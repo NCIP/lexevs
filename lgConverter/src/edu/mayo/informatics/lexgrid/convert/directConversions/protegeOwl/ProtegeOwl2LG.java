@@ -2482,7 +2482,7 @@ public class ProtegeOwl2LG {
 
         // Add to supported associations ...
 
-        lgSupportedMappings_.registerSupportedAssociation(propertyName, rdfProp.getNamespace() + propertyName, label,
+        lgSupportedMappings_.registerSupportedAssociation(label, rdfProp.getNamespace() + propertyName, label,
                 propertyName, nameSpace, true);
         return assoc;
 
