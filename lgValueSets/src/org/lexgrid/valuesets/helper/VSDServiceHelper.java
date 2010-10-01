@@ -562,7 +562,8 @@ public class VSDServiceHelper {
             for(AbsoluteCodingSchemeVersionReference suppliedVer : suppliedCsVersions.getAbsoluteCodingSchemeVersionReference()) {
             	
             	String externalVersionId = rm_.getUriForUserCodingSchemeName(
-                        rm_.getUriForUserCodingSchemeName(suppliedVer.getCodingSchemeURN()));
+                        suppliedVer.getCodingSchemeURN(),
+                        suppliedVer.getCodingSchemeVersion());
             	
                 // TODO - implement a content equality operator so we can use "contains" vs. an inner iterator
                 for(AbsoluteCodingSchemeVersionReference serviceVer : serviceCsVersions.getAbsoluteCodingSchemeVersionReference()) {

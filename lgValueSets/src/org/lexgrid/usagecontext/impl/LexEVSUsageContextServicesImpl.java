@@ -16,6 +16,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
@@ -72,10 +73,10 @@ public class LexEVSUsageContextServicesImpl implements LexEVSUsageContextService
 	
 	@Override
 	public CodingSchemeSummary getUsageContextCodingSchemeSummary(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		String version = versionOrTag == null ? null : versionOrTag.getVersion();
+		String version = ServiceUtility.getVersion(codingSchemeNameOrURI, versionOrTag);
 		
 		return databaseServiceManager.getCodingSchemeService().
-        	getCodingSchemeSummaryByUriAndVersion(getCodeSystemURI(codingSchemeNameOrURI), version);
+        	getCodingSchemeSummaryByUriAndVersion(getCodeSystemURI(codingSchemeNameOrURI, version), version);
 	}
 
 	/*
@@ -175,9 +176,9 @@ public class LexEVSUsageContextServicesImpl implements LexEVSUsageContextService
 		return lbsvc_;
 	}
 	
-	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+	private String getCodeSystemURI(String codeSystemNameOrUri, String version) throws LBParameterException{
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
-		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri, version);
 	}
 }

@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
@@ -75,7 +76,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	 */
 	@Override
 	public CodingScheme getConceptDomainCodingScheme(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexBIGService().resolveCodingScheme(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag);
+		return getLexBIGService().resolveCodingScheme(codingSchemeNameOrURI, versionOrTag);
 	}
 	
 	/*
@@ -84,10 +85,9 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	 */
 	@Override
 	public CodingSchemeSummary getConceptDomainCodingSchemeSummary(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		String version = versionOrTag == null ? null : versionOrTag.getVersion();
-		
+		String version = ServiceUtility.getVersion(codingSchemeNameOrURI, versionOrTag);
 		return databaseServiceManager.getCodingSchemeService().
-        	getCodingSchemeSummaryByUriAndVersion(getCodeSystemURI(codingSchemeNameOrURI), version);
+        	getCodingSchemeSummaryByUriAndVersion(getCodeSystemURI(codingSchemeNameOrURI, version), version);
 	}
 	
 	/*
@@ -96,7 +96,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	 */
 	@Override
 	public CodedNodeSet getConceptDomainCodedNodeSet(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
-		return getLexBIGService().getNodeSet(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag, 
+		return getLexBIGService().getNodeSet(codingSchemeNameOrURI, versionOrTag, 
 				Constructors.createLocalNameList(ConceptDomainConstants.CONCEPT_DOMAIN_ENTITY_TYPE));
 	}
 
@@ -107,7 +107,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	@Override
 	public List<Entity> listAllConceptDomainEntities(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
 		List<Entity> entityList = new ArrayList<Entity>();
-		CodedNodeSet cns = getConceptDomainCodedNodeSet(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag);
+		CodedNodeSet cns = getConceptDomainCodedNodeSet(codingSchemeNameOrURI, versionOrTag);
 		
 		if (cns != null)
 		{
@@ -128,7 +128,7 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 	@Override
 	public List<String> listAllConceptDomainIds(String codingSchemeNameOrURI, CodingSchemeVersionOrTag versionOrTag) throws LBException {
 		List<String> idsList = new ArrayList<String>();
-		List<Entity> entityList = listAllConceptDomainEntities(getCodeSystemURI(codingSchemeNameOrURI), versionOrTag);
+		List<Entity> entityList = listAllConceptDomainEntities(codingSchemeNameOrURI, versionOrTag);
 		for (Entity entity : entityList)
 		{
 			idsList.add(entity.getEntityCode());
@@ -242,9 +242,9 @@ public class LexEVSConceptDomainServicesImpl implements LexEVSConceptDomainServi
 		return vsd_;
 	}
 	
-	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+	private String getCodeSystemURI(String codeSystemNameOrUri, String version) throws LBParameterException{
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
-		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri, version);
 	}
 }
