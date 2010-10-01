@@ -41,6 +41,9 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
+		
+		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, uri) " +
+				"values ('2', '1', 'CodingScheme', 'csname', 'csuri')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
@@ -63,8 +66,10 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
+		lexEvsResourceManagingService.refresh();
+		
 		RegistryEntry entry = 
-			defaultTransitivityBuilder.getRegistryEntryForCodingSchemeName("csname");
+			defaultTransitivityBuilder.getRegistryEntryForCodingSchemeName("csname", "csuri", "csversion");
 		
 		assertNotNull(entry);
 		
@@ -217,7 +222,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		boolean isTransitive =
 			defaultTransitivityBuilder.isTransitive("csuri", "csversion", "ae-code", "ae-codens");
 		
-		assertFalse(isTransitive);
+		assertTrue(isTransitive);
 	}
 	
 	@Test
