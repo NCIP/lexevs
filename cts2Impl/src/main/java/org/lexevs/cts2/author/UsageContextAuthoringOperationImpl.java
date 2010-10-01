@@ -69,7 +69,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 			throw new LBException("New property can not be empty");
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.addNewConceptProperty(csURI, codeSystemVersion, usageContextId, namespace, newProperty, revision);
@@ -126,7 +126,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 			entity.addAnyProperties(properties.getPropertyAsReference());
 			
 		//insert
-		this.doReviseEntity(getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, entity, ChangeType.NEW, null, 0L, revisionInfo);
+		this.doReviseEntity(getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion), codeSystemVersion, entity, ChangeType.NEW, null, 0L, revisionInfo);
 		
 		return usageContextId;
 	}
@@ -173,7 +173,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.deleteConcept(csURI, codeSystemVersion, usageContextId, namespace, revision);
@@ -195,7 +195,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		
 		validateRevisionInfo(revision);		
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.deleteConceptProperty(csURI, codeSystemVersion, usageContextId, namespace, property, revision);
@@ -217,7 +217,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.updateConceptProperty(csURI, codeSystemVersion, usageContextId, namespace, changedProperty, revision);
@@ -256,7 +256,7 @@ public class UsageContextAuthoringOperationImpl extends AuthoringCore implements
 		
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		Entity conceptDomain = this.getEntityShell(usageContextId, namespace, csURI, codeSystemVersion, revision.getRevisionId(), ChangeType.VERSIONABLE);
 		

@@ -240,9 +240,9 @@ public class AuthoringCore extends BaseService{
 		return conceptDomain;
 	}
 	
-	protected String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
+	protected String getCodeSystemURI(String codeSystemNameOrUri, String version) throws LBParameterException{
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
-		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri, version);
 	}	
 }

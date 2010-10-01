@@ -134,6 +134,6 @@ public class ConceptDomainQueryOperationImpl implements
 	private String getCodeSystemURI(String codeSystemNameOrUri) throws LBParameterException{
 		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 		
-		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri);
+		return systemResourceService.getUriForUserCodingSchemeName(codeSystemNameOrUri, null);
 	}
 }

@@ -128,7 +128,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 			entity.addAnyProperties(properties.getPropertyAsReference());
 			
 		//insert
-		this.doReviseEntity(getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, entity, ChangeType.NEW, null, 0L, revisionInfo);
+		this.doReviseEntity(getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion), codeSystemVersion, entity, ChangeType.NEW, null, 0L, revisionInfo);
 		
 		return conceptDomainId;
 	}
@@ -148,7 +148,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Versionable ver = new Versionable();
 		ver.setStatus(newStatus);
 		
-		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, revisionInfo);
+		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion), codeSystemVersion, revisionInfo);
 	}
 	
 	/*
@@ -165,7 +165,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Versionable ver = new Versionable();
 		ver.setIsActive(true);
 		
-		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, revisionInfo);
+		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion), codeSystemVersion, revisionInfo);
 	}
 	
 	/*
@@ -182,7 +182,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		Versionable ver = new Versionable();
 		ver.setIsActive(false);
 		
-		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI), codeSystemVersion, revisionInfo);
+		return updateConceptDomainVersionable(conceptDomainId, namespace, ver, getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion), codeSystemVersion, revisionInfo);
 	}
 	
 	/*
@@ -201,7 +201,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		Entity conceptDomain = this.getEntityShell(conceptDomainId, namespace, csURI, codeSystemVersion, revision.getRevisionId(), ChangeType.VERSIONABLE);
 		
@@ -265,7 +265,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.addNewConceptProperty(csURI, codeSystemVersion, conceptDomainId, namespace, newProperty, revision);
@@ -289,7 +289,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 		
 		validateRevisionInfo(revision);
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.updateConceptProperty(csURI, codeSystemVersion, conceptDomainId, namespace, changedProperty, revision);
@@ -311,7 +311,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 			
 		validateRevisionInfo(revision);		
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.deleteConceptProperty(csURI, codeSystemVersion, conceptDomainId, namespace, property, revision);
@@ -358,7 +358,7 @@ public class  ConceptDomainAuthoringOperationImpl extends AuthoringCore implemen
 			throw new LBException("Concept Domain '" + conceptDomainId + "' can not be removed as it is binded to existing value sets.");
 		}
 		
-		String csURI = getCodeSystemURI(codeSystemNameOrURI);
+		String csURI = getCodeSystemURI(codeSystemNameOrURI, codeSystemVersion);
 		
 		CodeSystemAuthoringOperation csAuthOp = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
 		csAuthOp.deleteConcept(csURI, codeSystemVersion, conceptDomainId, namespace, revision);
