@@ -29,8 +29,11 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
@@ -140,7 +143,7 @@ public class ResourceManager implements SystemResourceService {
 
     // This maps internal coding scheme names to their UID.
     /** The internal coding scheme name uid map_. */
-    private Hashtable<String, String> internalCodingSchemeNameUIDMap_;
+    private Hashtable<String, List<LocalCodingScheme>> internalCodingSchemeNameUIDMap_;
 
     // this maps SupportedCodingScheme URN's (for relations) to the
     // codingschemeNames that are
@@ -248,7 +251,7 @@ public class ResourceManager implements SystemResourceService {
         //sqlServerBaseInterfaces_ = new Hashtable<String, SQLInterfaceBase>();
         historySqlServerInterfaces_ = new Hashtable<String, SQLHistoryInterface>();
         codingSchemeLocalNamesToInternalNameMap_ = new Hashtable<String, Hashtable<String, String>>();
-        internalCodingSchemeNameUIDMap_ = new Hashtable<String, String>();
+        internalCodingSchemeNameUIDMap_ = new Hashtable<String, List<LocalCodingScheme>>();
         supportedCodingSchemeToInternalMap_ = new Hashtable<String, String>();
 
         // populate the registry
@@ -423,7 +426,10 @@ public class ResourceManager implements SystemResourceService {
                     foundSchemes.add(acsvr);
 
                     // populate the internal name / uid map
-                    internalCodingSchemeNameUIDMap_.put(lcs.codingSchemeName, registeredName);
+                    if(!internalCodingSchemeNameUIDMap_.containsKey(registeredName)) {
+                    	internalCodingSchemeNameUIDMap_.put(registeredName, new ArrayList<LocalCodingScheme>());
+                    }
+                    internalCodingSchemeNameUIDMap_.get(registeredName).add(lcs);
 
                     addToInternalNameMap(lcs.codingSchemeName, lcs);
                     addToInternalNameMap(lcs.getCodingSchemeNameWithoutVersion(), lcs);
@@ -852,7 +858,18 @@ public class ResourceManager implements SystemResourceService {
         Enumeration<String> e = temp.elements();
         String urn = "";
         if (e.hasMoreElements()) {
-            urn = getURNForInternalCodingSchemeName(e.nextElement());
+            Set<String> uris = getAllURNsForInternalCodingSchemeName(e.nextElement());
+            if(uris.size() == 1) {
+            	urn = uris.iterator().next();
+            } else {
+            	if(uris.contains(externalCodeSystemName)) {
+            		for(String uri : uris) {
+            			if(uri.equals(externalCodeSystemName)) {
+            				return uri;
+            			}
+            		}
+            	}
+            }
         } else {
             throw new LBParameterException("No coding scheme could be located for the values you provided",
                     SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
@@ -952,13 +969,31 @@ public class ResourceManager implements SystemResourceService {
      * 
      * @throws LBParameterException the LB parameter exception
      */
-    public String getURNForInternalCodingSchemeName(String internalCodingSchemeName) throws LBParameterException {
-        String result = internalCodingSchemeNameUIDMap_.get(internalCodingSchemeName);
-        if (result == null) {
-            throw new LBParameterException("No URN was found for: ", "internalCodingSchemeName",
-                    internalCodingSchemeName);
-        }
-        return result;
+    public String getURNForInternalCodingSchemeName(String internalCodingSchemeName, 
+    		String internalVersionString) throws LBParameterException {
+    	for(Entry<String, List<LocalCodingScheme>> entry : this.internalCodingSchemeNameUIDMap_.entrySet()) {
+    		for(LocalCodingScheme lcs : entry.getValue()) {
+    			if(lcs.codingSchemeName.equals(internalCodingSchemeName)
+    					&&
+    					lcs.version.equals(internalVersionString)){
+    				return entry.getKey();
+    			}
+    		}
+    	}
+    	throw new LBParameterException("No URN was found for: ", "internalCodingSchemeName",
+    			internalCodingSchemeName);
+    }
+    
+    private Set<String> getAllURNsForInternalCodingSchemeName(String internalCodingSchemeName) throws LBParameterException {
+    	Set<String> returnSet = new HashSet<String>();
+    	for(Entry<String, List<LocalCodingScheme>> entry : this.internalCodingSchemeNameUIDMap_.entrySet()) {
+    		for(LocalCodingScheme lcs : entry.getValue()) {
+    			if(lcs.codingSchemeName.equals(internalCodingSchemeName)){
+    				returnSet.add(entry.getKey());
+    			}
+    		}
+    	}
+    	return returnSet;
     }
 
     /**
@@ -970,12 +1005,36 @@ public class ResourceManager implements SystemResourceService {
      * 
      * @throws LBParameterException the LB parameter exception
      */
-    public String getURNForExternalCodingSchemeName(String externalCodingSchemeName) throws LBParameterException {
-        String internalName = getInternalCodingSchemeNameForUserCodingSchemeName(externalCodingSchemeName, null);
+    public String getURNForExternalCodingSchemeName(String externalCodingSchemeName, String version) throws LBParameterException {
+        String internalName = getInternalCodingSchemeNameForUserCodingSchemeName(externalCodingSchemeName, version);
 
-        return getURNForInternalCodingSchemeName(internalName);
+        return getURNForInternalCodingSchemeName(internalName, version);
     }
 
+    public String getURNForExternalCodingSchemeName(String externalCodingSchemeName) throws LBParameterException {
+        String version = this.getInternalVersionStringForTag(externalCodingSchemeName, null);
+        String internalName = this.getInternalCodingSchemeNameForUserCodingSchemeName(externalCodingSchemeName, version);
+
+        return getURNForInternalCodingSchemeName(internalName, version);
+    }
+    
+    public String getURNForInternalCodingSchemeName(String internalCodingSchemeName) throws LBParameterException {
+        
+        Set<String> uris = getAllURNsForInternalCodingSchemeName(internalCodingSchemeName);
+        
+        if(uris.size() == 0) {
+        	throw new LBParameterException("No URN was found for: ", "internalCodingSchemeName",
+        			internalCodingSchemeName);
+        }
+        
+        if(uris.size() > 1) {
+        	throw new LBParameterException("Multiple URNs were found for: ", "internalCodingSchemeName",
+        			internalCodingSchemeName);
+        }
+        
+        return uris.iterator().next();
+    }
+    
     /**
      * Gets the sQL interface for history.
      * 
@@ -1525,7 +1584,7 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
 	 */
 	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException {
-		return this.getURNForExternalCodingSchemeName(codingSchemeName);
+		return this.getURNForExternalCodingSchemeName(codingSchemeName, version);
 	}
 
 	/* (non-Javadoc)
