@@ -267,30 +267,6 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	}
 	
 	/**
-	 * Gets the uri for user coding scheme name.
-	 * 
-	 * @param codingSchemeName the coding scheme name
-	 * @param version the version
-	 * 
-	 * @return the uri for user coding scheme name
-	 * 
-	 * @throws LBParameterException the LB parameter exception
-	 */
-	public String getUriForUserCodingSchemeName(
-			String codingSchemeName, String version) throws LBParameterException {
-		for(CodingSchemeAliasHolder alias : this.aliasHolder){
-			if(alias.getRepresentsVersion().equals(version)){
-				if( hasAlias(alias, codingSchemeName)){
-					return alias.getCodingSchemeUri();
-				}
-			}
-		}
-		 throw new LBParameterException("No coding scheme could be located for the values you provided",
-                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
-                 codingSchemeName + ", " + version);
-	}
-	
-	/**
 	 * Checks for alias.
 	 * 
 	 * @param holder the holder
@@ -326,7 +302,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
 	 */
-	public String getUriForUserCodingSchemeName(String codingSchemeName)
+	public String getUriForUserCodingSchemeName(String codingSchemeName, String version)
 	throws LBParameterException {
 		Set<String> uris = getUrisForCodingSchemeName(codingSchemeName);
 		if(uris == null || uris.size() == 0){
@@ -334,6 +310,27 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		}
 
 		if(uris.size() > 1){
+			if(uris.contains(codingSchemeName)) {
+				return codingSchemeName;
+			}
+
+			if(StringUtils.isNotBlank(version)) {
+				List<RegistryEntry> foundEntries = new ArrayList<RegistryEntry>();
+
+				for(String uri : uris) {
+					List<RegistryEntry> entries = 
+						this.registry.getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.CODING_SCHEME, uri, version);
+					foundEntries.addAll(entries);
+				}
+
+				if(foundEntries.size() == 0) {
+					throw new LBParameterException("No URI found for Coding Scheme Name: " + codingSchemeName + " Version " + version + ".");
+				}
+
+				if(foundEntries.size() == 1) {
+					return foundEntries.get(0).getResourceUri();
+				}
+			}
 			throw new LBParameterException("Found multiple URIs for Coding Scheme Name: " + codingSchemeName);
 		}
 
@@ -363,7 +360,9 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			if(taggedEntries.size() == 0){
 				 throw new LBParameterException("No Coding Schemes were found for the values you provided: ",
 		                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
-		                 codingSchemeName + ", " + tag);
+		                 codingSchemeName + ", " + tag +
+		                 ".\nIf you did not supply the tag '" +tag + "', it was appended in an attempt to find " +
+                 		 "the requested Ontology. Please specify a version in your request.");
 			}
 			
 			if(taggedEntries.size() > 1){
@@ -372,7 +371,9 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 				} else {
 					 throw new LBParameterException("Multiple Coding Schemes were found for the values you provided: ",
 			                 SQLTableConstants.TBLCOL_CODINGSCHEMENAME + ", " + SQLTableConstants.TBLCOL_VERSION,
-			                 codingSchemeName + ", " + tag);
+			                 codingSchemeName + ", " + tag +
+			                 ".\nIf you did not supply the tag '" +tag + "', it was appended in an attempt to find " +
+			                 "the requested Ontology. Please specify a version in your request.");
 				}
 			}
 			

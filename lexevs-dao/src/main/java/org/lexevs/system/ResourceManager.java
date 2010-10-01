@@ -699,7 +699,7 @@ public class ResourceManager implements SystemResourceService {
         	String uri;
 			try {
 				uri = LexEvsServiceLocator.getInstance().getSystemResourceService().
-        			getUriForUserCodingSchemeName(internalCodingSchemeName);
+        			getUriForUserCodingSchemeName(internalCodingSchemeName, internalVersionString);
 				
 				SQLInterface sqlInterface = new SQLInterface(uri, internalVersionString);
 				
@@ -971,8 +971,7 @@ public class ResourceManager implements SystemResourceService {
      * @throws LBParameterException the LB parameter exception
      */
     public String getURNForExternalCodingSchemeName(String externalCodingSchemeName) throws LBParameterException {
-        String version = getInternalVersionStringForTag(externalCodingSchemeName, null);
-        String internalName = getInternalCodingSchemeNameForUserCodingSchemeName(externalCodingSchemeName, version);
+        String internalName = getInternalCodingSchemeNameForUserCodingSchemeName(externalCodingSchemeName, null);
 
         return getURNForInternalCodingSchemeName(internalName);
     }
@@ -1525,7 +1524,7 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
 	 */
-	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
+	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException {
 		return this.getURNForExternalCodingSchemeName(codingSchemeName);
 	}
 

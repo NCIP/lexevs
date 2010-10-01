@@ -8,6 +8,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.relations.AssociationEntity;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.BooleanUtils;
@@ -403,7 +404,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				            containingEntityCodeNamespace = cs.getCodingSchemeName();
 				        }
 				        
-				        RegistryEntry entry = getRegistryEntryForCodingSchemeName(containingCodingScheme);
+				        RegistryEntry entry = getRegistryEntryForCodingSchemeName(containingCodingScheme, codingSchemeUri, version);
 
 						boolean isTransitive = isTransitive(entry.getResourceUri(), entry.getResourceVersion(), containingEntityCode, containingEntityCodeNamespace);
 
@@ -434,9 +435,19 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		return (associationEntity != null && BooleanUtils.toBoolean(associationEntity.getIsTransitive()));
 	}
 
-	protected RegistryEntry getRegistryEntryForCodingSchemeName(String codingSchemeName) {
+	protected RegistryEntry getRegistryEntryForCodingSchemeName(String codingSchemeName, String codingSchemeUri, String version) {
 		try {
-			String uri = this.systemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
+			CodingScheme cs = 
+				this.getDatabaseServiceManager().getCodingSchemeService().getCodingSchemeByUriAndVersion(codingSchemeUri, version);
+			
+			SupportedCodingScheme scs = this.getSupportedCodingScheme(cs, codingSchemeName);
+			
+			String uri;
+			if(scs != null && StringUtils.isNotBlank(scs.getUri())) {
+				uri = scs.getUri();
+			} else {
+				uri = this.systemResourceService.getUriForUserCodingSchemeName(codingSchemeName, null);
+			}
 
 			List<RegistryEntry> entries = 
 				this.registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, uri);
@@ -595,4 +606,13 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			batch.clear();
 		}
 	}
+	
+    private SupportedCodingScheme getSupportedCodingScheme(CodingScheme cs, String codingSchemeName) {
+        for(SupportedCodingScheme scs : cs.getMappings().getSupportedCodingScheme()) {
+            if(StringUtils.equals(scs.getLocalId(), codingSchemeName)) {
+                return scs;
+            }
+        }
+        return null;
+    }
 }

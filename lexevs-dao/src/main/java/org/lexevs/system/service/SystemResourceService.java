@@ -148,12 +148,13 @@ public interface SystemResourceService {
 	 * Gets the uri for user coding scheme name.
 	 * 
 	 * @param codingSchemeName the coding scheme name
+	 * @param version TODO
 	 * 
 	 * @return the uri for user coding scheme name
 	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
-	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException ;
+	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException ;
 
 	/**
 	 * Contains coding scheme resource.

@@ -127,14 +127,14 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	 * @see org.lexevs.system.service.SystemResourceService#getUriForUserCodingSchemeName(java.lang.String)
 	 */
 	@CacheMethod
-	public String getUriForUserCodingSchemeName(String codingSchemeName) throws LBParameterException {
+	public String getUriForUserCodingSchemeName(String codingSchemeName, String version) throws LBParameterException {
 		LBParameterException exception;
 		try {
-			return primarySystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
+			return primarySystemResourceService.getUriForUserCodingSchemeName(codingSchemeName, version);
 		} catch (LBParameterException e) {
 			exception = e;
 			try {
-				return delegateSystemResourceService.getUriForUserCodingSchemeName(codingSchemeName);
+				return delegateSystemResourceService.getUriForUserCodingSchemeName(codingSchemeName, version);
 			} catch (LBParameterException e1) {
 				throw exception;
 			}
