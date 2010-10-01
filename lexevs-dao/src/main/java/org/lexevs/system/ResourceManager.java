@@ -865,7 +865,7 @@ public class ResourceManager implements SystemResourceService {
             	if(uris.contains(externalCodeSystemName)) {
             		for(String uri : uris) {
             			if(uri.equals(externalCodeSystemName)) {
-            				return uri;
+            				urn = uri;
             			}
             		}
             	}
