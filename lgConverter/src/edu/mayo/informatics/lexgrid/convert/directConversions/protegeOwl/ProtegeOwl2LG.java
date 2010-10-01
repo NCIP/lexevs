@@ -87,6 +87,7 @@ import edu.stanford.smi.protegex.owl.database.OWLDatabaseKnowledgeBaseFactory;
 import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
 import edu.stanford.smi.protegex.owl.model.NamespaceManager;
 import edu.stanford.smi.protegex.owl.model.OWLAllDifferent;
+import edu.stanford.smi.protegex.owl.model.OWLAnonymousClass;
 import edu.stanford.smi.protegex.owl.model.OWLCardinalityBase;
 import edu.stanford.smi.protegex.owl.model.OWLClass;
 import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
@@ -984,6 +985,20 @@ public class ProtegeOwl2LG {
             RDFResource superClass = (RDFResource) superClasses.next();
             relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
                     superClass);
+            
+              //Reference code for Lian. Added on 10/01/2010 by Satya. 
+              //Can be deleted if not utilized.              
+             /* if( superClass instanceof OWLAnonymousClass ) {
+                
+                OWLAnonymousClass anunymousClass = (OWLAnonymousClass)superClass;
+                
+                String lgCode = resolveAnonymousClass((OWLAnonymousClass)superClass, source);
+                String targetNameSpace = getNameSpace(anunymousClass.getNamespace());
+
+                AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
+                relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
+                
+            } else  */
             if (superClass instanceof OWLRestriction) {
                 OWLRestriction restriction = (OWLRestriction) superClass;
                 processRestriction(restriction, null, source);
@@ -1676,7 +1691,17 @@ public class ProtegeOwl2LG {
             // relations.
             for (Iterator operands = logicalClass.getOperands().iterator(); operands.hasNext();) {
                 Object operand = operands.next();
-                if (operand instanceof OWLComplementClass) {
+                
+                if( operand instanceof OWLAnonymousClass) {
+                    OWLAnonymousClass anunymousClass = (OWLAnonymousClass)operand;
+                    
+                    String lgCode = resolveAnonymousClass((OWLAnonymousClass)operand, assocSource);
+                    String targetNameSpace = getNameSpace(anunymousClass.getNamespace());
+
+                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
+                    relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
+                    
+                } else if (operand instanceof OWLComplementClass) {
                     OWLComplementClass complement = (OWLComplementClass) operand;
                     String lgCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
 
