@@ -18,16 +18,12 @@
  */
 package org.LexGrid.LexBIG.gui.config;
 
-import java.io.IOException;
 import java.util.Properties;
 
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.gui.Constants;
 import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
 import org.LexGrid.LexBIG.gui.Utility;
-import org.LexGrid.util.config.PropertiesUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,13 +32,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.lexevs.system.ResourceManager;
 
 /**
  * This GUI allows you to display and edit all of the options from a LexBIG
@@ -60,8 +53,8 @@ public class Configure {
 	Text maxConnectionsPerDB, cacheSize_, iteratorIdleTime_, maxResultSize_,
 			registryFile_, indexLocation_, jarFileLocation_, fileLocation_,
 			dbPrefix_, dbParam_, dbUser_, dbPassword_, logLocation_,
-			eraseLogsAfter_, smtpServer_, emailTo_, relativePathBase_;
-	Combo logChange_, dbURL_, dbDriver_;
+			eraseLogsAfter_, smtpServer_, emailTo_, relativePathBase_,
+            logChange_, dbURL_, dbDriver_;
 
 	public Configure(LB_GUI lb_gui, Properties currentProperties) {
 		lb_gui_ = lb_gui;
@@ -109,47 +102,6 @@ public class Configure {
 		GridLayout layout = new GridLayout(3, false);
 		readFromFileG.setLayout(layout);
 
-		final Button fileBrowse = new Button(readFromFileG, SWT.PUSH);
-		fileBrowse.setText("Read config file");
-		gd = new GridData();
-		fileBrowse.setLayoutData(gd);
-
-		fileBrowse.addSelectionListener(new SelectionListener() {
-
-			public void widgetSelected(SelectionEvent arg0) {
-				FileDialog fileChooser = new FileDialog(fileBrowse.getShell(),
-						SWT.OPEN);
-				fileChooser.setText("Choose File");
-				// fileChooser.setFilterPath(currentDir);
-				fileChooser.setFilterExtensions(new String[] { "*.props" });
-				fileChooser
-						.setFilterNames(new String[] { "LexBIG config file (props)" });
-				String filename = fileChooser.open();
-
-				try {
-					if (filename != null && filename.length() > 0) {
-						fileLocation_.setText(filename);
-						Properties props = PropertiesUtility
-								.loadPropertiesFromFileOrURL(filename);
-						loadValues(props);
-					}
-				} catch (IOException e) {
-					dialog_.showError("Error reading file",
-							"There was an error reading the config file - "
-									+ e.toString());
-				} catch (Exception e) {
-					dialog_
-							.showError("Invalid properties file",
-									"The selected file is not a valid LexBIG properties file.");
-				}
-			}
-
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// 
-			}
-
-		});
-
 		Utility.makeLabel(readFromFileG, " Options read from:");
 		fileLocation_ = Utility.makeText(readFromFileG);
 		fileLocation_.setEnabled(false);
@@ -177,59 +129,35 @@ public class Configure {
 
 		Utility.makeLabel(generalOptions, "Max connections per DB");
 		maxConnectionsPerDB = Utility.makeText(generalOptions);
+		maxConnectionsPerDB.setEditable(false);
 
 		Utility.makeLabel(generalOptions, "Cache Size");
 		cacheSize_ = Utility.makeText(generalOptions);
-
+		cacheSize_.setEditable(false);
+		
 		Utility.makeLabel(generalOptions, "Iterator max idle time");
 		iteratorIdleTime_ = Utility.makeText(generalOptions);
-
+		iteratorIdleTime_.setEditable(false);
+		
 		Utility.makeLabel(generalOptions, "Max Result Size");
 		maxResultSize_ = Utility.makeText(generalOptions);
+		maxResultSize_.setEditable(false);
 
 		Utility.makeLabel(generalOptions, "Relative Base Path");
 		relativePathBase_ = Utility.makeText(generalOptions, 3);
+		relativePathBase_.setEditable(false);
 
 		Utility.makeLabel(generalOptions, "Registry file location");
 		registryFile_ = Utility.makeText(generalOptions, 3);
+		registryFile_.setEditable(false);
 
 		Utility.makeLabel(generalOptions, "Index file location");
 		indexLocation_ = Utility.makeText(generalOptions, 3);
+		indexLocation_.setEditable(false);
 
 		Utility.makeLabel(generalOptions, "Jar file location");
 		jarFileLocation_ = Utility.makeText(generalOptions, 3);
-
-		// Norm has been disabled.
-		// Group normOptions = new Group(currentOptions, SWT.None);
-		// gd = new GridData(GridData.FILL_HORIZONTAL);
-		// normOptions.setLayoutData(gd);
-		// normOptions.setText("Normalization Options");
-		//
-		// normOptions.setLayout(new GridLayout(4, false));
-		//
-		// Utility.makeLabel(normOptions, "");
-		// normQueriesEnabled_ = new Button(normOptions, SWT.CHECK);
-		// gd = new GridData();
-		// gd.horizontalSpan = 3;
-		// normQueriesEnabled_.setLayoutData(gd);
-		// normQueriesEnabled_.setText("Normalized Queries Enabled");
-		// normQueriesEnabled_.addSelectionListener(new SelectionListener()
-		// {
-		//
-		// public void widgetSelected(SelectionEvent arg0)
-		// {
-		// normConfigFile_.setEnabled(normQueriesEnabled_.getSelection());
-		// }
-		//
-		// public void widgetDefaultSelected(SelectionEvent arg0)
-		// {
-		// }
-		//
-		// });
-		//
-		// Utility.makeLabel(normOptions, "Norm Config File");
-		// normConfigFile_ = Utility.makeText(normOptions, 3);
-		// normConfigFile_.setEnabled(false);
+		jarFileLocation_.setEditable(false);
 
 		Group databaseOptions = new Group(currentOptions, SWT.None);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -239,30 +167,28 @@ public class Configure {
 		databaseOptions.setLayout(new GridLayout(4, false));
 
 		Utility.makeLabel(databaseOptions, "DB URL");
-		dbURL_ = new Combo(databaseOptions, SWT.DROP_DOWN);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 3;
-		dbURL_.setLayoutData(gd);
-		dbURL_.setItems(Constants.singleDBModeServers);
+		dbURL_ = Utility.makeText(databaseOptions);
+		dbURL_.setEditable(false);
 
 		Utility.makeLabel(databaseOptions, "DB Driver");
-		dbDriver_ = new Combo(databaseOptions, SWT.DROP_DOWN);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 3;
-		dbDriver_.setLayoutData(gd);
-		dbDriver_.setItems(Constants.drivers);
+		dbDriver_ = Utility.makeText(databaseOptions);
+		dbDriver_.setEditable(false);
 
 		Utility.makeLabel(databaseOptions, "DB Prefix");
 		dbPrefix_ = Utility.makeText(databaseOptions);
+		dbPrefix_.setEditable(false);
 
 		Utility.makeLabel(databaseOptions, "DB Paramaters");
 		dbParam_ = Utility.makeText(databaseOptions);
+		dbParam_.setEditable(false);
 
 		Utility.makeLabel(databaseOptions, "DB User");
 		dbUser_ = Utility.makeText(databaseOptions);
+		dbUser_.setEditable(false);
 
 		Utility.makeLabel(databaseOptions, "DB Password");
 		dbPassword_ = Utility.makeText(databaseOptions);
+		dbPassword_.setEditable(false);
 
 		Group loggingOptions = new Group(currentOptions, SWT.None);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -273,6 +199,7 @@ public class Configure {
 
 		Utility.makeLabel(loggingOptions, "Log File Location");
 		logLocation_ = Utility.makeText(loggingOptions, 3);
+		logLocation_.setEditable(false);
 
 		Utility.makeLabel(loggingOptions, "");
 		debugEnabled_ = new Button(loggingOptions, SWT.CHECK);
@@ -280,22 +207,22 @@ public class Configure {
 		gd.horizontalSpan = 1;
 		debugEnabled_.setLayoutData(gd);
 		debugEnabled_.setText("Debug Logging Enabled");
+		debugEnabled_.setEnabled(false);
 
 		apiLoggingEnabled_ = new Button(loggingOptions, SWT.CHECK);
 		gd = new GridData();
 		gd.horizontalSpan = 2;
 		apiLoggingEnabled_.setLayoutData(gd);
 		apiLoggingEnabled_.setText("API Logging Enabled");
+		apiLoggingEnabled_.setEnabled(false);
 
 		Utility.makeLabel(loggingOptions, "Log Change");
-		logChange_ = new Combo(loggingOptions, SWT.DROP_DOWN);
-		logChange_.setItems(new String[] { "daily", "weekly", "monthly", "1",
-				"5", "10", "50" });
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		logChange_.setLayoutData(gd);
+		logChange_ = Utility.makeText(loggingOptions);
+		logChange_.setEditable(false);
 
 		Utility.makeLabel(loggingOptions, "Erase Logs After");
 		eraseLogsAfter_ = Utility.makeText(loggingOptions);
+		eraseLogsAfter_.setEditable(false);
 
 		Utility.makeLabel(loggingOptions, "");
 		emailErrors_ = new Button(loggingOptions, SWT.CHECK);
@@ -303,31 +230,15 @@ public class Configure {
 		gd = new GridData();
 		gd.horizontalSpan = 3;
 		emailErrors_.setLayoutData(gd);
-		emailErrors_.addSelectionListener(new SelectionListener() {
-
-			public void widgetSelected(SelectionEvent arg0) {
-				if (emailErrors_.getSelection()) {
-					smtpServer_.setEnabled(true);
-					emailTo_.setEnabled(true);
-				} else {
-					smtpServer_.setEnabled(false);
-					emailTo_.setEnabled(false);
-				}
-			}
-
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				//
-			}
-
-		});
-
+		emailErrors_.setEnabled(false);
+			
 		Utility.makeLabel(loggingOptions, "SMTP Server");
 		smtpServer_ = Utility.makeText(loggingOptions);
-		smtpServer_.setEnabled(false);
+		smtpServer_.setEditable(false);
 
 		Utility.makeLabel(loggingOptions, "Email To");
 		emailTo_ = Utility.makeText(loggingOptions);
-		emailTo_.setEnabled(false);
+		emailTo_.setEditable(false);
 
 		sc.setMinSize(currentOptions.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
@@ -344,44 +255,6 @@ public class Configure {
 		ok.setLayoutData(gd);
 
 		ok.addSelectionListener(new SelectionListener() {
-
-			public void widgetSelected(SelectionEvent arg0) {
-				try {
-					Properties props = valuesToProps();
-					ResourceManager.reInit(props);
-					if (Configure.this.lb_gui_ != null)
-					{
-            			Configure.this.lb_gui_.getNewLBS();
-            			Configure.this.lb_gui_.refreshCodingSchemeList();
-            			Configure.this.lb_gui_.setCurrentProperties(props);
-					}
-					else if (Configure.this.lb_vd_gui_ != null)
-					{
-					    Configure.this.lb_vd_gui_.getNewLBS();
-	                    Configure.this.lb_vd_gui_.refreshValueDomainList();
-	                    Configure.this.lb_vd_gui_.setCurrentProperties(props);
-					}
-					shell.dispose();
-				} catch (LBInvocationException e) {
-					dialog_.showError("Error configuring LexBIG",
-							"There was a problem setting up LexBIG - "
-									+ e.toString());
-				}
-			}
-
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				//
-			}
-
-		});
-
-		Button cancel = new Button(okCancel, SWT.PUSH);
-		cancel.setText("Cancel");
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_END);
-		gd.widthHint = 70;
-		cancel.setLayoutData(gd);
-
-		cancel.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent arg0) {
 				shell.dispose();
