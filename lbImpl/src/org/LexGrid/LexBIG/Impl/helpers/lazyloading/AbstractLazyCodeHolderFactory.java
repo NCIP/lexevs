@@ -62,7 +62,7 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         EntityIndexService entityService = indexServiceManager.getEntityIndexService();
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
         
         AbsoluteCodingSchemeVersionReference ref =
             Constructors.createAbsoluteCodingSchemeVersionReference(
@@ -86,7 +86,7 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         EntityIndexService entityService = indexServiceManager.getEntityIndexService();
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName);
+        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
         
         Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
         

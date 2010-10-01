@@ -63,7 +63,7 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
 
     @Override
     protected Document buildDocument() throws Exception {
-        String uri = this.getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+        String uri = this.getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
         return 
             this.getEntityIndexService().getDocumentById(uri, internalVersionString, this.getDocumentId());
     }

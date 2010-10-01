@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ModuleDescriptionList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortDescriptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
@@ -95,6 +96,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -247,25 +249,15 @@ public class LexBIGServiceImpl implements LexBIGService {
     public CodingScheme resolveCodingScheme(String codingSchemeName, CodingSchemeVersionOrTag tagOrVersion)
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { codingSchemeName, tagOrVersion });
-        String version = null;
-        if (tagOrVersion == null || tagOrVersion.getVersion() == null || tagOrVersion.getVersion().length() == 0) {
-            version = systemResourceService.getInternalVersionStringForTag(codingSchemeName,
-                    (tagOrVersion == null ? null : tagOrVersion.getTag()));
-        } else {
-            version = tagOrVersion.getVersion();
-        }
+        
+        AbsoluteCodingSchemeVersionReference ref = 
+            ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingSchemeName, tagOrVersion, true);
 
         try {
             return databaseServiceManager.getCodingSchemeService().
                 getCodingSchemeByUriAndVersion(
-                        systemResourceService.
-                            getUriForUserCodingSchemeName(
-                                    codingSchemeName),
-                                    version);
-        }
-
-        catch (LBParameterException e) {
-            throw e;
+                        ref.getCodingSchemeURN(),
+                        ref.getCodingSchemeVersion());
         } catch (Exception e) {
             String id = getLogger().error("There was an unexpected error", e);
             throw new LBInvocationException("There was an unexpected error", id);

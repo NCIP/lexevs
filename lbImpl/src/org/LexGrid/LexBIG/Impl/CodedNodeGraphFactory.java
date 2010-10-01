@@ -52,8 +52,9 @@ public class CodedNodeGraphFactory {
      */
     public CodedNodeGraph getCodedNodeGraph(String codingScheme, CodingSchemeVersionOrTag versionOrTag, String relationContainerName)
     throws LBParameterException {
-        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
+        
         String version = ServiceUtility.getVersion(codingScheme, versionOrTag);
+        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme, version);
 
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 

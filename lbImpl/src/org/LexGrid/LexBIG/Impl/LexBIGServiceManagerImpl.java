@@ -136,7 +136,7 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
         getLogger().logMethod(new Object[] { codingScheme });
         String uri;
         try {
-            uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
+            uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme, null);
         } catch (LBParameterException e) {
             // this means that no coding scheme that was loaded could map to a
             // URN - but

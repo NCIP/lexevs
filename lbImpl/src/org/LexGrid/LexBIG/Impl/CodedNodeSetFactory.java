@@ -60,8 +60,9 @@ public class CodedNodeSetFactory {
      */
     public CodedNodeSet getCodedNodeSet(String codingScheme, CodingSchemeVersionOrTag versionOrTag, Boolean activeOnly, LocalNameList types)
     throws LBInvocationException, LBParameterException, LBResourceUnavailableException, LBException {
-        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
+        
         String version = ServiceUtility.getVersion(codingScheme, versionOrTag);
+        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme, version);
 
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 

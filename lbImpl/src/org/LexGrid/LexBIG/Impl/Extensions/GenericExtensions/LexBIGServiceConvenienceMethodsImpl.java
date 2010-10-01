@@ -759,7 +759,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             pendingOperations.add(rtc);
         }
 
-        final String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodingSchemeName);
+        final String uri = systemResourceService.getUriForUserCodingSchemeName(internalCodingSchemeName, version);
 
         DaoCallbackService daoCallbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
                 .getDaoCallbackService();
@@ -2099,7 +2099,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             version = versionOrTag.getVersion();
         }
 
-        internalCodingSchemeName = getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
+        internalCodingSchemeName = getSystemResourceService().getUriForUserCodingSchemeName(codingScheme, version);
 
         return (List<SupportedProperty>) getCodingSchemeService().getSupportedPropertyForPropertyType(
                 internalCodingSchemeName, version, PropertyTypes.PRESENTATION);

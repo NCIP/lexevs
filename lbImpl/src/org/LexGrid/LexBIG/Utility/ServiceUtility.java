@@ -37,7 +37,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.URIMap;
 import org.apache.commons.lang.ArrayUtils;
@@ -79,9 +78,10 @@ public class ServiceUtility {
         String uri;
         String version;
         try {
-            uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(
-                    codingScheme);
             version = getVersion(codingScheme, tagOrVersion);
+            
+            uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(
+                    codingScheme, version);
         } catch (LBParameterException e) {
             if (strict) {
                 throw e;
@@ -153,7 +153,7 @@ public class ServiceUtility {
         }
 
         String codingSchemeUri = LexEvsServiceLocator.getInstance().getSystemResourceService()
-                .getUriForUserCodingSchemeName(codingSchemeNameOrUri);
+                .getUriForUserCodingSchemeName(codingSchemeNameOrUri, codingSchemeVersion);
 
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
                 .getCodingSchemeService();
@@ -241,10 +241,10 @@ public class ServiceUtility {
 
     public static String getSchemaVersionForCodingScheme(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag)
             throws LBParameterException {
-
-        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(
-                codingSchemeName);
         String version = ServiceUtility.getVersion(codingSchemeName, versionOrTag);
+        
+        String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(
+                codingSchemeName, version);  
 
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 

@@ -132,9 +132,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 this.restrictToEntityTypes(entityTypes);
             }
             
-            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme);
             String version = ServiceUtility.getVersion(codingScheme, tagOrVersion);
-            
+            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingScheme, version);
+              
             CodingSchemeReference ref = new CodingSchemeReference();
             ref.setCodingSchemeURN(uri);
             ref.setCodingSchemeVersion(version);
@@ -249,11 +249,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 throw new LBParameterException("The parameter is required", "conceptCode");
             }
 
-            // The code is not validated any further, as we don't know what
-            // version to validate against.
-            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(code.getCodingSchemeName());
-
-            CodeToReturn temp = new CodeToReturn(code.getConceptCode(), null, uri, null);
+            CodeToReturn temp = new CodeToReturn(code.getConceptCode(), code.getCodeNamespace());
 
             return new Boolean(codesToInclude_.contains(temp));
         } catch (LBInvocationException e) {
@@ -726,7 +722,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String internalCodeSystemName = gac.getInternalCodingSchemeName();
             String internalVersionString = gac.getInternalVersionString();
             
-            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
 
             this.queries.add(new MatchAllDocsQuery());
             Query codingSchemeQuery = 
