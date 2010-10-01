@@ -7,7 +7,6 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 
 public class HistoryServiceFactory {
@@ -19,10 +18,10 @@ public class HistoryServiceFactory {
     public HistoryService getHistoryService(String codingScheme) throws LBException {
 
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        
+        String version = resourceService.getInternalVersionStringForTag(codingScheme, null);
 
-        String uri = resourceService.getUriForUserCodingSchemeName(codingScheme);
-
-        String version = resourceService.getInternalVersionStringForTag(uri, null);
+        String uri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
 
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 

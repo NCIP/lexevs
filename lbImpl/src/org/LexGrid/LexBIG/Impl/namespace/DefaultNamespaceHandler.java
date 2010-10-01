@@ -76,7 +76,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
         } else {
             try {
                 uri = LexEvsServiceLocator.getInstance().
-                    getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme());
+                    getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme(), null);
             } catch (Exception e) {
                 LoggerFactory.getLogger().info("The Equivalent Coding Scheme:" + sns.getEquivalentCodingScheme() + " was not found in the system.");
                 return null;

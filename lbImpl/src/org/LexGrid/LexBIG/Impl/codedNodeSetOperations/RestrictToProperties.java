@@ -141,7 +141,7 @@ public class RestrictToProperties implements Restriction, Operation {
         if(internalCodeSystemName != null && internalVersionString != null) {
 
             String uri = 
-                LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+                LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
 
             boolean isValid = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
             getCodingSchemeService().validatedSupportedAttribute(uri, internalVersionString, localId, supportedAttributeClass);

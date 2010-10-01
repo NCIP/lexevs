@@ -152,7 +152,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
                     } else {
                         
                         if(internalCodeSystemName!= null && internalVersionString != null) {
-                            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+                            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
                             // this will throw the necessary exceptions
                             if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
                                     validatedSupportedAttribute(uri, internalVersionString, item, SupportedProperty.class)) {
@@ -182,7 +182,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
 
             if (language != null && language.length() > 0) {
                 // this validated that language (throws exceptions as necessary)
-                String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName);
+                String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
                 if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
                         validatedSupportedAttribute(uri, internalVersionString, language, SupportedProperty.class)) {
                         throw new LBParameterException(language = " is not a Supported Property.");

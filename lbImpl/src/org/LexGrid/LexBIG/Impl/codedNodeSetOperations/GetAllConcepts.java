@@ -60,7 +60,7 @@ public class GetAllConcepts implements Operation {
         internalCodingSchemeName_ = rm.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
 
         // make sure that it is active.
-        String urn = rm.getUriForUserCodingSchemeName(internalCodingSchemeName_);
+        String urn = rm.getUriForUserCodingSchemeName(internalCodingSchemeName_, version);
         if (!registry.getCodingSchemeEntry(
                 Constructors.createAbsoluteCodingSchemeVersionReference(urn, version)).getStatus().
                     equals(CodingSchemeVersionStatus.ACTIVE.toString())) {
