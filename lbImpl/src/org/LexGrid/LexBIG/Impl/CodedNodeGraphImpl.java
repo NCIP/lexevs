@@ -97,7 +97,7 @@ public class CodedNodeGraphImpl implements CodedNodeGraph, Cloneable {
             internalVersion = version;
 
             // make sure that it is active.
-            String urn = rm.getURNForInternalCodingSchemeName(internalCodingSchemeName);
+            String urn = rm.getURNForInternalCodingSchemeName(internalCodingSchemeName, version);
             if (!rm.getRegistry().isActive(urn, version)) {
                 throw new LBResourceUnavailableException("The requested coding scheme is not currently active");
             }
