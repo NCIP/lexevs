@@ -95,7 +95,7 @@ public class TestBugFixes extends LexBIGServiceTestCase {
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
-        assertEquals(2,rcr.length);
+        assertEquals(3,rcr.length);
     }
 
     /*
