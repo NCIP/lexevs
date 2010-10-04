@@ -152,7 +152,7 @@
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeGuid = #param1#
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 
      </select>
      
@@ -191,7 +191,7 @@
 		ON
 			cs.codingSchemeGuid = csMulti.codingSchemeGuid
 		WHERE
-			cs.codingSchemeGuid = #param1#
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
      </select>
      
      <select id="test" resultClass="java.util.HashMap">
@@ -234,17 +234,17 @@
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getHistoryCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeGuid = #param1#
+			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			currentRevision.revisionId = #param2#	
      </select>
      
      <select id="getCodingSchemeIdByNameAndVersion" 
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-     	resultClass="string" 
+     	resultMap="Common.uidResult"
      	remapResults="true">
 		SELECT
-			codingSchemeGuid
+			codingSchemeGuid AS uidKey
 		FROM
 			$prefix$codingScheme
 		WHERE
@@ -255,10 +255,10 @@
      
      <select id="getCodingSchemeIdByUriAndVersion" 
      	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-     	resultClass="string"
+     	resultMap="Common.uidResult"
      	remapResults="true">
 		SELECT
-			codingSchemeGuid
+			codingSchemeGuid AS uidKey
 		FROM
 			$prefix$codingScheme
 		WHERE
@@ -267,7 +267,7 @@
 			representsVersion = #param2#
      </select>
      
-     <select id="getEntryStateId" parameterClass="map" remapResults="true"> resultClass="string">
+     <select id="getEntryStateId" parameterClass="map" remapResults="true" resultClass="string">
 		SELECT
 			entryStateId
 		FROM
@@ -277,7 +277,7 @@
 		AND
 			representsVersion = #representsVersion#
 		AND
-			isCurrentRelease = #isCurrentRelease#
+			isCurrentRelease = #isCurrentRelease,handler=numericBooleanTypeHandler#
      </select>
    
 	<update id="updateCodingSchemeByUId" 
@@ -314,12 +314,12 @@
 				copyright = #codingScheme.copyright.content#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>
 		</dynamic>
 
 		WHERE 
-			codingSchemeGuid = #uid#
+			codingSchemeGuid = #uid,handler=variablePrimaryKeyTypeHandler#
  	</update>
  	
  	<update id="updateCodingSchemeVerAttribByUId" 
@@ -345,12 +345,12 @@
 				expirationDate = #codingScheme.expirationDate#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>			
 		</dynamic>
 
 		WHERE 
-			codingSchemeGuid = #uid#
+			codingSchemeGuid = #uid,handler=variablePrimaryKeyTypeHandler#
  	</update>
 
  	<update id="updateCodingSchemeEntryStateUId" 
@@ -358,9 +358,9 @@
 		UPDATE
 			$prefix$codingScheme
 		SET
-			entryStateGuid = #param2#
+			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 		WHERE 
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
  	</update>
 
 	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">

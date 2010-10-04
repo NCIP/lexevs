@@ -450,7 +450,7 @@
 				isTransitive = #isTransitive,handler=numericBooleanTypeHandler#
 			</isNotNull>
 			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId#
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
 			</isNotNull>
 		</dynamic>
 
@@ -538,7 +538,7 @@
 		UNION
 		
 		SELECT 
-			ead.entityAssnsDataGuid
+			ead.entityAssnsDataGuid AS uidKey
 		FROM 
 			$prefix$entityAssnsToData ead
 		WHERE
@@ -570,9 +570,9 @@
  	
  	<select id="getPreviousEntryStateId" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="string">
+		resultMap="Common.uidResult">
 		SELECT 
-			prevEntryStateGuid
+			prevEntryStateGuid AS uidKey
 		FROM
 			$prefix$entryState es
 		WHERE
