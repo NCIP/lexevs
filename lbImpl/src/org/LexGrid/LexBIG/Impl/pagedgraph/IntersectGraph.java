@@ -45,6 +45,10 @@ public class IntersectGraph extends AbstractMultiGraph {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -6431881502847939549L;
+    
+    public IntersectGraph() {
+        super();
+    }
 
     /**
      * Instantiates a new intersect graph.
