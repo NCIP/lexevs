@@ -397,8 +397,8 @@
 			#codingScheme.status:VARCHAR#,
 			#codingScheme.effectiveDate:TIMESTAMP#,
 			#codingScheme.expirationDate:TIMESTAMP#,
-			#releaseUId:VARCHAR#,
-			#entryStateUId:VARCHAR#
+			#releaseUId,handler=variablePrimaryKeyTypeHandler#,
+			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
 		)
   </insert>
   
