@@ -986,6 +986,13 @@ public class DisplayCodedNodeSet {
 					graph.addEdge(parentNode, child, StringUtils.abbreviate(
 							edgeText.toString(), 64));
 
+					if (down) {
+                        graphAssociations(graph, child, ac.getSourceOf(), down,
+                                addToResults);
+                    } else {
+                        graphAssociations(graph, child, ac.getTargetOf(), down,
+                                addToResults);
+                    }
 				}
 			}
 		}

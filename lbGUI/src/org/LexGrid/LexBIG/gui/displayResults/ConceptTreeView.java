@@ -53,8 +53,6 @@ import org.eclipse.swt.widgets.TreeItem;
 public class ConceptTreeView {
 	private static Logger log = Logger.getLogger("ConceptTreeView");
 
-	private boolean showRecursiveTree = false;
-
     private Tree tree;
 	private final Shell shell;
 	private boolean codesShown = true;
@@ -170,17 +168,18 @@ public class ConceptTreeView {
 		tree.setRedraw(false);
 
 		for (int i = 0; i < concepts.length; i++) {
+		    ResolvedConceptReference ref = concepts[i];
 			TreeItem ti = new TreeItem(tree, SWT.NONE);
-			String desc = concepts[i].getEntityDescription() != null ? concepts[i]
+			String desc = ref.getEntityDescription() != null ? ref
 					.getEntityDescription().getContent()
 					: null;
-			String nodeName = Graph.getNodeName(concepts[i].getConceptCode(),
+			String nodeName = Graph.getNodeName(ref.getConceptCode(),
 					desc, false, " ");
 
-			ti.setData(concepts[i]);
+			ti.setData(ref);
 			ti.setText(nodeName);
-			treeAssociations(ti, concepts[i].getSourceOf(), true);
-			treeAssociations(ti, concepts[i].getTargetOf(), false);
+			treeAssociations(ti, ref.getSourceOf(), true);
+			treeAssociations(ti, ref.getTargetOf(), false);
 		}
 
 		tree.setRedraw(true);
@@ -207,9 +206,7 @@ public class ConceptTreeView {
 		    if(itr.hasNext()) {
 		        list.add(new MoreResultsToPageAssociatedConcept());
 		    }
-		    
-			AssociatedConcept[] acList = list.toArray(new AssociatedConcept[list.size()]);
-			
+		   
 			TreeItem associationBranch = new TreeItem(parentNode, SWT.NONE);
 			associationBranch.setData(association);
 			// Resolve the core association name ...
@@ -223,11 +220,11 @@ public class ConceptTreeView {
 			}
 			associationBranch.setText(edgeText.toString());
 
-			for (AssociatedConcept ac : acList) {
-				// if (addToResults) {
-				// addCodeToDisplayedResults(ac);
-				// }
-				// Node child = graph.addNode(ac);
+			for (AssociatedConcept ac : list) {
+//				 if (addToResults) {
+//				 addCodeToDisplayedResults(ac);
+//				 }
+//				 Node child = graph.addNode(ac);
 				TreeItem conceptLeaf = new TreeItem(associationBranch, SWT.NONE);
 				/*
 				 * Give this tree item some data to associate it with, so that
@@ -269,13 +266,11 @@ public class ConceptTreeView {
 					nodeName += " (" + additionalNodeText.toString() + ")";
 				}
 				conceptLeaf.setText(nodeName);
-				
-				if(showRecursiveTree) {
-    				if (down) {
-    					treeAssociations(conceptLeaf, ac.getSourceOf(), down);
-    				} else {
-    					treeAssociations(conceptLeaf, ac.getTargetOf(), down);
-    				}
+
+				if (down) {
+				    treeAssociations(conceptLeaf, ac.getSourceOf(), down);
+				} else {
+				    treeAssociations(conceptLeaf, ac.getTargetOf(), down);
 				}
 			}
 		}
@@ -382,12 +377,4 @@ public class ConceptTreeView {
 			updateTreeText(item, codesShown);
 		}
 	}
-	
-	public boolean isShowRecursiveTree() {
-        return showRecursiveTree;
-    }
-
-    public void setShowRecursiveTree(boolean showRecursiveTree) {
-        this.showRecursiveTree = showRecursiveTree;
-    }
 }
