@@ -737,12 +737,15 @@ public class OBO2LGDynamicMapHolders {
                     suppAss.setUri(OBO2LGUtils.getWithOBOURN(prpCode));
                     // suppAss.setLocalName(OBO2EMFUtils.toNMToken(prpCode));
                     suppAss.setLocalId(prpCode);
+                    suppAss.setContent(prpCode);
+                    suppAss.setEntityCode(prpCode);
                     suppAssoc.add(suppAss);
                 }
             }
             SupportedAssociation suppAss = new SupportedAssociation();
             suppAss.setUri(OBO2LGUtils.getWithOBOURN("-multi-assn-@-root-"));
             suppAss.setLocalId("-multi-assn-@-root-");
+            suppAss.setEntityCode("-multi-assn-@-root-");
             suppAssoc.add(suppAss);
         } catch (Exception ex) {
             messages_.error("Failed while getting supported associations!", ex);
