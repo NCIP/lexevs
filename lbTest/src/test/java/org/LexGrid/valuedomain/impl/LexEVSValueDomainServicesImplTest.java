@@ -411,17 +411,17 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	public void testIsEntityInDomainStringURICodingSchemeVersionOrTagURI() throws LBException, URISyntaxException {
 	    AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
-		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
+		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("Automobiles"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
 		assertTrue(csvr == null);
 		
 		incsvrl.setAbsoluteCodingSchemeVersionReference(0, Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1"));
-        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
+        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("Automobiles"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
 		assertTrue(csvr != null);
 		
-		csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "devel");
+		csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("Automobiles"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "devel");
         assertTrue(csvr == null);
         
-        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("urn:oid:11.11.0.1"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, LBConstants.KnownTags.PRODUCTION.toString());
+        csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("Automobiles"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, LBConstants.KnownTags.PRODUCTION.toString());
         assertTrue(csvr == null);
 	}
 
