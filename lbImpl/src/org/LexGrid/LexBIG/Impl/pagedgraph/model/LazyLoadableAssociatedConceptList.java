@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.pagedgraph.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -102,6 +103,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
     private PropertyType[] propertyTypes;
 
     private AssociatedConcept[] cache;
+    
+    private boolean startedIterating = false;
     
     public LazyLoadableAssociatedConceptList() {
         super();
@@ -195,7 +198,7 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	 */
 	@Override
 	public Enumeration<AssociatedConcept> enumerateAssociatedConcept() {
-		return new Enumeration<AssociatedConcept>() {
+	    return new Enumeration<AssociatedConcept>() {
 
 			private Iterator<AssociatedConcept> iterator = iterateAssociatedConcept();
 			
@@ -226,6 +229,8 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	        }
 
 	        cache = list.toArray(new AssociatedConcept[list.size()]);
+	    } else {
+	        this.cycleDetectingCallback.clear();
 	    }
 	    
 	    return cache;
@@ -253,26 +258,37 @@ public class LazyLoadableAssociatedConceptList extends AssociatedConceptList {
 	 */
 	@Override
 	public Iterator<AssociatedConcept> iterateAssociatedConcept() {
-	    return new AssociatedConceptIterator(
-	            this.codingSchemeUri,
-	            this.codingSchemeVersion, 
-	            this.relationsContainerName,
-	            this.associationPredicateName,
-	            this.entityCode,
-	            this.entityCodeNamespace,
-	            this.resolveForward,
-	            this.resolveBackward,
-	            this.resolveForwardAssociationDepth,
-	            this.resolveBackwardAssociationDepth,
-	            this.resolveCodedEntryDepth,
-	            this.graphQuery,
-	            this.propertyNames,
-	            this.propertyTypes,
-	            this.sortAlgorithms,
-	            this.filterOptions,
-	            this.cycleDetectingCallback,
-	            this.direction,
-	            this.pageSize);
+	    if(this.cache == null) {
+	        if(this.startedIterating) {
+	            this.cycleDetectingCallback.clear();
+	        }
+	        
+	        this.startedIterating = true;
+	        return new AssociatedConceptIterator(
+	                this.codingSchemeUri,
+	                this.codingSchemeVersion, 
+	                this.relationsContainerName,
+	                this.associationPredicateName,
+	                this.entityCode,
+	                this.entityCodeNamespace,
+	                this.resolveForward,
+	                this.resolveBackward,
+	                this.resolveForwardAssociationDepth,
+	                this.resolveBackwardAssociationDepth,
+	                this.resolveCodedEntryDepth,
+	                this.graphQuery,
+	                this.propertyNames,
+	                this.propertyTypes,
+	                this.sortAlgorithms,
+	                this.filterOptions,
+	                this.cycleDetectingCallback,
+	                this.direction,
+	                this.pageSize);
+	        
+	    } else {
+	        this.cycleDetectingCallback.clear();
+	        return Arrays.asList(cache).iterator();
+	    }
 	}
 
 	/* (non-Javadoc)
