@@ -62,4 +62,9 @@ public class ReferenceReturningCycleDetectingCallback extends AbstractCycleDetec
         
         return associatedConceptMap.containsKey(key);
     }
+
+    @Override
+    public void clear() {
+       this.associatedConceptMap.clear();
+    }
 }

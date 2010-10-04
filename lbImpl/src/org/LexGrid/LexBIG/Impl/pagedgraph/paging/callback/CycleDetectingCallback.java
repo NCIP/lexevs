@@ -58,4 +58,6 @@ public interface CycleDetectingCallback extends Serializable {
      */
     public boolean isAssociatedConceptAlreadyInGraph(String associationName,
             AssociatedConcept associatedConcept);
+    
+    public void clear();
 }

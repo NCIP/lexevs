@@ -81,4 +81,9 @@ public class StubReturningCycleDetectingCallback extends AbstractCycleDetectingC
         
         return associatedConceptSet.contains(key);
     }
+
+    @Override
+    public void clear() {
+       this.associatedConceptSet.clear();
+    }
 }
