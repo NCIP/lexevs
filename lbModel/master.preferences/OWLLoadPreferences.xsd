@@ -149,7 +149,7 @@
 							<xs:documentation>
 							Controls the relationship between restrictions of anonymous classes and parent concepts.
 							If true, restrictions for anonymous classes are not connected to the parent concepts.
-							The default is false.
+							The default is true.
 							</xs:documentation>
 						</xs:annotation>
 					</xs:element>
