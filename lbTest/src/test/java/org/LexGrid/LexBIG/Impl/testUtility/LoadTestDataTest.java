@@ -129,7 +129,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         NCIHistoryLoader hloader = (NCIHistoryLoader) lbsm.getLoader("NCIThesaurusHistoryLoader");
 
         hloader.load(new File("resources/testData/Filtered_pipe_out_12f.txt").toURI(), new File(
-                "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, true);
+                "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, false);
 
         assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
         assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
