@@ -44,7 +44,7 @@ public class ProtegeOwl2LGConstants {
     public static final int MEMOPT_NON_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB = 2;
     public static final int MEMOPT_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB = 3;
     public static final boolean PROCESS_COMPLEX_PROP = false;
-    public static final boolean STRICT_OWL_IMPLEMENTATION = false;
+    public static final boolean STRICT_OWL_IMPLEMENTATION = true;
 
     /* Namespaces */
     public static final String RDF_NAMESPACE = RDFNames.RDF_NAMESPACE;
