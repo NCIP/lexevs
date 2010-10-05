@@ -75,7 +75,6 @@ import org.LexGrid.LexBIG.Impl.Extensions.Sort.isActiveSort;
 import org.LexGrid.LexBIG.Impl.History.HistoryServiceFactory;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
-import org.LexGrid.LexBIG.Impl.helpers.LuceneWarmUpThread;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
@@ -87,6 +86,7 @@ import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -521,6 +521,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
         NCIHistoryLoaderImpl.register();
+        UMLSHistoryLoaderImpl.register();
         new MrmapRRFLoader().register();
         new SemNetLoaderImpl().register();
         
