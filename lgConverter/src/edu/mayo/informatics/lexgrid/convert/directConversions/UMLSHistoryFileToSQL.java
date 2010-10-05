@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.SimpleMemUsageReporter;
 import org.LexGrid.util.SimpleMemUsageReporter.Snapshot;
 import org.LexGrid.versions.SystemRelease;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
@@ -92,7 +93,7 @@ public class UMLSHistoryFileToSQL {
             throws SQLException {
         message_ = messageDirector;
         failOnAllErrors_ = failOnAllErrors;
-        if (token != null && token.length() > 0) {
+        if (StringUtils.isBlank(token)) {
             token_ = token;
         }
         this.codingSchemeUri = codingSchemeUri;
