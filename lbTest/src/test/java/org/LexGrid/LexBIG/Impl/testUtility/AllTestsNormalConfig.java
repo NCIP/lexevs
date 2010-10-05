@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
-import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,6 +29,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImpl
 import org.LexGrid.LexBIG.Impl.Extensions.Search.AbstractSearchTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.AbstractSortTest;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceTest;
+import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceTest;
 import org.LexGrid.LexBIG.Impl.bugs.GForge15976;
 import org.LexGrid.LexBIG.Impl.bugs.GForge19492;
 import org.LexGrid.LexBIG.Impl.bugs.GForge19573;
@@ -156,9 +156,6 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
-import org.lexevs.cts2.test.Cts2IntegrationTestRunner;
-import org.lexevs.cts2.test.integration.SetupCts2IntegrationTests;
-import org.lexevs.cts2.test.integration.TearDownCts2IntegrationTests;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
@@ -180,9 +177,8 @@ public class AllTestsNormalConfig {
         //currentSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(CodeToReturnTest.class);
-        // This test cannont be safely run - will corrupt already loaded history
-        // data.
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
+        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
         mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
         mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
         mainSuite.addTestSuite(CodedNodeSetImplTest.class);
