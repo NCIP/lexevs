@@ -77,10 +77,18 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     @Override
     public NCIChangeEventList getEditActionList(ConceptReference conceptReference,
             CodingSchemeVersion codingSchemeVersion) throws LBParameterException, LBInvocationException {
-        try {
-            return nciHistoryService.getEditActionList(uri, conceptReference, new URI(codingSchemeVersion.getReleaseURN()));
-        } catch (URISyntaxException e) {
-            throw new LBParameterException(e.getMessage());
+        if(codingSchemeVersion.getVersion() != null) {
+            try {
+                return nciHistoryService.getEditActionList(uri, conceptReference, this.dateFormat.parse(codingSchemeVersion.getVersion()));
+            } catch (ParseException e) {
+                throw new LBParameterException(e.getMessage());
+            }
+        } else {
+            try {
+                return nciHistoryService.getEditActionList(uri, conceptReference, new URI(codingSchemeVersion.getReleaseURN()));
+            } catch (URISyntaxException e) {
+                throw new LBParameterException(e.getMessage());
+            }
         }
     }
 
