@@ -59,6 +59,8 @@ public class UMLSHistoryFileToSQL {
     private Map<String, Date> systemReleaseDates_ = new HashMap<String, Date>();
     /** Holds string constant "http://nlm.gov" */
     private static final String releaseAgency = "http://nlm.gov";
+    
+    private static final String metaURN = "urn:oid:2.16.840.1.113883.3.26.1.2";
   
     private String codingSchemeUri;
     
@@ -255,7 +257,7 @@ public class UMLSHistoryFileToSQL {
             systemReleaseDates_.put(releaseId, releaseDate);
             
             SystemRelease systemRelease = new SystemRelease();
-            systemRelease.setReleaseURI(releaseId);
+            systemRelease.setReleaseURI(metaURN + ":" + releaseId);
             systemRelease.setReleaseId(releaseId);
             systemRelease.setReleaseDate(releaseDate);
             systemRelease.setReleaseAgency(releaseAgency);
