@@ -3,7 +3,7 @@ package org.LexGrid.LexBIG.Impl.History;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
-import org.LexGrid.LexBIG.Utility.Constructors;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -19,14 +19,29 @@ public class HistoryServiceFactory {
 
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         
-        String version = resourceService.getInternalVersionStringForTag(codingScheme, null);
+        String uri = null;
+        try {
+            String version = resourceService.getInternalVersionStringForTag(codingScheme, null);
 
-        String uri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
+            uri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
+        } catch (LBException e1) {
+            
+            //if the coding scheme isn't loaded, we can still continue if the user
+            //passed in the exact uri
+            if(codingScheme.equals(NCIThesaurusHistorySQLQueries.NCIThesaurusURN)) {
+                uri = NCIThesaurusHistorySQLQueries.NCIThesaurusURN;
+            }
+            if(codingScheme.equals(HistoryService.metaURN)) {
+                uri = HistoryService.metaURN;
+            }
+            if(StringUtils.isBlank(uri)) {
+                throw e1;
+            }
+        }
 
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 
-        RegistryEntry entry = registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(
-                uri, version));
+        RegistryEntry entry = registry.getNonCodingSchemeEntry(uri);
 
         if (entry.getDbSchemaVersion().equals(VERSION_18) || entry.getDbSchemaVersion().equals(VERSION_17)) {
             try {
