@@ -93,7 +93,7 @@ public class UMLSHistoryFileToSQL {
             throws SQLException {
         message_ = messageDirector;
         failOnAllErrors_ = failOnAllErrors;
-        if (StringUtils.isBlank(token)) {
+        if (StringUtils.isNotBlank(token)) {
             token_ = token;
         }
         this.codingSchemeUri = codingSchemeUri;
@@ -348,11 +348,6 @@ public class UMLSHistoryFileToSQL {
      * @return
      */
     private static List<String> deTokenizeString(String str, String token) {
-
-        if (token == null || token.equals("")) {
-            token = token_;
-        }
-
         int beginIndex = 0;
         int endIndex = str.indexOf(token);
         List<String> elementList = new ArrayList<String>();

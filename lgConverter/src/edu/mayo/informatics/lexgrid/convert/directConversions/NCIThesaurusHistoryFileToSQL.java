@@ -74,7 +74,7 @@ public class NCIThesaurusHistoryFileToSQL {
     public NCIThesaurusHistoryFileToSQL(String uri, URI filePath, URI versionsFilePath, String token, boolean failOnAllErrors,
             LgMessageDirectorIF messageDirector) throws Exception {
         md_ = messageDirector;
-        if (StringUtils.isBlank(token)) {
+        if (StringUtils.isNotBlank(token)) {
             token_ = token;
         }
         this.codingSchemeUri = uri;
