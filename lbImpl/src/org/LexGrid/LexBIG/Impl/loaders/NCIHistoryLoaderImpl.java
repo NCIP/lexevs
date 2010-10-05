@@ -90,7 +90,8 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
     public NCIHistoryLoaderImpl() {
        super();
        options = declareAllowedOptions(new DefaultOptionHolder());
-       
+       loadStatus = new LoadStatus();
+       this.messageDirector = new CachingMessageDirectorImpl( new MessageDirector(getName(), loadStatus));   
     }
 
     protected ExtensionDescription buildExtensionDescription(){
@@ -111,13 +112,8 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
      * .net.URI, boolean)
      */
     public void load(URI source, URI versions, boolean append, boolean stopOnErrors, boolean async) throws LBException {
-        loadStatus = new LoadStatus();
-
-        loadStatus.setState(ProcessState.PROCESSING);
-        loadStatus.setStartTime(new Date(System.currentTimeMillis()));
-        this.messageDirector = new CachingMessageDirectorImpl( new MessageDirector(getName(), loadStatus));
-        
         this.getOptions().getURIOption(VERSIONS_OPTION).setOptionValue(versions);
+        this.getOptions().getBooleanOption(OVERWRITE_OPTION).setOptionValue(!append);
         this.load(source);
     }
 
@@ -144,7 +140,10 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
     @Override
     public void load(URI resource){
         this.setResourceUri(resource);
-        
+ 
+        loadStatus.setState(ProcessState.PROCESSING);
+        loadStatus.setStartTime(new Date(System.currentTimeMillis()));
+      
         boolean overwrite = this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue();
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().
@@ -233,7 +232,7 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
 
     @Override
     public LogEntry[] getLog(LogLevel level) {
-        throw new UnsupportedOperationException();
+        return this.messageDirector.getLog(level);
     }
 
     @Override
