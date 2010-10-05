@@ -24,9 +24,11 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceManagerImpl;
 import org.LexGrid.LexBIG.Impl.function.query.TestPostLoadManifest;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 
@@ -63,6 +65,14 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManagerImpl lbsm = (LexBIGServiceManagerImpl) ServiceHolder.instance().getLexBIGService()
                 .getServiceManager(null);
         lbsm.removeHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+    }
+    
+    public void testRemoveMetaHistory() throws LBException {
+        LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
+        LexBIGServiceManager lbmn = lbsi.getServiceManager(null);
+
+        lbmn.removeHistoryService(HistoryService.metaURN);
+        lbsi.getHistoryService(HistoryService.metaURN);
     }
 
     public void testRemoveObo() throws LBException {

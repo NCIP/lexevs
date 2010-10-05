@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
@@ -121,7 +122,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
     }
 
-    public void testLoadHistory() throws InterruptedException, LBException {
+    public void testLoadNCItHistory() throws InterruptedException, LBException {
  
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -132,6 +133,17 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
         assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
+    }
+    
+    public void testLoadMetaHistory() throws LBException {
+        ServiceHolder.configureForSingleConfig();
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        UMLSHistoryLoader loader = (UMLSHistoryLoader) lbsm
+                .getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl.name);
+        loader.load((new File("resources/testData/sampleNciMetaHistory")).toURI(), false, true, false);
+
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
 
     public void testLoadObo() throws InterruptedException, LBException {
