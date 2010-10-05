@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.History;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -29,15 +28,12 @@ import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.SystemReleaseList;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SystemReleaseDetail;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.versions.CodingSchemeVersion;
@@ -78,17 +74,6 @@ public class UMLSHistoryServiceTest extends TestCase {
         cal.set(Calendar.MILLISECOND, 00);
         dRelease200702_ = cal.getTime();
 
-    }
-
-    public void testLoadMetaHistory() throws LBException {
-        ServiceHolder.configureForSingleConfig();
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-        UMLSHistoryLoader loader = (UMLSHistoryLoader) lbsm
-                .getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl.name);
-        loader.load((new File("resources/testData/sampleNciMetaHistory")).toURI(), false, true, false);
-
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
 
     public void testGetBaselines() throws LBException {
@@ -297,15 +282,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[0].getReferencecode().equals("C0242295"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.RETIRE));
     }
-    
-    public void testDeleteLoadedMetaHistory() throws LBException {
-        LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
-        LexBIGServiceManager lbmn = lbsi.getServiceManager(null);
 
-        lbmn.removeHistoryService(HistoryService.metaURN);
-        lbsi.getHistoryService(HistoryService.metaURN);
-    }
-    
     private static boolean containsSystemReleaseId(SystemReleaseList list, String id) {
     	for(SystemRelease sr : list.getSystemRelease()) {
     		if(sr.getReleaseId().endsWith(id)) {
