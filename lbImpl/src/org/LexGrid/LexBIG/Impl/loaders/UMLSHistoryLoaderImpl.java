@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
@@ -58,6 +59,7 @@ private static final long serialVersionUID = 1L;
     private final static String description = "This loader loads NCI Metathesaurus history files into the database.";
 
     private static String OVERWRITE_OPTION = "Overwrite";
+    public static String ASYNC_OPTION = "Async Load";
     
     private static final String NCIM_URN = "urn:oid:2.16.840.1.113883.3.26.1.2";
     
@@ -120,6 +122,7 @@ private static final long serialVersionUID = 1L;
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
         holder.setIsResourceUriFolder(true);
         
+        holder.getBooleanOptions().add(new BooleanOption(ASYNC_OPTION, true));
         holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
         holder.getStringOptions().add(new StringOption(Option.getNameForType(Option.DELIMITER)));
         holder.getBooleanOptions().add(new BooleanOption(OVERWRITE_OPTION, false));
@@ -134,44 +137,67 @@ private static final long serialVersionUID = 1L;
         loadStatus.setState(ProcessState.PROCESSING);
         loadStatus.setStartTime(new Date(System.currentTimeMillis()));
         
-        boolean overwrite = this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue();
+        RunLoad runner = new RunLoad();
+        
+        if(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue()) {
+            Thread conversion = new Thread(runner);
+            conversion.start();
+        } else {
+            runner.run();
+        }
+    }
+    
+    private class RunLoad implements Runnable {
 
-        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().
-            getSystemResourceService();
-        try {
-            if(resourceService.containsNonCodingSchemeResource(NCIM_URN)) {
-                if(overwrite) {
-                    removePreviousHistory();
+        @Override
+        public void run() {
+            boolean overwrite = getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue();
+
+            SystemResourceService resourceService = LexEvsServiceLocator.getInstance().
+                getSystemResourceService();
+            try {
+                if(resourceService.containsNonCodingSchemeResource(NCIM_URN)) {
+                    if(overwrite) {
+                        removePreviousHistory();
+                    }
+                } else {
+                    resourceService.addNciHistoryResourceToSystem(NCIM_URN);
                 }
-            } else {
-                resourceService.addNciHistoryResourceToSystem(NCIM_URN);
+            } catch (LBParameterException e) {
+               throw new RuntimeException(e);
             }
-        } catch (LBParameterException e) {
-           throw new RuntimeException(e);
-        }
-        
-        try {
-           
-            UMLSHistoryFileToSQL loader = new UMLSHistoryFileToSQL(
-                    NCIM_URN, 
-                    this.getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).getOptionValue(),
-                    this.messageDirector, 
-                    this.getOptions().getStringOption(Option.getNameForType(Option.DELIMITER)).getOptionValue());
             
-            loader.loadUMLSHistory(this.getResourceUri());
+            try {
+               
+                UMLSHistoryFileToSQL loader = new UMLSHistoryFileToSQL(
+                        NCIM_URN, 
+                        getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).getOptionValue(),
+                        messageDirector, 
+                        getOptions().getStringOption(Option.getNameForType(Option.DELIMITER)).getOptionValue());
+                
+                loader.loadUMLSHistory(getResourceUri());
 
-        } catch (Exception e) {
-            this.loadStatus.setEndTime(new Date());
-            this.loadStatus.setState(ProcessState.FAILED);
-            this.messageDirector.fatal("Error loading NCI History", e);
-            this.loadStatus.setErrorsLogged(true);
- 
-            return;
+            } catch (Exception e) {
+                loadStatus.setEndTime(new Date());
+                loadStatus.setState(ProcessState.FAILED);
+                messageDirector.fatal("Error loading NCI History", e);
+                loadStatus.setErrorsLogged(true);
+                
+                messageDirector.info("Removing Resources...");
+                try {
+                    LexBIGServiceImpl.defaultInstance().getServiceManager(null).removeHistoryService(NCIM_URN);
+                } catch (Exception e1) {
+                    messageDirector.warn("Resources cound not be removed.", e1);
+                } 
+     
+                return;
+            }
+            
+            loadStatus.setEndTime(new Date());
+            loadStatus.setState(ProcessState.COMPLETED);
+            loadStatus.setErrorsLogged(false);
         }
         
-        this.loadStatus.setEndTime(new Date());
-        this.loadStatus.setState(ProcessState.COMPLETED);
-        this.loadStatus.setErrorsLogged(false);
     }
     
     private void removePreviousHistory() {
@@ -182,6 +208,8 @@ private static final long serialVersionUID = 1L;
     @Override
     public void load(URI source, boolean append, boolean stopOnErrors, boolean async) throws LBException {
         this.getOptions().getBooleanOption(OVERWRITE_OPTION).setOptionValue(!append);
+        this.getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         this.load(source);
     }
 
