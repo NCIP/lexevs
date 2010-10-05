@@ -221,7 +221,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[0].getReferencecode().equals("C0017641"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MERGE));
     }
-
+/*
     public void testGetEditActionList2() throws LBException {
 
         LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
@@ -268,7 +268,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[1].getReferencecode().equals("C1608803"));
         assertTrue(nce[1].getEditaction().equals(ChangeType.MERGE));
     }
-
+*/
     public void testGetEditActionList3() throws LBException, URISyntaxException {
         LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
         HistoryService hs = lbsi.getHistoryService(HistoryService.metaURN);
