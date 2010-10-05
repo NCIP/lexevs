@@ -154,9 +154,9 @@ private static final long serialVersionUID = 1L;
            
             UMLSHistoryFileToSQL loader = new UMLSHistoryFileToSQL(
                     NCIM_URN, 
-                    false, 
+                    this.getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).getOptionValue(),
                     this.messageDirector, 
-                    null);
+                    this.getOptions().getStringOption(Option.getNameForType(Option.DELIMITER)).getOptionValue());
             
             loader.loadUMLSHistory(this.getResourceUri());
 

@@ -166,8 +166,8 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
                     NCI_URN, 
                     resource, 
                     this.getOptions().getURIOption(VERSIONS_OPTION).getOptionValue(),
-                    null,
-                    true,
+                    this.getOptions().getStringOption(Option.getNameForType(Option.DELIMITER)).getOptionValue(),
+                    this.getOptions().getBooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)).getOptionValue(),
                     this.messageDirector);
 
         } catch (Exception e) {
