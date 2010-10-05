@@ -62,9 +62,18 @@ public class CleanUpTest extends TestCase {
     }
 
     public void testRemoveHistory() throws LBException {
+    	LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
         LexBIGServiceManagerImpl lbsm = (LexBIGServiceManagerImpl) ServiceHolder.instance().getLexBIGService()
                 .getServiceManager(null);
         lbsm.removeHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+        
+        try {
+        	lbsi.getHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+		} catch (Exception e) {
+			//expected
+			return;
+		}
+		fail("Returned removed History Service.");
     }
     
     public void testRemoveMetaHistory() throws LBException {
@@ -72,7 +81,13 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbmn = lbsi.getServiceManager(null);
 
         lbmn.removeHistoryService(HistoryService.metaURN);
-        lbsi.getHistoryService(HistoryService.metaURN);
+        try {
+			lbsi.getHistoryService(HistoryService.metaURN);
+		} catch (Exception e) {
+			//expected
+			return;
+		}
+		fail("Returned removed History Service.");
     }
 
     public void testRemoveObo() throws LBException {
