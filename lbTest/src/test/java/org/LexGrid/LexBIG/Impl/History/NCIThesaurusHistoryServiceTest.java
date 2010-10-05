@@ -121,7 +121,6 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
                 .getContent()
                 .equals(
                         "Editing of NCI Thesaurus 05.12f was completed on January 3, 2006.  Version 05.12f was December's sixth build in our development cycle."));
-        assertEquals("03-JAN-06",ev[0].getVersion());
     }
 
     public void testGetConceptCreationVersion() throws LBException {
