@@ -98,6 +98,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -433,6 +434,7 @@ public class LB_GUI {
 
 			public void widgetSelected(SelectionEvent arg0) {
 				try {
+				    LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
 					LB_GUI.this.refreshCodingSchemeList();
 				} catch (Exception e) {
 					errorHandler.showError("Error during refresh", e
