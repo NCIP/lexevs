@@ -14,11 +14,11 @@ import org.apache.commons.cli.Options;
 import org.lexevs.system.ResourceManager;
 
 
-public class LoadMrMapp {
+public class LoadMrMap {
 
     public static void main(String[] args) {
         try {
-            new LoadMrMapp().run(args);
+            new LoadMrMap().run(args);
         } catch (LBResourceUnavailableException e) {
             Util.displayTaggedMessage(e.getMessage());
         } catch (Exception e) {
@@ -26,7 +26,7 @@ public class LoadMrMapp {
         }
     }
 
-    public LoadMrMapp() {
+    public LoadMrMap() {
         super();
     }
 
