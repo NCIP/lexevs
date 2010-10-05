@@ -1,6 +1,7 @@
 package org.LexGrid.LexBIG.Impl.History;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -77,12 +78,10 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     public NCIChangeEventList getEditActionList(ConceptReference conceptReference,
             CodingSchemeVersion codingSchemeVersion) throws LBParameterException, LBInvocationException {
         try {
-            Date date = dateFormat.parse(codingSchemeVersion.getVersion());
-            
-            return nciHistoryService.getEditActionList(uri, conceptReference, date);
-        } catch (ParseException e) {
-           throw new LBParameterException(e.getMessage());
-        } 
+            return nciHistoryService.getEditActionList(uri, conceptReference, new URI(codingSchemeVersion.getReleaseURN()));
+        } catch (URISyntaxException e) {
+            throw new LBParameterException(e.getMessage());
+        }
     }
 
     @Override
