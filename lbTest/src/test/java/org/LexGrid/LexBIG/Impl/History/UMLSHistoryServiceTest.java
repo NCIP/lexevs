@@ -192,7 +192,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(csv[0].getVersionDate().getTime() == dRelease200610_.getTime());
 
     }
-
+/*
     public void testGetEditActionList() throws LBException {
         LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
         HistoryService hs = lbsi.getHistoryService(HistoryService.metaURN);
@@ -221,7 +221,7 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[0].getReferencecode().equals("C0017641"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MERGE));
     }
-/*
+
     public void testGetEditActionList2() throws LBException {
 
         LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
