@@ -131,4 +131,8 @@ public interface Loader extends Extendable, StatusReporter {
 	 */
 	public void setLoaderPreferences(URI loaderPreferencesURI) throws LBParameterException;
 
+	/**
+	 * Return the ontology format the loader can handle 
+	 */
+	public OntologyFormat getOntologyFormat();
 }
