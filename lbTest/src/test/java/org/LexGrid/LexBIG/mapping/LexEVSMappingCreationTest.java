@@ -97,7 +97,7 @@ public class LexEVSMappingCreationTest extends TestCase {
 					   true);
 	
 	   }
-	
+	/*
 	public void testCreateNewMappingWithNewRelationsContainer()throws LBException{
 		   EntryState entryState = new EntryState();
 		   entryState.setChangeType(ChangeType.NEW);
@@ -178,4 +178,5 @@ public class LexEVSMappingCreationTest extends TestCase {
 						   revision,
 						   true);
 	}
+	*/
 }
