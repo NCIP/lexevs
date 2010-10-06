@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -296,5 +297,10 @@ private static final long serialVersionUID = 1L;
         } catch (LBParameterException e) {
            throw new RuntimeException(e);
         }   
+    }
+
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.UMLSHISTORY;
     }
 }
