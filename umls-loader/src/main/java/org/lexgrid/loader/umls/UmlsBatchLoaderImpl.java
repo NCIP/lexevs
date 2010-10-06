@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
@@ -162,4 +163,9 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 		meta.setVersion(MetaBatchLoader.VERSION);
 		return meta;
 	}
+	
+	@Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.UMLS;
+    }
 }
