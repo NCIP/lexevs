@@ -129,7 +129,7 @@ public class LoadHL7RIM {
             }
 
             // Find the registered extension handling this type of load ...
-            LexBIGService lbs = new LexBIGServiceImpl();
+            LexBIGService lbs = new LexBIGServiceImpl().defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
             HL7_Loader loader = (HL7_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl.name);
 
