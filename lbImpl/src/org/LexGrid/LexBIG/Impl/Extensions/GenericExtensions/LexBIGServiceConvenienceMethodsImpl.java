@@ -834,7 +834,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * java.lang.String, java.lang.String, boolean, boolean,
      * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
-    @LgClientSideSafe
     public AssociationList getHierarchyLevelNext(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String hierarchyID, String conceptCode, boolean resolveConcepts, boolean checkForHasHierarchyPathToRoot,
             NameAndValueList assocQuals) throws LBException {
@@ -889,7 +888,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * java.lang.String, java.lang.String, boolean,
      * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
-    @LgClientSideSafe
     public AssociationList getHierarchyLevelNext(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String hierarchyID, String conceptCode, boolean resolveConcepts, NameAndValueList assocQuals)
             throws LBException {
@@ -908,7 +906,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * java.lang.String, java.lang.String, boolean, boolean,
      * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
-    @LgClientSideSafe
     public AssociationList getHierarchyLevelPrev(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String hierarchyID, String conceptCode, boolean resolveConcepts, boolean checkForHasHierarchyPathToRoot,
             NameAndValueList assocQuals) throws LBException {
@@ -963,7 +960,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * java.lang.String, java.lang.String, boolean,
      * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
-    @LgClientSideSafe
     public AssociationList getHierarchyLevelPrev(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String hierarchyID, String conceptCode, boolean resolveConcepts, NameAndValueList assocQuals)
             throws LBException {
@@ -983,7 +979,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * .Generic.LexBIGServiceConvenienceMethods.HierarchyPathResolveOption,
      * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
-    @LgClientSideSafe
     public AssociationList getHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
             String hierarchyID, String conceptCode, boolean resolveConcepts,
             HierarchyPathResolveOption pathResolveOption, NameAndValueList assocQuals) throws LBException {
