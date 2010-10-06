@@ -9,6 +9,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
@@ -51,7 +52,7 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         return ed;
     }
 
-    public void runPostProcess(AbsoluteCodingSchemeVersionReference reference) {
+    public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         DaoCallbackService daoCallbackService  = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
         
