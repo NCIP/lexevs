@@ -127,7 +127,7 @@ public class PostProcessorLauncher extends LoadExportBaseShell {
                         getGenericExtension(extensionName, LoaderPostProcessor.class);
                     
                     LoaderPostProcessRunner loaderPostProcessRunner = new LoaderPostProcessRunner(postProcessor);
-                        startLogging(text, loaderPostProcessRunner.runProcess(ref));
+                        startLogging(text, loaderPostProcessRunner.runProcess(ref, null));
                    
                     
                 } catch (Exception e) {

@@ -47,7 +47,7 @@ public class ReIndexerLoader extends LoadExportBaseShell {
 			
 			ProcessRunner processRunner = new IndexLoaderImpl();
 
-			buildGUI(shell, processRunner.runProcess(ref));
+			buildGUI(shell, processRunner.runProcess(ref, null));
 
 			shell.open();
 
