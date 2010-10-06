@@ -8,6 +8,7 @@ public enum OntologyFormat {
     TEXT,
     RADLEX,
     NICHISTORY,
+    UMLSHISTORY,
     MRMAP;
     
     public static String getMetaName() {
