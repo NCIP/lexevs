@@ -157,9 +157,10 @@ public class LoadHL7RIM {
                     .displayCommandOptions(
                             "LoadHL7RIM",
                             options,"Check source uri and try again" +
+                            "Path requires a forward slash as designated below" +
                             "\n LoadHL7RIM -in \"file:///path/to/file.mdb\" -a"
                                     + "\n LoadHL7RIM -in \"file:///path/to/file.mdb\"  -mf \"file:///path/to/myCodingScheme-manifest.xml\"-a"
-                                    + "\n LoadHL7RIM -in \"file:///path/to/file.mdb\" -v 0" + Util.getURIHelp(), e);
+                                    + "\n LoadHL7RIM -in \"c:///path/to/file.mdb\" -v 0" + Util.getURIHelp(), e);
                 }
                 Util.displayLoaderStatus(loader);
             }
