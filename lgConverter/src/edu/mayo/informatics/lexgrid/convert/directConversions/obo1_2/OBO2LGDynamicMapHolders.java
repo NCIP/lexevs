@@ -409,7 +409,7 @@ public class OBO2LGDynamicMapHolders {
             processed = true;
             String anon_concept_label= createAnonymousConceptLabel(relation_name,  targets);
             Entity anon_eq = createAnonymousConcept(anon_concept_label);
-            addAssociation(concept, "equivalentClass", null, null, null, anon_eq);
+            addAssociation(anon_eq, "equivalentClass", null, null, null, concept);
 //   Removing this as this causes problems with how the anonymous concepts show up in
 //   the GUI. We create a lot of anonymous concepts with limited value         
 //            for (String target: targets) {
