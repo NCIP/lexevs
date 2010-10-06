@@ -2389,6 +2389,7 @@ public class SQLImplementedMethods {
                 }
             }
             
+            results.close();
             for(AssociationInfoHolder infoHolder : relationsMap.values()){
                 ConceptReference cr = resultsToReturn.addAssociation(
                         infoHolder.sourceCodingSchemeName,
