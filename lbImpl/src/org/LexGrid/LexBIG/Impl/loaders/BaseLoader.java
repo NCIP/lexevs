@@ -35,12 +35,14 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.BaseOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.OntologyFormatAddingPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -178,6 +180,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
             //TODO: Do we want to enable these by default?
             //loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
+            loaderPostProcessorOption.getOptionValue().add(OntologyFormatAddingPostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getPickList().addAll(this.getPostProcessorExtensionNames());
             
@@ -418,7 +421,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                     md_.info("Running PostProcessor:" + postProcessor);
 
                     for(AbsoluteCodingSchemeVersionReference ref : references) {
-                        getPostProcessor(postProcessor).runPostProcess(ref);
+                        getPostProcessor(postProcessor).runPostProcess(ref, getOntologyFormat());
                     }
                 }
             }
@@ -921,5 +924,9 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     public boolean isDoRemoveOnFailure() {
         return doRemoveOnFailure;
+    }
+    
+    public OntologyFormat getOntologyFormat(){
+        return null;
     }
 }

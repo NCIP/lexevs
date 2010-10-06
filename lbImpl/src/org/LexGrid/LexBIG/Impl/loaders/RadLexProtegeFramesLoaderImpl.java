@@ -25,6 +25,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.RadlexProtegeFrames_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -123,5 +124,10 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
         temp.setName(name);
         
         return temp;
+    }
+    
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.RADLEX;
     }
 }

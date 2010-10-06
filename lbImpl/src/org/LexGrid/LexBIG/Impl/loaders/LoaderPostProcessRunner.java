@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
@@ -46,12 +47,15 @@ public class LoaderPostProcessRunner extends AbstractProcessRunner {
      * @see org.LexGrid.LexBIG.Impl.loaders.AbstractProcessRunner#doRunProcess(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF, org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus)
      */
     @Override
-    protected void doRunProcess(AbsoluteCodingSchemeVersionReference codingSchemeVersion, LgMessageDirectorIF md,
+    protected void doRunProcess(
+            AbsoluteCodingSchemeVersionReference codingSchemeVersion, 
+            OntologyFormat ontFormat,
+            LgMessageDirectorIF md,
             ProcessStatus status) {
         
         md.info("Running Post Processor: " + postProcessor.getName());
         
-        postProcessor.runPostProcess(codingSchemeVersion);
+        postProcessor.runPostProcess(codingSchemeVersion, ontFormat);
         
         md.info("Finished Running Post Processor: " + postProcessor.getName());
     }

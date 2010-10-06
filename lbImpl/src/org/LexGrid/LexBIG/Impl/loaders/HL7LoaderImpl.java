@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.HL7_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -178,5 +179,10 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
 
     public void setMetaDataFileLocation(String metaDataFileLocation) {
         this.metaDataFileLocation = metaDataFileLocation;
+    }
+    
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.HL7;
     }
 }

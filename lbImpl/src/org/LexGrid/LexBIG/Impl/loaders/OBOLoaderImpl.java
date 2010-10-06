@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -158,6 +159,11 @@ public class OBOLoaderImpl extends BaseLoader implements OBO_Loader {
         Assert.state(relations.length == 1);
         
         return relations[0].getContainerName();
+    }
+    
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.OBO;
     }
 
     public void finalize() throws Throwable {

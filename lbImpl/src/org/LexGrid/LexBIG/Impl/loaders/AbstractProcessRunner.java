@@ -6,13 +6,16 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 
 public abstract class AbstractProcessRunner implements ProcessRunner {
 
-    public StatusReportingCallback runProcess(AbsoluteCodingSchemeVersionReference codingSchemeVersion)
+    public StatusReportingCallback runProcess(
+            AbsoluteCodingSchemeVersionReference codingSchemeVersion,
+            OntologyFormat format)
         throws LBParameterException {
 
         if (codingSchemeVersion.getCodingSchemeURN() == null
@@ -29,7 +32,7 @@ public abstract class AbstractProcessRunner implements ProcessRunner {
             status.setStartTime(new Date(System.currentTimeMillis()));
             CachingMessageDirectorIF md = new CachingMessageDirectorImpl( new MessageDirector("", status));
 
-            Thread runProcess = new Thread(new RunProcess(codingSchemeVersion, md, status));
+            Thread runProcess = new Thread(new RunProcess(codingSchemeVersion, format, md, status));
             runProcess.start();
             
             return new StatusReportingCallback(md, status);
@@ -40,14 +43,17 @@ public abstract class AbstractProcessRunner implements ProcessRunner {
         private AbsoluteCodingSchemeVersionReference codingSchemeVersion;
         private ProcessStatus status;
         private LgMessageDirectorIF md;
+        private OntologyFormat format;
 
         private RunProcess(
                 AbsoluteCodingSchemeVersionReference codingSchemeVersion, 
+                OntologyFormat format,
                 LgMessageDirectorIF md, 
                 ProcessStatus status) {
             this.codingSchemeVersion = codingSchemeVersion;
             this.status = status;
             this.md = md;
+            this.format = format;
         }
 
         public void run() {
@@ -57,7 +63,7 @@ public abstract class AbstractProcessRunner implements ProcessRunner {
 
                 md.info("beginning process");
 
-                doRunProcess(codingSchemeVersion, md, status);
+                doRunProcess(codingSchemeVersion, format, md, status);
 
                 md.info("Finished processes ");
 
@@ -71,7 +77,9 @@ public abstract class AbstractProcessRunner implements ProcessRunner {
         }
     }
     
-    protected abstract void doRunProcess(AbsoluteCodingSchemeVersionReference codingSchemeVersion,
+    protected abstract void doRunProcess(
+            AbsoluteCodingSchemeVersionReference codingSchemeVersion,
+            OntologyFormat format,
             LgMessageDirectorIF md, 
             ProcessStatus status);
 }

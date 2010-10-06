@@ -27,10 +27,14 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -146,6 +150,11 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
         } else {
             throw new LBParameterException("Loader Preferences must be of type 'OWLLoaderPreferences'");
         }
+    }
+    
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.OWLRDF;
     }
 
 }

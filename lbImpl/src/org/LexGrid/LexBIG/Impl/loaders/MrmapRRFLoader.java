@@ -23,6 +23,7 @@ import java.net.URI;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -119,6 +120,11 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     @Override
     public void validate(String source, int validationLevel) throws LBException {
         throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.MRMAP;
     }
 
 }

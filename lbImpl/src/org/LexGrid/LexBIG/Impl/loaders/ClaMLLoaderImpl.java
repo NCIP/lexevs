@@ -33,8 +33,7 @@ public class ClaMLLoaderImpl extends BaseLoader implements ClaML_Loader{
         
         this.persistCodingSchemeToDatabase(codingScheme);
         
-        URNVersionPair  urnVersion= new URNVersionPair(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
-        return new URNVersionPair[]{urnVersion};
+        return this.constructVersionPairsFromCodingSchemes(codingScheme);
     }
 
     @Override
