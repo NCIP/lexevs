@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.admin;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.HL7_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -80,6 +81,7 @@ public class LoadHL7RIM {
 
     /**
      * Primary entry point for the program.
+     * @throws Exception 
      * 
      * @throws Exception
      */
@@ -148,7 +150,17 @@ public class LoadHL7RIM {
                     loader.setLoaderPreferences(loaderPrefs);
                 }
 
-                loader.load(dbPath, false, true);
+                try {
+                    loader.load(dbPath, false, true);
+                } catch (LBException e) {
+                    Util
+                    .displayCommandOptions(
+                            "LoadHL7RIM",
+                            options,"Check source uri and try again" +
+                            "\n LoadHL7RIM -in \"file:///path/to/file.mdb\" -a"
+                                    + "\n LoadHL7RIM -in \"file:///path/to/file.mdb\"  -mf \"file:///path/to/myCodingScheme-manifest.xml\"-a"
+                                    + "\n LoadHL7RIM -in \"file:///path/to/file.mdb\" -v 0" + Util.getURIHelp(), e);
+                }
                 Util.displayLoaderStatus(loader);
             }
 
