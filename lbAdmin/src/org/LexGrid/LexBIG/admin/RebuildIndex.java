@@ -160,7 +160,7 @@ public class RebuildIndex {
                 ProcessRunner loader = new IndexLoaderImpl();
                 Util.displayTaggedMessage("Recreation of index extension '" + 
                         indexName + "' in progress...");
-                Util.displayStatus(loader.runProcess(ref));
+                Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {
                 Util.displayTaggedMessage("Rebuild of specified index extension '" + indexName + "' is not supported.");
             }
