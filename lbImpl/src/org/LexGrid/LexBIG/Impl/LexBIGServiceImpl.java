@@ -88,6 +88,7 @@ import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.OntologyFormatAddingPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -587,5 +588,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new ApproxNumOfConceptsPostProcessor().register();
         LexBIGServiceConvenienceMethodsImpl.register();
         new MappingExtensionImpl().register();
+        new OntologyFormatAddingPostProcessor().register();
     }
 }
