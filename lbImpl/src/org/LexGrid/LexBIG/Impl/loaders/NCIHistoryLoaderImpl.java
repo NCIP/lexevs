@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package org.LexGrid.LexBIG.Impl.loaders;
@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
@@ -293,5 +294,11 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
         } catch (LBParameterException e) {
            throw new RuntimeException(e);
         }   
+    }
+    
+        
+    @Override
+    public OntologyFormat getOntologyFormat() {
+        return OntologyFormat.NICHISTORY;
     }
 }
