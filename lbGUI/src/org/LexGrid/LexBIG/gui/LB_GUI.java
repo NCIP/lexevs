@@ -304,7 +304,7 @@ public class LB_GUI {
 				GridData.HORIZONTAL_ALIGN_CENTER, "Available Code Systems");
 
 		gd = new GridData(GridData.FILL_BOTH);
-		gd.verticalSpan = 13;
+		gd.verticalSpan = 14;
 		codeSystemsTV_ = new TableViewer(codeSystemComposite_, SWT.BORDER
 				| SWT.SINGLE | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
 		codeSystemsTV_.getTable().setLayoutData(gd);
