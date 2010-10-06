@@ -80,6 +80,7 @@ public class SystemVariables {
     
     private boolean singleTableMode = true;
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
+    private static boolean SINGLE_TABLE_MODE_DEFAULT = false;
     
     private static String LUCENE_SINGLE_INDEX_PROP = "LUCENE_SINGLE_INDEX";
     private static String LUCENE_SINGLE_INDEX_DEFAULT = "true";
@@ -249,7 +250,7 @@ public class SystemVariables {
             overrideSingleDbMode = getNullableBoolean(tempOverrideSingleDb, false);
             
             singleTableMode = getNullableBoolean(
-                    getNullableProperty(props, SINGLE_TABLE_MODE_PROP), true);
+                    getNullableProperty(props, SINGLE_TABLE_MODE_PROP), SINGLE_TABLE_MODE_DEFAULT);
             
             autoLoadDBPrefix_ = getProperty(props, "DB_PREFIX");
 
