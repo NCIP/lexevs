@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
@@ -170,6 +172,16 @@ public class DataTestUtils {
 		}
 		
 		return false;
+	}
+	
+	public static boolean isConceptReferencePresent(ResolvedConceptReferenceList refs, String code){
+		List<ConceptReference> list = new ArrayList<ConceptReference>();
+		
+		for(ResolvedConceptReference ref : refs.getResolvedConceptReference()) {
+			list.add(ref);
+		}
+		
+		return isConceptReferencePresent(list, code);
 	}
 	
 	/**
