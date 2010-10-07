@@ -672,7 +672,7 @@
 	</bean>
 	
 	<bean id="cyclingCharDbPrefixGenerator" class="org.lexevs.dao.database.prefix.CyclingCharDbPrefixGenerator">
-		<property name="databaseUtility" ref="defaultDatabaseUtility"/>
+		<property name="registry" ref="databaseRegistry"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 	</bean>
 	
