@@ -169,7 +169,7 @@ public class CodedNodeSetFactory {
                     null);
             
             if(cnsToReturn != null) {
-                cnsToReturn = cnsToReturn.union(targetCodedNodeSet.intersect(targetCodedNodeSet));
+                cnsToReturn = cnsToReturn.union(targetCodedNodeSet.intersect(toNodeListSet));
             } else {
                 cnsToReturn = targetCodedNodeSet;
             }
