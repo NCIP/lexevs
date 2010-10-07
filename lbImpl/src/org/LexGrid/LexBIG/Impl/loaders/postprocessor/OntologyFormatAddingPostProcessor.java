@@ -46,6 +46,12 @@ public class OntologyFormatAddingPostProcessor extends AbstractExtendable implem
     }
 
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
+        if(ontFormat == null) {
+            LoggerFactory.getLogger().warn("Skipping: " + this.getName() +
+                    " -- loader is not specifying a Format type.");
+            return;
+        }
+        
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         DaoCallbackService daoCallbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
         
