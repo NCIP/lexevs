@@ -18,8 +18,14 @@
  */
 package org.lexevs.dao.database.prefix;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ArrayUtils;
-import org.lexevs.dao.database.utility.DatabaseUtility;
+import org.lexevs.dao.database.access.registry.RegistryDao;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
@@ -33,11 +39,7 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	/** The prefix length limit. */
 	private int prefixLengthLimit = 4;
 	
-	/** The database utility. */
-	private DatabaseUtility databaseUtility;
-	
-	/** The test database name. */
-	private String testDatabaseName = "lexGridTableMetaData";
+	private Registry registry;
 	
 	/** The prefix resolver. */
 	private PrefixResolver prefixResolver;
@@ -55,6 +57,17 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	/** The LAS t_ character. */
 	public static char LAST_CHARACTER = ALPHABET[ALPHABET.length - 1];
 	
+	
+	public static void main(String[] args) {
+		CyclingCharDbPrefixGenerator g = new CyclingCharDbPrefixGenerator();
+		
+		String prefix = "aaaa";
+		while(true) {
+			prefix = g.generateNextDatabasePrefix(prefix);
+			System.out.println(prefix);
+		}
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
@@ -73,11 +86,29 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 		chars = adjustLength(chars);
 		
 		if(isInCycle(chars)){
-			return new String(
-					findNextInCycle( generateStartingCyclingPrefix() )).toLowerCase();
-		} else {
-			return new String(incrementByOne(chars)).toLowerCase();
+			chars = new char[chars.length];
+			for(int i=0;i<chars.length;i++) {
+				chars[i] = FIRST_CHARACTER;
+			}
 		}
+		String prefix = new String(incrementByOne(chars)).toLowerCase();
+		
+		while(this.doesPrefixAlreadyExistInDatabase(prefix)) {
+			prefix = this.generateNextDatabasePrefix(prefix);
+		}
+		
+		return prefix;
+	}
+	
+	protected boolean doesPrefixAlreadyExistInDatabase(String prefix) {
+		List<String> usedPrefixes = new ArrayList<String>();
+		
+		for(RegistryEntry entry : this.registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)) {
+			usedPrefixes.add(entry.getPrefix());
+			usedPrefixes.add(entry.getStagingPrefix());
+		}
+		
+		return usedPrefixes.contains(prefix);	
 	}
 	
 	/**
@@ -88,10 +119,12 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	 * @return the char[]
 	 */
 	protected char[] incrementByOne(char[] chars){
-		for(int i=0;i<chars.length;i++){
+		for(int i=chars.length-1;i>=0;i--){
 			if(chars[i] != LAST_CHARACTER){
 				chars[i] = findNextChar(chars[i]);
 				return chars;
+			} else {
+				chars[i] = FIRST_CHARACTER;
 			}
 		}
 		throw new RuntimeException("All Prefixes have been used.");
@@ -105,25 +138,15 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	 * @return true, if is in cycle
 	 */
 	protected boolean isInCycle(char[] chars){
-		return (chars.length == prefixLengthLimit
-				&& chars[chars.length - 1] == LAST_CHARACTER);
-	}
-	
-	/**
-	 * Find next in cycle.
-	 * 
-	 * @param chars the chars
-	 * 
-	 * @return the char[]
-	 */
-	protected char[] findNextInCycle(char[] chars){
-		if(this.databaseUtility.doesTableExist(prefixResolver.resolveDefaultPrefix() + new String(chars).toLowerCase() + this.testDatabaseName)){
-			return findNextInCycle(incrementByOne(chars));
-		} else {
-			return chars;
+		boolean isLastChar = true;
+		
+		for(char c : chars) {
+			isLastChar = isLastChar && c == LAST_CHARACTER;
 		}
+		
+		return isLastChar;
 	}
-	
+
 	/**
 	 * Generate starting cycling prefix.
 	 * 
@@ -197,42 +220,6 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	}
 
 	/**
-	 * Sets the database utility.
-	 * 
-	 * @param databaseUtility the new database utility
-	 */
-	public void setDatabaseUtility(DatabaseUtility databaseUtility) {
-		this.databaseUtility = databaseUtility;
-	}
-
-	/**
-	 * Gets the database utility.
-	 * 
-	 * @return the database utility
-	 */
-	public DatabaseUtility getDatabaseUtility() {
-		return databaseUtility;
-	}
-
-	/**
-	 * Gets the test database name.
-	 * 
-	 * @return the test database name
-	 */
-	public String getTestDatabaseName() {
-		return testDatabaseName;
-	}
-
-	/**
-	 * Sets the test database name.
-	 * 
-	 * @param testDatabaseName the new test database name
-	 */
-	public void setTestDatabaseName(String testDatabaseName) {
-		this.testDatabaseName = testDatabaseName;
-	}
-
-	/**
 	 * Gets the prefix resolver.
 	 * 
 	 * @return the prefix resolver
@@ -248,5 +235,13 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	 */
 	public void setPrefixResolver(PrefixResolver prefixResolver) {
 		this.prefixResolver = prefixResolver;
+	}
+
+	public Registry getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(Registry registry) {
+		this.registry = registry;
 	}
 }
