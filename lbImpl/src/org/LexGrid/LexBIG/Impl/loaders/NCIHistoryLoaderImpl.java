@@ -135,7 +135,7 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
 
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
         holder.getBooleanOptions().add(new BooleanOption(ASYNC_OPTION, true));
-        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
+        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR), false));
         holder.getStringOptions().add(new StringOption(Option.getNameForType(Option.DELIMITER)));
         holder.getURIOptions().add(new URIOption(VERSIONS_OPTION));
         holder.getBooleanOptions().add(new BooleanOption(OVERWRITE_OPTION, false));
