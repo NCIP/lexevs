@@ -66,6 +66,7 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String MAPPING_SCHEME_VERSION = "1.0";
     protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#";
     protected final static String PIZZA_SCHEME_VERSION = "version 1.2";
+    protected final static String PIZZA_SCHEME_NAME = "pizza.owl";
  
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
     /**
