@@ -26,36 +26,37 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     private DateFormat dateFormat = NciHistoryService.dateFormat;
 
     private String uri;
-    
-    private NciHistoryService nciHistoryService;
 
     public UriBasedHistoryServiceImpl(String codingSchemeUri) throws LBParameterException {
-        nciHistoryService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getNciHistoryService();
         uri = codingSchemeUri;  
+    }
+
+    private NciHistoryService getNciHistoryService() {
+        return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getNciHistoryService();
     }
     
     @Override
     public NCIChangeEventList getAncestors(ConceptReference conceptReference) throws LBParameterException,
             LBInvocationException {
-       return nciHistoryService.getAncestors(uri, conceptReference);
+       return getNciHistoryService().getAncestors(uri, conceptReference);
     }
 
     @Override
     public SystemReleaseList getBaselines(Date releasedAfter, Date releasedBefore) throws LBParameterException,
             LBInvocationException {
-        return this.nciHistoryService.getBaseLines(uri, releasedAfter, releasedBefore);
+        return this.getNciHistoryService().getBaseLines(uri, releasedAfter, releasedBefore);
     }
 
     @Override
     public CodingSchemeVersionList getConceptChangeVersions(ConceptReference conceptReference, Date beginDate,
             Date endDate) throws LBParameterException, LBInvocationException {
-        return this.nciHistoryService.getConceptChangeVersions(uri, conceptReference, beginDate, endDate);
+        return this.getNciHistoryService().getConceptChangeVersions(uri, conceptReference, beginDate, endDate);
     }
 
     @Override
     public CodingSchemeVersion getConceptCreationVersion(ConceptReference conceptReference)
             throws LBParameterException, LBInvocationException {
-        CodingSchemeVersion creationVersion = this.nciHistoryService.getConceptCreationVersion(uri, conceptReference);
+        CodingSchemeVersion creationVersion = this.getNciHistoryService().getConceptCreationVersion(uri, conceptReference);
         if(creationVersion == null) {
             throw new LBParameterException("No results found for parameter:", "conceptReference");
         }
@@ -66,12 +67,12 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     @Override
     public NCIChangeEventList getDescendants(ConceptReference conceptReference) throws LBParameterException,
             LBInvocationException {
-        return nciHistoryService.getDescendants(uri, conceptReference);
+        return getNciHistoryService().getDescendants(uri, conceptReference);
     }
 
     @Override
     public SystemRelease getEarliestBaseline() throws LBInvocationException {
-        return nciHistoryService.getEarliestBaseLine(uri);
+        return getNciHistoryService().getEarliestBaseLine(uri);
     }
 
     @Override
@@ -79,13 +80,13 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
             CodingSchemeVersion codingSchemeVersion) throws LBParameterException, LBInvocationException {
         if(codingSchemeVersion.getVersion() != null) {
             try {
-                return nciHistoryService.getEditActionList(uri, conceptReference, this.dateFormat.parse(codingSchemeVersion.getVersion()));
+                return getNciHistoryService().getEditActionList(uri, conceptReference, this.dateFormat.parse(codingSchemeVersion.getVersion()));
             } catch (ParseException e) {
                 throw new LBParameterException(e.getMessage());
             }
         } else {
             try {
-                return nciHistoryService.getEditActionList(uri, conceptReference, new URI(codingSchemeVersion.getReleaseURN()));
+                return getNciHistoryService().getEditActionList(uri, conceptReference, new URI(codingSchemeVersion.getReleaseURN()));
             } catch (URISyntaxException e) {
                 throw new LBParameterException(e.getMessage());
             }
@@ -95,23 +96,23 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     @Override
     public NCIChangeEventList getEditActionList(ConceptReference conceptReference, Date beginDate, Date endDate)
             throws LBParameterException, LBInvocationException {
-        return nciHistoryService.getEditActionList(uri, conceptReference, beginDate, endDate);
+        return getNciHistoryService().getEditActionList(uri, conceptReference, beginDate, endDate);
     }
 
     @Override
     public NCIChangeEventList getEditActionList(ConceptReference conceptReference, URI releaseURN)
             throws LBParameterException, LBInvocationException {
-        return nciHistoryService.getEditActionList(uri, conceptReference, releaseURN);
+        return getNciHistoryService().getEditActionList(uri, conceptReference, releaseURN);
     }
 
     @Override
     public SystemRelease getLatestBaseline() throws LBInvocationException {
-        return nciHistoryService.getLatestBaseLine(uri);
+        return getNciHistoryService().getLatestBaseLine(uri);
     }
 
     @Override
     public SystemReleaseDetail getSystemRelease(URI releaseURN) throws LBParameterException, LBInvocationException {
-        return nciHistoryService.getSystemRelease(uri, releaseURN);
+        return getNciHistoryService().getSystemRelease(uri, releaseURN);
     }
 
 }
