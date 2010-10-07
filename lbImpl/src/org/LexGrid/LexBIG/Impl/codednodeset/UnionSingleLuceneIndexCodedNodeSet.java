@@ -63,4 +63,17 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
         
         return newCodeHolder;
     }
+    
+    @Override
+    protected CodeHolder handleOneNullToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2) {
+        CodeHolder codeHolder = new DefaultCodeHolder();
+        if(toNodeListCodes1 != null) {
+            codeHolder.union(toNodeListCodes1);
+        }
+        if(toNodeListCodes2 != null) {
+            codeHolder.union(toNodeListCodes2);
+        }
+        
+        return codeHolder;
+    }
 }

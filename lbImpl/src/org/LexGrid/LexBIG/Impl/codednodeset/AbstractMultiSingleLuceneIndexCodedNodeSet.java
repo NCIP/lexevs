@@ -60,10 +60,19 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
        this.getCodingSchemeReferences().addAll(cns1.getCodingSchemeReferences());
        this.getCodingSchemeReferences().addAll(cns2.getCodingSchemeReferences());
 
-       if(cns1.getToNodeListCodes().getAllCodes().size() > 0 && 
-               cns2.getToNodeListCodes().getAllCodes().size() > 0) {
+       if(cns1.getToNodeListCodes() != null && 
+               cns2.getToNodeListCodes() != null) {
            this.setToNodeListCodes(handleToNodeListCodes(cns1.getToNodeListCodes(), cns2.getToNodeListCodes()));
+       } else {
+           if(cns1.getToNodeListCodes() != null || 
+                   cns2.getToNodeListCodes() != null) {
+               this.setToNodeListCodes(handleOneNullToNodeListCodes(cns1.getToNodeListCodes(), cns2.getToNodeListCodes()));
+           }
        }
+    }
+    
+    protected CodeHolder handleOneNullToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2) {
+        return null;
     }
 
     protected abstract CodeHolder handleToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2);

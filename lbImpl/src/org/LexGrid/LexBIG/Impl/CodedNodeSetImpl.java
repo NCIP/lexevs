@@ -98,7 +98,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
     
-    private CodeHolder toNodeListCodes = new DefaultCodeHolder();
+    private CodeHolder toNodeListCodes = null;
     
     private ActiveOption currentActiveOption;
 
@@ -499,7 +499,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             ResolvedConceptReferenceList rcrl = new ResolvedConceptReferenceList();
             
-            int max = codes.size() + this.getToNodeListCodes().getNumberOfCodes();
+            int max = codes.size() + 
+                    (this.getToNodeListCodes() != null ? this.getToNodeListCodes().getNumberOfCodes() : 0);
 
             if (maxToReturn > 0 && maxToReturn < max) {
                 max = maxToReturn;
@@ -725,10 +726,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
 
             this.queries.add(new MatchAllDocsQuery());
-            Query codingSchemeQuery = 
-                entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
-                
-            this.queries.add(codingSchemeQuery);
             
             for (int i = 1; i < pendingOperations_.size(); i++) {
                 Operation operation = pendingOperations_.get(i);
@@ -813,7 +810,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         ResolvedConceptReferencesIterator itr = new ResolvedConceptReferencesIteratorImpl(
                 codesToInclude, restrictToProperties, restrictToPropertyTypes, filters, resolveObjects);
         
-        if(this.getToNodeListCodes().getAllCodes().size() > 0) {
+        if(this.getToNodeListCodes() != null && 
+                this.getToNodeListCodes().getAllCodes().size() > 0) {
             return new ToNodeListResolvedConceptReferencesIteratorDecorator(itr, this.getToNodeListCodes(), this.currentActiveOption);
         } else {
             return itr;
