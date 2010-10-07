@@ -31,7 +31,6 @@ public class GForge29840 extends LexBIGServiceTestCase {
     public void testLanguageTags() throws Throwable {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
     	CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(PIZZA_SCHEME_VERSION);
-//    	CodedNodeSet cns = lbs.getNodeSet(PIZZA_SCHEME_URI, csvt, null);
     	CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_NAME, csvt, null);
     	
     	AssociatedConcept focus = new AssociatedConcept();
