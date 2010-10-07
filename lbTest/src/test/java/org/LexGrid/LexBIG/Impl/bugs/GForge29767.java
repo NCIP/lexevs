@@ -36,7 +36,7 @@ public class GForge29767 extends LexBIGServiceTestCase {
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         
         CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(PIZZA_SCHEME_VERSION);   
-        CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_URI, csvt, null);
+        CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_NAME, csvt, null);
         
         AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("NonVegetarianPizza");
