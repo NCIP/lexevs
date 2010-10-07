@@ -1,5 +1,6 @@
 package org.lexgrid.exporter.owlrdf.converter;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.Writer;
@@ -124,14 +125,14 @@ public class LexGridToOwlRdfConverter {
 	// private String NS_URI = "http://www.xfront.com/owl/ontologies/camera";
 	// private String outputFile_ = "C:/temp/camera.owl";
 
-//	private String NS_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
-//	private String outputFile_ = "C:/temp/pizza.owl";
+	private String NS_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
+	private String outputFile_ = "C:/temp/pizza.owl";
 
 //	 private String NS_URI = "urn:lsid:bioontology.org:cell";
 //	 private String outputFile_ = "C:/temp/cell.owl";
 	 
-	 private String NS_URI = "urn:oid:2.16.840.1.113883.6.110";
-	 private String outputFile_ = "C:/temp/umls.owl";
+//	 private String NS_URI = "urn:oid:2.16.840.1.113883.6.110";
+//	 private String outputFile_ = "C:/temp/umls.owl";
 	
 //	 private String NS_URI = "urn:lsid:bioontology.org:uberon";
 //	 private String outputFile_ = "C:/temp/uberon.owl";
@@ -1114,13 +1115,11 @@ public class LexGridToOwlRdfConverter {
 		
 		ExporterMessageDirector md = new ExporterMessageDirector("LexRdfExporter", status);
 		
-		// String codingSchemeUri =
-		// "http://www.xfront.com/owl/ontologies/camera",
-		// codingSchemeVersion = "UNASSIGNED";
-//		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", codingSchemeVersion = "version 1.2";
+//		String codingSchemeUri = "http://www.xfront.com/owl/ontologies/camera", codingSchemeVersion = "UNASSIGNED";
+		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", codingSchemeVersion = "version 1.2";
 //		String codingSchemeUri = "urn:lsid:bioontology.org:cell", codingSchemeVersion = "UNASSIGNED";
 //		String codingSchemeUri = "urn:lsid:bioontology.org:uberon", codingSchemeVersion = "UNASSIGNED";
-		String codingSchemeUri = "urn:oid:2.16.840.1.113883.6.110", codingSchemeVersion = "1993.bvt";
+//		String codingSchemeUri = "urn:oid:2.16.840.1.113883.6.110", codingSchemeVersion = "1993.bvt";
 
 		LexGridToOwlRdfConverter converter = new LexGridToOwlRdfConverter();
 
@@ -1149,4 +1148,5 @@ public class LexGridToOwlRdfConverter {
 		}
 
 	}
+
 }

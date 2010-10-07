@@ -4,8 +4,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbAdmin"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbTest"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
