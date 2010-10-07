@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-        xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes"
-        xmlns:lgRESTCommon="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" 
-        xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins"
-        xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins" 
-        xmlns:lgRESTCS="http://LexGrid.org/schema/2009/01/LexGrid/REST/codingSchemes" 
-        xmlns:lgRESTVD="http://LexGrid.org/schema/2009/01/LexGrid/REST/valueDomains" 
-        xmlns:lgVer="http://LexGrid.org/schema/2009/01/LexGrid/versions"
-        xmlns="http://LexGrid.org/schema/2009/01/LexGrid/REST/versions"
-        targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/versions" elementFormDefault="qualified">
+        xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" 
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+        xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" 
+        xmlns:lgRESTCS="http://LexGrid.org/schema/2010/01/LexGrid/REST/codingSchemes" 
+        xmlns:lgRESTVD="http://LexGrid.org/schema/2010/01/LexGrid/REST/valueSets" 
+        xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+        xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/versions"
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/versions" elementFormDefault="qualified">
         
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="../builtins.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="../commonTypes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/versions" schemaLocation="../versions.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/codingSchemes" schemaLocation="codingSchemes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/valueDomains" schemaLocation="valueDomains.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/codingSchemes" schemaLocation="codingSchemes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/valueSets" schemaLocation="valueSets.xsd"/>
 
 
         <xs:annotation>
@@ -107,7 +107,7 @@
                                                         <xs:documentation>A directory of coding schemes contained in this release</xs:documentation>
                                                 </xs:annotation>
                                         </xs:element>
-                                        <xs:element name="valueDomains" type="lgRESTVD:valueDomainDirectory" minOccurs="0" maxOccurs="1">
+                                        <xs:element name="valueSets" type="lgRESTVD:valueDomainDirectory" minOccurs="0" maxOccurs="1">
                                                 <xs:annotation>
                                                         <xs:documentation>A collection of value domain definitions that are included in this release. </xs:documentation>
                                                 </xs:annotation>

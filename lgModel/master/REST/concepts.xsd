@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://LexGrid.org/schema/2009/01/LexGrid/REST/concepts" 
+<xs:schema xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/concepts" 
         xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" 
-        xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" 
-        xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" 
-        xmlns:lgRESTCommon="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes"
-        xmlns:lgRESTRel="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations"
-        targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/concepts">
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+        xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" 
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes"
+        xmlns:lgRESTRel="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations"
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/concepts">
         
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="../builtins.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="../commonTypes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations" schemaLocation="relations.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" schemaLocation="relations.xsd"/>
 
 
         <xs:annotation>
@@ -30,6 +30,7 @@
                 <xs:sequence>
                         <xs:element name="entityCode" type="lgCommon:entityCode"/>
                         <xs:element name="entityNamespace" type="lgCommon:URI"/>
+                        <xs:element name="entityURI" type="lgCommon:URI"/>
                 </xs:sequence>
         </xs:complexType>
 

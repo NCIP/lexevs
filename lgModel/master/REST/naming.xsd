@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xs:schema xmlns="http://LexGrid.org/schema/2009/01/LexGrid/REST/naming" 
+<xs:schema xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/naming" 
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" 
-        xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins" 
-        xmlns:lgRESTCommon="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes"
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+        xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" 
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes"
         elementFormDefault="qualified" 
-        targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/naming">
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/naming">
 
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="../builtins.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
         
         <!-- ================================================= -->
         <!-- Package: <<XSDschema>> naming  -->

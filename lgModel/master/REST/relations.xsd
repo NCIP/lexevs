@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema         xmlns="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations" 
+<xs:schema         xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" 
         xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-        xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes"
-        xmlns:lgRESTCommon="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes"
-        xmlns:lgRESTBuiltins="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins"
-        xmlns:lgRESTCon="http://LexGrid.org/schema/2009/01/LexGrid/REST/concepts"
-        xmlns:lgRESTRel="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations" 
-        xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins"
+        xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes"
+        xmlns:lgRESTBuiltins="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins"
+        xmlns:lgRESTCon="http://LexGrid.org/schema/2010/01/LexGrid/REST/concepts"
+        xmlns:lgRESTRel="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" 
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
 
-        targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations" elementFormDefault="qualified">
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="../commonTypes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/concepts" schemaLocation="concepts.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="../builtins.xsd"/>
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" elementFormDefault="qualified">
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/concepts" schemaLocation="concepts.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
         
         <!-- ================================================= -->
         <!-- Package: <<XSDschema> relations  -->

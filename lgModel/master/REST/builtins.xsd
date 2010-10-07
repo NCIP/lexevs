@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins" 
+<xs:schema xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" 
                        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-                       xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins"
-                       elementFormDefault="qualified" targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/builtins"> 
-        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="../builtins.xsd"/>
+                       xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+                       elementFormDefault="qualified" targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins"> 
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
 
         <xs:annotation>
                 <xs:documentation>
@@ -17,7 +17,7 @@
                 ======================================================================================== --> 
         <xs:complexType name="resource">
                 <xs:annotation>
-                        <xs:documentation>A generic name and link to any resource within the REST infrastructure</xs:documentation>
+                        <xs:documentation>A generic name and link to a resource within the REST infrastructure</xs:documentation>
                 </xs:annotation>
                 <xs:simpleContent>
                         <xs:extension base="xs:string">
