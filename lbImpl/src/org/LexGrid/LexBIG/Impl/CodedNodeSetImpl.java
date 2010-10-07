@@ -101,6 +101,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private CodeHolder toNodeListCodes = null;
     
     private ActiveOption currentActiveOption;
+    
+    private boolean shouldCodingSchemeSpecificRestriction = true;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -727,6 +729,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             this.queries.add(new MatchAllDocsQuery());
             
+            if(this.isShouldCodingSchemeSpecificRestriction()) {
+                Query codingSchemeQuery = 
+                    entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
+                    
+                this.queries.add(codingSchemeQuery);
+            }
+            
             for (int i = 1; i < pendingOperations_.size(); i++) {
                 Operation operation = pendingOperations_.get(i);
 
@@ -961,5 +970,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     public CodeHolder getToNodeListCodes() {
         return toNodeListCodes;
+    }
+
+    public void setShouldCodingSchemeSpecificRestriction(boolean shouldCodingSchemeSpecificRestriction) {
+        this.shouldCodingSchemeSpecificRestriction = shouldCodingSchemeSpecificRestriction;
+    }
+
+    public boolean isShouldCodingSchemeSpecificRestriction() {
+        return shouldCodingSchemeSpecificRestriction;
     }
 }

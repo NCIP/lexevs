@@ -40,6 +40,7 @@ public class LuceneOnlyToNodeListCodedNodeSet extends SingleLuceneIndexCodedNode
  
     public LuceneOnlyToNodeListCodedNodeSet(String uri, String version, ConceptReferenceList codeList) throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         super(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version), null, null);
+        this.setShouldCodingSchemeSpecificRestriction(false);
         
         boolean emptyCodeList = false;
         if(codeList == null || codeList.getConceptReferenceCount() == 0) {
