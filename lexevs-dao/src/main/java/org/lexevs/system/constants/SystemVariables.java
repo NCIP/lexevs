@@ -626,7 +626,7 @@ public class SystemVariables {
             throw new LBParameterException("The required variable '" + key
                     + "' is missing from your supplied properties file");
         }
-        return value;
+        return StringUtils.trim(value);
     }
     
     private String getNullableProperty(Properties props, String key) throws LBParameterException {
@@ -638,7 +638,7 @@ public class SystemVariables {
         if(StringUtils.isBlank(value)) {
         	return defaultValue;
         } else {
-        	return value;
+        	return StringUtils.trim(value);
         }
     }
     
