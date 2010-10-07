@@ -65,6 +65,7 @@ import org.LexGrid.LexBIG.Impl.function.codednodeset.CodedNodeSetOperationsTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.DifferenceTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.IntersectionTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.MultipeRestrictionsTest;
+import org.LexGrid.LexBIG.Impl.function.codednodeset.ResolveMappingCodedNodeSetTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.ResolveTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.ResolveToListTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.RestrictToMatchingDesignationsTest;
@@ -276,6 +277,7 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(RestrictToMatchingPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
+        codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
         
         TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
