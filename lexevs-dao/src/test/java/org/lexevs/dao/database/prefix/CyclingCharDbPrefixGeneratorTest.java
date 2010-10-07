@@ -18,19 +18,15 @@
  */
 package org.lexevs.dao.database.prefix;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.easymock.EasyMock;
+import javax.annotation.Resource;
+
 import org.junit.Test;
-import org.lexevs.dao.database.utility.DatabaseUtility;
-import org.lexevs.dao.test.StaticPrefixResolver;
-import org.springframework.test.annotation.ExpectedException;
+import org.lexevs.registry.service.Registry;
 
 /**
  * The Class CyclingCharDbPrefixGeneratorTest.
@@ -42,6 +38,9 @@ public class CyclingCharDbPrefixGeneratorTest {
 	/**
 	 * Test adjust length chop.
 	 */
+	@Resource(name="databaseRegistry")
+	private Registry registry;
+	
 	@Test
 	public void testAdjustLengthChop(){
 		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
@@ -73,17 +72,6 @@ public class CyclingCharDbPrefixGeneratorTest {
 		generator.setPrefixLengthLimit(3);
 		
 		assertFalse(generator.isInCycle(new char[]{'E'}));
-	}
-	
-	/**
-	 * Test is in cycle multiple chars true.
-	 */
-	@Test
-	public void testIsInCycleMultipleCharsTrue(){
-		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
-		generator.setPrefixLengthLimit(10);
-		
-		assertTrue(generator.isInCycle("AEDGRYNGRZ".toCharArray()));
 	}
 	
 	/**
@@ -124,85 +112,7 @@ public class CyclingCharDbPrefixGeneratorTest {
 		assertEquals(5, chars.length);
 		assertArrayEquals("ffAAA".toCharArray(), chars);
 	}
-	
-	/**
-	 * Test get prefix without cycle.
-	 */
-	@Test
-	public void testGetPrefixWithoutCycle(){
-		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
-		generator.setPrefixLengthLimit(4);
-		
-		String newPrefix = generator.generateNextDatabasePrefix("aaaa");
-		
-		assertEquals("baaa", newPrefix);
-	}
-	
-	/**
-	 * Test get prefix without cycle one z.
-	 */
-	@Test
-	public void testGetPrefixWithoutCycleOneZ(){
-		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
-		generator.setPrefixLengthLimit(4);
-		
-		String newPrefix = generator.generateNextDatabasePrefix("zaaa");
-		
-		assertEquals("zbaa", newPrefix);
-	}
-	
-	/**
-	 * Test get prefix with cycle.
-	 */
-	@Test
-	public void testGetPrefixWithCycle(){
 
-		
-		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
-		
-		generator.setPrefixLengthLimit(4);
-		generator.setPrefixResolver(new StaticPrefixResolver("$$"));
-		
-		
-		DatabaseUtility dbUtil = createMock(DatabaseUtility.class);
-		expect(dbUtil.doesTableExist("$$aaaz" + generator.getTestDatabaseName())).andReturn(true).anyTimes();
-		expect(dbUtil.doesTableExist("$$baaz" + generator.getTestDatabaseName())).andReturn(true).anyTimes();
-		expect(dbUtil.doesTableExist("$$caaz" + generator.getTestDatabaseName())).andReturn(true).anyTimes();
-		expect(dbUtil.doesTableExist("$$daaz" + generator.getTestDatabaseName())).andReturn(false).anyTimes();
-		replay(dbUtil);
-		
-		generator.setDatabaseUtility(dbUtil);
-		
-		String newPrefix = generator.generateNextDatabasePrefix("zzzz");
-		
-		assertEquals("daaz", newPrefix);
-	}
-	
-	/**
-	 * Test no more prefixes.
-	 */
-	@Test
-	@ExpectedException(RuntimeException.class)
-	public void testNoMorePrefixes(){
-		
-		PrefixResolver resolver = createMock(PrefixResolver.class);
-		expect(resolver.resolveDefaultPrefix()).andReturn("$$").anyTimes();
-		replay(resolver);
-		
-		CyclingCharDbPrefixGenerator generator = new CyclingCharDbPrefixGenerator();
-		
-		generator.setPrefixLengthLimit(4);
-		generator.setPrefixResolver(new StaticPrefixResolver("$$"));
-		
-		DatabaseUtility dbUtil = createMock(DatabaseUtility.class);
-		expect(dbUtil.doesTableExist((String)EasyMock.anyObject())).andReturn(true).anyTimes();
-		replay(dbUtil);
-		
-		generator.setDatabaseUtility(dbUtil);
-		
-		String newPrefix = generator.generateNextDatabasePrefix("a");
-	}
-	
 	/**
 	 * Test too small prefix.
 	 * 
@@ -217,5 +127,4 @@ public class CyclingCharDbPrefixGeneratorTest {
 		
 		generator.afterPropertiesSet();
 	}
-	
 }
