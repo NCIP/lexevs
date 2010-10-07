@@ -124,7 +124,7 @@ private static final long serialVersionUID = 1L;
         holder.setIsResourceUriFolder(true);
         
         holder.getBooleanOptions().add(new BooleanOption(ASYNC_OPTION, true));
-        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR)));
+        holder.getBooleanOptions().add(new BooleanOption(Option.getNameForType(Option.FAIL_ON_ERROR), false));
         holder.getStringOptions().add(new StringOption(Option.getNameForType(Option.DELIMITER)));
         holder.getBooleanOptions().add(new BooleanOption(OVERWRITE_OPTION, false));
         
