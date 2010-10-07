@@ -87,7 +87,6 @@ import edu.stanford.smi.protegex.owl.database.OWLDatabaseKnowledgeBaseFactory;
 import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
 import edu.stanford.smi.protegex.owl.model.NamespaceManager;
 import edu.stanford.smi.protegex.owl.model.OWLAllDifferent;
-import edu.stanford.smi.protegex.owl.model.OWLAnonymousClass;
 import edu.stanford.smi.protegex.owl.model.OWLCardinalityBase;
 import edu.stanford.smi.protegex.owl.model.OWLClass;
 import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
@@ -985,20 +984,6 @@ public class ProtegeOwl2LG {
             RDFResource superClass = (RDFResource) superClasses.next();
             relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
                     superClass);
-            
-              //Reference code for Lian. Added on 10/01/2010 by Satya. 
-              //Can be deleted if not utilized.              
-             /* if( superClass instanceof OWLAnonymousClass ) {
-                
-                OWLAnonymousClass anunymousClass = (OWLAnonymousClass)superClass;
-                
-                String lgCode = resolveAnonymousClass((OWLAnonymousClass)superClass, source);
-                String targetNameSpace = getNameSpace(anunymousClass.getNamespace());
-
-                AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
-                relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
-                
-            } else  */
             if (superClass instanceof OWLRestriction) {
                 OWLRestriction restriction = (OWLRestriction) superClass;
                 processRestriction(restriction, null, source);
@@ -1164,6 +1149,9 @@ public class ProtegeOwl2LG {
             for (Iterator values = rdfResource.getPropertyValues(prop).iterator(); values.hasNext();) {
                 Object value = values.next();
                 String resolvedText = resolveRDFText(rdfResource, value);
+                String lang = null;
+                if (value instanceof DefaultRDFSLiteral)
+                    lang = ((DefaultRDFSLiteral) value).getLanguage();
 
                 // Special case for handling concept code and status, which are
                 // set directly as attributes on the LexGrid concept.
@@ -1178,7 +1166,7 @@ public class ProtegeOwl2LG {
                 // property to the list to eventually add to the concept.
                 else {
                     Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), lgLabel, lgDType, prop
-                            .getNamespace(), resolvedText);
+                            .getNamespace(), resolvedText, lang);
                     if (newProp.getValue() != null) {
                         sortedProps.add(newProp);
                         if (newProp instanceof Presentation)
@@ -1192,11 +1180,11 @@ public class ProtegeOwl2LG {
         Collection values = rdfResource.getPropertyValues(rdfResource.getOWLModel().getOWLEquivalentClassProperty());
         if (values == null || values.isEmpty()) {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "true", lgSupportedMappings_, null);
+                    .getPropertyName_primitive(), "true", lgSupportedMappings_, null, null);
             sortedProps.add(lgProp);
         } else {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "false", lgSupportedMappings_, null);
+                    .getPropertyName_primitive(), "false", lgSupportedMappings_, null, null);
             sortedProps.add(lgProp);
         }
 
@@ -1212,7 +1200,7 @@ public class ProtegeOwl2LG {
             String entityDesc = lgEntity.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null));
+                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null, null));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1272,7 +1260,7 @@ public class ProtegeOwl2LG {
                     if (range != null) {
                         String propertyRangeName = getRDFResourceLocalName(range);
                         Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), propertyName,
-                                propertyRangeName, lgSupportedMappings_, prop.getURI());
+                                propertyRangeName, lgSupportedMappings_, prop.getURI(), null);
                         sortedProps.add(lgProp);
                     }
                 }
@@ -1360,7 +1348,7 @@ public class ProtegeOwl2LG {
 
                 // Add this information as an instanceProperty.
                 Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), "isInstanceOf", className,
-                        lgSupportedMappings_, null);
+                        lgSupportedMappings_, null, null);
                 sortedProps.add(lgProp);
 
                 break;
@@ -1406,7 +1394,7 @@ public class ProtegeOwl2LG {
                 // property to the list to eventually add to the instance.
                 else {
                     Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), lgLabel, lgDType, prop
-                            .getNamespace(), resolvedText);
+                            .getNamespace(), resolvedText, null);
                     if (newProp.getValue() != null) {
                         sortedProps.add(newProp);
                         if (newProp instanceof Presentation)
@@ -1421,11 +1409,11 @@ public class ProtegeOwl2LG {
         Collection values = rdfResource.getPropertyValues(rdfResource.getOWLModel().getOWLEquivalentClassProperty());
         if (values == null || values.isEmpty()) {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "true", lgSupportedMappings_, null);
+                    .getPropertyName_primitive(), "true", lgSupportedMappings_, null, null);
             sortedProps.add(lgProp);
         } else {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++i), prefManager
-                    .getPropertyName_primitive(), "false", lgSupportedMappings_, null);
+                    .getPropertyName_primitive(), "false", lgSupportedMappings_, null, null);
             sortedProps.add(lgProp);
         }
 
@@ -1441,7 +1429,7 @@ public class ProtegeOwl2LG {
             String entityDesc = lgInstance.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
                     rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null));
+                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null, null));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1533,18 +1521,18 @@ public class ProtegeOwl2LG {
      * @return org.LexGrid.lg.concepts.ConceptProperty
      */
     protected Property resolveProp(RDFProperty prop, String lgClass, String lgID, String lgLabel, String lgDType,
-            String rdfNamespace, String rdfText) {
+            String rdfNamespace, String rdfText, String lang) {
 
         Property lgProp;
         String propName = prop.getName();
         if (RDFSNames.Slot.LABEL.equals(propName) || lgClass == PropertyTypes.PRESENTATION.toString())
-            lgProp = CreateUtils.createPresentation(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI());
+            lgProp = CreateUtils.createPresentation(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI(), lang);
         else if (RDFSNames.Slot.COMMENT.equals(propName) || lgClass == PropertyTypes.COMMENT.toString())
-            lgProp = CreateUtils.createComment(lgID, lgLabel, rdfText, lgSupportedMappings_, prop.getURI());
+            lgProp = CreateUtils.createComment(lgID, lgLabel, rdfText, lgSupportedMappings_, prop.getURI(), lang);
         else if (lgClass == PropertyTypes.DEFINITION.toString())
-            lgProp = CreateUtils.createDefinition(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI());
+            lgProp = CreateUtils.createDefinition(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI(), lang);
         else {
-            lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_, prop.getURI());
+            lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_, prop.getURI(), lang);
             if (prop.getLabels().isEmpty() == false) {
                 for(Iterator in = prop.getLabels().iterator(); in.hasNext();) {
                     Object obj = in.next();
@@ -1684,24 +1672,14 @@ public class ProtegeOwl2LG {
             // Add the type prop ...
             RDFProperty opProp = logicalClass.getOperandsProperty();
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
-                    .getPropertyName_type(), opProp.getLocalName(), lgSupportedMappings_, null);
+                    .getPropertyName_type(), opProp.getLocalName(), lgSupportedMappings_, null, null);
             lgClass.addProperty(lgProp);
 
             // Evaluate the operands defined for the anonymous node to determine
             // relations.
             for (Iterator operands = logicalClass.getOperands().iterator(); operands.hasNext();) {
                 Object operand = operands.next();
-                
-                if( operand instanceof OWLAnonymousClass) {
-                    OWLAnonymousClass anunymousClass = (OWLAnonymousClass)operand;
-                    
-                    String lgCode = resolveAnonymousClass((OWLAnonymousClass)operand, assocSource);
-                    String targetNameSpace = getNameSpace(anunymousClass.getNamespace());
-
-                    AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
-                    relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
-                    
-                } else if (operand instanceof OWLComplementClass) {
+                if (operand instanceof OWLComplementClass) {
                     OWLComplementClass complement = (OWLComplementClass) operand;
                     String lgCode = resolveAnonymousClass((OWLClass) complement.getComplement(), assocSource);
 
@@ -1749,14 +1727,14 @@ public class ProtegeOwl2LG {
 
         if (owlClass instanceof OWLEnumeratedClass) {
             Property lgProp = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
-                    .getPropertyName_type(), "owl:oneOf", lgSupportedMappings_, null);
+                    .getPropertyName_type(), "owl:oneOf", lgSupportedMappings_, null, null);
             lgClass.addProperty(lgProp);
         }
 
         if (owlClass instanceof OWLRestriction) {
             OWLRestriction restriction = (OWLRestriction) owlClass;
             Property lgProperty = CreateUtils.createProperty(generatePropertyID(++lgPropNum), prefManager
-                    .getPropertyName_type(), "owl:Restriction", lgSupportedMappings_, null);
+                    .getPropertyName_type(), "owl:Restriction", lgSupportedMappings_, null, null);
             lgClass.addProperty(lgProperty);
             processRestriction(restriction, assocSource, source);
         }
@@ -1776,7 +1754,7 @@ public class ProtegeOwl2LG {
         // Note: text was derived from the browser text. Since it is unclear
         // what property it was derived from, we document as 'label'.
         Presentation pres = CreateUtils.createPresentation(generatePropertyID(++lgPropNum), "label", lgClass
-                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_, null);
+                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_, null, null);
         lgClass.addPresentation(pres);
         // Add to the concept container or write to db...
         addEntity(lgClass);
@@ -2528,7 +2506,7 @@ public class ProtegeOwl2LG {
         topThing.setEntityDescription(ed);
         topThing.setIsAnonymous(Boolean.TRUE);
         Presentation p = CreateUtils.createPresentation(generatePropertyID(1), ProtegeOwl2LGConstants.ROOT_NAME,
-                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_, null);
+                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_, null, null);
         topThing.addPresentation(p);
         addEntity(topThing);
         return topThing;
@@ -2637,10 +2615,10 @@ public class ProtegeOwl2LG {
             
             if( propName != null && propName.equals(PropertyTypes.COMMENT.value())) {
                 pro = CreateUtils.createComment(generatePropertyID(++i), propName, resolvedText,
-                        lgSupportedMappings_, property.getURI());
+                        lgSupportedMappings_, property.getURI(), null);
             } else {
                 pro = CreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
-                        lgSupportedMappings_, property.getURI());
+                        lgSupportedMappings_, property.getURI(), null);
             }
             assocEntity.addProperty(pro);
         }
