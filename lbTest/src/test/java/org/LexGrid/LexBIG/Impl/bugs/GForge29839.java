@@ -45,7 +45,6 @@ public class GForge29839 extends LexBIGServiceTestCase {
         AssociationList assnList = conRef.getSourceOf();
         for (Association assn : assnList.getAssociation()) {
         	for (AssociatedConcept con : assn.getAssociatedConcepts().getAssociatedConcept()) {
-        		System.out.println(con.getCode());
         		assertEquals(con.getCode().equals("SpicyTopping"), false);
         	}
         }
