@@ -350,7 +350,9 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 			List<RegistryEntry> entries = this.registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, uri);
 			
 			for(RegistryEntry entry : entries){
-				foundEntries.add(entry);
+				if(entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())){
+					foundEntries.add(entry);
+				}
 			}
 		}
 		
