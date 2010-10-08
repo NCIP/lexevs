@@ -110,6 +110,7 @@ import edu.stanford.smi.protegex.owl.model.RDFSDatatype;
 import edu.stanford.smi.protegex.owl.model.RDFSLiteral;
 import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import edu.stanford.smi.protegex.owl.model.impl.DefaultOWLObjectProperty;
 import edu.stanford.smi.protegex.owl.model.impl.DefaultRDFSLiteral;
 
 /**
@@ -151,7 +152,7 @@ public class ProtegeOwl2LG {
     private Entities tempEmfEntityList_ = null;
 
     // Shared mapping information ...
-    private Map<String, Object> attributeMap_ = null;
+//    private Map<String, Object> attributeMap_ = null;
     private Map<String, String> owlDatatypeName2label_ = null;
     private Map<String, String> owlDatatypeName2lgPropClass_ = null;
     private Map<String, String> owlDatatypeName2lgDatatype_ = null;
@@ -717,6 +718,19 @@ public class ProtegeOwl2LG {
             AssociationSource source = CreateUtils.createAssociationSource(lgAssoc.getAssociationEntity()
                     .getEntityCode(), nameSpace);
 
+            // The idea is to create type "FunctionalProperty"
+            if (prop.isFunctional() == true) {
+                //TODO: add type functional property in the lg property and create the association predicate
+//                relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRdfType(), source, OWL.FunctionalProperty);
+            }
+            
+            // The idea is to create type "InverseFunctionalProperty"
+            if (prop instanceof DefaultOWLObjectProperty) {
+                if ( ((DefaultOWLObjectProperty) prop).isInverseFunctional() == true ) {
+                    //TODO: add type inverse functional property in the lg property and create the association predicate 
+                }
+            }
+            
             // The idea is to create a new association called "domain", whose
             // LHS will be the OWLObjectProperty and RHS will be the domain.
             if (prop.getDomains(false).size() != 0) {
@@ -2607,20 +2621,30 @@ public class ProtegeOwl2LG {
      */
     protected void resolveAssociationProperty(AssociationEntity assocEntity, RDFProperty rdfProp) {
         int i = 0;
+        
+        // functional property, inverse functional property and object property is in rdf type collection 
+        for (Iterator itr = rdfProp.getRDFTypes().iterator(); itr.hasNext();) {
+            RDFSClass rdfsClass = (RDFSClass) itr.next();
+            Property pro = CreateUtils.createComment(generatePropertyID(++i), "type", 
+                    rdfsClass.getLocalName(), lgSupportedMappings_, rdfsClass.getURI(), null);
+            assocEntity.addProperty(pro);
+        }
+        
         for (Iterator itr = rdfProp.getRDFProperties().iterator(); itr.hasNext();) {
             RDFProperty property = (RDFProperty) itr.next();
             String propName = getRDFResourceLocalName(property);
             String resolvedText = resolveRDFText(rdfProp, property);
             Property pro = null;
-            
-            if( propName != null && propName.equals(PropertyTypes.COMMENT.value())) {
-                pro = CreateUtils.createComment(generatePropertyID(++i), propName, resolvedText,
-                        lgSupportedMappings_, property.getURI(), null);
-            } else {
-                pro = CreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
-                        lgSupportedMappings_, property.getURI(), null);
+            if (propName.equals("type") == false) {
+                if( propName != null && propName.equals(PropertyTypes.COMMENT.value())) {
+                    pro = CreateUtils.createComment(generatePropertyID(++i), propName, resolvedText,
+                            lgSupportedMappings_, property.getURI(), null);
+                } else {
+                    pro = CreateUtils.createProperty(generatePropertyID(++i), propName, resolvedText,
+                            lgSupportedMappings_, property.getURI(), null);
+                }
+                assocEntity.addProperty(pro);
             }
-            assocEntity.addProperty(pro);
         }
     }
 
