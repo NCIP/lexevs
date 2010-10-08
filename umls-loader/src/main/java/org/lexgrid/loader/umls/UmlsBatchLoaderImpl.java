@@ -29,8 +29,6 @@ import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.event.SystemEventListener;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.properties.ConnectionPropertiesFactory;
@@ -68,6 +66,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#loadUmls(java.lang.String, java.lang.String)
 	 */
 	public void loadUmls(URI rrfDir, String sab) throws Exception {
+		this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(false);
 		this.getOptions().getStringOption(SAB_OPTION).setOptionValue(sab);
 		
 		this.load(rrfDir);
