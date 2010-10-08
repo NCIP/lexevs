@@ -122,7 +122,9 @@ import org.LexGrid.LexBIG.Impl.function.query.TestSearchbyStatus;
 import org.LexGrid.LexBIG.Impl.function.query.TestSetofVocabulariesforSearch;
 import org.LexGrid.LexBIG.Impl.function.query.TestSpecifyReturnOrder;
 import org.LexGrid.LexBIG.Impl.function.query.TestSubsetExtraction;
+import org.LexGrid.LexBIG.Impl.function.query.TestTransitiveClosure;
 import org.LexGrid.LexBIG.Impl.function.query.TestTraverseGraphviaRoleLinks;
+import org.LexGrid.LexBIG.Impl.function.query.TestVersionChanges;
 import org.LexGrid.LexBIG.Impl.function.query.TestVersioningandAuthorityEnumeration;
 import org.LexGrid.LexBIG.Impl.function.query.TestforCurrentOrObsoleteConcept;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestContains;
@@ -298,6 +300,7 @@ public class AllTestsNormalConfig {
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RootsTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FocusTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.UnionTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CrossOntologyResolveTest.class);
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
@@ -338,11 +341,9 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestSetofVocabulariesforSearch.class);
         functionalTests.addTestSuite(TestSpecifyReturnOrder.class);
         functionalTests.addTestSuite(TestSubsetExtraction.class);
-//        functionalTests.addTestSuite(TestTransitiveClosure.class);
+        functionalTests.addTestSuite(TestTransitiveClosure.class);
         functionalTests.addTestSuite(TestTraverseGraphviaRoleLinks.class);
-        // this test cannot be safely run on their config - will maul their
-        // history.
-        // functionalTests.addTestSuite(TestVersionChanges.class);
+        functionalTests.addTestSuite(TestVersionChanges.class);
         functionalTests.addTestSuite(TestVersioningandAuthorityEnumeration.class);
         functionalTests.addTestSuite(TestCodingSchemesWithSupportedAssociation.class);
         functionalTests.addTestSuite(TestEnumerateAssociationNames.class);
