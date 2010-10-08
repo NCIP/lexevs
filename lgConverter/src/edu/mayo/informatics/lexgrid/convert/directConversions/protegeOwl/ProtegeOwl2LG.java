@@ -695,7 +695,7 @@ public class ProtegeOwl2LG {
                 + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
         messages_.info("Processing OWL Object Properties ...");
-
+        
         for (Iterator props = owlModel_.getUserDefinedOWLObjectProperties().iterator(); props.hasNext();) {
             RDFProperty prop = (RDFProperty) props.next();
             // Modified on 01/19/2009 (Jyoti): I think this is what Satya meant
@@ -705,7 +705,7 @@ public class ProtegeOwl2LG {
             if (prefManager.isProcessConceptsForObjectProperties()) {
                 Entity concept = resolveConcept(prop);
             }
-
+            
             // ///////////////////////////////////
             // /// Process Domain and Ranges /////
             // //////////////////////////////////
@@ -718,19 +718,6 @@ public class ProtegeOwl2LG {
             AssociationSource source = CreateUtils.createAssociationSource(lgAssoc.getAssociationEntity()
                     .getEntityCode(), nameSpace);
 
-            // The idea is to create type "FunctionalProperty"
-            if (prop.isFunctional() == true) {
-                //TODO: add type functional property in the lg property and create the association predicate
-//                relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getRdfType(), source, OWL.FunctionalProperty);
-            }
-            
-            // The idea is to create type "InverseFunctionalProperty"
-            if (prop instanceof DefaultOWLObjectProperty) {
-                if ( ((DefaultOWLObjectProperty) prop).isInverseFunctional() == true ) {
-                    //TODO: add type inverse functional property in the lg property and create the association predicate 
-                }
-            }
-            
             // The idea is to create a new association called "domain", whose
             // LHS will be the OWLObjectProperty and RHS will be the domain.
             if (prop.getDomains(false).size() != 0) {
@@ -795,6 +782,13 @@ public class ProtegeOwl2LG {
                 OWLObjectProperty equivalent = (OWLObjectProperty) equivProperties.next();
                 relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getEquivalentProperty(),
                         source, equivalent);
+            }
+
+            // Step 4: process functional, inverse functional and transitive properties
+            for (Iterator iter = prop.getRDFTypes().iterator(); iter.hasNext();) {
+                RDFSClass rdfType = (RDFSClass) iter.next();
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.ASSOCIATION, assocManager.getRdfType(), source,
+                        rdfType);
             }
         } // end of for.
     }
