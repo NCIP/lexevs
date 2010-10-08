@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
@@ -124,6 +125,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	private static String UPDATE_ENTITY_ENTRYSTATE_UID = ENTITY_NAMESPACE + "updateEntityEntryStateUId";
 	
 	public static String GET_ENTRY_STATE = VERSIONS_NAMESPACE + "getEntryState";
+	
+	private static String GET_ENTITY_DESCRIPTION_SQL = ENTITY_NAMESPACE + "getEntityDescription";
 	
 	/** The ENTITY. */
 	public static String ENTITY = "entity";
@@ -793,5 +796,24 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			return true;
 		else
 			return false;
+	}
+
+	@Override
+	public EntityDescription getEntityDescription(String codingSchemeUid,
+			String entityCode, String entityCodeNamespace) {
+		SequentialMappedParameterBean bean = 
+			new SequentialMappedParameterBean(
+					codingSchemeUid, 
+					entityCode, 
+					entityCodeNamespace);
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUid);
+		
+		bean.setPrefix(prefix);
+		
+		return (EntityDescription) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTITY_DESCRIPTION_SQL,
+				bean);
 	}
 }

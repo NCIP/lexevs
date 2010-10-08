@@ -25,6 +25,7 @@ import java.util.Map;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -272,6 +273,13 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 				throw new RuntimeException(e);
 			}
 		}
+		
+		@Override
+		public EntityDescription getEntityDescription(String codingSchemeUid,
+				String entityCode, String entityCodeNamespace) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
 
 		@Override
 		public Entity getEntityByUId(String codingSchemeUId, String entityUId,
@@ -328,4 +336,5 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 		            throw new RuntimeException("Unexpected PropertyType");
 		        }
 		    }
+
 }

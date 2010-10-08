@@ -24,6 +24,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
 
@@ -161,4 +162,7 @@ public interface EntityService {
 	public Entity resolveEntityByDate(String codingSchemeURI,
 			String version, String entityCode, String entityCodeNamespace,
 			Date date) throws LBRevisionException;
+
+	public EntityDescription getEntityDescription(String codingSchemeURI, String version,
+			String code, String codeNamespace);
 }

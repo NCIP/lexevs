@@ -10,6 +10,7 @@
 	<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.onceptReference" />
 	<typeAlias alias="insertOrUpdateEntityBean" type="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean" />
 	<typeAlias alias="InsertOrUpdateAssociationEntityBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean" />
+	<typeAlias alias="entityDescription" type="org.LexGrid.commonTypes.EntityDescription" />
 	
 	<resultMap id="entityUidResult" class="string">
 		<result property="java.lang.String" column="uid" typeHandler="variablePrimaryKeyTypeHandler"/>
@@ -79,6 +80,11 @@
 		<result property="sourceProperty" column="sourcePropId" />
 		<result property="targetProperty" column="targetPropId" />
 		<result property="propertyLink" column="link" />
+	</resultMap>
+	
+	<resultMap id="entityDescriptionResult" 
+		class="entityDescription">
+		<result property="content" column="description" />
 	</resultMap>
 		
 	<select id="getResolvedCodedNodeReferenceByCodeAndNamespace" 
@@ -651,5 +657,21 @@
 				$prefix$entityType
 			WHERE
 				entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	</select>	
+	
+	<select id="getEntityDescription" 
+		remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="entityDescriptionResult">
+			SELECT
+				description
+			FROM
+				$prefix$entity entity
+			WHERE
+				entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+				AND
+				entity.entityCode = #param2#
+				AND
+				entity.entityCodeNamespace = #param3# 
 	</select>	
 </sqlMap>

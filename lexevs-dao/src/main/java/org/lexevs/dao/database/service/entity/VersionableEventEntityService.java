@@ -25,6 +25,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationEntity;
@@ -587,5 +588,16 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 		
 		return super.resolveEntryByRevision(
 				new CodingSchemeUriVersionBasedEntryId(codingSchemeURI, version), entityUid, revisionId);
+	}
+
+	@Override
+	public EntityDescription getEntityDescription(String codingSchemeURI,
+			String version, String code, String codeNamespace) {
+		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeURI,
+				version);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeURI, version);
+		
+		return entityDao.getEntityDescription(codingSchemeUid, code, codeNamespace);
 	}
 }
