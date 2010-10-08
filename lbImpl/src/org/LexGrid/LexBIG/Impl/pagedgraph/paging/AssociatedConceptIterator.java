@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandler;
@@ -37,6 +38,7 @@ import org.LexGrid.LexBIG.Impl.pagedgraph.root.NullFocusRootsResolver;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -235,6 +237,9 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
         } catch (LBParameterException e) {
            LoggerFactory.getLogger().warn("Could not assign CodingScheme Name.");
         }
+        
+        associatedConcept = 
+            this.addEntityDescription(adjustedCodingSchemeUri, adjustedCodingSchemeVersion, associatedConcept);
 	    
 	    if(this.cycleDetectingCallback.isAssociatedConceptAlreadyInGraph(associationPredicateName, associatedConcept)) {
 	        return cycleDetectingCallback.getAssociatedConceptInGraph(associationPredicateName, associatedConcept);
@@ -290,6 +295,27 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 	    
 	    return associatedConcept;
     }
+	
+	private <T extends ResolvedConceptReference> T addEntityDescription(String uri, String version, T ref) {
+	    if(ref != null && ref.getEntityDescription() == null) {
+	        if(ref.getEntity() != null && ref.getEntity().getEntityDescription() != null){
+	            ref.setEntityDescription(ref.getEntity().getEntityDescription());
+	        } else {
+	            EntityDescription ed = null;
+	            try {
+                    ed = LexEvsServiceLocator.getInstance().
+                        getDatabaseServiceManager().
+                            getEntityService().getEntityDescription(uri, version, ref.getCode(), ref.getCodeNamespace());
+                } catch (Exception e) {
+                   LoggerFactory.getLogger().debug("Error resolving EntityDescription: " + e.getMessage());
+                }
+                
+                ref.setEntityDescription(ed);
+	        }
+	    }
+	    
+	    return ref;
+	}
 	
 	/**
 	 * Should resolve next level.
