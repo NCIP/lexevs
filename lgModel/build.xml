@@ -359,10 +359,10 @@ public class]]></replacevalue>
 	
 	<!--target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
 	</target-->	
-	<target name="genModelAndAnnotate" depends="genCastorFromXSD, annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
+	<target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorRESTFromXSD,annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
 	</target>	
 	
-	<target name="all" depends="init, clean, genCastorFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs, ivy:">	
+	<target name="all" depends="init, clean, genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs, ivy:">	
 		<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}.pom">
    			<mapping conf="*" scope="compile"/>
    		</ivy:makepom>
