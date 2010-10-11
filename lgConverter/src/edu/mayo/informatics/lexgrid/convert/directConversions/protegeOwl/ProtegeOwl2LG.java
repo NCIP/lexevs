@@ -78,6 +78,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
+import edu.stanford.smi.protege.model.Cls;
 import edu.stanford.smi.protege.model.Project;
 import edu.stanford.smi.protege.storage.database.DatabaseKnowledgeBaseFactory;
 import edu.stanford.smi.protege.util.PropertyList;
@@ -110,7 +111,6 @@ import edu.stanford.smi.protegex.owl.model.RDFSDatatype;
 import edu.stanford.smi.protegex.owl.model.RDFSLiteral;
 import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
-import edu.stanford.smi.protegex.owl.model.impl.DefaultOWLObjectProperty;
 import edu.stanford.smi.protegex.owl.model.impl.DefaultRDFSLiteral;
 
 /**
@@ -990,11 +990,20 @@ public class ProtegeOwl2LG {
         Collection superClassCollection = rdfsNamedClass.getSuperclasses(false);
         for (Iterator superClasses = superClassCollection.iterator(); superClasses.hasNext();) {
             RDFResource superClass = (RDFResource) superClasses.next();
-            relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
-                    superClass);
-            if (superClass instanceof OWLRestriction) {
-                OWLRestriction restriction = (OWLRestriction) superClass;
-                processRestriction(restriction, null, source);
+
+            if (superClass.isAnonymous() && !rdfsNamedClass.hasEquivalentClass((RDFSClass) superClass)) {
+                // only subclass not equivalentclass included.  and subclass can be a anonymous class. 
+                String lgCode = this.resolveAnonymousClass((OWLClass) superClass, source);
+                AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, entityCode2NameSpace_.get(lgCode));
+                relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
+            }
+            else {
+                relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
+                        superClass);
+                if (superClass instanceof OWLRestriction) {
+                    OWLRestriction restriction = (OWLRestriction) superClass;
+                    processRestriction(restriction, null, source);
+                }
             }
         }
     }
@@ -2877,6 +2886,7 @@ public class ProtegeOwl2LG {
     protected void relateAssocSourceWithRDFResourceTarget(EntityTypes type, AssociationWrapper aw,
             AssociationSource source, RDFResource tgtResource) {
         String targetID = getRDFResourceLocalName(tgtResource);
+        
         if (type == EntityTypes.CONCEPT) {
             targetID = resolveConceptID(tgtResource);
         } else if (type == EntityTypes.INSTANCE) {
