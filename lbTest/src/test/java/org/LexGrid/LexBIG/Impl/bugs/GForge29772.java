@@ -44,7 +44,7 @@ public class GForge29772 extends LexBIGServiceTestCase {
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         
         boolean t = existAnonymousClassSubClass(list);
-        assertEquals(t, "true");
+        assertEquals(t, true);
 
     }
     
