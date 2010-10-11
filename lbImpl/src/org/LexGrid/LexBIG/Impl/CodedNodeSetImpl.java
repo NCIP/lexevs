@@ -183,7 +183,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     @LgClientSideSafe
     public CodedNodeSet intersect(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        getLogger().logMethod(new Object[] { codes });
         try {
             pendingOperations_.add(new Intersect(((CodedNodeSetImpl) codes).clone()));
             return this;
@@ -200,7 +199,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     @LgClientSideSafe
     public CodedNodeSet union(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
-        getLogger().logMethod(new Object[] { codes });
         try {
             pendingOperations_.add(new Union(((CodedNodeSetImpl) codes).clone()));
             return this;
@@ -218,7 +216,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     @LgClientSideSafe
     public CodedNodeSet difference(CodedNodeSet codesToRemove) throws LBInvocationException, LBParameterException {
-        getLogger().logMethod(new Object[] { codesToRemove });
         try {
             pendingOperations_.add(new Difference(((CodedNodeSetImpl) codesToRemove).clone()));
             return this;
@@ -357,7 +354,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet restrictToCodes(ConceptReferenceList codeList) throws LBInvocationException,
             LBParameterException {
-        getLogger().logMethod(new Object[] { codeList });
         try {
             this.clearToNodeListCodes();
             pendingOperations_.add(new RestrictToCodes(codeList));
@@ -663,7 +659,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet restrictToStatus(ActiveOption activeOption, String[] conceptStatus)
             throws LBInvocationException, LBParameterException {
-        getLogger().logMethod(new Object[] { activeOption, conceptStatus });
         try {
             this.currentActiveOption = activeOption;
             pendingOperations_.add(new RestrictToStatus(activeOption, conceptStatus));
