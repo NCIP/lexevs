@@ -7,12 +7,12 @@ in fulfillment of the following projects:
 - LexGrid Vocabulary Services for caBIG® (LexBIG/EVS)
 - LexGrid Vocabulary Services for NCBO™  (LexBIO)
 
-LexBIG provides core application programming interfaces (APIs) and
+LexEVS provides core application programming interfaces (APIs) and
 tools used to access and maintain vocabulary content based on the LexGrid
-model.  The LexBIG API and underlying repository serve as infrastructure
+model.  The LexEVS API and underlying repository serve as infrastructure
 for NCI Enterprise Vocabulary Services (EVS).
  
-The LexBIG architecture is enhanced and extended as required to meet
+The LexEVS architecture is enhanced and extended as required to meet
 specific needs of NCBO initiatives, and is incorporated into the architecture
 of the NCBO BioPortal.
 
@@ -21,21 +21,21 @@ reflect specific work done in support of these different communities and
 respective contracts.
 
 ===============================================================================
-Additional resources for LexBIG are available at:
+Additional resources for LexEVS are available at:
 ===============================================================================
 - The caBIG® Vocabulary Knowledge Center:
   http://cabig-kc.nci.nih.gov/Vocab/KC
   
   This site provides general help and support for download, installation, and
   use of this software package.  It is the recommended starting point for those
-  not directly involved in the development of the LexBIG or EVS software.
+  not directly involved in the development of the LexEVS or EVS software.
  
 - The caBIG® LexEVS Project:
   http://gforge.nci.nih.gov/projects/lexevs
  
-  This site serves as the primary home for development of new LexBIG and EVS
+  This site serves as the primary home for development of new LexEVS and EVS
   releases.  It is recommended as starting point for developers working on the
-  LexBIG and EVS projects, as well as anyone needing access to detailed
+  LexEVS and EVS projects, as well as anyone needing access to detailed
   project information or pre-production code releases.
 
 - The Mayo Informatics site:
@@ -44,16 +44,16 @@ Additional resources for LexBIG are available at:
 ===============================================================================
 Getting Started
 ===============================================================================
-- For detailed information regarding LexBIG system requirements, installation,
+- For detailed information regarding LexEVS system requirements, installation,
   administration, and configuration refer to the Administration Guide.
-  This guide is available as a PDF file (LexBIG_Installation_Admin_Guide.pdf)
+  This guide is available as a PDF file (LexEVS_Installation_Admin_Guide.pdf)
   from the download site.  Once installed, it is also available in the
   product /doc directory.
 
-- Installation of the LexBIG software is performed by downloading and invoking
+- Installation of the LexEVS software is performed by downloading and invoking
   an executable jar file from the Vocabulary Knowledge Center or LexEVS GForge
   sites.  The installer name will reflect the version being installed, for
-  example LexBIG-install-2.3.0.jar.
+  example LexEVS-install-2.3.0.jar.
   
   By default, invoking the jar will result in a graphical user interface being
   presented to select install options.  Alternatively, an xml-based options
@@ -61,9 +61,9 @@ Getting Started
   or command-line driven installation.  An example options file is available
   for reference from the download site.
 
-- For details on programming to the LexBIG API, refer to the
-  Programmer Guide (LexBIG_Programmer_Guide.pdf) in the /doc directory and
-  Javadoc in the /doc/javadoc directory.
+- For details on programming to the LexEVS API, refer to the
+  http://cabig-kc.nci.nih.gov/Vocab/KC for release documents for the latest 
+  LexEVS Version
   
 - Before invoking vocabulary services, you must first modify the
   /resources/config/config.props file to establish database connection criteria
