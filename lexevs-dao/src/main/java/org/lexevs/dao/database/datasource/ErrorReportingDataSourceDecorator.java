@@ -34,12 +34,6 @@ public class ErrorReportingDataSourceDecorator implements DataSource, Initializi
 		try {
 			connection = this.decoratoredDataSource.getConnection();
 
-			String catalog = connection.getCatalog();
-			
-			if(StringUtils.isBlank(catalog)) {
-				throw new Exception("Database not found.");
-			}
-			
 			JdbcUtils.closeConnection(connection);
 		} catch (Exception e) {
 			JdbcUtils.closeConnection(connection);
