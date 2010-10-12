@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -60,8 +61,6 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.log4j.Logger;
-
-import com.ibm.icu.util.StringTokenizer;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
