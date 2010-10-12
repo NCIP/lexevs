@@ -70,6 +70,7 @@ You may obtain a copy of the License at
         <res id="InfoPanel.info" parse="yes" src="antbuild/root/readme.txt" type="plain"/>
         <res id="LicencePanel.licence" parse="no" src="antbuild/root/license.txt" type="plain"/>
         <res id="installer.langsel.img" src="langsel-image.png"/>
+        <res id="XInfoPanel.info" parse="yes" src="antbuild/root/documentation.txt" type="plain"/>
     </resources>
     <panels>
         <panel classname="HelloPanel"/>
@@ -78,6 +79,7 @@ You may obtain a copy of the License at
         <panel classname="TargetPanel"/>
         <panel classname="PacksPanel"/>
         <panel classname="InstallPanel"/>
+        <panel classname="XInfoPanel" />
         <panel classname="FinishPanel"/>
     </panels>
     <packs>
@@ -135,9 +137,9 @@ You may obtain a copy of the License at
         </pack>
         <pack name="Documentation" preselected="yes" required="no">
             <description>Installs administration and programmer guides, including JavaDoc.</description>
-            <fileset dir="./antbuild/doc" targetdir="$INSTALL_PATH/doc" casesensitive="no">
+            <!--<fileset dir="./antbuild/doc" targetdir="$INSTALL_PATH/doc" casesensitive="no">
                 <include name="**"/>
-            </fileset>
+            </fileset>-->
         </pack>
         <pack name="Examples" preselected="yes" required="no">
             <description>Installs example code for invocation of common tasks.</description>
