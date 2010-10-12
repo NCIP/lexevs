@@ -30,7 +30,7 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 	
 	@Override
 	public void destroy() throws Exception {
-		LoggerFactory.getLogger().info(
+		LoggerFactory.getLogger().debug(
 				getCacheStatisticsStringRepresentation());
 	}
 	
