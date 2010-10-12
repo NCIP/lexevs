@@ -289,4 +289,30 @@ public class ServiceUtility {
 
         }
     }
+    
+    public static boolean isSupplement(String uri, String version) throws LBParameterException {
+        RegistryEntry entry = 
+            LexEvsServiceLocator.getInstance().getRegistry().
+            getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
+        if(StringUtils.isNotBlank(entry.getSupplementsUri())
+                &&
+                StringUtils.isNotBlank(entry.getSupplementsVersion())){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public static AbsoluteCodingSchemeVersionReference getParentOfSupplement(String uri, String version) throws LBParameterException {
+        RegistryEntry entry = 
+            LexEvsServiceLocator.getInstance().getRegistry().
+            getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
+        if(StringUtils.isNotBlank(entry.getSupplementsUri())
+                &&
+                StringUtils.isNotBlank(entry.getSupplementsVersion())){
+            return Constructors.createAbsoluteCodingSchemeVersionReference(uri, version);
+        } else {
+            throw new LBParameterException("URI: " + uri + " Version: " + version + " is not a Supplement of any Coding Scheme.");
+        }  
+    }
 }
