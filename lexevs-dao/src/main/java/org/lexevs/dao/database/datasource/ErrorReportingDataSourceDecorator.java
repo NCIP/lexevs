@@ -10,6 +10,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 
 public class ErrorReportingDataSourceDecorator implements DataSource, InitializingBean {
@@ -29,13 +30,24 @@ public class ErrorReportingDataSourceDecorator implements DataSource, Initializi
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.decoratoredDataSource);
 		
+		Connection connection = null;
 		try {
-			Connection connection = this.decoratoredDataSource.getConnection();
-			connection.close();
+			connection = this.decoratoredDataSource.getConnection();
+
+			String catalog = connection.getCatalog();
+			
+			if(StringUtils.isBlank(catalog)) {
+				throw new Exception("Database not found.");
+			}
+			
+			JdbcUtils.closeConnection(connection);
 		} catch (Exception e) {
+			JdbcUtils.closeConnection(connection);
 			logger.fatal(
 					this.printError(e));
 			System.exit(1);
+		} finally {
+			JdbcUtils.closeConnection(connection);
 		}
 	}
 	
