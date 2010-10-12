@@ -1,6 +1,6 @@
 Software User Agreement 
 
-14 Nov, 2008
+12 October, 2010
 
 ===============================================================================
 Usage of Content 
@@ -22,7 +22,7 @@ Applicable Licenses
 Unless otherwise noted, content is provided to you under terms and conditions
 of the following agreement: 
 
-Copyright: (c) 2004-2008 Mayo Foundation for Medical Education and
+Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and
 Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the
 triple-shield Mayo logo are trademarks and service marks of MFMER.
 
@@ -53,11 +53,11 @@ USE OF THE CONTENT.
 Included materials: 
 ================================================================================
 This product incorporates code and other materials created with NCI funding as
-part of the LexGrid Vocabulary Services for caBIG™ (LexBIG) project, with
+part of the LexGrid Vocabulary Services for caBIG™ (LexEVS) project, with
 additional funding provided by the National Center for Biomedical Ontology
 (NCBO) as part of the LexGrid Vocabulary Services for NCBO (LexBIO) project.
 
-The LexBIG service layer, as referenced below, provides application programming
+The LexEVS service layer, as referenced below, provides application programming
 interfaces (APIs) and tools used to view, access, and maintain vocabulary
 content.  The software subject to this notice and license includes both human
 readable source code form and machine readable, binary, object code form.
@@ -65,8 +65,8 @@ readable source code form and machine readable, binary, object code form.
 ========================================
 lbRuntime
 ========================================
-The LexBIG runtime code, including all necessary code and dependencies required
-for direct Java-to-Java invocation of the LexBIG API.  This consolidates LexBIG
+The LexEVS runtime code, including all necessary code and dependencies required
+for direct Java-to-Java invocation of the LexEVS API.  This consolidates LexEVS
 code and 3rd party modules in order to simplify configuration for program
 execution.
 
@@ -87,7 +87,7 @@ lbInterfaces
 lbModel
 lbUtility
 ========================================
-The LexBIG runtime code, excluding all 3rd party software modules.
+The LexEVS runtime code, excluding all 3rd party software modules.
 Provided under the Eclipse Public License (EPL), as stated above. 
 
 ========================================
@@ -231,7 +231,7 @@ JDBC drivers for PostgreSQL database.
 ========================================
 prefuse
 ========================================
-Used for graph representations in the LexBIG GUI.
+Used for graph representations in the LexEVS GUI.
 
 ========================================
 protege, protege-owl
