@@ -25,7 +25,7 @@ You may obtain a copy of the License at
 	<!-- *** TO BE CUSTOMIZED FOR EACH BUILD *** -->
 	<!-- *************************************** -->
 	<property name="prodID" value="LexEVS"/> <!-- Product ID -->
-	<property name="prodTitle" value = "LexGrid Vocabulary Services for caBIG(LexBIG)"/><!-- Product Title -->
+	<property name="prodTitle" value = "LexGrid Vocabulary Services for caBIG(LexEVS)"/><!-- Product Title -->
 	<!--<property name="prodTitle" value = "LexGrid Vocabulary Services for NCBO(LexBIO)"/>--><!-- Product Title -->
 
 	<property name="vMajor" value="6"/> <!-- Product version - major release -->
@@ -416,6 +416,7 @@ You may obtain a copy of the License at
 		<copy toDir="${pkg-root}" file="${file.dir}/NOTICE.txt"/>
 		<!-- Readme -->
 		<copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbig.txt"/>
+		<copy toFile="${pkg-root}/documentation.txt" file="${file.dir}/documentation.txt"/>
 		<!-- Install image/izpack language page -->
 		<copy toFile="${basedir}/langsel-image.png" file="${file.dir}/langsel-image-lexbig.png"/>
 		<!-- Required components -->
@@ -1002,7 +1003,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPSUBPATH@@" value="LexGrid/${prodID}/${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPVERSION@@" value="${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_INFO_URL@@"
-			value="http://informatics.mayo.edu/LexGrid/index.php?page=${prodID}"/>
+			value="https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexBig_and_LexEVS"/>
 		<!-- Create the izPack installer -->
 		<izPack input="${basedir}/izpack-install.xml"
 			output="${out.file}"
@@ -1149,7 +1150,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 	<target name="build-lexbig-jar" depends="
 			init, clean, buildinfo, predef,
 			lexbig.jar"/>
-	
+	<target name="build-pack" depends="build-lexbig-jar, pack"></target>
 	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
 		<ivy:retrieve pattern="${ivy.repos.dir}/[type]/[artifact].[revision](-[classifier]).[ext]"/>
     </target>
