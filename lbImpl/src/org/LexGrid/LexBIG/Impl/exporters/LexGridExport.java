@@ -85,6 +85,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
     public LexGridExport() {
         super.name_ = LexGridExport.name;
         super.description_ = LexGridExport.description;
+        super.getOptions().setIsResourceUriFolder(true);
     }
 
     public static void register() throws LBParameterException, LBException {
