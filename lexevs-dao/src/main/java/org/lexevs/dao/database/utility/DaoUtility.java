@@ -435,6 +435,38 @@ public class DaoUtility {
 		
 		return uriMapList;	
 	}
+	
+	public static Mappings mergeURIMappings(Mappings mappings1, Mappings mappings2) {
+		List<URIMap> comboList = new ArrayList<URIMap>();
+		
+		List<URIMap> list = getAllURIMappings(mappings1);
+		list.addAll(getAllURIMappings(mappings2));
+		
+		for(URIMap map : list) {
+			if(!doesListContainURIMap(comboList, map)) {
+				comboList.add(map);
+			}
+		}
+		Mappings mappings = new Mappings();
+		
+		for(URIMap map : comboList) {
+			insertIntoMappings(mappings,map);
+		}
+		
+		return mappings;
+	}
+	
+	
+	private static boolean doesListContainURIMap(List<URIMap> list, URIMap uriMap) {
+		for(URIMap map : list) {
+			if(map.getClass() == uriMap.getClass()
+					&&
+					map.getLocalId().equals(uriMap.getLocalId())){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static List<String> localNameListToString(LocalNameList lnl){
 		if(lnl == null || lnl.getEntryCount() == 0) {
