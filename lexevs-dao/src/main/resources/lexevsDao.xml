@@ -450,6 +450,8 @@
 	<bean id="jdbcDriverClass" class="org.lexevs.dao.database.utility.JdbcDriverBootstrap">
 		<property name="classLoader" ref="myClassLoader"/>
 		<property name="driverClass" ref="dbDriver" />
+		<property name="systemVariables" ref="systemVariables" />
+		<property name="logger" ref="loggerFactory" />
 	</bean>
 	
 	 <bean id="dsConnectionFactory" class="org.apache.commons.dbcp.DataSourceConnectionFactory">
