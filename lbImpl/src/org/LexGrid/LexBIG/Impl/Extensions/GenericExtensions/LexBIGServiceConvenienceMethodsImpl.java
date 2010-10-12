@@ -1674,6 +1674,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
         Object[] params = new Object[] { codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode, assocQuals };
         getLogger().logMethod(params);
+        
+        if(ServiceUtility.isSupplement(codingScheme, versionOrTag)) {
+            return true;
+        }
 
         // Check and re-use cached value if present ...
         Object key = getCacheKey(params);
