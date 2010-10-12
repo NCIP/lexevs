@@ -101,8 +101,10 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.Mappings;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
@@ -254,8 +256,9 @@ public class LexBIGServiceImpl implements LexBIGService {
         AbsoluteCodingSchemeVersionReference ref = 
             ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingSchemeName, tagOrVersion, true);
 
+        CodingScheme codingScheme;
         try {
-            return databaseServiceManager.getCodingSchemeService().
+            codingScheme = databaseServiceManager.getCodingSchemeService().
                 getCodingSchemeByUriAndVersion(
                         ref.getCodingSchemeURN(),
                         ref.getCodingSchemeVersion());
@@ -263,6 +266,26 @@ public class LexBIGServiceImpl implements LexBIGService {
             String id = getLogger().error("There was an unexpected error", e);
             throw new LBInvocationException("There was an unexpected error", id);
         }
+        
+
+        RegistryEntry entry = registry.getCodingSchemeEntry(ref);
+        
+        if(StringUtils.isNotBlank(entry.getSupplementsUri())
+                &&
+                StringUtils.isNotBlank(entry.getSupplementsVersion())){
+           
+            CodingScheme supplementCodingScheme = databaseServiceManager.getCodingSchemeService().
+                getCodingSchemeByUriAndVersion(
+                        entry.getSupplementsUri(),
+                        entry.getSupplementsVersion());
+            
+            Mappings mergedMappings = 
+                DaoUtility.mergeURIMappings(codingScheme.getMappings(), supplementCodingScheme.getMappings());
+            
+            codingScheme.setMappings(mergedMappings);
+        }
+        
+        return codingScheme;
     }
 
     /**
