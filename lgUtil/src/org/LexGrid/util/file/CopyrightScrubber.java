@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 public class CopyrightScrubber {
     protected static String COPYRIGHT = "/*" + "\n"
-            + " * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and " + "\n"
+            + " * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and " + "\n"
             + " * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the" + "\n"
             + " * triple-shield Mayo logo are trademarks and service marks of MFMER." + "\n" + " *" + "\n"
             + " * Except as contained in the copyright notice above, or as used to identify " + "\n"
