@@ -290,6 +290,13 @@ public class ServiceUtility {
         }
     }
     
+    public static boolean isSupplement(String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException {
+        AbsoluteCodingSchemeVersionReference ref = 
+            getAbsoluteCodingSchemeVersionReference(codingScheme, tagOrVersion, true);
+        
+        return isSupplement(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+    }
+    
     public static boolean isSupplement(String uri, String version) throws LBParameterException {
         RegistryEntry entry = 
             LexEvsServiceLocator.getInstance().getRegistry().
