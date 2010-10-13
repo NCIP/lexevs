@@ -117,6 +117,7 @@ public class LexEvsInstallationVerifyTest {
 	 * @param taskName the task name
 	 */
 	private void printTaskName(String taskName) {
+		System.out.println();
 		System.out.println("==============================");
 		System.out.println(taskName);
 		System.out.println("==============================");
