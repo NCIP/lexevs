@@ -367,7 +367,7 @@ public class SystemVariables {
             
             this.currentPersistenceScheme = getNullableProperty(props, CURRENT_PERSISTENCE_SCHEME_PROP, DEFAULT_PERSISTENCE_SCHEME);
            
-            emailErrors_ = new Boolean(getProperty(props, "EMAIL_ERRORS")).booleanValue();
+            emailErrors_ = new Boolean(getNullableProperty(props, "EMAIL_ERRORS", "false"));
             if (emailErrors_) {
                 SMTPServer_ = getProperty(props, "SMTP_SERVER");
                 emailTo_ = getProperty(props, "EMAIL_TO");
