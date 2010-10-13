@@ -141,16 +141,21 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         Group groupUri = new Group(options, SWT.NONE);
         groupUri.setLayout(new GridLayout(3, false));
         groupUri.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        String uriHelp = "The URI of the resource to load.";
   
         Label label = new Label(groupUri, SWT.NONE);
         label.setText("URI:");
+        label.setToolTipText(uriHelp);
         
         final Text file = new Text(groupUri, SWT.BORDER);
         file.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+        file.setToolTipText(uriHelp);
         
         OptionHolder optionHolder = loader.getOptions();
 
         final Button uriChooseButton;
+
         if(optionHolder.isResourceUriFolder()  ) {
             uriChooseButton = Utility.getFolderChooseButton(groupUri, file);
         } else {
@@ -158,6 +163,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]),
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
+        uriChooseButton.setToolTipText(uriHelp);
        
         
         for(final URIOption uriOption : optionHolder.getURIOptions()) {
@@ -168,12 +174,15 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             
             Label uriOptionLable = new Label(group1, SWT.NONE);
             uriOptionLable.setText(uriOption.getOptionName() + ":");
+            uriOptionLable.setToolTipText(uriOption.getHelpText());
 
             final Text uriOptionFile = new Text(group1, SWT.BORDER);
             uriOptionFile.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+            uriOptionFile.setToolTipText(uriOption.getHelpText());
 
             Button uriOptionfileChooseButton = Utility.getFileChooseButton(group1, uriOptionFile,
                     uriOption.getAllowedFileExtensions().toArray(new String[0]), null);
+            uriOptionfileChooseButton.setToolTipText(uriOption.getHelpText());
             
             uriOptionfileChooseButton.addSelectionListener(new SelectionListener() {
 
@@ -200,6 +209,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
            
 	       final Button button = new Button(group2, SWT.CHECK);
 	       button.setText(boolOption.getOptionName());
+	       button.setToolTipText(boolOption.getHelpText());
+	       
 	       if(boolOption.getOptionValue() != null){
 	           button.setSelection(boolOption.getOptionValue());
 	       }
@@ -225,9 +236,12 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	           
 	        Label textLabel = new Label(group3, SWT.NONE);
 	        textLabel.setText(stringOption.getOptionName() + ":");
+	        textLabel.setToolTipText(stringOption.getHelpText());
 	        
 	        if(CollectionUtils.isNotEmpty(stringOption.getPickList())) {
 	            final Combo comboDropDown = new Combo(group3, SWT.DROP_DOWN | SWT.BORDER);
+	            
+	            comboDropDown.setToolTipText(stringOption.getHelpText());
                 
 	            for(String pickListItem : stringOption.getPickList()) {
 	                comboDropDown.add(pickListItem);
@@ -253,6 +267,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	        textGd.width = 25;
 	        text.setLayoutData(textGd);
 	        
+	        text.setToolTipText(stringOption.getHelpText());
+	        
 	        text.addModifyListener(new ModifyListener(){
 
                 public void modifyText(ModifyEvent event) {
@@ -271,8 +287,10 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	               
 	            Label textLabel = new Label(group3, SWT.NONE);
 	            textLabel.setText(integerOption.getOptionName() + ":");
+	            textLabel.setToolTipText(integerOption.getHelpText());
 
 	            final Text text = new Text(group3, SWT.BORDER);
+	            text.setToolTipText(integerOption.getHelpText());
 	            
 	            if(integerOption.getOptionValue() != null){
 	                text.setText(integerOption.getOptionValue().toString());
@@ -296,9 +314,13 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	            Label textLabel = new Label(group4, SWT.NONE);
 	            String appendString = CollectionUtils.isNotEmpty(stringArrayOption.getPickList()) ? "" : "\n\t(Comma Seperated):";
 	            textLabel.setText(stringArrayOption.getOptionName() + appendString);
+	            textLabel.setToolTipText(stringArrayOption.getHelpText());
 
 	            if(CollectionUtils.isNotEmpty(stringArrayOption.getPickList())) {
 	                final List multi = new List(group4, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+	                
+	                multi.setToolTipText(stringArrayOption.getHelpText());
+	                
 	                for(String pickListItem : stringArrayOption.getPickList()) {
                         multi.add(pickListItem);
                     }
@@ -324,6 +346,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     });
 	            } else {
 	                final Text text = new Text(group4, SWT.BORDER);
+	                
+	                text.setToolTipText(stringArrayOption.getHelpText());
 
 	                String arrayString =
 	                    StringUtils.collectionToCommaDelimitedString(stringArrayOption.getOptionValue());
@@ -344,6 +368,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	    gd = new GridData(GridData.CENTER);
 	    gd.widthHint = 60;
 	    load.setLayoutData(gd);
+	    load.setToolTipText("Start Load Process.");
 
 	    load.addSelectionListener(new SelectionListener() {
 

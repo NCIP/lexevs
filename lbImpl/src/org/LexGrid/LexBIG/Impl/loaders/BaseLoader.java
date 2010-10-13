@@ -142,19 +142,33 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         OptionHolder holder = new DefaultOptionHolder();
         URIOption manifiestOption = new URIOption(MANIFEST_FILE_OPTION);
         manifiestOption.addAllowedFileExtensions("*.xml");
+        manifiestOption.setHelpText("A Manifest enables the user to control various\n" +
+        		                    "Coding Scheme metadata characteristics, such as\n" +
+                                    "adding a Supported Attribute, modifying an\n" +
+                                    "Association Name, etc.");
         
         holder.getURIOptions().add(manifiestOption);
         
         URIOption loaderPreferencesOption = new URIOption(LOADER_PREFERENCE_FILE_OPTION);
         loaderPreferencesOption.addAllowedFileExtensions("*.xml");
+        loaderPreferencesOption.setHelpText("Loader Preferences are loader-specific configuration\n" +
+                                    "files that may be used to alter the behavior of a\n" +
+                                    "specific loader.");
         
         holder.getURIOptions().add(loaderPreferencesOption);
         
         BooleanOption asyncOption = new BooleanOption(ASYNC_OPTION, true);
+        asyncOption.setHelpText("An ASYNC load will execute in a background thread.\n" +
+                                "A non-ASYNC load will execute in the main thread,\n" + 
+                                "blocking all other operations until completion.");
         holder.getBooleanOptions().add(asyncOption);
+        
         
         BooleanOption failOnErrorOption = new BooleanOption(FAIL_ON_ERROR_OPTION, false);
         holder.getBooleanOptions().add(failOnErrorOption);
+        failOnErrorOption.setHelpText(
+                edu.mayo.informatics.lexgrid.convert.formats.Option.getDescriptionForType(
+                        edu.mayo.informatics.lexgrid.convert.formats.Option.FAIL_ON_ERROR));
         
         this.options_ = holder;
     }
@@ -175,6 +189,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                 throw new RuntimeException(e);
             }
             
+            supplementOption.setHelpText("A Coding Scheme may 'Supplement' another Coding Scheme,\n" + 
+                                         "meaing the Coding Scheme will become an extension of its parent.\n" +
+                                         "All content of the Parent will be available through the supplement.");
+            
             options_.getStringOptions().add(supplementOption);
             
             StringArrayOption loaderPostProcessorOption = new StringArrayOption(LOADER_POST_PROCESSOR_OPTION);
@@ -184,6 +202,10 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             loaderPostProcessorOption.getOptionValue().add(OntologyFormatAddingPostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getPickList().addAll(this.getPostProcessorExtensionNames());
+            
+            loaderPostProcessorOption.setHelpText("User defined 'Post Processor' options to be run after\n" +
+                                                  "the completion of the load. Please see the individual\n" +
+                                                  "Post Processor documenation for details on each.");
             
             options_.getStringArrayOptions().add(loaderPostProcessorOption);
  

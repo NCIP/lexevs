@@ -108,8 +108,11 @@ public class OWLLoaderImpl extends BaseLoader implements OWL_Loader {
 
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        holder.getIntegerOptions().add(new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE), 
-                ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB));
+        IntegerOption memSafeOption = new IntegerOption(Option.getNameForType(Option.MEMORY_SAFE), 
+                ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB);
+        
+        memSafeOption.setHelpText(Option.getDescriptionForType(Option.MEMORY_SAFE));
+        holder.getIntegerOptions().add(memSafeOption);
         return holder;
     }
 
