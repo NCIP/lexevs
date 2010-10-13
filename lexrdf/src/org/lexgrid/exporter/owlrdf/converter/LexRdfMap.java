@@ -51,7 +51,7 @@ public class LexRdfMap {
 
 	public static Resource get(String key, OntologyType ontType) {
 		if (ontType.equals(OntologyType.OWLRDF)) {
-			return map.get(key);
+			return map.get(key.toLowerCase());
 		}
 		return map.get(ontType.toString() + "#" + key.toLowerCase());
 	}
