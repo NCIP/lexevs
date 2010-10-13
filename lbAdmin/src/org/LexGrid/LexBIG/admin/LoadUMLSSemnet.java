@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.UMLS_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Preferences.loader.SemNetLoadPreferences.SemNetLoaderPreferences;
@@ -99,18 +100,16 @@ public class LoadUMLSSemnet {
             // Parse the command line ...
             CommandLine cl = null;
             Options options = getCommandOptions();
-            int vl = -1;
             try {
                 cl = new BasicParser().parse(options, args);
-                if (cl.hasOption("v"))
-                    vl = Integer.parseInt(cl.getOptionValue("v"));
+
             } catch (ParseException e) {
                 Util
                         .displayCommandOptions(
                                 "LoadUMLSSemnet",
                                 options,
                                 "\n LoadUMLSSemnet -in \"file:///path/to/directory/\" -a -il 1"
-                                        + "\n LoadUMLSSemnet -in \"file:///path/to/directory/\" -v 0"
+                                        + "\n LoadUMLSSemnet -in \"file:///path/to/directory/\""
                                         + "\n LoadUMLSSemnet -in \"file:///path/to/directory/\" -mf \"file:///path/to/manifest/file.xml\""
                                         + Util.getURIHelp(), e);
                 return;
@@ -143,21 +142,17 @@ public class LoadUMLSSemnet {
                 manifestURI = Util.string2FileURI(cl.getOptionValue("mf"));
             }
 
-            boolean activate = vl < 0 && cl.hasOption("a");
-            if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING SOURCE URI: " + source.toString());
-            } else {
+            boolean activate = cl.hasOption("a");
+     
                 Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
                 Util.displayTaggedMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
-            }
+   
 
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
-            UMLS_Loader loader = null;
+            SemNetLoaderImpl loader = (SemNetLoaderImpl)lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl.name);
             
-            //TODO: Not sure how Semnet is being handled now... fix this for 6.0
-            //(UMLS_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSLoaderImpl.name);
 
             // Set the loader preference.
             if (loaderPrefObj != null)
@@ -168,17 +163,14 @@ public class LoadUMLSSemnet {
                 loader.setCodingSchemeManifestURI(manifestURI);
 
             // Perform the requested load or validate action ...
-            if (vl >= 0) {
-                loader.validateSemnet(source, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
-            } else {
-                loader.loadSemnet(source, false, true);
+
+                loader.load(source);
                 Util.displayLoaderStatus(loader);
-            }
+
 
             // If specified, set the associated tag on the newly loaded
             // scheme(s) ...
-            if (vl < 0 && cl.hasOption("t")) {
+            if ( cl.hasOption("t")) {
                 String tag = cl.getOptionValue("t");
                 AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
                 for (int i = 0; i < refs.length; i++) {
@@ -229,11 +221,6 @@ public class LoadUMLSSemnet {
         o.setRequired(false);
         options.addOption(o);
 
-        o = new Option("v", "validate", true, "Validation only; no load. If specified, 'a' and 't' "
-                + "are ignored. 0 to verify files exist.");
-        o.setArgName("int");
-        o.setRequired(false);
-        options.addOption(o);
 
         o = new Option("a", "activate", false, "ActivateScheme on successful load; if unspecified the "
                 + "vocabulary is loaded but not activated.");
