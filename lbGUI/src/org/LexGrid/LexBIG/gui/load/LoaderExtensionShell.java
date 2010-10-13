@@ -127,7 +127,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	 * @param shell the shell
 	 * @param loader the loader
 	 */
-	private void buildGUI(Shell shell, final Loader loader) {
+	private void buildGUI(final Shell shell, final Loader loader) {
 	    Group options = new Group(shell, SWT.NONE);
 	    options.setText("Load Options");
 	    shell.setLayout(new GridLayout());
@@ -150,10 +150,11 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         
         OptionHolder optionHolder = loader.getOptions();
 
+        final Button uriChooseButton;
         if(optionHolder.isResourceUriFolder()  ) {
-            Utility.getFolderChooseButton(groupUri, file);
+            uriChooseButton = Utility.getFolderChooseButton(groupUri, file);
         } else {
-            Utility.getFileChooseButton(groupUri, file,
+            uriChooseButton = Utility.getFileChooseButton(groupUri, file,
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]),
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
@@ -369,7 +370,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 				setLoading(true);
 				loader.load(uri);
 				setLoading(false);
-                load.setEnabled(false);
+				uriChooseButton.setEnabled(false);
+				load.setEnabled(false);
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
