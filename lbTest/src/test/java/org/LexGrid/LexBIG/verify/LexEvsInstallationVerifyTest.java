@@ -192,7 +192,7 @@ public class LexEvsInstallationVerifyTest {
      * @throws LBException the LB exception
      */
     public void testRemoveAutombiles() throws LBException {
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
                 "urn:oid:11.11.0.1", "1.0");
