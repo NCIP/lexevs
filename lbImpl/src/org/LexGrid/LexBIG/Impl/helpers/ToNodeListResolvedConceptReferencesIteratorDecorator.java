@@ -1,5 +1,6 @@
 package org.LexGrid.LexBIG.Impl.helpers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.annotations.LgProxyClass;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -24,6 +26,8 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
     private ResolvedConceptReferencesIterator delegate;
     private ActiveOption activeOption;
     private boolean haveInactivesBeenRemoved = false;
+    
+    private RemoveInactiveRunner removeInactiveRunner = new RemoveInactiveRunner();
     
     public ToNodeListResolvedConceptReferencesIteratorDecorator(
             ResolvedConceptReferencesIterator delegate, 
@@ -149,9 +153,32 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
                 this.activeOption != null
                 &&
                 !this.activeOption.equals(ActiveOption.ALL)) {
+            
+            List<CodeToReturn> activeList = 
+                this.removeInactiveRunner.removeInactives(
+                        this.toNodeListCodes, 
+                        this.activeOption);
+            
+            this.toNodeListCodes.getAllCodes().clear();
+            this.toNodeListCodes.getAllCodes().addAll(activeList);
+            
+            this.haveInactivesBeenRemoved = true;
+        }
+    }
+    
+    @LgProxyClass
+    protected static class RemoveInactiveRunner implements Serializable {
+
+        private static final long serialVersionUID = 7434331147644851900L;
+
+        public RemoveInactiveRunner(){
+            super();
+        }
+        
+        public List<CodeToReturn> removeInactives(CodeHolder codeHolder, ActiveOption activeOption){
             List<CodeToReturn> activeList = new ArrayList<CodeToReturn>();
 
-            for(CodeToReturn codeToReturn : this.toNodeListCodes.getAllCodes()) {
+            for(CodeToReturn codeToReturn : codeHolder.getAllCodes()) {
                 String uri = codeToReturn.getUri();
                 String version = codeToReturn.getVersion();
                 String code = codeToReturn.getCode();
@@ -167,18 +194,16 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
                 }
 
                 if(entity != null) {
-                    if(entity.getIsActive() == (this.activeOption.equals(ActiveOption.ACTIVE_ONLY) ? false : true)) {
+                    if(entity.getIsActive() == (activeOption.equals(ActiveOption.ACTIVE_ONLY) ? false : true)) {
                         continue;
                     }
                 }
                 
                 activeList.add(codeToReturn);
             }
-            this.toNodeListCodes.getAllCodes().clear();
-            this.toNodeListCodes.getAllCodes().addAll(activeList);
             
-            this.haveInactivesBeenRemoved = true;
-        }
+            return activeList;
+        } 
     }
 
     private ResolvedConceptReference toResolvedConceptReference(CodeToReturn codeToReturn) {
