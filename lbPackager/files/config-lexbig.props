@@ -77,7 +77,7 @@ INDEX_LOCATION=../lbIndex
 ############# LexGrid System performance variables
 
 # The maximum number of SQL connections to open (and pool) per database. 
-MAX_CONNECTIONS_PER_DB=8
+MAX_CONNECTIONS_PER_DB=25
 
 # Size of the Dynamic Cache (this is used to cache frequently accessed information)
 CACHE_SIZE=500
@@ -97,8 +97,6 @@ ITERATOR_IDLE_TIME=5
 MAX_RESULT_SIZE=1000
 
 
-
-
 ############# Database Configuration
 # The current persistence scheme used to persist to an underlying store.
 # This should remain unchanged unless there are custom persistence layers
@@ -116,16 +114,16 @@ CURRENT_PERSISTENCE_SCHEME=2.0
 # 'false' - each ontology in a seperate set of tables
 SINGLE_TABLE_MODE=true
 #
-# This variable _should_ contain the database name.
-#
-# NOTE: Changes to the URL will only affect newly loaded content.
-# The URL's for content that is already loaded are stored in the 
-# registry.xml file.
+# JDBC Connection URL string used to connect to the database
+# !!!IMPORTANT!!! 
+#  * This variable _should_ contain the database name.
+#  * The database specified must exist.
+DB_URL=jdbc:mysql://server.url/lexevs
+#DB_URL=jdbc:postgresql://server.url/lexevs
+#DB_URL=jdbc:hsqldb:file:C:/temp/lexevs
+#DB_URL=jdbc:oracle:thin:@server.url:1522:lexevs
+#DB_URL=jdbc:db2://server.url:50000/lexevs
 
-DB_URL=jdbc:mysql://bmidev/LexGrid
-#DB_URL=jdbc:postgresql://bmidev/LexGrid
-#DB_URL=jdbc:hsqldb:file:C:/temp/LexGrid
-#DB_URL=jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=C:/temp/LexBIG.mdb
 
 # The prefix to use on created tables.
 #
@@ -165,11 +163,17 @@ DB_PARAM=
 
 # The database driver.
 # NOTE: This should typically not be changed after content has been loaded.
+# !!!IMPORTANT!!! 
+#  * Only PostgreSQL and HSQLDB drivers are packaged with LexEVS.
+#    ALL other drivers must be downloaded and placed in the
+#    /runtime/sqlDrivers directory of the LexEVS installation.
+#    This INCLUDES MySQL drivers, which may be downloaded here: 
+#     - http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
 DB_DRIVER=com.mysql.jdbc.Driver
-#DB_DRIVER=org.gjt.mm.mysql.Driver
 #DB_DRIVER=org.postgresql.Driver
 #DB_DRIVER=org.hsqldb.jdbcDriver
-#DB_DRIVER=sun.jdbc.odbc.JdbcOdbcDriver
+#DB_DRIVER=oracle.jdbc.driver.OracleDriver
+#DB_DRIVER=com.ibm.db2.jcc.DB2Driver
 
 # The database username and password.
 #
@@ -184,14 +188,6 @@ DB_PASSWORD=
 #Note that, any value other than 'true' is considered false.
 
 #DB_PASSWORD_ENCRYPTED=
-
-############# History Database Schema
-
-# History tables are created optionally on the specified database schema. 
-# If left blank, history tables gets created along with the base tables.
-# This functionality is enabled ONLY when SINGLE_DB_MODE=true
-
-#HISTORY_DB_SCHEMA=
 
 ############# Lucene Configuration
 # The number of boolean 'clauses' Lucene will attempt to create for wildcard
@@ -238,17 +234,3 @@ LOG_CHANGE=5
 # If 'LOG_CHANGE' is set to a number, this is the number of old
 # log files that will be kept.
 ERASE_LOGS_AFTER=5
-
-# Controls e-mail notification of errors and warnings (true or false).
-# NOTE: E-mail is rate-limited, so frequent or repetitive errors will
-# not flood this address.
-EMAIL_ERRORS=false
-
-# The SMTP server to use for sending the e-mail.
-# NOTE: Only applicable if EMAIL_ERRORS is set to 'true'.
-SMTP_SERVER=yourserver.edu
-
-# The address(es) to send the e-mail to.
-# This can be a single address or comma-separated list.
-# NOTE: Only applicable if EMAIL_ERRORS is set to 'true'.
-EMAIL_TO=yourAddress@.edu
