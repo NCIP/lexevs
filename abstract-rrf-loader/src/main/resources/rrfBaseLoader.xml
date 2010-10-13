@@ -113,7 +113,7 @@
 					<beans:ref bean="loadStagingInsertsTable"/>
 				</beans:entry>
 				<beans:entry key="MYSQL">
-					<beans:ref bean="loadStagingLoadDataInfileTable"/>
+					<beans:ref bean="loadStagingInsertsTable"/>
 				</beans:entry>
 				<beans:entry key="ORACLE">
 					<beans:ref bean="loadStagingInsertsTable"/>

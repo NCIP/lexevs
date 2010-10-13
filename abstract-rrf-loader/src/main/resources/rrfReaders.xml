@@ -28,6 +28,7 @@
 			</beans:bean>
 		</beans:property>	
 		<beans:property name="saveState" value="true" />
+		<beans:property name="encoding" value="UTF8"/>
 	</beans:bean>
 	
 	 <beans:bean id="mrhierReader" class="org.springframework.batch.item.file.FlatFileItemReader">
@@ -43,6 +44,7 @@
 			</beans:bean>
 		</beans:property>	
 		<beans:property name="saveState" value="true" />
+		<beans:property name="encoding" value="UTF8"/>
 	</beans:bean>
 	
 	
@@ -59,6 +61,7 @@
 			</beans:bean>
 		</beans:property>	
 		<beans:property name="saveState" value="true" />
+		<beans:property name="encoding" value="UTF8"/>
 	</beans:bean>
 	
 	<beans:bean id="mrsabReader" class="org.springframework.batch.item.file.FlatFileItemReader" init-method="doOpen">
@@ -74,6 +77,7 @@
 			</beans:bean>
 		</beans:property>	
 		<beans:property name="saveState" value="true" />
+		<beans:property name="encoding" value="UTF8"/>
 	</beans:bean>
 	
 	<beans:bean id="mrdefReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
@@ -89,6 +93,7 @@
 			</beans:bean>
 		</beans:property>	
 		<beans:property name="saveState" value="true" />
+		<beans:property name="encoding" value="UTF8"/>
 	</beans:bean>
 	
 	<beans:bean id="skippingMrhierReader" class="org.lexgrid.loader.reader.SkippingItemReader">
@@ -102,6 +107,7 @@
 
 	<beans:bean id="mrdocReader" class="org.springframework.batch.item.file.FlatFileItemReader" init-method="doOpen">
 		<beans:property name="resource" value="${rrfDir}/MRDOC.RRF"/>
+		<beans:property name="encoding" value="UTF8"/>
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
@@ -116,6 +122,7 @@
 	
 	<beans:bean id="mrsatReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
 		<beans:property name="resource" value="${rrfDir}/MRSAT.RRF"/>
+		<beans:property name="encoding" value="UTF8"/>
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
@@ -130,6 +137,7 @@
 	
 	<beans:bean id="mrrankReader" class="org.springframework.batch.item.file.FlatFileItemReader" init-method="doOpen">
 		<beans:property name="resource" value="${rrfDir}/MRRANK.RRF"/>
+		<beans:property name="encoding" value="UTF8"/>
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
@@ -200,6 +208,7 @@
 
 	<beans:bean id="mrrelReader" class="org.springframework.batch.item.file.FlatFileItemReader" init-method="doOpen" scope="step">
 		<beans:property name="resource" value="${rrfDir}/MRREL.RRF"/>
+		<beans:property name="encoding" value="UTF8"/>
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
