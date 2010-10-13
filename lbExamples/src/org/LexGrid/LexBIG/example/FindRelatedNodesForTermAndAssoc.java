@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.example;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -118,7 +119,15 @@ public class FindRelatedNodesForTermAndAssoc {
                 Util.displayMessage('\n' + node.getConceptCode() + '/' + node.getEntityDescription().getContent());
                 for (int j = 0; j < matchCount; j++) {
                     ResolvedConceptReference match = (ResolvedConceptReference) matches.getResolvedConceptReference(j);
-                    Association a = match.getTargetOf().getAssociation(0);
+                    AssociationList list = match.getTargetOf();
+                    Association a = null;
+                    if (list != null){
+                    a = list.getAssociation(0);
+                    }
+                    else{
+                    Util.displayMessage('\t' + "No Source nodes beyond this node");
+                    return;
+                    }
                     AssociatedConcept[] acl = a.getAssociatedConcepts().getAssociatedConcept();
                     String aName = a.getDirectionalName();
                     for (int k = 0; k < acl.length; k++) {
@@ -167,7 +176,15 @@ public class FindRelatedNodesForTermAndAssoc {
                 Util.displayMessage('\n' + node.getConceptCode() + '/' + node.getEntityDescription().getContent());
                 for (int j = 0; j < matchCount; j++) {
                     ResolvedConceptReference match = (ResolvedConceptReference) matches.getResolvedConceptReference(j);
-                    Association a = match.getSourceOf().getAssociation(0);
+                    AssociationList list = match.getSourceOf();
+                    Association a = null;
+                    if (list != null){
+                    a = list.getAssociation(0);
+                    }
+                    else{
+                    Util.displayMessage('\t' + "No Target nodes beyond this node");
+                    return;
+                    }
                     AssociatedConcept[] acl = a.getAssociatedConcepts().getAssociatedConcept();
                     String aName = a.getDirectionalName();
                     for (int k = 0; k < acl.length; k++) {
