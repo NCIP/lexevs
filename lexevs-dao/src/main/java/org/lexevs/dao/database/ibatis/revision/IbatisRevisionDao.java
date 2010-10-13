@@ -2,7 +2,6 @@ package org.lexevs.dao.database.ibatis.revision;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -20,6 +19,7 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.service.SystemResourceService;
+import org.springframework.transaction.annotation.Transactional;
 
 public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao {
 	
@@ -111,19 +111,10 @@ public class IbatisRevisionDao extends AbstractIbatisDao implements RevisionDao 
 		return revisionUId;
 	}
 
+	@Transactional
 	public String getRevisionIdForDate(Timestamp dateTime) {
-	
-		String revisionId = null;
-		
-		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
-				.queryForMap(GET_REVISION_ID_BY_DATE, dateTime, "revId",
-						"revAppliedDate");
-		
-		if( revisionIdMap != null && !revisionIdMap.isEmpty()) {
-			revisionId = (String) revisionIdMap.keySet().toArray()[0];
-		}
-		
-		return revisionId;
+		return (String) this.getSqlMapClientTemplate()
+				.queryForObject(GET_REVISION_ID_BY_DATE, dateTime);		
 	}
 
 	@Override

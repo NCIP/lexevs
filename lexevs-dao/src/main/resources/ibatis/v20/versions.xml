@@ -626,18 +626,21 @@
      </select>
     
     <select id="getRevisionIdByDate" remapResults="true"
-		resultClass="java.util.TreeMap" parameterClass="java.sql.Timestamp">
+		resultClass="string" parameterClass="java.sql.Timestamp">
 		<![CDATA[
 			SELECT
-				revisionId AS revId,
-				revAppliedDate AS revAppliedDate
+				revisionId
 			FROM
 				${defaultPrefix}revision
-			WHERE
-				revAppliedDate <= #param1#
-			ORDER BY
-				revAppliedDate DESC			
-			LIMIT 1
+			WHERE revAppliedDate =
+			(
+				SELECT 
+					MAX(sub.revAppliedDate)
+				FROM
+					${defaultPrefix}revision sub
+				WHERE
+					sub.revAppliedDate <= #param1#
+			)
 		]]>	
      </select> 
 </sqlMap>
