@@ -45,4 +45,11 @@ public interface BaseOption<T> {
      * @return the option name
      */
     public String getOptionName();
+    
+    /**
+     * Gets the help text.
+     * 
+     * @return the help text
+     */
+    public String getHelpText();
 }

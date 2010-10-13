@@ -17,6 +17,8 @@ public abstract class AbstractBaseOption<T> {
     
     /** The option name. */
     private String optionName;
+    
+    private String helpText;
 
     /**
      * Instantiates a new abstract option.
@@ -34,10 +36,23 @@ public abstract class AbstractBaseOption<T> {
      * @param defaultValue the default value
      */
     public AbstractBaseOption(String optionName, T defaultValue){
-        this.optionName = optionName;
-        optionValue = defaultValue;
+        this(optionName, defaultValue, null);
     }
     
+    public AbstractBaseOption(String optionName, T defaultValue, String helpText){
+        this.optionName = optionName;
+        optionValue = defaultValue;
+        this.helpText = helpText;
+    }
+ 
+    public String getHelpText() {
+        return helpText;
+    }
+
+    public void setHelpText(String helpText) {
+        this.helpText = helpText;
+    }
+
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Load.options.Option#getOptionName()
      */
