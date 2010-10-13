@@ -27,8 +27,6 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
     private ActiveOption activeOption;
     private boolean haveInactivesBeenRemoved = false;
     
-    private RemoveInactiveRunner removeInactiveRunner = new RemoveInactiveRunner();
-    
     public ToNodeListResolvedConceptReferencesIteratorDecorator(
             ResolvedConceptReferencesIterator delegate, 
             CodeHolder toNodeListCodes, 
@@ -155,7 +153,7 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
                 !this.activeOption.equals(ActiveOption.ALL)) {
             
             List<CodeToReturn> activeList = 
-                this.removeInactiveRunner.removeInactives(
+                new RemoveInactiveRunner().removeInactives(
                         this.toNodeListCodes, 
                         this.activeOption);
             
