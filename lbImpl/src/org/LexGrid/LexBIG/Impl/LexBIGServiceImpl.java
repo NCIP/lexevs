@@ -75,6 +75,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.Sort.isActiveSort;
 import org.LexGrid.LexBIG.Impl.History.HistoryServiceFactory;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
+import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
@@ -605,6 +606,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         // export extensions
         LexGridExport.register();
         OBOExport.register();
+        OwlRdfExporterImpl.register();
 
         // Generic Extensions
         new SupportedAttributePostProcessor().register();
