@@ -38,6 +38,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
@@ -1943,15 +1944,15 @@ public class LB_GUI {
                                 "You must select a coding scheme first.");
                         return;
                     }
-                    /* TODO: Will put this back in when the exporter jena lib conflicts are resolved.
-                    Exporter exporter;
+
+                    OwlRdfExporterImpl exporter = null;
                     try {
-                        exporter = lbs_.getServiceManager(null).getExporter(org.LexGrid.LexBIG.Impl.exporters.OwlRdfExport.name);
+                        exporter = (OwlRdfExporterImpl) lbs_.getServiceManager(null).getExporter(OwlRdfExporterImpl.name);
                     } catch (LBException e) {
                         throw new RuntimeException(e);
                     }
                     new ExporterExtensionShell(LB_GUI.this, exporter, acsvr);
-                    */
+                    
                 }
 
                 public void widgetDefaultSelected(SelectionEvent arg0) {
