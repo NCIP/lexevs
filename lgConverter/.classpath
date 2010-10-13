@@ -20,11 +20,9 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/jdom/jaxen-core-1.1.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jdom/jaxen-jdom-1.1.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/looks-2.1.3.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.5.4.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/db2jcc_license_cu.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/mysql-connector-java-5.1.6-bin.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/protege/orphanNodesAlg.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/jena/iri.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-logging-1.1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-2.5.6.jar"/>
@@ -41,5 +39,7 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/swt/windows/swt.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/postgresql-8.4-701.jdbc3.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/db2jcc.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/jena/iri-0.8.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.6.3.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
