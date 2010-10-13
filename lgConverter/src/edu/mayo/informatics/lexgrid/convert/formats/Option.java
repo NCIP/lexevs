@@ -143,7 +143,10 @@ public class Option {
         case ROOT_RECALC:
             return "Recalculate links to system-designated top and end nodes";
         case MEMORY_SAFE:
-            return "Tune processing for reduced memory footprint.";
+            return "Tune processing for reduced memory footprint.\n" +
+                   "Options are:\n" +
+                   "1 (Recommended) = Faster/more memory (holds OWL in memory)\n" +
+                   "2 = Slower/less memory (cache OWL to database)";
         default:
             return "";
         }
