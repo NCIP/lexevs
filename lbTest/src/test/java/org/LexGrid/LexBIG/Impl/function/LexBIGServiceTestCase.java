@@ -28,8 +28,8 @@ import junit.framework.TestCase;
  */
 abstract public class LexBIGServiceTestCase extends TestCase {
     // Info for test vocabularies ...
-    protected final static String AUTO_SCHEME = "Automobiles";
-    protected final static String AUTO_URN = "urn:oid:11.11.0.1";
+	public final static String AUTO_SCHEME = "Automobiles";
+	public final static String AUTO_URN = "urn:oid:11.11.0.1";
     protected final static String AUTO_VERSION = "1.0";
     protected final static String AUTO_EXPORT_SCHEME = "AutosEXPORT";
     protected final static String AUTO_EXPORT_URI = "AutosEXPORTURI";
