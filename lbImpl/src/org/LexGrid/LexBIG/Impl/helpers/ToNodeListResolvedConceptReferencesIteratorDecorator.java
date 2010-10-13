@@ -27,6 +27,12 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
     private ActiveOption activeOption;
     private boolean haveInactivesBeenRemoved = false;
     
+    private RemoveInactiveRunner removeInactiveRunner = 
+        new RemoveInactiveRunner();
+    
+    private ToResolvedConceptReferenceRunner toResolvedConceptReferenceRunner = 
+        new ToResolvedConceptReferenceRunner();
+    
     public ToNodeListResolvedConceptReferencesIteratorDecorator(
             ResolvedConceptReferencesIterator delegate, 
             CodeHolder toNodeListCodes, 
@@ -74,7 +80,7 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
                 CodeToReturn codeToReturn = toNodeListCodes.getAllCodes().get(0);
                 while(toNodeListCodes.getAllCodes().remove(codeToReturn));
                
-                ref = toResolvedConceptReference(codeToReturn);
+                ref = this.toResolvedConceptReferenceRunner.toResolvedConceptReference(codeToReturn);
             }
         }
         
@@ -100,11 +106,11 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             removeInactive();
             
             int deficit = arg0 - list.getResolvedConceptReferenceCount();
-            
+  
             while(deficit > 0 && this.toNodeListCodes.getAllCodes().size() > 0) {
                 CodeToReturn codeToReturn = toNodeListCodes.getAllCodes().get(0);
                 
-                list.addResolvedConceptReference(this.toResolvedConceptReference(codeToReturn));
+                list.addResolvedConceptReference(this.toResolvedConceptReferenceRunner.toResolvedConceptReference(codeToReturn));
                 while(toNodeListCodes.getAllCodes().remove(codeToReturn));
             }
         }
@@ -153,7 +159,7 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
                 !this.activeOption.equals(ActiveOption.ALL)) {
             
             List<CodeToReturn> activeList = 
-                new RemoveInactiveRunner().removeInactives(
+                this.removeInactiveRunner .removeInactives(
                         this.toNodeListCodes, 
                         this.activeOption);
             
@@ -162,6 +168,39 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             
             this.haveInactivesBeenRemoved = true;
         }
+    }
+    
+    @LgProxyClass
+    protected static class ToResolvedConceptReferenceRunner implements Serializable {
+   
+        private static final long serialVersionUID = 1163403069703848281L;
+
+        public ToResolvedConceptReferenceRunner() {
+            super();
+        }
+        
+        public ResolvedConceptReference toResolvedConceptReference(CodeToReturn codeToReturn) {
+            ResolvedConceptReference returnRef = new ResolvedConceptReference();
+            returnRef.setCode(codeToReturn.getCode());
+            returnRef.setCodeNamespace(codeToReturn.getNamespace());
+            returnRef.setCodingSchemeURI(codeToReturn.getUri());
+            returnRef.setCodingSchemeVersion(codeToReturn.getVersion());
+            
+            String codingSchemeName = null;
+            try {
+                codingSchemeName = ServiceUtility.getCodingSchemeName(
+                        codeToReturn.getUri(), 
+                        codeToReturn.getVersion());
+            } catch (LBParameterException e) {
+                //no-op -- don't assing coding scheme name
+                //if we can't find it anywhere.
+            }
+            
+            returnRef.setCodingSchemeName(codingSchemeName);
+            
+            return returnRef;
+        }
+        
     }
     
     @LgProxyClass
@@ -202,27 +241,5 @@ public class ToNodeListResolvedConceptReferencesIteratorDecorator implements Res
             
             return activeList;
         } 
-    }
-
-    private ResolvedConceptReference toResolvedConceptReference(CodeToReturn codeToReturn) {
-        ResolvedConceptReference returnRef = new ResolvedConceptReference();
-        returnRef.setCode(codeToReturn.getCode());
-        returnRef.setCodeNamespace(codeToReturn.getNamespace());
-        returnRef.setCodingSchemeURI(codeToReturn.getUri());
-        returnRef.setCodingSchemeVersion(codeToReturn.getVersion());
-        
-        String codingSchemeName = null;
-        try {
-            codingSchemeName = ServiceUtility.getCodingSchemeName(
-                    codeToReturn.getUri(), 
-                    codeToReturn.getVersion());
-        } catch (LBParameterException e) {
-            //no-op -- don't assing coding scheme name
-            //if we can't find it anywhere.
-        }
-        
-        returnRef.setCodingSchemeName(codingSchemeName);
-        
-        return returnRef;
     }
 }
