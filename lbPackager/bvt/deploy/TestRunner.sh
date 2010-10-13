@@ -15,6 +15,9 @@
  #  	Run the LexBIG test suite and produce a report suitable
  #      for view in a standard web browser: this is the default
  #      if no other option is specified.
+ #  -v,--verify
+ #  	Basic verification that LexEVS is configured properly 
+ #	    and basic systems are functioning.
  # 
  # Example: TestRunner -h
  #

@@ -126,5 +126,12 @@ You may obtain a copy of the License at
 		<delete><fileset dir="${output.dir}"><include name="*.xml"/></fileset></delete>
 		<echo message="Report (html) stored in ${output.dir}."/>
 	</target>
+	
+	<target name="verify" description="Basic verification that LexEVS is configured properly and basic systems are functioning.">
+			<java classname="org.LexGrid.LexBIG.verify.LexEvsInstallationVerifyTest"
+				maxmemory="256m">
+				<classpath refid="test.classpath"/>
+			</java>
+	</target>
 
 </project>

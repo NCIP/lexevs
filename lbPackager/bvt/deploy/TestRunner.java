@@ -93,6 +93,7 @@ public class TestRunner {
 		boolean isFullRequested = cl.hasOption("f");
 		boolean isHtmlRequested = cl.hasOption("h");
 		boolean isXmlRequested = cl.hasOption("x");
+		boolean isVerifyRequested = cl.hasOption("v");
 
 		// Launch the requested tests ...
 		if (isBriefRequested)
@@ -107,6 +108,10 @@ public class TestRunner {
 		if (isXmlRequested)
 			org.apache.tools.ant.launch.Launcher.main(
 				new String[] {"-buildfile", "TestRunner.xml", "bvt-xml"});
+		if (isVerifyRequested)
+			org.apache.tools.ant.launch.Launcher.main(
+				new String[] {"-buildfile", "TestRunner.xml", "verify"});
+		
 	}
 
 	/**
@@ -139,6 +144,10 @@ public class TestRunner {
 		o = new Option("h", "html", false,
 				"Run the LexBIG test suite and produce a report " +
 				"suitable for view in a standard web browser.");
+		
+		o = new Option("v", "verify", false,
+				"Basic verification that LexEVS is configured properly " +
+				"and basic systems are functioning.");
 		o.setRequired(false);
 		options.addOption(o);
 

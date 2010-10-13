@@ -13,9 +13,12 @@ REM  	Run the LexBIG test suite and produce a report with extensive
 REM  	information for each test case in xml format.
 REM  -h,--html
 REM  	Run the LexBIG test suite and produce a report suitable
-REM      for view in a standard web browser; this is the default
-REM      if no other option is specified.
-REM 
+REM     for view in a standard web browser; this is the default
+REM     if no other option is specified.
+REM  -v,--verify
+REM  	Basic verification that LexEVS is configured properly 
+REM	    and basic systems are functioning.
+REM
 REM Example: TestRunner -h
 REM
 java -Xmx1000m -cp .\lbTest.jar;..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar;.\extlib\ant\ant-1.7.0.jar;.\extlib\ant\ant-junit-1.7.0.jar;.\extlib\ant\ant-trax-1.7.0.jar;.\extlib\ant\ant-launcher-1.7.0.jar;.\extlib\junit\junit-4.4.jar bvt.TestRunner %*
