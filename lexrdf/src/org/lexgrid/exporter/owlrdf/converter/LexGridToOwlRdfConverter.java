@@ -289,7 +289,7 @@ public class LexGridToOwlRdfConverter {
 			throws Exception {
 		
 		// for dev only
-//		if sourceConRef.getCode().equals("NonVegetarianPizza") == false)
+		if (sourceConRef.getCode().equals("NonVegetarianPizza") == false)
 //		if (sourceConRef.getCode().equals("AmericanHot") == false)
 //		if (sourceConRef.getCode().equals("CheeseyPizza") == false)
 //		if (sourceConRef.getCode().equals("VegetarianPizzaEquivalent1") == false)
@@ -298,7 +298,7 @@ public class LexGridToOwlRdfConverter {
 //		if (sourceConRef.getCode().equals("VegetarianTopping") == false)
 //		if (sourceConRef.getCode().equals("Country")) //loader issue
 //		if (sourceConRef.getCode().equals("CL:0000015") == false)
-//			return;
+			return;
 		
 		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
@@ -501,6 +501,9 @@ public class LexGridToOwlRdfConverter {
 					if (restriction != null)
 						rdfList.add(restriction);
 					else
+						if (localProp != null &&localProp.getURI().equals(OWL.complementOf.getURI())) {
+							targetRsc = model_.createComplementClass(null, targetRsc);
+						}
 						rdfList.add(targetRsc);
 				}
 				else {
@@ -1139,7 +1142,7 @@ public class LexGridToOwlRdfConverter {
 			CodedNodeGraph cng = lbsvc.getNodeGraph(codingSchemeUri,
 					versionOrTag, null);
 
-			converter.toTripleStore(codingScheme, cng, cns, null, md, OntologyType.UMLS);
+			converter.toTripleStore(codingScheme, cng, cns, null, md, OntologyType.OWLRDF);
 
 		}  catch (LBException e) {
 			e.printStackTrace();
