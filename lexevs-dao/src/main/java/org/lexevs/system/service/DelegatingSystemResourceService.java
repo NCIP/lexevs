@@ -395,7 +395,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 	
 	@Override
-	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
+	@ClearCache(clearAll=true)
 	public void refresh() {
 		primarySystemResourceService.refresh();
 		delegateSystemResourceService.refresh();
