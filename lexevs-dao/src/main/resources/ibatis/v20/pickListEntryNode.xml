@@ -384,7 +384,6 @@
 				)
 			ORDER BY
 				revAppliedDate DESC			
-			LIMIT 1
 		]]>			
 	</select>	
 	
@@ -425,7 +424,6 @@
 				r2.revisionID = #param2#
 			ORDER BY
 				revAppliedDate DESC		
-			LIMIT 1	
 		]]>			
 	</select>
 	
@@ -474,7 +472,6 @@
 				)
 			ORDER BY
 				revAppliedDate DESC		
-			LIMIT 1	
 		]]>			
 	</select>
 	

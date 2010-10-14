@@ -341,7 +341,6 @@
 				)
 			ORDER BY
 				revAppliedDate DESC			
-			LIMIT 1
 		]]>			
 	</select>	
 	
@@ -394,7 +393,6 @@
 				
 			ORDER BY
 				revAppliedDate DESC		
-			LIMIT 1	
 		]]>			
 	</select>	
 	<select id="getDefinitionEntryHistoryByRevision" remapResults="true"
@@ -446,7 +444,6 @@
 				
 			ORDER BY
 				revAppliedDate DESC		
-			LIMIT 1	
 		]]>			
 	</select>	     
 </sqlMap>

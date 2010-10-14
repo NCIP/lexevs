@@ -388,8 +388,7 @@
 					)
 				)
 			ORDER BY
-				revAppliedDate DESC			
-			LIMIT 1
+				revAppliedDate DESC	
 		]]>			
 	</select>
 
@@ -435,7 +434,6 @@
 				)
 			Order BY
 				revAppliedDate DESC		
-			LIMIT 1	
 		]]>			
 	</select>
 	
@@ -481,7 +479,6 @@
 				)
 			Order BY
 				revAppliedDate DESC		
-			LIMIT 1	
 		]]>			
 	</select>
 
