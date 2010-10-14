@@ -3,5 +3,5 @@
 #
 # Usage: LoadSampleData
 #
-sh ../admin/LoadOWL.sh -a -t SAMPLE -in ./resources/sample.owl
-sh ../admin/LoadUMLSSemnet.sh -a -t SAMPLE -in ./resources/semnet
+sh ../admin/LoadLgXML.sh -a -t SAMPLE -in ../test/resources/testData/Automobiles.xml $@
+
