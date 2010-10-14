@@ -144,6 +144,8 @@ public class TestRunner {
 		o = new Option("h", "html", false,
 				"Run the LexBIG test suite and produce a report " +
 				"suitable for view in a standard web browser.");
+		o.setRequired(false);
+		options.addOption(o);
 		
 		o = new Option("v", "verify", false,
 				"Basic verification that LexEVS is configured properly " +
