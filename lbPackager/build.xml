@@ -173,10 +173,7 @@ You may obtain a copy of the License at
 				<include name="*"/>
 			</fileset>
 			<fileset dir="${jena.libs.dir}" id="jena">
-				<include name="jena-2.6.3.jar"/>
-				<include name="iri*.jar"/>
-				<include name="concurrent*.jar"/>
-				<include name="arq*.jar"/>
+				<include name="*.jar"/>
 			</fileset>			
 			<fileset dir="${prefuse.libs.dir}" id="prefuse">
 				<include name="*.jar"/>
