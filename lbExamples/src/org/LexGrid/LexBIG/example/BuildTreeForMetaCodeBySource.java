@@ -246,23 +246,25 @@ public class BuildTreeForMetaCodeBySource {
         List<AssociatedConcept> neighbors = new ArrayList<AssociatedConcept>();
         for (ResolvedConceptReference node : nodes.getResolvedConceptReference()) {
             // Process sources and targets ...
-            if (node.getSourceOf() != null)
+            if (node.getSourceOf() != null){
                 for (Association assoc : node.getSourceOf().getAssociation())
                     for (AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept())
                         if (isValidForSAB(ac, sab))
                             neighbors.add(ac);
+                if(node.getTargetOf() != null){
             if (node.getTargetOf() != null)
                 for (Association assoc : node.getTargetOf().getAssociation())
                     for (AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept())
                         if (isValidForSAB(ac, sab))
                             neighbors.add(ac);
-            
+                }
             // Add to printed output
             for (ResolvedConceptReference neighbor : neighbors) {
                 Util.displayMessage(neighbor.getCode() + ':' +
                         StringUtils.abbreviate(neighbor.getEntityDescription().getContent(), 60));
                 for (String line : getAtomText(neighbor, sab).split("\\|"))
                     Util.displayMessage("    {" + StringUtils.abbreviate(line, 60) + '}');
+            }
             }
         }
     }
@@ -300,6 +302,7 @@ public class BuildTreeForMetaCodeBySource {
             AssociationList childAssociationList = associationsNavigatedFwd ? node.getSourceOf() : node.getTargetOf();
 
             // Process each association defining children ...
+            if(childAssociationList != null){
             for (Association child : childAssociationList.getAssociation()) {
                 String childNavText = getDirectionalLabel(scheme, csvt, child, associationsNavigatedFwd);
 
@@ -326,6 +329,7 @@ public class BuildTreeForMetaCodeBySource {
                             ti.addChild(childNavText, childItem);
                         }
                     }
+            }
             }
         }
     }
@@ -413,6 +417,7 @@ public class BuildTreeForMetaCodeBySource {
                 
                 // Each associated concept represents an upstream branch.
                 AssociationList aList = fwd ? refs[0].getSourceOf() : refs[0].getTargetOf();
+                if(aList != null){
                 for (Association assoc : aList.getAssociation()) {
                     
                     // Go through the concepts one by one, adding the
@@ -461,6 +466,7 @@ public class BuildTreeForMetaCodeBySource {
                                 isRoot = false;
                             }
                         }
+                }
                 }
             }
         }
