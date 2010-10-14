@@ -108,7 +108,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
     private ManifestUtil manifestUtil = new ManifestUtil();
     
     public static String LOADER_POST_PROCESSOR_OPTION = "Loader Post Processor (Extension Name)";
-    public static String SUPPLEMENT_OPTION = "Supplement Coding Scheme";
+    public static String SUPPLEMENT_OPTION = "To Extend";
     public static String MANIFEST_FILE_OPTION = "Manifest File";
     public static String LOADER_PREFERENCE_FILE_OPTION = "Loader Preferences File";
     public static String ASYNC_OPTION = "Async Load";
