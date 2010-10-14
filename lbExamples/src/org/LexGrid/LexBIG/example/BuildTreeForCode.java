@@ -81,7 +81,7 @@ import org.apache.commons.lang.StringUtils;
  * FindUMLSContextsForCUI.
  */
 public class BuildTreeForCode {
-    LocalNameList noopList_ = Constructors.createLocalNameList("_noop_");
+    LocalNameList noopList_ = Constructors.createLocalNameList("textualPresentation");
 
     public BuildTreeForCode() {
         super();
@@ -94,7 +94,7 @@ public class BuildTreeForCode {
      */
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Example: BuildTreeForCode \"C0000,C0001\"");
+            System.out.println("Example: BuildTreeForCode \"73,GM is_a\"");
             return;
         }
 
@@ -289,6 +289,7 @@ public class BuildTreeForCode {
             AssociationList childAssociationList = associationsNavigatedFwd ? node.getSourceOf() : node.getTargetOf();
 
             // Process each association defining children ...
+            if(childAssociationList != null){
             for (Association child : childAssociationList.getAssociation()) {
                 String childNavText = getDirectionalLabel(lbscm, scheme, csvt, child, associationsNavigatedFwd);
 
@@ -311,6 +312,7 @@ public class BuildTreeForCode {
                     }
                 }
             }
+        }
         }
     }
 
