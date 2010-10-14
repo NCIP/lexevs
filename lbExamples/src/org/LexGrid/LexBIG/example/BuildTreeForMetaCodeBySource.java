@@ -105,7 +105,7 @@ public class BuildTreeForMetaCodeBySource {
      */
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Example: BuildTreeForMetaCodeBySource \"C0017636\" NCI");
+            System.out.println("Example: BuildTreeForMetaCodeBySource \"C0245662\" NCI");
             return;
         }
 
