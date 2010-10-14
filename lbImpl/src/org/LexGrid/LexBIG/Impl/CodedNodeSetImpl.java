@@ -850,7 +850,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     }
     
     protected void clearToNodeListCodes() {
-        this.setToNodeListCodes(new DefaultCodeHolder());
+        this.setToNodeListCodes(null);
     }
 
     /*
