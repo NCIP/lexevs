@@ -810,13 +810,22 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<jar destfile="${temp.pkg}/lgValueSets.jar" basedir="${temp.bin}"/>
 		<jar destfile="${pkg-source}/lgValueSets.jar" basedir="${temp.src}"/>
     </target>
-
+	
+    <target name="lexrdf" description="builds the lexrdf source code">
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${lexevs.api.dir}/lexrdf/src" includes="**/*"/>
+		</copy>
+		<antcall target="temp-compile"/>
+		<jar destfile="${temp.pkg}/lexrdf.jar" basedir="${temp.bin}"/>
+		<jar destfile="${pkg-source}/lexrdf-sources.jar" basedir="${temp.src}"/>
+    </target>
 	
 	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
 	<target name="lexbig.jar" depends="lbModel, lbInterfaces, lexevs-dao, lgConverter, lbImpl, lbAdmin, 
 		Indexer, lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
-		umls-loader, meta-loader, cts2, lbGUI, lbTest">
+		umls-loader, meta-loader, lexrdf, cts2, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
