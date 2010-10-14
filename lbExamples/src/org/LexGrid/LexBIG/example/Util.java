@@ -49,7 +49,8 @@ class Util {
      */
     static void displayAndLogError(String message, Throwable cause) {
         displayTaggedMessage(message);
-        displayTaggedMessage(cause.getMessage());
+        if(cause.getMessage() != null)
+        {displayTaggedMessage(cause.getMessage());}
         _logger.error(message, cause);
     }
 
