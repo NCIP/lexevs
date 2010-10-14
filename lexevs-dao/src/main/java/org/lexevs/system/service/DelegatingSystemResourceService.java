@@ -269,7 +269,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 
 	@Override
-	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
+	@ClearCache(clearAll=true)
 	public void registerCodingSchemeSupplement(
 			AbsoluteCodingSchemeVersionReference parentScheme,
 			AbsoluteCodingSchemeVersionReference supplement)
@@ -286,7 +286,7 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	}
 	
 	@Override
-	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingDatabaseToXmlRegistryCache"})
+	@ClearCache(clearAll=true)
 	public void unRegisterCodingSchemeSupplement(
 			AbsoluteCodingSchemeVersionReference parentScheme,
 			AbsoluteCodingSchemeVersionReference supplement)
