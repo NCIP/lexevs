@@ -18,8 +18,7 @@ CREATE TABLE `@PREFIX@mrconsoStaging` (
   `SRL` varchar(20) collate utf8_bin default NULL,
   `SUPPRESS` varchar(1) collate utf8_bin default NULL,
   `CVF` varchar(50) collate utf8_bin default NULL,
-  `id` int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (`id`),
+
   KEY `Index_2` (`CUI`,`AUI`),
   KEY `Index_3` (`CODE`),
   KEY `Index_4` (`SAB`,`CODE`),
