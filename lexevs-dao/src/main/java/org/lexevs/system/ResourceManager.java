@@ -1742,7 +1742,11 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 	}  
 	
 	public void refresh() {
-		//no-op
+		try {
+			this.init();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
