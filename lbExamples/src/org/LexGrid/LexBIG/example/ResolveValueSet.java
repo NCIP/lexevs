@@ -46,6 +46,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  */
 public class ResolveValueSet {
+    private String message = "Enter the number of the Value Set Definition to use, then <Enter> :";
    public ResolveValueSet() {
         super();
     }
@@ -64,7 +65,7 @@ public class ResolveValueSet {
     }
 
     public void run() throws LBException {
-        ValueSetDefinition vsd = Util.promptForValueSetDefinition();
+        ValueSetDefinition vsd = Util.promptForValueSetDefinition(message);
         if (vsd != null) {
             AbsoluteCodingSchemeVersionReferenceList acsvList = null;
             Util.displayMessage("Now select Code System to use to resolve Value Set Definition");

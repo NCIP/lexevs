@@ -38,6 +38,9 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  */
 public class CheckForValueSetSubSet {
+    private String childVSDMessage = "Enter the number of the CHILD Value Set Definition to use, then <Enter> :";
+    private String parentVSDMessage = "Enter the number of the PARENT Value Set Definition to use, then <Enter> :";
+    
    public CheckForValueSetSubSet() {
         super();
     }
@@ -56,11 +59,9 @@ public class CheckForValueSetSubSet {
     }
 
     public void run() throws LBException {
-        Util.displayMessage("Select Child Value Set Definition");
-        ValueSetDefinition childVSD = Util.promptForValueSetDefinition();
+        ValueSetDefinition childVSD = Util.promptForValueSetDefinition(childVSDMessage);
         if (childVSD != null) {
-            Util.displayMessage("Select Parent Value Set Definition");
-            ValueSetDefinition parentVSD = Util.promptForValueSetDefinition();
+            ValueSetDefinition parentVSD = Util.promptForValueSetDefinition(parentVSDMessage);
             if (parentVSD != null) {
                 AbsoluteCodingSchemeVersionReferenceList acsvList = null;
                 Util.displayMessage("Now select Code System to use to resolve Value Set Definitions");

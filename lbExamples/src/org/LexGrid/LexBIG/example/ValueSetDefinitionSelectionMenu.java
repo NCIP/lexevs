@@ -114,7 +114,7 @@ public class ValueSetDefinitionSelectionMenu {
      * @return A valueSetDefinition corresponding to the user selection; null
      *         if no selection is made or an error occurs.
      */
-    public ValueSetDefinition displayAndGetSelection() {
+    public ValueSetDefinition displayAndGetSelection(String message) {
         ValueSetDefinition vsd = null;
         try {
             // Display choices ...
@@ -123,7 +123,7 @@ public class ValueSetDefinitionSelectionMenu {
             if (choices.size() >= 0) {
                 // Process the user input ...
                 try {
-                    Util.displayMessage("Enter the number of the Value Set Definition to use, then <Enter> :");
+                    Util.displayMessage(message);
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
                     int i = new Integer(br.readLine()).intValue();

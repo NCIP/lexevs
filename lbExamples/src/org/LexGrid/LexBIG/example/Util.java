@@ -162,8 +162,8 @@ class Util {
      * @return The selected value set definition; null if
      *         no valid selection was made.
      */
-    static ValueSetDefinition promptForValueSetDefinition() {
-        return new ValueSetDefinitionSelectionMenu().displayAndGetSelection();
+    static ValueSetDefinition promptForValueSetDefinition(String message) {
+        return new ValueSetDefinitionSelectionMenu().displayAndGetSelection(message);
     }
 
     /**

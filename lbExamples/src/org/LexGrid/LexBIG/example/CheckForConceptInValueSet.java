@@ -44,6 +44,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  */
 public class CheckForConceptInValueSet {
+    private String message_ = "Enter the number of the Value Set Definition to use, then <Enter> :";
     public CheckForConceptInValueSet() {
         super();
     }
@@ -68,7 +69,7 @@ public class CheckForConceptInValueSet {
     }
 
     public void run(String code) throws LBException {
-        ValueSetDefinition vsd = Util.promptForValueSetDefinition();
+        ValueSetDefinition vsd = Util.promptForValueSetDefinition(message_);
         if (vsd != null) {
             AbsoluteCodingSchemeVersionReferenceList acsvList = null;
             CodingSchemeSummary css = Util.promptForCodeSystem();
