@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.6.3.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/iri-0.8.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/jena/sdb-1.3.2.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/jena/arq-2.8.5.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
