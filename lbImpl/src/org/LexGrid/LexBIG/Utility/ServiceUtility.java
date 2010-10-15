@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Utility;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -46,15 +47,25 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
- * The Class ServiceUtility.
+ * Utility ServiceUtility Class with various helper methods.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class ServiceUtility {
 
+    /**
+     * Resolve concept reference.
+     * 
+     * @param conceptReference the concept reference
+     * 
+     * @return the entity
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static Entity resolveConceptReference(ResolvedConceptReference conceptReference) throws LBParameterException {
         String codingSchemeUri = conceptReference.getCodingSchemeURI();
         String version = conceptReference.getCodingSchemeVersion();
@@ -73,6 +84,17 @@ public class ServiceUtility {
         return entity;
     }
 
+    /**
+     * Gets the absolute coding scheme version reference.
+     * 
+     * @param codingScheme the coding scheme
+     * @param tagOrVersion the tag or version
+     * @param strict the strict
+     * 
+     * @return the absolute coding scheme version reference
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static AbsoluteCodingSchemeVersionReference getAbsoluteCodingSchemeVersionReference(String codingScheme,
             CodingSchemeVersionOrTag tagOrVersion, boolean strict) throws LBParameterException {
         String uri;
@@ -96,15 +118,12 @@ public class ServiceUtility {
     /**
      * Gets the version.
      * 
-     * @param codingScheme
-     *            the coding scheme
-     * @param tagOrVersion
-     *            the tag or version
+     * @param codingScheme the coding scheme
+     * @param tagOrVersion the tag or version
      * 
      * @return the version
      * 
-     * @throws LBParameterException
-     *             the LB parameter exception
+     * @throws LBParameterException the LB parameter exception
      */
     public static String getVersion(String codingScheme, CodingSchemeVersionOrTag tagOrVersion)
             throws LBParameterException {
@@ -121,12 +140,32 @@ public class ServiceUtility {
         return version;
     }
 
+    /**
+     * Gets the coding scheme name.
+     * 
+     * @param codingScheme the coding scheme
+     * @param version the version
+     * 
+     * @return the coding scheme name
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static String getCodingSchemeName(String codingScheme, String version) throws LBParameterException {
         SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
 
         return systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
     }
 
+    /**
+     * Validate parameter.
+     * 
+     * @param codingSchemeNameOrUri the coding scheme name or uri
+     * @param codingSchemeVersion the coding scheme version
+     * @param list the list
+     * @param supportedAttributeClass the supported attribute class
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static void validateParameter(String codingSchemeNameOrUri, String codingSchemeVersion, LocalNameList list,
             Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
         if (list == null) {
@@ -137,6 +176,17 @@ public class ServiceUtility {
         }
     }
 
+    /**
+     * Throw exception or return default.
+     * 
+     * @param exception the exception
+     * @param defaultReturnValue the default return value
+     * @param strict the strict
+     * 
+     * @return the o
+     * 
+     * @throws T the T
+     */
     public static <T extends Throwable, O> O throwExceptionOrReturnDefault(T exception, O defaultReturnValue,
             boolean strict) throws T {
         if (strict) {
@@ -146,6 +196,16 @@ public class ServiceUtility {
         }
     }
 
+    /**
+     * Validate parameter.
+     * 
+     * @param codingSchemeNameOrUri the coding scheme name or uri
+     * @param codingSchemeVersion the coding scheme version
+     * @param localId the local id
+     * @param supportedAttributeClass the supported attribute class
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static void validateParameter(String codingSchemeNameOrUri, String codingSchemeVersion, String localId,
             Class<? extends URIMap> supportedAttributeClass) throws LBParameterException {
         if (StringUtils.isBlank(localId)) {
@@ -164,6 +224,15 @@ public class ServiceUtility {
         }
     }
 
+    /**
+     * Validate filters.
+     * 
+     * @param filterOptions the filter options
+     * 
+     * @return the filter[]
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static Filter[] validateFilters(LocalNameList filterOptions) throws LBParameterException {
         if (filterOptions != null && filterOptions.getEntryCount() > 0) {
             Filter[] temp = new Filter[filterOptions.getEntryCount()];
@@ -176,6 +245,14 @@ public class ServiceUtility {
         }
     }
 
+    /**
+     * Checks if is sort algorithm valid.
+     * 
+     * @param algorithm the algorithm
+     * @param context the context
+     * 
+     * @return true, if is sort algorithm valid
+     */
     public static boolean isSortAlgorithmValid(String algorithm, SortContext context) {
         if (ExtensionRegistryImpl.instance().getSortExtension(algorithm) != null) {
             if (context != null) {
@@ -196,6 +273,14 @@ public class ServiceUtility {
         }
     }
 
+    /**
+     * Pass filters.
+     * 
+     * @param candidate the candidate
+     * @param filterOptions the filter options
+     * 
+     * @return true, if successful
+     */
     public static boolean passFilters(ResolvedConceptReference candidate, Filter[] filterOptions) {
 
         if (ArrayUtils.isEmpty(filterOptions)) {
@@ -214,6 +299,20 @@ public class ServiceUtility {
         return pass;
     }
 
+    /**
+     * Resolve resolved concept reference.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param propertyNames the property names
+     * @param propertyTypes the property types
+     * @param namespaceHandler the namespace handler
+     * @param resolvedConceptReference the resolved concept reference
+     * 
+     * @return the t
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static <T extends ResolvedConceptReference> T resolveResolvedConceptReference(String uri, String version,
             LocalNameList propertyNames, PropertyType[] propertyTypes, NamespaceHandler namespaceHandler,
             T resolvedConceptReference) throws LBParameterException {
@@ -228,6 +327,17 @@ public class ServiceUtility {
         return resolveResolvedConceptReference(uri, version, propertyNames, propertyTypes, resolvedConceptReference);
     }
 
+    /**
+     * Resolve resolved concept reference.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param propertyNames the property names
+     * @param propertyTypes the property types
+     * @param resolvedConceptReference the resolved concept reference
+     * 
+     * @return the t
+     */
     public static <T extends ResolvedConceptReference> T resolveResolvedConceptReference(String uri, String version,
             LocalNameList propertyNames, PropertyType[] propertyTypes, T resolvedConceptReference) {
         Entity entity = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService().getEntity(
@@ -239,6 +349,16 @@ public class ServiceUtility {
         return resolvedConceptReference;
     }
 
+    /**
+     * Gets the schema version for coding scheme.
+     * 
+     * @param codingSchemeName the coding scheme name
+     * @param versionOrTag the version or tag
+     * 
+     * @return the schema version for coding scheme
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static String getSchemaVersionForCodingScheme(String codingSchemeName, CodingSchemeVersionOrTag versionOrTag)
             throws LBParameterException {
         String version = ServiceUtility.getVersion(codingSchemeName, versionOrTag);
@@ -254,6 +374,18 @@ public class ServiceUtility {
         return entry.getDbSchemaVersion();
     }
 
+    /**
+     * Gets the entity.
+     * 
+     * @param codingSchemeUri the coding scheme uri
+     * @param codingSchemeVersion the coding scheme version
+     * @param entityCode the entity code
+     * @param entityCodeNamespace the entity code namespace
+     * 
+     * @return the entity
+     * 
+     * @throws LBException the LB exception
+     */
     public static Entity getEntity(String codingSchemeUri, String codingSchemeVersion, String entityCode,
             String entityCodeNamespace) throws LBException {
         CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
@@ -276,6 +408,13 @@ public class ServiceUtility {
 
     }
 
+    /**
+     * Validate sort options.
+     * 
+     * @param sortOptions the sort options
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static void validateSortOptions(SortOptionList sortOptions) throws LBParameterException {
         if (sortOptions == null || sortOptions.getEntryCount() == 0) {
             return;
@@ -290,6 +429,16 @@ public class ServiceUtility {
         }
     }
     
+    /**
+     * Checks if a given coding scheme is a supplement.
+     * 
+     * @param codingScheme the coding scheme
+     * @param tagOrVersion the tag or version
+     * 
+     * @return true, if is supplement
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static boolean isSupplement(String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException {
         AbsoluteCodingSchemeVersionReference ref = 
             getAbsoluteCodingSchemeVersionReference(codingScheme, tagOrVersion, true);
@@ -297,6 +446,16 @@ public class ServiceUtility {
         return isSupplement(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
     }
     
+    /**
+     * Checks if a given coding scheme is a supplement.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * 
+     * @return true, if is supplement
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static boolean isSupplement(String uri, String version) throws LBParameterException {
         RegistryEntry entry = 
             LexEvsServiceLocator.getInstance().getRegistry().
@@ -310,6 +469,34 @@ public class ServiceUtility {
         }
     }
     
+    /**
+     * Gets the parent of a supplement.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * 
+     * @return the parent of supplement
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
+    public static AbsoluteCodingSchemeVersionReference getParentOfSupplement(
+            String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException {
+        AbsoluteCodingSchemeVersionReference ref = 
+            getAbsoluteCodingSchemeVersionReference(codingScheme, tagOrVersion, true);
+        
+        return getParentOfSupplement(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+    }
+    
+    /**
+     * Gets the parent of a supplement.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * 
+     * @return the parent of supplement
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     public static AbsoluteCodingSchemeVersionReference getParentOfSupplement(String uri, String version) throws LBParameterException {
         RegistryEntry entry = 
             LexEvsServiceLocator.getInstance().getRegistry().
@@ -317,7 +504,9 @@ public class ServiceUtility {
         if(StringUtils.isNotBlank(entry.getSupplementsUri())
                 &&
                 StringUtils.isNotBlank(entry.getSupplementsVersion())){
-            return Constructors.createAbsoluteCodingSchemeVersionReference(uri, version);
+            return Constructors.createAbsoluteCodingSchemeVersionReference(
+                    entry.getSupplementsUri(), 
+                    entry.getSupplementsVersion());
         } else {
             throw new LBParameterException("URI: " + uri + " Version: " + version + " is not a Supplement of any Coding Scheme.");
         }  
