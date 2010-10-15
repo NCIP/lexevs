@@ -113,7 +113,7 @@
 				multiAttrib.subRef,
 				multiAttrib.role,
 				multiAttrib.qualifierType,
-				multiAttrib.entryStateGuid esGuid
+				multiAttrib.entryStateGuid AS esGuid
 			FROM 
 				$prefix$h_vsPropertyMultiAttrib multiAttrib
 			WHERE

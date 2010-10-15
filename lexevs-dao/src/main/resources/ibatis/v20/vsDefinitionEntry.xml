@@ -127,7 +127,7 @@
 
   <update id="updateDefinitionEntryByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
 		UPDATE 
-			$prefix$vsdEntry vsdEntry
+			$prefix$vsdEntry
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="definitionEntry.operator">
@@ -172,7 +172,7 @@
 		</dynamic>
 
 		WHERE 
-			vsdEntry.vsdEntryGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			vsdEntryGuid = #uid,handler=variablePrimaryKeyTypeHandler#
  	</update>
 
   <update id="updateDefinitionEntryVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean">
@@ -370,7 +370,7 @@
 				vsdEntry.effectiveDate,
 				vsdEntry.expirationDate,
 				vsdEntry.entryStateGuid,
-				r1.revAppliedDate revAppliedDate
+				r1.revAppliedDate AS revAppliedDate
 			FROM
 				$prefix$vsdEntry vsdEntry,
 				$prefix$vsEntryState es,
@@ -421,7 +421,7 @@
 				vsdEntry.effectiveDate,
 				vsdEntry.expirationDate,
 				vsdEntry.entryStateGuid,
-				r1.revAppliedDate revAppliedDate
+				r1.revAppliedDate AS revAppliedDate
 			FROM
 				$prefix$h_vsdEntry vsdEntry,
 				$prefix$vsEntryState es,

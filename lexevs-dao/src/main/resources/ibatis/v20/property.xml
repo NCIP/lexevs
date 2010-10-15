@@ -278,7 +278,7 @@
 			multiAttrib.subRef,
 			multiAttrib.role,
 			multiAttrib.qualifierType,
-			multiAttrib.entryStateGuid esGuid
+			multiAttrib.entryStateGuid AS esGuid
 		FROM 
 			$prefix$property	prop		
 		LEFT JOIN
@@ -486,7 +486,7 @@
   <update id="updatePropertyByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			$prefix$property property
+			$prefix$property
 		SET 
    		  <dynamic prepend=" ">
    		  	<isNotNull prepend="," property="property.propertyType">
@@ -535,13 +535,13 @@
 			</isNotNull>
 		  </dynamic>
 		 WHERE
-		 	property.propertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+		 	propertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
   </update>
   
   <update id="updatePropertyVersionableAttribByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			$prefix$property property
+			$prefix$property
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="property.isActive">
@@ -564,7 +564,7 @@
 			</isNotNull>
 		  </dynamic>
 		 WHERE
-		 	property.propertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+		 	propertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
   </update>
 
 	<delete id="deletePropertyByUId"

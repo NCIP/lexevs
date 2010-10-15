@@ -252,7 +252,7 @@
 
 	<update id="updateValueSetDefinitionByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
 		UPDATE 
-			$prefix$valueSetDefinition vsDef
+			$prefix$valueSetDefinition
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="valueSetDefinition.valueSetDefinitionName">
@@ -278,7 +278,7 @@
 
 	<update id="updateValueSetDefVersionableChangesByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
 		UPDATE 
-			$prefix$valueSetDefinition vsDef
+			$prefix$valueSetDefinition
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="valueSetDefinition.isActive">
@@ -302,16 +302,16 @@
 		</dynamic>
 
 		WHERE 
-			vsDef.valueSetDefGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #uid,handler=variablePrimaryKeyTypeHandler#
  	</update> 	
  	
 	<update id="updateValueSetDefinitinEntryStateUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE 
-			$prefix$valueSetDefinition vsDef
+			$prefix$valueSetDefinition
 		SET 
 			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
 		WHERE 
-			vsDef.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
  	</update> 	
  	
 	<delete id="removevalueSetDefinitionByValueSetDefinitionURI" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -352,7 +352,7 @@
 			vsMulti.attributeValue,
 			vsMulti.subRef,
 			vsMulti.role,
-			vsMulti.entryStateGuid esGuid				
+			vsMulti.entryStateGuid AS esGuid				
 		FROM
 			$prefix$valueSetDefinition vs
 		LEFT JOIN

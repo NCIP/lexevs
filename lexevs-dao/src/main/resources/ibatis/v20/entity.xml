@@ -431,7 +431,7 @@
   
   <update id="updateEntityByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
 		UPDATE 
-			$prefix$entity entity
+			$prefix$entity
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="entity.isDefined">
@@ -461,15 +461,15 @@
 		</dynamic>
 
 		WHERE 
-			entity.entityGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			entityGuid = #uid,handler=variablePrimaryKeyTypeHandler#
 		AND
-			entity.codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
  	</update>
 
 	<update id="updateEntityVerAttribByUId"
 		parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
 		UPDATE
-			$prefix$entity entity
+			$prefix$entity
 		SET
 		<dynamic prepend=" ">
 			<isNotNull prepend="," property="entity.isActive">
@@ -496,9 +496,9 @@
 		</dynamic>
 
 		WHERE
-			entity.entityGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			entityGuid = #uid,handler=variablePrimaryKeyTypeHandler#
 		AND
-			entity.codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
 	</update>
     
     <delete id="deleteEntityByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">

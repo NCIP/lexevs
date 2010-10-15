@@ -348,7 +348,7 @@
   <update id="updatePropertyByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			$prefix$vsProperty property
+			$prefix$vsProperty
 		SET 
    		  <dynamic prepend=" ">
    		  	<isNotNull prepend="," property="property.propertyType">
@@ -413,13 +413,13 @@
 			</isNotNull>
 		  </dynamic>
 		 WHERE
-		 	property.vsPropertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+		 	vsPropertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
   </update>
     
   <update id="updatePropertyVerAttribByUId"
   	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			$prefix$vsProperty property
+			$prefix$vsProperty
 		SET 
    		  <dynamic prepend=" ">
 			<isNotNull prepend="," property="property.isActive">
@@ -442,7 +442,7 @@
 			</isNotNull>
 		  </dynamic>
 		 WHERE
-		 	property.vsPropertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+		 	vsPropertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
   </update>
 	
 	<delete id="deletePropertyByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
