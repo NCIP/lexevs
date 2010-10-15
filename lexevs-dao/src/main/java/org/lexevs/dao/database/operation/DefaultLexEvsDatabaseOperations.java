@@ -341,7 +341,8 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 					codingSchemeHistoryXmlDdl,
 					commonXmlDdl,
 					nciHistoryXmlDdl,
-					valueSetXmlDdl
+					valueSetXmlDdl,
+					valueSetHistoryXmlDdl
 					);
 		for(Resource resource : scriptResources) {
 			this.doDumpSqlScripts(databaseType, resource, path, prefix);
