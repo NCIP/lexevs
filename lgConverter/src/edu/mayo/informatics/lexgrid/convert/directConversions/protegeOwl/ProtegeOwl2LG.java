@@ -2267,7 +2267,7 @@ public class ProtegeOwl2LG {
                     // Create and register a new association ...
                     AssociationWrapper aw = new AssociationWrapper();
 
-                    aw.setAssociationName(label);
+                    aw.setAssociationName(propertyName);
                     aw.setEntityCode(propertyName);
 
                     aw.setIsTransitive(Boolean.FALSE);
@@ -2397,7 +2397,7 @@ public class ProtegeOwl2LG {
             AssociationWrapper aw = new AssociationWrapper();
 
             aw.setEntityCode(propertyName);
-            aw.setAssociationName(label);
+            aw.setAssociationName(propertyName);
             aw.setForwardName(getAssociationLabel(label, true));
             aw.setReverseName(getAssociationLabel(label, false));
             aw.setIsTransitive(owlProp.isTransitive());
@@ -2487,7 +2487,7 @@ public class ProtegeOwl2LG {
         String propertyName = getRDFResourceLocalName(rdfProp);
         assoc.setEntityCode(propertyName);
         String label = resolveLabel(rdfProp);
-        assoc.setAssociationName(label);
+        assoc.setAssociationName(propertyName);
         assoc.setForwardName(getAssociationLabel(label, true));
         String nameSpace = getNameSpace(rdfProp.getNamespace());
         assoc.setEntityCodeNamespace(nameSpace);
@@ -2501,7 +2501,7 @@ public class ProtegeOwl2LG {
 
         // Add to supported associations ...
 
-        lgSupportedMappings_.registerSupportedAssociation(label, rdfProp.getNamespace() + propertyName, label,
+        lgSupportedMappings_.registerSupportedAssociation(propertyName, rdfProp.getNamespace() + propertyName, label,
                 propertyName, nameSpace, true);
         return assoc;
 
