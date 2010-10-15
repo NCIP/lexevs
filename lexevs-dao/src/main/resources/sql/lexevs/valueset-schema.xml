@@ -21,7 +21,7 @@
       <index name="@PREFIX@idx_vs_releaseGuid">
         <index-column name="releaseGuid"/>
       </index>
-      <index name="idx_vsdName">
+      <index name="@PREFIX@idx_vsdName">
         <index-column name="valueSetDefName"/>
       </index>
     </table>

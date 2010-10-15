@@ -52,10 +52,10 @@
       <foreign-key foreignTable="@PREFIX@vsdEntry" name="@PREFIX@FK_h_vsdeGuid" onDelete="cascade">
         <reference local="vsdEntryGuid" foreign="vsdEntryGuid"/>
       </foreign-key>
-      <index name="idx_h_valueSetDefGuid">
+      <index name="@PREFIX@idx_h_valueSetDefGuid">
         <index-column name="valueSetDefGuid"/>
       </index>
-      <index name="idx_h_vsdEnt_entityCode">
+      <index name="@PREFIX@idx_h_vsdEnt_entityCode">
         <index-column name="entityCode"/>
       </index>
     </table>
@@ -91,10 +91,10 @@
       <foreign-key foreignTable="@PREFIX@vsPickList" name="@PREFIX@FK_h_vsplGuid" onDelete="cascade">
         <reference local="vsPickListGuid" foreign="vsPickListGuid"/>
       </foreign-key>
-      <index name="idx_h_pickListId">
+      <index name="@PREFIX@idx_h_pickListId">
         <index-column name="pickListId"/>
       </index>
-      <index name="idx_h_representsVSD">
+      <index name="@PREFIX@idx_h_representsVSD">
         <index-column name="representsValueSetDefinition"/>
       </index>
     </table>
@@ -120,10 +120,10 @@
       <foreign-key foreignTable="@PREFIX@vsPLEntry" name="@PREFIX@FK_h_vspleGuid" onDelete="cascade">
         <reference local="vsPLEntryGuid" foreign="vsPLEntryGuid"/>
       </foreign-key>
-      <index name="idx_h_vsPickListGuid">
+      <index name="@PREFIX@idx_h_vsPickListGuid">
         <index-column name="vsPickListGuid"/>
       </index>
-      <index name="idx_vs_h_entityCode">
+      <index name="@PREFIX@idx_vs_h_entityCode">
         <index-column name="entityCode"/>
       </index>
     </table>
@@ -150,7 +150,7 @@
       <foreign-key foreignTable="@PREFIX@vsProperty" name="@PREFIX@FK_h_vspGuid" onDelete="cascade">
         <reference local="vsPropertyGuid" foreign="vsPropertyGuid"/>
       </foreign-key>
-      <index name="idx_h_vsProperty">
+      <index name="@PREFIX@idx_h_vsProperty">
         <index-column name="referenceGuid"/>
         <index-column name="propertyId"/>
         <index-column name="propertyName"/>
@@ -169,7 +169,7 @@
       <foreign-key foreignTable="@PREFIX@vsPropertyMultiAttrib" name="@PREFIX@FK_h_vspmaGuid" onDelete="cascade">
         <reference local="vsPropMultiAttribGuid" foreign="vsPropMultiAttribGuid"/>
       </foreign-key>
-      <index name="idx_h_vsPropertyGuid">
+      <index name="@PREFIX@idx_h_vsPropertyGuid">
         <index-column name="vsPropertyGuid"/>
       </index>
     </table>
