@@ -67,8 +67,8 @@
 		) VALUES (
 			#uid,handler=variablePrimaryKeyTypeHandler#,
 			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
-			#attributeType#,
-			#attributeValue#,
+			#attributeType:VARCHAR#,
+			#attributeValue:VARCHAR#,
 			#subRef:VARCHAR#,
 			#role:VARCHAR#,
 			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
