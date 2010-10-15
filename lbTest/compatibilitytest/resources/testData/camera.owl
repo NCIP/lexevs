@@ -21,6 +21,7 @@
      </owl:Class>
 
      <owl:DatatypeProperty rdf:ID="currency">
+     	  <rdfs:label>this is a test for association name</rdfs:label>
           <rdfs:domain rdf:resource="#Money"/>
           <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
      </owl:DatatypeProperty>
