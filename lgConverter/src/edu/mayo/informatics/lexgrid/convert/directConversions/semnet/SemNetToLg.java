@@ -51,6 +51,7 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.relations.AssociationEntity;
@@ -97,6 +98,7 @@ public class SemNetToLg {
     private static final int ALL = 1;
     private static final int EXCEPT_ISA = 2;
     private int inheritanceLevel_ = 2;
+    private static final String SEMNET_NAME = "UMLS_SemNet";
 
     public SemNetToLg(URI fileLocation, Integer inheritanceLevel, LgMessageDirectorIF messages) {
         this.semNetFolderLocation_ = fileLocation;
@@ -150,14 +152,14 @@ public class SemNetToLg {
     @SuppressWarnings("unchecked")
     protected void initScheme(CodingScheme scheme) throws IOException {
         // Initialize metadata ...
-        scheme.setCodingSchemeName("UMLS_SemNet");
+        scheme.setCodingSchemeName(SEMNET_NAME);
         Text txt = new Text();
         txt.setContent(getTermsAndConditions());
 
         scheme.setCopyright(txt);
         scheme.setDefaultLanguage("en");
         scheme.setFormalName("UMLS Semantic Network");
-        scheme.addLocalName("UMLS_SemNet");
+        scheme.addLocalName(SEMNET_NAME);
         scheme.setCodingSchemeURI("urn:lsid:nlm.nih.gov:semnet");
         
         EntityDescription ed = new EntityDescription();
@@ -208,7 +210,7 @@ public class SemNetToLg {
 
         // Initialize fixed mappings ...
         SupportedCodingScheme map1 = new SupportedCodingScheme();
-        map1.setLocalId("UMLS_SemNet");
+        map1.setLocalId(SEMNET_NAME);
         map1.setUri("urn:lsid:nlm.nih.gov:semnet");
         mappings.addSupportedCodingScheme(map1);
 
@@ -235,6 +237,13 @@ public class SemNetToLg {
         ((SupportedHierarchy) map5).setRootCode(ROOT_CODE);
         ((SupportedHierarchy) map5).setIsForwardNavigable(true);
         mappings.addSupportedHierarchy(map5);
+        
+        
+        SupportedNamespace namespace = new SupportedNamespace();
+        namespace.setEquivalentCodingScheme(SEMNET_NAME);
+        namespace.setLocalId(SEMNET_NAME);
+        namespace.setUri("urn:lsid:nlm.nih.gov:semnet");
+        mappings.addSupportedNamespace(namespace);
     }
 
     /**
@@ -294,7 +303,7 @@ public class SemNetToLg {
             ce.setEntityDescription(ed);
 
             ce.addEntityType(SQLTableConstants.ENTITYTYPE_CONCEPT);
-
+            ce.setEntityCodeNamespace(SEMNET_NAME);
             // Define properties to the concept ...
             if (fSTY_RL.length() > 0) {
                 Presentation p = new Presentation();
@@ -450,9 +459,11 @@ public class SemNetToLg {
                 // Source
                 AssociationSource ai = new AssociationSource();
                 ai.setSourceEntityCode(fUI1);
+                ai.setSourceEntityCodeNamespace(SEMNET_NAME);
                 // Target
                 AssociationTarget at = new AssociationTarget();
                 at.setTargetEntityCode(fUI3);
+                at.setTargetEntityCodeNamespace(SEMNET_NAME);
                 // Add them, ignoring duplicates ...
                 assocPredicate = RelationsUtil.subsume(scheme.getRelations(0), assocPredicate);
                 ai = RelationsUtil.subsume(assocPredicate, ai);
@@ -519,9 +530,11 @@ public class SemNetToLg {
                 // Source
                 AssociationSource ai = new AssociationSource();
                 ai.setSourceEntityCode(fUI1);
+                ai.setSourceEntityCodeNamespace(SEMNET_NAME);
                 // Target
                 AssociationTarget at = new AssociationTarget();
                 at.setTargetEntityCode(fUI3);
+                at.setTargetEntityCodeNamespace(SEMNET_NAME);
                 // Add them, ignoring duplicates ...
                 assocPredicate = RelationsUtil.subsume(scheme.getRelations(0), assocPredicate);
                 ai = RelationsUtil.subsume(assocPredicate, ai);
@@ -624,7 +637,7 @@ public class SemNetToLg {
     }
 
     public URNVersionPair[] getUrnVersionPairs() throws Exception {
-        return new URNVersionPair[] { new URNVersionPair("UMLS_SemNet", null) };
+        return new URNVersionPair[] { new URNVersionPair(SEMNET_NAME, null) };
     }
 
     //
