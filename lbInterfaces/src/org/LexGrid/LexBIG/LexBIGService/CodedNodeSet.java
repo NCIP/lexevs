@@ -654,6 +654,19 @@ public interface CodedNodeSet extends Serializable {
 	CodedNodeSet restrictToStatus(ActiveOption activeOption, String[] status)
 			throws LBInvocationException,LBParameterException;
 	
+	/**
+	 * Restrict the set to anonymous (or non-anonymous) nodes.
+	 * 
+	 * @param anonymousOption
+	 * 			AnonymousOption.ANONYMOUS_ONLY		: Only Anonymous nodes
+	 * 			AnonymousOption.NON_ANONYMOUS_ONLY  : Only nodes that are either not anonymous, or unspecified
+	 * 			AnonymousOption.ALL					: All nodes
+	 * 
+	 * @return A new CodedNodeSet representing the filtered result.
+	 * 
+	 * @throws LBInvocationException the LB invocation exception
+	 * @throws LBParameterException the LB parameter exception
+	 */
 	CodedNodeSet restrictToAnonymous(AnonymousOption anonymousOption) throws LBInvocationException, LBParameterException;
 
 	/**
