@@ -5,6 +5,7 @@ package org.lexevs.cts2.author;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -259,16 +260,16 @@ public class ValueSetAuthoringOperationImplTest {
 		
 		assertTrue(vsd.getDefinitionEntryCount() == 2);
 		
-		er = vsd.getDefinitionEntry(0).getEntityReference();
+		er = getEntityReference(vsd, "GM");
 		
-		assertTrue(er.getEntityCode().equals("GM"));
+		assertEquals("GM",er.getEntityCode());
 		assertTrue(er.getEntityCodeNamespace().equals("Automobiles"));
 		assertFalse(er.getLeafOnly());
 		assertTrue(er.getReferenceAssociation().equals("hasSubtype"));
 		assertFalse(er.getTargetToSource());
 		assertTrue(er.getTransitiveClosure());
 		
-		er = vsd.getDefinitionEntry(1).getEntityReference();
+		er = getEntityReference(vsd, "Ford");
 		
 		assertTrue(er.getEntityCode().equals("Ford"));
 		assertTrue(er.getEntityCodeNamespace().equals("Automobiles"));
@@ -278,6 +279,16 @@ public class ValueSetAuthoringOperationImplTest {
 		assertTrue(null == er.getTransitiveClosure());
 		
 		vsd = null;
+	}
+	
+	private EntityReference getEntityReference(ValueSetDefinition def, String code) {
+		for(DefinitionEntry definition : def.getDefinitionEntry()) {
+			if(definition.getEntityReference().getEntityCode().equals(code)) {
+				return definition.getEntityReference();
+			}
+		}
+		fail();
+		return null;
 	}
 	
 	/**
