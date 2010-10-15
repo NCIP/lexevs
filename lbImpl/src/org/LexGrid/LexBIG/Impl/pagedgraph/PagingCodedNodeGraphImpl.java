@@ -148,18 +148,16 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 }
             }
             
-            focus =
-                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
-                getEntityService().
-                getResolvedCodedNodeReference(
+            //try to do a resolve based on the code and namespace we were given
+            focus = attemptToResolveFocus(
                         codingSchemeUri, 
-                        version, 
-                        graphFocus.getCode(), 
-                        graphFocus.getCodeNamespace(),
+                        version,
+                        graphFocus, 
                         this.shouldResolveNextLevel(resolveCodedEntryDepth),
-                        DaoUtility.localNameListToString(propertyNames),
-                        DaoUtility.propertyTypeArrayToString(propertyTypes));
+                        propertyNames, 
+                        propertyTypes);
             
+            //if we didn't find it above, adjust the coding scheme based on the namespace, if possible
             if(focus == null) {
                 if(graphFocus.getCodeNamespace() != null) {
                     AbsoluteCodingSchemeVersionReference ref = null;
@@ -171,20 +169,18 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
                 
                     if(ref != null) {
                         focus =
-                            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
-                            getEntityService().
-                            getResolvedCodedNodeReference(
+                            attemptToResolveFocus(
                                     ref.getCodingSchemeURN(), 
                                     ref.getCodingSchemeVersion(), 
-                                    graphFocus.getCode(), 
-                                    graphFocus.getCodeNamespace(),
+                                    graphFocus,
                                     this.shouldResolveNextLevel(resolveCodedEntryDepth),
-                                    DaoUtility.localNameListToString(propertyNames),
-                                    DaoUtility.propertyTypeArrayToString(propertyTypes));
+                                    propertyNames,
+                                    propertyTypes);
                     }
                 }  
             } 
-           
+            
+            //if we haven't found it yet, all we can do is assign the defaults provided by the coding scheme
             if(focus == null) {
                focus = new ResolvedConceptReference();
                focus.setCode(graphFocus.getCode());
@@ -402,6 +398,45 @@ public class PagingCodedNodeGraphImpl extends AbstractQueryBuildingCodedNodeGrap
         }
     
         return returnList;
+    }
+
+    private ResolvedConceptReference attemptToResolveFocus(
+            String codingSchemeUri, 
+            String version, 
+            ConceptReference graphFocus, 
+            boolean resolve,
+            LocalNameList propertyNames, 
+            PropertyType[] propertyTypes) {
+        ResolvedConceptReference
+            focus =
+                LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
+                getEntityService().
+                getResolvedCodedNodeReference(
+                        codingSchemeUri, 
+                        version, 
+                        graphFocus.getCode(), 
+                        graphFocus.getCodeNamespace(),
+                        resolve,
+                        DaoUtility.localNameListToString(propertyNames),
+                        DaoUtility.propertyTypeArrayToString(propertyTypes));
+        
+        try {
+            if(focus == null && ServiceUtility.isSupplement(codingSchemeUri, version)) {
+                AbsoluteCodingSchemeVersionReference parent = 
+                    ServiceUtility.getParentOfSupplement(codingSchemeUri, version);
+                
+                return this.attemptToResolveFocus(
+                        parent.getCodingSchemeURN(), 
+                        parent.getCodingSchemeVersion(), 
+                        graphFocus, 
+                        resolve, 
+                        propertyNames, 
+                        propertyTypes);
+            }
+        } catch (LBParameterException e) {
+           LoggerFactory.getLogger().warn("Error attempting to Resolve Focus from Supplement.");
+        }
+        return focus;
     }
 
     protected ArtificialRootResolvePolicy adjustArtificialRootResolvePolicy(
