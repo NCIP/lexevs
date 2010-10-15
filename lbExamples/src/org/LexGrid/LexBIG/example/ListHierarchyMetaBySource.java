@@ -127,10 +127,13 @@ public class ListHierarchyMetaBySource {
         ResolvedConceptReference root = resolveReferenceGraphForward(lbSvc, getCodingSchemeRoot(lbSvc, sab));
         
         AssociationList assocList = root.getSourceOf();
-        for(Association assoc : assocList.getAssociation()){
-            for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()){
-                if(this.isSabQualifiedAssociation(ac, sab)){
-                    realRoots.addResolvedConceptReference(ac);
+        if (assocList != null)
+        {
+            for(Association assoc : assocList.getAssociation()){
+                for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()){
+                    if(this.isSabQualifiedAssociation(ac, sab)){
+                        realRoots.addResolvedConceptReference(ac);
+                    }
                 }
             }
         }
