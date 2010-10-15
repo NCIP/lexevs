@@ -22,7 +22,7 @@
       <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_codingScheme_codingScheme" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
-      <index name="releaseGuid">
+      <index name="@PREFIX@idx_h_releaseGuid">
         <index-column name="releaseGuid"/>
       </index>
       <index name="@PREFIX@idx_h_codingSchemeURI">
