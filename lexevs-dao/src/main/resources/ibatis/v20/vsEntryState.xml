@@ -48,9 +48,9 @@
 		VALUES (
 			#entryStateUId,handler=variablePrimaryKeyTypeHandler#,
 			#entryUId,handler=variablePrimaryKeyTypeHandler#,
-			#entryType#,
-			#entryState.changeType#,
-			#entryState.relativeOrder#,
+			#entryType:VARCHAR#,
+			#entryState.changeType:VARCHAR#,
+			#entryState.relativeOrder:NUMERIC#,
 			#revisionUId,handler=variablePrimaryKeyTypeHandler#,
 			#prevRevisionUId,handler=variablePrimaryKeyTypeHandler#,
 			#previousEntryStateUId,handler=variablePrimaryKeyTypeHandler#

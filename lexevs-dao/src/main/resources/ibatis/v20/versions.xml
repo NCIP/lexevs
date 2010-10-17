@@ -19,9 +19,9 @@
 		<result property="entityDescription.content" column="description" />
 	</resultMap>
 	
-	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultClass="string" remapResults="true" >
+	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultMap="Common.uidResult" remapResults="true" >
 		SELECT
-			sysRel.releaseGuid
+			sysRel.releaseGuid AS uidKey
 		FROM
 			${defaultPrefix}systemRelease sysRel
 		WHERE

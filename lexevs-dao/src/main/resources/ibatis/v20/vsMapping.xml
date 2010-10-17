@@ -260,15 +260,15 @@
 		) VALUES (
 			#uid,handler=variablePrimaryKeyTypeHandler#, 
 			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
-			#referenceType#,
-			#supportedAttributeTag#, 
-			#uriMap.localId#, 
-			#uriMap.uri#,
-			#uriMap.content#,
-			#associationNames#
+			#referenceType:VARCHAR#,
+			#supportedAttributeTag:VARCHAR#, 
+			#uriMap.localId:VARCHAR#, 
+			#uriMap.uri:VARCHAR#,
+			#uriMap.content:VARCHAR#,
+			#associationNames:VARCHAR#
 			
 			<isPropertyAvailable prepend="," property="uriMap.rootCode">
-				#uriMap.rootCode#
+				#uriMap.rootCode:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.rootCode">
 				null
@@ -289,42 +289,42 @@
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
-				#uriMap.equivalentCodingScheme#
+				#uriMap.equivalentCodingScheme:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.assemblyRule">
-				#uriMap.assemblyRule#
+				#uriMap.assemblyRule:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.assemblyRule">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.codingScheme">
-				#uriMap.codingScheme#
+				#uriMap.codingScheme:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.codingScheme">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.entityCodeNamespace">
-				#uriMap.entityCodeNamespace#
+				#uriMap.entityCodeNamespace:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.entityCodeNamespace">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.entityCode">
-				#uriMap.entityCode#
+				#uriMap.entityCode:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.entityCode">
 				null
 			</isNotPropertyAvailable>
 			
 			<isPropertyAvailable prepend="," property="uriMap.propertyType">
-				#uriMap.propertyType.name#
+				#uriMap.propertyType.name:VARCHAR#
 			</isPropertyAvailable>
 			<isNotPropertyAvailable prepend="," property="uriMap.propertyType">
 				null

@@ -111,16 +111,16 @@
 					null,
 				</isNotPropertyAvailable>
 				
-				#propertyRefCodingScheme#,
-				#propertyName#,
-				#propertyMatchValue#,
-				#matchAlgorithm#,
-				#format#,
+				#propertyRefCodingScheme:VARCHAR#,
+				#propertyName:VARCHAR#,
+				#propertyMatchValue:VARCHAR#,
+				#matchAlgorithm:VARCHAR#,
+				#format:VARCHAR#,
 				#definitionEntry.isActive,handler=numericBooleanTypeHandler#,
-				#definitionEntry.owner#,
-				#definitionEntry.status#,
-				#definitionEntry.effectiveDate#,
-				#definitionEntry.expirationDate#,
+				#definitionEntry.owner:VARCHAR#,
+				#definitionEntry.status:VARCHAR#,
+				#definitionEntry.effectiveDate:TIMESTAMP#,
+				#definitionEntry.expirationDate:TIMESTAMP#,
 				#entryStateUId,handler=variablePrimaryKeyTypeHandler#	
 			)
      </insert>
