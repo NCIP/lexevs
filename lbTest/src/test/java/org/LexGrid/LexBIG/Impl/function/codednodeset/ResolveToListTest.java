@@ -183,10 +183,10 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
          ResolvedConceptReference[] refs = union.resolveToList(
                  Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null, -1).getResolvedConceptReference();
 
-        assertTrue(refs[0].getCode().equals("R0001"));
-        assertTrue(refs[1].getCode().equals("A0001"));  
-        assertTrue(refs[2].getCode().equals("P0001")); 
-        assertTrue(refs[3].getCode().equals("T0001"));   
+         assertEquals("R0001", refs[0].getCode());
+         assertEquals("A0001", refs[1].getCode());  
+         assertEquals("P0001", refs[2].getCode()); 
+         assertEquals("T0001", refs[3].getCode());   
       }
     
     /**
