@@ -59,7 +59,6 @@ public class TestDAGWalking extends LexBIGServiceTestCase {
         // check for some source (down) codes that I know should be there
         a = rcr[0].getSourceOf().getAssociation();
 
-        assertTrue(contains(a, "Anatomic_Structure_is_Physical_Part_of", "Skeletal_System"));;
         assertTrue(contains(a, "subClassOf", "Musculoskeletal_System_Part"));
 
         // go down one more level from one of the codes.
