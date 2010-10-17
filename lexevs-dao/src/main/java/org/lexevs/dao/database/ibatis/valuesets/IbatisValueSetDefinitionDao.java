@@ -276,7 +276,10 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		String valueSetDefinitionGuid = this.createUniqueId();
 		String vsEntryStateGuid = this.createUniqueId();
 		
-		String systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseURI);
+		String systemReleaseId = null;
+		if(StringUtils.isNotBlank(systemReleaseURI)){
+			systemReleaseId = this.versionsDao.getSystemReleaseIdByUri(systemReleaseURI);
+		}
 		
 		EntryState entryState = vsdef.getEntryState();
 		
@@ -639,7 +642,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 					List<URIMap> urimapList = (List<URIMap>) field.get(mappings);
 					this.insertURIMap(referenceGuid, urimapList);
 				} catch (Exception e) {
-					if (e.getMessage().indexOf("Duplicate") == -1 && e.getMessage().indexOf("unique constraint") == -1)
+					if (e.getMessage().indexOf("Duplicate") == -1 
+							&& e.getMessage().indexOf("unique constraint") == -1
+							&& e.getMessage().indexOf("SQLSTATE: 23505") == -1)
 						throw new RuntimeException(e);
 				} 
 			}
