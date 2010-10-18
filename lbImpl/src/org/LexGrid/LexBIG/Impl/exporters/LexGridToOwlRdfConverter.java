@@ -1,13 +1,10 @@
 package org.LexGrid.LexBIG.Impl.exporters;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,8 +24,6 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -37,15 +32,11 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Source;
-import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
@@ -56,15 +47,8 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
-import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.relations.AssociationEntity;
-import org.LexGrid.relations.AssociationQualification;
-import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.AssociationTarget;
-import org.LexGrid.util.PrintUtility;
 import org.apache.commons.lang.StringUtils;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.exporter.owlrdf.LexRdf;
@@ -73,26 +57,19 @@ import org.lexgrid.exporter.owlrdf.LexRdfMap;
 import org.lexgrid.exporter.owlrdf.Skos;
 import org.lexgrid.exporter.owlrdf.StringHelper;
 
-import com.hp.hpl.jena.db.DBConnection;
-import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
 import com.hp.hpl.jena.ontology.ComplementClass;
-import com.hp.hpl.jena.ontology.DatatypeProperty;
-import com.hp.hpl.jena.ontology.EnumeratedClass;
 import com.hp.hpl.jena.ontology.IntersectionClass;
 import com.hp.hpl.jena.ontology.OntClass;
-import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.ontology.Ontology;
 import com.hp.hpl.jena.ontology.Restriction;
-import com.hp.hpl.jena.ontology.SomeValuesFromRestriction;
 import com.hp.hpl.jena.ontology.UnionClass;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ModelMaker;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFList;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -107,17 +84,11 @@ import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.shared.InvalidPropertyURIException;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.VCARD;
 
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationEntityCache;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.interfaces.AssociationSourceCache;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.AssociationEntityCacheFactory;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.AssociationSourceCacheFactory;
 
 public class LexGridToOwlRdfConverter {
 	// HSQL config -- faster than MySQL, can be used when the test case is large
@@ -211,7 +182,7 @@ public class LexGridToOwlRdfConverter {
 
 		// If SDB tables do not exist, it will throw an exception.
 		try {
-			long size = store_.getSize();
+			store_.getSize();
 		} catch (Exception e) {
 			store_.getTableFormatter().create();
 			System.out.println("create sdb tables");
@@ -343,8 +314,8 @@ public class LexGridToOwlRdfConverter {
 //		if (sourceConRef.getCode().equals("VegetarianTopping") == false)
 //		if (sourceConRef.getCode().equals("Country")) //loader issue
 //		if (sourceConRef.getCode().equals("CL:0000015") == false)
-	    if (sourceConRef.getCode().equals("Country") == false)
-			return;
+//	    if (sourceConRef.getCode().equals("SlicedTomatoTopping") == false)
+//			return;
 		
 		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
@@ -390,10 +361,8 @@ public class LexGridToOwlRdfConverter {
 					String propUri = null;
 					if (supportedAssn.getEntityCode() == null){
 						propUri = this.getLgPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getLocalId());
-//						prop = model_.getProperty(this.getPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getLocalId()));
 					} else {
 						propUri = this.getLgPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getEntityCode());
-//						prop = model_.getProperty(this.getPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getEntityCode()));
 					}
 					
 					if (propUri != null)
@@ -420,21 +389,22 @@ public class LexGridToOwlRdfConverter {
 					
 					if (target.getCode().startsWith("@")) {
 						Resource r = processLgAnonymousTarget(target);
-						this.createTriple(source, prop, r);
+						if (prop.getURI().equals(RDFS.subClassOf.getURI())) {
+						    this.createTriple(r, prop, source);
+						}
+						else
+						    this.createTriple(source, prop, r);
 						continue;
 					}
 					
 					// qualifier
-//					Restriction restriction = null;
 					SupportedAssociationQualifier q = this.getLgQualifier(target);
 					if (q != null && prop != null) {
-//						targetRsc = createRestriction(q, prop, targetRsc);
 						this.messenger_.info("in process target method there is a qualifier that is not null" );
 					}
 					
-//					source.addProperty(prop, this.resolveNamespace(target.getCodeNamespace()) + target.getCode());
-					if (this.ontFormat_.equals(OntologyFormat.OBO) && prop.getURI().equalsIgnoreCase(RDFS.subClassOf.getURI())) {
-						targetRsc = model_.getOntClass(this.resolveNamespace(target.getCodeNamespace()) + target.getCode());
+					if (this.ontFormat_.equals(OntologyFormat.UMLS) == false && prop.getURI().equalsIgnoreCase(RDFS.subClassOf.getURI())) {
+						targetRsc = model_.getOntClass(targetRsc.getURI());
 						this.createTriple(targetRsc, prop, source);
 					}
 					else if(this.ontFormat_.equals(OntologyFormat.UMLS) && prop.getURI().equalsIgnoreCase(RDFS.subClassOf.getURI())) {
@@ -494,7 +464,9 @@ public class LexGridToOwlRdfConverter {
 	            continue;
 	        StringHelper helper = new StringHelper(lgProp.getValue().getContent(), model_.getNsPrefixMap());
 	        if (helper.getStrFormat().equals(StringHelper.StrFormat.PREFIX_TYPE)) {
-	            if (helper.getType().getURI().equals(OWL.oneOf.getURI())) {
+	            if (helper.getType() == null)
+	                System.out.println();
+	            if (helper.getType()!= null && helper.getType().getURI().equals(OWL.oneOf.getURI())) {
 	                isOneOf = true;
 	                break;
 	            }
