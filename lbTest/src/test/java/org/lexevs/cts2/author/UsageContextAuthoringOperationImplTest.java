@@ -3,14 +3,15 @@
  */
 package org.lexevs.cts2.author;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -22,35 +23,36 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.query.UsageContextQueryOperation;
-import org.lexevs.dao.database.service.version.AuthoringService;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.usagecontext.util.UsageContextConstants;
 
 /**
  * @author m004181
  *
  */
-public class UsageContextAuthoringOperationImplTest extends TestCase{
+public class UsageContextAuthoringOperationImplTest {
 
 	private static UsageContextAuthoringOperation UC_AUTH_OP;
 	private static UsageContextQueryOperation UC_QUERY_OP;
 	
 	private static List<String> revIds_ = new ArrayList<String>();
 	
-	@Test
-	public void testSetUp() throws Exception {
-		super.setUp();
+	@BeforeClass
+	public static void init() throws Exception {
 		UC_AUTH_OP = LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getUsageContextAuthoringOperation();
 		UC_QUERY_OP = LexEvsCTS2Impl.defaultInstance().getQueryOperation().getUsageContextQueryOperation();
+		
+		createUsageContextCodeSystem();
+		createUsageContextFromFile();
 	}
 	
-	@Test
-	public void testCreateUsageContextCodeSystem() throws LBException {
+	private static void createUsageContextCodeSystem() throws LBException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -78,8 +80,7 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 		assertTrue(ucCS.getDefaultLanguage().equals("en"));
 	}
 	
-	@Test
-	public void testCreateUsageContextFromFile() throws LBException, IOException {
+	private static void createUsageContextFromFile() throws LBException, IOException {
 		CodeSystemLoadOperation csLoadOp = LexEvsCTS2Impl.defaultInstance().getAdminOperation().getCodeSystemLoadOperation();
 		File file = new File("resources/testData/cts2/usageContextCodingScheme_1.0.xml");
 		
@@ -359,8 +360,7 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 		}
 	}
 	
-	@Test
-	public void testRemoveUsageContext() throws LBException{
+	public static void removeUsageContext() throws LBException{
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -373,8 +373,10 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 		assertTrue(uc == null);
 	}
 
-	@Test
-	public void testCleanup() throws Exception {
+	@AfterClass
+	public static void cleanup() throws Exception {
+		removeUsageContext();
+		
 		UC_AUTH_OP = null;
 		UC_QUERY_OP = null;
 	
@@ -404,7 +406,7 @@ public class UsageContextAuthoringOperationImplTest extends TestCase{
 		assertTrue(removeStatus);
 	}
 
-	private String getRevId(){
+	private static String getRevId(){
 		String revId = UUID.randomUUID().toString();
 		revIds_.add(revId);
 		
