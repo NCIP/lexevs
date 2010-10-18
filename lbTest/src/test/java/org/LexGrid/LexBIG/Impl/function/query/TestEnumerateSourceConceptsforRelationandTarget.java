@@ -53,7 +53,7 @@ public class TestEnumerateSourceConceptsforRelationandTarget extends LexBIGServi
         AssociatedConcept[] ac = rcr[0].getTargetOf().getAssociation()[0].getAssociatedConcepts()
                 .getAssociatedConcept();
 
-        assertTrue(ac[0].getConceptCode().equals("Otolymph"));
+        assertEquals(1,ac.length);
 
     }
 
