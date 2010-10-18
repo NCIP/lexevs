@@ -462,8 +462,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	    try {
 			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
 		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
 		} 
 	
 		
