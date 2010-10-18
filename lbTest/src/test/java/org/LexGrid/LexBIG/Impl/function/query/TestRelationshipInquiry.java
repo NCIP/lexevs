@@ -36,15 +36,15 @@ public class TestRelationshipInquiry extends LexBIGServiceTestCase {
 
     public void testT1_FNC_12() throws LBException {
 
-        CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, "roles");
+        CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, null);
 
-        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("Anatomic_Structure_Has_Location", null),
-                Constructors.createConceptReference("Otolymph", THES_SCHEME),
+        assertTrue(cng.areCodesRelated(Constructors.createNameAndValue("subClassOf", null),
+                Constructors.createConceptReference("Ear_Part", THES_SCHEME),
                 Constructors.createConceptReference("Membranous_Labyrinth", THES_SCHEME), true).booleanValue());
 
-        assertFalse(cng.areCodesRelated(Constructors.createNameAndValue("Anatomic_Structure_Has_Location", null),
-                Constructors.createConceptReference("Otolymph", THES_SCHEME),
-                Constructors.createConceptReference("No_Code", THES_SCHEME), true).booleanValue());
+        assertFalse(cng.areCodesRelated(Constructors.createNameAndValue("subClassOf", null),
+                Constructors.createConceptReference("Membranous_Labyrinth", THES_SCHEME),
+                Constructors.createConceptReference("Otolymph", THES_SCHEME), true).booleanValue());
 
     }
 }
