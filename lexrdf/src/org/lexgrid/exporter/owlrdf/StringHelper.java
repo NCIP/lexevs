@@ -15,7 +15,7 @@ import com.hp.hpl.jena.vocabulary.OWL;
  * 2) DefaultOWLObjectProperty(http://www.co-ode.org/ontologies/pizza/2005/05/
  * 16/pizza.owl#hasIngredient)
  * 
- * Rule #1
+ * 
  * @author m077995
  *
  */
@@ -54,6 +54,7 @@ public class StringHelper {
 			String[] lines = str.split(":");
 			if(lines.length == 2 && supportedNamespace.containsKey(lines[0]))
 				type = LexRdfMap.get(lines[1], ontType);
+			strFormat = StrFormat.PREFIX_TYPE;
 		}
 	}
 	

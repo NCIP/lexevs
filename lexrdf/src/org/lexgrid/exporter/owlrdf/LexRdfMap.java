@@ -36,6 +36,7 @@ public class LexRdfMap {
 		map.put("DefaultOWLDataTypeProperty".toLowerCase(),
 				OWL.DatatypeProperty);
 		map.put("subPropertyOf".toLowerCase(), RDFS.subPropertyOf);
+		map.put("oneOf".toLowerCase(), OWL.oneOf);
 
 		// OBO
 		map.put(OBO + "is_a", RDFS.subClassOf);
