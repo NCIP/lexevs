@@ -3,6 +3,7 @@ package org.LexGrid.LexBIG.Impl.exporters;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,6 +78,7 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.ontology.AnnotationProperty;
 import com.hp.hpl.jena.ontology.ComplementClass;
 import com.hp.hpl.jena.ontology.DatatypeProperty;
+import com.hp.hpl.jena.ontology.EnumeratedClass;
 import com.hp.hpl.jena.ontology.IntersectionClass;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
@@ -303,12 +305,12 @@ public class LexGridToOwlRdfConverter {
 				
 				if (LexRdfMap.isMapped(sourceConRef, ontFormat_) == true)
 					continue;
-				this.processTargets(sourceConRef);
+				this.processLgTargets(sourceConRef);
 			}
 		}
 	}
 	
-	private SupportedAssociation getSupportedAssociation(String associationName)
+	private SupportedAssociation getLgSupportedAssociation(String associationName)
 			throws LBException {
 		for (SupportedAssociation supportedAssn : cs_.getMappings()
 				.getSupportedAssociation()) {
@@ -328,7 +330,7 @@ public class LexGridToOwlRdfConverter {
 		return null;
 	}
 
-	private void processTargets(ResolvedConceptReference sourceConRef)
+	private void processLgTargets(ResolvedConceptReference sourceConRef)
 			throws Exception {
 		
 		// for dev only
@@ -341,7 +343,8 @@ public class LexGridToOwlRdfConverter {
 //		if (sourceConRef.getCode().equals("VegetarianTopping") == false)
 //		if (sourceConRef.getCode().equals("Country")) //loader issue
 //		if (sourceConRef.getCode().equals("CL:0000015") == false)
-//			return;
+	    if (sourceConRef.getCode().equals("Country") == false)
+			return;
 		
 		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
@@ -360,7 +363,7 @@ public class LexGridToOwlRdfConverter {
 		}
 		else if (sourceConRef.getEntity().getEntityTypeCount() > 0 && sourceConRef.getEntity().getEntityType()[0].equalsIgnoreCase(EntityTypes.ASSOCIATION.value())) {
 			// for association
-			source = model_.getOntProperty(this.getPropertyUri(sourceConRef.getCodeNamespace(), sourceConRef.getCode()));
+			source = model_.getOntProperty(this.getLgPropertyUri(sourceConRef.getCodeNamespace(), sourceConRef.getCode()));
 		}
 		else if (sourceConRef.getEntity().getEntityTypeCount() > 0 && sourceConRef.getEntity().getEntityType()[0].equalsIgnoreCase(EntityTypes.CONCEPT.value())) {
 			// for concept
@@ -374,7 +377,7 @@ public class LexGridToOwlRdfConverter {
 				Association targetAssociation = targetsIterator.next();
 				// get association entity according to the association name
 				SupportedAssociation supportedAssn = this
-						.getSupportedAssociation(targetAssociation.getAssociationName());
+						.getLgSupportedAssociation(targetAssociation.getAssociationName());
 				Property prop = null;
 				if (supportedAssn == null) {
 					throw new LBException("cannot find the supported association for " + targetAssociation.getAssociationName());
@@ -386,10 +389,10 @@ public class LexGridToOwlRdfConverter {
 				else {
 					String propUri = null;
 					if (supportedAssn.getEntityCode() == null){
-						propUri = this.getPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getLocalId());
+						propUri = this.getLgPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getLocalId());
 //						prop = model_.getProperty(this.getPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getLocalId()));
 					} else {
-						propUri = this.getPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getEntityCode());
+						propUri = this.getLgPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getEntityCode());
 //						prop = model_.getProperty(this.getPropertyUri(supportedAssn.getEntityCodeNamespace(), supportedAssn.getEntityCode()));
 					}
 					
@@ -416,14 +419,14 @@ public class LexGridToOwlRdfConverter {
 						continue;
 					
 					if (target.getCode().startsWith("@")) {
-						Resource r = processAnonymousTarget(target);
+						Resource r = processLgAnonymousTarget(target);
 						this.createTriple(source, prop, r);
 						continue;
 					}
 					
 					// qualifier
 //					Restriction restriction = null;
-					SupportedAssociationQualifier q = this.getQualifier(target);
+					SupportedAssociationQualifier q = this.getLgQualifier(target);
 					if (q != null && prop != null) {
 //						targetRsc = createRestriction(q, prop, targetRsc);
 						this.messenger_.info("in process target method there is a qualifier that is not null" );
@@ -455,7 +458,7 @@ public class LexGridToOwlRdfConverter {
 	/*
 	 * Get Uri according to the name space and code. Apply the hash map if it isn't owl/rdf ontology
 	 */
-	private String getPropertyUri(String ns, String code) throws LBException {
+	private String getLgPropertyUri(String ns, String code) throws LBException {
 		if (this.ontFormat_.equals(OntologyFormat.OWLRDF))
 			return this.resolveNamespace(ns) + code;
 		else {
@@ -466,8 +469,60 @@ public class LexGridToOwlRdfConverter {
 		}
 	}
 	
+	/**
+	 * Create enumerated class -- oneOf. According to the owl loader if there is anonymous class does not have
+	 * association target, it could be an enumerated class. This method checks its property which specify the enumerated type,
+	 * and its entity description contains the list of enumerated things, for instance {instanceA, instanceB, classC}. 
+	 * @param anonymousSource
+	 * @return
+	 * @throws LBException
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 * @throws NoSuchMethodException 
+	 * @throws IllegalArgumentException 
+	 * @throws SecurityException 
+	 */
+	private Resource createEnumeratedClassFromEmptyAnonymousSource(AssociatedConcept anonymousSource) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	    Entity en = anonymousSource.getEntity();
+	    boolean isOneOf = false;
+	    
+	    for (org.LexGrid.commonTypes.Property lgProp : en.getProperty()) {
+//	        SupportedProperty lgSupProp = DaoUtility.getURIMap(cs_, SupportedProperty.class, lgProp.getPropertyName());
+//	        if (!lgSupProp.getUri().equals(RDF.type.getURI()))
+	        // TODO in supported property the URI of "type" is not correct
+            if (!lgProp.getPropertyName().equalsIgnoreCase("type"))
+	            continue;
+	        StringHelper helper = new StringHelper(lgProp.getValue().getContent(), model_.getNsPrefixMap());
+	        if (helper.getStrFormat().equals(StringHelper.StrFormat.PREFIX_TYPE)) {
+	            if (helper.getType().getURI().equals(OWL.oneOf.getURI())) {
+	                isOneOf = true;
+	                break;
+	            }
+	        }
+	    }
+	    if (isOneOf == false)
+	        return null;
+	    
+	    if (en.getEntityDescription() != null && en.getEntityDescription().getContent().startsWith("{") && 
+	            en.getEntityDescription().getContent().endsWith("}")) {
+	        
+	        String content = en.getEntityDescription().getContent();
+	        content = content.substring(1, content.length()-1);
+	        String[] elements = content.split(" ");
+	        if (elements.length == 0)
+	            return null;
+	        List<RDFNode> rdfList = new ArrayList<RDFNode>();
+	        for (String e : elements) {
+	            String code = e.trim();
+	            RDFNode rsc = model_.getResource(this.resolveNamespace(currentNamespace_) + code);
+	            rdfList.add(rsc);
+	        }
+	        return model_.createEnumeratedClass(null, model_.createList(rdfList.iterator()));
+	    }
+	    return null;
+	}
 	
-	private Resource processAnonymousTarget(AssociatedConcept anonymousSource) throws Exception{
+	private Resource processLgAnonymousTarget(AssociatedConcept anonymousSource) throws Exception{
 		this.messenger_.info("processing anonymous " + anonymousSource.getCode());
 		
 //		AssociationList assnList = anonymousSource.getSourceOf();
@@ -477,8 +532,10 @@ public class LexGridToOwlRdfConverter {
 			return null;
 		AssociationList assnList = localRcrl.getResolvedConceptReference(0).getSourceOf();
 
-		if (assnList == null)
-			return null;
+		if (assnList == null) {
+			return createEnumeratedClassFromEmptyAnonymousSource(anonymousSource);
+		}
+		
 		Iterator<? extends Association> iteratorAssociations = assnList.iterateAssociation();
 
 		//used for intersectionof or unionof
@@ -501,14 +558,13 @@ public class LexGridToOwlRdfConverter {
 		
 		while(iteratorAssociations.hasNext()) {
 			Association assn = iteratorAssociations.next();
-			SupportedAssociation suppAssn = this.getSupportedAssociation(assn.getAssociationName());
+			SupportedAssociation suppAssn = this.getLgSupportedAssociation(assn.getAssociationName());
 			Property localProp = null;
 			if (suppAssn == null) {
 				throw new LBException("no supported assocation found for " + assn.getAssociationName());
 			}
 			else {
-//				localProp = model_.getProperty(this.resolveNamespace(suppAssn.getEntityCodeNamespace())+ suppAssn.getEntityCode());
-				localProp = model_.getProperty(this.getPropertyUri(suppAssn.getEntityCodeNamespace(), suppAssn.getEntityCode()));
+				localProp = model_.getProperty(this.getLgPropertyUri(suppAssn.getEntityCodeNamespace(), suppAssn.getEntityCode()));
 			}
 				
 			if (assn.getAssociatedConcepts() == null)
@@ -523,9 +579,8 @@ public class LexGridToOwlRdfConverter {
 					continue;
 				if (target.getCode().startsWith("@") && anonymousSource.getCode().startsWith("@")) {
 					// target is anonymous class, recursively call itself
-					targetRsc = processAnonymousTarget(target);
+					targetRsc = processLgAnonymousTarget(target);
 					if (localProp.getURI().equals(OWL.complementOf.getURI()))
-//						this.createTriple(targetRsc, localProp, targetRsc);
 						targetRsc = model_.createComplementClass(null, targetRsc);
 					else {
 						if (localProp.getURI().equals(RDFS.subClassOf.getURI()) == false && localProp.getNameSpace().equals(currentNamespace_))
@@ -534,7 +589,7 @@ public class LexGridToOwlRdfConverter {
 						
 				}
 				
-				SupportedAssociationQualifier qualifier = getQualifier(target);
+				SupportedAssociationQualifier qualifier = getLgQualifier(target);
 				Restriction restriction = null;
 				if (localProp != null && qualifier != null) {
 					restriction = createRestriction(qualifier, localProp, targetRsc);
@@ -570,7 +625,7 @@ public class LexGridToOwlRdfConverter {
 		}
 
 		if (rdfList != null ) {
-			return this.createAnonymousClass(classHolder, rdfList);
+			return this.createIntersectionOrUnionClass(classHolder, rdfList);
 		}
 		else 
 			return null;
@@ -638,7 +693,7 @@ public class LexGridToOwlRdfConverter {
 	
 	
 	// create intersection class or union class
-	private Resource createAnonymousClass(Class<?> cls, List<RDFNode> rdfList) throws Exception {
+	private Resource createIntersectionOrUnionClass(Class<?> cls, List<RDFNode> rdfList) throws Exception {
 		final String prefix = "create";
 		try {
 			Method m = model_.getClass().getMethod(prefix + cls.getSimpleName(), String.class, RDFList.class);
@@ -652,7 +707,7 @@ public class LexGridToOwlRdfConverter {
 	}
 	
 	
-	private SupportedAssociationQualifier getQualifier(AssociatedConcept concept) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	private SupportedAssociationQualifier getLgQualifier(AssociatedConcept concept) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		NameAndValueList nameValueList = concept.getAssociationQualifiers();
 		if (nameValueList != null && nameValueList.getNameAndValueCount() > 0 ) {
 			for (NameAndValue nameAndValue : nameValueList.getNameAndValue()) {
@@ -696,9 +751,7 @@ public class LexGridToOwlRdfConverter {
 		}
 		
 		if (supProp.getUri().equalsIgnoreCase(
-				RDFS.domain.getURI())) {
-//			String id = resolveNamespace(currentNamespace_)	+ property.getValue().getContent();
-//			ontProperty.addDomain(model_.getResource(id));
+				RDFS.domain.getURI())) { 
 			String id = resolveNamespace(currentNamespace_) + property.getValue().getContent();
 			this.createTriple(ontProperty, model_.getProperty(supProp.getUri()), model_.getResource(id));
 		} else if (supProp.getUri().equalsIgnoreCase(
@@ -713,9 +766,6 @@ public class LexGridToOwlRdfConverter {
 				throw new LBException("invalid property value");
 		} else if (supProp.getUri().equalsIgnoreCase(
 				RDFS.range.getURI())) {
-//			String id = resolveNamespace(currentNamespace_)
-//					+ property.getValue().getContent();
-//			ontProperty.addRange(model_.getResource(id));
 			String id = resolveNamespace(currentNamespace_) + property.getValue().getContent();
 			this.createTriple(ontProperty, model_.getProperty(supProp.getUri()), model_.getResource(id));
 		} else if (supProp.getUri().equalsIgnoreCase(
@@ -811,21 +861,21 @@ public class LexGridToOwlRdfConverter {
 		Map<String, ReifiedStatement> statementHash = new HashMap<String, ReifiedStatement>();
 		// handle entity's comments
 		for (Comment comment : entity.getComment()) {
-			this.addCommentOrDefinitionOrPresentation(resource, Skos.note, comment, statementHash);
+			this.addLgCommentOrDefinitionOrPresentation(resource, Skos.note, comment, statementHash);
 		}
 
 		// handle entity's definition
 		for (Definition def : entity.getDefinition()) {
-			this.addCommentOrDefinitionOrPresentation(resource, Skos.definition, def, statementHash);
+			this.addLgCommentOrDefinitionOrPresentation(resource, Skos.definition, def, statementHash);
 		}
 
 		// handle entity's presentation
 		for (Presentation presentation : entity.getPresentation()) {
 			if (presentation.getIsPreferred() == true) {
-				this.addCommentOrDefinitionOrPresentation(resource, Skos.prefLabel, presentation,
+				this.addLgCommentOrDefinitionOrPresentation(resource, Skos.prefLabel, presentation,
 						statementHash);
 			} else {
-				this.addCommentOrDefinitionOrPresentation(resource, Skos.altLabel, presentation,
+				this.addLgCommentOrDefinitionOrPresentation(resource, Skos.altLabel, presentation,
 						statementHash);
 			}
 		}
@@ -870,21 +920,21 @@ public class LexGridToOwlRdfConverter {
 		Map<String, ReifiedStatement> statementHash = new HashMap<String, ReifiedStatement>();
 		// handle entity's comments
 		for (Comment comment : entity.getComment()) {
-			this.addCommentOrDefinitionOrPresentation(owlClass, Skos.note, comment, statementHash);
+			this.addLgCommentOrDefinitionOrPresentation(owlClass, Skos.note, comment, statementHash);
 		}
 
 		// handle entity's definition
 		for (Definition def : entity.getDefinition()) {
-			this.addCommentOrDefinitionOrPresentation(owlClass, Skos.definition, def, statementHash);
+			this.addLgCommentOrDefinitionOrPresentation(owlClass, Skos.definition, def, statementHash);
 		}
 
 		// handle entity's presentation
 		for (Presentation presentation : entity.getPresentation()) {
 			if (presentation.getIsPreferred() != null && presentation.getIsPreferred() == true) {
-				this.addCommentOrDefinitionOrPresentation(owlClass, Skos.prefLabel, presentation,
+				this.addLgCommentOrDefinitionOrPresentation(owlClass, Skos.prefLabel, presentation,
 						statementHash);
 			} else {
-				this.addCommentOrDefinitionOrPresentation(owlClass, Skos.altLabel, presentation,
+				this.addLgCommentOrDefinitionOrPresentation(owlClass, Skos.altLabel, presentation,
 						statementHash);
 			}
 		}
@@ -905,7 +955,7 @@ public class LexGridToOwlRdfConverter {
 	// only a regular mapping from lg:property's value to
 	// comment/definition/presentation. not necessary to consider the property
 	// name
-	private void addCommentOrDefinitionOrPresentation(OntResource resource, Property prop,
+	private void addLgCommentOrDefinitionOrPresentation(OntResource resource, Property prop,
 			org.LexGrid.commonTypes.Property lgProp,
 			Map<String, ReifiedStatement> statementHash) {
 		Statement statement = model_.createStatement(resource, prop, lgProp
@@ -1139,7 +1189,7 @@ public class LexGridToOwlRdfConverter {
 		
 		// Close the database connection
 		model_.close();
-//		store_.getTableFormatter().truncate(); // for development only
+		store_.getTableFormatter().truncate(); // for development only
 		store_.getConnection().close();
 		
 		System.out.println("proccessed association: " + Integer.toString(assnCounter));
@@ -1169,7 +1219,9 @@ public class LexGridToOwlRdfConverter {
 		ExporterMessageDirector md = new ExporterMessageDirector("LexRdfExporter", status);
 		
 //		String codingSchemeUri = "http://www.xfront.com/owl/ontologies/camera", codingSchemeVersion = "UNASSIGNED";
-		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", codingSchemeVersion = "version 1.2";
+		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", 
+		       codingSchemeVersion = "version 1.2",
+		       output = "C:/temp/pizza.owl";
 //		String codingSchemeUri = "urn:lsid:bioontology.org:cell", codingSchemeVersion = "UNASSIGNED";
 //		String codingSchemeUri = "urn:lsid:bioontology.org:uberon", codingSchemeVersion = "UNASSIGNED";
 //		String codingSchemeUri = "urn:oid:2.16.840.1.113883.6.110", codingSchemeVersion = "1993.bvt";
@@ -1192,7 +1244,9 @@ public class LexGridToOwlRdfConverter {
 			CodedNodeGraph cng = lbsvc.getNodeGraph(codingSchemeUri,
 					versionOrTag, null);
 
-			converter.toTripleStore(codingScheme, cng, cns, null, md, null);
+			FileOutputStream f = new FileOutputStream(output);
+			Writer w = new OutputStreamWriter(f);
+			converter.toTripleStore(codingScheme, cng, cns, w, md, null);
 
 		}  catch (LBException e) {
 			e.printStackTrace();
