@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 
 /**
- * GUI to load the RadLex Protégé Frames representation to LexBIG.
+ * GUI to load the RadLex ProtÃ©gÃ© Frames representation to LexBIG.
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $
@@ -96,7 +96,7 @@ public class RadLexProtegeFramesLoader extends LoadExportBaseShell {
 
 		Button fileChooseButton = Utility.getFileChooseButton(options, file,
 				new String[] { "*.pprj" },
-				new String[] { "Protégé project file (pprj)" });
+				new String[] { "ProtÃ©gÃ© project file (pprj)" });
 
 		gd = new GridData(SWT.CENTER);
 		gd.widthHint = 60;
