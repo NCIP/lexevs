@@ -40,19 +40,35 @@ public class GForge29842 extends LexBIGServiceTestCase {
     	CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_NAME, csvt, null);
     	
     	AssociatedConcept focus = new AssociatedConcept();
+    	
+    	// entity isBaseOf
         focus.setCode("isBaseOf");
         focus.setCodeNamespace("pizza.owl");
 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         Entity entity = list.getResolvedConceptReference()[0].getEntity();
         List<String> typeList = new ArrayList<String>();
-        for (Property p : entity.getAllProperties()) {
+        for (Property p : entity.getProperty()) {
         	if (p.getPropertyName().equals("type"))
         		typeList.add(p.getValue().getContent());
         }
         
         assertEquals(typeList.size(), 3);
         assertEquals(typeList.contains("InverseFunctionalProperty"), true);
+        assertEquals(typeList.contains("FunctionalProperty"), true);
+        assertEquals(typeList.contains("ObjectProperty"), true);
+        
+        // entity hasSpiciness
+        focus.setCode("hasSpiciness");
+        list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
+        entity = list.getResolvedConceptReference()[0].getEntity();
+        typeList = new ArrayList<String>();
+        for (Property p : entity.getProperty()) {
+        	if (p.getPropertyName().equals("type"))
+        		typeList.add(p.getValue().getContent());
+        }
+        
+        assertEquals(typeList.size(), 2);
         assertEquals(typeList.contains("FunctionalProperty"), true);
         assertEquals(typeList.contains("ObjectProperty"), true);
         
