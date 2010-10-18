@@ -185,8 +185,8 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
 
          assertEquals("R0001", refs[0].getCode());
          assertEquals("A0001", refs[1].getCode());  
-         //assertEquals("P0001", refs[2].getCode()); 
-         //assertEquals("T0001", refs[3].getCode());   
+         assertEquals("P0001", refs[2].getCode()); 
+         assertEquals("T0001", refs[3].getCode());   
       }
     
     /**
