@@ -91,7 +91,9 @@ public class CleanUpTest extends TestCase {
 
     }
     
-    @Test
+    //@Test
+    //This is not guarenteed to run before the method below... and will fail if
+    //so. Let the below method remove all.
 	public void testRemoveValueDomain() throws LBException, URISyntaxException {
 		getValueDomainService().removeValueSetDefinition(new URI("SRITEST:AUTO:EveryThing"));
 	}
