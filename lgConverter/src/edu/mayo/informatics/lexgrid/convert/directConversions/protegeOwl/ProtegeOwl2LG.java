@@ -76,6 +76,8 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallbac
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protege.model.Project;
@@ -2628,7 +2630,7 @@ public class ProtegeOwl2LG {
         for (Iterator itr = rdfProp.getRDFTypes().iterator(); itr.hasNext();) {
             RDFSClass rdfsClass = (RDFSClass) itr.next();
             Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", 
-                    rdfsClass.getLocalName(), lgSupportedMappings_, rdfsClass.getURI(), null);
+                    rdfsClass.getLocalName(), lgSupportedMappings_, RDF.type.getURI(), null);
             assocEntity.addProperty(pro);
         }
         
