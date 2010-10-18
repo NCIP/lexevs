@@ -105,14 +105,14 @@ public class TestBugFixes extends LexBIGServiceTestCase {
      */
 
     public void testAssociationQualifiers() throws LBException {
-        CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, null);
-        cng.restrictToAssociations(Constructors.createNameAndValueList("Anatomic_Structure_is_Physical_Part_of"),
-                Constructors.createNameAndValueList("owl:someValuesFrom"));
-        ResolvedConceptReference[] rcr = cng.resolveAsList(Constructors.createConceptReference("External_Lip", null), true,
+        CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(AUTO_SCHEME, null, null);
+        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"),
+                Constructors.createNameAndValueList("hasEngine"));
+        ResolvedConceptReference[] rcr = cng.resolveAsList(Constructors.createConceptReference("A0001", null), true,
                 false, 1, 1, null, null, null, -1).getResolvedConceptReference();
 
         assertTrue(rcr[0].getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0)
-                .getAssociationQualifiers().getNameAndValue(0).getName().equals("owl:someValuesFrom"));
+                .getAssociationQualifiers().getNameAndValue(0).getName().equals("hasEngine"));
     }
 
     private boolean contains(SupportedAssociation[] sa, String association) {
