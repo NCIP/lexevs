@@ -438,7 +438,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 	}
 	
 	@AfterClass
-	public static void testRemoveConceptDomainCodeSystem() throws Exception{
+	public static void removeConceptDomainCodeSystem() throws Exception{
 		removeConceptDomainToValueSetBinding();
 		removeConceptDomain();
 		getValueSetBinding2();
@@ -468,6 +468,8 @@ public class ConceptDomainAuthoringOperationImplTest {
 	
 		
 		assertTrue(removeStatus);
+		
+		tearDown();
 	}
 	
 	class ConceptDomainData{
@@ -483,8 +485,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		return revId;
 	}
 
-	@AfterClass
-	public static void testTearDown() throws Exception {
+	public static void tearDown() throws Exception {
 		CD_AUTH_OP = null;
 		CD_QUERY_OP = null;
 		
