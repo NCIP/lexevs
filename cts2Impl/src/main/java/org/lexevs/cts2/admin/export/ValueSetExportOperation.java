@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -25,8 +25,8 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.Exceptions.LBException;
 
 public interface ValueSetExportOperation {
-	
-	/**
+
+/**
 	 * Export Value Set Definition to LexGrid canonical XML format.
 	 * 
 	 * @param valueSetDefinitionURI
@@ -41,7 +41,7 @@ public interface ValueSetExportOperation {
 	 * 			True: stops exporting if any error.
 	 * @throws LBException
 	 */
-	public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionVersion, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
+public void exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionVersion, String xmlFullPathName, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Exports contents of the Value Set Definition using the exporter specified.
