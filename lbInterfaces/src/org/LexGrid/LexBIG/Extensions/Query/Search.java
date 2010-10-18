@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -23,7 +23,7 @@ import org.apache.lucene.search.Query;
 
 public interface Search extends Extendable {
 
-	/**
+/**
 	 * Generate a Lucene Query given a text String.
 	 * 
 	 * @param searchText
@@ -31,5 +31,5 @@ public interface Search extends Extendable {
 	 * @return
 	 * 		The Query
 	 */
-	public Query buildQuery(String searchText);
+public Query buildQuery(String searchText);
 }
