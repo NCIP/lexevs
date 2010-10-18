@@ -20,7 +20,6 @@ package org.LexGrid.LexBIG.Impl.function.query;
 
 // LexBIG Test ID: T1_FNC_40	TestRetrieveRelationsforConcept
 
-import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
@@ -52,11 +51,6 @@ public class TestRetrieveRelationsforConcept extends LexBIGServiceTestCase {
                 .getResolvedConceptReference();
         assertTrue(rcr[0].getEntity().getProperty()[0].getPropertyName().equals("Semantic_Type"));
         assertTrue(rcr[0].getEntity().getProperty().length == 1);
-
-        Association[] a = rcr[0].getSourceOf().getAssociation();
-        assertTrue(a.length == 1);
-        assertTrue(a[0].getAssociationName().equals("Anatomic_Structure_is_Physical_Part_of"));
-
     }
 
 }
