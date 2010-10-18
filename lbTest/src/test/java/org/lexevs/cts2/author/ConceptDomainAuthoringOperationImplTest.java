@@ -461,8 +461,11 @@ public class ConceptDomainAuthoringOperationImplTest {
 	
 	    try {
 			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
-		} catch (LBException e) {
-			removeStatus = codeSystemAuthOp.removeCodeSystem(revInfo, codingSchemeURI, representsVersion);
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			//if above fails -- at least try this so it won't effect anything downstream.
+			LexEvsServiceLocator.getInstance().getSystemResourceService().removeCodingSchemeResourceFromSystem(codingSchemeURI, representsVersion);
 		} 
 	
 		
