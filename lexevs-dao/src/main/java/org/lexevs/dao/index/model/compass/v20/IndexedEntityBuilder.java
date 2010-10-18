@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -31,12 +31,12 @@ import org.compass.core.Property.Index;
 import org.compass.core.Property.Store;
 import org.lexevs.dao.index.model.IndexableResourceBuilder;
 
-	/**
+/**
 	 * The Class IndexedEntityBuilder.
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,Resource>{	
+public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,Resource>{	
 		
 		/** The compass. */
 		private Compass compass;
