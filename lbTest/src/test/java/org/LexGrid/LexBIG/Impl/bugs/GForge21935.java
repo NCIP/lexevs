@@ -51,14 +51,14 @@ public class GForge21935 extends LexBIGServiceTestCase {
      * @throws Throwable
      */
     public void testOwlRestrictionAssociations() throws Throwable {
-        String code = "Vertebra";
-        String relatedCode = "Vertebral_Column";
+        String code = "A0001";
+        String relatedCode = "C0001";
 
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         
-        CodedNodeGraph cng = lbs.getNodeGraph(THES_SCHEME, null, null);
-        cng.restrictToAssociations(Constructors.createNameAndValueList("Anatomic_Structure_is_Physical_Part_of"), null);
-        ResolvedConceptReferenceList rcrl = cng.resolveAsList(Constructors.createConceptReference(code, THES_SCHEME), true, true, 1, 1, null, null, null, null, -1);
+        CodedNodeGraph cng = lbs.getNodeGraph(AUTO_SCHEME, null, null);
+        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), null);
+        ResolvedConceptReferenceList rcrl = cng.resolveAsList(Constructors.createConceptReference(code, AUTO_SCHEME), true, true, 1, 1, null, null, null, null, -1);
         ResolvedConceptReference[] rcr = rcrl.getResolvedConceptReference();
 
         assertTrue(rcr.length == 1);
