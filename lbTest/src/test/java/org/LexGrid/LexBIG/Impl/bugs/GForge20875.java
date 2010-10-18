@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -52,7 +52,7 @@ public class GForge20875 extends LexBIGServiceTestCase {
         Property[] properties = rcr[0].getEntity().getProperty();
         Boolean fail = true;
         for(Property prop: properties){
-            if(prop.getValue().getContent().equals("CTCAE Gradé 2 Boñé Marrow Céllularity")){
+            if(prop.getValue().getContent().equals("CTCAE GradÃ© 2 BoÃ±Ã© Marrow CÃ©llularity")){
                 assertTrue(prop.getSource()[0].getContent().equals("NCI"));
                 assertTrue(prop.getLanguage().equals("es"));
                 fail = false;
@@ -64,7 +64,7 @@ public class GForge20875 extends LexBIGServiceTestCase {
         fail = true;
         for(Property prop: properties){
         	System.out.println(prop.getValue().getContent());
-            if(prop.getValue().getContent().equals("Modératély hypoçéllûlar or >25 - <=50% rédûçtion from normal çéllûlarity for agé")){
+            if(prop.getValue().getContent().equals("ModÃ©ratÃ©ly hypoÃ§Ã©llÃ»lar or >25 - <=50% rÃ©dÃ»Ã§tion from normal Ã§Ã©llÃ»larity for agÃ©")){
                 assertTrue(prop.getSource()[0].getContent().equals("CTCAE"));
                 assertTrue(prop.getLanguage().equals("fr"));
                 fail = false;

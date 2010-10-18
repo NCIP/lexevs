@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -172,4 +172,3 @@ public class HitCollectorMergerTest extends TestCase {
 		assertTrue("Size: " + scoreDocs.size(), scoreDocs.size() == 1);
 	}
 }
-

@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -50,7 +50,7 @@ public class TestUtil {
      * @return true if scheme exists with given status; false otherwise.
      * @throws LBInvocationException
      */
-    public static synchronized boolean verifyScheme(String localName, String urn, String version, CodingSchemeVersionStatus status)
+public static synchronized boolean verifyScheme(String localName, String urn, String version, CodingSchemeVersionStatus status)
             throws LBInvocationException {
         // Verify vocabulary is loaded and active ...
         boolean verified = false;

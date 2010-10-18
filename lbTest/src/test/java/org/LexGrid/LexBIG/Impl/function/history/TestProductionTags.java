@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -64,8 +64,6 @@ public class TestProductionTags extends LexBIGServiceTestCase {
      * @throws LBException
      * 
      */
-    
-
 public void testProductionTags01() throws InterruptedException, LBException {
         // info("01 Load/Activate version 1.1 of Automobiles vocabulary (see
         // TestUtil.loadLgXML() as
