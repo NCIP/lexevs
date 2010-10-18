@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -40,7 +40,7 @@ import edu.stanford.smi.protege.model.Project;
 
 /**
  * Validates and/or loads RadLex content, provided by the
- * Radiological Society of North America in Protégé frame format.
+ * Radiological Society of North America in ProtÃ©gÃ© frame format.
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $
@@ -48,7 +48,7 @@ import edu.stanford.smi.protege.model.Project;
 public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexProtegeFrames_Loader {
     private static final long serialVersionUID = 6279347193782597340L;
     public final static String name = "RadLexFramesLoader";
-    private final static String description = "This loader loads the RadLex Protégé frame representation into the LexGrid format.";
+    private final static String description = "This loader loads the RadLex ProtÃ©gÃ© frame representation into the LexGrid format.";
 
     public RadLexProtegeFramesLoaderImpl() {
         super();
@@ -62,7 +62,7 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
             pFrames.testConnection();
 
         } catch (ConnectionFailure e) {
-            throw new LBParameterException("The Protégé file path appears to be invalid - " + e);
+            throw new LBParameterException("The ProtÃ©gÃ© file path appears to be invalid - " + e);
         } catch (LBInvocationException e) {
             throw new LBParameterException(
                     "Each loader can only do one thing at a time.  Please create a new loader to do multiple loads at once.");

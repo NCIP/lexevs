@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -21,7 +21,6 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-
 
 /**
  * The Class StartsWithSearch.
