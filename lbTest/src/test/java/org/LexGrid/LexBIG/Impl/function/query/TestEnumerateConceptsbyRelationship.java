@@ -43,7 +43,7 @@ public class TestEnumerateConceptsbyRelationship extends LexBIGServiceTestCase {
         ResolvedConceptReference[] rcr = cng.toNodeList(Constructors.createConceptReference("External_Lip", THES_SCHEME),
                 true, false, -1, -1).resolveToList(null, null, null, -1).getResolvedConceptReference();
 
-        assertEquals(3,rcr.length);
+        assertEquals(1,rcr.length);
 
     }
 
