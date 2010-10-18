@@ -2627,7 +2627,7 @@ public class ProtegeOwl2LG {
         // functional, inverse functional, transitive and object property is in rdf type collection 
         for (Iterator itr = rdfProp.getRDFTypes().iterator(); itr.hasNext();) {
             RDFSClass rdfsClass = (RDFSClass) itr.next();
-            Property pro = CreateUtils.createComment(generatePropertyID(++i), "type", 
+            Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", 
                     rdfsClass.getLocalName(), lgSupportedMappings_, rdfsClass.getURI(), null);
             assocEntity.addProperty(pro);
         }
