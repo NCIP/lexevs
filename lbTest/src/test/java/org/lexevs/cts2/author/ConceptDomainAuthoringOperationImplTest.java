@@ -396,8 +396,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		}		
 	}
 
-	@Test
-	public void testRemoveConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
+	public static void removeConceptDomainToValueSetBinding() throws LBException, URISyntaxException {
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -407,8 +406,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 				new URI("SRITEST:AUTO:PropertyRefTest1-VSDONLY"), rev));
 	}
 	
-	@Test
-	public void testGetValueSetBinding2(){		
+	public static void getValueSetBinding2(){		
 		List<String> urisStr = vds_.getValueSetDefinitionURIsWithConceptDomain("cdunitest1", null);
 		
 		assertTrue(urisStr.size() == 0);
@@ -430,8 +428,8 @@ public class ConceptDomainAuthoringOperationImplTest {
 		CD_AUTH_OP.removeConceptDomainProperty("cdunitest2", null, prop, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
 	
-	@Test
-	public void testRemoveConceptDomain() throws LBException{
+
+	public static void removeConceptDomain() throws LBException{
 		RevisionInfo rev = new RevisionInfo();
 		rev.setRevisionId(getRevId());
 		
@@ -439,8 +437,12 @@ public class ConceptDomainAuthoringOperationImplTest {
 				ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_FORMAL_NAME, ConceptDomainConstants.CONCEPT_DOMAIN_DEFAULT_CODING_SCHEME_VERSION, rev);
 	}
 	
-	@Test
-	public void testRemoveConceptDomainCodeSystem() throws LBException{
+	@AfterClass
+	public static void testRemoveConceptDomainCodeSystem() throws Exception{
+		removeConceptDomainToValueSetBinding();
+		removeConceptDomain();
+		getValueSetBinding2();
+		
 		RevisionInfo revInfo = new RevisionInfo();
 		revInfo.setChangeAgent("changeAgent");
 		revInfo.setChangeInstruction("changeInstruction");
@@ -474,7 +476,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 		String description;
 	}
 	
-	private String getRevId(){
+	private static String getRevId(){
 		String revId = UUID.randomUUID().toString();
 		revIds_.add(revId);
 		
