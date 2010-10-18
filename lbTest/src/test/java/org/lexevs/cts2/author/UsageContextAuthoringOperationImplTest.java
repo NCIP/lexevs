@@ -30,6 +30,7 @@ import org.lexevs.cts2.LexEvsCTS2Impl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.cts2.query.UsageContextQueryOperation;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.usagecontext.util.UsageContextConstants;
 
 /**
@@ -404,6 +405,23 @@ public class UsageContextAuthoringOperationImplTest {
 		} 
 		
 		assertTrue(removeStatus);
+		
+		try {
+			revInfo.setRevisionId(getRevId());
+			
+			removeStatus = codeSystemAuthOp.removeCodeSystem(
+					revInfo, 
+					UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_URI,
+					UsageContextConstants.USAGE_CONTEXT_DEFAULT_CODING_SCHEME_VERSION);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+		assertTrue(removeStatus);
+		
+		LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService().optimizeCommonIndex();
+
 	}
 
 	private static String getRevId(){
