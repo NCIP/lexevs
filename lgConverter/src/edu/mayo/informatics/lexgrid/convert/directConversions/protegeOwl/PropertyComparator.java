@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- *      http://www.eclipse.org/legal/epl-v10.html
+ * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl;
@@ -26,12 +26,12 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
+
 /**
  *  Comparator used to sort concept properties by type and priority ...
  * 
  * @author Pradip Kanjamala (kanjamala.pradip@mayo.edu)
  */
-
 public class PropertyComparator implements Comparator<Property>{
     
     List<Class<? extends Property>> prioritizedPropertyClasses;

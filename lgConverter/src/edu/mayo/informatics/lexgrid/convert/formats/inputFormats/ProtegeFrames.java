@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -29,7 +29,7 @@ import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.LexGridXMLOut;
 import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.OBOOut;
 
 /**
- * Details for reading Protégé Frames files.
+ * Details for reading ProtÃ©gÃ© Frames files.
  * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
  * @version subversion $Revision: 3348 $ checked in on $Date: 2006-09-14

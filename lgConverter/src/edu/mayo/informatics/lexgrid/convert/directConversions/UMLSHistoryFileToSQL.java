@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -48,8 +48,8 @@ import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 
 public class UMLSHistoryFileToSQL {
 
-    /** Holds reference to message director. */
-    private LgMessageDirectorIF message_;
+/** Holds reference to message director. */
+private LgMessageDirectorIF message_;
     /** Holds the token which seperates the fields in a flat file. */
     private static String token_ = "|";
     /** Holds a boolean value failOnAllErrors */
