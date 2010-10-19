@@ -245,6 +245,9 @@ public class LexGridToOwlRdfConverter {
 			Entity entity = conRef.getEntity();
 			counter++;
 			
+			if (entity.getEntityCode().equals("hasSpiciness"))
+			    System.out.println();
+			
 			// handle the anonymous entity in association mapping, not here.
 			if (entity.isIsAnonymous() != null && entity.isIsAnonymous() == true)
 				continue; 
@@ -332,8 +335,8 @@ public class LexGridToOwlRdfConverter {
 //		if (sourceConRef.getCode().equals("VegetarianTopping") == false)
 //		if (sourceConRef.getCode().equals("Country")) //loader issue
 //		if (sourceConRef.getCode().equals("CL:0000015") == false)
-//	    if (sourceConRef.getCode().equals("SlicedTomatoTopping") == false)
-//			return;
+	    if (sourceConRef.getCode().equals("MozzarellaTopping") == false)
+			return;
 		
 		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
@@ -734,6 +737,10 @@ public class LexGridToOwlRdfConverter {
 
 	private void processLgProperty(OntProperty ontProperty,
 			org.LexGrid.commonTypes.Property property) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	    if (property.getValue().getContent().equals("FunctionalProperty") ||
+	            property.getValue().getContent().equals("ObjectProperty"))
+	        System.out.println();
+	    
 		// get supported property
 		SupportedProperty supProp = DaoUtility.getURIMap(cs_, SupportedProperty.class, property.getPropertyName());
 		if (supProp == null) {
@@ -762,7 +769,15 @@ public class LexGridToOwlRdfConverter {
 				RDF.type.getURI())) {
 			StringHelper sh = new StringHelper(
 					property.getValue().getContent(), model_.getNsPrefixMap());
-			ontProperty.addRDFType(sh.getType());
+			if (sh.getStrFormat()!= null)
+			    ontProperty.addRDFType(sh.getType());
+			else {
+			    Resource ontType = LexRdfMap.get(property.getValue().getContent(), ontFormat_);
+			    if (ontType == null){
+			        System.out.println();
+			    }
+			    ontProperty.addRDFType(ontType);
+			}
 		} else if (supProp.getUri().equalsIgnoreCase(
 				RDFS.subPropertyOf.getURI())) {
 			StringHelper sh = new StringHelper(
