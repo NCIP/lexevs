@@ -167,9 +167,9 @@
 	 	WHERE
 	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	 	AND
-	 		urimap.supportedAttributeTag = #param2#
+	 		urimap.supportedAttributeTag = #param3#
 	 	AND
-	 		urimap.id = #param3#
+	 		urimap.id = #param2#
 	 </select>
 	 
 	 <select id="getPropertyURIMapByPropertyType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
