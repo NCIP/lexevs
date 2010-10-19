@@ -98,8 +98,6 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
 
     @Override
     public void release() throws LBResourceUnavailableException {
-        // TODO Auto-generated method stub (IMPLEMENT!)
-        throw new UnsupportedOperationException();
+        //no-op
     }
-
 }
