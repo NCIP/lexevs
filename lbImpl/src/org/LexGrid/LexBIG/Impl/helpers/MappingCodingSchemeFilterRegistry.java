@@ -29,24 +29,23 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToCodes;
-import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
+import org.apache.lucene.search.TermsFilter;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder.TripleIterator;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class CodeListFilterRegistry.
@@ -150,22 +149,21 @@ public class MappingCodingSchemeFilterRegistry {
     protected Filter buildFilter(
             String uri, 
             String version) throws LBParameterException {
-        String name = ServiceUtility.getCodingSchemeName(uri, version);
+        LoggerFactory.getLogger().info("Building mapping filter for URI: " + uri + "Version: " + version);
+
+        String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
+        
+        TermsFilter filter = new TermsFilter();
         
         ConceptReferenceList codeList = this.buildConceptReferenceList(uri, version);
         
-        RestrictToCodes restriction = new RestrictToCodes(codeList);
-        
-        Query query;
-        try {
-            query = RestrictionImplementations.getQuery(restriction, name, version);
-        } catch (UnexpectedInternalError e) {
-            throw new RuntimeException(e);
-        } catch (MissingResourceException e) {
-            throw new RuntimeException(e);
+        for(ConceptReference ref : codeList.getConceptReference()){
+            filter.addTerm(new Term(codeField, ref.getCode()));
         }
         
-        return decorateFilter(new QueryWrapperFilter(query));
+        LoggerFactory.getLogger().info("Finished building mapping filter for URI: " + uri + "Version: " + version);
+        
+        return decorateFilter(filter);
     }
     
     protected Filter decorateFilter(Filter filter) {
@@ -178,7 +176,7 @@ public class MappingCodingSchemeFilterRegistry {
         DatabaseServiceManager databaseServiceManager = 
             LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
         
-        TripleIterator itr = new TripleIterator(databaseServiceManager, uri, version, null);
+        TripleIterator itr = new TripleIterator(databaseServiceManager, uri, version, null, 25000);
         
         while(itr.hasNext()) {
             Triple triple = itr.next();
