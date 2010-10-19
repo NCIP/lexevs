@@ -91,7 +91,11 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 			LRUMap insertedCache = new LRUMap(10000000);
 
-			TripleIterator tripleIterator = new TripleIterator(codingSchemeUri, version, associationPredicateId);
+			TripleIterator tripleIterator = new TripleIterator(
+					databaseServiceManager, 
+					codingSchemeUri, 
+					version, 
+					associationPredicateId);
 
 			for(Triple triple : tripleIterator) {
 				sourceECNS = triple.getSourceEntityNamespace();
@@ -113,7 +117,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 							sourceCode,
 							targetCode,
 							insertedCache,
-							sourceCode.code + this.CODE_NAMESPACE_DELIMITER + sourceCode.namespace + this.PATH_DELIMITER + targetCode.code + this.CODE_NAMESPACE_DELIMITER + targetCode.namespace, 
+							sourceCode.code + CODE_NAMESPACE_DELIMITER + sourceCode.namespace + PATH_DELIMITER + targetCode.code + CODE_NAMESPACE_DELIMITER + targetCode.namespace, 
 							batchController);
 				}
 			}  
@@ -172,7 +176,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 						targetCodes.add(temp);
 					}
 				}
-				String path = sourceCodes.get(j).code + this.CODE_NAMESPACE_DELIMITER + sourceCodes.get(j).namespace + this.PATH_DELIMITER;
+				String path = sourceCodes.get(j).code + CODE_NAMESPACE_DELIMITER + sourceCodes.get(j).namespace + PATH_DELIMITER;
 				processTransitive(codingSchemeUri, version, associationPredicateId,
 						sourceCodes.get(j), targetCodes, insertedCache, batchController, path);
 			}
@@ -236,7 +240,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 			ArrayList<StringTuple> targetTargets = new ArrayList<StringTuple>();
 			String targetECNS = null;
 			String targetEC = null;
-			String targetPath = path + targetCodes.get(i).code + this.CODE_NAMESPACE_DELIMITER + targetCodes.get(i).namespace + this.PATH_DELIMITER;
+			String targetPath = path + targetCodes.get(i).code + CODE_NAMESPACE_DELIMITER + targetCodes.get(i).namespace + PATH_DELIMITER;
 
 			List<Node> targetNodes = getTargetTriples(
 					codingSchemeUri, 
@@ -276,7 +280,7 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 						sourceCode, 
 						targetTargets.get(j), 
 						insertedCache,
-						targetPath + targetTargets.get(j).code + this.CODE_NAMESPACE_DELIMITER+targetTargets.get(j).namespace,
+						targetPath + targetTargets.get(j).code + CODE_NAMESPACE_DELIMITER+targetTargets.get(j).namespace,
 						batchInsertController);               
 				if (!iInserted) {
 					// If I didn't insert it into the transitive table, it was
@@ -344,26 +348,6 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 	private class StringTuple {
 		String code;
 		String namespace;
-	}
-
-	protected List<Triple> getTriples(
-			final String codingSchemeUri,
-			final String version,
-			final String associationPredicateId, 
-			final int start, 
-			final int pageSize){
-		return databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<List<Triple>>(){
-
-			@Override
-			public List<Triple> execute(DaoManager daoManager) {
-				String codingSchemeId = daoManager.getCurrentCodingSchemeDao().
-				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-
-				return daoManager.getCurrentAssociationDao().
-				getAllTriplesOfCodingScheme(codingSchemeId, associationPredicateId, start, pageSize);
-			}
-
-		});
 	}
 
 	protected List<String> getTransitiveAssociationPredicateIds(
@@ -522,23 +506,51 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 		this.logger = logger;
 	}
 
-	private class TripleIterator extends AbstractPageableIterator<Triple>{
+	public static class TripleIterator extends AbstractPageableIterator<Triple>{
 
+		private static final long serialVersionUID = -4390395000937078077L;
+		
+		private DatabaseServiceManager databaseServiceManager;
 		private String codingSchemeUri; 
 		private String version; 
 		private String associationPredicateId;
 
-		private TripleIterator(String codingSchemeUri, String version, String associationPredicateId) {
+		public TripleIterator(
+				DatabaseServiceManager databaseServiceManager,
+				String codingSchemeUri, 
+				String version, 
+				String associationPredicateId) {
+			
 			super(1000);
 			this.codingSchemeUri = codingSchemeUri;
 			this.version = version;
 			this.associationPredicateId = associationPredicateId;
+			this.databaseServiceManager = databaseServiceManager;
 		}
+		
 		@Override
 		protected List<Triple> doPage(int currentPosition, int pageSize) {
 			return getTriples(codingSchemeUri, version, associationPredicateId, currentPosition, pageSize);
 		}
+		
+		protected List<Triple> getTriples(
+				final String codingSchemeUri,
+				final String version,
+				final String associationPredicateId, 
+				final int start, 
+				final int pageSize){
+			return databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<List<Triple>>(){
 
+				@Override
+				public List<Triple> execute(DaoManager daoManager) {
+					String codingSchemeId = daoManager.getCurrentCodingSchemeDao().
+					getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+
+					return daoManager.getCurrentAssociationDao().
+					getAllTriplesOfCodingScheme(codingSchemeId, associationPredicateId, start, pageSize);
+				}
+			});
+		}
 	}
 	
 	private class BatchInsertController {
