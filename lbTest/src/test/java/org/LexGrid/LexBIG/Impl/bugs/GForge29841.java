@@ -30,8 +30,6 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.commonTypes.Property;
-import org.LexGrid.concepts.Entity;
 
 public class GForge29841 extends LexBIGServiceTestCase {
     final static String testID = "GForge29841";
