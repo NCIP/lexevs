@@ -13,27 +13,27 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package org.LexGrid.LexBIG.Impl;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
 import org.LexGrid.LexBIG.Impl.codednodeset.SingleLuceneIndexCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.codednodeset.UnionSingleLuceneIndexCodedNodeSet;
+import org.LexGrid.LexBIG.Impl.helpers.MappingCodingSchemeFilterRegistry;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -91,101 +91,61 @@ public class CodedNodeSetFactory {
                 
                 return new UnionSingleLuceneIndexCodedNodeSet(parent, supplement);
             } else {
-                CodedNodeSet codingSchemeToReturn = new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
+               CodedNodeSet codingSchemeToReturn = new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
                 
-                CodingScheme csToFind = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingScheme, versionOrTag);
-                
-                for(Relations relation : csToFind.getRelations()) {
-     
-                    CodedNodeSet toNodeListSet = null;
-                    
-                    if(BooleanUtils.toBoolean(relation.getIsMapping())) {
-                        
-                        if(toNodeListSet == null) {
-                            toNodeListSet = LexBIGServiceImpl.defaultInstance().getNodeGraph(
-                                uri, 
-                                versionOrTag,
-                                null).toNodeList(null, true, false, 1, -1);
-                        }
-
-                        String sourceCodingSchemeName = relation.getSourceCodingScheme();
-                        String sourceCodingSchemeVersion = relation.getSourceCodingSchemeVersion();
-                        String targetCodingSchemeName = relation.getTargetCodingScheme();
-                        String targetCodingSchemeVersion = relation.getTargetCodingSchemeVersion();
-
-                        if(! DaoUtility.containsNulls(
-                                sourceCodingSchemeName,
-                                targetCodingSchemeName)) {
-
-                            CodedNodeSet unionedCodedNode = unionMappingCodingScheme(
-                                    toNodeListSet,
-                                    sourceCodingSchemeName,
-                                    sourceCodingSchemeVersion,
-                                    targetCodingSchemeName,
-                                    targetCodingSchemeVersion);
-
-                     
-                                codingSchemeToReturn = unionedCodedNode;
-                        }
-                    }
-                }   
-
-                return codingSchemeToReturn;
+               MappingExtension mappingExtension = 
+                   (MappingExtension) LexBIGServiceImpl.defaultInstance().getGenericExtension("MappingExtension");
+               
+               if(mappingExtension.isMappingCodingScheme(codingScheme, versionOrTag)) {
+                   CodingScheme cs = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version));
+                   
+                   for(Relations relations : cs.getRelations()) {
+                       AbsoluteCodingSchemeVersionReference sourceRef = 
+                           ServiceUtility.resolveCodingSchemeFromLocalName(
+                               uri, 
+                               version, 
+                               relations.getSourceCodingScheme(),
+                               relations.getSourceCodingSchemeVersion());
+                       
+                       AbsoluteCodingSchemeVersionReference targetRef = 
+                           ServiceUtility.resolveCodingSchemeFromLocalName(
+                               uri, 
+                               version, 
+                               relations.getTargetCodingScheme(),
+                               relations.getTargetCodingSchemeVersion());
+                       
+                       if(sourceRef != null && targetRef !=  null) {
+                           SingleLuceneIndexCodedNodeSet sourceCodingScheme = 
+                               new SingleLuceneIndexCodedNodeSet(
+                                       sourceRef.getCodingSchemeURN(), 
+                                       Constructors.createCodingSchemeVersionOrTagFromVersion(sourceRef.getCodingSchemeVersion()), 
+                                       activeOnly, 
+                                       types);
+                          
+                           SingleLuceneIndexCodedNodeSet targetCodingScheme = 
+                               new SingleLuceneIndexCodedNodeSet(
+                                       targetRef.getCodingSchemeURN(), 
+                                       Constructors.createCodingSchemeVersionOrTagFromVersion(targetRef.getCodingSchemeVersion()), 
+                                       activeOnly, 
+                                       types);
+                           
+                           UnionSingleLuceneIndexCodedNodeSet combinedSet =
+                               new UnionSingleLuceneIndexCodedNodeSet(sourceCodingScheme, targetCodingScheme);
+                           
+                           combinedSet.getFilters().add(
+                                   MappingCodingSchemeFilterRegistry.
+                                       defaultInstance().
+                                           getMappingCodingSchemeFilter(uri, version, true));
+                           
+                           codingSchemeToReturn = codingSchemeToReturn.union(combinedSet);
+                       }
+                   }
+               } 
+               
+               return codingSchemeToReturn;
             }
         }
 
         throw new LBParameterException("Could not create a CodedNodeSet for CodingScheme: " + codingScheme);
-    }
-    
-    private CodedNodeSet unionMappingCodingScheme(
-            CodedNodeSet toNodeListSet, 
-            String sourceCodingSchemeName, 
-            String sourceCodingSchemeVersion,
-            String targetCodingSchemeName, 
-            String targetCodingSchemeVersion) {
-        CodingSchemeVersionOrTag sourceCsvt = 
-            StringUtils.isBlank(sourceCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(sourceCodingSchemeVersion);
-
-        CodingSchemeVersionOrTag targetCsvt = 
-            StringUtils.isBlank(targetCodingSchemeVersion) ? null : Constructors.createCodingSchemeVersionOrTagFromVersion(targetCodingSchemeVersion);
-
-        CodedNodeSet cnsToReturn = null;
-
-        try {
-            CodedNodeSet sourceCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
-                    sourceCodingSchemeName, 
-                    sourceCsvt,
-                    null);
-            
-            cnsToReturn = sourceCodedNodeSet.intersect(toNodeListSet);
-        } catch (LBException e) {
-            //not loaded or unavailable
-        }
-        
-        try {
-            CodedNodeSet targetCodedNodeSet = LexBIGServiceImpl.defaultInstance().getNodeSet(
-                    targetCodingSchemeName, 
-                    targetCsvt,
-                    null);
-            
-            if(cnsToReturn != null) {
-                cnsToReturn = cnsToReturn.union(targetCodedNodeSet.intersect(toNodeListSet));
-            } else {
-                cnsToReturn = targetCodedNodeSet;
-            }
-        } catch (LBException e) {
-            //not loaded or unavailable
-            if(cnsToReturn != null) {
-                try {
-                    return cnsToReturn.union(toNodeListSet);
-                } catch (Exception innerEx) {
-                    throw new RuntimeException(innerEx);
-                } 
-            } else {
-                return toNodeListSet;
-            }
-        }
-        
-        return cnsToReturn; 
     }
 }
