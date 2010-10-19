@@ -39,7 +39,9 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	
     	ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
     	
-    	assertEquals(9,list.getResolvedConceptReferenceCount());
+    	PrintUtility.print(list);
+    	
+    	assertEquals(10,list.getResolvedConceptReferenceCount());
     	
     	DataTestUtils.isConceptReferencePresent(list, "E0001");
     	DataTestUtils.isConceptReferencePresent(list, "Jaguar");
@@ -75,7 +77,7 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	
     	PrintUtility.print(list);
     	
-    	assertEquals(6,list.getResolvedConceptReference().length);
+    	assertEquals(7,list.getResolvedConceptReference().length);
     	
     	/*
     	"C0001"
