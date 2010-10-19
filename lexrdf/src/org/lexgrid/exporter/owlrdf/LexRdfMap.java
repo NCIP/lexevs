@@ -50,6 +50,7 @@ public class LexRdfMap {
 		map.put("FunctionalProperty".toLowerCase(), OWL.FunctionalProperty);
 		map.put("InverseFunctionalProperty".toLowerCase(),
 				OWL.InverseFunctionalProperty);
+		map.put("TransitiveProperty".toLowerCase(), OWL.TransitiveProperty);
 		map.put("DefaultOWLObjectProperty".toLowerCase(), OWL.ObjectProperty);
 		map.put("DefaultOWLDataTypeProperty".toLowerCase(),
 				OWL.DatatypeProperty);

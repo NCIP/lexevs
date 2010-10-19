@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.OWL;
  *
  */
 public class StringHelper {
-	final private OntologyFormat ontType = OntologyFormat.OWLRDF;
+	final private OntologyFormat ontFormat = OntologyFormat.OWLRDF;
 	private String str;
 	private Map<String, String> supportedNamespace;
 	
@@ -61,7 +61,7 @@ public class StringHelper {
 			int startIndex = str.indexOf("(") + 1, endIndex = str.indexOf(")");
 			value = str.substring(startIndex, endIndex);
 			
-			type = LexRdfMap.get(str.substring(0, startIndex-1), ontType);
+			type = LexRdfMap.get(str.substring(0, startIndex-1), ontFormat);
 			
 			if (value != null && type != null)
 				strFormat = StrFormat.TYPE_VALUE;
@@ -70,9 +70,10 @@ public class StringHelper {
 		// Rule #2, we assume that the string can owl:type
 		else { 
 			String[] lines = str.split(":");
-			if(lines.length == 2 && supportedNamespace.containsKey(lines[0]))
-				type = LexRdfMap.get(lines[1], ontType);
-			strFormat = StrFormat.PREFIX_TYPE;
+			if(lines.length == 2 && supportedNamespace.containsKey(lines[0])) {
+				type = LexRdfMap.get(lines[1], ontFormat);
+				strFormat = StrFormat.PREFIX_TYPE;
+			}
 		}
 	}
 	
