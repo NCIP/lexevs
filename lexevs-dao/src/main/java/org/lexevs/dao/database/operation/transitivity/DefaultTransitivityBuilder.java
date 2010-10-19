@@ -510,6 +510,8 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 
 		private static final long serialVersionUID = -4390395000937078077L;
 		
+		private static final int DEFAULT_PAGE_SIZE = 1000;
+		
 		private DatabaseServiceManager databaseServiceManager;
 		private String codingSchemeUri; 
 		private String version; 
@@ -520,8 +522,17 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				String codingSchemeUri, 
 				String version, 
 				String associationPredicateId) {
+			this(databaseServiceManager, codingSchemeUri, version, associationPredicateId, DEFAULT_PAGE_SIZE);
+		}
+		
+		public TripleIterator(
+				DatabaseServiceManager databaseServiceManager,
+				String codingSchemeUri, 
+				String version, 
+				String associationPredicateId, 
+				int pageSize) {
 			
-			super(1000);
+			super(pageSize);
 			this.codingSchemeUri = codingSchemeUri;
 			this.version = version;
 			this.associationPredicateId = associationPredicateId;
