@@ -853,7 +853,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@SuppressWarnings("unchecked")
 	public <T extends URIMap> T getUriMap(String codingSchemeId, String localId, Class<T> uriMap) {	
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return (T) this.getSqlMapClientTemplate().queryForList(	
+		return (T) this.getSqlMapClientTemplate().queryForObject(	
 				GET_URIMAP_BY_LOCALNAME_AND_TYPE_SQL, 
 				new PrefixedParameterTriple(prefix, codingSchemeId, localId, this.classToStringMappingClassifier.classify(uriMap)));
 	}
