@@ -39,7 +39,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermsFilter;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder.TripleIterator;
