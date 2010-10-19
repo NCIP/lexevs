@@ -360,7 +360,9 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         
         ConceptReferenceList codeList;
         
-        if(this.isNotRestricted()
+        if( graphFocus == null 
+                &&
+                this.isNotRestricted()
                 &&
                 mappingExtension.isMappingCodingScheme(
                 codingSchemeUri, 
