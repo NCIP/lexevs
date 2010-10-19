@@ -29,7 +29,6 @@ import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.DaoManager;
@@ -185,15 +184,8 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
             throw new LBParameterException("RelationsContainer: " + relations.getContainerName() + " is not a Mapping Relations Container.");
         }
         
-        AbsoluteCodingSchemeVersionReference source = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
-                relations.getSourceCodingScheme(), 
-                Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getSourceCodingSchemeVersion()),
-                false);
-   
-        AbsoluteCodingSchemeVersionReference target = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
-                relations.getTargetCodingScheme(), 
-                Constructors.createCodingSchemeVersionOrTagFromVersion(relations.getTargetCodingSchemeVersion()),
-                false);
+        AbsoluteCodingSchemeVersionReference source = ServiceUtility.resolveCodingSchemeFromLocalName(uri, version, relations.getSourceCodingScheme(), relations.getSourceCodingSchemeVersion());
+        AbsoluteCodingSchemeVersionReference target = ServiceUtility.resolveCodingSchemeFromLocalName(uri, version, relations.getTargetCodingScheme(), relations.getTargetCodingSchemeVersion());
         
         refs.setSourceCodingScheme(source);
         refs.setSourceCodingSchemeName(relations.getSourceCodingScheme());
