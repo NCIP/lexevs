@@ -993,7 +993,8 @@ public class ProtegeOwl2LG {
             RDFResource superClass = (RDFResource) superClasses.next();
 
             if (superClass.isAnonymous() && !rdfsNamedClass.hasEquivalentClass((RDFSClass) superClass)) {
-                // only subclass not equivalentclass included.  and subclass can be a anonymous class. 
+                // subclass can be a anonymous class.
+                // subclass only. we do not want to create it for equivalentclass.   
                 String lgCode = this.resolveAnonymousClass((OWLClass) superClass, source);
                 AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, entityCode2NameSpace_.get(lgCode));
                 relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
@@ -1853,6 +1854,9 @@ public class ProtegeOwl2LG {
                     if (hasValueObj instanceof RDFResource) {
                         RDFResource hasValueResource = (RDFResource) hasValueObj;
                         targetCode = resolveConceptID(hasValueResource);
+                        // if no concept id found, check the instance ID
+                        if (targetCode == null)
+                            targetCode = this.resolveInstanceID(hasValueResource);
                         targetNameSpace = getNameSpace(hasValueResource.getNamespace());
                     } else if ((hasValueObj instanceof RDFSLiteral)) {
                         // Updated on 09/23/08: need to store
