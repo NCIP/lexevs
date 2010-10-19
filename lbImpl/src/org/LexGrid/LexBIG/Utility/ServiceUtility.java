@@ -38,10 +38,13 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
@@ -54,6 +57,57 @@ import org.lexevs.system.service.SystemResourceService;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class ServiceUtility {
+    
+    /**
+     * Resolve coding scheme from local name.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param relationsCodingSchemeLocalName the relations coding scheme local name
+     * @param relationsCodingSchemeVersion the relations coding scheme version
+     * 
+     * @return the absolute coding scheme version reference
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
+    public static AbsoluteCodingSchemeVersionReference resolveCodingSchemeFromLocalName(
+            final String uri, 
+            final String version, 
+            final String codingSchemeLocalName, 
+            final String localCodingSchemeVersion) throws LBParameterException{
+        SupportedCodingScheme scs = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<SupportedCodingScheme>(){
+
+                @Override
+                public SupportedCodingScheme execute(DaoManager daoManager) {
+                    String codingSchemeUid = daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+                    
+                   return daoManager.getCodingSchemeDao(uri, version).getUriMap(codingSchemeUid, codingSchemeLocalName, SupportedCodingScheme.class);
+                }
+            
+        });
+        
+        AbsoluteCodingSchemeVersionReference ref = null;
+        
+        if(scs != null && StringUtils.isNotBlank(scs.getUri())){
+
+            ref = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
+                    scs.getUri(), 
+                    StringUtils.isNotBlank(localCodingSchemeVersion) ? 
+                            Constructors.createCodingSchemeVersionOrTagFromVersion(localCodingSchemeVersion) : null,
+                            false);
+        } 
+        
+        if(ref == null){
+            ref = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
+                    codingSchemeLocalName, 
+                    StringUtils.isNotBlank(localCodingSchemeVersion) ? 
+                            Constructors.createCodingSchemeVersionOrTagFromVersion(localCodingSchemeVersion) : null,
+                            false);
+        }
+        
+        return ref;
+    }
 
     /**
      * Resolve concept reference.
