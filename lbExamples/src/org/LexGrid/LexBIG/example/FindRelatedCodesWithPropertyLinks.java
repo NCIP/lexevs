@@ -51,7 +51,7 @@ public class FindRelatedCodesWithPropertyLinks {
      */
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Example: FindRelatedCodes \"C25762\" ");
+            System.out.println("Example: FindRelatedCodes \"GM\" ");
             return;
         }
         ;
@@ -105,6 +105,7 @@ public class FindRelatedCodesWithPropertyLinks {
 
             // Print the associations
             AssociationList targetof = ref.getTargetOf();
+            if(targetof != null){
             Association[] associations = targetof.getAssociation();
             for (int i = 0; i < associations.length; i++) {
                 Association assoc = associations[i];
@@ -115,6 +116,7 @@ public class FindRelatedCodesWithPropertyLinks {
                     Util.displayMessage("\t\t" + ac.getConceptCode() + "/"
                             + (ed == null ? "**No Description**" : ed.getContent()));
                 }
+            }
             }
         }
     }
@@ -210,6 +212,7 @@ public class FindRelatedCodesWithPropertyLinks {
 
             // Print the associations
             AssociationList sourceof = ref.getSourceOf();
+            if(sourceof != null){
             Association[] associations = sourceof.getAssociation();
             for (int i = 0; i < associations.length; i++) {
                 Association assoc = associations[i];
@@ -220,6 +223,7 @@ public class FindRelatedCodesWithPropertyLinks {
                     Util.displayMessage("\t\t" + ac.getConceptCode() + "/"
                             + (ed == null ? "**No Description**" : ed.getContent()));
                 }
+            }
             }
 
         }

@@ -55,7 +55,7 @@ public class FindPropsAndAssocForCode {
      */
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Example: FindPropsAndAssocForCode \"C25762\"");
+            System.out.println("Example: FindPropsAndAssocForCode \"GM\"");
             return;
         }
 
@@ -153,6 +153,7 @@ public class FindPropsAndAssocForCode {
             while (refEnum.hasMoreElements()) {
                 ResolvedConceptReference ref = refEnum.nextElement();
                 AssociationList targetof = ref.getTargetOf();
+                if(targetof != null){
                 Association[] associations = targetof.getAssociation();
 
                 for (int i = 0; i < associations.length; i++) {
@@ -166,6 +167,7 @@ public class FindPropsAndAssocForCode {
                         Util.displayMessage("\t\t" + ac.getConceptCode() + "/"
                                 + (ed == null ? "**No Description**" : ed.getContent()));
                     }
+                }
                 }
             }
         }
@@ -198,6 +200,8 @@ public class FindPropsAndAssocForCode {
             while (refEnum.hasMoreElements()) {
                 ResolvedConceptReference ref = refEnum.nextElement();
                 AssociationList sourceof = ref.getSourceOf();
+                
+                if(sourceof != null){
                 Association[] associations = sourceof.getAssociation();
 
                 for (int i = 0; i < associations.length; i++) {
@@ -212,6 +216,7 @@ public class FindPropsAndAssocForCode {
                                 + (ed == null ? "**No Description**" : ed.getContent()));
                     }
                 }
+            }
             }
         }
     }

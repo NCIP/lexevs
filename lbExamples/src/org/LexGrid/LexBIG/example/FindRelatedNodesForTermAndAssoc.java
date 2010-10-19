@@ -56,7 +56,7 @@ public class FindRelatedNodesForTermAndAssoc {
     public static void main(String[] args) {
         if (args.length < 2) {
             System.out
-                    .println("Example: FindRelatedNodesForTermAndAssoc \"lung\" \"Anatomic_Structure_Is_Physical_Part_Of\"");
+                    .println("Example: FindRelatedNodesForTermAndAssoc \"General Motors\" \"hasSubtype\"");
             return;
         }
         ;
