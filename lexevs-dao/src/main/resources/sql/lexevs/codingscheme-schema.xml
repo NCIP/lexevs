@@ -175,7 +175,7 @@
       <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToData_assnGuid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_entAsToData_sourceNS">
+      <index name="@PREFIX@idx_eatd_sourceNS">
         <index-column name="sourceEntityCode"/>
         <index-column name="sourceEntityCodeNamespace"/>
       </index>
@@ -213,7 +213,7 @@
         <index-column name="sourceEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_entAsToEnt_sourceNS">
+      <index name="@PREFIX@idx_eate_sourceNS">
         <index-column name="sourceEntityCodeNamespace"/>
         <index-column name="sourceEntityCode"/>
         <index-column name="associationPredicateGuid"/>
@@ -222,7 +222,7 @@
         <index-column name="targetEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_entAsToEnt_targetNS">
+      <index name="@PREFIX@idx_eate_targetNS">
         <index-column name="targetEntityCodeNamespace"/>
         <index-column name="targetEntityCode"/>
         <index-column name="associationPredicateGuid"/>
@@ -249,12 +249,12 @@
       <index name="@PREFIX@idx_entAsToEntTr_apGuid">
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_entAsToEntTr_source">
+      <index name="@PREFIX@idx_eatetr_source">
         <index-column name="associationPredicateGuid"/>
         <index-column name="sourceEntityCode"/>
         <index-column name="sourceEntityCodeNamespace"/>
       </index>
-      <index name="@PREFIX@idx_entAsToEntTr_target">
+      <index name="@PREFIX@idx_eatetr_target">
         <index-column name="associationPredicateGuid"/>
         <index-column name="targetEntityCode"/>
         <index-column name="targetEntityCodeNamespace"/>
@@ -401,7 +401,7 @@
       <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_relation_codingScheme" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_csGuid_rel_containerName">
+      <unique name="@PREFIX@UQ_csGuid_rel_cName">
         <unique-column name="codingSchemeGuid"/>
         <unique-column name="containerName"/>
       </unique>
