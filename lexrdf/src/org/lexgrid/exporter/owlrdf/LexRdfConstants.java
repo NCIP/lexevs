@@ -48,7 +48,7 @@ public class LexRdfConstants {
 	public static final String SKOS_ALTLABEL			= SKOS_NS_URI + "altLabel";
 	
 	// for lexrdf
-	public static final String LEXRDF_NS_URI			= "http://lexrdf.mayo.edu#";
+	public static final String LEXRDF_NS_URI			= "http://informatics.mayo.edu/lexrdf#";
 	public static final String LEXRDF_NS_PREFIX			= "lexrdf";
 	public static final String LEXRDF_IS_DEFINED			= LEXRDF_NS_URI + "isDefined";
 	public static final String LEXRDF_COMMENT			= LEXRDF_NS_URI + "comment";
@@ -57,6 +57,7 @@ public class LexRdfConstants {
 	public static final String LEXRDF_MATCH_IF_NO_CONTEXT = LEXRDF_NS_URI + "matchIfNoContext";
 	public static final String LEXRDF_REPRESENTATIONAL_FORM = LEXRDF_NS_URI + "representationalForm";
 	public static final String LEXRDF_PROPERTY_LINK		= LEXRDF_NS_URI + "propertyLink";
+	public static final String LEXRDF_ASSOCIATION_QUALIFICATION	= LEXRDF_NS_URI + "associationQualification";
 	
 	// loader settings
 	public static final String LOADER_IS_DATA_TYPE_PROPERTY	= "isDatatypeProperty";

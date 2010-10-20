@@ -47,9 +47,11 @@ public class LexRdfMap {
 		map.put("type", RDF.type);
 		map.put(EntityTypes.CONCEPT.value().toLowerCase(), OWL.Class);
 		map.put("ObjectProperty".toLowerCase(), OWL.ObjectProperty);
+		map.put("DatatypeProperty".toLowerCase(), OWL.DatatypeProperty);
 		map.put("FunctionalProperty".toLowerCase(), OWL.FunctionalProperty);
 		map.put("InverseFunctionalProperty".toLowerCase(),
 				OWL.InverseFunctionalProperty);
+		map.put("equivalentProperty", OWL.equivalentProperty);
 		map.put("TransitiveProperty".toLowerCase(), OWL.TransitiveProperty);
 		map.put("DefaultOWLObjectProperty".toLowerCase(), OWL.ObjectProperty);
 		map.put("DefaultOWLDataTypeProperty".toLowerCase(),
