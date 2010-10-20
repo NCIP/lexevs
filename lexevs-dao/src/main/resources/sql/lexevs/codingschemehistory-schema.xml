@@ -19,7 +19,7 @@
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="releaseGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_codingScheme_codingScheme" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_cs_cs" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_h_releaseGuid">
@@ -95,7 +95,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@entityAssnsToData" name="@PREFIX@FK_h_entityAssnsD_entityAssnsD" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@entityAssnsToData" name="@PREFIX@FK_h_ead_ead" onDelete="cascade">
         <reference local="entityAssnsDataGuid" foreign="entityAssnsDataGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_h_entAsToData_source">
@@ -119,7 +119,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@entityAssnsToEntity" name="@PREFIX@FK_h_entityAssnsE_entityAssnsE" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@entityAssnsToEntity" name="@PREFIX@FK_h_eae_eae" onDelete="cascade">
         <reference local="entityAssnsGuid" foreign="entityAssnsGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_h_entAsToEnt_source">
@@ -175,7 +175,7 @@
       <column name="link" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="targetPropertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@propertyLinks" name="@PREFIX@FK_h_propertyLin_propertyLinks">
+      <foreign-key foreignTable="@PREFIX@propertyLinks" name="@PREFIX@FK_h_pl_pl">
         <reference local="propertyLinksGuid" foreign="propertyLinksGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_h_sourcePropertyGuid">

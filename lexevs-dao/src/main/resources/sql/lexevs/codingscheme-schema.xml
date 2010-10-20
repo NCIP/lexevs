@@ -6,7 +6,7 @@
       <column name="associationPredicateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="relationGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="associationName" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_associationPredica_relation" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_assocPred_relation" onDelete="cascade">
         <reference local="relationGuid" foreign="relationGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_association">
