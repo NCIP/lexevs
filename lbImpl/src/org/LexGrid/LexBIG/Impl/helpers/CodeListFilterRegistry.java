@@ -23,13 +23,11 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToCodes;
-import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
-import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
+import org.apache.lucene.search.TermsFilter;
 
 /**
  * The Class CodeListFilterRegistry.
@@ -76,10 +74,15 @@ public class CodeListFilterRegistry {
         try {
             int key = this.getKey(uri, version, list);
             if(!filterMap.containsKey(key)) {
-                RestrictToCodes restriction = new RestrictToCodes(list);
-                String name = ServiceUtility.getCodingSchemeName(uri, version);
-                Query query = RestrictionImplementations.getQuery(restriction, name, version);
-                this.filterMap.put(key, new CachingWrapperFilter(new QueryWrapperFilter(query)));
+                String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
+                
+                TermsFilter filter = new TermsFilter();
+               
+                for(ConceptReference ref : list.getConceptReference()){
+                    filter.addTerm(new Term(codeField, ref.getCode()));
+                }
+                
+                this.filterMap.put(key, new CachingWrapperFilter(filter));
             }
             
             return this.filterMap.get(key);
