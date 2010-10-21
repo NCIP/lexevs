@@ -224,26 +224,30 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 	 */
 	@Transactional
 	@DatabaseErrorIdentifier(errorCode=INSERT_CODINGSCHEME_ERROR)
-	public void insertCodingScheme(CodingScheme scheme, String releaseURI)
+	public  void insertCodingScheme(CodingScheme scheme, String releaseURI)
 			throws CodingSchemeAlreadyLoadedException {
-		this.firePreCodingSchemeInsertEvent(scheme);
+		try {
+			this.firePreCodingSchemeInsertEvent(scheme);
 
-		CodingSchemeDao codingSchemeDao = this.getDaoManager()
-				.getCurrentCodingSchemeDao();
+			CodingSchemeDao codingSchemeDao = this.getDaoManager()
+					.getCurrentCodingSchemeDao();
 
-		String releaseUId;
-		if(StringUtils.isNotBlank(releaseURI)){
-			releaseUId = this.getDaoManager().getSystemReleaseDao()
-				.getSystemReleaseUIdByUri(releaseURI);
-		} else {
-			releaseUId = null;
-		}
+			String releaseUId;
+			if(StringUtils.isNotBlank(releaseURI)){
+				releaseUId = this.getDaoManager().getSystemReleaseDao()
+					.getSystemReleaseUIdByUri(releaseURI);
+			} else {
+				releaseUId = null;
+			}
 
-		codingSchemeDao.insertCodingScheme(scheme, releaseUId, true);
+			codingSchemeDao.insertCodingScheme(scheme, releaseUId, true);
 
-		this.firePostCodingSchemeInsertEvent(scheme);
+			this.firePostCodingSchemeInsertEvent(scheme);
+		} catch (RuntimeException e) {
+			this.fireCodingSchemeInsertErrorEvent(scheme, e);
+		} 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#insertURIMap(java.lang.String, java.lang.String, org.LexGrid.naming.URIMap)
 	 */

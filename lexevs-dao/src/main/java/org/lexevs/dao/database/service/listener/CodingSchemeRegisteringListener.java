@@ -18,10 +18,13 @@
  */
 package org.lexevs.dao.database.service.listener;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertErrorEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -66,5 +69,18 @@ public class CodingSchemeRegisteringListener extends DefaultServiceEventListener
 		}
 		
 		return true;
+	}
+
+	@Override
+	public <T extends Exception> void onCodingSchemeInsertError(
+			CodingSchemeInsertErrorEvent<T> codingSchemeInsertErrorEvent){
+		SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+		try {
+			systemResourceService.removeCodingSchemeResourceFromSystem(
+					codingSchemeInsertErrorEvent.getCodingScheme().getCodingSchemeURI(),
+					codingSchemeInsertErrorEvent.getCodingScheme().getRepresentsVersion());
+		} catch (LBParameterException e) {
+			LoggerFactory.getLogger().warn("Error removing coding scheme");
+		}
 	}
 }

@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.service.listener;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 import org.lexevs.dao.database.service.event.association.AssociationBatchInsertEvent;
+import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertErrorEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
@@ -130,5 +131,11 @@ public class DefaultServiceEventListener implements DatabaseServiceEventListener
 
 	public boolean onPreAssociationInsert(AssociationBatchInsertEvent event) {
 		return true;
+	}
+
+	@Override
+	public <T extends Exception> void onCodingSchemeInsertError(
+			CodingSchemeInsertErrorEvent<T> codingSchemeInsertErrorEvent) {
+		//
 	}
 }

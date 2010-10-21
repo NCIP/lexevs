@@ -20,6 +20,7 @@ package org.lexevs.dao.database.service.event;
 
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.service.event.association.AssociationBatchInsertEvent;
+import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertErrorEvent;
 import org.lexevs.dao.database.service.event.codingscheme.CodingSchemeUpdateEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PostCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
@@ -40,6 +41,17 @@ public class DatabaseServiceEventSupport {
 
 	private ListenerRegistry listenerRegistry;
 
+	
+	protected <T extends Exception> void fireCodingSchemeInsertErrorEvent(CodingScheme scheme, T exception) throws T {
+		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
+			listener.onCodingSchemeInsertError(
+					new CodingSchemeInsertErrorEvent<T>(
+							scheme,
+							exception));
+		}
+		throw exception;
+	}
+	
 	/**
 	 * Fire coding scheme update event.
 	 * 
