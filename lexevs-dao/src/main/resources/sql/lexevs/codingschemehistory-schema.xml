@@ -60,7 +60,7 @@
       <column name="reverseName" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
       <column name="isNavigable" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
       <column name="isTransitive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_h_entity_entity" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_h_e_eid" onDelete="cascade">
         <reference local="entityGuid" foreign="entityGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_h_entity">
@@ -161,7 +161,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_h_property_property" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_h_prop_id" onDelete="cascade">
         <reference local="propertyGuid" foreign="propertyGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_h_referenceGuid">
@@ -216,7 +216,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_h_relation_relation" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_h_rel_id" onDelete="cascade">
         <reference local="relationGuid" foreign="relationGuid"/>
       </foreign-key>
     </table>
