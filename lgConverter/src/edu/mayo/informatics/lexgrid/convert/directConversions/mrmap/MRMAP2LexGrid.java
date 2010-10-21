@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -250,15 +251,24 @@ public class MRMAP2LexGrid {
         RRFLineReader satReader = new RRFLineReader(sPath);
         String[] mrSatRow;
         HashMap<String, Relations> relationsMap = null;
+        int lineCount = 0;
+        int modCount = 0;
         try {
          relationsMap = processRelationsContainers(mPath);
+         messages_.info("Searching MRSAT for mapping metadata");
             while((mrSatRow = satReader.readRRFLine()) != null){
-                MrSat metaData = processMrSatRow(mrSatRow);
+                lineCount++;
+                MrSat metaData = processMrSatRow(mrSatRow, lineCount);
                if (relationsMap.containsKey(metaData.getCui())){
                processMrSatToRelation(metaData, relationsMap.get(metaData.getCui()));
                 }
+               if (lineCount% 100000 == 99999){
+                   modCount = modCount + 100000;
+                   messages_.debug("MRSAT lines processed: " + modCount);
+               }
             }
             satReader.close();
+            messages_.info("Finished Searching MRSAT for mapping data");
         } catch (IOException e) {
 
             e.printStackTrace();
@@ -318,12 +328,21 @@ public class MRMAP2LexGrid {
         AssociationPredicate predicate  = createAssociationPredicate();
 
             try {
+                messages_.info("Processing MRMAP mappings");
                 while((mrMapRow = mapReader.readRRFLine()) != null){
                     MrMap map = processMrMapRow(mrMapRow);
                     if(currentRelation.equals(map.getMapsetcui())){
+                        if(map.getFromid()!= null && !map.getToexpr().equals("")){
                         processAndMergeIntoSource(map, predicate, sourceSchemeNamespace, targetSchemeNamespace);
+                        }
+                        else{
+                            messages_.warn("Mapping source: " + map.getFromid() +  " or target: " 
+                                    + map.getToexpr() + " is empty -- skipping relation");
+                           
+                        }
                     }
                 }
+                messages_.info("Finished Processing MRMAP mappings");
                 mapReader.close();
             } catch (SecurityException e) {
                 // TODO Auto-generated catch block
@@ -358,7 +377,7 @@ public class MRMAP2LexGrid {
         
         return relations;
     }
-    private AssociationPredicate processAndMergeIntoSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws Exception {
+    private AssociationPredicate processAndMergeIntoSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws Exception  {
 
         if(sources.add(map.getFromid())){
            AssociationSource source = createNewAssociationSourceWithTarget(map,targetEntityCodeNamespace);
@@ -367,6 +386,7 @@ public class MRMAP2LexGrid {
            return predicate;
         }
         else{
+            
     
             return addTargetToExistingSource(map, predicate, sourceEntityCodeNamespace,targetEntityCodeNamespace);
         }
@@ -379,23 +399,41 @@ public class MRMAP2LexGrid {
         return predicate;
     }
     
-    protected AssociationSource createNewAssociationSourceWithTarget(MrMap map, String targetEntityCodeNamespace) throws Exception {
-    AssociationSource source = new AssociationSource();
-    source.setSourceEntityCode(map.getFromid());
-    source.addTargetData(createTargetData(map));
-    source.addTarget(createAssociationTarget(map,targetEntityCodeNamespace));
-    return source;
+    protected AssociationSource createNewAssociationSourceWithTarget(MrMap map, String targetEntityCodeNamespace)
+            throws LBParameterException, IndexOutOfBoundsException, IllegalArgumentException, IllegalAccessException,
+            ClassNotFoundException {
+        AssociationSource source = new AssociationSource();
+        source.setSourceEntityCode(map.getFromid());
+        source.addTargetData(createTargetData(map));
+        source.addTarget(createAssociationTarget(map, targetEntityCodeNamespace));
+
+        return source;
     }
-    
-   protected AssociationTarget createAssociationTarget(MrMap map, String targetEntityCodeNamespace) throws Exception {
+
+    protected AssociationTarget createAssociationTarget(MrMap map, String targetEntityCodeNamespace)
+            throws LBParameterException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
         AssociationTarget target = new AssociationTarget();
         target.setTargetEntityCodeNamespace(targetEntityCodeNamespace);
         target.setAssociationInstanceId(map.getMapid());
-        target.setTargetEntityCode(map.getToid());
+        target.setTargetEntityCode(getFirstParsableEntityCode(map.getToexpr()));
         target.setAssociationQualification(getAssociationQualifiers(map));
         return target;
     }
     
+    private String getFirstParsableEntityCode(String parseTarget) {
+        
+        String s = "<";
+        String and = " AND";
+        String emptyString = "";
+        if(parseTarget.contains(s)){
+        int index = parseTarget.indexOf(">");
+        parseTarget = parseTarget.substring(0, index);
+        parseTarget = parseTarget.replace("<", "");}
+        if (parseTarget.contains(and)){
+          int index =  parseTarget.indexOf(and);
+          parseTarget = parseTarget.substring(0, index);}
+        return parseTarget;
+    }
     protected AssociationData createTargetData(MrMap map) {
         AssociationData data = new AssociationData();
         if(map.getMapid() != null)
@@ -406,7 +444,7 @@ public class MRMAP2LexGrid {
         return data;
     }
     
-    public List<AssociationQualification> getAssociationQualifiers(MrMap map) throws Exception {
+    public List<AssociationQualification> getAssociationQualifiers(MrMap map) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException  {
         ArrayList<AssociationQualification> qualifiers = new ArrayList<AssociationQualification>();
         
             Class<?> cl = Class.forName("edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMap");
@@ -426,7 +464,7 @@ public class MRMAP2LexGrid {
         return qualifiers;
     }
 
-    protected AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws IndexOutOfBoundsException, Exception {
+    protected AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws IndexOutOfBoundsException, LBParameterException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
      AssociationSource[] sources = predicate.getSource();
      for(AssociationSource s: sources){
          //DEBUG code
@@ -435,12 +473,13 @@ public class MRMAP2LexGrid {
             AssociationTarget[] targets = s.getTarget();
             for(AssociationTarget t : targets){
                 //only testing for unique code.  name spaces should be equal
-                if( t.getTargetEntityCode().equals(map.getToid())){
+                if( t.getTargetEntityCode().equals(map.getToexpr())){
                 messages_.warn("source: " + s.getSourceEntityCode() + " and Target: " + t.getTargetEntityCode() 
                         + "appear to be duplicates, skipping load of this mapping");
                 return predicate;
                 }
             }
+          
             s.addTarget(createAssociationTarget(map, targetEntityCodeNamespace));
             AssociationData[] data = s.getTargetData();
             for(AssociationData d: data){
@@ -451,7 +490,7 @@ public class MRMAP2LexGrid {
                }
             }
             s.addTargetData(createTargetData(map));
-        }
+            }
      }
         return predicate;
     }
@@ -606,7 +645,7 @@ public class MRMAP2LexGrid {
     }
 
     private String createDescriptiveSchemeName(Relations rel) {
-      return rel.getSourceCodingScheme() + ":" + rel.getSourceCodingSchemeVersion() + "_TO_" + rel.getTargetCodingScheme() + ":"+ rel.getTargetCodingSchemeVersion();
+      return rel.getSourceCodingSchemeVersion() + "_TO_" + rel.getTargetCodingSchemeVersion();
     }
 
     protected MrMap processMrMapRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
@@ -618,12 +657,22 @@ public class MRMAP2LexGrid {
         }
         return mrMap;
     }
-    protected MrSat processMrSatRow(String [] mapRow) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+    protected MrSat processMrSatRow(String [] mapRow, int lineCount) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrSat mrSat = new MrSat();
         Class<?> mapClass = mrSat.getClass();
         Field[] columns = mapClass.getDeclaredFields();
+        try{
         for(int i = 0; i < mapRow.length; i++){
             columns[i].set(mrSat, mapRow[i]);
+        }
+        }
+        catch(IndexOutOfBoundsException e){
+            messages_.warn("Error in row " + lineCount + " of MRSAT -- number of columns is larger than specified for UMLS MRSAT: " + e.getMessage()); 
+            messages_.warn("This associated mapping data will not be processed: " );
+            for(String s : mapRow){
+                messages_.warn(s);
+            }
+            
         }
         return mrSat;
     }
