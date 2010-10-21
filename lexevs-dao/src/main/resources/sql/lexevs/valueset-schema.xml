@@ -15,13 +15,13 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" default="CURRENT_TIMESTAMP" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <unique name="@PREFIX@UQ_vsd_valueSetDefURI">
+      <unique name="@PREFIX@UQ_vsd_URI">
         <unique-column name="valueSetDefURI"/>
       </unique>
-      <index name="@PREFIX@idx_vs_releaseGuid">
+      <index name="@PREFIX@idx_vsd_relid">
         <index-column name="releaseGuid"/>
       </index>
-      <index name="@PREFIX@idx_vsdName">
+      <index name="@PREFIX@idx_vsd_name">
         <index-column name="valueSetDefName"/>
       </index>
     </table>
@@ -52,14 +52,14 @@
       <foreign-key foreignTable="@PREFIX@valueSetDefinition" name="@PREFIX@FK_vsde_vsid" onDelete="cascade">
         <reference local="valueSetDefGuid" foreign="valueSetDefGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_vsdEntry_valueSetDefGuid">
+      <unique name="@PREFIX@UQ_vsde_idro">
         <unique-column name="valueSetDefGuid"/>
         <unique-column name="ruleOrder"/>
       </unique>
-      <index name="@PREFIX@idx_valueSetDefGuid">
+      <index name="@PREFIX@idx_vsde_vid">
         <index-column name="valueSetDefGuid"/>
       </index>
-      <index name="@PREFIX@idx_vsdEnt_entityCode">
+      <index name="@PREFIX@idx_vsde_ec">
         <index-column name="entityCode"/>
       </index>
     </table>
@@ -75,13 +75,13 @@
       <foreign-key foreignTable="@PREFIX@vsEntryState" name="@PREFIX@FK_vses_pid" onDelete="cascade">
         <reference local="prevEntryStateGuid" foreign="entryStateGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_vs_prevEntryStateGuid">
+      <index name="@PREFIX@idx_ves_pid">
         <index-column name="prevEntryStateGuid"/>
       </index>
-      <index name="@PREFIX@idx_vs_revisionGuid">
+      <index name="@PREFIX@idx_ves_rid">
         <index-column name="revisionGuid"/>
       </index>
-      <index name="@PREFIX@idx_vs_prevRevisionGuid">
+      <index name="@PREFIX@idx_ves_prid">
         <index-column name="prevRevisionGuid"/>
       </index>
     </table>
@@ -94,10 +94,10 @@
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <index name="@PREFIX@idx_vsma_vsGuid">
+      <index name="@PREFIX@idx_vsma_rid">
         <index-column name="referenceGuid"/>
       </index>
-      <index name="@PREFIX@idx_vsma_vsG_at">
+      <index name="@PREFIX@idx_vsma_rat">
         <index-column name="referenceGuid"/>
         <index-column name="attributeType"/>
       </index>
@@ -121,10 +121,10 @@
       <unique name="@PREFIX@UQ_pl_plid">
         <unique-column name="pickListId"/>
       </unique>
-      <index name="@PREFIX@idx_pl_releaseGuid">
+      <index name="@PREFIX@idx_pl_relid">
         <index-column name="releaseGuid"/>
       </index>
-      <index name="@PREFIX@idx_representsVSD">
+      <index name="@PREFIX@idx_pl_rvsd">
         <index-column name="representsValueSetDefinition"/>
       </index>
     </table>
@@ -150,14 +150,14 @@
       <foreign-key foreignTable="@PREFIX@vsPickList" name="FK_ple_plid" onDelete="cascade">
         <reference local="vsPickListGuid" foreign="vsPickListGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_vsPLEntry_vsPickListGuid">
+      <unique name="@PREFIX@UQ_ple_pleid">
         <unique-column name="vsPickListGuid"/>
         <unique-column name="plEntryId"/>
       </unique>
-      <index name="@PREFIX@idx_vsPickListGuid">
+      <index name="@PREFIX@idx_ple_plid">
         <index-column name="vsPickListGuid"/>
       </index>
-      <index name="@PREFIX@idx_entityCode">
+      <index name="@PREFIX@idx_ple_ecd">
         <index-column name="entityCode"/>
       </index>
     </table>
@@ -181,7 +181,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" default="CURRENT_TIMESTAMP" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <unique name="@PREFIX@UQ_vsProperty">
+      <unique name="@PREFIX@UQ_vsp_rid">
         <unique-column name="referenceGuid"/>
         <unique-column name="propertyId"/>
         <unique-column name="propertyName"/>
@@ -197,10 +197,10 @@
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@vsProperty" name="@PREFIX@FK_vspropid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@vsProperty" name="@PREFIX@FK_vspm_pid" onDelete="cascade">
         <reference local="vsPropertyGuid" foreign="vsPropertyGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_vs_vspma_PropertyGuid">
+      <index name="@PREFIX@idx_vspm_pid">
         <index-column name="vsPropertyGuid"/>
       </index>
     </table>
@@ -222,12 +222,12 @@
       <column name="assnNamespace" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="assnEntityCode" primaryKey="false" required="false" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="propertyType" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
-      <unique name="@PREFIX@UQ_vsMapping">
+      <unique name="@PREFIX@UQ_vssa_rtid">
         <unique-column name="referenceGuid"/>
         <unique-column name="supportedAttributeTag"/>
         <unique-column name="id"/>
       </unique>
-      <index name="@PREFIX@idx_vs_saReferenceGuid">
+      <index name="@PREFIX@idx_vssa_rid">
         <index-column name="referenceGuid"/>
       </index>
     </table>
