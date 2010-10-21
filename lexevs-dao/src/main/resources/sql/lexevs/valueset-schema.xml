@@ -49,7 +49,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" default="CURRENT_TIMESTAMP" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@valueSetDefinition" name="@PREFIX@FK_vsdEnt_vsdGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@valueSetDefinition" name="@PREFIX@FK_vsde_vsid" onDelete="cascade">
         <reference local="valueSetDefGuid" foreign="valueSetDefGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_vsdEntry_valueSetDefGuid">
@@ -72,7 +72,7 @@
       <column name="revisionGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="prevRevisionGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="prevEntryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@vsEntryState" name="@PREFIX@FK_vsES_prevEntryStateGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@vsEntryState" name="@PREFIX@FK_vses_pid" onDelete="cascade">
         <reference local="prevEntryStateGuid" foreign="entryStateGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_vs_prevEntryStateGuid">
@@ -147,7 +147,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" default="CURRENT_TIMESTAMP" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@vsPickList" name="FK_vsPLEnt_vsPLGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@vsPickList" name="FK_ple_plid" onDelete="cascade">
         <reference local="vsPickListGuid" foreign="vsPickListGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_vsPLEntry_vsPickListGuid">
@@ -197,7 +197,7 @@
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@vsProperty" name="@PREFIX@FK_vsProperty" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@vsProperty" name="@PREFIX@FK_vspropid" onDelete="cascade">
         <reference local="vsPropertyGuid" foreign="vsPropertyGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_vs_vspma_PropertyGuid">
