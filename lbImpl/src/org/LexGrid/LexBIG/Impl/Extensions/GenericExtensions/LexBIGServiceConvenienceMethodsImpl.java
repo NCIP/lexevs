@@ -1122,9 +1122,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 // Need to resolve first level; only want to return 'real'
                 // concepts ...
                 ConceptReference cr = new ConceptReference();
-                cr.setCodingSchemeName(this.getCodingScheme(codingScheme, versionOrTag).getCodingSchemeName());
-
                 cr.setCode(sh.getRootCode());
+                
                 CodedNodeGraph cng = getLexBIGService().getNodeGraph(codingScheme, versionOrTag, null);
                 cng = cng.restrictToAssociations(ConvenienceMethods.createNameAndValueList(sh.getAssociationNames()),
                         null);
