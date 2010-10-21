@@ -22,10 +22,10 @@
       <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_h_cs_cs" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_h_releaseGuid">
+      <index name="@PREFIX@idx_h_cs_rid">
         <index-column name="releaseGuid"/>
       </index>
-      <index name="@PREFIX@idx_h_codingSchemeURI">
+      <index name="@PREFIX@idx_h_cs_uri">
         <index-column name="codingSchemeURI"/>
       </index>
     </table>
@@ -37,7 +37,7 @@
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <index name="@PREFIX@idx_h_csMultiAttrib">
+      <index name="@PREFIX@idx_h_csm_id">
         <index-column name="codingSchemeGuid"/>
         <index-column name="attributeType"/>
       </index>
@@ -63,11 +63,11 @@
       <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_h_e_eid" onDelete="cascade">
         <reference local="entityGuid" foreign="entityGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_h_entity">
+      <index name="@PREFIX@idx_h_e_ceid">
         <index-column name="codingSchemeGuid"/>
         <index-column name="entityCode"/>
       </index>
-      <index name="@PREFIX@idx_h_entityNS">
+      <index name="@PREFIX@idx_h_e_cens">
         <index-column name="codingSchemeGuid"/>
         <index-column name="entityCode"/>
         <index-column name="entityCodeNamespace"/>
@@ -98,7 +98,7 @@
       <foreign-key foreignTable="@PREFIX@entityAssnsToData" name="@PREFIX@FK_h_ead_ead" onDelete="cascade">
         <reference local="entityAssnsDataGuid" foreign="entityAssnsDataGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_h_entAsToData_source">
+      <index name="@PREFIX@idx_h_ead_sid">
         <index-column name="associationPredicateGuid"/>
         <index-column name="sourceEntityCode"/>
       </index>
@@ -122,20 +122,20 @@
       <foreign-key foreignTable="@PREFIX@entityAssnsToEntity" name="@PREFIX@FK_h_eae_eae" onDelete="cascade">
         <reference local="entityAssnsGuid" foreign="entityAssnsGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_h_entAsToEnt_source">
+      <index name="@PREFIX@idx_h_eae_si">
         <index-column name="associationPredicateGuid"/>
         <index-column name="sourceEntityCode"/>
       </index>
-      <index name="@PREFIX@idx_h_entAsToEnt_sourceNS">
+      <index name="@PREFIX@idx_h_eae_sn">
         <index-column name="associationPredicateGuid"/>
         <index-column name="sourceEntityCode"/>
         <index-column name="sourceEntityCodeNamespace"/>
       </index>
-      <index name="@PREFIX@idx_h_entAsToEnt_target">
+      <index name="@PREFIX@idx_h_eae_ti">
         <index-column name="associationPredicateGuid"/>
         <index-column name="targetEntityCode"/>
       </index>
-      <index name="@PREFIX@idx_h_entAsToEnt_targetNS">
+      <index name="@PREFIX@idx_h_eae_tn">
         <index-column name="associationPredicateGuid"/>
         <index-column name="targetEntityCode"/>
         <index-column name="targetEntityCodeNamespace"/>
@@ -161,10 +161,10 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_h_prop_id" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_h_pr_id" onDelete="cascade">
         <reference local="propertyGuid" foreign="propertyGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_h_referenceGuid">
+      <index name="@PREFIX@idx_h_pr_rid">
         <index-column name="referenceGuid"/>
       </index>
     </table>
@@ -175,13 +175,13 @@
       <column name="link" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="targetPropertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@propertyLinks" name="@PREFIX@FK_h_pl_pl">
+      <foreign-key foreignTable="@PREFIX@propertyLinks" name="@PREFIX@FK_h_prl_pl">
         <reference local="propertyLinksGuid" foreign="propertyLinksGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_h_sourcePropertyGuid">
+      <index name="@PREFIX@idx_h_prl_si">
         <index-column name="sourcePropertyGuid"/>
       </index>
-      <index name="@PREFIX@idx_h_targetPropertyGuid">
+      <index name="@PREFIX@idx_h_prl_ti">
         <index-column name="targetPropertyGuid"/>
       </index>
     </table>
@@ -195,7 +195,7 @@
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <index name="@PREFIX@idx_h_propertyMultiAttrib">
+      <index name="@PREFIX@idx_h_pm_pid">
         <index-column name="propertyGuid"/>
       </index>
     </table>
