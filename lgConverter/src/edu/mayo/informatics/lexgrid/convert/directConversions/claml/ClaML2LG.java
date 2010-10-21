@@ -25,10 +25,10 @@ import java.util.List;
 
 import javax.naming.NameNotFoundException;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexBIG.claml.ClaML;
 import org.LexGrid.LexBIG.claml.Meta;
 import org.LexGrid.LexBIG.claml.ModifiedBy;
-import org.LexGrid.LexBIG.claml.Modifier;
 import org.LexGrid.LexBIG.claml.ModifierClass;
 import org.LexGrid.LexBIG.claml.Rubric;
 import org.LexGrid.LexBIG.claml.RubricKind;
@@ -37,30 +37,30 @@ import org.LexGrid.LexBIG.claml.SubClass;
 import org.LexGrid.LexBIG.claml.SuperClass;
 import org.LexGrid.LexBIG.claml.UsageKind;
 import org.LexGrid.LexBIG.claml.UsageKinds;
-import org.LexGrid.commonTypes.EntityDescription;
-import org.LexGrid.commonTypes.Text;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedAssociationQualifier;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedProperty;
-import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.custom.relations.RelationsUtil;
 import org.apache.commons.lang.StringUtils;
-import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.claml.config.ClaMLConfig;
 import edu.mayo.informatics.lexgrid.convert.directConversions.claml.interfaces.DefaultRubricProcessorImpl;
@@ -88,11 +88,29 @@ public class ClaML2LG {
 			clamlCS = buildMappings(clamlCS);
 			clamlCS = setUpRelations(clamlCS);
 			clamlCS = buildConcepts(clamlCS);
-			clamlCS = processModifiers(clamlCS);
+			clamlCS = processRoots(clamlCS);
 			
 		
 			return clamlCS;
 		}
+		
+		private CodingScheme processRoots(CodingScheme clamlEMF) {
+    
+            for(String root : ClaMLUtils.getHierarchyRoots(clamlXML_)){
+            
+                this.processAssociation(clamlEMF, this.config_.getSubclassAssoc(), ClaMLConstants.ROOT, root);
+            }
+            
+            SupportedHierarchy shier = new SupportedHierarchy();
+            shier.setLocalId(ClaMLConstants.HIERARCHY_ID);
+            shier.setAssociationNames(Arrays.asList(this.config_.getSubclassAssoc()));
+            shier.setIsForwardNavigable(true);
+            shier.setRootCode(ClaMLConstants.ROOT);
+
+            clamlEMF.getMappings().addSupportedHierarchy(shier);
+            
+            return clamlEMF;
+        }
 		
 		private CodingScheme setUpRelations(CodingScheme clamlCS){
 			Relations relations = new Relations();
@@ -236,7 +254,7 @@ public class ClaML2LG {
 			clamlCS.setMappings(mappingsCS);
 			return clamlCS;
 		}
-		
+		/*
 		private CodingScheme processModifiers(CodingScheme clamlCS){
 //			Entities concepts = clamlCS.getEntities();
 			
@@ -335,7 +353,7 @@ public class ClaML2LG {
 			
 			return clamlCS;
 		}
-
+*/
 		private Entity processConceptProperties(CodingScheme schemeCS, Entity conceptCS, org.LexGrid.LexBIG.claml.Class clamlClass){
 			RubricProcessor rubricProcessor = new DefaultRubricProcessorImpl(clamlXML_, schemeCS, conceptCS, config_, messages_);
 
@@ -343,6 +361,9 @@ public class ClaML2LG {
 			
 			for(Rubric rubric : rubricList){
 				Property property = rubricProcessor.processRubric(rubric);
+				if(StringUtils.isBlank(property.getValue().getContent())){
+                    continue;
+                }
 				//check to see what kind of property we got back -- checking with
 				//'instanceof's probably isn't the best... but works.
 				if(property instanceof Presentation){
@@ -421,39 +442,51 @@ public class ClaML2LG {
 			//Load ModifiersClasses as Concepts
 			//TODO verify this...
 			List<ModifierClass> modifierClasList = clamlXML_.getModifierClass();
+			/*
 			for(ModifierClass clamlModifierClass : modifierClasList){
 			    Entity concept = processModifier(clamlCS, clamlModifierClass);
 				clamlCS.getEntities().addEntity(concept);
 			}
+			 */
 			
 			return clamlCS;
 		}
 
-		private List<Entity> processModifiedConcepts(Entity concept, org.LexGrid.LexBIG.claml.Class clamlClass, CodingScheme clamlCS){
-			List<Entity> returnList = new ArrayList<Entity>();
-			List<ModifiedBy> modifiedBy = clamlClass.getModifiedBy();
-			for(ModifiedBy modified : modifiedBy){
-			
-				if(isModifierOptional(modified)){
-					AssociationQualification qual = new AssociationQualification();
-					qual.setAssociationQualifier("optional");
-					
-					Text text = new Text();
-					text.setContent("true");
-					qual.setQualifierText(text);
-					
-					this.processAssociation(clamlCS, this.config_.getModifiesAssoc(), concept.getEntityCode(), modified.getCode(), qual);
-				} else {
-	
-					List<ModifierClass> modifierClasses = this.getModifierClassesByCode(modified.getCode());
-					for(ModifierClass modifierClass : modifierClasses){
-						returnList.add(this.modifyConcept(concept, modifierClass, clamlCS));	
-						this.processAssociation(clamlCS, config_.getModifiesAssoc(), concept.getEntityCode(), modifierClass.getModifier());
-					}
-				 }
-			}
-			return returnList;
-		}
+		private List<Entity> processModifiedConcepts(Entity concept, org.LexGrid.LexBIG.claml.Class clamlClass, CodingScheme clamlEMF){
+            List<Entity> returnList = new ArrayList<Entity>();
+            List<ModifiedBy> modifiedBy = clamlClass.getModifiedBy();
+
+            for(ModifiedBy modified : modifiedBy){  
+
+                List<ModifierClass> modifierClasses = this.getModifierClassesByCode(modified.getCode());
+
+                for(ModifierClass modifierClass : modifierClasses){
+                    returnList.add(this.modifyConcept(concept, modifierClass, clamlEMF));   
+                    /*
+                    Property prop = CommontypesFactory.eINSTANCE.createProperty();
+                    prop.setPropertyName(this.config_.getModifiedByProperty());
+
+                    Text text = CommontypesFactory.eINSTANCE.createText();
+                    prop.setValue(text);
+                    prop.setPropertyId(modifierClass.getCode());
+
+                    if(isModifierOptional(modified)){
+                        PropertyQualifier qual = CommontypesFactory.eINSTANCE.createPropertyQualifier();
+                        qual.setPropertyQualifierName("optional");
+
+                        Text qualText = CommontypesFactory.eINSTANCE.createText();
+                        qualText.setValue("true");
+                        qual.setValue(qualText);
+
+                        prop.getPropertyQualifier().add(qual);
+                    }
+
+                    concept.getProperty().add(prop);
+                    */
+                }
+            }
+            return returnList;
+        }
 		
 		private boolean isModifierOptional(ModifiedBy modifiedBy){
 			List<Meta> metaList = modifiedBy.getMeta();
@@ -577,8 +610,6 @@ public class ClaML2LG {
 			modifiedConcept.setEntityDescription(ed);
 			
 			this.processAssociation(clamlCS, config_.getSubclassAssoc(), concept.getEntityCode(), modifiedConcept.getEntityCode());
-			this.processAssociation(clamlCS, config_.getSuperclassAssoc(), modifiedConcept.getEntityCode(), concept.getEntityCode());
-			this.processAssociation(clamlCS, config_.getSubcodesAssoc(), concept.getEntityCode(), modifierClass.getModifier() + appendDotOnModifierCode(modifierClass.getCode()));
 			
 			return modifiedConcept;
 		}
@@ -692,7 +723,7 @@ public class ClaML2LG {
 			
 			return concept;
 		}
-		
+		/*
 		private Entity processModifier(CodingScheme schemeCS, ModifierClass modifier){
 		    Entity concept = new Entity();
 			
@@ -751,7 +782,7 @@ public class ClaML2LG {
 
 			return concept;
 		}
-
+*/
 		private void processAssociation(CodingScheme schemeCS, String association,
 				String sourceCode, String targetCode) {
 			this.processAssociation(schemeCS, association, sourceCode, targetCode, new ArrayList<AssociationQualification>());

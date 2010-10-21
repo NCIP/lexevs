@@ -37,7 +37,7 @@ public class ClaML2LGMain {
 public static void main(String[] args) {
 	    ClaML2LGMain main = new ClaML2LGMain();
 	    try {
-            main.map(new File("C:\\Documents and Settings\\m077995\\My Documents\\Work\\icd10ClaML2008\\icd\\icd.xml").toURI(), null, LoggerFactory.getLogger());
+            main.map(new File("W:/ontologies/icd10sources/claml/icd10ClaML2008/icd/icd.xml").toURI(), null, LoggerFactory.getLogger());
         } catch (LgConvertException e) {
             e.printStackTrace();
         }
