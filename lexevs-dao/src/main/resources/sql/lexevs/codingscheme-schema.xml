@@ -6,7 +6,7 @@
       <column name="associationPredicateGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="relationGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="associationName" primaryKey="false" required="true" type="VARCHAR" size="100" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_assocPred_relation" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_ap_relid" onDelete="cascade">
         <reference local="relationGuid" foreign="relationGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_association">
@@ -34,7 +34,7 @@
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="releaseGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@DEFAULT_PREFIX@systemRelease" name="@PREFIX@FK_cs_releaseGuid" onDelete="cascade">
+      <foreign-key foreignTable="@DEFAULT_PREFIX@systemRelease" name="@PREFIX@FK_cs_relid" onDelete="cascade">
         <reference local="releaseGuid" foreign="releaseGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_URIVersionPair">
@@ -63,7 +63,7 @@
       <column name="subRef" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_csMulti_csGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_csm_csid" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_csma_csGuid">
@@ -91,7 +91,7 @@
       <column name="assnNamespace" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="assnEntityCode" primaryKey="false" required="false" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="propertyType" primaryKey="false" required="false" type="VARCHAR" size="50" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_map_csGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_map_csid" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_mapping">
@@ -121,7 +121,7 @@
       <column name="reverseName" primaryKey="false" required="false" type="VARCHAR" size="100" autoIncrement="false"/>
       <column name="isNavigable" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
       <column name="isTransitive" primaryKey="false" required="false" type="CHAR" size="1" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_ent_csGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_ent_csid" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_entity">
@@ -172,7 +172,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToData_assnGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_etod_apid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_eatd_sourceNS">
@@ -203,7 +203,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToEnt_assnGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_etoe_apid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_entAsToEnt_apGuid">
@@ -236,7 +236,7 @@
       <column name="targetEntityCode" primaryKey="false" required="true" type="VARCHAR" size="200" autoIncrement="false"/>
       <column name="targetEntityCodeNamespace" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="path" primaryKey="false" required="false" type="LONGVARCHAR" size="65535" autoIncrement="false" />
-      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_entAsToEntTr_assnGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_etoet_apid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_sourceTargetCombo">
@@ -263,7 +263,7 @@
     <table name="@PREFIX@entityType">
       <column name="entityGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entityType" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_eType_entityGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_eType_eid" onDelete="cascade">
         <reference local="entityGuid" foreign="entityGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_entityGuid">
@@ -279,13 +279,13 @@
       <column name="revisionGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="prevRevisionGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="prevEntryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_prevRevisionGuid" onDelete="cascade">
+      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_previd" onDelete="cascade">
         <reference local="prevRevisionGuid" foreign="revisionGuid"/>
       </foreign-key>
-      <foreign-key foreignTable="@PREFIX@entryState" name="@PREFIX@FK_es_prevEntryStateGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@entryState" name="@PREFIX@FK_es_pesid" onDelete="cascade">
         <reference local="prevEntryStateGuid" foreign="entryStateGuid"/>
       </foreign-key>
-      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_revisionGuid" onDelete="cascade">
+      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_revid" onDelete="cascade">
         <reference local="revisionGuid" foreign="revisionGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_es_prevEntryStateGuid">
@@ -338,13 +338,13 @@
       <column name="link" primaryKey="false" required="true" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="targetPropertyGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pLinks_tPropGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_plnks_tid" onDelete="cascade">
         <reference local="targetPropertyGuid" foreign="propertyGuid"/>
       </foreign-key>
-      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_pLinks_EntityGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_plnks_eid" onDelete="cascade">
         <reference local="entityGuid" foreign="entityGuid"/>
       </foreign-key>
-      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pLinks_sPropGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_plnks_sid" onDelete="cascade">
         <reference local="sourcePropertyGuid" foreign="propertyGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_propLinks">
@@ -369,7 +369,7 @@
       <column name="role" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="qualifierType" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pma_propertyGuid" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pma_pid" onDelete="cascade">
         <reference local="propertyGuid" foreign="propertyGuid"/>
       </foreign-key>
       <index name="@PREFIX@idx_pma_guid_at_id">
@@ -398,7 +398,7 @@
       <column name="effectiveDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="expirationDate" primaryKey="false" required="false" type="TIMESTAMP" size="19" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_relation_codingScheme" onDelete="cascade">
+      <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_rel_csid" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
       <unique name="@PREFIX@UQ_csGuid_rel_cName">
