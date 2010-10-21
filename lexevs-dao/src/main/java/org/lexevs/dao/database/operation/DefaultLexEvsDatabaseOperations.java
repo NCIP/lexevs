@@ -51,6 +51,12 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 import org.xml.sax.InputSource;
 
@@ -199,11 +205,28 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public void dropCodingSchemeTables(String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
 
-		if(! this.getSystemVariables().isSingleTableMode()) {
-			this.dropCodingSchemeHistoryTables(codingSchemeUri, version);
-		}
+		this.doDropCodingSchemeTables(codingSchemeUri, version, prefix);
+	}
+	
+	protected void doDropCodingSchemeTables(final String codingSchemeUri, final String version, final String prefix) {
 		
-		this.doExecuteSql(this.codingSchemeXmlDdl, new DropSchemaPlatformActor(), prefix);	
+		TransactionTemplate template = new TransactionTemplate(this.getTransactionManager());
+		template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		
+		template.execute(new TransactionCallback() {
+
+			@Override
+			public Object doInTransaction(TransactionStatus status) {
+
+				if(! getSystemVariables().isSingleTableMode()) {
+					dropCodingSchemeHistoryTables(codingSchemeUri, version);
+				}
+				
+				doExecuteSql(codingSchemeXmlDdl, new DropSchemaPlatformActor(), prefix);	
+				
+				return null;
+			}
+		});
 	}
 	
 	@Override
