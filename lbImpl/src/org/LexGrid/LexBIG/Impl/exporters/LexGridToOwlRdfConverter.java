@@ -109,33 +109,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 public class LexGridToOwlRdfConverter {
-	// HSQL config -- faster than MySQL, can be used when the test case is large
-	// String className = "org.hsqldb.jdbcDriver"; // path of driver class
-	// String DB_URL = "jdbc:hsqldb:file:C:/temp/owlrdf-export"; // URL of
-	// database
-	// String DB_USER = "sa"; // database user id
-	// String DB_PASSWD = ""; // database password
-	// String DB = "HSQL"; // database type
-
-//	private String DB_URL = "jdbc:mysql://localhost:3306/lb60";
-//	private String DB_USER = "root";
-//	private String DB_PASSWD = "root";
-
-	// private String NS_URI = "http://www.xfront.com/owl/ontologies/camera";
-	// private String outputFile_ = "C:/temp/camera.owl";
-
-//	private String NS_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
-//	private String outputFile_ = "C:/temp/pizza.owl";
-
-//	 private String NS_URI = "urn:lsid:bioontology.org:cell";
-//	 private String outputFile_ = "C:/temp/cell.owl";
-	 
-//	 private String NS_URI = "urn:oid:2.16.840.1.113883.6.110";
-//	 private String outputFile_ = "C:/temp/umls.owl";
-	
-//	 private String NS_URI = "urn:lsid:bioontology.org:uberon";
-//	 private String outputFile_ = "C:/temp/uberon.owl";
-
 	private Store store_ = null;
 	private String currentNamespace_;
 	private OntModel model_;
@@ -184,7 +157,8 @@ public class LexGridToOwlRdfConverter {
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.PostgreSQL);
         }
-		else if (type.getProductName().equals(DatabaseType.HSQLDB.getName())) {
+		else if (type.getProductName().equals(DatabaseType.HSQLDB.getName()) ||
+		        type.getAliases()[0].equals(DatabaseType.HSQLDB.getName())) {
             JDBC.loadDriverHSQL();
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.HSQLDB);
@@ -203,7 +177,7 @@ public class LexGridToOwlRdfConverter {
 			store_.getSize();
 		} catch (Exception e) {
 			store_.getTableFormatter().create();
-			System.out.println("create sdb tables");
+			messenger_.info("create sdb tables.");
 		}
 		return store_;
 	}
@@ -213,7 +187,7 @@ public class LexGridToOwlRdfConverter {
 	}
 
 	private void codingSchemeMapping() throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		// TODO find an ontology with sources to test.
+	    messenger_.info("processing coding scheme meta data.");
 		Ontology ontology = model_.createOntology(cs_.getCodingSchemeURI());
 		ontology.addLabel(cs_.getCodingSchemeName(), LexRdfConstants.ENGLISH);
 		ontology.addVersionInfo(cs_.getRepresentsVersion());
@@ -235,6 +209,9 @@ public class LexGridToOwlRdfConverter {
 	private void entityMapping() throws LBResourceUnavailableException, SecurityException, IllegalArgumentException, LBException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if (cns_ == null)
 			return;
+		
+		messenger_.info("Processing entities ...");
+		
 		List<Entity> instanceList = new ArrayList<Entity>();
 
 		ResolvedConceptReferencesIterator iterator = cns_.resolve(null, null,
@@ -245,8 +222,6 @@ public class LexGridToOwlRdfConverter {
 			ResolvedConceptReference conRef = iterator.next();
 			Entity entity = conRef.getEntity();
 			counter++;
-			if(entity.getEntityCode().equals("Money"))
-			    System.out.println();
 			
 			// handle the anonymous entity in association mapping, not here.
 			if (entity.isIsAnonymous() != null && entity.isIsAnonymous() == true)
@@ -275,13 +250,15 @@ public class LexGridToOwlRdfConverter {
 		// at last, process the instance, since the instance maybe an instance
 		// of owl:class
 		processInstance(instanceList);
-		System.out.println("concepts total: " + Integer.toString(counter));
+		messenger_.info("Processed entity total: " + Integer.toString(counter));
 	}
 
 	private void associationMapping() throws LBResourceUnavailableException, Exception{
 		if (cns_ == null || cng_ == null) {
 			return;
 		}
+		
+		messenger_.info("Processing associations ...");
 		
 		ResolvedConceptReferencesIterator conIterator = cns_.resolve(null, null, null, null, false);
 		
@@ -300,6 +277,8 @@ public class LexGridToOwlRdfConverter {
 				this.processLgTargets(sourceConRef);
 			}
 		}
+		
+		messenger_.info("proccessed the total associations: " + Integer.toString(assnCounter));
 	}
 	
 	private SupportedAssociation getLgSupportedAssociation(String associationName)
@@ -521,7 +500,6 @@ public class LexGridToOwlRdfConverter {
 	}
 	
 	private Resource processLgAnonymousTarget(AssociatedConcept anonymousSource) throws Exception{
-		this.messenger_.info("processing anonymous " + anonymousSource.getCode());
 		
 //		AssociationList assnList = anonymousSource.getSourceOf();
 		//anonymous class's getsourceof does not work correct, use cng instead for now
@@ -1240,10 +1218,11 @@ public class LexGridToOwlRdfConverter {
 		store_.getTableFormatter().truncate(); // for development only
 		store_.getConnection().close();
 		
-		System.out.println("proccessed association: " + Integer.toString(assnCounter));
 	}
 
 	public void toOwlOntology(String iri) throws ClassNotFoundException {
+	    messenger_.info("Converting triple store to ontology ...");
+	    
 		Model baseModel = this.getBaseModel(iri);
 
 		OntModel localModel = ModelFactory.createOntologyModel(
