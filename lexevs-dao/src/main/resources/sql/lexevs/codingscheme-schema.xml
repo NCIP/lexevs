@@ -9,11 +9,11 @@
       <foreign-key foreignTable="@PREFIX@relation" name="@PREFIX@FK_ap_relid" onDelete="cascade">
         <reference local="relationGuid" foreign="relationGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_association">
+      <unique name="@PREFIX@UQ_assn">
         <unique-column name="relationGuid"/>
         <unique-column name="associationName"/>
       </unique>
-      <index name="@PREFIX@idx_ap_relationGuid">
+      <index name="@PREFIX@idx_ap_relid">
         <index-column name="relationGuid"/>
       </index>
     </table>
@@ -37,11 +37,11 @@
       <foreign-key foreignTable="@DEFAULT_PREFIX@systemRelease" name="@PREFIX@FK_cs_relid" onDelete="cascade">
         <reference local="releaseGuid" foreign="releaseGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_URIVersionPair">
+      <unique name="@PREFIX@UQ_URIVer">
         <unique-column name="codingSchemeURI"/>
         <unique-column name="representsVersion"/>
       </unique>
-      <index name="@PREFIX@idx_csReleaseGuid">
+      <index name="@PREFIX@idx_csRelid">
         <index-column name="releaseGuid"/>
       </index>
       <index name="@PREFIX@idx_csURI">
@@ -50,7 +50,7 @@
       <index name="@PREFIX@idx_csName">
         <index-column name="codingSchemeName"/>
       </index>
-      <index name="@PREFIX@idx_csNameVersion">
+      <index name="@PREFIX@idx_csNameV">
         <index-column name="codingSchemeName"/>
         <index-column name="representsVersion"/>
       </index>
@@ -66,10 +66,10 @@
       <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_csm_csid" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_csma_csGuid">
+      <index name="@PREFIX@idx_csm_id">
         <index-column name="codingSchemeGuid"/>
       </index>
-      <index name="@PREFIX@idx_csma_csG_at">
+      <index name="@PREFIX@idx_csm_idt">
         <index-column name="codingSchemeGuid"/>
         <index-column name="attributeType"/>
       </index>
@@ -99,7 +99,7 @@
         <unique-column name="supportedAttributeTag"/>
         <unique-column name="id"/>
       </unique>
-      <index name="@PREFIX@idx_cssa_cS_Guid">
+      <index name="@PREFIX@idx_cssa_id">
         <index-column name="codingSchemeGuid"/>
       </index>
     </table>
@@ -129,19 +129,19 @@
         <unique-column name="entityCode"/>
         <unique-column name="entityCodeNamespace"/>
       </unique>
-      <index name="@PREFIX@idx_entity_csGuid">
+      <index name="@PREFIX@idx_e_csid">
         <index-column name="codingSchemeGuid"/>
       </index>
-      <index name="@PREFIX@idx_entity_code_cs">
+      <index name="@PREFIX@idx_e_ec_cs">
         <index-column name="entityCode"/>
         <index-column name="codingSchemeGuid"/>
       </index>
-      <index name="@PREFIX@idx_entityNS">
+      <index name="@PREFIX@idx_eNS">
         <index-column name="entityCodeNamespace"/>
         <index-column name="entityCode"/>
         <index-column name="codingSchemeGuid"/>
       </index>
-      <index name="@PREFIX@idx_entityDesc">
+      <index name="@PREFIX@idx_eDesc">
         <index-column name="description" size="20"/>
       </index>
     </table>
@@ -151,7 +151,7 @@
       <column name="qualifierName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
       <column name="qualifierValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <unique name="@PREFIX@UQ_entityAssnQuals">
+      <unique name="@PREFIX@UQ_eAssnQ">
         <unique-column name="referenceGuid"/>
         <unique-column name="qualifierName"/>
         <unique-column name="qualifierValue"/>
@@ -175,14 +175,14 @@
       <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_etod_apid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_eatd_sourceNS">
+      <index name="@PREFIX@idx_etd_sNS">
         <index-column name="sourceEntityCode"/>
         <index-column name="sourceEntityCodeNamespace"/>
       </index>
-      <index name="@PREFIX@idx_entAsToData_apGuid">
+      <index name="@PREFIX@idx_etd_apid">
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_entAsToData_source">
+      <index name="@PREFIX@idx_etd_sid">
         <index-column name="associationPredicateGuid"/>
         <index-column name="sourceEntityCode"/>
       </index>
@@ -206,23 +206,23 @@
       <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_etoe_apid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_entAsToEnt_apGuid">
+      <index name="@PREFIX@idx_ete_aid">
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_entAsToEnt_source">
+      <index name="@PREFIX@idx_ete_sid">
         <index-column name="sourceEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_eate_sourceNS">
+      <index name="@PREFIX@idx_ete_sNS">
         <index-column name="sourceEntityCodeNamespace"/>
         <index-column name="sourceEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_entAsToEnt_target">
+      <index name="@PREFIX@idx_ete_tid">
         <index-column name="targetEntityCode"/>
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_eate_targetNS">
+      <index name="@PREFIX@idx_ete_tNS">
         <index-column name="targetEntityCodeNamespace"/>
         <index-column name="targetEntityCode"/>
         <index-column name="associationPredicateGuid"/>
@@ -239,22 +239,22 @@
       <foreign-key foreignTable="@PREFIX@associationPredicate" name="@PREFIX@FK_etoet_apid" onDelete="cascade">
         <reference local="associationPredicateGuid" foreign="associationPredicateGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_sourceTargetCombo">
+      <unique name="@PREFIX@UQ_etet_stid">
         <unique-column name="sourceEntityCode"/>
         <unique-column name="sourceEntityCodeNamespace"/>
         <unique-column name="targetEntityCode"/>
         <unique-column name="targetEntityCodeNamespace"/>
         <unique-column name="associationPredicateGuid"/>
       </unique>
-      <index name="@PREFIX@idx_entAsToEntTr_apGuid">
+      <index name="@PREFIX@idx_etet_aid">
         <index-column name="associationPredicateGuid"/>
       </index>
-      <index name="@PREFIX@idx_eatetr_source">
+      <index name="@PREFIX@idx_etet_sid">
         <index-column name="associationPredicateGuid"/>
         <index-column name="sourceEntityCode"/>
         <index-column name="sourceEntityCodeNamespace"/>
       </index>
-      <index name="@PREFIX@idx_eatetr_target">
+      <index name="@PREFIX@idx_etet_tid">
         <index-column name="associationPredicateGuid"/>
         <index-column name="targetEntityCode"/>
         <index-column name="targetEntityCodeNamespace"/>
@@ -266,7 +266,7 @@
       <foreign-key foreignTable="@PREFIX@entity" name="@PREFIX@FK_eType_eid" onDelete="cascade">
         <reference local="entityGuid" foreign="entityGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_entityGuid">
+      <index name="@PREFIX@idx_ety_eid">
         <index-column name="entityGuid"/>
       </index>
     </table>
@@ -288,13 +288,13 @@
       <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_revid" onDelete="cascade">
         <reference local="revisionGuid" foreign="revisionGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_es_prevEntryStateGuid">
+      <index name="@PREFIX@idx_es_pesid">
         <index-column name="prevEntryStateGuid"/>
       </index>
-      <index name="@PREFIX@idx_es_revisionGuid">
+      <index name="@PREFIX@idx_es_rid">
         <index-column name="revisionGuid"/>
       </index>
-      <index name="@PREFIX@idx_es_prevRevisionGuid">
+      <index name="@PREFIX@idx_es_prid">
         <index-column name="prevRevisionGuid"/>
       </index>
     </table>
@@ -324,10 +324,10 @@
         <unique-column name="propertyName"/>
         <unique-column name="propertyId"/>
       </unique>
-      <index name="@PREFIX@idx_p_referenceGuid">
+      <index name="@PREFIX@idx_p_refid">
         <index-column name="referenceGuid"/>
       </index>
-      <index name="@PREFIX@idx_p_value">
+      <index name="@PREFIX@idx_p_val">
         <index-column name="propertyValue" size="20"/>
       </index>
     </table>
@@ -352,10 +352,10 @@
         <unique-column name="link"/>
         <unique-column name="targetPropertyGuid"/>
       </unique>
-      <index name="@PREFIX@idx_pl_sourcePropertyGuid">
+      <index name="@PREFIX@idx_pl_spid">
         <index-column name="sourcePropertyGuid"/>
       </index>
-      <index name="@PREFIX@idx_pl_targetPropertyGuid">
+      <index name="@PREFIX@idx_pl_tpid">
         <index-column name="targetPropertyGuid"/>
       </index>
     </table>
@@ -372,12 +372,12 @@
       <foreign-key foreignTable="@PREFIX@property" name="@PREFIX@FK_pma_pid" onDelete="cascade">
         <reference local="propertyGuid" foreign="propertyGuid"/>
       </foreign-key>
-      <index name="@PREFIX@idx_pma_guid_at_id">
+      <index name="@PREFIX@idx_pm_idtid">
         <index-column name="propertyGuid"/>
         <index-column name="attributeType"/>
         <index-column name="attributeId"/>
       </index>
-      <index name="@PREFIX@idx_pma_pGuid">
+      <index name="@PREFIX@idx_pm_pid">
         <index-column name="propertyGuid"/>
       </index>
     </table>
@@ -401,11 +401,11 @@
       <foreign-key foreignTable="@PREFIX@codingScheme" name="@PREFIX@FK_rel_csid" onDelete="cascade">
         <reference local="codingSchemeGuid" foreign="codingSchemeGuid"/>
       </foreign-key>
-      <unique name="@PREFIX@UQ_csGuid_rel_cName">
+      <unique name="@PREFIX@UQ_rel_csidn">
         <unique-column name="codingSchemeGuid"/>
         <unique-column name="containerName"/>
       </unique>
-      <index name="@PREFIX@idx_codingSchemeGuid">
+      <index name="@PREFIX@idx_rel_csid">
         <index-column name="codingSchemeGuid"/>
       </index>
     </table>
