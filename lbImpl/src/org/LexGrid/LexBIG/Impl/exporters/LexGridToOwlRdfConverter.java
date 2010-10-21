@@ -142,28 +142,27 @@ public class LexGridToOwlRdfConverter {
 		    getLexEvsDatabaseOperations().getDatabaseType();
 		
 		StoreDesc storeDesc = null;
-		if (type.getProductName().equals(DatabaseType.MySQL.getName())) {
+		if (type.equals(org.lexevs.dao.database.type.DatabaseType.MYSQL)) {
 		    JDBC.loadDriverMySQL();
 		    storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
 	                DatabaseType.MySQL);
 		}
-		else if (type.getProductName().equals(DatabaseType.Oracle.getName())) {
+		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.ORACLE)) {
             JDBC.loadDriverOracle();
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.Oracle);
         }
-		else if (type.getProductName().equals(DatabaseType.PostgreSQL.getName())) {
+		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.POSTGRES)) {
             JDBC.loadDriverPGSQL();
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.PostgreSQL);
         }
-		else if (type.getProductName().equals(DatabaseType.HSQLDB.getName()) ||
-		        type.getAliases()[0].equals(DatabaseType.HSQLDB.getName())) {
+		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.HSQL)) {
             JDBC.loadDriverHSQL();
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.HSQLDB);
         }
-		else if (type.getProductName().equals(DatabaseType.DB2.getName())) {
+		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.DB2)) {
             JDBC.loadDriverDB2();
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.DB2);
@@ -178,6 +177,7 @@ public class LexGridToOwlRdfConverter {
 		} catch (Exception e) {
 			store_.getTableFormatter().create();
 			messenger_.info("create sdb tables.");
+			return store_;
 		}
 		return store_;
 	}
@@ -222,6 +222,9 @@ public class LexGridToOwlRdfConverter {
 			ResolvedConceptReference conRef = iterator.next();
 			Entity entity = conRef.getEntity();
 			counter++;
+			
+			if (entity == null)
+			    continue;
 			
 			// handle the anonymous entity in association mapping, not here.
 			if (entity.isIsAnonymous() != null && entity.isIsAnonymous() == true)
@@ -884,7 +887,6 @@ public class LexGridToOwlRdfConverter {
 		}
 
 		// handle property links
-		// TODO: test
 		for (PropertyLink propLink : entity.getPropertyLink()) {
 			AnnotationProperty ap = model_.createAnnotationProperty(namespace
 					+ propLink.getPropertyLink());
@@ -954,7 +956,6 @@ public class LexGridToOwlRdfConverter {
 		}
 
 		// handle property links
-		// TODO: test
 		for (PropertyLink propLink : entity.getPropertyLink()) {
 			AnnotationProperty ap = model_.createAnnotationProperty(namespace
 					+ propLink.getPropertyLink());
@@ -1115,12 +1116,6 @@ public class LexGridToOwlRdfConverter {
 	
 	public void toTripleStore(CodingScheme cs, CodedNodeGraph baseCng,
 			CodedNodeSet cns, Writer writer, LgMessageDirectorIF messenger, OntologyFormat ontFormat){
-		Model baseModel = this.getBaseModel(cs.getCodingSchemeURI());
-
-		// create or open the default model
-		model_ = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM,
-				baseModel);
-		
 		this.cs_ = cs;
 		this.cns_ = cns;
 		this.cng_ = baseCng;
@@ -1131,6 +1126,15 @@ public class LexGridToOwlRdfConverter {
 		else
 		    ontFormat_ = this.findOntFormat();
 
+		Model baseModel = this.getBaseModel(cs.getCodingSchemeURI());
+
+        // create or open the default model
+        model_ = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM,
+                baseModel);
+        
+        // clean up the triple store to load
+        store_.getTableFormatter().truncate(); 
+		
 		try {
 			// coding schema mapping
 			this.codingSchemeMapping();
@@ -1215,7 +1219,6 @@ public class LexGridToOwlRdfConverter {
 		
 		// Close the database connection
 		model_.close();
-		store_.getTableFormatter().truncate(); // for development only
 		store_.getConnection().close();
 		
 	}
