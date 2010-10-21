@@ -88,6 +88,10 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
                 this.getMessageDirector(),
                 this.getOptions().getBooleanOption(LexGridMultiLoaderImpl.VALIDATE).getOptionValue(),
                 this.getCodingSchemeManifest());
+        
+        if(loadedObject == null || loadedObject.length == 0) {
+            return null;
+        }
    
         URNVersionPair[] loadedCodingSchemes = this.constructVersionPairsFromCodingSchemes(loadedObject);
         
