@@ -35,7 +35,7 @@ public class TestMRMapResolveGraphOnly extends TestCase {
 public void testResolveUnlinkedGraph() throws LBParameterException, LBInvocationException, LBResourceUnavailableException{
 	CodingSchemeVersionOrTag version = new CodingSchemeVersionOrTag();
 	version.setVersion("200909");
-		CodedNodeGraph cng = LexBIGServiceImpl.defaultInstance().getNodeGraph("MDR:MDR12_1_TO_CST:CST95", version, "CL413321");
+		CodedNodeGraph cng = LexBIGServiceImpl.defaultInstance().getNodeGraph("MDR12_1_TO_CST95", version, "CL413321");
 		ResolvedConceptReferenceList list = cng.resolveAsList(null, true, false, 20, 3, null, null, null,null, 100);
 
 		ResolvedConceptReference[] refs = list.getResolvedConceptReference();

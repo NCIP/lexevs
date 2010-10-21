@@ -23,13 +23,18 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.relations.Relations;
+import org.apache.log4j.Logger;
+import org.lexevs.logging.LoggerFactory;
 
 import junit.framework.TestCase;
 
 public class ProcessMrSatToRelationsTest extends TestCase {
+private LgMessageDirectorIF messages = LoggerFactory.getLogger();
+
 public void testProcessMrSatToRelations() throws SecurityException, IllegalArgumentException, FileNotFoundException, NoSuchFieldException, IllegalAccessException{
-	  MRMAP2LexGrid map = new MRMAP2LexGrid(null, null, null);
+	  MRMAP2LexGrid map = new MRMAP2LexGrid(messages , null, null);
 	 HashMap<String, Relations> relationsMap = map.processMrSatBean("resources/testData/mrmap_mapping/MRSAT.RRF", "resources/testData/mrmap_mapping/MRMAP.RRF");
 	 Object[] relations = relationsMap.values().toArray();
 	  for(Object r: relations){

@@ -63,7 +63,7 @@ public class CreateNewAssociationSourceWithTargetTest extends TestCase {
 		assertNull(source.getSourceEntityCodeNamespace());
 		AssociationTarget target = source.getTarget(0);
 		assertTrue(target.getAssociationInstanceId().equals("AT102971857"));
-		assertTrue(target.getTargetEntityCode().equals("adf"));
+		assertTrue(target.getTargetEntityCode().equals("Carcinoma"));
 		assertTrue(target.getTargetEntityCodeNamespace().equals("toNameSpace"));
 		assertTrue(target.getAssociationQualification().length == 23);
 		assertTrue(source.getTargetData()[0].getAssociationInstanceId().equals("AT102971857"));

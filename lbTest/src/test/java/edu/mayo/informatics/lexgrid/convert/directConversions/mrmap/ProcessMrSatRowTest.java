@@ -32,8 +32,8 @@ public class ProcessMrSatRowTest extends TestCase {
 				  rawData[i] = String.valueOf(generator.nextInt(10000));
 			  }
 			  MRMAP2LexGrid mrsat = new MRMAP2LexGrid(null, null, null);
-			  
-			  MrSat sat = mrsat.processMrSatRow(rawData);
+			  int count = 0;
+			  MrSat sat = mrsat.processMrSatRow(rawData, count);
 			  //Should be     
 			  //	cui
 			  //	lui
