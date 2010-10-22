@@ -201,7 +201,7 @@
 		AND 
 			vsd.valueSetDefGuid = vss.referenceGuid
 		AND 
-			(vss.id = #param2# OR vss.uri = #param2# OR vss.idValue = #param2#)
+			(vss.id = #param2:VARCHAR# OR vss.uri = #param2:VARCHAR# OR vss.idValue = #param2:VARCHAR#)
 	 </select>
 	 
 	 <select id="getValueSetDefinitionURIForSupportedTagAndValueAndURI" 
@@ -217,7 +217,7 @@
 		AND 
 			vsd.valueSetDefGuid = vss.referenceGuid
 		AND 
-			(vss.id = #param2# OR vss.uri = #param2# OR vss.idValue = #param2#)
+			(vss.id = #param2:VARCHAR# OR vss.uri = #param2:VARCHAR# OR vss.idValue = #param2:VARCHAR#)
 		AND 
 			vss.uri = #param3#	
 	 </select>
