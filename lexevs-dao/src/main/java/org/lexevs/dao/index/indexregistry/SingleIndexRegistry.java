@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -123,7 +125,10 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	@Override
 	public void destroyIndex(String indexName) {
-		for(Entry<CodingSchemeUriVersionPair, String> entry : this.luceneCodingSchemeToIndexNameMap.entrySet()) {
+		Set<Entry<CodingSchemeUriVersionPair, String>> entrySet = new HashSet<Entry<CodingSchemeUriVersionPair, String>>(
+				this.luceneCodingSchemeToIndexNameMap.entrySet());
+		
+		for(Entry<CodingSchemeUriVersionPair, String> entry : entrySet) {
 			if(entry.getValue().equals(indexName)) {
 				NamedDirectory namedDirectory = this.luceneIndexNameToDirctoryMap.get(entry.getValue());
 				namedDirectory.remove();
