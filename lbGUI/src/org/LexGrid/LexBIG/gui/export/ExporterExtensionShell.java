@@ -317,7 +317,9 @@ public class ExporterExtensionShell extends LoadExportBaseShell {
 
         });
 
-        getStatusComposite(shell, exporter);
+        Composite status = getStatusComposite(shell, exporter);
+        gd = new GridData(GridData.FILL_BOTH);
+        status.setLayoutData(gd);
     }
 	
 	/**
