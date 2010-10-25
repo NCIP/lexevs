@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
@@ -35,6 +36,11 @@ import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
+import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -62,6 +68,8 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	private MetaData metaData;
 	
 	private IndexRegistry indexRegistry;
+	
+	private Registry registry;
 
 	@Override
 	public String getIndexName(String codingSchemeUri,
@@ -69,15 +77,38 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).
 			getIndexName(codingSchemeUri, codingSchemeVersion);
 	}
-	
-	@Override
-	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion) {
-		indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).optimizeIndex(codingSchemeUri, codingSchemeVersion);
-	}
 
 	@Override
-	public void optimizeCommonIndex() {
-		indexRegistry.getCommonLuceneIndexTemplate().optimize();
+	public void optimizeAll() {
+		for(RegistryEntry entry :
+			registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
+			try {
+				this.optimizeIndex(entry.getResourceUri(), entry.getResourceVersion());
+			} catch (Exception e) {
+				LoggerFactory.getLogger().warn("Error Optimizing Index for Coding Scheme URI: " + entry.getResourceUri() + " Version: " + entry.getResourceVersion() + "." +
+						" Error reported was: " + e.getMessage() + ". Skipping...");
+			}
+		}
+	}
+	
+	@Override
+	public void optimizeIndex(final String codingSchemeUri, final String codingSchemeVersion) {
+		boolean isOptimized = indexRegistry.getLuceneIndexTemplate(codingSchemeUri, codingSchemeVersion).executeInIndexReader(new IndexReaderCallback<Boolean>() {
+
+			@Override
+			public Boolean doInIndexReader(IndexReader indexReader)
+					throws Exception {
+				return indexReader.isOptimized();
+			}
+			
+		});
+		
+		if(isOptimized) {
+			LoggerFactory.getLogger().info("Index of URI: " + codingSchemeUri + " Version: " + codingSchemeVersion + " is already optimized.");
+		} else {
+			LoggerFactory.getLogger().info("Optimizing: " + codingSchemeUri + " Version: " + codingSchemeVersion + ".");
+			indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).optimizeIndex(codingSchemeUri, codingSchemeVersion);
+		}
 	}
 	
 	@Override
@@ -326,5 +357,13 @@ public class LuceneEntityIndexService implements EntityIndexService {
 
 	public void setIndexRegistry(IndexRegistry indexRegistry) {
 		this.indexRegistry = indexRegistry;
+	}
+
+	public Registry getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(Registry registry) {
+		this.registry = registry;
 	}
 }

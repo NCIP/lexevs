@@ -37,7 +37,7 @@ public class OptimizeLuceneIndexLauncher {
 			LexEvsServiceLocator.getInstance().
 				getIndexServiceManager().
 					getEntityIndexService().
-						optimizeCommonIndex();
+						optimizeAll();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -48,9 +48,9 @@ public interface EntityIndexService {
 	
 	public String getIndexName(String codingSchemeUri, String codingSchemeVersion);
 	
-	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion);
+	public void optimizeAll();
 	
-	public void optimizeCommonIndex();
+	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion);
 	
 	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id);
 	

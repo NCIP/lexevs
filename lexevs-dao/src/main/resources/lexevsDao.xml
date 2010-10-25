@@ -775,6 +775,7 @@
 		<property name="entityIndexer" ref="commonIndexLoaderCodeIndexer"/>
 		<property name="metaData" ref="luceneIndexMetadataFactory"/>
 		<property name="indexRegistry" ref="indexRegistry"/>
+		<property name="registry" ref="registry"/>
 	</bean>
 	
 	<bean id="luceneMetadataIndexService" 
