@@ -247,7 +247,7 @@ public class ValueSetDefinitionDetails {
        propertyComposite_.setLayoutData(gd);
 
        Utility.makeBoldLabel(propertyComposite_, 2,
-               GridData.HORIZONTAL_ALIGN_CENTER, "Available Definition Entries");
+               GridData.HORIZONTAL_ALIGN_CENTER, "Available Properties");
        tab2.setControl(propertyComposite_);
        setUpVSDProeprtyGp();
        
