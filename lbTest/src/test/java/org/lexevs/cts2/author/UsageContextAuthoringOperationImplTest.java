@@ -435,7 +435,7 @@ public class UsageContextAuthoringOperationImplTest {
 
 		assertTrue(removeStatus);
 		
-		LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService().optimizeCommonIndex();
+		LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService().optimizeAll();
 
 	}
 
