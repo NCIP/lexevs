@@ -415,7 +415,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#insertValueSetDefinition(java.lang.String, org.LexGrid.valueDomains.ValueSetDefinition)
+	 * @see org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao#insertValueSetDefinition(java.lang.String, org.LexGrid.valueSets.ValueSetDefinition)
 	 */
 	@Override
 	public String insertValueSetDefinition(String systemReleaseUri,
