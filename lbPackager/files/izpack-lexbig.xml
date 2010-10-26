@@ -193,6 +193,13 @@ You may obtain a copy of the License at
                 <include name="windows/*"/>
             </fileset>
         </pack>
+        <pack name="Graphical Interface Platform Support - Windows 64-bit" preselected="yes" required="no">
+            <description>Installs the graphical interface for Windows.</description>
+            <fileset dir="./antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
+                <include name="*.bat"/>
+                <include name="windows_64/*"/>
+            </fileset>
+        </pack>
         <pack name="Graphical Interface Platform Support - Linux" preselected="yes" required="no">
             <description>Installs the graphical interface for Linux.</description>
             <fileset dir="antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">

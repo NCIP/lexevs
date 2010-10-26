@@ -68,15 +68,18 @@
             <!-- #8: Graphical Interface Platform Support - Windows - OPTIONAL.
                 Installs the graphical interface for Windows. -->
             <pack index="8"/> 
-            <!-- #9: Graphical Interface Platform Support - Linux - OPTIONAL.
-                Installs the graphical interface for Linux. -->
+            <!-- #9: Graphical Interface Platform Support - Windows 64-bit - OPTIONAL.
+                Installs the graphical interface for Windows 64-bit. -->
             <pack index="9"/> 
-            <!-- #10:Graphical Interface Platform Support - Linux x86 64-bit - OPTIONAL.
-                Installs the graphical interface for 64-bit Linux on x86 processors. -->
+            <!-- #10: Graphical Interface Platform Support - Linux - OPTIONAL.
+                Installs the graphical interface for Linux. -->
             <pack index="10"/> 
-            <!-- #11:Graphical Interface Platform Support - OSX - OPTIONAL.
+            <!-- #11:Graphical Interface Platform Support - Linux x86 64-bit - OPTIONAL.
+                Installs the graphical interface for 64-bit Linux on x86 processors. -->
+            <pack index="11"/> 
+            <!-- #12:Graphical Interface Platform Support - OSX - OPTIONAL.
                 Installs the graphical interface for OSX. -->
-            <pack index="11"/>
+            <pack index="12"/>
     </selected>
     </com.izforge.izpack.panels.PacksPanel>
     <com.izforge.izpack.panels.InstallPanel/>
