@@ -42,6 +42,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -256,7 +258,7 @@ public class LexGridToOwlRdfConverter {
 		messenger_.info("Processed entity total: " + Integer.toString(counter));
 	}
 
-	private void associationMapping() throws LBResourceUnavailableException, Exception{
+	private void associationMapping() throws NullPointerException, LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{
 		if (cns_ == null || cng_ == null) {
 			return;
 		}
@@ -318,8 +320,8 @@ public class LexGridToOwlRdfConverter {
 	    prop.addSuperProperty(LexRdf.associationQualification);
 	    rs.addProperty(prop, qualifierValue);
 	}
-	private void processLgTargets(ResolvedConceptReference sourceConRef)
-			throws Exception {
+	private void processLgTargets(ResolvedConceptReference sourceConRef) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException
+			 {
 		
 		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
@@ -502,7 +504,7 @@ public class LexGridToOwlRdfConverter {
 	    return null;
 	}
 	
-	private Resource processLgAnonymousTarget(AssociatedConcept anonymousSource) throws Exception{
+	private Resource processLgAnonymousTarget(AssociatedConcept anonymousSource) throws SecurityException, IllegalArgumentException, LBException, NoSuchMethodException, IllegalAccessException, InvocationTargetException  {
 		
 //		AssociationList assnList = anonymousSource.getSourceOf();
 		//anonymous class's getsourceof does not work correct, use cng instead for now
@@ -672,17 +674,11 @@ public class LexGridToOwlRdfConverter {
 	
 	
 	// create intersection class or union class
-	private Resource createIntersectionOrUnionClass(Class<?> cls, List<RDFNode> rdfList) throws Exception {
+	private Resource createIntersectionOrUnionClass(Class<?> cls, List<RDFNode> rdfList) throws LBException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		final String prefix = "create";
-		try {
-			Method m = model_.getClass().getMethod(prefix + cls.getSimpleName(), String.class, RDFList.class);
-			m.setAccessible(true);
-			return (Resource)m.invoke(model_, null, model_.createList(rdfList.iterator()));
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-			throw e;
-		}
+		Method m = model_.getClass().getMethod(prefix + cls.getSimpleName(), String.class, RDFList.class);
+		m.setAccessible(true);
+		return (Resource)m.invoke(model_, null, model_.createList(rdfList.iterator()));
 	}
 	
 	// Only consider one qualifier
@@ -781,7 +777,7 @@ public class LexGridToOwlRdfConverter {
 		        ontProperty.addEquivalentProperty(model_.getProperty(sh.getValue()));
 		}
 		else if(supProp.getUri().equalsIgnoreCase(RDFS.label.getURI())) {
-		    //do nothing
+		    //do nothing. label will be map to presentation
 		}
 		else {
 			System.err.println("attention, not inlucded property, create annotation property for: "
@@ -821,7 +817,9 @@ public class LexGridToOwlRdfConverter {
 			AssociationList associationList = resolvedConRefList
 					.getResolvedConceptReference(0).getSourceOf();
 
-			if (associationList.getAssociation(0).getAssociatedConcepts()
+			if (associationList == null ||
+			        associationList.getAssociation(0) == null ||
+			        associationList.getAssociation(0).getAssociatedConcepts()
 					.getAssociatedConceptCount() == 0)
 				// no specific type, treat it as owl:thing
 				this.addOwlThing(model_, cs_, entity);
@@ -917,7 +915,6 @@ public class LexGridToOwlRdfConverter {
 		// add owl class
 		OntClass owlClass = model_.createClass(namespace
 				+ entity.getEntityCode());
-		
 
 		// set rdf:isDefined
 		if (entity.isIsDefined() != null)
@@ -1014,22 +1011,20 @@ public class LexGridToOwlRdfConverter {
 
 		statementHash.put(lgProp.getPropertyId(), rs);
 
-		// TODO property qualifier
 	}
 
 	private String resolveNamespace(String localId) throws LBException {
 		Map<String, String> supportedNamespace = model_.getNsPrefixMap();
 		String uri = supportedNamespace.get(localId);
 		if (uri != null) {
-			if (!uri.endsWith("#"))
-				uri = uri + "#";
+			if (!uri.endsWith("#") && !uri.endsWith("/") && !uri.endsWith(":"))
+			    uri = uri + "#";
 		}
 
 		// for dev only
 		if (uri == null)
 			throw new LBException("ns " + localId
 					+ " has not been imported to ontology yet!");
-
 		return uri;
 	}
 	
@@ -1056,7 +1051,7 @@ public class LexGridToOwlRdfConverter {
 		nsMap.put(currentNamespace_, cs_.getCodingSchemeURI() + "#");
 
 		// check coding scheme mappings
-		if (cs_.getMappings() == null) {
+		if (cs_.getMappings() != null) {
 			// supported namespace
 			SupportedNamespace[] supportedNss = cs_.getMappings()
 					.getSupportedNamespace();
@@ -1064,10 +1059,15 @@ public class LexGridToOwlRdfConverter {
 				nsMap.put(ns.getLocalId(), ns.getUri());
 			}
 			// supported associations
-			SupportedAssociation[] supportedAssns = cs_.getMappings()
-					.getSupportedAssociation();
-			for (SupportedAssociation assn : supportedAssns)
-				model_.createOntProperty(assn.getUri());
+			if (ontFormat_.equals(OntologyFormat.OWLRDF)) {
+    			SupportedAssociation[] supportedAssns = cs_.getMappings()
+    					.getSupportedAssociation();
+    			for (SupportedAssociation assn : supportedAssns) {
+    			    if (assn.getUri() != null) {
+    			        model_.createOntProperty(assn.getUri());
+    			    }
+    			}
+			}
 		}
 
 		model_.setNsPrefixes(nsMap);
@@ -1202,7 +1202,7 @@ public class LexGridToOwlRdfConverter {
 		} catch (InvocationTargetException e) {
 			this.messenger_.error(e.toString());
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
 			this.messenger_.error(e.toString());
 			e.printStackTrace();
 		}
@@ -1248,12 +1248,16 @@ public class LexGridToOwlRdfConverter {
 		
 		ExporterMessageDirector md = new ExporterMessageDirector("LexRdfExporter", status);
 		
-		String codingSchemeUri = "http://www.xfront.com/owl/ontologies/camera/", 
-		       codingSchemeVersion = "UNASSIGNED",
-		       output = "c:/temp/camera.owl";
-//		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", 
-//		       codingSchemeVersion = "version 1.2",
-//		       output = "C:/temp/pizza.owl";
+//		String codingSchemeUri = "http://www.xfront.com/owl/ontologies/camera/", 
+//		       codingSchemeVersion = "UNASSIGNED",
+//		       output = "c:/temp/camera.owl";
+		
+//		String codingSchemeUri = "http://purl.org/net/OCRe/OCRe-Start-Here", 
+//        codingSchemeVersion = "UNASSIGNED",
+//        output = "c:/temp/ocre.owl";
+		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", 
+		       codingSchemeVersion = "version 1.2",
+		       output = "C:/temp/pizza.owl";
 //		String codingSchemeUri = "urn:lsid:bioontology.org:cell", 
 //		       codingSchemeVersion = "UNASSIGNED",
 //		       output = "c:/temp/cell_obo.owl";
