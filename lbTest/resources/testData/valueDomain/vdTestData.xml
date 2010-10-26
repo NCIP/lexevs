@@ -179,6 +179,32 @@
                 <lgVD:entityReference entityCode="GM" referenceAssociation="hasSubtype" transitiveClosure="true"  targetToSource="false" leafOnly="false"/>
             </lgVD:definitionEntry>
         </lgVD:valueSetDefinition>
+		<!-- The entry below is designed to test to return only the entity entered (GM) in EntityReference
+			gForge #24037
+		-->
+		<lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:GM_NODE_ONLY" valueSetDefinitionName="GM Node Only" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value>GM Only</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="GM" transitiveClosure="false"  targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+		<!-- The entry below is designed to test to return only the entity entered (GM)in EntityReference and its immediate nodes associated with hasSubtype association
+			gForge #24037
+		-->
+		<lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:GM_AND_IMMI_NODE" valueSetDefinitionName="GM and immediate nodes Only" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value>GM Only</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="GM" referenceAssociation="hasSubtype" transitiveClosure="false"  targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
         <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:Ford" valueSetDefinitionName="Ford" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
             <lgVD:properties>
                 <lgCommon:property propertyName="textualPresentation">

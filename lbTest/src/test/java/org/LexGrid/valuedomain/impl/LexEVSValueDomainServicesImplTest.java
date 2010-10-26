@@ -55,7 +55,7 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
- * JUnit for Value Domain extension.
+ * JUnit for Value Set Definition Services.
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
@@ -63,7 +63,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	private LexEVSValueSetDefinitionServices vds_;
 	
 	@Test
-	public void testGetAllValueDomainsWithNoNames() throws LBException, URISyntaxException {
+	public void testGetAllValueSetsWithNoNames() throws LBException, URISyntaxException {
 		List<String> uris = getValueSetDefinitionService().getAllValueSetDefinitionsWithNoName();
 		ArrayList<String> blankURIS = new ArrayList<String>();
 		
@@ -102,7 +102,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	}
 
 	@Test
-	public void testGetValueDomainDefinition() throws LBException, URISyntaxException {
+	public void testGetValueSetDefinition() throws LBException, URISyntaxException {
 		ValueSetDefinition vdDef = getValueSetDefinitionService().getValueSetDefinition(new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
 		
 		assertTrue(vdDef.getDefaultCodingScheme().equals("fungal_anatomy"));
@@ -272,7 +272,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	}
 
 	@Test
-	public void testGetValueDomainEntitiesForTerm() throws LBException, URISyntaxException {
+	public void testGetValueSetEntitiesForTerm() throws LBException, URISyntaxException {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().getValueSetDefinitionEntitiesForTerm("General Motors", MatchAlgorithms.exactMatch.name(), new URI("SRITEST:AUTO:AllDomesticANDGM"), null, null);
 		CodedNodeSet cns = null;
@@ -360,7 +360,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	}
 
 	@Test
-	public void testIsEntityInDomainStringURI() throws LBException, URISyntaxException {
+	public void testIsEntityInVSResolution() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Chevy", new URI("SRITEST:AUTO:EveryThing"), null, null);
 		assertTrue(csvr != null);
 		
@@ -408,7 +408,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	}
 
 	@Test
-	public void testIsEntityInDomainStringURICodingSchemeVersionOrTagURI() throws LBException, URISyntaxException {
+	public void testIsEntityInValueSetResolution() throws LBException, URISyntaxException {
 	    AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
 		AbsoluteCodingSchemeVersionReference csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("Automobiles"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, incsvrl, null);
@@ -472,7 +472,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	}
 	
 	@Test
-	public void testIsSubDomain() throws LBException, URISyntaxException {
+	public void testIsSubSet() throws LBException, URISyntaxException {
 
 		assertFalse(getValueSetDefinitionService().isSubSet(new URI("SRITEST:AUTO:DomesticAutoMakers"), new URI("SRITEST:AUTO:GM"), null, null));
 		
@@ -511,7 +511,7 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
 	
 	
 	@Test
-	public void testResolveValueDomain() throws LBException, URISyntaxException {
+	public void testResolveValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
 		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:Ford"), null, csvList, null, null);
@@ -601,6 +601,67 @@ public class LexEVSValueDomainServicesImplTest extends TestCase {
         assertTrue(codes.contains("GM"));
         assertTrue(codes.contains("Chevy"));
         codes.clear();
+	}
+	
+	/**
+	 * GForge #24037 : 1. Include only specified entityCode if the transitiveClosure is 'false' and no association is stated
+	 * in referenceAssociation.
+	 * @throws LBException
+	 * @throws URISyntaxException
+	 */
+	@Test
+	public void testResolveNodeOnlyValueSetDef() throws LBException, URISyntaxException {
+		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
+		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
+		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:GM_NODE_ONLY"), null, csvList, null, null);
+		
+		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
+		assertTrue(rvdDef.getValueSetDefinitionURI().equals(new URI("SRITEST:AUTO:GM_NODE_ONLY")));
+		assertTrue(rvdDef.getValueSetDefinitionName().equals("GM Node Only"));
+		
+		Set<String> codes = new HashSet<String>();
+		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
+		{
+			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
+			codes.add(rcr.getCode());
+		}
+		
+		// should return only GM concept
+		assertTrue(codes.size() == 1);
+		assertTrue(codes.contains("GM"));
+		
+		codes.clear();
+	}
+	
+	/**
+	 * GForge #24037 : 2. Include specified entityCode and it's immediate parent/children (depending on stated association) if transitiveClosure
+	 * is 'false' and an association is stated in referenceAssociation.
+	 * @throws LBException
+	 * @throws URISyntaxException
+	 */
+	@Test
+	public void testResolveNodeAndImmediateChildrenOnlyValueSetDef() throws LBException, URISyntaxException {
+		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
+		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
+		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:GM_AND_IMMI_NODE"), null, csvList, null, null);
+		
+		assertTrue(rvdDef.getDefaultCodingScheme().equals("Automobiles"));
+		assertTrue(rvdDef.getValueSetDefinitionURI().equals(new URI("SRITEST:AUTO:GM_AND_IMMI_NODE")));
+		assertTrue(rvdDef.getValueSetDefinitionName().equals("GM and immediate nodes Only"));
+		
+		Set<String> codes = new HashSet<String>();
+		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
+		{
+			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
+			codes.add(rcr.getCode());
+		}
+		
+		// should return only GM and immediate children concepts
+		assertTrue(codes.size() == 3);
+		assertTrue(codes.contains("GM"));
+		assertTrue(codes.contains("GMC"));
+		assertTrue(codes.contains("Chevy"));
+		codes.clear();
 	}
 
 	@Test

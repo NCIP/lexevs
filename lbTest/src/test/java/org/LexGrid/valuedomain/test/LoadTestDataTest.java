@@ -19,6 +19,9 @@
 package org.LexGrid.valuedomain.test;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -110,6 +113,29 @@ public class LoadTestDataTest extends TestCase {
 
 		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
 				LBConstants.KnownTags.PRODUCTION.toString());
+	}
+	
+	/**
+	 * gForge #24967
+	 * Test to determine that ValueSet Services will not throw null pointer exception when there are
+	 * no Value Set Definition in the system. Also to remove if any test value set definitions are
+	 * present.
+	 *  
+	 * @throws LBException
+	 * @throws URISyntaxException
+	 */
+	@Test
+	public void testCheckValueSetDef() throws LBException, URISyntaxException{
+		List<String> uris = getValueDomainService().listValueSetDefinitions(null);
+		
+		// check if we missed any test valueDomains
+		uris = getValueDomainService().listValueSetDefinitions(null);
+		
+		for (String uri : uris)
+		{
+			if (uri.toString().startsWith("SRITEST:"))
+				assertFalse("Not all test value domains were deleted.",true);
+		}
 	}
 	
 	@Test
