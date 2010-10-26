@@ -48,7 +48,7 @@ import edu.stanford.smi.protege.model.Project;
 public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexProtegeFrames_Loader {
     private static final long serialVersionUID = 6279347193782597340L;
     public final static String name = "RadLexFramesLoader";
-    private final static String description = "This loader loads the RadLex ProtÃƒÂ©gÃƒÂ© frame representation into the LexGrid format.";
+    private final static String description = "This loader loads the RadLex Protégé frame representation into the LexGrid format.";
 
     public RadLexProtegeFramesLoaderImpl() {
         super();
@@ -62,7 +62,7 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
             pFrames.testConnection();
 
         } catch (ConnectionFailure e) {
-            throw new LBParameterException("The ProtÃƒÂ©gÃƒÂ© file path appears to be invalid - " + e);
+            throw new LBParameterException("The Protégé file path appears to be invalid - " + e);
         } catch (LBInvocationException e) {
             throw new LBParameterException(
                     "Each loader can only do one thing at a time.  Please create a new loader to do multiple loads at once.");
@@ -107,7 +107,7 @@ public class RadLexProtegeFramesLoaderImpl extends BaseLoader implements RadlexP
             RadLex2LGMain mainTxfm = new RadLex2LGMain();
             scheme = mainTxfm.map(this.getResourceUri(), this.getMessageDirector());
         } else {
-            throw new RuntimeException("Currently the Protege Frames loader only supports loading of FMA and RadLex.");
+            throw new RuntimeException("Currently the Protégé Frames loader only supports loading of FMA and RadLex.");
         }
  
         super.persistCodingSchemeToDatabase(scheme);
