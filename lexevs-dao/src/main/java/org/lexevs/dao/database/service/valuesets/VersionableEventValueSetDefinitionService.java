@@ -93,7 +93,7 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	
 
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueDomains(org.LexGrid.valueDomains.ValueDomains, java.lang.String)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueSetDefinitions(org.LexGrid.valueSets.ValueSetDefinitions, java.lang.String)
 	 */
 	@Override
 	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions,
