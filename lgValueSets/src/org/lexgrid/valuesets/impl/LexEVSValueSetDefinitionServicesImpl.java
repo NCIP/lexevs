@@ -246,7 +246,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         }
         
         if (vdDef != null) {
-            ResolvedValueSetCodedNodeSet rvdcns = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);            
+            ResolvedValueSetCodedNodeSet rvdcns = getServiceHelper().getResolvedCodedNodeSetForValueSet(vdDef, csVersionList, versionTag);            
             if (rvdcns != null && rvdcns.getCodedNodeSet() != null && rvdcns.getCodingSchemeVersionRefList() != null) {
                 Iterator<? extends AbsoluteCodingSchemeVersionReference> csUsedIter = rvdcns.getCodingSchemeVersionRefList().iterateAbsoluteCodingSchemeVersionReference();
                 CodedNodeSet resolvedSet = rvdcns.getCodedNodeSet();
@@ -319,7 +319,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         
         if(vdDef != null) {
-            domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
+            domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueSet(vdDef, csVersionList, versionTag);
             if (domainNodes != null && domainNodes.getCodedNodeSet() != null)
             	domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null);            
         }
@@ -348,7 +348,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         	vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         
         if(vdDef != null) {
-            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
+            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueSet(vdDef, csVersionList, versionTag);
             
             // Assemble the reply
             ResolvedValueSetDefinition rvddef = new ResolvedValueSetDefinition();
@@ -384,7 +384,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		getLogger().logMethod(new Object[] { vsDef, csVersionList, versionTag });
         
 		if(vsDef != null) {
-            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vsDef, csVersionList, versionTag);
+            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueSet(vsDef, csVersionList, versionTag);
             
             // Assemble the reply
             ResolvedValueSetDefinition rvddef = new ResolvedValueSetDefinition();
@@ -437,14 +437,14 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         HashMap<String,String> refVersions = getServiceHelper().pruneVersionList(csVersionList);
         
         // Resolve the child value set definition and populate CodedNodeSet for this domain and the coding scheme version that was used.
-        childCNS = getServiceHelper().getCodedNodeSetForValueDomain(childVDDef, refVersions, versionTag);
+        childCNS = getServiceHelper().getCodedNodeSetForValueSet(childVDDef, refVersions, versionTag);
         if (childCNS == null) {
             md_.fatal("There was a problem creating CodedNodeSet for child value set definition : " + childValueSetDefinitionURI);
             throw new LBException("There was a problem creating CodedNodeSet for child value set definition : " + childValueSetDefinitionURI);
         }
             
         // Resolve the parent value set definition and populate CodedNodeSet for this domain and the coding scheme version that was used.
-        parentCNS = getServiceHelper().getCodedNodeSetForValueDomain(parentVDDef, refVersions, versionTag);
+        parentCNS = getServiceHelper().getCodedNodeSetForValueSet(parentVDDef, refVersions, versionTag);
         if (parentCNS == null) {
             md_.fatal("There was a problem creating CodedNodeSet for parent value set definition : " + parentValueSetDefinitionURI);
             throw new LBException("There was a problem creating CodedNodeSet for parent value set definition : " + parentValueSetDefinitionURI);
@@ -514,7 +514,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         
         ValueSetDefinition vdDef = this.getValueSetDefinitionService().getValueSetDefinitionByUri(valueSetDefinitionURI);
         if (vdDef != null) {
-            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueDomain(vdDef, csVersionList, versionTag);
+            ResolvedValueSetCodedNodeSet domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueSet(vdDef, csVersionList, versionTag);
             
             // apply the term restriction to the codedNodeSet 
             if (domainNodes != null) {

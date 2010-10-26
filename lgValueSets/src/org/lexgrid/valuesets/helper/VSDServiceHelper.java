@@ -284,10 +284,10 @@ public class VSDServiceHelper {
 	 *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
 	 *                    marked "production" will be used
 	 *                4) If there isn't one marked production, then the "latest" will be used
-	 * @return ResolvedValueDomainCodedNodeSet
+	 * @return ResolvedValueSetCodedNodeSet
 	 * @throws LBException
 	 */
-    public ResolvedValueSetCodedNodeSet getResolvedCodedNodeSetForValueDomain(
+    public ResolvedValueSetCodedNodeSet getResolvedCodedNodeSetForValueSet(
 	        ValueSetDefinition vdd, AbsoluteCodingSchemeVersionReferenceList csVersionsToUse, String versionTag) 
 	            throws LBException {
         ResolvedValueSetCodedNodeSet rval = new ResolvedValueSetCodedNodeSet();
@@ -296,7 +296,7 @@ public class VSDServiceHelper {
 		// TODO What should the behavior be if it is in the list but not supported by the service?  Warning?
 		HashMap<String, String> refVersions = pruneVersionList(csVersionsToUse);
 	
-		rval.setCodedNodeSet(getCodedNodeSetForValueDomain(vdd, refVersions, versionTag));
+		rval.setCodedNodeSet(getCodedNodeSetForValueSet(vdd, refVersions, versionTag));
 		rval.setCodingSchemeVersionRefList(new AbsoluteCodingSchemeVersionReferenceList());
 		
 	    // Transfer the list of used versions
@@ -319,7 +319,7 @@ public class VSDServiceHelper {
      *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
      *                    marked "production" will be used
      *                4) If there isn't one marked production, then the "latest" will be used     */
-    public CodedNodeSet getCodedNodeSetForValueDomain( 
+    public CodedNodeSet getCodedNodeSetForValueSet( 
 	        ValueSetDefinition vdd, HashMap<String, String> refVersions, String versionTag) 
                                                         throws LBException {
 	    CodedNodeSet finalNodeSet = null;
@@ -342,7 +342,7 @@ public class VSDServiceHelper {
                         // TODO This is a data error.  We whine in enough places that it isn't worth doing here
                     }
                     if(innerVdd != null)
-                        product = getCodedNodeSetForValueDomain(innerVdd, refVersions, versionTag);   
+                        product = getCodedNodeSetForValueSet(innerVdd, refVersions, versionTag);   
 		        } else if(vdDef.getEntityReference() != null) {
 		            product = getNodeSetForEntityReference(vdd, vdDef.getEntityReference(), refVersions, versionTag);
 		        } else if (vdDef.getPropertyReference() != null) {
