@@ -737,6 +737,10 @@ You may obtain a copy of the License at
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 pause
 		</echo>	
+		<echo file="${pkg-gui}/Windows_64-lbGUI.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+pause
+		</echo>	
 		<echo file="${pkg-gui}/Linux-lbGUI.sh">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
@@ -749,6 +753,10 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<!--create the start scripts-->
 		<echo file="${pkg-gui}/Windows-lbGUI-browser.bat">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+pause
+		</echo>	
+		<echo file="${pkg-gui}/Windows_64-lbGUI-browser.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 pause
 		</echo>	
 		<echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
