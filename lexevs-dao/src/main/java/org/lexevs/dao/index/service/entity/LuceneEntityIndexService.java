@@ -89,6 +89,19 @@ public class LuceneEntityIndexService implements EntityIndexService {
 						" Error reported was: " + e.getMessage() + ". Skipping...");
 			}
 		}
+		
+		boolean isCommonIndexOptimized = indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Boolean>() {
+
+			@Override
+			public Boolean doInIndexReader(IndexReader indexReader)
+					throws Exception {
+				return indexReader.isOptimized();
+			}
+		});
+		
+		if(!isCommonIndexOptimized) {
+			indexRegistry.getCommonLuceneIndexTemplate().optimize();
+		}
 	}
 	
 	@Override
