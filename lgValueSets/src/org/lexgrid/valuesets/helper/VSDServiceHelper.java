@@ -309,7 +309,7 @@ public class VSDServiceHelper {
     }
 	
     /**
-     * Resolves the supplied valueDomainDefinition object against the list of coding scheme versions 
+     * Resolves the supplied valueSetDefinition object against the list of coding scheme versions 
      * @param vdd - the value domain to be resolved
      * @param refVersions - a map from coding scheme URIs to the corresponding version
      * @param versionTag - a tag (e.g. "production", "test", etc. used to resolve missing coding schemes)

@@ -195,8 +195,9 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		md_.info("Finished loading value set definitions");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexgrid.extension.valuedomain.LexEVSValueDomainServices#validate(java.net.URI, int)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#validate(java.net.URI, int)
 	 */
 	public void validate(URI uri, int validationLevel) throws LBException{
 		LexBIGServiceManager lbsm;
@@ -705,15 +706,15 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * 
 	 */
 	@Override
-	public void exportValueSetDefinition(URI valueDomainURI, String valueSetDefinitionRevisionId, 
+	public void exportValueSetDefinition(URI valueSetDefURI, String valueSetDefinitionRevisionId, 
 			String xmlFullPathName, boolean overwrite, boolean failOnAllErrors)
 			throws LBException {
-		md_.info("Starting to export value domain definition : " + valueDomainURI);
+		md_.info("Starting to export value set definition : " + valueSetDefURI);
 		if (StringUtils.isNotEmpty(xmlFullPathName))
 		{
 			File f = new File(xmlFullPathName.trim());
 			LexGrid_Exporter exporter = (LexGrid_Exporter)getLexBIGService().getServiceManager(null).getExporter(org.LexGrid.LexBIG.Impl.exporters.LexGridExport.name);			
-			exporter.exportValueSetDefinition(valueDomainURI, valueSetDefinitionRevisionId, f.toURI(), overwrite, failOnAllErrors, true);
+			exporter.exportValueSetDefinition(valueSetDefURI, valueSetDefinitionRevisionId, f.toURI(), overwrite, failOnAllErrors, true);
 			
 			while (exporter.getStatus().getEndTime() == null) {
 	            try {
@@ -723,7 +724,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 					e.printStackTrace();
 				}
 	        }
-			md_.info("Done exporting value domain definition : " + valueDomainURI + " to location : " + xmlFullPathName);
+			md_.info("Done exporting value set definition : " + valueSetDefURI + " to location : " + xmlFullPathName);
 		}
 		else
 		{

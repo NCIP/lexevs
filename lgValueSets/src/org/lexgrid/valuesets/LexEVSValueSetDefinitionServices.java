@@ -277,7 +277,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * Note: plural because there is no guarantee of valueSetDefinition uniqueness. If the name is the
 	 * empty string "", returns all unnamed valueSetDefinitions.
 	 * 
-	 * @param valueDomainName
+	 * @param valueSetDefinitionName
 	 * @return value domain URI's
 	 * @throws LBException
 	 */
