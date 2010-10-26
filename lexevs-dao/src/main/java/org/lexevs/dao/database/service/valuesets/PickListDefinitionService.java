@@ -47,7 +47,7 @@ public interface PickListDefinitionService {
 	/**
 	 * Gets the pick list definition id's by value set definition uri.
 	 * 
-	 * @param valueDomainUri the value set definition uri
+	 * @param valueSetDefUri the value set definition uri
 	 * 
 	 * @return list of pick list definition id that match value set definition uri
 	 */
