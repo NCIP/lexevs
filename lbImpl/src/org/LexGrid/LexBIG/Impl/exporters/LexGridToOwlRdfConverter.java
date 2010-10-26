@@ -769,7 +769,8 @@ public class LexGridToOwlRdfConverter {
 					property.getValue().getContent(), model_.getNsPrefixMap());
 			OntProperty localProperty = model_.createOntProperty(sh.getValue());
 			localProperty.addRDFType(sh.getType());
-			ontProperty.addSubProperty(localProperty);
+//			ontProperty.addSubProperty(localProperty);
+			localProperty.addSubProperty(ontProperty);
 		}
 		else if(supProp.getUri().equalsIgnoreCase(OWL.equivalentProperty.getURI())) {
 		    StringHelper sh = new StringHelper(property.getValue().getContent(), model_.getNsPrefixMap());
