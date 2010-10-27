@@ -60,6 +60,7 @@ public abstract class BaseExporter {
 
     public static String ASYNC_OPTION = "Async Load";
     public static String FAIL_ON_ERROR_OPTION = Option.getNameForType(Option.FAIL_ON_ERROR);
+    public static String OVERWRITE_OPTION = Option.getNameForType(Option.OVERWRITE);
     
     private OptionHolder holder = new DefaultOptionHolder();
     
@@ -73,6 +74,7 @@ public abstract class BaseExporter {
         status_ = new ExportStatus();
         status_.setState(ProcessState.PROCESSING);
         status_.setStartTime(new Date(System.currentTimeMillis()));
+        status_.setDestination(this.getResourceUri() != null ? this.getResourceUri().toString() : "UNKNOWN");
         md_ = new ExporterMessageDirector(getName(), status_);
 
         if (async) {

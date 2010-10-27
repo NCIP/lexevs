@@ -87,14 +87,14 @@ public class OBOExport extends LoadExportBaseShell {
 		options.setLayout(layout);
 
 		Label fileLabel = new Label(options, SWT.NONE);
-		fileLabel.setText("Save to folder");
+		fileLabel.setText("Save to file");
 
 		final Text file = new Text(options, SWT.BORDER);
 		gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 3;
 		file.setLayoutData(gd);
 
-		Button fileChooseButton = Utility.getFolderChooseButton(options, file);
+		Button fileChooseButton = Utility.getFileSaveButton(options, file, new String[] {".obo"}, new String[] {".obo"});
 		gd = new GridData(SWT.CENTER);
 		gd.widthHint = 60;
 		fileChooseButton.setLayoutData(gd);
@@ -121,14 +121,8 @@ public class OBOExport extends LoadExportBaseShell {
 				// is this a local file?
 				File theFile = new File(file.getText());
 
-				if (theFile.exists() && theFile.isDirectory()) {
-					uri = theFile.toURI();
-				} else {
-					dialog_.showError("Path Error",
-							"No folder could be located at this location");
-					return;
-				}
-
+				uri = theFile.toURI();
+				
 				try {
 					exporter.export(source, uri, overwrite.getSelection(), false, true);
 					export.setEnabled(false);

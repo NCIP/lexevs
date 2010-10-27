@@ -54,33 +54,43 @@ public class Utility {
 	public static Button getFileChooseButton(Composite parent,
 			final Text whereToPutFileName, final String[] filterExtensions,
 			final String[] filterNames) {
-		final Button fileBrowse = new Button(parent, SWT.PUSH);
-		fileBrowse.setText("Browse");
-
-		fileBrowse.addSelectionListener(new SelectionListener() {
-
-			public void widgetSelected(SelectionEvent arg0) {
-				FileDialog fileChooser = new FileDialog(fileBrowse.getShell(),
-						SWT.OPEN);
-				fileChooser.setText("Choose File");
-				// fileChooser.setFilterPath(currentDir);
-				fileChooser.setFilterExtensions(filterExtensions);
-				fileChooser.setFilterNames(filterNames);
-				String filename = fileChooser.open();
-				if (filename != null) {
-					whereToPutFileName.setText(filename);
-				}
-			}
-
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// 
-			}
-
-		});
-
-		return fileBrowse;
-
+	    return getFileButton(parent, whereToPutFileName, filterExtensions, filterNames, SWT.OPEN);
 	}
+	
+	public static Button getFileSaveButton(Composite parent,
+	        final Text whereToPutFileName, final String[] filterExtensions,
+	        final String[] filterNames) {
+	   return getFileButton(parent, whereToPutFileName, filterExtensions, filterNames, SWT.SAVE);
+	}
+	
+	private static Button getFileButton(Composite parent,
+            final Text whereToPutFileName, final String[] filterExtensions,
+            final String[] filterNames, final int swtType) {
+        final Button fileBrowse = new Button(parent, SWT.PUSH);
+        fileBrowse.setText("Browse");
+
+        fileBrowse.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent arg0) {
+                FileDialog fileChooser = new FileDialog(fileBrowse.getShell(),
+                        swtType);
+                fileChooser.setText("Choose File");
+                fileChooser.setFilterExtensions(filterExtensions);
+                fileChooser.setFilterNames(filterNames);
+                String filename = fileChooser.open();
+                if (filename != null) {
+                    whereToPutFileName.setText(filename);
+                }
+            }
+
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // 
+            }
+
+        });
+
+        return fileBrowse;
+    }
 
 	public static Button getFolderChooseButton(Composite parent,
 			final Text whereToPutFileName) {

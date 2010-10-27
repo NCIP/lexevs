@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.exporters;
 
+import java.io.File;
 import java.net.URI;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -27,6 +28,9 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Export.OBO_Exporter;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
+
+import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.LG2OBO;
+import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 
 /**
  * Exporter for OBO files.
@@ -64,7 +68,11 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
 
     public void export(AbsoluteCodingSchemeVersionReference source, URI destination, boolean overwrite,
             boolean stopOnErrors, boolean async) throws LBException {
-        //
+        this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
+        this.getOptions().getBooleanOption(OVERWRITE_OPTION).setOptionValue(overwrite);
+       
+        this.export(source, destination);
     }
 
     public String getOBOVersion() {
@@ -74,11 +82,27 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
 
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+        this.getOptions().getBooleanOptions().add(
+                new BooleanOption(OVERWRITE_OPTION, false));
+        
         return holder;
     }
 
     @Override
     protected void doExport() throws Exception {
-        //
+        LG2OBO lg2Obo = new LG2OBO(this.getSource().getCodingSchemeURN(),
+                this.getSource().getCodingSchemeVersion(), this.getMessageDirector());
+        
+        File file = new File(this.getResourceUri());
+        
+        if(this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue()
+                &&
+                file.exists()) {
+            file.delete();
+        }
+        
+        file.createNewFile();
+        
+        lg2Obo.save(file);
     }
 }
