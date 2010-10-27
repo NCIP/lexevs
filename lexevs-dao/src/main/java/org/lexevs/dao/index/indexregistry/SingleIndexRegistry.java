@@ -15,6 +15,7 @@
  * 
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
+<<<<<<< .mine
  */
 package org.lexevs.dao.index.indexregistry;
 
@@ -31,6 +32,7 @@ import java.util.Map.Entry;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.store.FSDirectory;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
@@ -66,6 +68,10 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	private Map<CodingSchemeUriVersionPair,String> luceneCodingSchemeToIndexNameMap = 
 		new HashMap<CodingSchemeUriVersionPair,String>();
+	
+	private Map<String,Filter> codingSchemeFilterMap = new HashMap<String,Filter>();
+	
+	private Map<String,Filter> boundaryDocFilterMap = new HashMap<String,Filter>();
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -262,6 +268,22 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
+	}
+
+	public Map<String, Filter> getCodingSchemeFilterMap() {
+		return codingSchemeFilterMap;
+	}
+
+	public void setCodingSchemeFilterMap(Map<String, Filter> codingSchemeFilterMap) {
+		this.codingSchemeFilterMap = codingSchemeFilterMap;
+	}
+
+	public Map<String, Filter> getBoundaryDocFilterMap() {
+		return boundaryDocFilterMap;
+	}
+
+	public void setBoundaryDocFilterMap(Map<String, Filter> boundaryDocFilterMap) {
+		this.boundaryDocFilterMap = boundaryDocFilterMap;
 	}
 
 	protected static class CodingSchemeUriVersionPair {

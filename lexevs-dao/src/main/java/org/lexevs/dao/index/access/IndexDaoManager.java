@@ -72,7 +72,7 @@ public class IndexDaoManager {
 		LuceneIndexTemplate template = 
 			indexRegistry.getCommonLuceneIndexTemplate(codingSchemes);
 
-		return new SingleTemplateDisposableLuceneCommonEntityDao(template, codingSchemes);
+		return new SingleTemplateDisposableLuceneCommonEntityDao(indexRegistry, template, codingSchemes);
 	}
 	
 	public MetadataDao getMetadataDao(){

@@ -19,8 +19,10 @@
 package org.lexevs.dao.index.indexregistry;
 
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.lucene.search.Filter;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 
 public interface IndexRegistry {
@@ -39,4 +41,8 @@ public interface IndexRegistry {
 	public void destroyIndex(String indexName);
 	
 	public String getCommonIndexName();
+	
+	public Map<String, Filter> getCodingSchemeFilterMap();
+
+	public Map<String, Filter> getBoundaryDocFilterMap();
 }

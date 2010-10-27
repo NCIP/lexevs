@@ -27,6 +27,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
@@ -45,8 +46,10 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 	private List<AbsoluteCodingSchemeVersionReference> references;
 
 	public SingleTemplateDisposableLuceneCommonEntityDao(
+			IndexRegistry indexRegistry,
 			LuceneIndexTemplate template,
 			List<AbsoluteCodingSchemeVersionReference> references){
+		this.setIndexRegistry(indexRegistry);
 		this.template = template;
 		this.references = references;
 	}

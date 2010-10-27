@@ -61,8 +61,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
-	
-	private IndexRegistry indexRegistry;
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
@@ -382,7 +380,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return this.indexRegistry.getLuceneIndexTemplate(codingSchemeUri, version);
+		return this.getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
@@ -391,13 +389,5 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
 		return luceneIndexTemplate;
-	}
-
-	public void setIndexRegistry(IndexRegistry indexRegistry) {
-		this.indexRegistry = indexRegistry;
-	}
-
-	public IndexRegistry getIndexRegistry() {
-		return indexRegistry;
 	}
 }

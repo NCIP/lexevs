@@ -26,7 +26,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
-import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
@@ -37,8 +36,6 @@ import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
-	
-	private IndexRegistry indexRegistry;
 	
 	/** The supported index version2009. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2009 = LexEvsIndexFormatVersion.parseStringToVersion("2009");
@@ -69,14 +66,6 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return indexRegistry.getLuceneIndexTemplate(codingSchemeUri, version);
-	}
-
-	public void setIndexRegistry(IndexRegistry indexRegistry) {
-		this.indexRegistry = indexRegistry;
-	}
-
-	public IndexRegistry getIndexRegistry() {
-		return indexRegistry;
+		return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 }
