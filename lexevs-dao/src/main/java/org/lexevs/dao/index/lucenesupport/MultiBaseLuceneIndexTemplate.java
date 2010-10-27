@@ -87,4 +87,9 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
 		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 	}
+	
+	protected void doFinalize() throws Throwable {
+		//no-op -- this is a prototype-scoped class, don't close underlying Lucene
+		//resources on finalize
+	}
 }

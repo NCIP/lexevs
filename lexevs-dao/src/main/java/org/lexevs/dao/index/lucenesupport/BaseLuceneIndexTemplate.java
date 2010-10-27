@@ -320,6 +320,10 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	public void finalize() throws Throwable {
 		super.finalize();
+		this.doFinalize();
+	}
+	
+	protected void doFinalize() throws Throwable {
 		if(this.indexReader != null) {
 			this.indexReader.close();
 		}
