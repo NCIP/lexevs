@@ -25,6 +25,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
@@ -35,7 +36,6 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.custom.concepts.EntitiesUtil;
-import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
@@ -43,7 +43,11 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.logging.LoggerFactory;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.service.entity.EntityService;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.paging.AbstractPageableIterator;
 
 /**
  * EMF to OBO Implementation.
@@ -55,13 +59,15 @@ import org.lexevs.logging.LoggerFactory;
 public class LG2OBO {
     private LgMessageDirectorIF messages;
 
-    private CodingScheme codingScheme;
+    private String uri;
+    private String version;
 
     private static final String lineReturn = System.getProperty("line.separator");
 
-    public LG2OBO(CodingScheme codingScheme, LgMessageDirectorIF messages) {
+    public LG2OBO(String uri, String version, LgMessageDirectorIF messages) {
         this.messages = messages;
-        this.codingScheme = codingScheme;
+        this.uri = uri;
+        this.version = version;
     }
 
     /**
@@ -91,14 +97,19 @@ public class LG2OBO {
      * Generate the OBO 1.2 representation of the Lexgrid EMF content
      */
     public String toString() {
-        String oboText = generateOBOHeader();
+        CodingScheme cs = 
+            LexEvsServiceLocator.getInstance().
+                getDatabaseServiceManager().
+                    getCodingSchemeService().
+                        getCodingSchemeByUriAndVersion(uri, version);
+        String oboText = generateOBOHeader(cs);
         oboText += generateOBOContent();
         oboText += generateTypeDef();
         return oboText;
 
     }
 
-    String generateOBOHeader() {
+    String generateOBOHeader(CodingScheme codingScheme) {
         String str = "format-version: 1.2 " + lineReturn;
         str += "default-namespace: " + codingScheme.getFormalName() + lineReturn;
         str += lineReturn;
@@ -106,9 +117,11 @@ public class LG2OBO {
     }
 
     String generateOBOContent() {
+        EntityService entityService = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
         String str = "";
         // Try to find an existing target to match
-        for (Entity en : codingScheme.getEntities().getEntity()) {
+        for (Entity en : entityService.getEntities(uri, version, 0, -1)) {
             if (en.getEntityCode()!= null && en.getEntityCode().trim().length()>0
                     && en instanceof AssociationEntity == false){
                 String entityCode = en.getEntityCode();
@@ -210,50 +223,44 @@ public class LG2OBO {
     }
 
     String generateRelations(Entity codedEntry) {
+        List<String> predicateNames = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
+            getAssociationPredicateNamesForCodingScheme(uri, version, null);
         String str = "";
         str += generateIsARelation(codedEntry);
 
-        for (Relations relations: codingScheme.getRelations()) {
-            for (AssociationPredicate ap : relations.getAssociationPredicate()){
-                String as_name = ap.getAssociationName();
-                if (isBuiltInRelationName(as_name)) {
-                    str += generateBuiltInRelation(codedEntry, as_name);
-                } else {
-                    str += generateNonBuiltInRelation(codedEntry, as_name);
-                }
+
+        for (String as_name : predicateNames){
+
+            if (isBuiltInRelationName(as_name)) {
+                str += generateBuiltInRelation(codedEntry, as_name);
+            } else {
+                str += generateNonBuiltInRelation(codedEntry, as_name);
             }
         }
         return str;
-
     }
 
     String generateBuiltInRelation(Entity codedEntry, String association_name) {
         String str = "";
-        List<AssociationPredicate> association_list = RelationsUtil.resolveAssociationPredicates(codingScheme, association_name);
-        List<AssociationSource> aSrcs = RelationsUtil.resolveRelationSources(codedEntry, association_list);
-        
-        for(AssociationSource src : aSrcs){
-            for(AssociationTarget tgt: src.getTarget()) {
-                if (tgt != null && !"@@".equals(tgt.getTargetEntityCode())) {
-                    str += association_name + ": " + tgt.getTargetEntityCode() + lineReturn;
-                }
+
+        for(AssociatedConcept tgt : new GetTargetsFromSourceTripleIterator(codedEntry.getEntityCode(), association_name)){
+            if (tgt != null && !"@@".equals(tgt.getCode())) {
+                str += association_name + ": " + tgt.getCode() + lineReturn;
             }
         }
-        
+
         return str;
     }
 
     String generateNonBuiltInRelation(Entity codedEntry, String association_name) {
         String str = "";
-        List<AssociationPredicate> association_list = RelationsUtil.resolveAssociationPredicates(codingScheme, association_name);
-        List<AssociationSource> srcList = RelationsUtil.resolveRelationSources(codedEntry, association_list);
-        
-        for (AssociationSource src : srcList) {
-            for (AssociationTarget tgt : src.getTarget()) {
-                if (tgt != null && !"@@".equals(tgt.getTargetEntityCode())) {
-                    str += "relationship: " + association_name + " " + tgt.getTargetEntityCode() + lineReturn;
+ 
+        for(AssociatedConcept tgt : new GetTargetsFromSourceTripleIterator(codedEntry.getEntityCode(), association_name)){
+                 if (tgt != null && !"@@".equals(tgt.getCode())) {
+                    str += "relationship: " + association_name + " " + tgt.getCode() + lineReturn;
                 }
-            }
+
         }
         
         return str;
@@ -269,10 +276,9 @@ public class LG2OBO {
      */
     String generateIsARelation(Entity codedEntry) {
         String str = "";
-        List<AssociationPredicate> association_list = RelationsUtil.resolveAssociationPredicates(codingScheme, OBO2LGConstants.ASSOCIATION_HASSUBTYPE);
-        List<AssociationSource> sources = RelationsUtil.resolveRelationTargets(codedEntry, association_list);
-        for(AssociationSource as: sources) {
-            str += OBO2LGConstants.ASSOCIATION_ISA + ": " + as.getSourceEntityCode() + lineReturn;
+        
+        for(AssociatedConcept as: new GetSourcesFromTargetTripleIterator(codedEntry.getEntityCode(), OBO2LGConstants.ASSOCIATION_HASSUBTYPE)) {
+            str += OBO2LGConstants.ASSOCIATION_ISA + ": " + as.getCode() + lineReturn;
         }
         return str;
     }
@@ -280,15 +286,16 @@ public class LG2OBO {
     String generateTypeDef() {
         String str = "";
 
-        for (Relations relations : codingScheme.getRelations()){
-            for (AssociationPredicate ap : relations.getAssociationPredicate()) {
-                String code = ap.getAssociationName();
-                if (!isBuiltInRelationName(code) && !code.equalsIgnoreCase("-multi-assn-@-root-")) {
-                    str += "[Typedef]" + lineReturn;
-                    str += "id: " + code + lineReturn;
-                    str += "name: " + code + lineReturn;
-                    str += lineReturn;
-                }
+        List<String> predicateNames = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
+            getAssociationPredicateNamesForCodingScheme(uri, version, null);
+
+        for (String code : predicateNames) {
+            if (!isBuiltInRelationName(code) && !code.equalsIgnoreCase("-multi-assn-@-root-")) {
+                str += "[Typedef]" + lineReturn;
+                str += "id: " + code + lineReturn;
+                str += "name: " + code + lineReturn;
+                str += lineReturn;
             }
         }
 
@@ -391,15 +398,52 @@ public class LG2OBO {
         relations.addAssociationPredicate(ap);
         
         cs.addRelations(relations);
-        
-        LG2OBO lg2Obo = new LG2OBO(cs, LoggerFactory.getLogger());
-        File file = new File("2obo.obo");
-        try {
-            lg2Obo.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
+    
     }
+    
+    @SuppressWarnings("serial")
+    private class GetSourcesFromTargetTripleIterator extends AbstractPageableIterator<AssociatedConcept>{
+        
+        private String targetCode;
+        private String associationName;
+        
+        private GetSourcesFromTargetTripleIterator(String targetCode, String associationName){
+            this.targetCode = targetCode;
+            this.associationName = associationName;
+        }
 
+        @Override
+        protected List<? extends AssociatedConcept> doPage(int currentPosition, int pageSize) {
+            CodedNodeGraphService cngService = 
+                LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getCodedNodeGraphService();
+            List<String> tripleUids = cngService.getTripleUidsContainingObject(uri, version, null, associationName, targetCode, null, new GraphQuery(), null, currentPosition, pageSize);
+           
+           return cngService.getAssociatedConceptsFromUidSource(uri, version, false, null, null, null, tripleUids);          
+        }
+    }
+    
+    @SuppressWarnings("serial")
+    private class GetTargetsFromSourceTripleIterator extends AbstractPageableIterator<AssociatedConcept>{
+        
+        private String sourceCode;
+        private String associationName;
+        
+        private GetTargetsFromSourceTripleIterator(String sourceCode, String associationName){
+            this.sourceCode = sourceCode;
+            this.associationName = associationName;
+        }
+
+        @Override
+        protected List<? extends AssociatedConcept> doPage(int currentPosition, int pageSize) {
+            CodedNodeGraphService cngService = 
+                LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getCodedNodeGraphService();
+            List<String> tripleUids = cngService.getTripleUidsContainingSubject(uri, version, null, associationName, sourceCode, null, new GraphQuery(), null, currentPosition, pageSize);
+           
+           return cngService.getAssociatedConceptsFromUidTarget(uri, version, false, null, null, null, tripleUids);          
+        }
+    }
 }
