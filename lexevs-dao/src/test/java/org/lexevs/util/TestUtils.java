@@ -18,10 +18,22 @@
  */
 package org.lexevs.util;
 
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 
 public class TestUtils {
+	
+	public static boolean containsConceptReference(List<ConceptReference> list, String code) {
+		for(ConceptReference ref : list) {
+			if(ref.getCode().equals(code)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static boolean entityContainsPropertyWithValue(Entity entity, String propertyValue) {
 		for(Property prop : entity.getAllProperties()) {

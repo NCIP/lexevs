@@ -44,6 +44,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNames
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.util.TestUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
@@ -1858,6 +1859,219 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals("t-code", refs.get(0).getCode());
 		assertEquals("t-ns", refs.get(0).getCodeNamespace());
+	}
+	
+	@Test
+	public void testGetConceptReferencesContainingSubject() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("s-code");
+		ref.setCodeNamespace("s-ns");
+		
+		List<ConceptReference> codeList = Arrays.asList(ref);
+		
+		List<ConceptReference> refs = 
+			ibatisCodedNodeGraphDao.
+				getConceptReferencesContainingSubject("1", null, codeList, null, null, null, null, null, null, null, 0, -1);
+	
+		assertEquals(1,refs.size());
+		
+		assertEquals("t-code", refs.get(0).getCode());
+		assertEquals("t-ns", refs.get(0).getCodeNamespace());
+	}
+	
+	@Test
+	public void testGetConceptReferencesContainingSubjectWithMultiple() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code2'," +
+				" 't-ns2'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("s-code");
+		ref.setCodeNamespace("s-ns");
+		
+		List<ConceptReference> codeList = Arrays.asList(ref);
+		
+		List<ConceptReference> refs = 
+			ibatisCodedNodeGraphDao.
+				getConceptReferencesContainingSubject("1", null, codeList, null, null, null, null, null, null, null, 0, -1);
+	
+		assertEquals(2,refs.size());
+		
+		assertTrue(TestUtils.containsConceptReference(refs, "t-code"));
+		assertTrue(TestUtils.containsConceptReference(refs, "t-code2"));
+	}
+	
+	@Test
+	public void testGetConceptReferencesContainingObject() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("t-code");
+		ref.setCodeNamespace("t-ns");
+		
+		List<ConceptReference> codeList = Arrays.asList(ref);
+		
+		List<ConceptReference> refs = 
+			ibatisCodedNodeGraphDao.
+				getConceptReferencesContainingObject("1", null, codeList, null, null, null, null, null, null, null, 0, -1);
+	
+		assertEquals(1,refs.size());
+		
+		assertEquals("s-code", refs.get(0).getCode());
+		assertEquals("s-ns", refs.get(0).getCodeNamespace());
+	}
+	
+	@Test
+	public void testGetConceptReferencesContainingObjectWithLimit() throws SQLException{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 's-code', 's-ns')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+		"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code2', " +
+				" 's-ns2'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id', null, null, null, null, null, null, null, null)");
+	
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("t-code");
+		ref.setCodeNamespace("t-ns");
+		
+		List<ConceptReference> codeList = Arrays.asList(ref);
+		
+		List<ConceptReference> refs = 
+			ibatisCodedNodeGraphDao.
+				getConceptReferencesContainingObject("1", null, codeList, null, null, null, null, null, null, null, 0, 1);
+	
+		assertEquals(1,refs.size());
+		
+		ConceptReference firstResult = refs.get(0);
+		
+		refs = 
+			ibatisCodedNodeGraphDao.
+				getConceptReferencesContainingObject("1", null, codeList, null, null, null, null, null, null, null, 1, 1);
+		
+		ConceptReference secondResult = refs.get(0);
+		
+		assertFalse(firstResult.getCode().equals(secondResult.getCode()));
 	}
 	
 	@Test
