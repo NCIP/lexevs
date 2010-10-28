@@ -1074,6 +1074,50 @@
 			</isEqual>
 	</select>
 	
+	<select id="getConceptReferences"
+				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
+				resultMap="Entity.conceptReferenceResult">
+		SELECT 
+			<isEqual property="tripleNode" compareValue="SUBJECT">
+				eate.targetEntityCode AS entityCode,
+				eate.targetEntityCodeNamespace AS entityCodeNamespace
+			</isEqual>
+			<isEqual property="tripleNode" compareValue="OBJECT">
+				eate.sourceEntityCode AS entityCode,
+				eate.sourceEntityCodeNamespace AS entityCodeNamespace
+			</isEqual>
+			
+		<include refid="getEntityAssnsToEntityUidsFragment"/>
+		<include refid="restrictEntityAssnsToEntityUidsByMultipleCodesFragment"/>
+		
+		AND
+			eate.sourceEntityCode NOT IN ('@' , '@@')
+		AND
+			eate.targetEntityCode NOT IN ('@' , '@@')
+		
+		GROUP BY
+			<isEqual property="tripleNode" compareValue="SUBJECT">
+				eate.targetEntityCode,
+				eate.targetEntityCodeNamespace
+			</isEqual>
+			<isEqual property="tripleNode" compareValue="OBJECT">
+				eate.sourceEntityCode,
+				eate.sourceEntityCodeNamespace
+			</isEqual>
+		<isNotEmpty property="sorts">
+		ORDER BY
+			<iterate property="sorts" conjunction=",">
+				<isEqual property="tripleNode" compareValue="SUBJECT">
+					$sorts[].columnSortType.subjectColumn$
+				</isEqual>
+				<isEqual property="tripleNode" compareValue="OBJECT">
+					$sorts[].columnSortType.objectColumn$
+				</isEqual>
+				$sorts[].order$
+			</iterate>
+		</isNotEmpty>
+	</select>
+	
 	<select id="getDistinctSources" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		remapResults="true" 

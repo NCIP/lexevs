@@ -68,10 +68,109 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getRootEntityAssnsToEntityUids";
 	private static String GET_CODE_RELATIONSHIPS_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeRelationships";
 	private static String GET_COUNT_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCountConceptReferences";
+	private static String GET_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getConceptReferences";
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
 	
+	
+	
+	
+	@Override
+	public List<ConceptReference> getConceptReferencesContainingObject(
+			String codingSchemeUid,
+			String relationsContainerName,
+			List<ConceptReference> objects, 
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveSubjectEntityType,
+			Boolean restrictToAnonymous, 
+			List<Sort> sorts,
+			int start,
+			int pageSize) {
+		return this.doGetConceptReferences(
+				codingSchemeUid, 
+				relationsContainerName, 
+				objects, 
+				associationNames, 
+				associationQualifiers, 
+				mustHaveSubjectCodes, 
+				mustHaveSubjectNamespace, 
+				mustHaveSubjectEntityType, 
+				restrictToAnonymous, 
+				TripleNode.OBJECT,
+				start,
+				pageSize);
+	}
+
+	@Override
+	public List<ConceptReference> getConceptReferencesContainingSubject(
+			String codingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> subjects, 
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType, 
+			Boolean restrictToAnonymous,
+			List<Sort> sorts, 
+			int start,
+			int pageSize) {
+		return this.doGetConceptReferences(
+				codingSchemeUid, 
+				relationsContainerName, 
+				subjects, 
+				associationNames, 
+				associationQualifiers, 
+				mustHaveObjectCodes, 
+				mustHaveObjectNamespace, 
+				mustHaveObjectEntityType, 
+				restrictToAnonymous, 
+				TripleNode.SUBJECT,
+				start,
+				pageSize);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<ConceptReference> doGetConceptReferences(
+			String codingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> conceptReferences, 
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveCodes,
+			List<String> mustHaveNamespace,
+			List<String> mustHaveEntityType, 
+			Boolean restrictToAnonymous, 
+			TripleNode tripleNode,
+			int start,
+			int pageSize){
+		
+		if(pageSize < 0) {
+			pageSize = Integer.MAX_VALUE;
+		}
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		GetCountConceptReferenceBean bean = new GetCountConceptReferenceBean();
+		bean.setPrefix(prefix);
+		bean.setCodingSchemeUid(codingSchemeUid);
+		bean.setRelationsContainerName(relationsContainerName);
+		bean.setConceptReferences(conceptReferences);
+		bean.setAssociations(associationNames);
+		bean.setAssociationQualifiers(associationQualifiers);
+		bean.setMustHaveCodes(mustHaveCodes);
+		bean.setMustHaveNamespaces(mustHaveNamespace);
+		bean.setMustHaveEntityTypes(mustHaveEntityType);
+		bean.setRestrictToAnonymous(restrictToAnonymous);
+		bean.setTripleNode(tripleNode);
+		
+		return this.getSqlMapClientTemplate().queryForList(GET_CONCEPTREFERENCES_SQL, bean, start, pageSize);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	@CacheMethod
@@ -477,7 +576,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			List<String> mustHaveSubjectNamespace,
 			List<String> mustHaveObjectEntityType, 
 			Boolean restrictToAnonymous) {
-		return this.doGetCountConceptReferencesContainingSubject(
+		return this.doGetCountConceptReferences(
 				codingSchemeUid, 
 				relationsContainerName, 
 				objects, 
@@ -498,7 +597,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			List<CodeNamespacePair> mustHaveObjectCodes,
 			List<String> mustHaveObjectNamespace,
 			List<String> mustHaveObjectEntityType, Boolean restrictToAnonymous) {
-		return this.doGetCountConceptReferencesContainingSubject(
+		return this.doGetCountConceptReferences(
 				codingSchemeUid, 
 				relationsContainerName, 
 				subjects, 
@@ -511,7 +610,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected List<CountConceptReference> doGetCountConceptReferencesContainingSubject(
+	protected List<CountConceptReference> doGetCountConceptReferences(
 			String codingSchemeUid, 
 			String relationsContainerName,
 			List<ConceptReference> conceptReferences, 

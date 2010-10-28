@@ -95,6 +95,20 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<String> mustHaveObjectNamespace,
 			List<String> mustHaveObjectEntityType,
 			Boolean restrictToAnonymous);
+			
+	public List<ConceptReference> getConceptReferencesContainingSubject(
+			String codingSchemeUid,
+			String relationsContainerName,
+			List<ConceptReference> subjects,
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveObjectCodes,
+			List<String> mustHaveObjectNamespace,
+			List<String> mustHaveObjectEntityType,
+			Boolean restrictToAnonymous,
+			List<Sort> sorts,
+			int start,
+			int pageSize);
 	
 	public List<String> getTripleUidsContainingObject(
 			String codingSchemeUid,
@@ -120,9 +134,23 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			List<QualifierNameValuePair> associationQualifiers,
 			List<CodeNamespacePair> mustHaveSubjectCodes,
 			List<String> mustHaveSubjectNamespace,
-			List<String> mustHaveObjectEntityType,
+			List<String> mustHaveSubjectEntityType,
 			Boolean restrictToAnonymous);
 	
+	public List<ConceptReference> getConceptReferencesContainingObject(
+			String codingSchemeUid,
+			String relationsContainerName,
+			List<ConceptReference> objects,
+			List<String> associationNames,
+			List<QualifierNameValuePair> associationQualifiers,
+			List<CodeNamespacePair> mustHaveSubjectCodes,
+			List<String> mustHaveSubjectNamespace,
+			List<String> mustHaveSubjectEntityType,
+			Boolean restrictToAnonymous,
+			List<Sort> sorts,
+			int start,
+			int pageSize);
+			
 	public List<CountConceptReference> getCountConceptReferencesContainingObject(
 			String codingSchemeUid,
 			String relationsContainerName,

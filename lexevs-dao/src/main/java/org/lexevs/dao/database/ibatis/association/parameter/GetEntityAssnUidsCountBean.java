@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 
@@ -38,6 +39,7 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	private List<String> mustHaveNamespaces;
 	private List<String> mustHaveEntityTypes;
 	private Boolean restrictToAnonymous;
+	private List<Sort> sorts;
 	private TripleNode tripleNode;
 
 	public List<String> getMustHaveEntityTypes() {
@@ -111,5 +113,11 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 
 	public boolean isNeedsEntityJoin() {
 		return CollectionUtils.isNotEmpty(this.mustHaveEntityTypes) || (this.restrictToAnonymous != null);
+	}
+	public void setSorts(List<Sort> sorts) {
+		this.sorts = sorts;
+	}
+	public List<Sort> getSorts() {
+		return sorts;
 	}
 }
