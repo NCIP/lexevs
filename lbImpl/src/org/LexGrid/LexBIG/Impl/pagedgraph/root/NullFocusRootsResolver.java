@@ -24,10 +24,12 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.apache.commons.collections.CollectionUtils;
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.database.utility.DaoUtility.SortContainer;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -70,6 +72,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                 return this.getRelatedSourceCodes(
                         codingSchemeUri, 
                         codingSchemeVersion, 
+                        relationsContainerName,
                         query, 
                         sortOptionList,
                         currentPosition,
@@ -98,6 +101,7 @@ public class NullFocusRootsResolver implements RootsResolver {
                 return this.getRelatedTargetCodes(
                         codingSchemeUri, 
                         codingSchemeVersion, 
+                        relationsContainerName,
                         query,
                         sortOptionList,
                         currentPosition,
@@ -132,79 +136,83 @@ public class NullFocusRootsResolver implements RootsResolver {
     }
     
     protected List<ConceptReference> getRelatedTargetCodes(
-            String  codingSchemeUri, 
-            String codingSchemeVersion,
-            GraphQuery query,
+            final String  codingSchemeUri, 
+            final String codingSchemeVersion,
+            final String containerName,
+            final GraphQuery query,
             SortOptionList sortOptionList,
-            int currentPosition,
-            int pageSize){
+            final int currentPosition,
+            final int pageSize){
          
-        List<String> uids = new ArrayList<String>();
+        final SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
         
-        CodedNodeGraphService service =
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
-        
-        for(ConceptReference ref : query.getRestrictToSourceCodes()) {
-            uids.addAll( 
-            service.
-            getTripleUidsContainingSubject(
-                    codingSchemeUri, 
-                    codingSchemeVersion, 
-                    null, 
-                    null, 
-                    ref.getCode(), 
-                    ref.getCodeNamespace(), 
-                    query, 
-                    sortContainer.getSorts(), 
-                    currentPosition, 
-                    pageSize));
-        }
-        
-        return service.getConceptReferencesFromUidTarget(
-                codingSchemeUri, 
-                codingSchemeVersion, 
-                sortContainer.getSorts(), 
-                uids);
+        return LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getDaoCallbackService().
+                    executeInDaoLayer(new DaoCallback<List<ConceptReference>>() {
+            
+                        @Override
+                        public List<ConceptReference> execute(DaoManager daoManager) {
+                            String codingSchemeUid = 
+                                daoManager.getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+                                    getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+                            
+                            return daoManager.getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+                                getConceptReferencesContainingSubject(
+                                        codingSchemeUid, 
+                                        containerName, 
+                                        query.getRestrictToSourceCodes(),
+                                        query.getRestrictToAssociations(),
+                                        query.getRestrictToAssociationsQualifiers(), 
+                                        DaoUtility.toCodeNamespacePair(query.getRestrictToTargetCodes()),
+                                        query.getRestrictToTargetCodeSystem(), 
+                                        query.getRestrictToEntityTypes(), 
+                                        query.isRestrictToAnonymous(),
+                                        sortContainer.getSorts(),
+                                        currentPosition, 
+                                        pageSize);
+                        }
+        });
     }
     
     protected List<ConceptReference> getRelatedSourceCodes(
-            String  codingSchemeUri, 
-            String codingSchemeVersion,
-            GraphQuery query, 
+            final String  codingSchemeUri, 
+            final String codingSchemeVersion,
+            final String containerName,
+            final GraphQuery query, 
             SortOptionList sortOptionList,
-            int currentPosition,
-            int pageSize){
-         
-        List<String> uids = new ArrayList<String>();
+            final int currentPosition,
+            final int pageSize){
         
-        CodedNodeGraphService service =
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
-        
-        for(ConceptReference ref : query.getRestrictToTargetCodes()) {
-            uids.addAll( 
-            service.
-            getTripleUidsContainingObject(
-                    codingSchemeUri, 
-                    codingSchemeVersion, 
-                    null, 
-                    null, 
-                    ref.getCode(), 
-                    ref.getCodeNamespace(), 
-                    query, 
-                    sortContainer.getSorts(), 
-                    currentPosition, 
-                    pageSize));
-        }
-        
-        return service.getConceptReferencesFromUidSource(
-                codingSchemeUri, 
-                codingSchemeVersion, 
-                sortContainer.getSorts(), 
-                uids);
+        final SortContainer sortContainer = DaoUtility.mapSortOptionListToSort(sortOptionList);
+       
+        return LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getDaoCallbackService().
+                    executeInDaoLayer(new DaoCallback<List<ConceptReference>>() {
+            
+                        @Override
+                        public List<ConceptReference> execute(DaoManager daoManager) {
+                            String codingSchemeUid = 
+                                daoManager.getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
+                                    getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
+                            
+                            return daoManager.getCodedNodeGraphDao(codingSchemeUri, codingSchemeVersion).
+                                getConceptReferencesContainingObject(
+                                        codingSchemeUid, 
+                                        containerName, 
+                                        query.getRestrictToTargetCodes(),
+                                        query.getRestrictToAssociations(),
+                                        query.getRestrictToAssociationsQualifiers(), 
+                                        DaoUtility.toCodeNamespacePair(query.getRestrictToSourceCodes()),
+                                        query.getRestrictToSourceCodeSystem(), 
+                                        query.getRestrictToEntityTypes(), 
+                                        query.isRestrictToAnonymous(),
+                                        sortContainer.getSorts(),
+                                        currentPosition, 
+                                        pageSize);
+                        }
+        });
     }
     
     protected List<ConceptReference> getRoots(
