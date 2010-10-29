@@ -73,7 +73,7 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		
 		int cacheSize = cache.size();
 		
-		return inCachePosition < cacheSize ;
+		return inCachePosition < cacheSize;
 	}
 
 	@Override
