@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class AbstractPageableIteratorTest {
+public class AbstractRefereshingPageableIteratorTest {
 
 	
 	@Test
@@ -91,7 +91,7 @@ public class AbstractPageableIteratorTest {
 	}
 
 	private Iterator<String> getTestIterator(int pageSize){
-		return new AbstractPageableIterator<String>(pageSize) {
+		return new AbstractRefereshingPageableIterator<String,String>(pageSize) {
 			
 			private String[] strings = new String[] {"1", "2", "3", 
 					"4", "5", "6"};
@@ -106,12 +106,22 @@ public class AbstractPageableIteratorTest {
 				
 				return returnList;
 			}
+
+			@Override
+			protected String doGetRefresh() {
+				return "";
+			}
+
+			@Override
+			protected void doRefresh(String refresh) {
+				//
+			}
 			
 		};
 	}
 	
 	private Iterator<String> getTestIteratorMoreResultsReturned(int pageSize){
-		return new AbstractPageableIterator<String>(pageSize) {
+		return new AbstractRefereshingPageableIterator<String,String>(pageSize) {
 			
 			private String[] strings = new String[] {"1", "2", "3", 
 					"4", "5", "6"};
@@ -126,6 +136,16 @@ public class AbstractPageableIteratorTest {
 					returnList.add(itr.next());
 				}
 				return returnList;
+			}
+
+			@Override
+			protected String doGetRefresh() {
+				return "";
+			}
+
+			@Override
+			protected void doRefresh(String refresh) {
+				//
 			}
 			
 		};
