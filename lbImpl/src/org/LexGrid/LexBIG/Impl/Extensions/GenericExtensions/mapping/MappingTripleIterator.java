@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.relations.Relations;
+import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -117,6 +118,9 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
     }
     
     private List<? extends ResolvedConceptReference> buildList(List<String> tripleUids){
+        if(CollectionUtils.isEmpty(tripleUids)){
+            return null;
+        }
         List<? extends ResolvedConceptReference> list = 
             LexEvsServiceLocator.getInstance().
                 getDatabaseServiceManager().
