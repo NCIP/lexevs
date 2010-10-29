@@ -63,12 +63,17 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
 		if(!indexRegistry.getBoundaryDocFilterMap().containsKey(key)) {
 			Filter filter = createBoundaryDocFilter();
-			indexRegistry.getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter));
+
+			Filter chainedFilter = 
+				new ChainedFilter(
+						new Filter[] {filter, 
+								this.getCodingSchemeFilterForCodingScheme(codingSchemeUri, codingSchemeVersion)}, 
+								ChainedFilter.AND);
+			
+			indexRegistry.getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(chainedFilter));
 		}
-		return new ChainedFilter(
-				new Filter[] {indexRegistry.getBoundaryDocFilterMap().get(key), 
-				this.getCodingSchemeFilterForCodingScheme(codingSchemeUri, codingSchemeVersion)}, 
-				ChainedFilter.AND);
+		
+		return indexRegistry.getBoundaryDocFilterMap().get(key);
 	}
 	
 	protected Filter createBoundaryDocFilter() {
