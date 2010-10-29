@@ -18,6 +18,10 @@
  */
 package org.lexevs.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -116,16 +120,7 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		assertEquals("threefour", testCacheProxy.getCaches().get("testCache").values().toArray()[1]);
 	}
 	
-	/**
-	 * Test un cachable method.
-	 */
-	@Test
-	public void testUnCachableMethod(){
-		
-		assertEquals("onetwo", testCacheBean.getValueNotCachable("one", "two"));
-		
-		assertNull(testCacheProxy.getCaches().get("testCache"));
-	}
+	
 	
 	/**
 	 * Test clear cache.
@@ -152,6 +147,41 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		CodingScheme cachedCs = testCacheBean.getClonedResult("uri", "version");
 		
 		assertNull(cachedCs.getDefaultLanguage());
+	}
+	
+	@Test
+	public void testCacheThreadSafety() throws InterruptedException{
+		List<TestCacheThread> threads = new ArrayList<TestCacheThread>();
+		for(int i=0;i<1000;i++) {
+			TestCacheThread thread = new TestCacheThread();
+			threads.add(thread);
+			thread.start();
+		}
+		
+		Thread.sleep(10000);
+		
+		for(TestCacheThread thread : threads) {
+			thread.run = false;
+		}
+	}
+	
+	private class TestCacheThread extends Thread {
+
+		private boolean run = true;
+		@Override
+		public void run() {
+			while(run) {
+				String value1 = testCacheBean.getValue("1", "2");
+				assertEquals("12", value1);
+				
+				String uid1 = UUID.randomUUID().toString();
+				String uid2 = UUID.randomUUID().toString();
+				
+				String value2 = testCacheBean.getValue(uid1, uid2);
+				assertEquals(uid1+uid2, value2);
+				testCacheBean.testClear();
+			}
+		}
 	}
 	
 	/**

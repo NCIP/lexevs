@@ -20,6 +20,7 @@ package org.lexevs.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -181,7 +182,7 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void testCacheThreadSafety() throws InterruptedException{
 		List<TestCacheThread> threads = new ArrayList<TestCacheThread>();
-		for(int i=0;i<100;i++) {
+		for(int i=0;i<1000;i++) {
 			TestCacheThread thread = new TestCacheThread();
 			threads.add(thread);
 			thread.start();
@@ -200,8 +201,14 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 		@Override
 		public void run() {
 			while(run) {
-				String value = testCacheBean.getValue("1", "2");
-				assertEquals("12", value);
+				String value1 = testCacheBean.getValue("1", "2");
+				assertEquals("12", value1);
+				
+				String uid1 = UUID.randomUUID().toString();
+				String uid2 = UUID.randomUUID().toString();
+				
+				String value2 = testCacheBean.getValue(uid1, uid2);
+				assertEquals(uid1+uid2, value2);
 				testCacheBean.testClear();
 			}
 		}
