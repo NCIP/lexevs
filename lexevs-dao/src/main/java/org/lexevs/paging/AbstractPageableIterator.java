@@ -40,6 +40,8 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	
 	private int globalPosition = 0;
 	
+	private int inCachePosition = 0;
+	
 	private Pager<T> pager;
 	
 	private NextDecorator<T> nextDecorator;
@@ -71,17 +73,19 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 			return false;
 		}
 		
-		int positionInCache = calculateCachePosition();
 		int cacheSize = cache.size();
 		
-		return positionInCache < cacheSize ;
+		return inCachePosition < cacheSize ;
 	}
 
 	@Override
 	public T next() {
 		pageIfNecessary();
-		T returnItem = cache.get( calculateCachePosition() );
+		
+		T returnItem = cache.get( inCachePosition );
+		
 		globalPosition++;
+		inCachePosition++;
 		
 		if(this.decorateNext) {
 			return this.nextDecorator.decorateNext(this, returnItem);
@@ -101,18 +105,21 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		throw new UnsupportedOperationException();
 	}
 	
-	protected int calculateCachePosition() {
-		return globalPosition - ( (currentPage -1 ) * pageSize) ;
-	}
 	
 	protected boolean isPageNeeded() {
-		boolean page = globalPosition >  ( ( currentPage * pageSize) - 1 );
+		boolean page = inCachePosition > ( cache.size() - 1 );
 		return page;
 	}
 	
 	protected void page() {
-		cache = this.pager.doPage(this, globalPosition, pageSize);
+		cache = doExecutePage();
+		
 		currentPage++;
+		inCachePosition = 0;
+	}
+	
+	protected List<? extends T> doExecutePage(){
+		return this.pager.doPage(this, globalPosition, pageSize);
 	}
 	
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
@@ -140,9 +147,12 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		}
 		
 		public List<? extends T> doPage(AbstractPageableIterator<T> abstractPageableIterator, int currentPosition, int pageSize){
-			return abstractPageableIterator.doPage(currentPosition, pageSize);
+			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize);
+			
+			return returnList;
 		}
 	}
+	
 	
 	@LgProxyClass
 	public static class NextDecorator<T> implements Serializable {
@@ -157,4 +167,13 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 			return abstractPageableIterator.decorateNext(item);
 		}
 	}
+
+
+	protected int getPageSize() {
+		return pageSize;
+	}
+
+	protected int getGlobalPosition() {
+		return globalPosition;
+	}	
 }
