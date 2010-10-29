@@ -36,8 +36,6 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	
 	private int pageSize;
 	
-	private int currentPage = 0;
-	
 	private int globalPosition = 0;
 	
 	private int inCachePosition = 0;
@@ -111,10 +109,9 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		return page;
 	}
 	
-	protected void page() {
+	protected final void page() {
 		cache = doExecutePage();
-		
-		currentPage++;
+
 		inCachePosition = 0;
 	}
 	
