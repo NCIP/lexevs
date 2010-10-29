@@ -65,7 +65,7 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         if(direction.equals(ResolveDirection.FORWARD)) {
             if(CollectionUtils.isNotEmpty(query.getRestrictToSourceCodes())) {
-                return query.getRestrictToSourceCodes();
+                return getSubList(query.getRestrictToSourceCodes(), currentPosition, pageSize);
             }
             
             if(CollectionUtils.isNotEmpty(query.getRestrictToTargetCodes())) {
@@ -94,7 +94,7 @@ public class NullFocusRootsResolver implements RootsResolver {
         
         if(direction.equals(ResolveDirection.BACKWARD)) {
             if(CollectionUtils.isNotEmpty(query.getRestrictToTargetCodes())) {
-                return query.getRestrictToTargetCodes();
+                return getSubList(query.getRestrictToTargetCodes(), currentPosition, pageSize);
             }
             
             if(CollectionUtils.isNotEmpty(query.getRestrictToSourceCodes())) {
@@ -124,6 +124,20 @@ public class NullFocusRootsResolver implements RootsResolver {
         return returnList;
     }
     
+    private List<ConceptReference> getSubList(List<ConceptReference> codes, int currentPosition, int pageSize) {
+        if(codes == null || codes.size() == 0 || codes.size() < currentPosition){
+            return codes;
+        }
+        
+        List<ConceptReference> returnList = new ArrayList<ConceptReference>();
+        for(int i=currentPosition;i<currentPosition + pageSize && i<codes.size();i++){
+            returnList.add(codes.get(i));
+        }
+        
+        return returnList;
+    }
+
+
     @Override
     public boolean isRootOrTail(ConceptReference ref) {
        return isRefRootOrTail(ref);
