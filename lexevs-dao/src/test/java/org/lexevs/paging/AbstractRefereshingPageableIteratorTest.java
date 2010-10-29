@@ -89,6 +89,18 @@ public class AbstractRefereshingPageableIteratorTest {
 		assertFalse(itr.hasNext());
 		
 	}
+	
+	@Test
+	public void testPageLessResultsReturnedPageSize() {
+		Iterator<String> itr = getTestIteratorLessResultsReturned(3);
+		for(int i=1; i<7;i++) {
+			String foundString = itr.next();
+			assertEquals(String.valueOf(i), foundString);
+		}
+		
+		assertFalse(itr.hasNext());
+		
+	}
 
 	private Iterator<String> getTestIterator(int pageSize){
 		return new AbstractRefereshingPageableIterator<String,String>(pageSize) {
@@ -147,7 +159,39 @@ public class AbstractRefereshingPageableIteratorTest {
 			protected void doRefresh(String refresh) {
 				//
 			}
-			
+
 		};
 	}
+
+	private Iterator<String> getTestIteratorLessResultsReturned(int pageSize){
+		return new AbstractRefereshingPageableIterator<String,String>(pageSize) {
+
+			private String[] strings = new String[] {"1", "2", "3", 
+					"4", "5", "6"};
+
+			private Iterator<String> itr = Arrays.asList(strings).iterator();
+
+			@Override
+			protected List<String> doPage(int position, int pageSize) {
+				List<String> returnList = new ArrayList<String>();
+
+				if(itr.hasNext()){
+					returnList.add(itr.next());
+				} 
+
+				return returnList;
+			}
+			
+			@Override
+			protected String doGetRefresh() {
+				return "";
+			}
+
+			@Override
+			protected void doRefresh(String refresh) {
+				//
+			}
+		};
+	}
+
 }
