@@ -27,7 +27,6 @@ import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
 import org.apache.lucene.queryParser.QueryParser;
-import org.lexevs.system.ResourceManager;
 import org.springframework.util.StringUtils;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGenerator;
@@ -42,9 +41,6 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8821994690004828366L;
     
-    /** The query parser. */
-    private QueryParser queryParser;
-    
     /** The extra whitespace charaters. */
     private Set extraWhitespaceCharaters;
 
@@ -54,7 +50,6 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
     protected AbstractSearch(){
         super();
         IndexQueryParserFactory queryParserFactory = IndexQueryParserFactory.getInstance();
-        this.queryParser = queryParserFactory.getQueryProcessor();
         this.extraWhitespaceCharaters = queryParserFactory.getExtraWhitespaceCharaters();
     }
     
@@ -162,15 +157,6 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
      * @return the query parser
      */
     public QueryParser getQueryParser() {
-        return queryParser;
-    }
-
-    /**
-     * Sets the query parser.
-     * 
-     * @param queryParser the new query parser
-     */
-    public void setQueryParser(QueryParser queryParser) {
-        this.queryParser = queryParser;
+        return IndexQueryParserFactory.getQueryThreadSafeQueryParser();
     }
 }

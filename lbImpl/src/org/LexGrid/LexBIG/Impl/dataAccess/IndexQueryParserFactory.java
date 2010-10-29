@@ -171,6 +171,10 @@ public class IndexQueryParserFactory {
         return this.parser_;
     }
     
+    public static QueryParser getQueryThreadSafeQueryParser(){
+        return new IndexQueryParserFactory().getQueryProcessor();
+    }
+    
     public Set getExtraWhitespaceCharaters(){
         return this.extraWhiteSpaceChars_;
     }
