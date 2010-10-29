@@ -38,7 +38,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.annotations.LgProxyClass;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
-import org.lexevs.paging.AbstractPageableIterator;
+import org.lexevs.paging.AbstractRefereshingPageableIterator;
 
 /**
  * The Class LazyLoadableAssociatedConceptList.
@@ -292,7 +292,7 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
 	}	
 	
 	@LgClientSideSafe
-	public static class RootResolvedConceptReferenceIterator extends AbstractPageableIterator<ResolvedConceptReference> {
+	public static class RootResolvedConceptReferenceIterator extends AbstractRefereshingPageableIterator<RootConceptReferenceIterator,ResolvedConceptReference> {
 
         private static final long serialVersionUID = -1322750106614136398L;
         
@@ -348,6 +348,24 @@ public class LazyLoadableResolvedConceptReferenceList extends ResolvedConceptRef
                 graphQuery,
                 this.sortAlgorithms);
 	    }
+
+        @Override
+        protected RootConceptReferenceIterator doGetRefresh() {
+            return this.getRootConceptReferenceIterator();
+        }
+
+        @Override
+        protected void doRefresh(RootConceptReferenceIterator refresh) {
+            this.rootConceptReferenceIterator = refresh;
+        }
+
+        public RootConceptReferenceIterator getRootConceptReferenceIterator() {
+            return rootConceptReferenceIterator;
+        }
+
+        public void setRootConceptReferenceIterator(RootConceptReferenceIterator rootConceptReferenceIterator) {
+            this.rootConceptReferenceIterator = rootConceptReferenceIterator;
+        }
 
         @Override
         protected List<? extends ResolvedConceptReference> doPage(int currentPosition, int pageSize) {
