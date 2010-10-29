@@ -279,7 +279,7 @@
       <column name="revisionGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="prevRevisionGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="prevEntryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
-      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_previd" onDelete="setnull">
+      <foreign-key foreignTable="@DEFAULT_PREFIX@revision" name="@PREFIX@FK_es_previd" onDelete="cascade">
         <reference local="prevRevisionGuid" foreign="revisionGuid"/>
       </foreign-key>
       <foreign-key foreignTable="@PREFIX@entryState" name="@PREFIX@FK_es_pesid" onDelete="cascade">
