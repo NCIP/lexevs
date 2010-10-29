@@ -45,6 +45,10 @@ public abstract class AbstractRefereshingPageableIterator<R,T> extends AbstractP
 		super(pageSize);
 	}
 
+	public AbstractRefereshingPageableIterator() {
+		super();
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.paging.AbstractPageableIterator#doExecutePage()
 	 */
