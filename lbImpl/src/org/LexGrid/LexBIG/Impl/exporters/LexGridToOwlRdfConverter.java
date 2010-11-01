@@ -394,6 +394,8 @@ public class LexGridToOwlRdfConverter {
 					
 					if (target.getCode().startsWith("@")) {
 						Resource r = processLgAnonymousTarget(target);
+						if (r == null)
+						    continue;
 						if (prop.getURI().equals(RDFS.subClassOf.getURI())) {
 						    this.createTriple(r, prop, source);
 						}
@@ -554,6 +556,8 @@ public class LexGridToOwlRdfConverter {
 				if (target.getCode().startsWith("@") && anonymousSource.getCode().startsWith("@")) {
 					// target is anonymous class, recursively call itself
 					targetRsc = processLgAnonymousTarget(target);
+					if (targetRsc == null)
+					    continue;
 					if (localProp.getURI().equals(OWL.complementOf.getURI()))
 						targetRsc = model_.createComplementClass(null, targetRsc);
 					else {
@@ -597,7 +601,7 @@ public class LexGridToOwlRdfConverter {
 			}
 		}
 
-		if (rdfList != null ) {
+		if (rdfList != null && rdfList.size() > 1) {
 			return this.createIntersectionOrUnionClass(classHolder, rdfList);
 		}
 		else 
