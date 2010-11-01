@@ -42,8 +42,6 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -51,7 +49,6 @@ import org.LexGrid.LexBIG.Impl.exporters.ExporterMessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -320,13 +317,10 @@ public class LexGridToOwlRdfConverter {
 	    prop.addSuperProperty(LexRdf.associationQualification);
 	    rs.addProperty(prop, qualifierValue);
 	}
-	private void processLgTargets(ResolvedConceptReference sourceConRef) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException
-			 {
-		
+	private void processLgTargets(ResolvedConceptReference sourceConRef) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException	 {
 		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
 		
-		// for dev only
 		assnCounter++;
 		
 		//only consider the anonymous target
@@ -471,7 +465,6 @@ public class LexGridToOwlRdfConverter {
 	    for (org.LexGrid.commonTypes.Property lgProp : en.getProperty()) {
 //	        SupportedProperty lgSupProp = DaoUtility.getURIMap(cs_, SupportedProperty.class, lgProp.getPropertyName());
 //	        if (!lgSupProp.getUri().equals(RDF.type.getURI()))
-	        // TODO in supported property the URI of "type" is not correct
             if (!lgProp.getPropertyName().equalsIgnoreCase("type"))
 	            continue;
 	        StringHelper helper = new StringHelper(lgProp.getValue().getContent(), model_.getNsPrefixMap());
@@ -567,7 +560,6 @@ public class LexGridToOwlRdfConverter {
 						if (localProp.getURI().equals(RDFS.subClassOf.getURI()) == false && localProp.getNameSpace().equals(currentNamespace_))
 							System.err.println("process anonymous targe error");
 					}
-						
 				}
 				
 				SupportedAssociationQualifier qualifier = getLgQualifier(target);
@@ -659,15 +651,21 @@ public class LexGridToOwlRdfConverter {
 	}
 	
 	private Restriction createRestriction(SupportedAssociationQualifier q, Property p, Resource r) {
-		if (q.getUri().equalsIgnoreCase(OWL.someValuesFrom.getURI())) {
+		if (q.getUri().equalsIgnoreCase(OWL.someValuesFrom.getURI())) 
 			return model_.createSomeValuesFromRestriction(null, p, r);
-		}
-		else if (q.getUri().equalsIgnoreCase(OWL.allValuesFrom.getURI())) {
+		else if (q.getUri().equalsIgnoreCase(OWL.allValuesFrom.getURI())) 
 			return model_.createAllValuesFromRestriction(null, p, r);
-		}
-		else if (q.getUri().equalsIgnoreCase(OWL.hasValue.getURI())) {
+		else if (q.getUri().equalsIgnoreCase(OWL.hasValue.getURI())) 
 			return model_.createHasValueRestriction(null, p, r);
-		}
+		/**
+		 * We cannot create max cardinality and min cardinality restrictions,
+		 * since the associatedData does not support the qualifier for now.
+		 * We will add this feature in the next release
+		 */
+//		else if (q.getUri().equalsIgnoreCase(OWL.maxCardinality.getURI()))
+//		    return model_.createMaxCardinalityRestriction(null, p, n);
+//		else if (q.getUri().equalsIgnoreCase(OWL.minCardinality.getURI()))
+//		    return model_.createMinCardinalityRestriction(null, p, n);
 		else 
 			return null;
 	}
@@ -784,9 +782,8 @@ public class LexGridToOwlRdfConverter {
 			System.err.println("attention, not inlucded property, create annotation property for: "
 					+ property.getPropertyName() + ": "
 					+ property.getValue().getContent());
-			AnnotationProperty annotationProp = model_.createAnnotationProperty(currentNamespace_ + property.getPropertyName());
+			AnnotationProperty annotationProp = model_.createAnnotationProperty(this.resolveNamespace(currentNamespace_) + property.getPropertyName());
 			ontProperty.addProperty(annotationProp, property.getValue().getContent());
-			
 		}
 	}
 
@@ -899,15 +896,15 @@ public class LexGridToOwlRdfConverter {
 
 	}
 
-	private Property createPropertyLink() {
-		OntProperty p = model_
-				.getOntProperty(LexRdfConstants.LEXRDF_PROPERTY_LINK);
-		if (p != null)
-			return p;
-		p = model_.createOntProperty(LexRdfConstants.LEXRDF_PROPERTY_LINK);
-		p.setRDFType(OWL.AnnotationProperty);
-		return p;
-	}
+//	private Property createPropertyLink() {
+//		OntProperty p = model_
+//				.getOntProperty(LexRdfConstants.LEXRDF_PROPERTY_LINK);
+//		if (p != null)
+//			return p;
+//		p = model_.createOntProperty(LexRdfConstants.LEXRDF_PROPERTY_LINK);
+//		p.setRDFType(OWL.AnnotationProperty);
+//		return p;
+//	}
 
 	private void addOwlClass(Entity entity) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		String namespace = this.resolveNamespace(entity
@@ -963,12 +960,6 @@ public class LexGridToOwlRdfConverter {
 					statementHash.get(targetProp).getURI());
 
 		}
-	}
-	
-	private Entity getEntity(String uri) {
-	    
-	    
-	    return null;
 	}
 
 	// only a regular mapping from lg:property's value to
@@ -1093,18 +1084,18 @@ public class LexGridToOwlRdfConverter {
 		return cng_.intersect(localCng);
 	}
 	
-	private CodedNodeSet restrictToCnsAnonymous() throws LBException{
-		LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
-		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion(cs_.getRepresentsVersion());
-		CodedNodeSet localCns;
-
-		localCns = lbsvc.getNodeSet(cs_.getCodingSchemeURI(), versionOrTag, null);
-		localCns.restrictToAnonymous(AnonymousOption.ANONYMOUS_ONLY);
-		ResolvedConceptReferencesIterator iterator = localCns.resolve(null, null, null, null, true);
-		iterator.numberRemaining();
-		return cns_.intersect(localCns);
-	}
+//	private CodedNodeSet restrictToCnsAnonymous() throws LBException{
+//		LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
+//		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+//		versionOrTag.setVersion(cs_.getRepresentsVersion());
+//		CodedNodeSet localCns;
+//
+//		localCns = lbsvc.getNodeSet(cs_.getCodingSchemeURI(), versionOrTag, null);
+//		localCns.restrictToAnonymous(AnonymousOption.ANONYMOUS_ONLY);
+//		ResolvedConceptReferencesIterator iterator = localCns.resolve(null, null, null, null, true);
+//		iterator.numberRemaining();
+//		return cns_.intersect(localCns);
+//	}
 
 	private OntologyFormat findOntFormat() {
 	    for (org.LexGrid.commonTypes.Property p : cs_.getProperties().getProperty()) {
