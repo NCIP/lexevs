@@ -142,7 +142,7 @@ DB_PREFIX=lb
 
 # DB_PRIMARY_KEY_STRATEGY indicates which strategy will be used
 # for the primary key of the database tables.
-# WARNING - This cannot be change after the initial 
+# WARNING - This cannot be changed after the initial 
 # schema installation.
 #
 # Allowable values include:
