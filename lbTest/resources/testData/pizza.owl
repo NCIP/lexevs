@@ -4042,8 +4042,6 @@
     <owl:disjointWith rdf:resource="#ThinAndCrispyBase"/>
     <rdfs:label xml:lang="pt">BaseEspessa</rdfs:label>
   </owl:Class>
-  <owl:Class rdf:ID="MyPizza">
-  </owl:Class>
   <owl:ObjectProperty rdf:ID="isIngredientOf">
     <rdfs:comment xml:lang="en">The inverse property tree to hasIngredient - all subproperties and attributes of the properties should reflect those under hasIngredient.</rdfs:comment>
     <owl:inverseOf>
