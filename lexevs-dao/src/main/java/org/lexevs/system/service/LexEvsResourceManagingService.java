@@ -231,7 +231,12 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	public void removePickListDefinitionResourceFromSystem(String pickListId, String version) throws LBParameterException {
 		this.databaseServiceManager.getPickListDefinitionService().removePickListDefinitionByPickListId(pickListId);
 		
-		List<RegistryEntry> entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
+		List<RegistryEntry> entryList = null;
+		
+		if (StringUtils.isEmpty(version))
+			entryList = this.getRegistry().getAllRegistryEntriesOfTypeAndURI(ResourceType.PICKLIST_DEFINITION, pickListId);
+		else			
+			entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
 		for (RegistryEntry entry : entryList)
 		{
 			this.getRegistry().removeEntry(entry);
