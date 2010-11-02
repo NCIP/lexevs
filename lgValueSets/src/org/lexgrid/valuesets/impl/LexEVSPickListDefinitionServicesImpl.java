@@ -233,18 +233,18 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
 	 * @see org.lexgrid.valuesets.LexEVSPickListDefinitionServices#getPickListValueSetDefinition(java.lang.String)
 	 */
 	public URI getPickListValueSetDefinition(String pickListId) throws LBException {
-		URI valueDomainURI = null;
+		URI valueSetDefURI = null;
 		
 		try {
 			PickListDefinition pickList = getPickListDefinitionById(pickListId);
 			
 			if (pickList != null)
-				valueDomainURI = new URI(pickList.getRepresentsValueSetDefinition()); // TODO need to change representsValueDomain from String to URI in XML schema
+				valueSetDefURI = new URI(pickList.getRepresentsValueSetDefinition()); // TODO need to change representsValueDomain from String to URI in XML schema
 		} catch (URISyntaxException e) {
 			md_.fatal("Problem getting PickLists for pickListId : " + pickListId, e);
 			throw new LBException("Problem getting PickLists for pickListId : " + pickListId, e);
 		}
-		return valueDomainURI;
+		return valueSetDefURI;
 	}
 
 	/* (non-Javadoc)
@@ -498,7 +498,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         return plList;
     }
 
-    private ResolvedPickListEntryList internalResolvePickListForTerm(String valueDomainURI, boolean sortByText,
+    private ResolvedPickListEntryList internalResolvePickListForTerm(String valueSetDefURI, boolean sortByText,
     		AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag) throws LBException {
         
         ResolvedPickListEntryList plList = new ResolvedPickListEntryList();
@@ -511,7 +511,7 @@ public class LexEVSPickListDefinitionServicesImpl implements LexEVSPickListDefin
         	sortCriteria = Constructors.createSortOptionList(new String[] { "entityDescription" });
         
         try {
-            rvdDef = vds.resolveValueSetDefinition(new URI(valueDomainURI), null, csVersionList, versionTag, sortCriteria);
+            rvdDef = vds.resolveValueSetDefinition(new URI(valueSetDefURI), null, csVersionList, versionTag, sortCriteria);
         } catch (URISyntaxException e) {
             throw new LBException("Problem with ValueSet URI", e);
         }
