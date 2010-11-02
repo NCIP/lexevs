@@ -105,13 +105,13 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 				getValueSetDefinitionService().removeValueSetDefinition(new URI(uri));
 		}
 		
-		// check if we missed any test valueDomains
+		// check if we missed any test valueSetDefs
 		uris = getValueSetDefinitionService().listValueSetDefinitions(null);
 		
 		for (String uri : uris)
 		{
 			if (uri.toString().startsWith("SRITEST:"))
-				assertTrue("Not all test value domains were deleted.",false);
+				assertTrue("Not all test value set definitions were deleted.",false);
 		}
 	}
 

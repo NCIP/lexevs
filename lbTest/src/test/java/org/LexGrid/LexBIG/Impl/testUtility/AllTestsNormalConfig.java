@@ -412,8 +412,8 @@ public class AllTestsNormalConfig {
         
         mainSuite.addTestSuite(CleanUpTest.class);
        
-        //ValueDomain tests
-        mainSuite.addTest(org.LexGrid.valuedomain.test.VDAllTests.suite());
+        //ValueSets tests
+        mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
         
         //LexGrid XML Exporter tests
         mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
