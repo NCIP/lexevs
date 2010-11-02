@@ -102,7 +102,7 @@ public class CleanUpTest extends TestCase {
 				getValueSetDefService().removeValueSetDefinition(new URI(uri));
 		}
 		
-		// check if we missed any test valueDomains
+		// check if we missed any test valueSetDefs
 		uris = getValueSetDefService().listValueSetDefinitions(null);
 		
 		for (String uri : uris)
@@ -112,11 +112,6 @@ public class CleanUpTest extends TestCase {
 		}
 	}
 	
-	/**
-	 * Test method for {@link org.lexgrid.valuedomain.impl.LexEVSPickListServicesImpl#removePickList(java.lang.String)}.
-	 * @throws LBException 
-	 * @throws RemoveException 
-	 */
 	@Test
 	public void testRemovePickList() {
 		try {
@@ -137,11 +132,6 @@ public class CleanUpTest extends TestCase {
 		
 	}
 	
-	/**
-	 * Test method for {@link org.lexgrid.valuedomain.impl.LexEVSPickListServicesImpl#removeAllPickLists()}.
-	 * @throws LBException 
-	 * @throws RemoveException 
-	 */
 	@Test
 	public void testRemoveAllTestPickLists() throws LBException {
 		List<String> pickListIds = getPickListService().listPickListIds();
