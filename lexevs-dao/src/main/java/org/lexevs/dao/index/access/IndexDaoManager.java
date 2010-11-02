@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
@@ -112,6 +113,10 @@ public class IndexDaoManager {
 			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
 	
 			String indexVersion = metaData.getIndexMetaDataValue(indexName, "lgModel");
+			
+			Assert.state(StringUtils.isNotBlank(indexName) &&
+					StringUtils.isNotBlank(indexVersion), "A Lucene Index could not be found for URI: " +
+					uri + " Version: " + version + ". Reindexing may be needed.");
 			
 			return LexEvsIndexFormatVersion.parseStringToVersion(indexVersion);
 		} catch (Exception e) {
