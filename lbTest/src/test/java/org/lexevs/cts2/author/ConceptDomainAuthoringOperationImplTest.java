@@ -515,7 +515,7 @@ public class ConceptDomainAuthoringOperationImplTest {
 				vds_.removeValueSetDefinition(new URI(uri));
 		}
 		
-		// check if we missed any test valueDomains
+		// check if we missed any test valueSetDefs
 		uris = vds_.listValueSetDefinitions(null);
 		
 		for (String uri : uris)
