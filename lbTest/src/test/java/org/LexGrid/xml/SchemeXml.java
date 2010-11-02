@@ -39,7 +39,7 @@ public class SchemeXml {
 			"		    xmlns:lgLDAP=\"http://LexGrid.org/schema/2010/01/LexGrid/ldap\"" +
 			"		    xmlns:lgNaming=\"http://LexGrid.org/schema/2010/01/LexGrid/naming\"" +
 			"		    xmlns:lgService=\"http://LexGrid.org/schema/2010/01/LexGrid/service\"" +
-			"		    xmlns:lgVD=\"http://LexGrid.org/schema/2010/01/LexGrid/valueDomains\"" +
+			"		    xmlns:lgVD=\"http://LexGrid.org/schema/2010/01/LexGrid/valueSets\"" +
 			"		    xmlns:lgVer=\"http://LexGrid.org/schema/2010/01/LexGrid/versions\"" +
 			"		    xmlns:NCIHistory=\"http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory\"" +
 			"			codingSchemeName=\"colors\" codingSchemeURI=\"1.2.3\" formalName=\"colors coding scheme\"" +
