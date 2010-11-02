@@ -1553,7 +1553,7 @@ public class VSDObjectToString {
                 .append(toString(o.getMappings(), indent + sp8));
     }
     
-    //ValueDomainDefinition
+    //ValueSetDefinition
     protected static void append(StringBuffer buff, String indent, ValueSetDefinition o) {
         buff.append(getBreakAndIndent())
             .append(getBoldedString("Value Set Definition Name: ")).append(o.getValueSetDefinitionName());
