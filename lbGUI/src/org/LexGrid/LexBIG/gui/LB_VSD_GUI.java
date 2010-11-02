@@ -108,13 +108,13 @@ public class LB_VSD_GUI{
     private static Logger log = Logger.getLogger("LB_VSGUI_LOGGER");
     protected Shell shell_;
     private DialogHandler errorHandler;
-    private Composite valueDomainComposite_, pickListComposite_;
-    private TableViewer valueDomainTV_, pickListTV_;
+    private Composite valueSetDefComposite_, pickListComposite_;
+    private TableViewer valueSetDefTV_, pickListTV_;
     private Properties currentProperties_;
     private List codeSetsList_;
 
     private MenuItem enableAdmin_, loadItem_, exportItem_, queryItem_, createItem_;
-    private Button removeValueDomain_, removePickList_;
+    private Button removeValueSetDef_, removePickList_;
 
     private ArrayList<CodeSet> codeSets;
     private LogViewer logViewer_;
@@ -245,7 +245,7 @@ public class LB_VSD_GUI{
         topBottom.setLayoutData(gd);
         topBottom.setVisible(true);
 
-        buildValueDomainComposite(topBottom);
+        buildValueSetDefComposite(topBottom);
        
         SashForm leftRightBottom = new SashForm(topBottom, SWT.HORIZONTAL);
         leftRightBottom.SASH_WIDTH = 5;
@@ -262,7 +262,7 @@ public class LB_VSD_GUI{
         if (filePath != null) {
             File file = new File(filePath);
             if (file.exists()) {
-                refreshValueDomainList();
+                refreshValueSetDefList();
                 try {
                     PropertiesUtility.propertiesLocationKey = "CONFIG_FILE_LOCATION";
                     currentProperties_ = PropertiesUtility
@@ -277,36 +277,36 @@ public class LB_VSD_GUI{
 
     }
 
-    private void buildValueDomainComposite(Composite holder) {
-        valueDomainComposite_ = new Composite(holder, SWT.BORDER);
+    private void buildValueSetDefComposite(Composite holder) {
+        valueSetDefComposite_ = new Composite(holder, SWT.BORDER);
 
         GridData gd = new GridData(GridData.FILL_BOTH);
         gd.horizontalSpan = 2;
-        valueDomainComposite_.setLayout(new GridLayout(2, false));
-        valueDomainComposite_.setLayoutData(gd);
+        valueSetDefComposite_.setLayout(new GridLayout(2, false));
+        valueSetDefComposite_.setLayoutData(gd);
 
-        Utility.makeBoldLabel(valueDomainComposite_, 2,
+        Utility.makeBoldLabel(valueSetDefComposite_, 2,
                 GridData.HORIZONTAL_ALIGN_CENTER, "Available Value Set Definitions");
 
         gd = new GridData(GridData.FILL_BOTH);
         gd.verticalSpan = 12;
-        valueDomainTV_ = new TableViewer(valueDomainComposite_, SWT.BORDER
+        valueSetDefTV_ = new TableViewer(valueSetDefComposite_, SWT.BORDER
                 | SWT.SINGLE | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
-        valueDomainTV_.getTable().setLayoutData(gd);
+        valueSetDefTV_.getTable().setLayoutData(gd);
 
-        valueDomainTV_.setContentProvider(new ValueSetDefinitionContentProvider(this));
+        valueSetDefTV_.setContentProvider(new ValueSetDefinitionContentProvider(this));
         ValueSetDefinitionLabelProvider vdlp = new ValueSetDefinitionLabelProvider();
-        valueDomainTV_.setLabelProvider(vdlp);
+        valueSetDefTV_.setLabelProvider(vdlp);
 
-        valueDomainTV_.setUseHashlookup(true);
-        valueDomainTV_.getTable().setHeaderVisible(true);
-        valueDomainTV_.getTable().setLayoutData(gd);
-        valueDomainTV_.getTable().setLinesVisible(true);
+        valueSetDefTV_.setUseHashlookup(true);
+        valueSetDefTV_.getTable().setHeaderVisible(true);
+        valueSetDefTV_.getTable().setLayoutData(gd);
+        valueSetDefTV_.getTable().setLinesVisible(true);
 
-        vdlp.setupColumns(valueDomainTV_.getTable());
-        valueDomainTV_.setInput("");
+        vdlp.setupColumns(valueSetDefTV_.getTable());
+        valueSetDefTV_.setInput("");
 
-        valueDomainTV_
+        valueSetDefTV_
                 .addSelectionChangedListener(new ISelectionChangedListener() {
 
                     public void selectionChanged(SelectionChangedEvent arg0) {
@@ -315,7 +315,7 @@ public class LB_VSD_GUI{
 
                 });
 
-        valueDomainTV_.addDoubleClickListener(new IDoubleClickListener() {
+        valueSetDefTV_.addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent arg0) {
                 try {
@@ -328,13 +328,13 @@ public class LB_VSD_GUI{
         });
 
         Button resolveVD = Utility.makeButton("Resolve",
-                valueDomainComposite_, GridData.VERTICAL_ALIGN_BEGINNING
+                valueSetDefComposite_, GridData.VERTICAL_ALIGN_BEGINNING
                         | GridData.FILL_HORIZONTAL);
         resolveVD.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
 
-                URI uri = getSelectedValueDomain();
+                URI uri = getSelectedValueSetDef();
 
                 if (uri == null) {
                     errorHandler.showError("No Value Set Definition selected",
@@ -351,13 +351,13 @@ public class LB_VSD_GUI{
         });
         
         Button displayVDDef = Utility.makeButton("Display Details",
-                valueDomainComposite_, GridData.VERTICAL_ALIGN_BEGINNING
+                valueSetDefComposite_, GridData.VERTICAL_ALIGN_BEGINNING
                         | GridData.FILL_HORIZONTAL);
         displayVDDef.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
 
-                URI uri = getSelectedValueDomain();
+                URI uri = getSelectedValueSetDef();
 
                 if (uri == null) {
                     errorHandler.showError("No Value Set Definition selected",
@@ -378,12 +378,12 @@ public class LB_VSD_GUI{
 
         });
 
-        Button refresh = Utility.makeButton("Refresh", valueDomainComposite_,
+        Button refresh = Utility.makeButton("Refresh", valueSetDefComposite_,
                 GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
         refresh.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
-               LB_VSD_GUI.this.refreshValueDomainList();
+               LB_VSD_GUI.this.refreshValueSetDefList();
             }
 
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -392,15 +392,15 @@ public class LB_VSD_GUI{
 
         });
         
-        removeValueDomain_ = Utility.makeButton("Remove",
-                valueDomainComposite_, GridData.VERTICAL_ALIGN_BEGINNING
+        removeValueSetDef_ = Utility.makeButton("Remove",
+                valueSetDefComposite_, GridData.VERTICAL_ALIGN_BEGINNING
                         | GridData.FILL_HORIZONTAL);
-        removeValueDomain_.setEnabled(false);
-        removeValueDomain_.addSelectionListener(new SelectionListener() {
+        removeValueSetDef_.setEnabled(false);
+        removeValueSetDef_.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
                 try {
-                    URI uri = getSelectedValueDomain();
+                    URI uri = getSelectedValueSetDef();
 
                     if (uri == null) {
                         errorHandler.showError("No value set definition selected",
@@ -415,7 +415,7 @@ public class LB_VSD_GUI{
                             .setMessage("Do you really want to remove the selected value set definition?");
                     if (messageBox.open() == SWT.YES) {
                         LB_VSD_GUI.this.getValueSetDefinitionService().removeValueSetDefinition(uri);
-                        LB_VSD_GUI.this.refreshValueDomainList();
+                        LB_VSD_GUI.this.refreshValueSetDefList();
                     }
                 } catch (LBException e) {
                     errorHandler.showError("Error executing remove", e
@@ -586,8 +586,8 @@ public class LB_VSD_GUI{
 
     }
 
-    private URI getSelectedValueDomain() {
-        TableItem[] temp = valueDomainTV_.getTable().getSelection();
+    private URI getSelectedValueSetDef() {
+        TableItem[] temp = valueSetDefTV_.getTable().getSelection();
         if (temp.length == 1) {
             try {
                 return new URI(((ValueSetDefinition) temp[0].getData()).getValueSetDefinitionURI());
@@ -608,30 +608,30 @@ public class LB_VSD_GUI{
         return null;
     }
     
-    public void refreshValueDomainListTemp() {
+    public void refreshValueSetDefListTemp() {
         shell_.getDisplay().syncExec(new Runnable() {
             public void run() {
-                valueDomainTV_.setContentProvider(new ValueSetDefinitionContentProvider(LB_VSD_GUI.this));
-                valueDomainTV_.setInput("");
+                valueSetDefTV_.setContentProvider(new ValueSetDefinitionContentProvider(LB_VSD_GUI.this));
+                valueSetDefTV_.setInput("");
             }
         });
     }
     
-    public void refreshValueDomainList() {
+    public void refreshValueSetDefList() {
         shell_.getDisplay().syncExec(new Runnable() {
             public void run() {
                 URI temp;
-                temp = getSelectedValueDomain();
-                valueDomainTV_.setInput("");
+                temp = getSelectedValueSetDef();
+                valueSetDefTV_.setInput("");
                 // reselect previous selection
                 if (temp != null) {
-                    TableItem[] ti = valueDomainTV_.getTable().getItems();
-                    valueDomainTV_.getTable().select(0);
+                    TableItem[] ti = valueSetDefTV_.getTable().getItems();
+                    valueSetDefTV_.getTable().select(0);
                     for (int i = 0; i < ti.length; i++) {
                         if (((ValueSetDefinition) ti[i].getData())
                                 .getValueSetDefinitionURI()
                                 .equals(temp)) {
-                            valueDomainTV_.getTable().select(i);
+                            valueSetDefTV_.getTable().select(i);
 //                                updateButtonStates();
                             break;
                         }
@@ -715,12 +715,12 @@ public class LB_VSD_GUI{
                     if (enableAdmin_.getSelection()) {
                         loadItem_.setEnabled(true);
                         exportItem_.setEnabled(true);
-                        removeValueDomain_.setEnabled(true);
+                        removeValueSetDef_.setEnabled(true);
                         removePickList_.setEnabled(true);
                     } else {
                         loadItem_.setEnabled(false);
                         exportItem_.setEnabled(false);
-                        removeValueDomain_.setEnabled(false);
+                        removeValueSetDef_.setEnabled(false);
                         removePickList_.setEnabled(false);
                     }
 
@@ -807,7 +807,7 @@ public class LB_VSD_GUI{
             exportVSDLexGrid.setText("Value Set Definition as LexGrid XML");
             exportVSDLexGrid.addSelectionListener(new SelectionListener() {
                 public void widgetSelected(SelectionEvent arg0) {
-                    URI uri = getSelectedValueDomain();
+                    URI uri = getSelectedValueSetDef();
 
                     if (uri == null) {
                         errorHandler.showError("No value set selected",
@@ -833,7 +833,7 @@ public class LB_VSD_GUI{
             exportVSResolvedLexGrid.setText("Value Set Resolution as LexGrid XML");
             exportVSResolvedLexGrid.addSelectionListener(new SelectionListener() {
                 public void widgetSelected(SelectionEvent arg0) {
-                    URI uri = getSelectedValueDomain();
+                    URI uri = getSelectedValueSetDef();
 
                     if (uri == null) {
                         errorHandler.showError("No value set selected",
@@ -936,7 +936,7 @@ public class LB_VSD_GUI{
         checkForSubset.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
-                URI vsdSelected = getSelectedValueDomain();
+                URI vsdSelected = getSelectedValueSetDef();
                 new ValueSetDefIsSubSet(LB_VSD_GUI.this, vsdSelected == null ? null : vsdSelected.toString(), shell_);
             }
 
@@ -953,7 +953,7 @@ public class LB_VSD_GUI{
                 String vsdURI = null;
                 ValueSetDefinition selectedVSD = null;
                 Mappings vsdMappings = null;
-                URI vsdSelected = getSelectedValueDomain();
+                URI vsdSelected = getSelectedValueSetDef();
                 if (vsdSelected != null)
                 {
                     vsdURI = vsdSelected.toString();
@@ -980,7 +980,7 @@ public class LB_VSD_GUI{
 
             public void widgetSelected(SelectionEvent arg0) {
                 String vsdURI = null;
-                URI vsdSelected = getSelectedValueDomain();
+                URI vsdSelected = getSelectedValueSetDef();
                 if (vsdSelected != null)
                 {
                     vsdURI = vsdSelected.toString();
@@ -1098,13 +1098,14 @@ public class LB_VSD_GUI{
     }
 
     private void displayValueSetDefinitionDetails() throws LBException {
-        new ValueSetDefinitionDetails(this, this.shell_, getValueSetDefinitionService().getValueSetDefinition(getSelectedValueDomain(), null));
+        new ValueSetDefinitionDetails(this, this.shell_, getValueSetDefinitionService().getValueSetDefinition(getSelectedValueSetDef(), null));
     }
     
     private void displayPickListDefinitionDetails() throws LBException {
         new ValueSetDefinitionDetails(this.shell_, getPickListDefinitionService().getPickListDefinitionById(getSelectedPickList()));
     }
 
+    @Deprecated
     public void resolveValueDomainOld(URI uri) throws LBException {
         ConvenienceMethods cm = new ConvenienceMethods();
         org.LexGrid.LexBIG.LexBIGService.CodedNodeSet finalCNS = null;   
@@ -1123,7 +1124,7 @@ public class LB_VSD_GUI{
         new VDDisplayCodedNodeSet(this, finalCNS, null);
     }
     
-    public void resolveValueDomain(URI uri) throws LBException {
+    public void resolveValueSetDef(URI uri) throws LBException {
         if (uri == null)
             return;
         
@@ -1138,7 +1139,7 @@ public class LB_VSD_GUI{
        
     }
     
-    public void resolveValueDomain(URI uri, AbsoluteCodingSchemeVersionReferenceList csrList, String revisionId) throws LBException {
+    public void resolveValueSetDef(URI uri, AbsoluteCodingSchemeVersionReferenceList csrList, String revisionId) throws LBException {
         ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().getCodedNodeSetForValueSetDefinition(uri, null, csrList, null);
         org.LexGrid.LexBIG.LexBIGService.CodedNodeSet finalCNS = null;
         if (resolvedVSDCNS != null)
@@ -1147,7 +1148,7 @@ public class LB_VSD_GUI{
         new VDDisplayCodedNodeSet(this, finalCNS, null);
     }
     
-    public void resolveValueDomain(ValueSetDefinition vsd, AbsoluteCodingSchemeVersionReferenceList csrList, String revisionId) throws LBException {
+    public void resolveValueSetDef(ValueSetDefinition vsd, AbsoluteCodingSchemeVersionReferenceList csrList, String revisionId) throws LBException {
         ConvenienceMethods cm = new ConvenienceMethods();
         org.LexGrid.LexBIG.LexBIGService.CodedNodeSet finalCNS = null; 
         try {

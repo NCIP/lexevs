@@ -115,7 +115,7 @@ public class ValueSetDefinitionDetails {
     private Text  vsdURITxt_, vsdNameTxt_, conceptDomainTxt_, statusTxt_, ownerTxt_, 
         effDateTxt_, expDateTxt_, currRevisionTxt_, prevRevisionTxt_, revDateTxt_, changeAgentTxt_, sourceTxt_, contextTxt_;
     private StyledText changeInst;
-    private Composite valueDomainComposite_, definitionEntryComposite_, propertyComposite_, suppAttribComposite_;
+    private Composite valueSetsComposite_, definitionEntryComposite_, propertyComposite_, suppAttribComposite_;
     
     private Button editButton_, removeButton_, resolveButton_, saveButton_, closeButton_, sourceAddButton_, sourceRemoveButton_,
         contextAddButton_, contextRemoveButton_, entityRefAddButton_, entityRefRemoveButton_, entityRefEditButton_,
@@ -177,7 +177,7 @@ public class ValueSetDefinitionDetails {
         topBottom.setVisible(true);
         
         
-        buildValueDomainComposite(topBottom);
+        buildValueSetsComposite(topBottom);
         
         SashForm leftRightBottom = new SashForm(topBottom, SWT.HORIZONTAL);
         leftRightBottom.SASH_WIDTH = 5;
@@ -646,7 +646,7 @@ public class ValueSetDefinitionDetails {
 
                 MessageBox messageBox = new MessageBox(shell_,
                         SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                messageBox.setText("Remove definition? entry");
+                messageBox.setText("Remove definition entry?");
                 messageBox.setMessage("Do you really want to remove the selected definition entry?");
                 if (messageBox.open() == SWT.YES) {
                     DefinitionEntry defEntryToDelete = ((DefinitionEntry)temp[0].getData());
@@ -769,7 +769,7 @@ public class ValueSetDefinitionDetails {
 
                 MessageBox messageBox = new MessageBox(shell_,
                         SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                messageBox.setText("Remove definition? entry");
+                messageBox.setText("Remove definition entry?");
                 messageBox.setMessage("Do you really want to remove the selected definition entry?");
                 if (messageBox.open() == SWT.YES) {
                     DefinitionEntry defEntryToDelete = ((DefinitionEntry)temp[0].getData());
@@ -890,7 +890,7 @@ public class ValueSetDefinitionDetails {
 
                 MessageBox messageBox = new MessageBox(shell_,
                         SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                messageBox.setText("Remove definition? entry");
+                messageBox.setText("Remove definition entry?");
                 messageBox.setMessage("Do you really want to remove the selected definition entry?");
                 if (messageBox.open() == SWT.YES) {
                     DefinitionEntry defEntryToDelete = ((DefinitionEntry)temp[0].getData());
@@ -1016,7 +1016,7 @@ public class ValueSetDefinitionDetails {
 
                 MessageBox messageBox = new MessageBox(shell_,
                         SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                messageBox.setText("Remove definition? entry");
+                messageBox.setText("Remove definition entry?");
                 messageBox.setMessage("Do you really want to remove the selected definition entry?");
                 if (messageBox.open() == SWT.YES) {
                     DefinitionEntry defEntryToDelete = ((DefinitionEntry)temp[0].getData());
@@ -1065,7 +1065,7 @@ public class ValueSetDefinitionDetails {
         gd.verticalSpan = 2;       
         gd.horizontalSpan = 3;
         
-        vsdMetaDataGp_ = new Group(valueDomainComposite_, SWT.FILL);
+        vsdMetaDataGp_ = new Group(valueSetsComposite_, SWT.FILL);
         vsdMetaDataGp_.setText("Value Set Definition meta data");
         vsdMetaDataGp_.setLayoutData(gd);
 
@@ -1339,7 +1339,7 @@ public class ValueSetDefinitionDetails {
         GridData gd = new GridData(GridData.FILL_BOTH);
         gd.verticalSpan = 3;        
         
-        vsdSourceAndContextGp_ = new Group(valueDomainComposite_, SWT.NONE);
+        vsdSourceAndContextGp_ = new Group(valueSetsComposite_, SWT.NONE);
         vsdSourceAndContextGp_.setText("Source and Context");
         vsdSourceAndContextGp_.setLayoutData(gd);
 
@@ -1565,7 +1565,7 @@ public class ValueSetDefinitionDetails {
         GridData gd = new GridData(GridData.FILL_BOTH);
         gd.verticalSpan = 2;        
         
-        vsdRevisionGp_ = new Group(valueDomainComposite_, SWT.NONE);
+        vsdRevisionGp_ = new Group(valueSetsComposite_, SWT.NONE);
         vsdRevisionGp_.setText("Revision");
         vsdRevisionGp_.setLayoutData(gd);
 
@@ -1712,7 +1712,7 @@ public class ValueSetDefinitionDetails {
         GridData gd = new GridData(GridData.FILL, GridData.CENTER, true, true);
         gd.horizontalIndent = 5;
         
-        buttonsGp_ = new Group(valueDomainComposite_, SWT.NONE);
+        buttonsGp_ = new Group(valueSetsComposite_, SWT.NONE);
         buttonsGp_.setLayoutData(gd);
 
         GridLayout layout = new GridLayout(1, false);
@@ -1789,7 +1789,7 @@ public class ValueSetDefinitionDetails {
                             .setMessage("Do you really want to remove the selected value set definition?");
                     if (messageBox.open() == SWT.YES) {
                         lb_vsd_gui_.getValueSetDefinitionService().removeValueSetDefinition(uri);
-                        lb_vsd_gui_.refreshValueDomainList();
+                        lb_vsd_gui_.refreshValueSetDefList();
                         
                         errorHandler.showInfo("Removed", "Selected Value Set Definition has been removed");
                         shell_.dispose();
@@ -1868,7 +1868,7 @@ public class ValueSetDefinitionDetails {
                             refreshDefinitionEntryList();
                             refreshVSDPropertyList();
                             setChangesMade(false);
-                            lb_vsd_gui_.refreshValueDomainList();
+                            lb_vsd_gui_.refreshValueSetDefList();
                             resolveButton_.setEnabled(true);
                             changesSaved = false;
                         }
@@ -1913,15 +1913,15 @@ public class ValueSetDefinitionDetails {
         });
     }
     
-    private void buildValueDomainComposite(Composite holder) {
-        valueDomainComposite_ = new Composite(holder, SWT.BORDER);
+    private void buildValueSetsComposite(Composite holder) {
+        valueSetsComposite_ = new Composite(holder, SWT.BORDER);
 
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
         gd.verticalSpan = 2;
         
-        valueDomainComposite_.setLayout(new GridLayout(6, false));
-        valueDomainComposite_.setLayoutData(gd);
+        valueSetsComposite_.setLayout(new GridLayout(6, false));
+        valueSetsComposite_.setLayoutData(gd);
 
         // group 1 for vsd meta data
         setUpVSDMetaDataGp();

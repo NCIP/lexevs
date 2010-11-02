@@ -489,7 +489,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         Composite status = null;
         
         if (loadingVS)
-            status = getStatusCompositeForValueDomain(shell, loader);        
+            status = getStatusCompositeForValueSets(shell, loader);        
         else if (loadingPL)
                 status = getStatusCompositeForPickList(shell, loader);
         

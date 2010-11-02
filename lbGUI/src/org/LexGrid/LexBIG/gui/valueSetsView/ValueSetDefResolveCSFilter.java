@@ -137,9 +137,9 @@ public class ValueSetDefResolveCSFilter {
                     if (resolvingVSD_)
                     {
                         if (vsd_ != null)
-                            lb_vsd_gui_.resolveValueDomain(vsd_, acsvrList, "");
+                            lb_vsd_gui_.resolveValueSetDef(vsd_, acsvrList, "");
                         else
-                            lb_vsd_gui_.resolveValueDomain(new URI(vsdURIOrPLDid_),acsvrList, "");
+                            lb_vsd_gui_.resolveValueSetDef(new URI(vsdURIOrPLDid_),acsvrList, "");
                     } 
                     else if (resolvingPLD_)
                     {

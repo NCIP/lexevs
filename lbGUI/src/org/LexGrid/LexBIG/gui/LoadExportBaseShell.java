@@ -90,7 +90,7 @@ public abstract class LoadExportBaseShell {
         return getStatusComposite(parent, reporter);
     }
 	
-	protected Composite getStatusCompositeForValueDomain(Composite parent, StatusReporter reporter) {
+	protected Composite getStatusCompositeForValueSets(Composite parent, StatusReporter reporter) {
         this.loadingVD_ = true;
         this.loadingPL_ = false;
         return getStatusComposite(parent, reporter);
@@ -191,7 +191,7 @@ public abstract class LoadExportBaseShell {
 						if (LoadExportBaseShell.this.lb_vd_gui_ != null)
 						{
 						    if (loadingVD_)
-						        LoadExportBaseShell.this.lb_vd_gui_.refreshValueDomainList();
+						        LoadExportBaseShell.this.lb_vd_gui_.refreshValueSetDefList();
 						    else
 						        LoadExportBaseShell.this.lb_vd_gui_.refreshPickListList();
 						}
