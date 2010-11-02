@@ -1106,7 +1106,7 @@ public class LB_VSD_GUI{
     }
 
     @Deprecated
-    public void resolveValueDomainOld(URI uri) throws LBException {
+    public void resolveValueSetDefOld(URI uri) throws LBException {
         ConvenienceMethods cm = new ConvenienceMethods();
         org.LexGrid.LexBIG.LexBIGService.CodedNodeSet finalCNS = null;   
         ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(uri, null, null, null, null);
