@@ -113,7 +113,7 @@ public class ValueSetLoadOperationImplTest {
 	}
 	
 	@Test
-	public void testRemoveAllTestValueDomains() throws LBException, URISyntaxException {
+	public void testRemoveAllTestValueSetDefs() throws LBException, URISyntaxException {
 		List<String> uris = getValueSetDefinitionService().listValueSetDefinitions(null);
 		assertTrue(uris.size() > 0);
 		
@@ -123,7 +123,7 @@ public class ValueSetLoadOperationImplTest {
 				getValueSetDefinitionService().removeValueSetDefinition(new URI(uri));
 		}
 		
-		// check if we missed any test valueDomains
+		// check if we missed any test valueSetDefs
 		uris = getValueSetDefinitionService().listValueSetDefinitions(null);
 		
 		for (String uri : uris)
