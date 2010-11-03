@@ -438,7 +438,7 @@ public class ProtegeOwl2LG {
         // them
         // as well as find out additional associations (e.g,. From)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
-            OWLIndividual individual = (OWLIndividual) individuals.next();
+            RDFIndividual individual = (RDFIndividual) individuals.next();
             Entity lgInstance = resolveIndividual(individual);
             if (lgInstance != null) {
                 addEntity(lgInstance);
@@ -469,7 +469,7 @@ public class ProtegeOwl2LG {
         // Process the associations (e.g.,
         // rdf:type, DifferentFrom, SameAs, ObjectProperties)
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
-            OWLIndividual individual = (OWLIndividual) individuals.next();
+            RDFIndividual individual = (RDFIndividual) individuals.next();
             String nameSpace = getNameSpace(individual.getNamespace());
             String lgCode = resolveInstanceID(individual);
             if (lgCode != null) {
@@ -1088,7 +1088,7 @@ public class ProtegeOwl2LG {
      * Defines EMF differentFrom relations based on OWL source.
      * 
      */
-    protected void resolveDifferentFromRelations(AssociationSource source, OWLIndividual individual) {
+    protected void resolveDifferentFromRelations(AssociationSource source, RDFIndividual individual) {
 
         for (Iterator differentFrom = individual.getDifferentFrom().iterator(); differentFrom.hasNext();) {
             OWLIndividual different = (OWLIndividual) differentFrom.next();
@@ -1102,7 +1102,7 @@ public class ProtegeOwl2LG {
      * Defines EMF complementOf relations based on OWL source.
      * 
      */
-    protected void resolveSameAsRelations(AssociationSource source, OWLIndividual individual) {
+    protected void resolveSameAsRelations(AssociationSource source, RDFIndividual individual) {
         for (Iterator sameAs = individual.getSameAs().iterator(); sameAs.hasNext();) {
             OWLIndividual same = (OWLIndividual) sameAs.next();
             relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE, assocManager.getSameAs(), source, same);
@@ -1113,7 +1113,7 @@ public class ProtegeOwl2LG {
      * Defines EMF RDFType relations based on OWL source.
      * 
      */
-    protected void resolveRdfTypeRelations(AssociationSource source, OWLIndividual individual) {
+    protected void resolveRdfTypeRelations(AssociationSource source, RDFIndividual individual) {
         for (Iterator iter = individual.getDirectTypes().iterator(); iter.hasNext();) {
             Object item = iter.next();
             if (item instanceof RDFSClass) {
@@ -2446,7 +2446,7 @@ public class ProtegeOwl2LG {
             addAnnotationPropertyAssociations(rdfResource);
         }
         for (Iterator individuals = owlModel_.getOWLIndividuals().iterator(); individuals.hasNext();) {
-            OWLIndividual individual = (OWLIndividual) individuals.next();
+            RDFIndividual individual = (RDFIndividual) individuals.next();
             addAnnotationPropertyAssociations(individual);
         }
 
