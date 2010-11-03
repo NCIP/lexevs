@@ -38,9 +38,9 @@ import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.custom.NonScoringTermQuery;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 
 import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
@@ -313,8 +313,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
         return scoreDocs;
 	}
 	
-	
-	
 	@Override
 	public Document getDocumentById(String codingSchemeUri, String version,
 			int id) {
@@ -331,13 +329,11 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	 */
 	public Query getMatchAllDocsQuery(
 			String codingSchemeUri, String version) {
-		TermQuery query = new TermQuery(
-				new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, 
-								version)));
-		
-		query.setBoost(0);
-		
+		TermQuery query = new NonScoringTermQuery(
+						new Term(
+						LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, version)));
+
 		return query;
 	}
 
