@@ -144,8 +144,8 @@ public abstract class AbstractMethodCachingBean<T> {
 		//Not sure which sync strategy is best here. Locking on the cache
 		//level will be faster, but is there a deadlock threat?
 		//Maybe a global lock will be safer...
-		synchronized(cache) {
-		//synchronized(lock) {
+		//synchronized(cache) {
+		synchronized(lock) {
 			if(method.isAnnotationPresent(ClearCache.class)) {
 				return this.clearCache(joinPoint, method);
 			}
