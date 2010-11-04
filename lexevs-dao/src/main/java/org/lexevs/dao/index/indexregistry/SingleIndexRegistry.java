@@ -126,6 +126,11 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 			}
 
 			luceneCodingSchemeToIndexNameMap.remove(key);
+
+			String mapKey = DaoUtility.createKey(codingSchemeUri, version);
+			
+			this.boundaryDocFilterMap.remove(mapKey);
+			this.codingSchemeFilterMap.remove(mapKey);
 		}
 	}
 	

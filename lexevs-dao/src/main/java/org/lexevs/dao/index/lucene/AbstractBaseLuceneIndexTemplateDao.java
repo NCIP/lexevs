@@ -40,6 +40,7 @@ import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.springframework.util.Assert;
 
 public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseIndexDao {
 	
@@ -61,25 +62,26 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 						ref.getCodingSchemeVersion());
 			}
 			
-			Filter chainedFilter = new ChainedFilter(filters, ChainedFilter.OR);
-			indexRegistry.getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(chainedFilter));
+			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
+			indexRegistry.getBoundaryDocFilterMap().put(key, chainedFilter);
 		}
 		return indexRegistry.getBoundaryDocFilterMap().get(key);
 	}
 	
 	protected Filter getBoundaryDocFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
+		
 		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
 		if(!indexRegistry.getBoundaryDocFilterMap().containsKey(key)) {
 			Filter filter1 = createBoundaryDocFilter();
-			Filter filter2 = this.getCodingSchemeFilterForCodingScheme(codingSchemeUri, codingSchemeVersion);
-
-			ChainedFilter chainedFilter = new CachingChinedFilter(
-				new Filter[] {filter1, filter2}, ChainedFilter.AND);
 			
-			indexRegistry.getBoundaryDocFilterMap().put(key, chainedFilter);
+			indexRegistry.getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter1));
 		}
 		
-		return indexRegistry.getBoundaryDocFilterMap().get(key);
+		Filter returnFilter = indexRegistry.getBoundaryDocFilterMap().get(key);
+		
+		Assert.notNull(returnFilter);
+
+		return returnFilter;
 	}
 	
 	protected Filter createBoundaryDocFilter() {
@@ -89,13 +91,13 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 		return filter;
 	}
 	
-	private class CachingChinedFilter extends ChainedFilter {
+	private class CachingChainedFilter extends ChainedFilter {
 
 		private static final long serialVersionUID = 5154482258370999758L;
 		
 		private Map<Integer,DocIdBitSet> bitSetCache = new HashMap<Integer,DocIdBitSet>();
 		
-		public CachingChinedFilter(Filter[] chain, int logic) {
+		public CachingChainedFilter(Filter[] chain, int logic) {
 			super(chain, logic);
 		}
 
@@ -110,15 +112,23 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 				BitSet bitSet = new BitSet();
 				
 				DocIdSetIterator itr = superIdSet.iterator();
-				while(itr.next()){
-					bitSet.set(itr.doc());
-				}
+				bitSet = docIdSetIteratorToBitSet(itr);
 				
 				bitSetCache.put(key, new DocIdBitSet(bitSet));
 			}
 			
 			return bitSetCache.get(key);
 		}
+	}
+	
+	private BitSet docIdSetIteratorToBitSet(DocIdSetIterator itr) throws IOException {
+		BitSet bitSet = new BitSet();
+
+		while(itr.next()){
+			bitSet.set(itr.doc());
+		}
+		
+		return bitSet;
 	}
 	
 	protected Filter getCodingSchemeFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
@@ -133,8 +143,8 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 						ref.getCodingSchemeVersion());
 			}
 			
-			Filter chainedFilter = new ChainedFilter(filters, ChainedFilter.OR);
-			indexRegistry.getCodingSchemeFilterMap().put(key, new CachingWrapperFilter(chainedFilter));
+			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
+			indexRegistry.getCodingSchemeFilterMap().put(key, chainedFilter);
 		}
 		return indexRegistry.getCodingSchemeFilterMap().get(key);
 	}
