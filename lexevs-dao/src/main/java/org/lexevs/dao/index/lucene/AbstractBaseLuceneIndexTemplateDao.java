@@ -18,14 +18,22 @@
  */
 package org.lexevs.dao.index.lucene;
 
+import java.io.IOException;
+import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
+import org.apache.lucene.search.DocIdSet;
+import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.util.DocIdBitSet;
 import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
@@ -62,13 +70,16 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 	protected Filter getBoundaryDocFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
 		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
 		if(!indexRegistry.getBoundaryDocFilterMap().containsKey(key)) {
-			Filter filter = createBoundaryDocFilter();
-			indexRegistry.getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter));
+			Filter filter1 = createBoundaryDocFilter();
+			Filter filter2 = this.getCodingSchemeFilterForCodingScheme(codingSchemeUri, codingSchemeVersion);
+
+			ChainedFilter chainedFilter = new CachingChinedFilter(
+				new Filter[] {filter1, filter2}, ChainedFilter.AND);
+			
+			indexRegistry.getBoundaryDocFilterMap().put(key, chainedFilter);
 		}
-		return new ChainedFilter(
-				new Filter[] {indexRegistry.getBoundaryDocFilterMap().get(key), 
-				this.getCodingSchemeFilterForCodingScheme(codingSchemeUri, codingSchemeVersion)}, 
-				ChainedFilter.AND);
+		
+		return indexRegistry.getBoundaryDocFilterMap().get(key);
 	}
 	
 	protected Filter createBoundaryDocFilter() {
@@ -76,6 +87,38 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 		filter.addTerm(new Term("codeBoundry", "T"));
 		
 		return filter;
+	}
+	
+	private class CachingChinedFilter extends ChainedFilter {
+
+		private static final long serialVersionUID = 5154482258370999758L;
+		
+		private Map<Integer,DocIdBitSet> bitSetCache = new HashMap<Integer,DocIdBitSet>();
+		
+		public CachingChinedFilter(Filter[] chain, int logic) {
+			super(chain, logic);
+		}
+
+		@Override
+		public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
+			int key = reader.hashCode();
+			if(! bitSetCache.containsKey(key)){
+				bitSetCache.clear();
+
+				DocIdSet superIdSet = super.getDocIdSet(reader);
+
+				BitSet bitSet = new BitSet();
+				
+				DocIdSetIterator itr = superIdSet.iterator();
+				while(itr.next()){
+					bitSet.set(itr.doc());
+				}
+				
+				bitSetCache.put(key, new DocIdBitSet(bitSet));
+			}
+			
+			return bitSetCache.get(key);
+		}
 	}
 	
 	protected Filter getCodingSchemeFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
