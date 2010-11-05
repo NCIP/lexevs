@@ -247,6 +247,9 @@ public class LexGridToOwlRdfConverter {
 				// save instance into a list, process the instances later
 				instanceList.add(entity);
 			}
+			if (counter%100==0){
+			    messenger_.info("processed " + Integer.toString(counter) + " entities");
+			}
 		}
 
 		// at last, process the instance, since the instance maybe an instance
@@ -317,11 +320,14 @@ public class LexGridToOwlRdfConverter {
 	    prop.addSuperProperty(LexRdf.associationQualification);
 	    rs.addProperty(prop, qualifierValue);
 	}
-	private void processLgTargets(ResolvedConceptReference sourceConRef) throws LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException	 {
-		String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
+	private void processLgTargets(ResolvedConceptReference sourceConRef) throws NullPointerException, LBException, SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException	 {
+	    String sourceUri = this.resolveNamespace(sourceConRef.getCodeNamespace()) + sourceConRef.getCode();
 		Resource source = null;
 		
 		assnCounter++;
+		if (assnCounter % 100 == 0) {
+		    messenger_.info("processed " + Integer.toString(assnCounter) + " associations");
+		}
 		
 		//only consider the anonymous target
 		if (sourceConRef.getCode().startsWith("@")) {
@@ -609,6 +615,8 @@ public class LexGridToOwlRdfConverter {
 	}
 	
 	private void createTriple(Resource s, Property p, Resource o) {
+	    if (s == null || p == null || o == null)
+	        return;
 		try {
 			if (p.getURI().equals(OWL.equivalentClass.getURI())) {
 				((OntClass)s).addEquivalentClass(o);
@@ -649,7 +657,6 @@ public class LexGridToOwlRdfConverter {
 		}
 		catch (Exception e){
 			messenger_.error(e.toString());
-			System.out.println(e.toString());
 		}
 		
 	}
@@ -1251,9 +1258,12 @@ public class LexGridToOwlRdfConverter {
 //		String codingSchemeUri = "http://purl.org/net/OCRe/OCRe-Start-Here", 
 //        codingSchemeVersion = "UNASSIGNED",
 //        output = "c:/temp/ocre.owl";
-		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", 
-		       codingSchemeVersion = "version 1.2",
-		       output = "C:/temp/pizza.owl";
+//		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl", 
+//		       codingSchemeVersion = "version 1.2",
+//		       output = "C:/temp/pizza.owl";
+		String codingSchemeUri = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine", 
+        codingSchemeVersion = "UNASSIGNED",
+        output = "C:/temp/wine.owl";
 //		String codingSchemeUri = "urn:lsid:bioontology.org:cell", 
 //		       codingSchemeVersion = "UNASSIGNED",
 //		       output = "c:/temp/cell_obo.owl";
