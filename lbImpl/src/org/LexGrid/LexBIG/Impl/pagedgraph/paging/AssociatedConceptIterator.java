@@ -46,7 +46,7 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.database.utility.DaoUtility.SortContainer;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.paging.AbstractPageableIterator;
+import org.lexevs.paging.AbstractRefereshingPageableIterator;
 import org.lexevs.paging.codednodegraph.TripleUidIterator;
 
 /**
@@ -55,7 +55,7 @@ import org.lexevs.paging.codednodegraph.TripleUidIterator;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @LgClientSideSafe
-public class AssociatedConceptIterator extends AbstractPageableIterator<AssociatedConcept> {
+public class AssociatedConceptIterator extends AbstractRefereshingPageableIterator<Iterator<String>,AssociatedConcept> {
 
     private static final long serialVersionUID = 8499054225802045957L;
 
@@ -187,7 +187,17 @@ public class AssociatedConceptIterator extends AbstractPageableIterator<Associat
 		this.setDecorateNext(true);
 	}
 
-	protected AssociatedConcept decorateNext(AssociatedConcept associatedConcept) {
+	@Override
+    protected Iterator<String> doGetRefresh() {
+        return this.tripleUidIterator;
+    }
+
+    @Override
+    protected void doRefresh(Iterator<String> refresh) {
+        this.tripleUidIterator = refresh;
+    }
+
+    protected AssociatedConcept decorateNext(AssociatedConcept associatedConcept) {
         String adjustedCodingSchemeUri;
         String adjustedCodingSchemeVersion;
         String adjustedRelationsContainer;
