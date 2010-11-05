@@ -102,6 +102,9 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	private static String UPDATE_PREVIOUS_ENTRY_STATE_UIDS_SQL = VERSIONS_NAMESPACE
 			+ "updatePreviousEntryStateUIds";
 	
+	private static String SET_PREVIOUS_ENTRY_STATE_UIDS_TO_NULL_SQL = VERSIONS_NAMESPACE
+			+ "setPreviousEntryStatesNullByEntryUid";
+	
 	private static String GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTRY_SQL = VERSIONS_NAMESPACE + "getPrevRevIdFromGivenRevIdForEntry";
 
 	private static String GET_ENTRY_STATE_BY_ENTRY_UID_AND_REVISION_ID_SQL = VERSIONS_NAMESPACE + "getEntryStateByEntryUidAndRevisionId";
@@ -450,6 +453,15 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 9. Delete all coding scheme entry states. */	
+		
+		//For some reason, MySQL can't delete these all the time because
+		//the prev entry state references the same column. It fails about
+		//half of the time. To be safe, set these to null first, then delete.
+		this.getSqlMapClientTemplate().update(
+				SET_PREVIOUS_ENTRY_STATE_UIDS_TO_NULL_SQL,
+				new PrefixedParameter(prefix,
+						codingSchemeUId));
+		
 		this.getSqlMapClientTemplate().delete(
 				DELETE_ALL_CODINGSCHEME_ENTRYSTATES_SQL,
 				new PrefixedParameter(prefix,
