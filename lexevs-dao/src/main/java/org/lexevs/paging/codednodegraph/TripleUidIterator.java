@@ -21,6 +21,7 @@ package org.lexevs.paging.codednodegraph;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -29,6 +30,7 @@ import org.lexevs.dao.database.utility.DaoUtility.SortContainer;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.paging.AbstractPageableIterator;
 
+@LgClientSideSafe
 public class TripleUidIterator extends AbstractPageableIterator<String>{
 
 	private static final long serialVersionUID = 5700989835363272357L;
