@@ -182,13 +182,13 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void testCacheThreadSafety() throws InterruptedException{
 		List<TestCacheThread> threads = new ArrayList<TestCacheThread>();
-		for(int i=0;i<1000;i++) {
+		for(int i=0;i<100;i++) {
 			TestCacheThread thread = new TestCacheThread();
 			threads.add(thread);
 			thread.start();
 		}
 		
-		Thread.sleep(10000);
+		Thread.sleep(1000);
 		
 		for(TestCacheThread thread : threads) {
 			thread.run = false;
