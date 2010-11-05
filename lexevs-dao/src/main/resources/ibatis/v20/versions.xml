@@ -357,6 +357,15 @@
 			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</delete>
 	
+	<delete id="setPreviousEntryStatesNullByEntryUid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		UPDATE
+			$prefix$entryState
+		SET
+			$prefix$entryState.prevEntryStateGuid = NULL
+		WHERE
+			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	</delete>
+	
 	<delete id="deleteAllCodingSchemeEntrySatesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			$prefix$entryState
