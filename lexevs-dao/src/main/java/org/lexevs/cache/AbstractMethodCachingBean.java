@@ -121,9 +121,17 @@ public abstract class AbstractMethodCachingBean<T> {
 		if(!CacheSessionManager.getCachingStatus()) {
 			return this.proceed(joinPoint);
 		}
-		
+
 		Method method = this.getMethod(joinPoint);
 
+		if(method.isAnnotationPresent(CacheMethod.class)
+				&&
+					method.isAnnotationPresent(ClearCache.class)){
+			throw new RuntimeException("Cannot both Cache method results and clear the Cache in " +
+					"the same method. Please only use @CacheMethod OR @ClearCache -- not both. " +
+					" This occured on method: " + method.toString());
+		}
+		
 		Object target = this.getTarget(joinPoint);
 		
 		Annotation[][] parameterAnnotations = method.getParameterAnnotations();
@@ -138,13 +146,31 @@ public abstract class AbstractMethodCachingBean<T> {
 	
 		CacheWrapper<String,Object> cache = this.getCacheFromName(
 				cacheableAnnotation.cacheName(), true);
-		
-		Object result;
+
+		//Try an optimistic access of the cache. The intent here is to avoid
+		//the second synchronization block if possible. If the object is in cache,
+		//we can return here;
+		if(method.isAnnotationPresent(CacheMethod.class)) {
+			synchronized(cache) {
+				Object preValue = cache.get(key);
+				if(preValue != null) {
+					this.logger.debug("Pre-synchronized block Cache hit on: " + key);
+					if(preValue.equals(NULL_VALUE_CACHE_PLACEHOLDER)) {
+						return null;
+					} else {
+						return returnResult(preValue, cacheMethodAnnotation);
+					}
+				} else {
+					this.logger.debug("Pre-synchronized block Caching miss on: " + key);
+				}
+			}
+		}
 		
 		//Not sure which sync strategy is best here. Locking on the cache
 		//level will be faster, but is there a deadlock threat?
 		//Maybe a global lock will be safer...
-		//synchronized(cache) {
+		//Note -- a global lock IS safer. Cache level locking
+		//can cause deadlocks -- has been observed in testing.
 		synchronized(lock) {
 			if(method.isAnnotationPresent(ClearCache.class)) {
 				return this.clearCache(joinPoint, method);
@@ -156,21 +182,25 @@ public abstract class AbstractMethodCachingBean<T> {
 				if(value.equals(NULL_VALUE_CACHE_PLACEHOLDER)) {
 					return null;
 				} else {
-					return value;
+					return returnResult(value, cacheMethodAnnotation);
 				}
 			} else {
 				this.logger.debug("Caching miss on: " + key);
 			}
 
-			result = this.proceed(joinPoint);
+			Object result = this.proceed(joinPoint);
 			
 			if(result != null) {
 				cache.put(key, result);
 			} else {
 				cache.put(key, NULL_VALUE_CACHE_PLACEHOLDER);
 			}
+			
+			return returnResult(result, cacheMethodAnnotation);
 		}
-
+	}
+	
+	private Object returnResult(Object result, CacheMethod cacheMethodAnnotation) {
 		if(result != null && 
 				cacheMethodAnnotation.cloneResult() && 
 				ClassUtils.isAssignable(result.getClass(), Serializable.class)) {
@@ -179,7 +209,7 @@ public abstract class AbstractMethodCachingBean<T> {
 			return result;
 		}
 	}
-	
+
 	protected abstract Method getMethod(T joinPoint);
 
 	protected abstract Object getTarget(T joinPoint);
