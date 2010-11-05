@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
@@ -47,6 +48,8 @@ public interface LuceneIndexTemplate {
 	public void optimize();
 	
 	public int getMaxDoc();
+	
+	public Document getDocumentById(int id, FieldSelector fieldSelector);
 	
 	public Document getDocumentById(int id);
 	

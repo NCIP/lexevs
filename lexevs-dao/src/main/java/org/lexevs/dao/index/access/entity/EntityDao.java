@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
@@ -48,6 +49,9 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	public void addDocuments(String codingSchemeUri, String version, List<Document> documents, Analyzer analyzer);
 	
 	public Document getDocumentById(String codingSchemeUri, String version, int id);
+	
+	public Document getDocumentById(String codingSchemeUri, String version,
+			int id, FieldSelector fieldSelector);
 
 	public Query getMatchAllDocsQuery(
 			String codingSchemeUri, String version);
@@ -60,7 +64,7 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 			String codingSchemeUri, 
 			String version, 
 			Query query);
-
+	
 	public Document getDocumentById(int id);
 
 	public Filter getCodingSchemeFilter(String uri, String version);

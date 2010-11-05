@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -169,12 +170,20 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
 	 */
 	public Document getDocumentById(final int id){
+		return this.getDocumentById(id, null);
+	}
+	
+	public Document getDocumentById(final int id, final FieldSelector fieldSelector){
 		return this.doInIndexSearcher(new IndexSearcherCallback<Document>() {
 
 			@Override
 			public Document doInIndexSearcher(Searcher indexSearcher)
 					throws Exception {
-				return indexSearcher.doc(id);
+				if(fieldSelector != null) {
+					return indexSearcher.doc(id, fieldSelector);
+				} else {
+					return indexSearcher.doc(id);
+				}
 			}
 		});	
 	}

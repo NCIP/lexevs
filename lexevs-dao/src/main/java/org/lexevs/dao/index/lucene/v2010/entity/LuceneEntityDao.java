@@ -26,6 +26,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
@@ -316,7 +317,13 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	@Override
 	public Document getDocumentById(String codingSchemeUri, String version,
 			int id) {
-		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id);
+		return getDocumentById(codingSchemeUri, version, id, null);
+	}
+	
+	@Override
+	public Document getDocumentById(String codingSchemeUri, String version,
+			int id, FieldSelector fieldSelector) {
+		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fieldSelector);
 	}
 	
 	@Override
