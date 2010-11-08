@@ -982,8 +982,9 @@ public class ProtegeOwl2LG {
         // Does this concept represent the root of a concept branch that should
         // be centrally linked to the top node for subclass traversal?
         if (isRootNode(rdfsNamedClass)) {
+            //always give the root node the default namespace
             AssociationTarget target = CreateUtils.createAssociationTarget(ProtegeOwl2LGConstants.ROOT_CODE,
-                    getNameSpace(rdfsNamedClass.getNamespace()));
+                    getNameSpace(null));
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
         }
 
