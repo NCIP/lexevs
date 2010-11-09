@@ -136,13 +136,13 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     messager.info("association processing complete. marshalled " + this.associationCount
                             + " association objects");
                 } catch (LBInvocationException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (LBParameterException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (MarshalException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (ValidationException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 }
                 messager.info("..... done");
                 return false;
@@ -207,7 +207,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             this.marshaller.setMapping(mapping);
                             messager.info(mappingFileName + " loaded successfully");
                         } catch (MappingException e) {
-                            e.printStackTrace();
+                            messager.error(e.toString());
                         }
                         String key;
                         AssociationEntity aE;
@@ -219,15 +219,15 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                         messager.info("AssociationEntity object processing complete.");
                     }
                 } catch (LBInvocationException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (LBParameterException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (LBResourceUnavailableException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (MarshalException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 } catch (ValidationException e) {
-                    e.printStackTrace();
+                    messager.error(e.toString());
                 }
             }
 
@@ -306,9 +306,9 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                     try {
                         localRcrl = this.cng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
                     } catch (LBInvocationException e) {
-                        e.printStackTrace();
+                        messager.error(e.toString());
                     } catch (LBParameterException e) {
-                        e.printStackTrace();
+                        messager.error(e.toString());
                     }
                     ResolvedConceptReference sourceRef = null;
                     if (localRcrl != null && localRcrl.getResolvedConceptReferenceCount() > 0) {
