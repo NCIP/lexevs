@@ -301,7 +301,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
 
                     ConceptReference focus = new ConceptReference();
                     focus.setCode(source.getConceptCode());
-                    focus.setCodingSchemeName(source.getCodingSchemeName());
+                    focus.setCodeNamespace(source.getCodeNamespace());
                     ResolvedConceptReferenceList localRcrl = null;
                     try {
                         localRcrl = this.cng.resolveAsList(focus, true, false, 0, -1, null, null, null, null, -1);
