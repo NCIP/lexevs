@@ -233,10 +233,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 		
 		List<RegistryEntry> entryList = null;
 		
-		if (StringUtils.isEmpty(version))
-			entryList = this.getRegistry().getAllRegistryEntriesOfTypeAndURI(ResourceType.PICKLIST_DEFINITION, pickListId);
-		else			
-			entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
+		entryList = this.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.PICKLIST_DEFINITION, pickListId, version);
 		for (RegistryEntry entry : entryList)
 		{
 			this.getRegistry().removeEntry(entry);
