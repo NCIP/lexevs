@@ -23,12 +23,19 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLClassLoader;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -97,7 +104,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.LayoutType;
@@ -120,11 +126,36 @@ public class LexGridToOwlRdfConverter {
 	
 	private int assnCounter = 0; // for dev only
 
+	class DriverShim implements Driver {
+	    private Driver driver;
+	    DriverShim(Driver d) {
+	        this.driver = d;
+	    }
+	    public boolean acceptsURL(String u) throws SQLException {
+	        return this.driver.acceptsURL(u);
+	    }
+	    public Connection connect(String u, Properties p) throws SQLException {
+	        return this.driver.connect(u, p);
+	    }
+	    public int getMajorVersion() {
+	        return this.driver.getMajorVersion();
+	    }
+	    public int getMinorVersion() {
+	        return this.driver.getMinorVersion();
+	    }
+	    public DriverPropertyInfo[] getPropertyInfo(String u, Properties p) throws SQLException {
+	        return this.driver.getPropertyInfo(u, p);
+	    }
+	    public boolean jdbcCompliant() {
+	        return this.driver.jdbcCompliant();
+	    }
+	}
+	
 	public LexGridToOwlRdfConverter() {
 		
 	}
 
-	public Store getStore() {
+	public Store getStore() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
 		if (store_ != null)
 			return store_;
 		
@@ -141,28 +172,36 @@ public class LexGridToOwlRdfConverter {
 		    getLexEvsDatabaseOperations().getDatabaseType();
 		
 		StoreDesc storeDesc = null;
+		
+		URLClassLoader loader = LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader();
+		
 		if (type.equals(org.lexevs.dao.database.type.DatabaseType.MYSQL)) {
-		    JDBC.loadDriverMySQL();
+		    Driver d = (Driver) Class.forName("com.mysql.jdbc.Driver", true, loader).newInstance();
+		    DriverManager.registerDriver(new DriverShim(d));
 		    storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
 	                DatabaseType.MySQL);
 		}
 		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.ORACLE)) {
-            JDBC.loadDriverOracle();
+            Driver d = (Driver) Class.forName("oracle.jdbc.driver.OracleDriver", true, loader).newInstance();
+            DriverManager.registerDriver(new DriverShim(d));
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.Oracle);
         }
 		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.POSTGRES)) {
-            JDBC.loadDriverPGSQL();
+            Driver d = (Driver) Class.forName("org.postgresql.Driver", true, loader).newInstance();
+            DriverManager.registerDriver(new DriverShim(d));
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.PostgreSQL);
         }
 		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.HSQL)) {
-            JDBC.loadDriverHSQL();
+            Driver d = (Driver) Class.forName("org.hsqldb.jdbcDriver", true, loader).newInstance();
+            DriverManager.registerDriver(new DriverShim(d));
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.HSQLDB);
         }
 		else if (type.equals(org.lexevs.dao.database.type.DatabaseType.DB2)) {
-            JDBC.loadDriverDB2();
+            Driver d = (Driver) Class.forName("com.ibm.db2.jcc.DB2Driver", true, loader).newInstance();
+            DriverManager.registerDriver(new DriverShim(d));
             storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesIndex,
                     DatabaseType.DB2);
         } 
@@ -181,7 +220,7 @@ public class LexGridToOwlRdfConverter {
 		return store_;
 	}
 
-	public Model getBaseModel(String iri) {
+	public Model getBaseModel(String iri) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
 		return SDBFactory.connectNamedModel(this.getStore(), iri);
 	}
 
@@ -221,6 +260,9 @@ public class LexGridToOwlRdfConverter {
 			ResolvedConceptReference conRef = iterator.next();
 			Entity entity = conRef.getEntity();
 			counter++;
+			if (counter % 100 == 0){
+                messenger_.info("processed " + Integer.toString(counter) + " entities");
+            }
 			
 			if (entity == null)
 			    continue;
@@ -246,9 +288,6 @@ public class LexGridToOwlRdfConverter {
 					.equalsIgnoreCase(EntityTypes.INSTANCE.value())) {
 				// save instance into a list, process the instances later
 				instanceList.add(entity);
-			}
-			if (counter%100==0){
-			    messenger_.info("processed " + Integer.toString(counter) + " entities");
 			}
 		}
 
@@ -1129,11 +1168,22 @@ public class LexGridToOwlRdfConverter {
 		else
 		    ontFormat_ = this.findOntFormat();
 
-		Model baseModel = this.getBaseModel(cs.getCodingSchemeURI());
-
-        // create or open the default model
-        model_ = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM,
-                baseModel);
+		Model baseModel;
+        try {
+            baseModel = this.getBaseModel(cs.getCodingSchemeURI());
+            // create or open the default model
+            model_ = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM,
+                    baseModel);
+        } catch (ClassNotFoundException e1) {
+            messenger_.error(e1.toString());
+        } catch (InstantiationException e1) {
+            messenger_.error(e1.toString());
+        } catch (IllegalAccessException e1) {
+            messenger_.error(e1.toString());
+        } catch (SQLException e) {
+            messenger_.error(e.toString());
+        }
+       
         
         // clean up the triple store to load
         store_.getTableFormatter().truncate(); 
@@ -1143,19 +1193,14 @@ public class LexGridToOwlRdfConverter {
 			this.codingSchemeMapping();
 		} catch (SecurityException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		}
 
 		// entity mapping
@@ -1163,25 +1208,18 @@ public class LexGridToOwlRdfConverter {
 			this.entityMapping();
 		} catch (LBResourceUnavailableException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (SecurityException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (LBException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		}
 		
 		// association mapping
@@ -1189,25 +1227,18 @@ public class LexGridToOwlRdfConverter {
 			this.associationMapping();
 		} catch (SecurityException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (LBException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		} catch (NullPointerException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
 		}
 
 		// model_.write(System.out); // for dev & test/
@@ -1217,8 +1248,13 @@ public class LexGridToOwlRdfConverter {
 			this.toOwlOntology(cs_.getCodingSchemeURI());
 		} catch (ClassNotFoundException e) {
 			this.messenger_.error(e.toString());
-			e.printStackTrace();
-		}
+		} catch (InstantiationException e) {
+		    this.messenger_.error(e.toString());
+        } catch (IllegalAccessException e) {
+            this.messenger_.error(e.toString());
+        } catch (SQLException e) {
+            this.messenger_.error(e.toString());
+        }
 		
 		// Close the database connection
 		model_.close();
@@ -1226,7 +1262,7 @@ public class LexGridToOwlRdfConverter {
 		
 	}
 
-	public void toOwlOntology(String iri) throws ClassNotFoundException {
+	public void toOwlOntology(String iri) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
 	    messenger_.info("Converting triple store to ontology ...");
 	    
 		Model baseModel = this.getBaseModel(iri);
