@@ -35,9 +35,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.paging.AbstractPageableIterator;
+import org.lexevs.paging.AbstractRefereshingPageableIterator;
 
-public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConceptReference> {
+public class MappingTripleIterator extends AbstractRefereshingPageableIterator<Iterator<String>,ResolvedConceptReference> {
 
     private static final long serialVersionUID = 5709428653655124881L;
 
@@ -106,7 +106,17 @@ public class MappingTripleIterator extends AbstractPageableIterator<ResolvedConc
                refs, 
                sortOptionList);
     }
-    
+
+    @Override
+    protected Iterator<String> doGetRefresh() {
+        return this.tripleUidIterator;
+    }
+
+    @Override
+    protected void doRefresh(Iterator<String> refresh) {
+        this.tripleUidIterator = refresh;
+    }
+
     @Override
     protected List<? extends ResolvedConceptReference> doPage(int currentPosition, int pageSize) {
         List<String> tripleUidList = new ArrayList<String>();
