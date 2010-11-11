@@ -3,7 +3,7 @@ REM Exports content from the repository to a file in OWL/RDF format.
 REM
 REM Options:
 REM   -out,--output <uri> URI or path of the directory to contain the
-REM        resulting XML file.  The file name will be automatically derived
+REM        resulting OWL file.  The file name will be automatically derived
 REM        from the coding scheme name.   
 REM   -u,--urn <name> URN of the coding scheme to export.
 REM   -v,--version <id> The assigned tag/label or absolute version
@@ -18,4 +18,4 @@ REM
 REM Example: ExportOwlRdf -out "file:///path/to/dir" -f
 REM Example: ExportOwlRdf -out "file:///path/to/dir" -u "NCI_Thesaurus" -v "PRODUCTION" -f
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.lexgrid.exporter.owlrdf.admin.ExportOwlRdf %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.ExportOwlRdf %*
