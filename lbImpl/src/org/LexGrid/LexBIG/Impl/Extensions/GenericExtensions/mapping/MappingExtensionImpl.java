@@ -21,17 +21,23 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 import java.util.Iterator;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.helpers.IteratorBackedResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.relations.Relations;
@@ -138,5 +144,55 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                 }});
         
         return isMappingCodingScheme;
+    }
+    
+    @Override
+    public AbsoluteCodingSchemeVersionReferenceList getMappingCodingSchemesEntityParticipatesIn(
+            String entityCode,
+            String entityCodeNamespace) throws LBParameterException {
+        
+        AbsoluteCodingSchemeVersionReferenceList returnList = new AbsoluteCodingSchemeVersionReferenceList();
+        
+        try {
+            for(CodingSchemeRendering csr : 
+                LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes().getCodingSchemeRendering()) {
+                CodingSchemeSummary css = csr.getCodingSchemeSummary();
+                
+                String uri = css.getCodingSchemeURI();
+                String version = css.getRepresentsVersion();
+                
+                if(this.isMappingCodingScheme(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version))) {
+                    if(this.doesCodeParticipateInMapping(uri, version, entityCode, entityCodeNamespace)) {
+                        returnList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference(css));
+                    }
+                }
+            }
+        } catch (LBInvocationException e) {
+            throw new RuntimeException(e);
+        } 
+        
+        return returnList;   
+    }
+
+    protected boolean doesCodeParticipateInMapping(
+            final String uri,
+            final String version,
+            final String code,
+            final String namespace) throws LBParameterException {
+       
+        boolean participates = 
+            LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getDaoCallbackService().
+            executeInDaoLayer(new DaoCallback<Boolean>() {
+
+                @Override
+                public Boolean execute(DaoManager daoManager) {
+                    String codingSchemeUid = daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+
+                    return daoManager.getCodedNodeGraphDao(uri, version).doesEntityParticipateInRelationships(codingSchemeUid, null, code, namespace);
+                }});
+        
+        return participates;
     }
 }
