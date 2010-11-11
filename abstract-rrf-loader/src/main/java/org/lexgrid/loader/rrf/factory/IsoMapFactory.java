@@ -53,9 +53,10 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 		Map<String,String> isoMap = UMLSBaseCode.getIsoMap();
 		
 		Resource resource = new FileSystemResource(
-				lexEvsServiceLocator.getSystemResourceService().
-					getSystemVariables().getConfigFileLocation() 
-				+ File.separator + ".." + File.separator + ISO_MAP_FILE_NAME);
+				
+				this.getPath()
+				
+					);
 		
 		if(!resource.exists()){
 			this.getLogger().warn("No user defined UMLS SAB->ISO mappings, using defaults.");
@@ -83,6 +84,14 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 			
 			return isoMap;
 		}
+	}
+	
+	private String getPath() {
+		String configPath = 
+		lexEvsServiceLocator.getSystemResourceService().
+			getSystemVariables().getConfigFileLocation();
+		
+		return configPath.substring(0, configPath.lastIndexOf(File.separator) + 1) + ISO_MAP_FILE_NAME;
 	}
 
 	/* (non-Javadoc)
