@@ -72,8 +72,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
-	
-	
+	private static String GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeMappingParticipationCount";
 	
 	
 	@Override
@@ -736,6 +735,28 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		return 
 			(Integer) 
 				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL, bean);
+	}
+	
+	@CacheMethod
+	@Override
+	public boolean doesEntityParticipateInRelationships(
+			String mappingCodingSchemeUid, 
+			String relationsContainerName,
+			String code,
+			String namespace) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				mappingCodingSchemeUid,
+				relationsContainerName,
+				code, 
+				namespace);
+		
+		bean.setPrefix(prefix);
+		
+		return 
+			(Integer) 
+				this.getSqlMapClientTemplate().queryForObject(GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL, bean) > 0;
 	}
 
 	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){

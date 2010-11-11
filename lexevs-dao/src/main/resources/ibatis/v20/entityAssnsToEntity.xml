@@ -1540,4 +1540,48 @@
 			rel.containerName = #param2#
 	</select>
 	
+	<select id="getCodeMappingParticipationCount" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultClass="int">
+		SELECT
+			COUNT(*)
+		FROM
+			$prefix$entityAssnsToEntity eate
+		
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eate.associationPredicateGuid = ap.associationPredicateGuid
+			
+		INNER JOIN
+			$prefix$relation rel
+		ON 
+			ap.relationGuid = rel.relationGuid
+			
+		WHERE
+			rel.codingSchemeGuid = #param1#
+			
+		<isNotNull property="param2">
+		AND
+			rel.containerName = #param2#
+		</isNotNull>
+		
+		AND 
+		(
+			(
+			eate.sourceEntityCode = #param3#
+			<isNotNull property="param4">
+				eate.sourceEntityCode = #param4#
+			</isNotNull>
+			)
+		OR
+			(
+			eate.targetEntityCode = #param3#
+			<isNotNull property="param4">
+				eate.targetEntityCode = #param4#
+			</isNotNull>
+			)
+		)	
+	</select>
+	
 </sqlMap>
