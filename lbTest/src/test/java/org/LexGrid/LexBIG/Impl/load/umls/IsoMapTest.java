@@ -18,12 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.load.umls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.junit.After;
@@ -38,10 +37,10 @@ import org.lexgrid.loader.rrf.factory.IsoMapFactory;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @SuppressWarnings("unchecked")
-public class IsoMapTest{
+public class IsoMapTest extends TestCase {
 
 	@After
-	public void cleanUpFile() {
+	public void tearDown() {
 		this.getFile().delete();
 	}
 	
