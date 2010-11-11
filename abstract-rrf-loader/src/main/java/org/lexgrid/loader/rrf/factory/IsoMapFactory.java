@@ -1,5 +1,5 @@
 /*
- * Copyright: (c) 2004-2009 Mayo Foundation for Medical Education and 
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
  * triple-shield Mayo logo are trademarks and service marks of MFMER.
  *
@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
-import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.FileSystemResource;
@@ -31,7 +31,7 @@ import org.springframework.core.io.Resource;
 import edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBaseCode;
 
 /**
- * A factory for creating MrsatUsage objects.
+ * A factory for creating IsoMap objects.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
@@ -39,7 +39,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBas
 public class IsoMapFactory extends LoggingBean implements FactoryBean {
 	
 	/** The system variables. */
-	private SystemVariables systemVariables;
+	private LexEvsServiceLocator lexEvsServiceLocator;
 	
 	/** The IS o_ ma p_ fil e_ name. */
 	public static String ISO_MAP_FILE_NAME = "UMLS_SAB_ISO_Map.txt";
@@ -52,7 +52,9 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 	public Object getObject() throws Exception {
 		Map<String,String> isoMap = UMLSBaseCode.getIsoMap();
 		
-		Resource resource = new FileSystemResource(systemVariables.getConfigFileLocation() 
+		Resource resource = new FileSystemResource(
+				lexEvsServiceLocator.getSystemResourceService().
+					getSystemVariables().getConfigFileLocation() 
 				+ File.separator + ".." + File.separator + ISO_MAP_FILE_NAME);
 		
 		if(!resource.exists()){
@@ -99,21 +101,11 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 		return true;
 	}
 
-	/**
-	 * Gets the system variables.
-	 * 
-	 * @return the system variables
-	 */
-	public SystemVariables getSystemVariables() {
-		return systemVariables;
+	public LexEvsServiceLocator getLexEvsServiceLocator() {
+		return lexEvsServiceLocator;
 	}
 
-	/**
-	 * Sets the system variables.
-	 * 
-	 * @param systemVariables the new system variables
-	 */
-	public void setSystemVariables(SystemVariables systemVariables) {
-		this.systemVariables = systemVariables;
+	public void setLexEvsServiceLocator(LexEvsServiceLocator lexEvsServiceLocator) {
+		this.lexEvsServiceLocator = lexEvsServiceLocator;
 	}
 }
