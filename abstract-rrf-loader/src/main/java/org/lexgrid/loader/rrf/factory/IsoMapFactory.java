@@ -61,7 +61,7 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 			this.getLogger().warn("No user defined UMLS SAB->ISO mappings, using defaults.");
 			return isoMap;
 		} else {
-			this.getLogger().warn("No user defined UMLS SAB->ISO mappings at: " + resource.getFile().getPath());
+			this.getLogger().warn("User defined UMLS SAB->ISO mappings found at: " + resource.getFile().getPath());
 			
 			Properties props = new Properties();
 			props.load(resource.getInputStream());
@@ -73,8 +73,8 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 					isoMap.put(sab, iso);
 				
 				if(oldValue != null) {
-					this.getLogger().warn("Old value SAB: " + sab + " ISO: " + iso +
-						" was replaced with SAB: " + sab + " ISO: " + oldValue + ".");
+					this.getLogger().warn("Old value SAB: " + sab + " ISO: " + oldValue +
+						" was replaced with SAB: " + sab + " ISO: " + iso + ".");
 				} else {
 					this.getLogger().warn("User defined entry SAB: " + sab + " ISO: " + iso +
 						" was added.");
