@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Extensions.Generic;
 import java.io.Serializable;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
@@ -198,4 +199,20 @@ public interface MappingExtension extends GenericExtension {
 			CodingSchemeVersionOrTag codingSchemeVersionOrTag,
 			String relationsContainerName,
 			List<MappingSortOption> sortOptionList) throws LBParameterException;
+
+	/**
+	 * Resolve a list of Mapping Coding Scheme References that the given
+	 * Entity participates in as either a Source or Target.
+	 * 
+	 * If entityCodeNamespace is null, namespace will not be considered.
+	 * 
+	 * @param entityCode the entity code
+	 * @param entityCodeNamespace the entity code namespace (Optional)
+	 * 
+	 * @throws LBParameterException the LB parameter exception
+	 */
+	public AbsoluteCodingSchemeVersionReferenceList getMappingCodingSchemesEntityParticipatesIn(
+			String entityCode, 
+			String entityCodeNamespace)
+			throws LBParameterException;
 }
