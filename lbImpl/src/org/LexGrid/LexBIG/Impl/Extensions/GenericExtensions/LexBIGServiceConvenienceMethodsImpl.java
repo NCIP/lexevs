@@ -36,6 +36,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -83,6 +84,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
@@ -2179,6 +2181,35 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
             return rootConRef;
         }
 
+    }
+    
+    public List<String> getDistinctNamespacesOfCode(
+            String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag,
+            final String code) throws LBException {
+        
+        AbsoluteCodingSchemeVersionReference ref = 
+            ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, versionOrTag, true);
+        
+        final String uri = ref.getCodingSchemeURN();
+        final String version = ref.getCodingSchemeVersion();
+       
+        List<String> namespaces = 
+            LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getDaoCallbackService().
+            executeInDaoLayer(new DaoCallback<List<String>>() {
+
+                @Override
+                public List<String> execute(DaoManager daoManager) {
+                    String codingSchemeUid = daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+
+                    EntityDao entityDao = daoManager.getEntityDao(uri, version);
+
+                    return entityDao.getDistinctEntityNamespacesFromCode(codingSchemeUid, code);
+                }});
+        
+        return namespaces;
     }
     
     private boolean useBackwardCompatibleMethods(String codingScheme, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
