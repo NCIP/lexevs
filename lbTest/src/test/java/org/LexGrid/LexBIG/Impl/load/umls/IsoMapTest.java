@@ -41,7 +41,11 @@ public class IsoMapTest extends TestCase {
 
 	@After
 	public void tearDown() {
-		this.getFile().delete();
+		//can't delete the file without a gc... strange.
+		System.gc();
+		if(!this.getFile().delete()) {
+			this.getFile().deleteOnExit();
+		}
 	}
 	
 	@Test
