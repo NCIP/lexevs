@@ -180,9 +180,16 @@ public class IsoMapTest extends TestCase {
 	
 	private File getFile() {
 		File file = 
-			new File(LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getConfigFileLocation() 
-					+ File.separator + ".." + File.separator + IsoMapFactory.ISO_MAP_FILE_NAME);
+			new File(getPath());
 
 		return file;
+	}
+	
+	private String getPath() {
+		String configPath = 
+		LexEvsServiceLocator.getInstance().getSystemResourceService().
+			getSystemVariables().getConfigFileLocation();
+		
+		return configPath.substring(0, configPath.lastIndexOf(File.separator) + 1) + IsoMapFactory.ISO_MAP_FILE_NAME;
 	}
 }
