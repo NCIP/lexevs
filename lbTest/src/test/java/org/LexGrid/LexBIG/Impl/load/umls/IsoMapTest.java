@@ -66,7 +66,12 @@ public class IsoMapTest extends TestCase {
 		factory.setLexEvsServiceLocator(LexEvsServiceLocator.getInstance());
 
 		File newFile = this.getFile();
-		newFile.createNewFile();
+		try {
+			newFile.createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Could not create a file at: " + newFile.getPath(), e);
+		}
 		
 		this.writeToFile(newFile, "someNewSab=newOid");
 		
