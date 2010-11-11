@@ -1559,7 +1559,7 @@
 			ap.relationGuid = rel.relationGuid
 			
 		WHERE
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 			
 		<isNotNull property="param2">
 		AND
