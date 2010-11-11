@@ -809,7 +809,8 @@ public class LexGridToOwlRdfConverter {
 			    ontProperty.addRDFType(sh.getType());
 			else {
 			    Resource ontType = LexRdfMap.get(property.getValue().getContent(), ontFormat_);
-			    ontProperty.addRDFType(ontType);
+			    if (ontType != null)
+			        ontProperty.addRDFType(ontType);
 			}
 		} else if (supProp.getUri().equalsIgnoreCase(
 				RDFS.subPropertyOf.getURI())) {
