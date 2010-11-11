@@ -228,6 +228,7 @@ public class AllTestsNormalConfig {
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.ReverseAssocDirectionalityTestIT.class);
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.SameCodeDifferentCuiTestIT.class); 
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.TuiPropertyDataTestIT.class);
+        umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.IsoMapTest.class);
         mainSuite.addTest(umlsLoaderSuite);
         
         TestSuite luceneSuite = new TestSuite("Lucene Tests");
