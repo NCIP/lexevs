@@ -128,6 +128,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	private static String GET_ENTITY_DESCRIPTION_SQL = ENTITY_NAMESPACE + "getEntityDescription";
 	
+	private static String GET_DISTINCT_ENTITY_NAMESPACES_SQL = ENTITY_NAMESPACE + "getDistinctNamespaces";
+	
 	/** The ENTITY. */
 	public static String ENTITY = "entity";
 	
@@ -774,6 +776,19 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				UPDATE_ENTITY_ENTRYSTATE_UID, 
 				new PrefixedParameterTuple(prefix, entityUId, entryStateUId),1);
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@CacheMethod
+	public List<String> getDistinctEntityNamespacesFromCode(
+			String codingSchemeUId, 
+			String entityCode) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_DISTINCT_ENTITY_NAMESPACES_SQL, 
+				new PrefixedParameterTuple(prefix, codingSchemeUId, entityCode));
 	}
 	
 	public String getEntryState(

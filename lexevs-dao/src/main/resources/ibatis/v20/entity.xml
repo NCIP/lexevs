@@ -674,4 +674,59 @@
 				AND
 				entity.entityCodeNamespace = #param3# 
 	</select>	
+	
+	<select id="getDistinctNamespaces" 
+		remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+			SELECT
+				DISTINCT entity.entityCodeNamespace
+			FROM
+				$prefix$entity entity
+			WHERE
+				entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+				AND
+				entity.entityCode = #param2#
+			
+			UNION 
+			
+			SELECT 
+				DISTINCT eate.sourceEntityCodeNamespace 
+			FROM 
+				$prefix$entityAssnsToEntity eate
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON 
+				eate.associationPredicateGuid = ap.associationPredicateGuid
+			INNER JOIN
+				$prefix$relation rel
+			ON 
+				ap.relationGuid = rel.relationGuid
+			
+			WHERE
+				rel.codingSchemeGuid = #param1#
+			AND
+				eate.sourceEntityCode = #param2#
+				
+			UNION 
+			
+			SELECT 
+				DISTINCT eate.targetEntityCodeNamespace 
+			FROM 
+				$prefix$entityAssnsToEntity eate
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON 
+				eate.associationPredicateGuid = ap.associationPredicateGuid
+			INNER JOIN
+				$prefix$relation rel
+			ON 
+				ap.relationGuid = rel.relationGuid
+			
+			WHERE
+				rel.codingSchemeGuid = #param1#
+			AND
+				eate.targetEntityCode = #param2#
+	</select>	
+	
 </sqlMap>

@@ -295,7 +295,14 @@ public class SQLInterfaceEntityDao extends AbstraceSqlImplementedMethodsDao impl
 			// TODO Auto-generated method stub (IMPLEMENT!)
 			throw new UnsupportedOperationException();
 		}
-		
+
+		@Override
+		public List<String> getDistinctEntityNamespacesFromCode(
+				String codingSchemeUId, String entityCode) {
+			// TODO Auto-generated method stub (IMPLEMENT!)
+			throw new UnsupportedOperationException();
+		}
+
 		private LocalNameList toLocalNameList(List<String> list) {
 			if(CollectionUtils.isEmpty(list)) {
 				return null;
