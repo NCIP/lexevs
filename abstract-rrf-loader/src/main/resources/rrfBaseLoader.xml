@@ -41,9 +41,10 @@
 		</beans:property> 
 	</beans:bean>
 
-    <beans:bean id="isoMap"
-      class="edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBaseCode"
-      factory-method="getIsoMap"/>
+    <beans:bean id="isoMap" parent="loggingBean" 
+      class="org.lexgrid.loader.rrf.factory.IsoMapFactory">
+      	<beans:property name="lexEvsServiceLocator" ref="serviceLocator"/>
+     </beans:bean>
 		
 		<beans:bean id="mrrankFactoryBean" class="org.lexgrid.loader.reader.FactoryBeanReader">
 			<beans:property name="delegate"> 
