@@ -305,6 +305,7 @@ public class AllTestsNormalConfig {
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.UnionTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CrossOntologyResolveTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAnonymousTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToEntityTypesTest.class);
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
