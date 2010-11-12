@@ -365,7 +365,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             rvddef.setSource(vdDef.getSourceAsReference());
             rvddef.setCodingSchemeVersionRefList(domainNodes.getCodingSchemeVersionRefList());
             if(domainNodes != null && domainNodes.getCodedNodeSet() != null)
-                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(sortOptionList, null, null, null, false));
+                rvddef.setResolvedConceptReferenceIterator(domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null).resolve(sortOptionList, null, null, null, true));
             return rvddef;
         } else {
             md_.fatal("No Value DomSet Definition found for URI : " + valueSetDefinitionURI);
