@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
@@ -169,6 +170,19 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		}
 
 		assertEquals(2,foundQuals.size());
+	}
+
+	public void testGetMappingCodingSchemesEntityParticipatesIn() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		AbsoluteCodingSchemeVersionReferenceList list = mappingExtension.getMappingCodingSchemesEntityParticipatesIn(
+				"C0001", null);
+		
+		assertEquals(1,list.getAbsoluteCodingSchemeVersionReferenceCount());
+		
+		assertEquals(MAPPING_SCHEME_URI, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeURN());
+		assertEquals(MAPPING_SCHEME_VERSION, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion());
 	}
 	
 	private void checkResolvedConceptReference(ResolvedConceptReference next) {
