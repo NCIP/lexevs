@@ -950,4 +950,20 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	public void modifyEntityLuceneIndexes(String codingSchemeName,
 			CodingSchemeVersionOrTag versionOrTag, List<String> entityCodes)
 			throws LBException;
+	
+    /**
+     * Gets the distinct namespaces of a code.
+     * 
+     * @param codingScheme the coding scheme
+     * @param versionOrTag the version or tag
+     * @param code the code
+     * 
+     * @return the distinct namespaces of code
+     * 
+     * @throws LBException the LB exception
+     */
+    public List<String> getDistinctNamespacesOfCode(
+            String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag,
+            final String code) throws LBException;
 }
