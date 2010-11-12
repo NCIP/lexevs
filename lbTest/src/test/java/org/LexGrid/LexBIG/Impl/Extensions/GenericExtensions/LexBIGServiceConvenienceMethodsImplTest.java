@@ -220,6 +220,25 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	}
     }
     
+    public void testGetDistinctNamespacesOfCode() throws Exception {
+    	List<String> namespaces = lbscm.getDistinctNamespacesOfCode(AUTO_SCHEME, null, "C0001");
+    	
+    	assertEquals(1,namespaces.size());
+    	
+    	assertEquals("Automobiles",namespaces.get(0));
+    }
+    
+    public void testGetDistinctNamespacesOfCodeWithMultiple() throws Exception {
+    	List<String> namespaces = lbscm.getDistinctNamespacesOfCode(PARTS_SCHEME, null, "codeWithMultipleNs");
+    	
+    	assertEquals(4,namespaces.size());
+    	
+    	assertTrue(namespaces.contains("ns1"));
+    	assertTrue(namespaces.contains("ns2"));
+    	assertTrue(namespaces.contains("ns3"));
+    	assertTrue(namespaces.contains("ns4"));
+    }
+    
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {
         TestRunnable[] runnables = {
                 new TestCachePut(cache, 1000, 1),
