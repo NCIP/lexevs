@@ -64,6 +64,22 @@
         <lgCommon:value>Tires</lgCommon:value>
       </lgCon:presentation>
     </lgCon:entity>
+
+	<lgCon:entity entityCode="codeWithMultipleNs" isActive="true" entityCodeNamespace="ns1">
+      <lgCommon:entityDescription>codeWithMultileNs</lgCommon:entityDescription>
+      <lgCon:entityType>concept</lgCon:entityType>
+      <lgCon:presentation propertyName="textualPresentation" propertyId="t1" isPreferred="true">
+        <lgCommon:value>codeWithMultileNs</lgCommon:value>
+      </lgCon:presentation>
+    </lgCon:entity>
+    
+    <lgCon:entity entityCode="codeWithMultipleNs" isActive="true" entityCodeNamespace="ns2">
+      <lgCommon:entityDescription>codeWithMultileNs</lgCommon:entityDescription>
+      <lgCon:entityType>concept</lgCon:entityType>
+      <lgCon:presentation propertyName="textualPresentation" propertyId="t1" isPreferred="true">
+        <lgCommon:value>codeWithMultileNs</lgCommon:value>
+      </lgCon:presentation>
+    </lgCon:entity>
     
     <!-- Entity for Feature Request https://gforge.nci.nih.gov/tracker/index.php?func=detail&aid=19883&group_id=491&atid=1853 -->
     <lgCon:entity entityCode="DifferentNamespaceEntity" status="kj" isActive="true" entityCodeNamespace="SomeOtherNamespace">
@@ -80,6 +96,9 @@
     <lgRel:associationPredicate associationName="hasSubtype" >
         <lgRel:source sourceEntityCodeNamespace="GermanMadePartsNamespace" sourceEntityCode="E0001">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="P0001"/>
+      </lgRel:source>
+       <lgRel:source sourceEntityCodeNamespace="ns3" sourceEntityCode="codeWithMultipleNs">
+        <lgRel:target targetEntityCodeNamespace="ns4" targetEntityCode="codeWithMultipleNs"/>
       </lgRel:source>
     </lgRel:associationPredicate>
   </relations>
