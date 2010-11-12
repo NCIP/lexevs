@@ -29,7 +29,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
  */
 public class RestrictToEntityTypesTest extends BaseCodedNodeGraphTest {
 
-    public void testRestrictToAssociation() throws Exception {
+    public void testRestrictToAssociationType() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(CAMERA_SCHEME_MANIFEST_URN, null, null);
     	
     	cng = cng.restrictToEntityTypes(Constructors.createLocalNameList("association"));
@@ -51,7 +51,7 @@ public class RestrictToEntityTypesTest extends BaseCodedNodeGraphTest {
         assertEquals(2,rcr[0].getSourceOf().getAssociation().length);
     }
     
-    public void testRestrictToAssociationWithWrong() throws Exception {
+    public void testRestrictToAssociationTypeWithWrong() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(CAMERA_SCHEME_MANIFEST_URN, null, null);
     	
     	cng = cng.restrictToEntityTypes(Constructors.createLocalNameList("invalid"));
@@ -71,5 +71,27 @@ public class RestrictToEntityTypesTest extends BaseCodedNodeGraphTest {
                 rcr.length);
         
         assertNull(rcr[0].getSourceOf());
+    }
+    
+    public void testRestrictToEntityTypeForMappingScheme() throws Exception {
+    	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
+    	
+    	cng = cng.restrictToEntityTypes(Constructors.createLocalNameList("concept"));
+
+        ResolvedConceptReference[] rcr = 
+            cng.resolveAsList(Constructors.createConceptReference("C0001", AUTO_SCHEME, AUTO_SCHEME), 
+                    true, 
+                    false, 
+                    0, 
+                    1, 
+                    null, 
+                    null, 
+                    null, 
+                    -1).getResolvedConceptReference();
+        
+        assertEquals(1, 
+                rcr.length);
+        
+        assertTrue(rcr[0].getSourceOf() != null);
     }
 }
