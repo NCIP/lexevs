@@ -437,14 +437,24 @@
 			)
 		</isNotEmpty>
 		<isNotEmpty property="mustHaveEntityTypes" prepend="AND">
+		(
 			(
 			<iterate property="mustHaveEntityTypes" conjunction="OR">
 				entityType.entityType = #mustHaveEntityTypes[]#
 			</iterate>
 			)
+			OR
+			(
+				entityType.entityType IS NULL
+			)
+		)
 		</isNotEmpty>
 		<isNotNull property="restrictToAnonymous" prepend="AND">
+		(
 			entity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+			OR
+			entity.isAnonymous IS NULL
+		)
 		</isNotNull>
 	</sql>
 	
@@ -607,26 +617,44 @@
 		<isNotEmpty property="mustHaveEntityTypes" prepend="AND">
 			(
 				(
-				<iterate property="mustHaveEntityTypes" conjunction="OR">
-					sourceEntityType.entityType = #mustHaveEntityTypes[]#
-				</iterate>
+					(
+					<iterate property="mustHaveEntityTypes" conjunction="OR">
+						sourceEntityType.entityType = #mustHaveEntityTypes[]#
+					</iterate>
+					)
+					OR
+					(
+						sourceEntityType.entityType IS NULL
+					)
 				)
 				AND
 				(
-				<iterate property="mustHaveEntityTypes" conjunction="OR">
-					targetEntityType.entityType = #mustHaveEntityTypes[]#
-				</iterate>
+					(
+					<iterate property="mustHaveEntityTypes" conjunction="OR">
+						targetEntityType.entityType = #mustHaveEntityTypes[]#
+					</iterate>
+					)
+					OR
+					(
+						targetEntityType.entityType IS NULL
+					)
 				)	
 			)
 		</isNotEmpty>
 	
 		<isNotNull property="restrictToAnonymous" prepend="AND">
 			(
-			
-			sourceEntity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+				(
+				sourceEntity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+				OR
+				sourceEntity.isAnonymous IS NULL
+				)
 			AND
-			targetEntity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
-			
+				(
+				targetEntity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+				OR
+				targetEntity.isAnonymous IS NULL
+				)
 			)
 		</isNotNull>
 	</sql>
