@@ -19,7 +19,9 @@
 package org.LexGrid.LexBIG.Impl.featureRequests;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -74,19 +76,31 @@ public class AddNamespaceToIndex extends LexBIGServiceTestCase {
         codeNamespaceMap.put("P0001", "GermanMadePartsNamespace");
         codeNamespaceMap.put("R0001", "GermanMadePartsNamespace");
         codeNamespaceMap.put("T0001", "GermanMadePartsNamespace");
+        codeNamespaceMap.put("codeWithMultipleNs", "ns1");
+        codeNamespaceMap.put("codeWithMultipleNs", "ns2");
         codeNamespaceMap.put("DifferentNamespaceEntity", "SomeOtherNamespace");
         
         int counter = 0;
         
         assertTrue(rcri.hasNext());
+        
+        Set<String> foundNamespaces = new HashSet<String>();
+        
         while(rcri.hasNext()){
             counter++;
             ResolvedConceptReference ref = rcri.next();
             String entityCode = ref.getCode();
             String entityNamesapce = ref.getCodeNamespace();
+            if(entityCode.equals("codeWithMultipleNs")) {
+            	foundNamespaces.add(entityNamesapce);
+            	continue;
+            }
             assertTrue(codeNamespaceMap.get(entityCode).equals(entityNamesapce));
         }
         
-        assertTrue(counter == 5);   
+        assertTrue(counter == 7);   
+        assertEquals(2,foundNamespaces.size());
+        assertTrue(foundNamespaces.contains("ns1"));
+    	assertTrue(foundNamespaces.contains("ns2"));
     }
 }
