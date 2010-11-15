@@ -204,7 +204,8 @@ public class LexBIGServiceImpl implements LexBIGService {
         try {
             CodingSchemeRenderingList temp = new CodingSchemeRenderingList();
             
-            systemResourceService.refresh();
+            //see if we can get by without the refresh here....
+            //systemResourceService.refresh();
 
             List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
             
