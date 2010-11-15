@@ -241,7 +241,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 	
 	@SuppressWarnings("unchecked")
-	@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
+	//shouldn't need to clear any caches on a 'get'...leaving this here just incase.
+	//@ClearCache(clearCaches={"IbatisCodingSchemeDaoCache","IbatisEntityDaoCache"})
 	public List<Property> getPropertiesOfParents(
 			String codingSchemeId, 
 			List<String> propertyNames, 
