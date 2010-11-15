@@ -18,12 +18,12 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
@@ -40,7 +40,7 @@ public class CodeListFilterRegistry {
     private static CodeListFilterRegistry codeListFilterRegistry;
     
     /** The filter map. */
-    private Map<Integer,Filter> filterMap = new HashMap<Integer,Filter>();
+    private Map<Integer,Filter> filterMap = new LRUMap(2);
     
     /**
      * Instantiates a new code list filter registry.
@@ -109,5 +109,5 @@ public class CodeListFilterRegistry {
         }
         
         return key;
-    }
+    } 
 }
