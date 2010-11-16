@@ -212,7 +212,7 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
             throw e;
         } catch (Exception e) {
             String id = getLogger().error("Implementation problem in the resolved concept reference iterator", e);
-            throw new LBInvocationException("Unexpected system error", id);
+            throw new LBInvocationException("Unexpected system error: " + e.getMessage(), id);
         }
     }
 
