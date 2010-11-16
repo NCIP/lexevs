@@ -45,7 +45,6 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 	private MethodCachingInterceptor testCacheProxy;
 	
 	/** The test cache bean. */
-	@Resource 
 	private TestCacheBean testCacheBean;
 	
 	@Resource
@@ -148,6 +147,16 @@ public class MethodCachingInterceptorTest extends LexEvsDbUnitTestBase {
 		assertEquals("threefour", testCacheProxy.getCaches().get("testCache").values().toArray()[1]);
 		
 		testCacheBean.testClear();
+		assertEquals(0, testCacheProxy.getCaches().get("testCache").size());
+		
+	}
+	
+	/**
+	 * Test clear cache.
+	 */
+	@Test
+	public void testClearCacheWithNestedCache(){
+		testCacheBean.testClearWithNestedCache();
 		assertEquals(0, testCacheProxy.getCaches().get("testCache").size());
 		
 	}

@@ -139,6 +139,17 @@ public class MethodCachingProxyTest extends LexEvsDbUnitTestBase {
 		
 	}
 	
+	/**
+	 * Test clear cache.
+	 */
+	@Test
+	public void testClearCacheWithNestedCache(){
+		
+		testCacheBean.testClearWithNestedCache();
+		assertEquals(0, testCacheProxy.getCaches().get("testCache").size());
+		
+	}
+	
 	@Test
 	public void testCloneResult(){
 		CodingScheme cs = testCacheBean.getClonedResult("uri", "version");

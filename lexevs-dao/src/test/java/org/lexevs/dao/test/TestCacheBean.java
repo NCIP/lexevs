@@ -18,12 +18,16 @@
  */
 package org.lexevs.dao.test;
 
+import javax.annotation.Resource;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.cache.CacheWrappingFactory;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.cache.annotation.ParameterKey;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * The Class TestCacheBean.
@@ -32,6 +36,10 @@ import org.lexevs.cache.annotation.ParameterKey;
  */
 @Cacheable(cacheName = "testCache")
 public class TestCacheBean {
+	
+	@Resource
+	private CacheWrappingFactory cacheWrappingFactory;
+	
 	
 	/**
 	 * Gets the value.
@@ -80,4 +88,27 @@ public class TestCacheBean {
 	 */
 	@ClearCache
 	public void testClear(){}
+	
+	/**
+	 * Test clear.
+	 */
+	@ClearCache
+	public void testClearWithNestedCache(){
+		if(this.cacheWrappingFactory == null){
+			this.cacheWrappingFactory = LexEvsServiceLocator.getInstance().getCacheWrappingFactory();
+		}
+		TestNestedCacheBean bean = cacheWrappingFactory.wrapForCaching(new TestNestedCacheBean());
+		bean.getNestedValue("1", "2");
+	}
+	
+	@Cacheable(cacheName = "testCache")
+	public static class TestNestedCacheBean {
+		
+		@CacheMethod
+		public String getNestedValue(
+				String arg1, 
+				String arg2){
+			return arg1 + arg2;
+		}
+	}
 }
