@@ -55,10 +55,7 @@ public abstract class AbstractMethodCachingBean<T> {
 	private static String NULL_VALUE_CACHE_PLACEHOLDER = "NULL_VALUE_CACHE_PLACEHOLDER";
 
 	private CacheRegistry cacheRegistry;
-	
-	@SuppressWarnings("unused")
-	private final Object lock = new Object();
-	
+
 	/**
 	 * Clear cache.
 	 * 
@@ -69,21 +66,25 @@ public abstract class AbstractMethodCachingBean<T> {
 	 * @throws Throwable the throwable
 	 */
 	protected Object clearCache(T joinPoint, Method method) throws Throwable {
-		logger.debug("Clearing cache.");
-		
-		Object target = this.getTarget(joinPoint);
-		
-		Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(target.getClass(), Cacheable.class);
-		
-		ClearCache clearCacheAnnotation = method.getAnnotation(ClearCache.class);
-		
-		clearCache(cacheableAnnotation, clearCacheAnnotation);
-		
-		Object returnObj = this.proceed(joinPoint);
-		
-		clearCache(cacheableAnnotation, clearCacheAnnotation);
-		
-		return returnObj;
+		try {
+			logger.debug("Clearing cache.");
+
+			this.cacheRegistry.setInThreadCacheClearingState(true);
+
+			Object target = this.getTarget(joinPoint);
+
+			Cacheable cacheableAnnotation = AnnotationUtils.findAnnotation(target.getClass(), Cacheable.class);
+
+			ClearCache clearCacheAnnotation = method.getAnnotation(ClearCache.class);
+
+			clearCache(cacheableAnnotation, clearCacheAnnotation);
+
+			Object returnObj = this.proceed(joinPoint);
+
+			return returnObj;
+		} finally {
+			this.cacheRegistry.setInThreadCacheClearingState(false);
+		}
 	}
 
 	private void clearCache(
@@ -118,6 +119,7 @@ public abstract class AbstractMethodCachingBean<T> {
 	 * @throws Throwable the throwable
 	 */
 	protected Object doCacheMethod(T joinPoint) throws Throwable {
+		
 		if(!CacheSessionManager.getCachingStatus()) {
 			return this.proceed(joinPoint);
 		}
@@ -147,57 +149,37 @@ public abstract class AbstractMethodCachingBean<T> {
 		CacheWrapper<String,Object> cache = this.getCacheFromName(
 				cacheableAnnotation.cacheName(), true);
 
-		//Try an optimistic access of the cache. The intent here is to avoid
-		//the second synchronization block if possible. If the object is in cache,
-		//we can return here;
-		if(method.isAnnotationPresent(CacheMethod.class)) {
-			synchronized(cache) {
-				Object preValue = cache.get(key);
-				if(preValue != null) {
-					this.logger.debug("Pre-synchronized block Cache hit on: " + key);
-					if(preValue.equals(NULL_VALUE_CACHE_PLACEHOLDER)) {
-						return null;
-					} else {
-						return returnResult(preValue, cacheMethodAnnotation);
-					}
-				} else {
-					this.logger.debug("Pre-synchronized block Caching miss on: " + key);
-				}
-			}
+		if(method.isAnnotationPresent(ClearCache.class)) {
+			return this.clearCache(joinPoint, method);
 		}
-		
-		//Not sure which sync strategy is best here. Locking on the cache
-		//level will be faster, but is there a deadlock threat?
-		//Maybe a global lock will be safer...
-		//Note -- a global lock IS safer. Cache level locking
-		//can cause deadlocks -- has been observed in testing.
-		synchronized(lock) {
-			if(method.isAnnotationPresent(ClearCache.class)) {
-				return this.clearCache(joinPoint, method);
-			}
 
-			Object value = cache.get(key);
-			if(value != null) {
-				this.logger.debug("Cache hit on: " + key);
-				if(value.equals(NULL_VALUE_CACHE_PLACEHOLDER)) {
-					return null;
-				} else {
-					return returnResult(value, cacheMethodAnnotation);
-				}
+		Object value = cache.get(key);
+		if(value != null) {
+			this.logger.debug("Cache hit on: " + key);
+			if(value.equals(NULL_VALUE_CACHE_PLACEHOLDER)) {
+				return null;
 			} else {
-				this.logger.debug("Caching miss on: " + key);
+				return returnResult(value, cacheMethodAnnotation);
 			}
+		} else {
+			this.logger.debug("Caching miss on: " + key);
+		}
 
-			Object result = this.proceed(joinPoint);
+		Object result = this.proceed(joinPoint);
+
+		if(this.cacheRegistry.getInThreadCacheClearingState() == null || this.cacheRegistry.getInThreadCacheClearingState() == false){
+			this.logger.debug("Thread is not in @Clear state, caching can continue for key: " + key);
 			
 			if(result != null) {
 				cache.put(key, result);
 			} else {
 				cache.put(key, NULL_VALUE_CACHE_PLACEHOLDER);
 			}
-			
-			return returnResult(result, cacheMethodAnnotation);
+		} else {
+			this.logger.debug("Thread is in @Clear state, caching skipped for key: " + key);
 		}
+
+		return returnResult(result, cacheMethodAnnotation);
 	}
 	
 	private Object returnResult(Object result, CacheMethod cacheMethodAnnotation) {

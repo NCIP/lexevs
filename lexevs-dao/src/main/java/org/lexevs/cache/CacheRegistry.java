@@ -39,8 +39,12 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 	
 	private CacheManager cacheManager;
 
-/** The caches. */
-private Map<String,CacheWrapper<String,Object>> caches = new HashMap<String,CacheWrapper<String,Object>>();
+	/** The caches. */
+	private Map<String,CacheWrapper<String,Object>> caches = new HashMap<String,CacheWrapper<String,Object>>();
+
+
+	private final ThreadLocal<Boolean> inCacheClearingState =
+		new ThreadLocal<Boolean>();
 	
 	public void afterPropertiesSet() throws Exception {
 		initializeCache();
@@ -210,5 +214,13 @@ private Map<String,CacheWrapper<String,Object>> caches = new HashMap<String,Cach
 		public Ehcache getCache(){
 			return cacheManager.getEhcache(cacheName);
 		}
+	}
+	
+	public Boolean getInThreadCacheClearingState(){
+		return this.inCacheClearingState.get();
+	}
+	
+	public void setInThreadCacheClearingState(boolean inThreadClearingState){
+		this.inCacheClearingState.set(inThreadClearingState);
 	}
 }
