@@ -438,14 +438,14 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         HashMap<String,String> refVersions = getServiceHelper().pruneVersionList(csVersionList);
         
         // Resolve the child value set definition and populate CodedNodeSet for this domain and the coding scheme version that was used.
-        childCNS = getServiceHelper().getCodedNodeSetForValueSet(childVDDef, refVersions, versionTag);
+        childCNS = getServiceHelper().getValueSetDefinitionCompiler().compileValueSetDefinition(childVDDef, refVersions, versionTag);
         if (childCNS == null) {
             md_.fatal("There was a problem creating CodedNodeSet for child value set definition : " + childValueSetDefinitionURI);
             throw new LBException("There was a problem creating CodedNodeSet for child value set definition : " + childValueSetDefinitionURI);
         }
             
         // Resolve the parent value set definition and populate CodedNodeSet for this domain and the coding scheme version that was used.
-        parentCNS = getServiceHelper().getCodedNodeSetForValueSet(parentVDDef, refVersions, versionTag);
+        parentCNS = getServiceHelper().getValueSetDefinitionCompiler().compileValueSetDefinition(parentVDDef, refVersions, versionTag);
         if (parentCNS == null) {
             md_.fatal("There was a problem creating CodedNodeSet for parent value set definition : " + parentValueSetDefinitionURI);
             throw new LBException("There was a problem creating CodedNodeSet for parent value set definition : " + parentValueSetDefinitionURI);

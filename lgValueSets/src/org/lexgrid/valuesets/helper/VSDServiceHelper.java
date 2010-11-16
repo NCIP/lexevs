@@ -35,32 +35,25 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.valueSets.DefinitionEntry;
-import org.LexGrid.valueSets.EntityReference;
-import org.LexGrid.valueSets.PropertyMatchValue;
-import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
+import org.lexgrid.valuesets.helper.compiler.FileSystemCachingValueSetDefinitionCompilerDecorator;
+import org.lexgrid.valuesets.helper.compiler.ValueSetDefinitionCompiler;
 
 /**
  * Helper class for Value Set Definition functions.
@@ -70,6 +63,8 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 public class VSDServiceHelper {
 	@SuppressWarnings("unused")
     private static Logger log = Logger.getLogger("convert.SQL");
+	
+	private ValueSetDefinitionCompiler valueSetDefinitionCompiler;
 	
 	// The maximum number of nodes to cache in the process of searching for leaf nodes of a graph
 	private int maxLeafCacheSize = 10000;
@@ -296,7 +291,7 @@ public class VSDServiceHelper {
 		// TODO What should the behavior be if it is in the list but not supported by the service?  Warning?
 		HashMap<String, String> refVersions = pruneVersionList(csVersionsToUse);
 	
-		rval.setCodedNodeSet(getCodedNodeSetForValueSet(vdd, refVersions, versionTag));
+		rval.setCodedNodeSet(getValueSetDefinitionCompiler().compileValueSetDefinition(vdd, refVersions, versionTag));
 		rval.setCodingSchemeVersionRefList(new AbsoluteCodingSchemeVersionReferenceList());
 		
 	    // Transfer the list of used versions
@@ -307,246 +302,7 @@ public class VSDServiceHelper {
 		}
 		return rval;
     }
-	
-    /**
-     * Resolves the supplied valueSetDefinition object against the list of coding scheme versions 
-     * @param vdd - the value domain to be resolved
-     * @param refVersions - a map from coding scheme URIs to the corresponding version
-     * @param versionTag - a tag (e.g. "production", "test", etc. used to resolve missing coding schemes)
-     *   If a coding scheme does not appear in this list the resolution will be as follows:
-     *                1) If the service supports a single version of the coding scheme it will be used.
-     *                2) If there is more than one version the one that uses the supplied versionTag will be used
-     *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
-     *                    marked "production" will be used
-     *                4) If there isn't one marked production, then the "latest" will be used     */
-    public CodedNodeSet getCodedNodeSetForValueSet( 
-	        ValueSetDefinition vdd, HashMap<String, String> refVersions, String versionTag) 
-                                                        throws LBException {
-	    CodedNodeSet finalNodeSet = null;
-	    
-		// Iterate over the value domain resolving contents
-		if(vdd != null && vdd.getDefinitionEntry() != null) {
-		    Iterator<DefinitionEntry> defIter = vdd.getDefinitionEntryAsReference().iterator();
-		    while(defIter.hasNext()) {
-		        DefinitionEntry vdDef = defIter.next();
-		        CodedNodeSet product = null;
-		        
-		        // All of the contents of a coding scheme
-		        if(vdDef.getCodingSchemeReference() != null) {
-		            product = getNodeSetForCodingScheme(vdd, vdDef.getCodingSchemeReference().getCodingScheme(), refVersions, versionTag);
-		        } else if(vdDef.getValueSetDefinitionReference() != null) {
-		            ValueSetDefinition innerVdd = null;
-                    try {
-                        innerVdd = vsds_.getValueSetDefinitionByUri(new URI(vdDef.getValueSetDefinitionReference().getValueSetDefinitionURI()));
-                    } catch (URISyntaxException e) {
-                        // TODO This is a data error.  We whine in enough places that it isn't worth doing here
-                    }
-                    if(innerVdd != null)
-                        product = getCodedNodeSetForValueSet(innerVdd, refVersions, versionTag);   
-		        } else if(vdDef.getEntityReference() != null) {
-		            product = getNodeSetForEntityReference(vdd, vdDef.getEntityReference(), refVersions, versionTag);
-		        } else if (vdDef.getPropertyReference() != null) {
-		        	product = getNodeSetForPropertyReference(vdd, vdDef.getPropertyReference(), refVersions, versionTag);
-		        }
-		        	
-		        if(product != null) {
-    		        if (vdDef.getOperator() != null)
-    		        {
-    		        	if (vdDef.getOperator().value().equals(DefinitionOperator.OR.value())) 
-    		        		finalNodeSet = finalNodeSet == null? product : finalNodeSet.union(product);
-    		        	else if (vdDef.getOperator().value().equals(DefinitionOperator.AND.value()))
-    		        		finalNodeSet = finalNodeSet == null? null : finalNodeSet.intersect(product);
-    		        	else if (vdDef.getOperator().value().equals(DefinitionOperator.SUBTRACT.value()))
-    		        		finalNodeSet = finalNodeSet == null? null : finalNodeSet.difference(product);
-    		        }
-		        } else {
-		            // TODO we probably want to say something when we get no resolution at all.
-		        }
-		    }
-		}
-		return finalNodeSet;
-	}
-	
-	/**
-	 * Return the coded node set that represents all of the concept codes in the referenced coding scheme
-	 * @param vdd          - containing value set definition
-	 * @param csName       - local name of coding scheme within the value domain
-	 * @param refVersions  - map from coding scheme URI to versions.  A new node will be added to this list if the coding scheme isn't already there
-	 * @param versionTag   - default version or tag
-	 * @return coded node set that corresponds to this node or null if none available
-	 * @throws LBException
-	 */
-	protected CodedNodeSet getNodeSetForCodingScheme(
-	        ValueSetDefinition vdd, String csName, HashMap<String, String> refVersions, String versionTag) 
-    throws LBException {
-	    
-        if(StringUtils.isEmpty(csName))
-            csName = vdd.getDefaultCodingScheme();
-        if(!StringUtils.isEmpty(csName)) {
-            AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(csName, vdd.getMappings(), versionTag, refVersions);
-            CodingSchemeVersionOrTag verOrTag = new CodingSchemeVersionOrTag();
-            verOrTag.setVersion(resVersion.getCodingSchemeVersion());
-            return getLexBIGService().getCodingSchemeConcepts(resVersion.getCodingSchemeURN(), verOrTag).restrictToStatus(ActiveOption.ACTIVE_ONLY, null); 
-        }
-        return null;
-	}
-	
-	/**
-	 * Return a coded node set that represents the supplied entity reference
-	 * @param vdd - containing value set definition
-	 * @param entityRef - entity reference to resolve
-	 * @param refVersions - fixed versions to resolve against
-	 * @param versionTag - version tag to resolve elsewise
-	 * @return corresponding coded node set
-	 * @throws LBException
-	 */
-	protected CodedNodeSet getNodeSetForEntityReference(
-	        ValueSetDefinition vdd, EntityReference entityRef, HashMap<String, String> refVersions, String versionTag) 
-    throws LBException {
-	    
-	    // Locate the coding scheme namespace
-	    String entityCodeCodingScheme = getCodingSchemeNameForNamespaceName(vdd.getMappings(), entityRef.getEntityCodeNamespace());
-	    if(StringUtils.isEmpty(entityCodeCodingScheme))
-	        entityCodeCodingScheme = vdd.getDefaultCodingScheme();
-	    if(StringUtils.isEmpty(entityCodeCodingScheme)) {
-	        // TODO report an error here.  Can't have a code without some coding scheme reference
-	        return null;
-	    }
-	    AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(entityCodeCodingScheme, vdd.getMappings(), versionTag, refVersions);
-	    CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-	    try{
-	    	versionOrTag.setVersion(resVersion.getCodingSchemeVersion());
-	    }catch(NullPointerException e){
-	    	throw new LBException("Coding Scheme not found in the system");
-	    }
-	    ConceptReference cr = ConvenienceMethods.createConceptReference(entityRef.getEntityCode(), resVersion.getCodingSchemeURN());
-	    // Option 1: A single entity code
-	    if (StringUtils.isEmpty(entityRef.getReferenceAssociation()) ) {
-	        ConceptReferenceList crl = new ConceptReferenceList();
-	        
-	        crl.addConceptReference(cr);
-	        return getLexBIGService().getCodingSchemeConcepts(resVersion.getCodingSchemeURN(), versionOrTag).restrictToCodes(crl);
-	    }
-	    
-	    // Option 2: Some type of graph
-	    // TODO file model bug report because we don't know the relation container name here...
-	    CodedNodeGraph cng = getLexBIGService().getNodeGraph(resVersion.getCodingSchemeURN(), versionOrTag, null);
-	    cng = cng.restrictToAssociations(Constructors.createNameAndValueList(entityRef.getReferenceAssociation()), null);
-	    return entityRef.isLeafOnly()?
-	            leavesOfGraph(cng, entityRef.isTargetToSource(), cr, vdd, refVersions, versionTag) :
-	            cng.toNodeList(cr, !entityRef.isTargetToSource(), entityRef.isTargetToSource(), entityRef.isTransitiveClosure()? -1 : 1, -1);
-	}
-	
-	/**
-	 * Return a coded node set that represents the supplied property reference
-	 * @param vdd - containing value set definition
-	 * @param propertyRef - property reference to resolve
-	 * @param refVersions - fixed versions to resolve against
-	 * @param versionTag - version tag to resolve elsewise
-	 * @return corresponding coded node set
-	 * @throws LBException
-	 */
-	protected CodedNodeSet getNodeSetForPropertyReference(
-	        ValueSetDefinition vdd, PropertyReference propertyRef, HashMap<String, String> refVersions, String versionTag) 
-    throws LBException {
-	    
-		AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(propertyRef.getCodingScheme(), vdd.getMappings(), versionTag, refVersions);
-	    CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-	    try{
-	    	if (refVersions != null && refVersions.containsKey(resVersion.getCodingSchemeURN()))
-	    		versionOrTag.setVersion(refVersions.get(resVersion.getCodingSchemeURN()));
-	    	else
-	    		versionOrTag.setVersion(resVersion.getCodingSchemeVersion());	    	
-	    }catch(NullPointerException e){
-	    	throw new LBException("Coding Scheme not found in the system");
-	    }
-	    String propertyMatchValue = null;
-	    String matchAlgorithm = null;
-	    
-	    CodedNodeSet cns = getLexBIGService().getNodeSet(propertyRef.getCodingScheme(), versionOrTag, null);
-	    
-	    PropertyMatchValue pmv = propertyRef.getPropertyMatchValue();
-	    if (pmv != null)
-	    {
-	    	propertyMatchValue = pmv.getContent();
-	    	matchAlgorithm = pmv.getMatchAlgorithm();
-	    }
-	    if (StringUtils.isEmpty(matchAlgorithm))
-	    	matchAlgorithm = MatchAlgorithms.LuceneQuery.name();
-	    
-	    if (StringUtils.isNotEmpty(propertyMatchValue))
-	    {
-	    	cns.restrictToMatchingProperties(
-	    		StringUtils.isNotEmpty(propertyRef.getPropertyName()) ? Constructors.createLocalNameList(propertyRef.getPropertyName()): null, 
-	    				new PropertyType[] { PropertyType.PRESENTATION, PropertyType.GENERIC }, propertyMatchValue, matchAlgorithm, null);
-	    }
-	    else if (StringUtils.isNotEmpty(propertyRef.getPropertyName()))
-	    {
-	    	cns.restrictToProperties(Constructors.createLocalNameList(propertyRef.getPropertyName()), null);
-	    }
-	    	
-	    return cns;
-	}
-	
-	/**
-     * Return the leaf nodes for the supplied graph.  As the graph to be traversed could be quite large, this is
-     * done breadth first and non-recursively.  With apologies to Walt Whitman
-     * 
-     * Note: were we to implement both the forward and reverse closure on
-     * transitive graphs, this routine could be replaced with the intersection of the supplied graph and the immediate
-     * children or ancestors of the top or bottom nodes respectively.
-     * 
-     * @param cng - graph to be traversed
-     * @param isTargetToSource - direction to traverse the graph
-     * @param root - the root node to start the traverse at
-     * @param vdd  - value domain definition to resolve leaf nodes against if isLeaf is set
-     * @param refVersions - map of coding Scheme URI to version (may be updated by this routine)
-     * @param versionTag  - version tag (e.g. devel, production, etc.) to resolve new nodes
-     * @return - a list of all leaf nodes
-	 * @throws LBException 
-     */
-    public CodedNodeSet leavesOfGraph(
-            CodedNodeGraph cng, boolean isTargetToSource, ConceptReference root, ValueSetDefinition vdd, HashMap<String,String> refVersions, String versionTag) 
-                    throws LBException {
- 
-        ConceptReferenceList leaves = new ConceptReferenceList();
-        ConceptReferenceList probes = new ConceptReferenceList();
-        probes.addConceptReference(root);
-        HashSet<String> seenNode = new HashSet<String>();          // Trade performance for space
-       
-        while(probes.getConceptReferenceCount() > 0) {
-            ConceptReferenceList newProbes = new ConceptReferenceList();
-            Iterator<? extends ConceptReference> cri = probes.iterateConceptReference();
-            while(cri.hasNext()) {
-                ConceptReference probe = cri.next();
-                // Never look at a node more than once. 
-                if(seenNode.contains(constructKey(probe)))
-                    continue;
-                if(seenNode.size() < maxLeafCacheSize)
-                    seenNode.add(constructKey(probe));
-                
-                boolean probeHasChildren = false;
-                CodedNodeSet directChildren = cng.toNodeList(probe, !isTargetToSource, isTargetToSource, 1, -1);
-                if(directChildren != null) {
-                    ResolvedConceptReferencesIterator dcIter = directChildren.resolve(null, null, null, null, false);
-                    while(dcIter.hasNext()) {
-                        ConceptReference childNode = dcIter.next();
-                        if(!equalReferences(probe, childNode)) {
-                            probeHasChildren = true;
-                            newProbes.addConceptReference(childNode);
-                        }
-                    }
-                }
-                
-                if(!probeHasChildren)
-                    leaves.addConceptReference(probe);
-            }
-            probes = newProbes;
-        }
-        return conceptReferenceListToCodedNodeSet(leaves, vdd, refVersions, versionTag );
-    }
-    
-    
+
     /**
      * Go over the supplied coding scheme version reference list and remove any entries that aren't supported by the service.
      * If a coding scheme URI appears more than once in the list, only the first entry will be used.
@@ -730,4 +486,39 @@ public class VSDServiceHelper {
         }
         return mergedNodeSet;
     }
+    
+	/**
+	 * Return the coded node set that represents all of the concept codes in the referenced coding scheme
+	 * @param vdd          - containing value set definition
+	 * @param csName       - local name of coding scheme within the value domain
+	 * @param refVersions  - map from coding scheme URI to versions.  A new node will be added to this list if the coding scheme isn't already there
+	 * @param versionTag   - default version or tag
+	 * @return coded node set that corresponds to this node or null if none available
+	 * @throws LBException
+	 */
+	protected CodedNodeSet getNodeSetForCodingScheme(
+	        ValueSetDefinition vdd, String csName, HashMap<String, String> refVersions, String versionTag) 
+    throws LBException {
+	    
+        if(StringUtils.isEmpty(csName))
+            csName = vdd.getDefaultCodingScheme();
+        if(!StringUtils.isEmpty(csName)) {
+            AbsoluteCodingSchemeVersionReference resVersion = resolveCSVersion(csName, vdd.getMappings(), versionTag, refVersions);
+            CodingSchemeVersionOrTag verOrTag = new CodingSchemeVersionOrTag();
+            verOrTag.setVersion(resVersion.getCodingSchemeVersion());
+            return getLexBIGService().getCodingSchemeConcepts(resVersion.getCodingSchemeURN(), verOrTag).restrictToStatus(ActiveOption.ACTIVE_ONLY, null); 
+        }
+        return null;
+	}
+	
+	public ValueSetDefinitionCompiler getValueSetDefinitionCompiler() {
+		if(this.valueSetDefinitionCompiler == null) {
+			this.valueSetDefinitionCompiler = this.doCreateValueSetDefinitionCompiler();
+		}
+		return this.valueSetDefinitionCompiler;
+	}
+	
+	protected ValueSetDefinitionCompiler doCreateValueSetDefinitionCompiler() {
+		return new FileSystemCachingValueSetDefinitionCompilerDecorator(new DefaultCompiler(this));
+	}
 }
