@@ -58,7 +58,6 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.SetOperation;
 import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
-import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
 import org.LexGrid.LexBIG.Impl.helpers.ToNodeListResolvedConceptReferencesIteratorDecorator;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
@@ -98,7 +97,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
     
-    private CodeHolder toNodeListCodes = null;
+    //This can be very large an expensive to send remotely. Make this transient
+    //for now and rely on Lucene matches to reconstruct the 'toNodeListCodes' matches.
+    private transient CodeHolder toNodeListCodes = null;
     
     private ActiveOption currentActiveOption;
     
