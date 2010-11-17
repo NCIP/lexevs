@@ -32,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexgrid.valuesets.helper.VSDServiceHelper;
 
 /**
  * The Class FileSystemCachingValueSetDefinitionCompilerDecorator.
@@ -51,8 +52,8 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 	 * 
 	 * @param delegate the delegate
 	 */
-	public FileSystemCachingValueSetDefinitionCompilerDecorator(ValueSetDefinitionCompiler delegate){
-		super(delegate);
+	public FileSystemCachingValueSetDefinitionCompilerDecorator(ValueSetDefinitionCompiler delegate, VSDServiceHelper vsdServiceHelper){
+		super(delegate, vsdServiceHelper);
 		
 		File cacheLocation = new File(this.getDiskStorePath());
 		

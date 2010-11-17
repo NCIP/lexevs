@@ -20,10 +20,18 @@ package org.lexgrid.valuesets.helper.compiler;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.valueSets.CodingSchemeReference;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
+import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.apache.commons.lang.StringUtils;
+import org.lexgrid.valuesets.helper.VSDServiceHelper;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -37,14 +45,21 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 	
 	/** The delegate. */
 	private ValueSetDefinitionCompiler delegate;
+	
+	private VSDServiceHelper vsdServiceHelper;
+	
+	private static String NULL_STRING = "NULL";
+	
+	private static int NULL_STRING_HASH_CODE = NULL_STRING.hashCode();
 
 	/**
 	 * Instantiates a new caching value set definition compiler decorator.
 	 * 
 	 * @param delegate the delegate
 	 */
-	public AbstractCachingValueSetDefinitionCompilerDecorator(ValueSetDefinitionCompiler delegate){
+	public AbstractCachingValueSetDefinitionCompilerDecorator(ValueSetDefinitionCompiler delegate, VSDServiceHelper vsdServiceHelper){
 		this.delegate = delegate;
+		this.vsdServiceHelper = vsdServiceHelper;
 	}
 	
 	/* (non-Javadoc)
@@ -61,17 +76,24 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 		int uuid = callback.getComputedHashCode();
 		
 		if(refVersions != null){
-			uuid =+ refVersions.hashCode();
+			uuid += refVersions.hashCode();
+		} else {
+			uuid += NULL_STRING_HASH_CODE;
 		}
 		
 		if(versionTag != null){
-			uuid =+ versionTag.hashCode();
+			uuid += versionTag.hashCode();
+		} else {
+			uuid += NULL_STRING_HASH_CODE;
 		}
 		
 		try {
 			CodedNodeSet cns = this.retrieveCodedNodeSet(uuid);
 			
 			if(cns != null) {
+				
+				populateRefVersions(vdd, refVersions, versionTag);
+				
 				return cns;
 			} else {
 				cns = this.delegate.compileValueSetDefinition(vdd, refVersions, versionTag);
@@ -82,6 +104,40 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+	}
+	
+	private void populateRefVersions(ValueSetDefinition vdd, HashMap<String, String> refVersions, 
+			String versionTag) throws LBException {
+		for(DefinitionEntry definitionEntry : vdd.getDefinitionEntry()){
+			EntityReference entityRef = definitionEntry.getEntityReference();
+			
+			if(entityRef != null){
+				// Locate the coding scheme namespace
+				String entityCodeCodingScheme = vsdServiceHelper.getCodingSchemeNameForNamespaceName(vdd.getMappings(), entityRef.getEntityCodeNamespace());
+				if(StringUtils.isEmpty(entityCodeCodingScheme)) {
+					entityCodeCodingScheme = vdd.getDefaultCodingScheme();
+				}
+				if(StringUtils.isNotEmpty(entityCodeCodingScheme)) {
+					vsdServiceHelper.resolveCSVersion(entityCodeCodingScheme, vdd.getMappings(), versionTag, refVersions);
+				}
+			}
+
+			PropertyReference propertyRef = definitionEntry.getPropertyReference();
+			if(propertyRef != null){
+				vsdServiceHelper.resolveCSVersion(propertyRef.getCodingScheme(), vdd.getMappings(), versionTag, refVersions);
+			}
+
+			CodingSchemeReference codingSchemeRef = definitionEntry.getCodingSchemeReference();
+			if(codingSchemeRef != null){
+				String csName = codingSchemeRef.getCodingScheme();
+
+				if(StringUtils.isEmpty(csName))
+					csName = vdd.getDefaultCodingScheme();
+				if(!StringUtils.isEmpty(csName)) {
+					vsdServiceHelper.resolveCSVersion(csName, vdd.getMappings(), versionTag, refVersions);
+				}
+			}
 		}
 	}
 
@@ -118,6 +174,7 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 			}
 
 			if(value instanceof String ||
+					value instanceof Date ||
 					ClassUtils.isPrimitiveOrWrapper(value.getClass()) || 
 					value.getClass().isEnum()) {
 				

@@ -384,7 +384,7 @@ public class VSDServiceHelper {
      * @return the URI/Version to use or null if none can be found
      * @throws LBException
      */
-    protected AbsoluteCodingSchemeVersionReference resolveCSVersion(
+    public AbsoluteCodingSchemeVersionReference resolveCSVersion(
             String csName, Mappings maps, String versionTag, HashMap<String, String> refVersions) throws LBException {
         String csURI = getURIForCodingSchemeName(maps, csName);
         if(!StringUtils.isEmpty(csURI)) {           
@@ -519,6 +519,6 @@ public class VSDServiceHelper {
 	}
 	
 	protected ValueSetDefinitionCompiler doCreateValueSetDefinitionCompiler() {
-		return new FileSystemCachingValueSetDefinitionCompilerDecorator(new DefaultCompiler(this));
+		return new FileSystemCachingValueSetDefinitionCompilerDecorator(new DefaultCompiler(this), this);
 	}
 }
