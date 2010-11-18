@@ -50,6 +50,7 @@ import org.LexGrid.LexBIG.Impl.bugs.GForge22826;
 import org.LexGrid.LexBIG.Impl.bugs.GForge23103;
 import org.LexGrid.LexBIG.Impl.bugs.GForge25067;
 import org.LexGrid.LexBIG.Impl.bugs.GForge26741;
+import org.LexGrid.LexBIG.Impl.bugs.GForge27457;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29772;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29839;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29840;
@@ -392,6 +393,7 @@ public class AllTestsNormalConfig {
         bugTests.addTestSuite(GForge29860.class);
         bugTests.addTestSuite(GForge29924.class);
         bugTests.addTestSuite(GForge29940.class);
+        bugTests.addTestSuite(GForge27457.class);
         
         mainSuite.addTest(bugTests);
         
