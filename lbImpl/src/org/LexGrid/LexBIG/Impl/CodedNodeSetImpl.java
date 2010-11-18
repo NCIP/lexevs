@@ -104,6 +104,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private ActiveOption currentActiveOption;
     
     private boolean shouldCodingSchemeSpecificRestriction = true;
+    
+    private boolean hasMatchAllDocsQueryBeenAdded = false;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -722,15 +724,20 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String internalVersionString = gac.getInternalVersionString();
             
             String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
-
-            this.queries.add(new MatchAllDocsQuery());
             
-            if(this.isShouldCodingSchemeSpecificRestriction()) {
-                Query codingSchemeQuery = 
-                    entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
-                    
-                this.queries.add(codingSchemeQuery);
-            }
+            //TODO: Move this block of logic somewhere else so we don't have to rely on a flag
+            if(! hasMatchAllDocsQueryBeenAdded){
+                this.queries.add(new MatchAllDocsQuery());
+
+                if(this.isShouldCodingSchemeSpecificRestriction()) {
+                    Query codingSchemeQuery = 
+                        entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
+
+                    this.queries.add(codingSchemeQuery);
+                }
+                
+                hasMatchAllDocsQueryBeenAdded = true;
+            } 
             
             for (int i = 1; i < pendingOperations_.size(); i++) {
                 Operation operation = pendingOperations_.get(i);
