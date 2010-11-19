@@ -29,14 +29,17 @@ public class QueryOperationImpl extends BaseService implements QueryOperation {
 	private transient ValueSetQueryOperation valueSetQueryOp_;
 	private transient ConceptDomainQueryOperation conceptDomainQueryOp_;
 	private transient UsageContextQueryOperation usageContextQueryOp_;
+	private transient AssociationQueryOperation assnQueryOp_;
+	private transient CodeSystemQueryOperation codeSystemQueryOp_;
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.cts2.query.QueryOperation#getAssociationQueryOperation()
 	 */
 	@Override
 	public AssociationQueryOperation getAssociationQueryOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (assnQueryOp_ == null)
+			assnQueryOp_ = new AssociationQueryOperationImpl();
+		return assnQueryOp_;
 	}
 
 	/* (non-Javadoc)
@@ -44,8 +47,9 @@ public class QueryOperationImpl extends BaseService implements QueryOperation {
 	 */
 	@Override
 	public CodeSystemQueryOperation getCodeSystemQueryOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (codeSystemQueryOp_ == null)
+			codeSystemQueryOp_ = new CodeSystemQueryOperationImpl();
+		return codeSystemQueryOp_;
 	}
 
 	/* (non-Javadoc)
