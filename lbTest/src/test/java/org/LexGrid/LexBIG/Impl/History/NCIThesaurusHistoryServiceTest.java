@@ -21,9 +21,7 @@ package org.LexGrid.LexBIG.Impl.History;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -33,7 +31,6 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.SystemReleaseDetail;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -42,7 +39,6 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.EntityVersion;
 import org.LexGrid.versions.SystemRelease;
-import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 
 /**
  * JUnit tests for history service.
@@ -50,6 +46,7 @@ import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+@SuppressWarnings("deprecation")
 public class NCIThesaurusHistoryServiceTest extends TestCase {
 	
     public void testGetBaselines() throws LBException {
@@ -92,7 +89,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertTrue(sr.getReleaseId().equals("v1.0"));
         assertTrue(sr.getReleaseAgency().equals("http://nci.nih.gov/"));
         assertTrue(sr.getReleaseURI().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#:v1.0"));
-        assertTrue(sr.getReleaseDate().getTime() == Long.parseLong("1029387600000"));
+        
+        Date date = sr.getReleaseDate();
+        assertEquals(15, date.getDate());
+        assertEquals(7, date.getMonth());
+        assertEquals(102, date.getYear());
+       
         assertTrue(sr.getEntityDescription().getContent().equals(
                 "NCI Thesaurus with editing completed through July 22, 2002"));
 
@@ -132,7 +134,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertTrue(csv.getReleaseURN().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#:05.12f"));
         assertEquals("03-JAN-06", csv.getVersion());
         assertFalse(csv.getIsComplete());
-        assertTrue(csv.getVersionDate().getTime() == Long.parseLong("1139205600000"));
+        
+        Date date = csv.getVersionDate();
+        assertEquals(6, date.getDate());
+        assertEquals(1, date.getMonth());
+        assertEquals(106, date.getYear());
+        
         assertTrue(csv
                 .getEntityDescription()
                 .getContent()
@@ -145,7 +152,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertTrue(csv.getReleaseURN().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#:05.12f"));
         assertTrue(csv.getVersion().equals("03-JAN-06"));
         assertFalse(csv.getIsComplete());
-        assertTrue(csv.getVersionDate().getTime() == Long.parseLong("1139205600000"));
+        
+        date = csv.getVersionDate();
+        assertEquals(6, date.getDate());
+        assertEquals(1, date.getMonth());
+        assertEquals(106, date.getYear());
+        
         assertTrue(csv
                 .getEntityDescription()
                 .getContent()
@@ -164,7 +176,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertTrue(csv[0].getReleaseURN().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#:05.12f"));
         assertTrue(csv[0].getVersion().equals("22-DEC-05") || csv[1].getVersion().equals("22-DEC-05"));
         assertFalse(csv[0].getIsComplete());
-        assertTrue(csv[0].getVersionDate().getTime() == Long.parseLong("1139205600000"));
+       
+        Date date = csv[0].getVersionDate();
+        assertEquals(6, date.getDate());
+        assertEquals(1, date.getMonth());
+        assertEquals(106, date.getYear());
+        
         assertTrue(csv[0]
                 .getEntityDescription()
                 .getContent()
@@ -184,7 +201,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertEquals(1,nce.length);
         assertTrue(nce[0].getConceptcode().equals("C51826"));
         assertTrue(nce[0].getConceptName().equals("Grant_Principal_Investigator"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1135231200000"));
+        
+        Date date = nce[0].getEditDate();
+        assertEquals(22, date.getDate());
+        assertEquals(11, date.getMonth());
+        assertEquals(105, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().equals(""));
         assertTrue(nce[0].getReferencename().equals("Grant_PI"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MODIFY));
@@ -202,7 +224,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         }
         assertTrue(nce[i].getConceptcode().equals("C15363"));
         assertTrue(nce[i].getConceptName().equals("Healthcare"));
-        assertTrue(nce[i].getEditDate().getTime() == Long.parseLong("1136268000000"));
+        
+        date = nce[i].getEditDate();
+        assertEquals(3, date.getDate());
+        assertEquals(0, date.getMonth());
+        assertEquals(106, date.getYear());
+        
         assertTrue(nce[i].getReferencecode().equals("C16205"));
         assertTrue(nce[i].getReferencename().equals("Healthcare_Activity"));
         assertTrue(nce[i].getEditaction().equals(ChangeType.MERGE));
@@ -239,7 +266,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
 
         assertTrue(nce[0].getConceptcode().equals("C51826"));
         assertTrue(nce[0].getConceptName().equals("Grant_Principal_Investigator"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1135231200000"));
+        
+        Date date = nce[0].getEditDate();
+        assertEquals(22, date.getDate());
+        assertEquals(11, date.getMonth());
+        assertEquals(105, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().length() == 0);
         assertTrue(nce[0].getReferencename().equals("Grant_PI"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MODIFY));
@@ -249,7 +281,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
 
         assertTrue(nce[0].getConceptcode().equals("C51826"));
         assertTrue(nce[0].getConceptName().equals("Grant_Principal_Investigator"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1136268000000"));
+        
+        date = nce[0].getEditDate();
+        assertEquals(3, date.getDate());
+        assertEquals(0, date.getMonth());
+        assertEquals(106, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().length() == 0);
         assertTrue(nce[0].getReferencename() == null || nce[0].getReferencename().length() == 0);
         assertTrue(nce[0].getEditaction().equals(ChangeType.CREATE));
@@ -258,13 +295,18 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertTrue(nce.length == 1);
         assertTrue(nce[0].getConceptcode().equals("C51826"));
         assertTrue(nce[0].getConceptName().equals("Grant_Principal_Investigator"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1136268000000"));
+        
+        date = nce[0].getEditDate();
+        assertEquals(3, date.getDate());
+        assertEquals(0, date.getMonth());
+        assertEquals(106, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().length() == 0);
         assertTrue(nce[0].getReferencename() == null || nce[0].getReferencename().length() == 0);
         assertTrue(nce[0].getEditaction().equals(ChangeType.CREATE));
     }
 
-    public void testGetEditActionList3() throws LBException, URISyntaxException {
+	public void testGetEditActionList3() throws LBException, URISyntaxException {
         LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
         HistoryService hs = lbsi.getHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
 
@@ -274,7 +316,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertEquals(1,nce.length);
         assertTrue(nce[0].getConceptcode().equals("C640"));
         assertTrue(nce[0].getConceptName().equals("Methaqualone"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1133935200000"));
+        
+        Date date = nce[0].getEditDate();
+        assertEquals(7, date.getDate());
+        assertEquals(11, date.getMonth());
+        assertEquals(105, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().equals(""));
         assertTrue(nce[0].getReferencename().equals("Current Dental Terminology 2005"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MODIFY));
@@ -285,7 +332,12 @@ public class NCIThesaurusHistoryServiceTest extends TestCase {
         assertTrue(nce.length == 1);
         assertTrue(nce[0].getConceptcode().equals("C640"));
         assertTrue(nce[0].getConceptName().equals("Methaqualone"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1133935200000"));
+        
+        date = nce[0].getEditDate();
+        assertEquals(7, date.getDate());
+        assertEquals(11, date.getMonth());
+        assertEquals(105, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().equals(""));
         assertTrue(nce[0].getReferencename().equals("Current Dental Terminology 2005"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MODIFY));
