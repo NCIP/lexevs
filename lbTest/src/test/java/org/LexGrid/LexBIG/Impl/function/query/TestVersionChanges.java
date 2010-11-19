@@ -22,6 +22,7 @@ package org.LexGrid.LexBIG.Impl.function.query;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
@@ -38,7 +39,8 @@ public class TestVersionChanges extends LexBIGServiceTestCase {
         return testID;
     }
 
-    public void testT1_FNC_03() throws URISyntaxException, LBException {
+    @SuppressWarnings("deprecation")
+	public void testT1_FNC_03() throws URISyntaxException, LBException {
 
         HistoryService hs = ServiceHolder.instance().getLexBIGService().getHistoryService(
                 "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
@@ -49,7 +51,12 @@ public class TestVersionChanges extends LexBIGServiceTestCase {
         assertTrue(nce.length == 1);
         assertTrue(nce[0].getConceptcode().equals("C640"));
         assertTrue(nce[0].getConceptName().equals("Methaqualone"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1133935200000"));
+        
+        Date date = nce[0].getEditDate();
+        assertEquals(7, date.getDate());
+        assertEquals(11, date.getMonth());
+        assertEquals(105, date.getYear());
+        
         assertTrue(nce[0].getReferencecode() == null || nce[0].getReferencecode().equals(""));
         assertTrue(nce[0].getReferencename().equals("Current Dental Terminology 2005"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.MODIFY));
