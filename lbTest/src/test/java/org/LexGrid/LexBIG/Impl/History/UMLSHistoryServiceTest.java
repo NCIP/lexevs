@@ -269,7 +269,8 @@ public class UMLSHistoryServiceTest extends TestCase {
         assertTrue(nce[1].getEditaction().equals(ChangeType.MERGE));
     }
 */
-    public void testGetEditActionList3() throws LBException, URISyntaxException {
+    @SuppressWarnings("deprecation")
+	public void testGetEditActionList3() throws LBException, URISyntaxException {
         LexBIGService lbsi = ServiceHolder.instance().getLexBIGService();
         HistoryService hs = lbsi.getHistoryService(HistoryService.metaURN);
 
@@ -278,7 +279,12 @@ public class UMLSHistoryServiceTest extends TestCase {
 
         assertTrue(nce.length == 1);
         assertTrue(nce[0].getConceptcode().equals("C0359583"));
-        assertTrue(nce[0].getEditDate().getTime() == Long.parseLong("1170309600000"));
+        
+        Date date = nce[0].getEditDate();
+        assertEquals(1, date.getDate());
+        assertEquals(1, date.getMonth());
+        assertEquals(107, date.getYear());
+        
         assertTrue(nce[0].getReferencecode().equals("C0242295"));
         assertTrue(nce[0].getEditaction().equals(ChangeType.RETIRE));
     }
