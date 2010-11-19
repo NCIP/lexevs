@@ -47,7 +47,7 @@ public class GForge24191 extends LexBIGServiceTestCase {
         }
 		CodedNodeGraph cng = lbs.getNodeGraph(LexBIGServiceTestCase.HL7_SCHEME, null, null);
 		ResolvedConceptReferenceList rcrl = cng.resolveAsList(Constructors.createConceptReference("URL:URL",LexBIGServiceTestCase.HL7_SCHEME), true, true ,-1,-1,null, null, null, -1);
-        assertTrue(rcrl.getResolvedConceptReferenceCount() == 0);
+        assertEquals(1,rcrl.getResolvedConceptReferenceCount());
         assertTrue( cng.isCodeInGraph(Constructors.createConceptReference("URL:URL",LexBIGServiceTestCase.HL7_SCHEME)).booleanValue());
 		
 	}
