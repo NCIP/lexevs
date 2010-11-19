@@ -2,16 +2,12 @@ package org.LexGrid.LexBIG.Impl.bugs;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.codingSchemes.CodingScheme;
 
 public class GForge27457 extends LexBIGServiceTestCase{
 	final static String testID = "GForge27457";
@@ -21,22 +17,61 @@ public class GForge27457 extends LexBIGServiceTestCase{
         return testID;
     }
 
-    public void testEmptyNamespace() {
+    public void testResolveWithQualifierAndValue() throws Exception {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-    	CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(CAMERA_SCHEME_VERSION);
-    	try {
-			CodedNodeSet cns = lbs.getNodeSet(CAMERA_SCHEME_NAME, csvt, null);
-			NameAndValueList nvList = Constructors.createNameAndValueList("label", null);
-			LocalNameList lcList = Constructors.createLocalNameList("label test in data property");
-			cns.restrictToProperties(lcList, null, null, null, nvList);
-			ResolvedConceptReferencesIterator iterator = cns.resolve(null, null,
-					null, null, true);
-			if (!iterator.hasNext()){
-				fail("no entity found");
-			}
-			
-		} catch (LBException e) {
-			e.printStackTrace();
-		}
+
+    	CodedNodeSet cns = lbs.getNodeSet(META_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(SAMPLE_META_VERSION), null);
+    	NameAndValueList nvList = Constructors.createNameAndValueList("CVF", "cvf");
+
+    	LocalNameList lcList = Constructors.createLocalNameList("presentation");
+    	cns = cns.restrictToProperties(lcList, null, null, null, nvList);
+    	ResolvedConceptReferencesIterator iterator = cns.resolve(null, null,
+    			null, null, true);
+    	if (!iterator.hasNext()){
+    		fail("no entity found");
+    	}
+    	
+    	assertEquals("C0000039", iterator.next().getCode());
+    
+    	assertFalse(iterator.hasNext());
+    }
+    
+    public void testResolveWithQualifierAndBlankValue() throws Exception {
+    	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+
+    	CodedNodeSet cns = lbs.getNodeSet(META_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(SAMPLE_META_VERSION), null);
+    	NameAndValueList nvList = Constructors.createNameAndValueList("CVF", "");
+
+    	LocalNameList lcList = Constructors.createLocalNameList("presentation");
+    	cns = cns.restrictToProperties(lcList, null, null, null, nvList);
+    	ResolvedConceptReferencesIterator iterator = cns.resolve(null, null,
+    			null, null, true);
+    	
+    	if (!iterator.hasNext()){
+    		fail("no entity found");
+    	}
+    	
+    	assertEquals("C0000039", iterator.next().getCode());
+        
+    	assertFalse(iterator.hasNext());
+    }
+    
+    public void testResolveWithQualifierAndNullValue() throws Exception {
+    	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+
+    	CodedNodeSet cns = lbs.getNodeSet(META_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(SAMPLE_META_VERSION), null);
+    	NameAndValueList nvList = Constructors.createNameAndValueList("CVF", null);
+
+    	LocalNameList lcList = Constructors.createLocalNameList("presentation");
+    	cns = cns.restrictToProperties(lcList, null, null, null, nvList);
+    	ResolvedConceptReferencesIterator iterator = cns.resolve(null, null,
+    			null, null, true);
+    	if (!iterator.hasNext()){
+    		fail("no entity found");
+    	}
+    	
+    	assertEquals("C0000039", iterator.next().getCode());
+        
+    	assertFalse(iterator.hasNext());
     }
 }
