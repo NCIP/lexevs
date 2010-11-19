@@ -44,7 +44,7 @@ import org.lexevs.logging.LoggerFactory;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 @LgClientSideSafe
-public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptReferencesIterator {
+public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptReferencesIterator, Cloneable {
     private static final long serialVersionUID = 5609297086069631237L;
     private int pos_ = 0;
     private long lastRead_;
@@ -479,4 +479,23 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         restrictToPropertyTypes_ = null;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ResolvedConceptReferencesIteratorImpl clone = new ResolvedConceptReferencesIteratorImpl();
+        clone.codesToReturn_ = this.codesToReturn_;
+        clone.codeToReturnResolver = this.codeToReturnResolver;
+        clone.cut_ = this.cut_;
+        clone.cuti_ = this.cuti_;
+        clone.filterCheck_ = this.filterCheck_;
+        clone.filters_ = this.filters_;
+        clone.lastRead_ = this.lastRead_;
+        clone.maxSizeSystemLimit = this.maxSizeSystemLimit;
+        clone.pos_ = this.pos_;
+        clone.ref = this.ref;
+        clone.resolveEntities_ = this.resolveEntities_;
+        clone.restrictToProperties_ = this.restrictToProperties_;
+        clone.restrictToPropertyTypes_ = this.restrictToPropertyTypes_;
+        
+        return clone;
+    }
 }
