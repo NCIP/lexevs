@@ -31,6 +31,7 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	private transient CodeSystemAuthoringOperation codeSystemAuthop_;
 	private transient ConceptDomainAuthoringOperation conceptDomainAuthOp_;
 	private transient UsageContextAuthoringOperation usageContextAuthOp_;
+	private transient AssociationAuthoringOperation assnAuthOp_;
 
 	
 	/* (non-Javadoc)
@@ -38,8 +39,9 @@ public class AuthoringOperationImpl extends BaseService implements AuthoringOper
 	 */
 	@Override
 	public AssociationAuthoringOperation getAssociationAuthoringOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (assnAuthOp_ == null)
+			assnAuthOp_ = new AssociationAuthoringOperationImpl();
+		return assnAuthOp_;
 	}
 
 	/* (non-Javadoc)
