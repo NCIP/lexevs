@@ -20,11 +20,13 @@ package org.lexevs.cts2.admin;
 
 import org.lexevs.cts2.BaseService;
 import org.lexevs.cts2.admin.export.AssociationExportOperation;
+import org.lexevs.cts2.admin.export.AssociationExportOperationImpl;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperation;
 import org.lexevs.cts2.admin.export.CodeSystemExportOperationImpl;
 import org.lexevs.cts2.admin.export.ValueSetExportOperation;
 import org.lexevs.cts2.admin.export.ValueSetExportOperationImpl;
 import org.lexevs.cts2.admin.load.AssociationLoadOperation;
+import org.lexevs.cts2.admin.load.AssociationLoadOperationImpl;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperation;
 import org.lexevs.cts2.admin.load.CodeSystemLoadOperationImpl;
 import org.lexevs.cts2.admin.load.ValueSetLoadOperation;
@@ -42,6 +44,8 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	private ValueSetLoadOperation vsLoadOp_;
 	private ValueSetExportOperation vsExportOp_;
 	private NotificationAdminOperation notificationAdminOp_;
+	private AssociationExportOperation assnExportOp_;
+	private AssociationLoadOperation assnLoadOp_;
 	
 	/*
 	 * (non-Javadoc)
@@ -49,8 +53,9 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	 */
 	@Override
 	public AssociationExportOperation getAssociationExportOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (assnExportOp_ == null)
+			assnExportOp_ = new AssociationExportOperationImpl();
+		return assnExportOp_;
 	}
 
 	/*
@@ -59,8 +64,9 @@ public class AdminOperationImpl extends BaseService implements AdminOperation {
 	 */
 	@Override
 	public AssociationLoadOperation getAssociationLoadOperation() {
-		// TODO Auto-generated method stub
-		return null;
+		if (assnLoadOp_ == null)
+			assnLoadOp_ = new AssociationLoadOperationImpl();
+		return assnLoadOp_;
 	}
 
 	/*
