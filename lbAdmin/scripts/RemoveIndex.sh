@@ -4,7 +4,6 @@
 # Options
 #   -u,--urn <urn> URN uniquely identifying the code system.
 #   -v,--version <id> Version identifier.
-#   -i,--index <name> Name of the index extension to clear.
 #   -f,--force Force clear (no confirmation).
 # 
 # Note: If the URN and version values are unspecified, a
@@ -12,6 +11,6 @@
 # user selection.
 #
 #  Example: RemoveIndex -i "myindex"
-#  Example: RemoveIndex -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e" -i "myindex"
+#  Example: RemoveIndex -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e"
 #
 java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.RemoveIndex $@

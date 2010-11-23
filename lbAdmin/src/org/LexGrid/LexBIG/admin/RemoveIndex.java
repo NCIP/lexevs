@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.admin;
 import java.util.Enumeration;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -35,6 +36,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.lexevs.dao.index.operation.LexEvsIndexOperations;
+import org.lexevs.dao.index.service.IndexServiceManager;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -45,7 +49,6 @@ import org.lexevs.system.ResourceManager;
  * Example: java org.LexGrid.LexBIG.admin.RemoveIndex
  *  -u,--urn &lt;name&gt; URN uniquely identifying the code system.
  *  -v,--version &lt;id&gt; Version identifier.
- *  -i,--index &lt;name&gt; Name of the index extension to clear.
  *  -f,--force Force clear (no confirmation).
  * 
  * Note: If the URN and version values are unspecified, a
@@ -54,7 +57,7 @@ import org.lexevs.system.ResourceManager;
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
  * org.LexGrid.LexBIG.admin.RemoveIndex
- *    -u &quot;urn:oid:2.16.840.1.113883.3.26.1.1&quot; -v &quot;05.09e&quot; -i &quot;myindex&quot;
+ *    -u &quot;urn:oid:2.16.840.1.113883.3.26.1.1&quot; -v &quot;05.09e&quot;
  * </pre>
  * 
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
@@ -89,7 +92,7 @@ public class RemoveIndex {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
                 Util.displayCommandOptions("RemoveIndex", options,
-                        "RemoveIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\" -i \"myIndex\"", e);
+                        "RemoveIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
                 return;
             }
@@ -125,29 +128,17 @@ public class RemoveIndex {
                 if (css == null)
                     return;
             }
+            
+            AbsoluteCodingSchemeVersionReference acsvr = new  AbsoluteCodingSchemeVersionReference();
+            
+            acsvr.setCodingSchemeURN(css.getCodingSchemeURI());
+            acsvr.setCodingSchemeVersion(css.getRepresentsVersion());
+            
+            LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+                getEntityIndexService().dropIndex(acsvr);
+        
 
-            // Valid index name?
-            String indexName = cl.getOptionValue("i");
-            LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-            ExtensionDescriptionList indexes = lbsm.getIndexExtensions();
-            Index match = null;
-            Enumeration<? extends ExtensionDescription> indexEnum = indexes.enumerateExtensionDescription();
-            while (indexEnum.hasMoreElements() && match == null) {
-                Index ext = (Index) indexEnum.nextElement();
-                if (indexName.equalsIgnoreCase(ext.getName()))
-                    match = ext;
-            }
-
-            // Nope, try again ...
-            if (match == null) {
-                Util.displayTaggedMessage("No matching index extension was found.");
-                Util.displayTaggedMessage("Use the ListExtensions program to display a list of registered extensions.");
-                return;
-            }
-
-            // Continue and confirm the action (if not bypassed by force option)
-            // ...
-            Util.displayTaggedMessage("A matching coding scheme and index were found ...");
             boolean confirmed = true;
             if (!force) {
                 Util.displayMessage("CLEAR? ('Y' to confirm, any other key to cancel)");
@@ -155,7 +146,6 @@ public class RemoveIndex {
                 confirmed = choice == 'Y' || choice == 'y';
             }
             if (confirmed) {
-                match.getLoader().clear(Constructors.createAbsoluteCodingSchemeVersionReference(css), match, false);
                 Util.displayTaggedMessage("Request complete");
             } else {
                 Util.displayTaggedMessage("Action cancelled by user");
@@ -180,11 +170,6 @@ public class RemoveIndex {
         o = new Option("v", "version", true, "Version identifier.");
         o.setArgName("id");
         o.setRequired(false);
-        options.addOption(o);
-
-        o = new Option("i", "index", true, "Name of the index extension to clear.");
-        o.setArgName("name");
-        o.setRequired(true);
         options.addOption(o);
 
         o = new Option("f", "force", false, "Force clear (no confirmation).");
