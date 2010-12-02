@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
+import org.apache.commons.beanutils.BeanUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
-import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.data.property.ParameterizedListIdSetter;
 import org.lexgrid.loader.processor.AbstractParameterPassingDoubleListProcessor;
@@ -76,8 +76,9 @@ public class MrstyListProcessor extends AbstractParameterPassingDoubleListProces
 				
 				try {
 					ParentIdHolder<Property> holder = new ParentIdHolder<Property>();
-					
-					Property clonedProp = DataUtils.deepCloneProperty(prop.getItem());
+
+					//shallow clone the bean, as deep cloning is too expensive to do this many times
+					Property clonedProp = (Property)BeanUtils.cloneBean(prop.getItem());
 					
 					String codingSchemeUri = 
 						codingSchemeIdSetter.getCodingSchemeUri();
