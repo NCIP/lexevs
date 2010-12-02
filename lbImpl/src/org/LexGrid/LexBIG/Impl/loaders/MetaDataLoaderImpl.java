@@ -24,26 +24,32 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
+import java.util.Date;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.jdom.input.SAXBuilder;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
+import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.options.CodingSchemeReferencesStringArrayPickListOption;
 import edu.mayo.informatics.lexgrid.convert.options.DefaultOptionHolder;
 import edu.mayo.informatics.lexgrid.convert.options.StringOption;
+import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -58,6 +64,7 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
     private static String OVERWRITE_OPTION = "Overwrite Existing";
     private static String SCHEME_OPTION = "Coding Scheme";
     
+    private ManifestUtil manifestUtil = new ManifestUtil();
 
     public MetaDataLoaderImpl() {
        super();
@@ -143,15 +150,44 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
         throw new UnsupportedOperationException();
     }
 
-    public void loadLexGridManifest(CodingSchemeManifest source,
-            AbsoluteCodingSchemeVersionReference codingSchemeURNVersion, boolean stopOnErrors, boolean async)
+    public void loadLexGridManifest(
+            final CodingSchemeManifest source,
+            final AbsoluteCodingSchemeVersionReference codingSchemeURNVersion, 
+            boolean stopOnErrors, 
+            boolean async)
     throws LBException {
-       //
+        this.setInUse();
+
+        LoadStatus status = new LoadStatus();
+        status.setLoadSource(source.toString());
+
+        status.setState(ProcessState.PROCESSING);
+        status.setStartTime(new Date(System.currentTimeMillis()));
+
+        this.setStatus(status);
+
+        this.setCachingMessageDirectorIF(createCachingMessageDirectorIF());
+
+        if (async) {
+            Thread loadManifest = new Thread(new LoadManifest(
+                    source, 
+                    codingSchemeURNVersion, 
+                    this.getMessageDirector()));
+            loadManifest.start();
+
+        } else {
+            new LoadManifest(
+                    source, 
+                    codingSchemeURNVersion, 
+                    this.getMessageDirector());
+        }     
     }
 
     public void loadLexGridManifest(URI source, AbsoluteCodingSchemeVersionReference codingSchemeURNVersion,
             boolean stopOnErrors, boolean async) throws LBException {
-        //
+        CodingSchemeManifest manifest = manifestUtil.getManifest(source);
+        
+        this.loadLexGridManifest(manifest, codingSchemeURNVersion, stopOnErrors, async);    
     }
 
     public void validateLexGridManifest(URI source, AbsoluteCodingSchemeVersionReference codingSchemeVersion,
@@ -208,5 +244,59 @@ public class MetaDataLoaderImpl extends BaseLoader implements MetaData_Loader {
                 scheme.getCodingSchemeURN(),
                 scheme.getCodingSchemeVersion()
         )};
+    }
+    
+    private class LoadManifest implements Runnable {
+
+        CodingSchemeManifest manifest_;
+        AbsoluteCodingSchemeVersionReference currentURNVersion_;
+        CachingMessageDirectorIF message_;
+
+        public LoadManifest(CodingSchemeManifest source, 
+                AbsoluteCodingSchemeVersionReference codingSchemeVersion,
+                CachingMessageDirectorIF md) {
+            manifest_ = source;
+            currentURNVersion_ = codingSchemeVersion;
+            message_ = md;
+        }
+
+        public void run() {
+
+            message_.info("Start Time : " + new Date(System.currentTimeMillis()));
+            try {
+
+                String urn = currentURNVersion_.getCodingSchemeURN();
+                String version = currentURNVersion_.getCodingSchemeVersion();
+
+                URNVersionPair currentURNVersion = new URNVersionPair(urn, version);
+
+                /* --------------------- Apply Manifest ---------------------- */
+                message_.info("Applying manifest entries to the coding scheme...");
+                try {
+
+                    manifestUtil.applyManifest(manifest_, currentURNVersion);
+
+                } catch (LgConvertException e) {
+                    message_.fatalAndThrowException("Exception occured while applying manifest: " + e.getMessage());
+                } 
+
+                message_.info("Coding scheme is updated with manifest entries.");
+
+                MetaDataLoaderImpl.this.getStatus().setState(ProcessState.COMPLETED);
+
+                message_.info("Manifest process completed without error!");
+
+            } catch (Exception e) {
+                message_.fatal("Load failed due to exception." + e.getMessage());
+
+            } finally {
+                LoadStatus status = MetaDataLoaderImpl.this.getStatus();
+                if (status.getState() == null || !status.getState().equals(ProcessState.COMPLETED)) {
+                    status.setState(ProcessState.FAILED);
+                }
+                status.setEndTime(new Date(System.currentTimeMillis()));
+                inUse = false;
+            }
+        }
     }
 }
