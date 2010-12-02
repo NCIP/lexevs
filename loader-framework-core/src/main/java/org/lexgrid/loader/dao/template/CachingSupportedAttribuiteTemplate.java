@@ -30,15 +30,18 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallbac
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.data.codingScheme.SimpleCodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
 
 /**
  * The Class CachingSupportedAttribuiteTemplate.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttributeTemplate implements JobExecutionListener {
+public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttributeTemplate implements JobExecutionListener, StepExecutionListener {
 	
 	private DatabaseServiceManager databaseServiceManager;
 
@@ -55,6 +58,18 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 	public void beforeJob(JobExecution arg0) {
 		//
 	}
+	
+	@Override
+	public ExitStatus afterStep(StepExecution step) {
+		this.flushCache();
+		
+		return step.getExitStatus();
+	}
+
+	@Override
+	public void beforeStep(StepExecution step) {
+		this.flushCache();
+	}	
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.dao.template.AbstractSupportedAttributeTemplate#insert(org.LexGrid.persistence.model.CodingSchemeSupportedAttrib)
@@ -118,5 +133,5 @@ public class CachingSupportedAttribuiteTemplate extends AbstractSupportedAttribu
 
 	protected Map<String,CodingSchemeIdHolder<URIMap>> getAttributeCache() {
 		return this.attributeCache;
-	}	
+	}
 }
