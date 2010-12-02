@@ -45,6 +45,8 @@ import org.springframework.util.ReflectionUtils;
  */
 public abstract class AbstractMethodCachingBean<T> {
 
+	private static final boolean DEFAULT_ISOLATE_CACHES_ON_CLEAR = false;
+
 	/** The logger. */
 	private LgLoggerIF logger;
 
@@ -55,6 +57,8 @@ public abstract class AbstractMethodCachingBean<T> {
 	private static String NULL_VALUE_CACHE_PLACEHOLDER = "NULL_VALUE_CACHE_PLACEHOLDER";
 
 	private CacheRegistry cacheRegistry;
+	
+	private boolean isolateCachesOnClear = DEFAULT_ISOLATE_CACHES_ON_CLEAR;
 
 	/**
 	 * Clear cache.
@@ -69,7 +73,9 @@ public abstract class AbstractMethodCachingBean<T> {
 		try {
 			logger.debug("Clearing cache.");
 
-			this.cacheRegistry.setInThreadCacheClearingState(true);
+			if(isolateCachesOnClear){
+				this.cacheRegistry.setInThreadCacheClearingState(true);
+			}
 
 			Object target = this.getTarget(joinPoint);
 
@@ -77,13 +83,15 @@ public abstract class AbstractMethodCachingBean<T> {
 
 			ClearCache clearCacheAnnotation = method.getAnnotation(ClearCache.class);
 
-			clearCache(cacheableAnnotation, clearCacheAnnotation);
-
 			Object returnObj = this.proceed(joinPoint);
+			
+			clearCache(cacheableAnnotation, clearCacheAnnotation);
 
 			return returnObj;
 		} finally {
-			this.cacheRegistry.setInThreadCacheClearingState(false);
+			if(isolateCachesOnClear){
+				this.cacheRegistry.setInThreadCacheClearingState(false);
+			}
 		}
 	}
 
@@ -167,9 +175,13 @@ public abstract class AbstractMethodCachingBean<T> {
 
 		Object result = this.proceed(joinPoint);
 
-		if(this.cacheRegistry.getInThreadCacheClearingState() == null || this.cacheRegistry.getInThreadCacheClearingState() == false){
+		if(this.isolateCachesOnClear == false || 
+				(this.isolateCachesOnClear == true &&
+						(this.cacheRegistry.getInThreadCacheClearingState() == null 
+								|| 
+								this.cacheRegistry.getInThreadCacheClearingState() == false))){
 			this.logger.debug("Thread is not in @Clear state, caching can continue for key: " + key);
-			
+
 			if(result != null) {
 				cache.put(key, result);
 			} else {
