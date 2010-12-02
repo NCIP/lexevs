@@ -65,13 +65,31 @@
 		<split id="doLoad" task-executor="taskExecutor">
 
 			<flow>
-				<step id="umlsLoadEntityAssnsToEntity" parent="listenerStep">
+				<step id="umlsLoadEntityAssnsToEntity" parent="listenerStep" next="processAssociations">
 					<tasklet>
 						<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
 							processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
 							writer="associationSourceListWriter" commit-interval="1000">
 						</chunk>
 					</tasklet>
+				</step>
+				
+				<step id="processAssociations" next="buildTransitivityTable" parent="listenerStep">	
+					<tasklet>
+						<chunk reader="mrdocAssociationGroupReader" processor="umlsAssociationProcessor"
+							writer="entityListWriter" commit-interval="1">
+							<streams>
+								<stream ref="mrdocReader" />
+							</streams>
+						</chunk>
+						<listeners>
+							<listener ref="cachingSupportedAttribuiteTemplate" />
+						</listeners>
+					</tasklet>
+				</step>		
+				
+				<step id="buildTransitivityTable" parent="listenerStep">
+					<tasklet ref="transitivityBuildingTasklet" />
 				</step>
 
 			</flow>
@@ -195,8 +213,6 @@
 			<beans:ref local="umlsCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
-
-
 
 	<beans:bean id="umlsCodingSchemeNameSettingProcessor"
 		abstract="true">
