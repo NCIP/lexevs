@@ -573,6 +573,8 @@ public class MRMAP2LexGrid {
         mappings.addSupportedAssociation(supportedMapping);
         mappings.addSupportedContainerName(container);
         scheme.setMappings(mappings);
+        rel.setTargetCodingSchemeVersion(null);
+        rel.setSourceCodingSchemeVersion(null);
         scheme.addRelations(rel);
         return scheme;
     }
