@@ -71,6 +71,7 @@ import org.LexGrid.LexBIG.Impl.featureRequests.GForge17019;
 import org.LexGrid.LexBIG.Impl.featureRequests.GForge24191;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.CodedNodeSetOperationsTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.DifferenceTest;
+import org.LexGrid.LexBIG.Impl.function.codednodeset.ExtensionCodedNodeSetTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.IntersectionTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.MultipeRestrictionsTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.ResolveMappingCodedNodeSetTest;
@@ -289,6 +290,7 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
+        codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
         
         TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
@@ -307,6 +309,7 @@ public class AllTestsNormalConfig {
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CrossOntologyResolveTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAnonymousTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToEntityTypesTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CodingSchemeExtensionResolveTest.class);
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
