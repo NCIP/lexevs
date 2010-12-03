@@ -188,6 +188,27 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
 
     }    
     
+    public void testGetHierarchyPathToRootFromExtension() throws InterruptedException, LBException {
+        LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+        LexBIGServiceConvenienceMethods lbscm = (LexBIGServiceConvenienceMethods) lbs
+                .getGenericExtension("LexBIGServiceConvenienceMethods");
+
+        // Iterate through all hierarchies ...
+        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(AUTO_EXTENSION_VERSION);
+        String[] hierarchyIDs = lbscm.getHierarchyIDs(AUTO_EXTENSION_URN, csvt);
+        String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
+
+        for (String hierarchy : hierarchyIDs) {
+            if (hierarchy.equalsIgnoreCase("IS_A"))
+                hierarchyId = hierarchy;
+        }
+        String  code= "DeVille";
+        
+        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_EXTENSION_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associations.getAssociation().length > 0);
+       
+    }    
+    
     /**
      * Test getting the next level count for a concept
      * 
