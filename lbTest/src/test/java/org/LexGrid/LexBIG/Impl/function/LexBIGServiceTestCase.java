@@ -31,6 +31,8 @@ abstract public class LexBIGServiceTestCase extends TestCase {
 	public final static String AUTO_SCHEME = "Automobiles";
 	public final static String AUTO_URN = "urn:oid:11.11.0.1";
     public final static String AUTO_VERSION = "1.0";
+	public final static String AUTO_EXTENSION_URN = "urn:oid:11.11.0.1-extension";
+    public final static String AUTO_EXTENSION_VERSION = "1.0-extension";
     protected final static String AUTO_EXPORT_SCHEME = "AutosEXPORT";
     protected final static String AUTO_EXPORT_URI = "AutosEXPORTURI";
     protected final static String AUTO_EXPORT_VERSION = "AutosEXPORTVersion";

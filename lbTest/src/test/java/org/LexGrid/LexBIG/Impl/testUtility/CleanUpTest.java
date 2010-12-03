@@ -39,6 +39,18 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CleanUpTest extends TestCase {
+	
+	public void testRemoveAutombilesExtension() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+				"urn:oid:11.11.0.1-extension", "1.0-extension");
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+
+		lbsm.removeCodingSchemeVersion(a);
+	}
+	 
     public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 

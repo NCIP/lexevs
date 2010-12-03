@@ -88,6 +88,31 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
+    
+    public void testLoadAutombilesExtension() throws LBParameterException, LBInvocationException, InterruptedException,
+    LBException {
+    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+    	LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+    	loader.load(new File("resources/testData/testExtension.xml").toURI(), true, true);
+
+    	while (loader.getStatus().getEndTime() == null) {
+    		Thread.sleep(500);
+    	}
+
+    	assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+    	assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+    	lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+    	lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    	
+    	lbsm.registerCodingSchemeAsSupplement(
+    			Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION), 
+    			Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_EXTENSION_URN, AUTO_EXTENSION_VERSION));
+    			
+    }
 
     public void testLoadGermanMadeParts() throws LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
