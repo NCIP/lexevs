@@ -44,7 +44,7 @@ public class CleanUpTest extends TestCase {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-				"urn:oid:11.11.0.1-extension", "1.0-extension");
+				"urn:oid:11.11.0.1.1-extension", "1.0-extension");
 
 		lbsm.deactivateCodingSchemeVersion(a, null);
 
