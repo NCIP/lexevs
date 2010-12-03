@@ -22,7 +22,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.lexgrid.loader.test.util.DataTestUtils;
 
 /**
  * The Class CodingSchemeExtensionResolveTest.
@@ -114,10 +113,20 @@ public class CodingSchemeExtensionResolveTest extends BaseCodedNodeGraphTest {
         AssociatedConcept[] assocCons = rcr[0].getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();
         assertEquals(3,assocCons.length);
         
-        assertTrue(DataTestUtils.isAssociatedConceptPresent(assocCons, "Chevy"));
-        assertTrue(DataTestUtils.isAssociatedConceptPresent(assocCons, "73"));
-        assertTrue(DataTestUtils.isAssociatedConceptPresent(assocCons, "Cadillac"));
+        assertTrue(isAssociatedConceptPresent(assocCons, "Chevy"));
+        assertTrue(isAssociatedConceptPresent(assocCons, "73"));
+        assertTrue(isAssociatedConceptPresent(assocCons, "Cadillac"));
        
     }
+    
+	private static boolean isAssociatedConceptPresent(AssociatedConcept[] assocConcepts, String code){
+		for(AssociatedConcept concept : assocConcepts){
+			if(concept.getCode().equals(code)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
     
 }
