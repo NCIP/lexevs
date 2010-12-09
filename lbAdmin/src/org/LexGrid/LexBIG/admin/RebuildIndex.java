@@ -140,7 +140,7 @@ public class RebuildIndex {
     protected void rebuildSingleNamedExtension(AbsoluteCodingSchemeVersionReference ref,
             boolean force) throws LBException {
         
-        String indexName = "URI: " + ref.getCodingSchemeURN() + " VERION: " + 
+        String indexName = "URI: " + ref.getCodingSchemeURN() + " VERSION: " + 
             ref.getCodingSchemeVersion();
 
         // Confirm the action (if not bypassed by force option) ...
