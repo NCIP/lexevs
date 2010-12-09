@@ -238,6 +238,20 @@ public class SemNetToLg {
         ((SupportedHierarchy) map5).setIsForwardNavigable(true);
         mappings.addSupportedHierarchy(map5);
         
+        if(scheme.getEntities() == null){
+            scheme.setEntities(new Entities());
+        }
+        
+        //Add the 'hasSubtype' AssociationEntity
+        AssociationEntity hasSubTypeEntity = 
+            EntityFactory.createAssociation();
+        
+        hasSubTypeEntity.setEntityCode("hasSubtype");
+        hasSubTypeEntity.setEntityCodeNamespace(SEMNET_NAME);
+        hasSubTypeEntity.setIsNavigable(true);
+        hasSubTypeEntity.setIsTransitive(true);
+        
+        scheme.getEntities().addAssociationEntity(hasSubTypeEntity);
         
         SupportedNamespace namespace = new SupportedNamespace();
         namespace.setEquivalentCodingScheme(SEMNET_NAME);
