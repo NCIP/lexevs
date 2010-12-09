@@ -23,6 +23,9 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.scheme.PersistenceScheme;
 
 public class TestUtils {
 	
@@ -69,5 +72,29 @@ public class TestUtils {
 			}
 		}
 		throw new RuntimeException("Property not found");
+	}
+	
+	public static class DummyPersistenceScheme implements PersistenceScheme {
+
+		@Override
+		public void destroyScheme() {
+			//
+		}
+
+		@Override
+		public LexGridSchemaVersion getLexGridSchemaVersion() {
+			return null;
+		}
+
+		@Override
+		public void initScheme() {
+			//
+		}
+
+		@Override
+		public void registerDaos(DaoManager daoManager) {
+			//
+		}
+		
 	}
 }

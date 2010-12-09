@@ -39,8 +39,8 @@ import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
 import org.lexevs.system.service.LexEvsResourceManagingService.CodingSchemeAliasHolder;
+import org.lexevs.util.TestUtils.DummyPersistenceScheme;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class LexEvsResourceManagingServiceTest.
@@ -137,6 +137,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
@@ -188,6 +189,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
@@ -238,6 +240,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
@@ -288,6 +291,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
@@ -313,6 +317,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		entries.add(entry);
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
+		expect(registryMock.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, "uri")).andReturn(entries);
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
@@ -340,6 +345,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		service.setRegistry(registryMock);
 		
 		service.setDatabaseServiceManager(manager);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
@@ -365,6 +371,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		entries.add(entry);
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
+		expect(registryMock.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, "uri")).andReturn(entries);
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries);
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
@@ -391,6 +398,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setRegistry(registryMock);
 		service.setDatabaseServiceManager(manager);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
@@ -422,6 +430,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		entries.add(entry2);
 		
 		expect(registryMock.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)).andReturn(entries);
+		expect(registryMock.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, "uri")).andReturn(entries);
 		expect(registryMock.getEntriesForUri("uri")).andReturn(entries).anyTimes();
 		
 		LexEvsResourceManagingService service = new LexEvsResourceManagingService();
@@ -450,6 +459,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		service.setDatabaseServiceManager(manager);
 		service.setRegistry(registryMock);
+		service.setPersistenceScheme(new DummyPersistenceScheme());
 		service.initialize();
 		
 		assertEquals(
