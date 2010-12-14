@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.index.Term;
@@ -184,8 +185,8 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
                 // this validated that language (throws exceptions as necessary)
                 String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
                 if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
-                        validatedSupportedAttribute(uri, internalVersionString, language, SupportedProperty.class)) {
-                        throw new LBParameterException(language = " is not a Supported Property.");
+                        validatedSupportedAttribute(uri, internalVersionString, language, SupportedLanguage.class)) {
+                        throw new LBParameterException(language = " is not a Supported Language.");
                     }
                 language_ = language;
             }
