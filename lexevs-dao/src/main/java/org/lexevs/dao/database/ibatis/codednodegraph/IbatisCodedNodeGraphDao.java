@@ -74,6 +74,31 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
 	private static String GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeMappingParticipationCount";
 	
+	private static String GET_TRANSITIVE_TABLE_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTransitiveTableCount";
+	private static String DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "deleteFromTransitiveTableByCodingSchemeUid";
+	
+	@Override
+	public int getTransitiveTableCount(String codingSchemeUid){
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameter bean = new PrefixedParameter(prefix, codingSchemeUid);
+		
+		return (Integer) 
+			this.getSqlMapClientTemplate().queryForObject(GET_TRANSITIVE_TABLE_COUNT_SQL, bean);
+	}
+	
+	@Override
+	public int deleteFromTransitiveTableByCodingSchemeUid(String codingSchemeUid){
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameter bean = new PrefixedParameter(prefix, codingSchemeUid);
+		
+		return (Integer) 
+			this.getSqlMapClientTemplate().delete(
+					DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL, bean);
+	}
 	
 	@Override
 	public List<ConceptReference> getConceptReferencesContainingObject(

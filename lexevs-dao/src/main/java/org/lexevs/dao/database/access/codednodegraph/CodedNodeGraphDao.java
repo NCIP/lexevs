@@ -235,4 +235,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String relationsContainerName,
 			String code, 
 			String namespace);
+
+	public int getTransitiveTableCount(String codingSchemeUid);
+	
+	public int deleteFromTransitiveTableByCodingSchemeUid(String codingSchemeUid);
 }
