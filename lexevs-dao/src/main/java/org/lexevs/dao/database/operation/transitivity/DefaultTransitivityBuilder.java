@@ -28,6 +28,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.relations.AssociationEntity;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -40,8 +41,6 @@ import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.LoggerFactory;
 import org.lexevs.paging.AbstractPageableIterator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -63,15 +62,35 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 	
 	public final static String PATH_DELIMITER = "->";
 	
-	public static void main(String[] args) {
-		DefaultTransitivityBuilder builder = new DefaultTransitivityBuilder();
-		builder.setLogger(LoggerFactory.getLogger());
-		builder.setRegistry(LexEvsServiceLocator.getInstance().getRegistry());
-		builder.setDatabaseServiceManager(LexEvsServiceLocator.getInstance().getDatabaseServiceManager());
-		builder.setSystemResourceService(LexEvsServiceLocator.getInstance().getSystemResourceService());
+	@Override
+	public TransitivityTableState isTransitiveTableComputed(String codingSchemeUri,
+			String codingSchemeVersion) {
 		
-		builder.computeTransitivityTable("urn:oid:11.11.0.1", "1.0");
+		List<String> transitiveAssociations = 
+			this.getTransitiveAssociationPredicateIds(codingSchemeUri, codingSchemeVersion);
 		
+		if(CollectionUtils.isEmpty(transitiveAssociations)){
+			return TransitivityTableState.NO_TRANSITIVE_ASSOCIATIONS_DEFINED;
+		}
+		
+		if(this.getTransitiveTableCount(codingSchemeUri, codingSchemeVersion) > 0){
+			return TransitivityTableState.COMPUTED;
+		} else {
+			return TransitivityTableState.NOT_COMPUTED;
+		}
+	}
+
+	@Override
+	public void reComputeTransitivityTable(String codingSchemeUri,
+			String codingSchemeVersion) {
+		if(this.getTransitiveTableCount(codingSchemeUri, codingSchemeVersion) > 0){
+			logger.warn("Transitivity Table for Coding Scheme: " + codingSchemeUri + " Version: " + codingSchemeVersion  + " has existing data, " +
+					"which will be removed and re-computed.");
+			
+			this.deleteFromTransitiveTable(codingSchemeUri, codingSchemeVersion);
+		}	
+		
+		this.computeTransitivityTable(codingSchemeUri, codingSchemeVersion);	
 	}
 
 	public void computeTransitivityTable(String codingSchemeUri, String version) {
@@ -562,6 +581,40 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				}
 			});
 		}
+	}
+	
+	protected int getTransitiveTableCount(
+			final String codingSchemeUri,
+			final String version){
+		return databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Integer>(){
+
+			@Override
+			public Integer execute(DaoManager daoManager) {
+				String codingSchemeUid = daoManager.getCurrentCodingSchemeDao().
+				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+
+				return daoManager.getCodedNodeGraphDao(codingSchemeUri, version).
+					getTransitiveTableCount(codingSchemeUid);
+			}
+		});
+	}
+	
+	protected void deleteFromTransitiveTable(
+			final String codingSchemeUri,
+			final String version){
+		databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Void>(){
+
+			@Override
+			public Void execute(DaoManager daoManager) {
+				String codingSchemeUid = daoManager.getCurrentCodingSchemeDao().
+				getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+
+				daoManager.getCodedNodeGraphDao(codingSchemeUri, version).
+					deleteFromTransitiveTableByCodingSchemeUid(codingSchemeUid);
+				
+				return null;
+			}
+		});
 	}
 	
 	private class BatchInsertController {
