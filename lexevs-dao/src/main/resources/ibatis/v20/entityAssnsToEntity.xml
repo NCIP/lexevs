@@ -303,6 +303,48 @@
 		)
   </insert>
   
+  <select id="getTransitiveTableCount" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="int">
+		SELECT
+			COUNT(*)
+		FROM 
+			$prefix$entityAssnsToEntityTr eaetr
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eaetr.associationPredicateGuid =
+			ap.associationPredicateGuid
+		INNER JOIN
+			$prefix$relation rel
+		ON
+			ap.relationGuid =
+			rel.relationGuid
+		WHERE
+			rel.codingSchemeGuid = 
+			#param1,handler=variablePrimaryKeyTypeHandler#
+  </select>
+  
+   <delete id="deleteFromTransitiveTableByCodingSchemeUid"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		DELETE
+			$prefix$entityAssnsToEntityTr
+		FROM 
+			$prefix$entityAssnsToEntityTr
+		INNER JOIN
+			$prefix$associationPredicate
+		ON 
+			$prefix$entityAssnsToEntityTr.associationPredicateGuid =
+			$prefix$associationPredicate.associationPredicateGuid
+		INNER JOIN
+			$prefix$relation
+		ON
+			$prefix$associationPredicate.relationGuid =
+			$prefix$relation.relationGuid
+		WHERE
+			$prefix$relation.codingSchemeGuid = 
+			#param1,handler=variablePrimaryKeyTypeHandler#
+  </delete>
+  
    <insert id="insertTransitiveClosure" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean">
 		INSERT INTO $prefix$entityAssnsToEntityTr (
 			entityAssnsTrGuid,
