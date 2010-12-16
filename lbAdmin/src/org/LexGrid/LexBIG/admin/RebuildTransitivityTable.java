@@ -139,13 +139,13 @@ public class RebuildTransitivityTable {
     protected void rebuildTransitivityTable(AbsoluteCodingSchemeVersionReference ref,
             boolean force) throws LBException {
         
-        String indexName = "URI: " + ref.getCodingSchemeURN() + " VERSION: " + 
+        String codingScheme = "URI: " + ref.getCodingSchemeURN() + " VERSION: " + 
             ref.getCodingSchemeVersion();
 
         // Confirm the action (if not bypassed by force option) ...
         boolean confirmed = force;
         if (!confirmed) {
-            Util.displayMessage("REBUILD TRANSITIVITY TABLE FOR " + indexName + "? ('Y' to confirm, any other key to cancel)");
+            Util.displayMessage("REBUILD TRANSITIVITY TABLE FOR " + codingScheme + "? ('Y' to confirm, any other key to cancel)");
             try {
                 char choice = Util.getConsoleCharacter();
                 confirmed = choice == 'Y' || choice == 'y';
@@ -158,18 +158,18 @@ public class RebuildTransitivityTable {
             try {
                
                 Util.displayTaggedMessage("Recreation Transitivity Table '" + 
-                        indexName + "' in progress...");
+                        codingScheme + "' in progress...");
                 LexEvsServiceLocator.
                     getInstance().
                         getLexEvsDatabaseOperations().
-                            computeTransitiveTable(
+                            reComputeTransitiveTable(
                                     ref.getCodingSchemeURN(), 
                                     ref.getCodingSchemeVersion());
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Recreation Transitivity Table '" + indexName + "' is not supported.");
+                Util.displayTaggedMessage("Recreation Transitivity Table '" + codingScheme + "' is not supported.");
             }
         } else {
-            Util.displayTaggedMessage("Recreation Transitivity Table '" + indexName + "' cancelled by user.");
+            Util.displayTaggedMessage("Recreation Transitivity Table '" + codingScheme + "' cancelled by user.");
         }
     }
 
