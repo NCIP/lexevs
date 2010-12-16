@@ -24,6 +24,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
+import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder.TransitivityTableState;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DatabaseUtility;
@@ -79,6 +80,12 @@ public interface LexEvsDatabaseOperations {
 	public void dumpSqlScripts(DatabaseType databaseType, String outputPath, String prefix) throws IOException;
 	
 	public boolean isCodingSchemeLoaded(String codingSchemeUri, String version);
+	
+	public void reComputeTransitiveTable(String codingSchemeUri,
+			String codingSchemeVersion);
+	
+	public TransitivityTableState isTransitiveTableComputed(String codingSchemeUri,
+			String codingSchemeVersion);
 
 	/**
 	 * Gets the database utility.

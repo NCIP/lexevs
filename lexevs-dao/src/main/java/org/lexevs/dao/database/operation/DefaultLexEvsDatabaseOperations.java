@@ -40,6 +40,7 @@ import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
 import org.lexevs.dao.database.operation.root.RootBuilder;
 import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder;
+import org.lexevs.dao.database.operation.transitivity.TransitivityBuilder.TransitivityTableState;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -53,8 +54,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
@@ -413,6 +412,16 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 	public void computeTransitiveTable(String codingSchemeUri,
 			String codingSchemeVersion) {
 		transitivityBuilder.computeTransitivityTable(codingSchemeUri, codingSchemeVersion);
+	}
+	
+	public void reComputeTransitiveTable(String codingSchemeUri,
+			String codingSchemeVersion) {
+		transitivityBuilder.reComputeTransitivityTable(codingSchemeUri, codingSchemeVersion);
+	}
+	
+	public TransitivityTableState isTransitiveTableComputed(String codingSchemeUri,
+			String codingSchemeVersion) {
+		return transitivityBuilder.isTransitiveTableComputed(codingSchemeUri, codingSchemeVersion);
 	}
 
 	/**
