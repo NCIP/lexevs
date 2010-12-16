@@ -416,6 +416,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	}
 	
 	@Override
+	@ClearCache
 	public String insertEntity(String codingSchemeId, Entity entity,
 			boolean cascade) {
 		
