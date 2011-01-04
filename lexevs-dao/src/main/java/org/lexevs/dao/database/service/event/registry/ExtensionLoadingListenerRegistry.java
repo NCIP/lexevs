@@ -25,13 +25,23 @@ import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
 import org.lexevs.system.utility.MyClassLoader;
 import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * The Class ExtensionLoadingListenerRegistry.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class ExtensionLoadingListenerRegistry extends BaseListenerRegistry implements InitializingBean {
 	
+	/** The my class loader. */
 	private MyClassLoader myClassLoader;
 	
+	/** The logger. */
 	private LgLoggerIF logger;
 
 	
+	/* (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		for(ExtensionDescription ed :
@@ -55,21 +65,41 @@ public class ExtensionLoadingListenerRegistry extends BaseListenerRegistry imple
 		}
 	}
 
+	/**
+	 * Gets the my class loader.
+	 * 
+	 * @return the my class loader
+	 */
 	public MyClassLoader getMyClassLoader() {
 		return myClassLoader;
 	}
 
 
+	/**
+	 * Sets the my class loader.
+	 * 
+	 * @param myClassLoader the new my class loader
+	 */
 	public void setMyClassLoader(MyClassLoader myClassLoader) {
 		this.myClassLoader = myClassLoader;
 	}
 
 
+	/**
+	 * Gets the logger.
+	 * 
+	 * @return the logger
+	 */
 	public LgLoggerIF getLogger() {
 		return logger;
 	}
 
 
+	/**
+	 * Sets the logger.
+	 * 
+	 * @param logger the new logger
+	 */
 	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
 	}

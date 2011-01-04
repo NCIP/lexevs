@@ -40,20 +40,41 @@ import org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSc
 public abstract class RevisableAbstractDatabaseService<T extends Versionable, I extends CodingSchemeUriVersionBasedEntryId> extends AbstractDatabaseService {
 	
 	
+	/**
+	 * The Class ParentUidReferencingId.
+	 */
 	public static class ParentUidReferencingId extends CodingSchemeUriVersionBasedEntryId {
 
+		/** The parent uid. */
 		private String parentUid;
 		
+		/**
+		 * Instantiates a new parent uid referencing id.
+		 * 
+		 * @param codingSchemeUri the coding scheme uri
+		 * @param codingSchemeVersion the coding scheme version
+		 * @param parentUid the parent uid
+		 */
 		public ParentUidReferencingId(String codingSchemeUri,
 				String codingSchemeVersion, String parentUid) {
 			super(codingSchemeUri, codingSchemeVersion);
 			this.parentUid = parentUid;
 		}
 
+		/**
+		 * Gets the parent uid.
+		 * 
+		 * @return the parent uid
+		 */
 		public String getParentUid() {
 			return parentUid;
 		}
 
+		/**
+		 * Sets the parent uid.
+		 * 
+		 * @param parentUid the new parent uid
+		 */
 		public void setParentUid(String parentUid) {
 			this.parentUid = parentUid;
 		}
@@ -347,6 +368,17 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		});
 	}
 	
+	/**
+	 * Resolve entry by revision.
+	 * 
+	 * @param id the id
+	 * @param entryUid the entry uid
+	 * @param revisionId the revision id
+	 * 
+	 * @return the t
+	 * 
+	 * @throws LBRevisionException the LB revision exception
+	 */
 	public T resolveEntryByRevision(
 			I id, String entryUid, String revisionId) throws LBRevisionException {
 		
@@ -416,6 +448,16 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		}
 	}
 	
+	/**
+	 * Valid revision.
+	 * 
+	 * @param id the id
+	 * @param entry the entry
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	protected boolean validRevision(I id, T entry) throws LBException {
 		
 		String invalid = "Invalid Revision. ";
@@ -488,6 +530,16 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		return true;
 	}
 	
+	/**
+	 * Adds the dependent attributes by revision id.
+	 * 
+	 * @param id the id
+	 * @param entryUid the entry uid
+	 * @param entry the entry
+	 * @param revisionId the revision id
+	 * 
+	 * @return the t
+	 */
 	protected abstract T addDependentAttributesByRevisionId(I id, String entryUid, T entry, String revisionId);
 
 	/**
@@ -530,8 +582,25 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 	 */
 	protected abstract T getCurrentEntry(I id, String entryUId);
 	
+	/**
+	 * Gets the history entry by revision id.
+	 * 
+	 * @param id the id
+	 * @param entryUid the entry uid
+	 * @param revisionId the revision id
+	 * 
+	 * @return the history entry by revision id
+	 */
 	protected abstract T getHistoryEntryByRevisionId(I id, String entryUid, String revisionId);
 	
+	/**
+	 * Gets the latest revision id.
+	 * 
+	 * @param id the id
+	 * @param entryUId the entry u id
+	 * 
+	 * @return the latest revision id
+	 */
 	protected abstract String getLatestRevisionId(I id, String entryUId);
 
 	/**
@@ -564,6 +633,13 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 	 */
 	protected abstract String getCurrentEntryStateUid(I id, String entryUid);
 	
+	/**
+	 * Gets the coding scheme uid.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the coding scheme uid
+	 */
 	protected String getCodingSchemeUid(CodingSchemeUriVersionBasedEntryId id) {
 		String uri = id.getCodingSchemeUri();
 		String version = id.getCodingSchemeVersion();

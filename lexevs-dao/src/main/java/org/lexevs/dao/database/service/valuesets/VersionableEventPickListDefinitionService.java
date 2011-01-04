@@ -46,13 +46,14 @@ import org.springframework.transaction.annotation.Transactional;
  * The Class VersionableEventPickListDefinitionService.
  * 
  * @author <a href="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</a>
- *
  */
 public class VersionableEventPickListDefinitionService extends AbstractDatabaseService implements
 		PickListDefinitionService {
 
+	/** The vs property service. */
 	VSPropertyService vsPropertyService = null;
 	
+	/** The pick list entry node service. */
 	PickListEntryNodeService pickListEntryNodeService = null;
 	
 	/* (non-Javadoc)
@@ -73,6 +74,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		return this.getDaoManager().getCurrentPickListDefinitionDao().getPickListDefinitionIdForValueSetDefinitionURI(valueSetDefURI);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#getPickListDefinitionIdForEntityReference(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<String> getPickListDefinitionIdForEntityReference(
 			String entityCode, String entityCodeNameSpace, String propertyId) {
@@ -103,6 +107,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 //		this.fireCodingSchemeInsertEvent(definition);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#insertPickListDefinitions(org.LexGrid.valueSets.PickListDefinitions, java.lang.String)
+	 */
 	@Transactional
 //	@DatabaseErrorIdentifier(errorCode=INSERT_PICKLIST_ERROR)
 	public void insertPickListDefinitions(PickListDefinitions definitions, String systemReleaseUri) {
@@ -136,6 +143,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		plDao.removePickListDefinitionByPickListId(pickListId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#getPickListDefinitionIdForSupportedTagAndValue(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<String> getPickListDefinitionIdForSupportedTagAndValue(
 			String supportedTag, String value) {
@@ -144,12 +154,18 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 						value);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#removePickListDefinition(org.LexGrid.valueSets.PickListDefinition)
+	 */
 	@Override
 	public void removePickListDefinition(PickListDefinition definition) {
 
 		removePickListDefinitionByPickListId(definition.getPickListId());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#updatePickListDefinition(org.LexGrid.valueSets.PickListDefinition)
+	 */
 	@Override
 	public void updatePickListDefinition(PickListDefinition definition) throws LBException {
 
@@ -170,6 +186,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		this.insertDependentChanges(definition);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#updateVersionableAttributes(org.LexGrid.valueSets.PickListDefinition)
+	 */
 	@Override
 	public void updateVersionableAttributes(PickListDefinition definition) throws LBException {
 
@@ -190,6 +209,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		this.insertDependentChanges(definition);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#insertDependentChanges(org.LexGrid.valueSets.PickListDefinition)
+	 */
 	@Override
 	public void insertDependentChanges(PickListDefinition definition) throws LBException {
 
@@ -224,6 +246,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#revise(org.LexGrid.valueSets.PickListDefinition, org.LexGrid.naming.Mappings, java.lang.String)
+	 */
 	@Override
 	public void revise(PickListDefinition pickListDefinition, Mappings mapping,
 			String releaseURI) throws LBException {
@@ -253,6 +278,8 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Gets the vs property service.
+	 * 
 	 * @return the vsPropertyService
 	 */
 	public VSPropertyService getVsPropertyService() {
@@ -260,6 +287,8 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Sets the vs property service.
+	 * 
 	 * @param vsPropertyService the vsPropertyService to set
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
@@ -267,6 +296,8 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Gets the pick list entry node service.
+	 * 
 	 * @return the pickListEntryNodeService
 	 */
 	public PickListEntryNodeService getPickListEntryNodeService() {
@@ -274,6 +305,8 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Sets the pick list entry node service.
+	 * 
 	 * @param pickListEntryNodeService the pickListEntryNodeService to set
 	 */
 	public void setPickListEntryNodeService(
@@ -281,6 +314,15 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		this.pickListEntryNodeService = pickListEntryNodeService;
 	}
 
+	/**
+	 * Valid revision.
+	 * 
+	 * @param pickListDefinition the pick list definition
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validRevision(PickListDefinition pickListDefinition) throws LBException {
 		
 		if(  pickListDefinition == null) 
@@ -347,6 +389,11 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		return true;
 	}
 
+	/**
+	 * Do add pick list definition dependent entry.
+	 * 
+	 * @param definition the definition
+	 */
 	private void doAddPickListDefinitionDependentEntry(
 			PickListDefinition definition) {
 	
@@ -391,6 +438,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 		pickListDefDao.updateEntryStateUId(pickListDefUId, entryStateUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#resolvePickListDefinitionByRevision(java.lang.String, java.lang.String, java.lang.Integer)
+	 */
 	@Override
 	public PickListDefinition resolvePickListDefinitionByRevision(String pickListId,
 			String revisionId, Integer sortType) throws LBRevisionException {
@@ -401,6 +451,9 @@ public class VersionableEventPickListDefinitionService extends AbstractDatabaseS
 				sortType);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListDefinitionService#resolvePickListDefinitionByDate(java.lang.String, java.sql.Date, java.lang.Integer)
+	 */
 	@Override
 	public PickListDefinition resolvePickListDefinitionByDate(String pickListId,
 			Date date, Integer sortType) throws LBRevisionException {

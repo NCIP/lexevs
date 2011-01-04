@@ -43,10 +43,13 @@ public class DefaultDatabaseError implements DatabaseError {
 	/** The error time. */
 	private Date errorTime = new Date();
 	
+	/** The error code. */
 	private String errorCode;
 	
+	/** The error description. */
 	private String errorDescription;
     
+	/** The debug. */
 	private boolean debug = false;
 
 	/**
@@ -54,11 +57,20 @@ public class DefaultDatabaseError implements DatabaseError {
 	 * 
 	 * @param errorObject the error object
 	 * @param errorException the error exception
+	 * @param errorCode the error code
 	 */
 	public DefaultDatabaseError(String errorCode, Object errorObject, Exception errorException) {
 		this(errorCode, errorObject, "An " + errorCode + " + Error Occured.", errorException);
 	}
 	
+	/**
+	 * Instantiates a new default database error.
+	 * 
+	 * @param errorCode the error code
+	 * @param errorObject the error object
+	 * @param errorDescription the error description
+	 * @param errorException the error exception
+	 */
 	public DefaultDatabaseError(String errorCode, Object errorObject, String errorDescription, Exception errorException) {
 		super();
 		this.errorObject = errorObject;
@@ -66,6 +78,9 @@ public class DefaultDatabaseError implements DatabaseError {
 		this.errorCode = errorCode;
 	}
 	
+    /* (non-Javadoc)
+     * @see org.lexevs.dao.database.service.error.DatabaseError#getErrorMessage()
+     */
     public String getErrorMessage() {
         StringBuffer sb = new StringBuffer();
 
@@ -110,6 +125,9 @@ public class DefaultDatabaseError implements DatabaseError {
     	return this.getErrorObject().toString();
     }
     
+    /* (non-Javadoc)
+     * @see org.lexevs.dao.database.service.error.DatabaseError#getErrorDescription()
+     */
     public String getErrorDescription() {
     	return this.errorDescription;
     }
@@ -163,14 +181,27 @@ public class DefaultDatabaseError implements DatabaseError {
 		return errorTime;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.error.DatabaseError#getErrorCode()
+	 */
 	public String getErrorCode() {
 		return errorCode;
 	}
 
+	/**
+	 * Checks if is debug.
+	 * 
+	 * @return true, if is debug
+	 */
 	public boolean isDebug() {
 		return debug;
 	}
 
+	/**
+	 * Sets the debug.
+	 * 
+	 * @param debug the new debug
+	 */
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}

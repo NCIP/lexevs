@@ -48,6 +48,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class VersionableEventCodedNodeGraphService extends AbstractDatabaseService implements CodedNodeGraphService {
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getRelationNamesForCodingScheme(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<String> getRelationNamesForCodingScheme(
 			String codingSchemeUri,
@@ -60,6 +63,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return associationDao.getRelationsNamesForCodingSchemeUId(codingSchemeUid);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#listCodeRelationships(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.service.codednodegraph.model.GraphQuery, boolean)
+	 */
 	@Override
 	@Transactional
 	public List<String> listCodeRelationships(
@@ -107,6 +113,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return returnList;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getAssociatedConceptFromUidSource(java.lang.String, java.lang.String, boolean, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], java.lang.String)
+	 */
 	@Override
 	@Transactional
 	public AssociatedConcept getAssociatedConceptFromUidSource(
@@ -126,6 +135,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getAssociatedConceptFromUidTarget(java.lang.String, java.lang.String, boolean, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], java.lang.String)
+	 */
 	@Override
 	@Transactional
 	public AssociatedConcept getAssociatedConceptFromUidTarget(
@@ -145,6 +157,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				DaoUtility.createNonTypedList(tripleUid)).get(0);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTripleUidsContainingObject(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.service.codednodegraph.model.GraphQuery, java.util.List, int, int)
+	 */
 	@Override
 	@Transactional
 	public List<String> getTripleUidsContainingObject(
@@ -185,6 +200,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					pageSize);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getAssociationPredicateNamesForCodingScheme(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	@Transactional
 	public List<String> getAssociationPredicateNamesForCodingScheme(
@@ -198,6 +216,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				getAssociationPredicateNamesForCodingSchemeUid(codingSchemeUid, relationsContainerName);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTripleUidsContainingObjectCount(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.service.codednodegraph.model.GraphQuery)
+	 */
 	@Override
 	@Transactional
 	public Map<String,Integer> getTripleUidsContainingObjectCount(
@@ -224,6 +245,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.isRestrictToAnonymous());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTripleUidsContainingSubject(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.service.codednodegraph.model.GraphQuery, java.util.List, int, int)
+	 */
 	@Override
 	@Transactional
 	public List<String> getTripleUidsContainingSubject(
@@ -265,6 +289,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					pageSize);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTripleUidsContainingSubjectCount(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.service.codednodegraph.model.GraphQuery)
+	 */
 	@Override
 	@Transactional
 	public Map<String,Integer> getTripleUidsContainingSubjectCount(
@@ -291,6 +318,17 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					query.isRestrictToAnonymous());
 	}
 
+	/**
+	 * Gets the association predicate uid.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * @param codingSchemeUid the coding scheme uid
+	 * @param relationsContainerName the relations container name
+	 * @param associationPredicateName the association predicate name
+	 * 
+	 * @return the association predicate uid
+	 */
 	@Transactional
 	protected String getAssociationPredicateUid(
 			String uri,
@@ -324,6 +362,17 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					associationPredicateName);
 	}
 	
+	/**
+	 * Gets the association predicate uids.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * @param codingSchemeUid the coding scheme uid
+	 * @param relationsContainerName the relations container name
+	 * @param associationPredicateName the association predicate name
+	 * 
+	 * @return the association predicate uids
+	 */
 	@Transactional
 	protected List<String> getAssociationPredicateUids(
 			String uri,
@@ -346,6 +395,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					codingSchemeUid, relationsContainerName, associationPredicateName));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getAssociatedConceptsFromUidSource(java.lang.String, java.lang.String, boolean, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], java.util.List, java.util.List)
+	 */
 	@Override
 	@Transactional
 	public List<? extends AssociatedConcept> getAssociatedConceptsFromUidSource(
@@ -368,6 +420,20 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					TripleNode.SUBJECT);
 	}
 	
+	/**
+	 * Do get associated concepts.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param resolve the resolve
+	 * @param propertyNames the property names
+	 * @param propertyTypes the property types
+	 * @param tripleUids the triple uids
+	 * @param sorts the sorts
+	 * @param tripleNode the triple node
+	 * 
+	 * @return the list<? extends associated concept>
+	 */
 	protected List<? extends AssociatedConcept> doGetAssociatedConcepts(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
@@ -405,6 +471,13 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return associatedConcepts;
 	}
 	
+	/**
+	 * Gets the entity uids.
+	 * 
+	 * @param associatedConcepts the associated concepts
+	 * 
+	 * @return the entity uids
+	 */
 	private List<String> getEntityUids(List<EntityReferencingAssociatedConcept> associatedConcepts){
 		List<String> returnList = new ArrayList<String>();
 		for(EntityReferencingAssociatedConcept assocConcept : associatedConcepts) {
@@ -417,6 +490,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getAssociatedConceptsFromUidTarget(java.lang.String, java.lang.String, boolean, org.LexGrid.LexBIG.DataModel.Collections.LocalNameList, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType[], java.util.List, java.util.List)
+	 */
 	@Override
 	@Transactional
 	public List<? extends AssociatedConcept> getAssociatedConceptsFromUidTarget(
@@ -439,6 +515,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				TripleNode.OBJECT);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getConceptReferencesFromUidSource(java.lang.String, java.lang.String, java.util.List, java.util.List)
+	 */
 	@Override
 	@Transactional
 	public List<ConceptReference> getConceptReferencesFromUidSource(
@@ -456,6 +535,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				sorts);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getConceptReferencesFromUidTarget(java.lang.String, java.lang.String, java.util.List, java.util.List)
+	 */
 	@Override
 	public List<ConceptReference> getConceptReferencesFromUidTarget(
 			String codingSchemeUri, 
@@ -472,6 +554,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				sorts);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getRootConceptReferences(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.List, java.util.List, java.util.List, org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations, java.util.List, int, int)
+	 */
 	@Override
 	@Transactional
 	public List<ConceptReference> getRootConceptReferences(
@@ -517,6 +602,17 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					pageSize);
 	}
 
+	/**
+	 * Gets the association predicate uids.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param codingSchemeUid the coding scheme uid
+	 * @param relationsContainerName the relations container name
+	 * @param associationPredicateNames the association predicate names
+	 * 
+	 * @return the association predicate uids
+	 */
 	private List<String> getAssociationPredicateUids(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
@@ -541,6 +637,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return associationPredicateUids;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTailConceptReferences(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.List, java.util.List, java.util.List, org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations, java.util.List, int, int)
+	 */
 	@Override
 	public List<ConceptReference> getTailConceptReferences(
 			String codingSchemeUri,
@@ -585,6 +684,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					pageSize);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getAssociationPredicateUidsForNames(java.lang.String, java.lang.String, java.lang.String, java.util.List)
+	 */
 	@Override
 	public List<String> getAssociationPredicateUidsForNames(
 			String codingSchemeUri, String codingSchemeVersion,
@@ -598,6 +700,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				associationNames);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTripleUidsForMappingRelationsContainer(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String, java.util.List, int, int)
+	 */
 	@Override
 	public List<String> getTripleUidsForMappingRelationsContainer(
 			String codingSchemeUri,
@@ -638,6 +743,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					pageSize);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getMappingTriples(java.lang.String, java.lang.String, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.lang.String, java.util.List)
+	 */
 	@Override
 	public List<? extends ResolvedConceptReference> getMappingTriples(
 			String codingSchemeUri,
@@ -676,6 +784,9 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 								tripleUids);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getMappingTriplesCount(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public int getMappingTriplesCount(
 			String codingSchemeUri,

@@ -28,8 +28,14 @@ import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 
+/**
+ * The Class VersionableEventVSPropertyService.
+ */
 public class VersionableEventVSPropertyService extends AbstractDatabaseService implements VSPropertyService{
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#insertValueSetDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void insertValueSetDefinitionProperty(String valueSetDefinitionUri,
 			Property property) {
@@ -38,6 +44,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		this.getDaoManager().getCurrentVsPropertyDao().insertProperty(valueSetDefGuid, ReferenceType.VALUESETDEFINITION, property);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#updateValueSetDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void updateValueSetDefinitionProperty(String valueSetDefinitionUri,
 			Property property) {
@@ -49,6 +58,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		updateProperty(property, valueSetDefUId, ReferenceType.VALUESETDEFINITION);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#removeValueSetDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void removeValueSetDefinitionProperty(String valueSetDefinitionUri,
 			Property property) {
@@ -60,6 +72,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		removeProperty(property, valueSetDefUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#insertValueSetDefPropVersionableChanges(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void insertValueSetDefPropVersionableChanges(
 			String valueSetDefinitionUri, Property property) {
@@ -71,6 +86,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		updateVersionableAttributes(property, valueSetDefUId, ReferenceType.VALUESETDEFINITION);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#insertPickListDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void insertPickListDefinitionProperty(String pickListId,
 			Property property) {
@@ -80,6 +98,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#updatePickListDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void updatePickListDefinitionProperty(String pickListId,
 			Property property) {
@@ -92,6 +113,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 				ReferenceType.PICKLISTDEFINITION);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#removePickListDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void removePickListDefinitionProperty(String pickListId,
 			Property property) {
@@ -103,6 +127,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		removeProperty(property, pickListDefUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#insertPickListDefPropVersionableChanges(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void insertPickListDefPropVersionableChanges(String pickListId,
 			Property property) {
@@ -116,6 +143,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#insertPickListEntryNodeProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void insertPickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) {
@@ -127,6 +157,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#updatePickListEntryNodeProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void updatePickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) {
@@ -138,6 +171,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		updateProperty(property, pickListEntryNodeUId, ReferenceType.PICKLISTENTRY);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#removePickListEntryNodeProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void removePickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) {
@@ -149,6 +185,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		removeProperty(property, pickListEntryNodeUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#insertPickListEntryNodePropVersionableChanges(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void insertPickListEntryNodePropVersionableChanges(
 			String pickListId, String pickListEntryNodeId, Property property) {
@@ -161,6 +200,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 				ReferenceType.PICKLISTENTRY);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#revisePickListDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void revisePickListDefinitionProperty(String pickListId,
 			Property property) throws LBException {
@@ -189,6 +231,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#revisePickListEntryNodeProperty(java.lang.String, java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void revisePickListEntryNodeProperty(String pickListId,
 			String pickListEntryNodeId, Property property) throws LBException {
@@ -217,6 +262,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#reviseValueSetDefinitionProperty(java.lang.String, org.LexGrid.commonTypes.Property)
+	 */
 	@Override
 	public void reviseValueSetDefinitionProperty(String valueSetDefinitionUri,
 			Property property) throws LBException {
@@ -245,6 +293,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#resolveValueSetDefinitionPropertyByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Property resolveValueSetDefinitionPropertyByRevision(String valueSetDefURI, String propertyId,
 			String revisionId) throws LBRevisionException {
@@ -259,6 +310,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		return vsPropertyDao.resolveVSPropertyByRevision(valueSetDefUId, propertyId, revisionId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#resolvePickListDefinitionPropertyByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Property resolvePickListDefinitionPropertyByRevision(String pickListId, String propertyId,
 			String revisionId) throws LBRevisionException {
@@ -273,6 +327,9 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		return vsPropertyDao.resolveVSPropertyByRevision(pickListUId, propertyId, revisionId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSPropertyService#resolvePickListEntryNodePropertyByRevision(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Property resolvePickListEntryNodePropertyByRevision(String pickListId, String plEntryId, String propertyId,
 			String revisionId) throws LBRevisionException {
@@ -288,6 +345,13 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 				propertyId, revisionId);
 	}
 	
+	/**
+	 * Update property.
+	 * 
+	 * @param property the property
+	 * @param parentUId the parent u id
+	 * @param type the type
+	 */
 	private void updateProperty(Property property, String parentUId, ReferenceType type) {
 		
 		VSPropertyDao propertyDao = this.getDaoManager()
@@ -308,6 +372,13 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 				prevEntryStateUId, property.getEntryState());
 	}
 
+	/**
+	 * Update versionable attributes.
+	 * 
+	 * @param property the property
+	 * @param parentUId the parent u id
+	 * @param type the type
+	 */
 	private void updateVersionableAttributes(Property property,
 			String parentUId, ReferenceType type) {
 		
@@ -331,6 +402,12 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 				property.getEntryState());
 	}
 
+	/**
+	 * Removes the property.
+	 * 
+	 * @param property the property
+	 * @param parentUId the parent u id
+	 */
 	private void removeProperty(Property property, String parentUId) {
 		
 		VSPropertyDao propertyDao = this.getDaoManager()
@@ -343,6 +420,16 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		propertyDao.deletePropertyByUId(propertyUId);
 	}
 	
+	/**
+	 * Valid value set definition revision.
+	 * 
+	 * @param valueSetDefinitionUri the value set definition uri
+	 * @param property the property
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validValueSetDefinitionRevision(
 			String valueSetDefinitionUri, Property property) throws LBException {
 		
@@ -371,6 +458,16 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		return validate(property, vsPropertyDao, propertyUId);
 	}
 
+	/**
+	 * Valid pick list definition revision.
+	 * 
+	 * @param pickListId the pick list id
+	 * @param property the property
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validPickListDefinitionRevision(String pickListId,
 			Property property) throws LBException {
 	
@@ -398,6 +495,17 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		return validate(property, vsPropertyDao, propertyUId);
 	}
 
+	/**
+	 * Valid pl entry revision.
+	 * 
+	 * @param pickListId the pick list id
+	 * @param pickListEntryNodeId the pick list entry node id
+	 * @param property the property
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validPLEntryRevision(String pickListId,
 			String pickListEntryNodeId, Property property) throws LBException {
 		
@@ -426,6 +534,17 @@ public class VersionableEventVSPropertyService extends AbstractDatabaseService i
 		return validate(property, vsPropertyDao, propertyUId);
 	}
 
+	/**
+	 * Validate.
+	 * 
+	 * @param property the property
+	 * @param vsPropertyDao the vs property dao
+	 * @param propertyUId the property u id
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validate(Property property,
 			VSPropertyDao vsPropertyDao, String propertyUId) throws LBException {
 

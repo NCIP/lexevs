@@ -37,6 +37,7 @@ import org.lexevs.system.service.SystemResourceService;
  * method is invoked.
  * 
  * @see CodingSchemeRegisteringEvent
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class CodingSchemeRegisteringListener extends DefaultServiceEventListener {
 	
@@ -71,6 +72,9 @@ public class CodingSchemeRegisteringListener extends DefaultServiceEventListener
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.listener.DefaultServiceEventListener#onCodingSchemeInsertError(org.lexevs.dao.database.service.event.codingscheme.CodingSchemeInsertErrorEvent)
+	 */
 	@Override
 	public <T extends Exception> void onCodingSchemeInsertError(
 			CodingSchemeInsertErrorEvent<T> codingSchemeInsertErrorEvent){

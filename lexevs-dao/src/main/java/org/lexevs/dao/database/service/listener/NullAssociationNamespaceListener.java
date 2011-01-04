@@ -25,8 +25,23 @@ import org.LexGrid.relations.Relations;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+/**
+ * The listener interface for receiving nullAssociationNamespace events.
+ * The class that is interested in processing a nullAssociationNamespace
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addNullAssociationNamespaceListener<code> method. When
+ * the nullAssociationNamespace event occurs, that object's appropriate
+ * method is invoked.
+ * 
+ * @see NullAssociationNamespaceEvent
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class NullAssociationNamespaceListener extends AbstractPreAssociationInsertValidatingListener{
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.listener.AbstractPreAssociationInsertValidatingListener#doValidateNullNamespace(java.lang.String, java.lang.String, org.LexGrid.relations.Relations, org.LexGrid.relations.AssociationSource)
+	 */
 	@Override
 	protected boolean doValidateNullNamespace(String uri, String version,
 			Relations relation, AssociationSource source) {

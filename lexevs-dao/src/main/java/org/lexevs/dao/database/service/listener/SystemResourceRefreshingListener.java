@@ -26,15 +26,16 @@ import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
- * The listener interface for receiving codingSchemeRegistering events.
- * The class that is interested in processing a codingSchemeRegistering
+ * The listener interface for receiving systemResourceRefreshing events.
+ * The class that is interested in processing a systemResourceRefreshing
  * event implements this interface, and the object created
  * with that class is registered with a component using the
- * component's <code>addCodingSchemeRegisteringListener<code> method. When
- * the codingSchemeRegistering event occurs, that object's appropriate
+ * component's <code>addSystemResourceRefreshingListener<code> method. When
+ * the systemResourceRefreshing event occurs, that object's appropriate
  * method is invoked.
  * 
- * @see CodingSchemeRegisteringEvent
+ * @see SystemResourceRefreshingEvent
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class SystemResourceRefreshingListener extends DefaultServiceEventListener {
 	

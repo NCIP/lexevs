@@ -34,6 +34,7 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	/** The dao manager. */
 	private DaoManager daoManager;
 	
+	/** The logger. */
 	private Logger logger;
 
 	/**
@@ -51,12 +52,26 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	}
 	
 	
+	/**
+	 * Checks if is change type dependent.
+	 * 
+	 * @param versionable the versionable
+	 * 
+	 * @return true, if is change type dependent
+	 */
 	protected boolean isChangeTypeDependent(Versionable versionable) {
 		return versionable.getEntryState() != null 
 				&&
 				versionable.getEntryState().getChangeType().equals(ChangeType.DEPENDENT);
 	}
 	
+	/**
+	 * Checks if is change type remove.
+	 * 
+	 * @param versionable the versionable
+	 * 
+	 * @return true, if is change type remove
+	 */
 	protected boolean isChangeTypeRemove(Versionable versionable) {
 		return versionable.getEntryState() != null 
 				&&
@@ -81,10 +96,20 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 		this.daoManager = daoManager;
 	}
 
+	/**
+	 * Sets the logger.
+	 * 
+	 * @param logger the new logger
+	 */
 	public void setLogger(Logger logger) {
 		this.logger = logger;
 	}
 
+	/**
+	 * Gets the logger.
+	 * 
+	 * @return the logger
+	 */
 	public Logger getLogger() {
 		return logger;
 	}

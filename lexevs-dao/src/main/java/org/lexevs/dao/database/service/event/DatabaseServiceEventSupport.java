@@ -39,9 +39,18 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  */
 public class DatabaseServiceEventSupport {
 
+	/** The listener registry. */
 	private ListenerRegistry listenerRegistry;
 
 	
+	/**
+	 * Fire coding scheme insert error event.
+	 * 
+	 * @param scheme the scheme
+	 * @param exception the exception
+	 * 
+	 * @throws T the T
+	 */
 	protected <T extends Exception> void fireCodingSchemeInsertErrorEvent(CodingScheme scheme, T exception) throws T {
 		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 			listener.onCodingSchemeInsertError(
@@ -91,6 +100,13 @@ public class DatabaseServiceEventSupport {
 			}
 	}
 	
+	/**
+	 * Fire post coding scheme insert event.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * 
+	 * @throws CodingSchemeAlreadyLoadedException the coding scheme already loaded exception
+	 */
 	protected void firePostCodingSchemeInsertEvent(
 			CodingScheme codingScheme) throws CodingSchemeAlreadyLoadedException{
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
@@ -100,42 +116,77 @@ public class DatabaseServiceEventSupport {
 		}
 	}
 	
+	/**
+	 * Fire pre entity insert event.
+	 * 
+	 * @param entityInsertEvent the entity insert event
+	 */
 	protected void firePreEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreEntityInsert(entityInsertEvent);
 			}
 	}
 	
+	/**
+	 * Fire post entity insert event.
+	 * 
+	 * @param entityInsertEvent the entity insert event
+	 */
 	protected void firePostEntityInsertEvent(EntityInsertOrRemoveEvent entityInsertEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostEntityInsert(entityInsertEvent);
 			}
 	}
 	
+	/**
+	 * Fire pre batch entity insert event.
+	 * 
+	 * @param entityInsertEvent the entity insert event
+	 */
 	protected void firePreBatchEntityInsertEvent(EntityBatchInsertEvent entityInsertEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreBatchEntityInsert(entityInsertEvent);
 			}
 	}
 	
+	/**
+	 * Fire post batch entity insert event.
+	 * 
+	 * @param entityInsertEvent the entity insert event
+	 */
 	protected void firePostBatchEntityInsertEvent(EntityBatchInsertEvent entityInsertEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostBatchEntityInsert(entityInsertEvent);
 			}
 	}
 	
+	/**
+	 * Fire pre batch association insert event.
+	 * 
+	 * @param assocInsertEvent the assoc insert event
+	 */
 	protected void firePreBatchAssociationInsertEvent(AssociationBatchInsertEvent assocInsertEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreBatchAssociationInsert(assocInsertEvent);
 			}
 	}
 
+	/**
+	 * Fire post property insert event.
+	 * 
+	 * @param propertyInsertEvent the property insert event
+	 */
 	protected void firePostPropertyInsertEvent(PropertyUpdateEvent propertyInsertEvent){
 		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 			listener.onPostPropertyInsert(propertyInsertEvent);
 		}
 	}
 	
+	/**
+	 * Fire property update event.
+	 * 
+	 * @param event the event
+	 */
 	protected void firePropertyUpdateEvent(
 			PropertyUpdateEvent event) {
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
@@ -143,40 +194,75 @@ public class DatabaseServiceEventSupport {
 			}
 	}
 	
+	/**
+	 * Fire post property remove event.
+	 * 
+	 * @param propertyRemoveEvent the property remove event
+	 */
 	protected void firePostPropertyRemoveEvent(PropertyUpdateEvent propertyRemoveEvent){
 		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 			listener.onPostPropertyRemove(propertyRemoveEvent);
 		}
 	}
 
+	/**
+	 * Fire entity update event.
+	 * 
+	 * @param entityUpdateEvent the entity update event
+	 */
 	protected void fireEntityUpdateEvent(EntityUpdateEvent entityUpdateEvent) {
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onEntityUpdate(entityUpdateEvent);
 			}
 	}
 	
+	/**
+	 * Fire pre entity remove event.
+	 * 
+	 * @param entityRemoveEvent the entity remove event
+	 */
 	protected void firePreEntityRemoveEvent(EntityInsertOrRemoveEvent entityRemoveEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPreEntityRemove(entityRemoveEvent);
 			}
 	}
 	
+	/**
+	 * Fire post entity remove event.
+	 * 
+	 * @param entityRemoveEvent the entity remove event
+	 */
 	protected void firePostEntityRemoveEvent(EntityInsertOrRemoveEvent entityRemoveEvent){
 			for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 				listener.onPostEntityRemove(entityRemoveEvent);
 			}
 	}
 	
+	/**
+	 * Fire entity revise event.
+	 * 
+	 * @param entityReviseEvent the entity revise event
+	 */
 	protected void fireEntityReviseEvent(EntityReviseEvent entityReviseEvent){
 		for(DatabaseServiceEventListener listener : this.listenerRegistry.getRegisteredListeners()){
 			listener.onEntityReviseEvent(entityReviseEvent);
 		}
 }
 
+	/**
+	 * Sets the listener registry.
+	 * 
+	 * @param listenerRegistry the new listener registry
+	 */
 	public void setListenerRegistry(ListenerRegistry listenerRegistry) {
 		this.listenerRegistry = listenerRegistry;
 	}
 
+	/**
+	 * Gets the listener registry.
+	 * 
+	 * @return the listener registry
+	 */
 	public ListenerRegistry getListenerRegistry() {
 		return listenerRegistry;
 	}

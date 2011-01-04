@@ -50,6 +50,9 @@ import org.springframework.util.Assert;
 public class VersionableEventPropertyService extends RevisableAbstractDatabaseService<Property,ParentUidReferencingId>
 		implements PropertyService {
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#doInsertDependentChanges(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected void doInsertDependentChanges(
 			ParentUidReferencingId id, Property revisedEntry)
@@ -57,6 +60,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		//
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#entryStateExists(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected boolean entryStateExists(ParentUidReferencingId id,
 			String entryStateUid) {
@@ -71,6 +77,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return propertyDao.entryStateExists(codingSchemeUid, entryStateUid);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getCurrentEntry(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected Property getCurrentEntry(ParentUidReferencingId id,
 			String entryUId) {
@@ -85,6 +94,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return propertyDao.getPropertyByUid(codingSchemeId, entryUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getCurrentEntryStateUid(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected String getCurrentEntryStateUid(
 			ParentUidReferencingId id, String entryUid) {
@@ -98,6 +110,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 			getEntryStateUId(codingSchemeUid, entryUid);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getEntryUid(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected String getEntryUid(ParentUidReferencingId id,
 			Property entry) {
@@ -116,6 +131,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 				entry.getPropertyName());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#insertIntoHistory(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable, java.lang.String)
+	 */
 	@Override
 	protected void insertIntoHistory(ParentUidReferencingId id,
 			Property currentEntry, String entryUId) {
@@ -130,6 +148,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		propertyDao.insertHistoryProperty(codingSchemeUid, entryUId, currentEntry);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#addDependentAttributesByRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, org.LexGrid.commonTypes.Versionable, java.lang.String)
+	 */
 	@Override
 	protected Property addDependentAttributesByRevisionId(
 			ParentUidReferencingId id, String entryUid, Property entry, String revisionId) {
@@ -137,6 +158,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return entry;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getHistoryEntryByRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, java.lang.String)
+	 */
 	@Override
 	protected Property getHistoryEntryByRevisionId(ParentUidReferencingId id,
 			String entryUid, String revisionId) {
@@ -147,6 +171,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return this.getPropertyDao(id).getHistoryPropertyByRevisionId(codingSchemeUid, entryUid, revisionId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getLatestRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected String getLatestRevisionId(ParentUidReferencingId id,
 			String entryUId) {
@@ -158,6 +185,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return this.getPropertyDao(id).getLatestRevision(codingSchemeUid, entryUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#updateEntryVersionableAttributes(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected String updateEntryVersionableAttributes(
 			ParentUidReferencingId id, String entryUId,
@@ -320,6 +350,15 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		this.doRemoveProperty(codingSchemeUri, version, relationUId, property, PropertyType.RELATION);
 	}
 	
+	/**
+	 * Do insert property.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * @param parentUid the parent uid
+	 * @param property the property
+	 * @param propertyType the property type
+	 */
 	protected void doInsertProperty(
 			String codingSchemeUri, 
 			String version,
@@ -350,6 +389,15 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		
 	}
 	
+	/**
+	 * Do remove property.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * @param parentUid the parent uid
+	 * @param property the property
+	 * @param propertyType the property type
+	 */
 	protected void doRemoveProperty(
 			String codingSchemeUri, 
 			String version,
@@ -393,6 +441,17 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		}
 	}
 
+	/**
+	 * Do revise property.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * @param parentUid the parent uid
+	 * @param property the property
+	 * @param propertyType the property type
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	protected void doReviseProperty(
 			String codingSchemeUri, 
 			String version,
@@ -422,6 +481,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.property.PropertyService#resolvePropertiesOfCodingSchemeByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public List<Property> resolvePropertiesOfCodingSchemeByRevision(
 			String codingSchemeURI,
 			String version,
@@ -431,6 +493,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return this.doResolvePropertiesOfParentByRevision(codingSchemeURI, version, codingSchemeUid, revisionId);	
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.property.PropertyService#resolvePropertiesOfEntityByRevision(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public List<Property> resolvePropertiesOfEntityByRevision(
 			String codingSchemeURI,
 			String version, 
@@ -449,6 +514,9 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.property.PropertyService#resolvePropertiesOfRelationByRevision(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<Property> resolvePropertiesOfRelationByRevision(
 			String codingSchemeURI, String version, String relationsName,
@@ -464,6 +532,16 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return this.doResolvePropertiesOfParentByRevision(codingSchemeURI, version, relationsUid, revisionId);		
 	}
 
+	/**
+	 * Do resolve properties of parent by revision.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * @param parentUid the parent uid
+	 * @param revisionId the revision id
+	 * 
+	 * @return the list< property>
+	 */
 	protected List<Property> doResolvePropertiesOfParentByRevision(
 			String codingSchemeUri, 
 			String version,
@@ -619,6 +697,17 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		}
 	}
 	
+	/**
+	 * Do update property.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param version the version
+	 * @param parentUid the parent uid
+	 * @param property the property
+	 * @param propertyType the property type
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	protected void doUpdateProperty(
 			String codingSchemeUri, 
 			String version,
@@ -668,10 +757,8 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 	/**
 	 * Property list to batch insert list.
 	 * 
-	 * @param parentId
-	 *            the parent id
-	 * @param props
-	 *            the props
+	 * @param parentId the parent id
+	 * @param props the props
 	 * 
 	 * @return the list< property batch insert item>
 	 */
@@ -684,6 +771,13 @@ public class VersionableEventPropertyService extends RevisableAbstractDatabaseSe
 		return returnList;
 	}
 	
+	/**
+	 * Gets the property dao.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the property dao
+	 */
 	private PropertyDao getPropertyDao(ParentUidReferencingId id) {
 		return this.getDaoManager().getPropertyDao(id.getCodingSchemeUri(), id.getCodingSchemeVersion());
 	}

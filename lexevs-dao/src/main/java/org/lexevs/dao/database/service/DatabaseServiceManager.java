@@ -43,9 +43,11 @@ import org.lexevs.dao.database.service.version.AuthoringService;
  */
 public class DatabaseServiceManager {
 	
+	/** The error callback database service factory. */
 	private ErrorCallbackDatabaseServiceFactory errorCallbackDatabaseServiceFactory = 
 		new ErrorCallbackDatabaseServiceFactory();
 	
+	/** The listener registry. */
 	private ListenerRegistry listenerRegistry;
 	
 	/** The coding scheme service. */
@@ -81,12 +83,23 @@ public class DatabaseServiceManager {
 	/** The authoring service. */
 	private AuthoringService authoringService;
 	
+	/** The coded node graph service. */
 	private CodedNodeGraphService codedNodeGraphService;
 	
+	/** The nci history service. */
 	private NciHistoryService nciHistoryService;
 	
+	/** The dao callback service. */
 	private DaoCallbackService daoCallbackService;
 	
+	/**
+	 * Wrap service for error handling.
+	 * 
+	 * @param service the service
+	 * @param errorCallbackListener the error callback listener
+	 * 
+	 * @return the t
+	 */
 	public <T> T wrapServiceForErrorHandling(T service, ErrorCallbackListener errorCallbackListener) {
 		return errorCallbackDatabaseServiceFactory.
 			getErrorCallbackDatabaseService(service, errorCallbackListener);
@@ -164,31 +177,63 @@ public class DatabaseServiceManager {
 		return associationService;
 	}
 	
+	/**
+	 * Sets the dao callback service.
+	 * 
+	 * @param daoCallbackService the new dao callback service
+	 */
 	public void setDaoCallbackService(DaoCallbackService daoCallbackService) {
 		this.daoCallbackService = daoCallbackService;
 	}
 
+	/**
+	 * Gets the dao callback service.
+	 * 
+	 * @return the dao callback service
+	 */
 	public DaoCallbackService getDaoCallbackService() {
 		return daoCallbackService;
 	}
 	
+	/**
+	 * Gets the authoring service.
+	 * 
+	 * @return the authoring service
+	 */
 	public AuthoringService getAuthoringService() {
 		return authoringService;
 	}
 
+	/**
+	 * Sets the authoring service.
+	 * 
+	 * @param authoringService the new authoring service
+	 */
 	public void setAuthoringService(AuthoringService authoringService) {
 		this.authoringService = authoringService;
 	}
 
+	/**
+	 * Sets the pick list definition service.
+	 * 
+	 * @param pickListDefinitionService the new pick list definition service
+	 */
 	public void setPickListDefinitionService(PickListDefinitionService pickListDefinitionService) {
 		this.pickListDefinitionService = pickListDefinitionService;
 	}
 
+	/**
+	 * Gets the pick list definition service.
+	 * 
+	 * @return the pick list definition service
+	 */
 	public PickListDefinitionService getPickListDefinitionService() {
 		return pickListDefinitionService;
 	}
 
 	/**
+	 * Gets the value set definition service.
+	 * 
 	 * @return the valueSetDefinitionService
 	 */
 	public ValueSetDefinitionService getValueSetDefinitionService() {
@@ -196,6 +241,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Sets the value set definition service.
+	 * 
 	 * @param valueSetDefinitionService the valueSetDefinitionService to set
 	 */
 	public void setValueSetDefinitionService(
@@ -204,6 +251,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Gets the vs property service.
+	 * 
 	 * @return the vsPropertyService
 	 */
 	public VSPropertyService getVsPropertyService() {
@@ -211,21 +260,35 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Sets the vs property service.
+	 * 
 	 * @param vsPropertyService the vsPropertyService to set
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
 		this.vsPropertyService = vsPropertyService;
 	}
 
+	/**
+	 * Sets the coded node graph service.
+	 * 
+	 * @param codedNodeGraphService the new coded node graph service
+	 */
 	public void setCodedNodeGraphService(CodedNodeGraphService codedNodeGraphService) {
 		this.codedNodeGraphService = codedNodeGraphService;
 	}
 
+	/**
+	 * Gets the coded node graph service.
+	 * 
+	 * @return the coded node graph service
+	 */
 	public CodedNodeGraphService getCodedNodeGraphService() {
 		return codedNodeGraphService;
 	}
 
 	/**
+	 * Gets the relation service.
+	 * 
 	 * @return the relationService
 	 */
 	public RelationService getRelationService() {
@@ -233,6 +296,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Sets the relation service.
+	 * 
 	 * @param relationService the relationService to set
 	 */
 	public void setRelationService(RelationService relationService) {
@@ -240,6 +305,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Gets the association target service.
+	 * 
 	 * @return the associationTargetService
 	 */
 	public AssociationTargetService getAssociationTargetService() {
@@ -247,6 +314,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Sets the association target service.
+	 * 
 	 * @param associationTargetService the associationTargetService to set
 	 */
 	public void setAssociationTargetService(
@@ -255,6 +324,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Gets the association data service.
+	 * 
 	 * @return the associationDataService
 	 */
 	public AssociationDataService getAssociationDataService() {
@@ -262,6 +333,8 @@ public class DatabaseServiceManager {
 	}
 
 	/**
+	 * Sets the association data service.
+	 * 
 	 * @param associationDataService the associationDataService to set
 	 */
 	public void setAssociationDataService(
@@ -269,18 +342,38 @@ public class DatabaseServiceManager {
 		this.associationDataService = associationDataService;
 	}
 
+	/**
+	 * Gets the nci history service.
+	 * 
+	 * @return the nci history service
+	 */
 	public NciHistoryService getNciHistoryService() {
 		return nciHistoryService;
 	}
 
+	/**
+	 * Sets the nci history service.
+	 * 
+	 * @param nciHistoryService the new nci history service
+	 */
 	public void setNciHistoryService(NciHistoryService nciHistoryService) {
 		this.nciHistoryService = nciHistoryService;
 	}
 
+	/**
+	 * Sets the listener registry.
+	 * 
+	 * @param listenerRegistry the new listener registry
+	 */
 	public void setListenerRegistry(ListenerRegistry listenerRegistry) {
 		this.listenerRegistry = listenerRegistry;
 	}
 
+	/**
+	 * Gets the listener registry.
+	 * 
+	 * @return the listener registry
+	 */
 	public ListenerRegistry getListenerRegistry() {
 		return listenerRegistry;
 	}

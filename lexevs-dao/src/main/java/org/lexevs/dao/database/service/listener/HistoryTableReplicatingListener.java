@@ -30,6 +30,7 @@ import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
  * method is invoked.
  * 
  * @see HistoryTableReplicatingEvent
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class HistoryTableReplicatingListener extends DefaultServiceEventListener {
 	

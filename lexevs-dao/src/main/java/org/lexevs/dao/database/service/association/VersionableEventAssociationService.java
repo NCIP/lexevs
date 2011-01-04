@@ -42,8 +42,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class VersionableEventAssociationService extends AbstractDatabaseService implements AssociationService{
 	
+	/** The property service. */
 	private PropertyService propertyService = null;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationService#getAssociationTripleByAssociationInstanceId(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public AssociationTriple getAssociationTripleByAssociationInstanceId(
 			String codingSchemeUri, 
@@ -164,6 +168,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	 * @param codingSchemeId the coding scheme id
 	 * @param predicateId the predicate id
 	 * @param sources the sources
+	 * @param relations the relations
 	 */
 	protected void doInsertAssociationSource(String codingSchemeUri, 
 			String codingSchemeVersion, String codingSchemeId, Relations relations, String predicateId, List<AssociationSource> sources) {
@@ -178,6 +183,8 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	}
 
 	/**
+	 * Gets the property service.
+	 * 
 	 * @return the propertyService
 	 */
 	public PropertyService getPropertyService() {
@@ -185,6 +192,8 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	}
 
 	/**
+	 * Sets the property service.
+	 * 
 	 * @param propertyService the propertyService to set
 	 */
 	public void setPropertyService(PropertyService propertyService) {

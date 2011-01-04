@@ -36,13 +36,28 @@ import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedExcept
  */
 public interface CodingSchemeService {
 	
+	/** The Constant INSERT_CODINGSCHEME_ERROR. */
 	public static final String INSERT_CODINGSCHEME_ERROR = "INSERT-CODING-SCHEME-ERROR";
+	
+	/** The Constant REMOVE_CODINGSCHEME_ERROR. */
 	public static final String REMOVE_CODINGSCHEME_ERROR = "REMOVE-CODING-SCHEME-ERROR";
+	
+	/** The Constant INSERT_CODINGSCHEME_URI_ERROR. */
 	public static final String INSERT_CODINGSCHEME_URI_ERROR = "INSERT-CODING-SCHEME-URI-ERROR";
+	
+	/** The Constant UPDATE_CODINGSCHEME_URI_ERROR. */
 	public static final String UPDATE_CODINGSCHEME_URI_ERROR = "UPDATE-CODING-SCHEME-URI-ERROR";
+	
+	/** The Constant UPDATE_CODINGSCHEME_ERROR. */
 	public static final String UPDATE_CODINGSCHEME_ERROR = "UPDATE-CODING-SCHEME-ERROR";
+	
+	/** The Constant UPDATE_CODINGSCHEME_ENTRYSTATE_ERROR. */
 	public static final String UPDATE_CODINGSCHEME_ENTRYSTATE_ERROR = "UPDATE-CODING-SCHEME-ENTRYSTATE-ERROR";
+	
+	/** The Constant INSERT_CODINGSCHEME_VERSIONABLE_CHANGES_ERROR. */
 	public static final String INSERT_CODINGSCHEME_VERSIONABLE_CHANGES_ERROR = "INSERT-CODING-SCHEME-VERSIONABLE-CHANGES-ERROR";
+	
+	/** The Constant INSERT_CODINGSCHEME_DEPENDENT_CHANGES_ERROR. */
 	public static final String INSERT_CODINGSCHEME_DEPENDENT_CHANGES_ERROR = "INSERT-CODING-SCHEME-DEPENDENT-CHANGES-ERROR";
 	
 	/**
@@ -70,9 +85,10 @@ public interface CodingSchemeService {
 	/**
 	 * Returns entire codingScheme.
 	 * 
-	 * @param codingSchemeUri
-	 * @param codingSchemeVersion
-	 * @return
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * 
+	 * @return the complete coding scheme
 	 */
 	public CodingScheme getCompleteCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion);
@@ -90,6 +106,7 @@ public interface CodingSchemeService {
 	 * Insert coding scheme.
 	 * 
 	 * @param scheme the scheme
+	 * @param releaseURI the release uri
 	 * 
 	 * @throws CodingSchemeAlreadyLoadedException the coding scheme already loaded exception
 	 */
@@ -100,7 +117,8 @@ public interface CodingSchemeService {
 	 * Update coding scheme.
 	 * 
 	 * @param codingScheme the coding scheme
-	 * @throws LBException 
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public void updateCodingScheme(CodingScheme codingScheme) throws LBException;
 	
@@ -116,6 +134,13 @@ public interface CodingSchemeService {
 			String codingSchemeVersion,
 			URIMap uriMap);
 	
+	/**
+	 * Update uri map.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param uriMap the uri map
+	 */
 	public void updateURIMap(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
@@ -148,13 +173,32 @@ public interface CodingSchemeService {
 	/**
 	 * revise the codingScheme.
 	 * 
-	 * @param revisedCodingScheme
-	 * @throws LBException
+	 * @param revisedCodingScheme the revised coding scheme
+	 * @param releaseURI the release uri
+	 * @param indexNewCodingScheme the index new coding scheme
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public void revise(CodingScheme revisedCodingScheme, String releaseURI, Boolean indexNewCodingScheme) throws LBException;
 
+	/**
+	 * Removes the coding scheme.
+	 * 
+	 * @param revisedCodingScheme the revised coding scheme
+	 */
 	public void removeCodingScheme(CodingScheme revisedCodingScheme);
 	
+	/**
+	 * Resolve coding scheme by revision.
+	 * 
+	 * @param codingSchemeURI the coding scheme uri
+	 * @param version the version
+	 * @param revisionId the revision id
+	 * 
+	 * @return the coding scheme
+	 * 
+	 * @throws LBRevisionException the LB revision exception
+	 */
 	public CodingScheme resolveCodingSchemeByRevision(String codingSchemeURI,
 			String version, String revisionId) throws LBRevisionException;
 }

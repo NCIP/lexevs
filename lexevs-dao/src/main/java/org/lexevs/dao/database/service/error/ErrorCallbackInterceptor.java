@@ -37,6 +37,7 @@ public class ErrorCallbackInterceptor extends TransactionInterceptor {
     /** The callback. */
     private ErrorCallbackListener errorCallbackListener;
     
+    /** The UNKNOWN_ERROR_CODE Constant. */
     private static String UNKNOWN_ERROR_CODE = DatabaseError.UNKNOWN_ERROR_CODE;
     
     /**

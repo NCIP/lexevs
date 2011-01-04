@@ -46,12 +46,13 @@ import org.lexevs.system.service.SystemResourceService;
 /**
  * The Class VersionableEventValueSetDefinitionService.
  * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class VersionableEventValueSetDefinitionService extends AbstractDatabaseService implements ValueSetDefinitionService{
 
+	/** The vs definition entry service. */
 	VSDefinitionEntryService vsDefinitionEntryService = null;
 	
+	/** The vs property service. */
 	VSPropertyService vsPropertyService = null;
 	
 	/* (non-Javadoc)
@@ -70,6 +71,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionByURI(uri.toString());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, java.lang.String, org.LexGrid.naming.Mappings)
+	 */
 	@Override
 	public void insertValueSetDefinition(ValueSetDefinition definition,
 			String systemReleaseUri, Mappings mappings) throws LBException {
@@ -106,6 +110,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#listValueSetDefinitionURIs()
+	 */
 	@Override
 	public List<String> listValueSetDefinitionURIs() {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIs();
@@ -113,12 +120,18 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	
 
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getAllValueSetDefinitionsWithNoName()
+	 */
 	@Override
 	public List<String> getAllValueSetDefinitionsWithNoName()
 			throws LBException {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getAllValueSetDefinitionsWithNoName();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#removeValueSetDefinition(java.lang.String)
+	 */
 	@Override
 	public void removeValueSetDefinition(String valueSetDefinitionURI) {
 		this.getDaoManager().getCurrentValueSetDefinitionDao().removeValueSetDefinitionByValueSetDefinitionURI(valueSetDefinitionURI);
@@ -134,6 +147,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value, uri);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertDependentChanges(org.LexGrid.valueSets.ValueSetDefinition)
+	 */
 	@Override
 	public void insertDependentChanges(
 			ValueSetDefinition valueSetDefinition) throws LBException {
@@ -169,6 +185,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#updateVersionableAttributes(org.LexGrid.valueSets.ValueSetDefinition)
+	 */
 	@Override
 	public void updateVersionableAttributes(
 			ValueSetDefinition valueSetDefinition) throws LBException {
@@ -195,6 +214,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		this.insertDependentChanges(valueSetDefinition);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#updateValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition)
+	 */
 	@Override
 	public void updateValueSetDefinition(ValueSetDefinition valueSetDefinition) throws LBException {
 
@@ -220,6 +242,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		this.insertDependentChanges(valueSetDefinition);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#revise(org.LexGrid.valueSets.ValueSetDefinition, org.LexGrid.naming.Mappings, java.lang.String)
+	 */
 	@Override
 	public void revise(ValueSetDefinition valueSetDefinition, Mappings mapping,
 			String releaseURI) throws LBException {
@@ -250,6 +275,8 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Gets the vs definition entry service.
+	 * 
 	 * @return the vsDefinitionEntryService
 	 */
 	public VSDefinitionEntryService getVsDefinitionEntryService() {
@@ -257,6 +284,8 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Sets the vs definition entry service.
+	 * 
 	 * @param vsDefinitionEntryService the vsDefinitionEntryService to set
 	 */
 	public void setVsDefinitionEntryService(
@@ -265,6 +294,8 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Gets the vs property service.
+	 * 
 	 * @return the vsPropertyService
 	 */
 	public VSPropertyService getVsPropertyService() {
@@ -272,12 +303,17 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	}
 
 	/**
+	 * Sets the vs property service.
+	 * 
 	 * @param vsPropertyService the vsPropertyService to set
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
 		this.vsPropertyService = vsPropertyService;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertDefinitionEntry(org.LexGrid.valueSets.ValueSetDefinition, org.LexGrid.valueSets.DefinitionEntry)
+	 */
 	@Override
 	public void insertDefinitionEntry(ValueSetDefinition valueSetDefinition,
 			DefinitionEntry definitionEntry) throws LBException {
@@ -285,6 +321,15 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		
 	}
 
+	/**
+	 * Valid revision.
+	 * 
+	 * @param valueSetDefinition the value set definition
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validRevision(ValueSetDefinition valueSetDefinition) throws LBException {
 		
 		if(  valueSetDefinition == null) 
@@ -348,6 +393,11 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		return true;
 	}
 
+	/**
+	 * Do add value set definition dependent entry.
+	 * 
+	 * @param valueSetDefinition the value set definition
+	 */
 	private void doAddValueSetDefinitionDependentEntry(
 			ValueSetDefinition valueSetDefinition) {
 	
@@ -393,6 +443,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 				entryStateUId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionByRevision(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException {
@@ -408,6 +461,9 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		return vsd;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionByDate(java.lang.String, java.sql.Date)
+	 */
 	@Override
 	public ValueSetDefinition getValueSetDefinitionByDate(String valueSetDefURI,
 			Date date) throws LBRevisionException {

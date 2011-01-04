@@ -61,10 +61,18 @@ import org.springframework.util.Assert;
 @ErrorHandlingService
 public class VersionableEventCodingSchemeService extends RevisableAbstractDatabaseService<CodingScheme,CodingSchemeUriVersionBasedEntryId> implements CodingSchemeService {
 	
+	/** The property service. */
 	private PropertyService propertyService = null;
+	
+	/** The entity service. */
 	private EntityService entityService = null;
+	
+	/** The relation service. */
 	private RelationService relationService = null;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getCurrentEntryStateUid(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected String getCurrentEntryStateUid(
 			CodingSchemeUriVersionBasedEntryId id,
@@ -75,6 +83,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			getCodingSchemeDao(codingSchemeUri, version).getEntryStateUId(entryUid);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#addDependentAttributesByRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, org.LexGrid.commonTypes.Versionable, java.lang.String)
+	 */
 	@Override
 	protected CodingScheme addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, String entryUid,
@@ -91,6 +102,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return entry;	
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getHistoryEntryByRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, java.lang.String)
+	 */
 	@Override
 	protected CodingScheme getHistoryEntryByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, String entryUid,
@@ -102,6 +116,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return codingSchemeDao.getHistoryCodingSchemeByRevision(codingSchemeUid, revisionId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getLatestRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected String getLatestRevisionId(CodingSchemeUriVersionBasedEntryId id,
 			String entryUId) {
@@ -112,6 +129,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return codingSchemeDao.getLatestRevision(codingSchemeUid);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#entryStateExists(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected boolean entryStateExists(CodingSchemeUriVersionBasedEntryId id,
 			String entryStateUid) {
@@ -126,6 +146,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			getCodingSchemeDao(codingSchemeUri, version).getEntryStateUId(codingSchemeUid).equals(entryStateUid);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#resolveCodingSchemeByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public CodingScheme resolveCodingSchemeByRevision(String codingSchemeURI,
 			String version, String revisionId) throws LBRevisionException {
@@ -147,6 +170,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			getCodingSchemeByUriAndVersion(uri, version);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#getCompleteCodingScheme(java.lang.String, java.lang.String)
+	 */
 	@Transactional
 	public CodingScheme getCompleteCodingScheme(String codingSchemeUri,
 			String codingSchemeVersion) {
@@ -264,6 +290,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			insertURIMap(codingSchemeId, uriMap);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#updateURIMap(java.lang.String, java.lang.String, org.LexGrid.naming.URIMap)
+	 */
 	@Transactional
 	@DatabaseErrorIdentifier(errorCode=UPDATE_CODINGSCHEME_URI_ERROR)
 	public void updateURIMap(
@@ -326,6 +355,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return codingSchemeDao.validateSupportedAttribute(codingSchemeId, localId, attributeClass);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#revise(org.LexGrid.codingSchemes.CodingScheme, java.lang.String, java.lang.Boolean)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public void revise(CodingScheme revisedCodingScheme, String releaseURI, Boolean indexNewCodingScheme) throws LBException {
@@ -374,6 +406,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#removeCodingScheme(org.LexGrid.codingSchemes.CodingScheme)
+	 */
 	@Override
 	@Transactional
 	@DatabaseErrorIdentifier(errorCode=REMOVE_CODINGSCHEME_ERROR)
@@ -385,6 +420,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		removeCodingScheme(codingSchemeUri, version);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.codingscheme.CodingSchemeService#getSupportedPropertyForPropertyType(java.lang.String, java.lang.String, org.LexGrid.commonTypes.types.PropertyTypes)
+	 */
 	@Override
 	public List<SupportedProperty> getSupportedPropertyForPropertyType(
 			String codingSchemeUri, String codingSchemeVersion, PropertyTypes propertyType) {
@@ -396,6 +434,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return (List<SupportedProperty>) codingSchemeDao.getPropertyUriMapForPropertyType(codingSchemeId, propertyType);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#doInsertDependentChanges(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected void doInsertDependentChanges(CodingSchemeUriVersionBasedEntryId id, CodingScheme revisedEntry) throws LBException {
 		String codingSchemeUri = id.getCodingSchemeUri();
@@ -445,6 +486,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getCurrentEntry(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected CodingScheme getCurrentEntry(CodingSchemeUriVersionBasedEntryId id, String entryUId) {
 		String codingSchemeUri = id.getCodingSchemeUri();
@@ -453,6 +497,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		return this.getCodingSchemeDao(codingSchemeUri, version).getCodingSchemeByUId(entryUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getEntryUid(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected String getEntryUid(CodingSchemeUriVersionBasedEntryId id,
 			CodingScheme entry) {
@@ -465,6 +512,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 					entry.getRepresentsVersion());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#insertIntoHistory(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable, java.lang.String)
+	 */
 	@Override
 	protected void insertIntoHistory(CodingSchemeUriVersionBasedEntryId id,
 			CodingScheme currentEntry, String entryUId) {
@@ -474,6 +524,9 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		this.getCodingSchemeDao(codingSchemeUri, version).insertHistoryCodingScheme(entryUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#updateEntryVersionableAttributes(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected String updateEntryVersionableAttributes(CodingSchemeUriVersionBasedEntryId id, String entryUId, CodingScheme revisedEntity) {
 		String codingSchemeUri = id.getCodingSchemeUri();
@@ -488,6 +541,11 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 			updateCodingSchemeVersionableAttrib(codingSchemeUId, revisedEntity);	
 	}
 	
+	/**
+	 * Do add cs dependent entry.
+	 * 
+	 * @param codingScheme the coding scheme
+	 */
 	private void doAddCSDependentEntry(CodingScheme codingScheme) {
 		
 		String codingSchemeUri = codingScheme.getCodingSchemeURI();
@@ -510,34 +568,79 @@ public class VersionableEventCodingSchemeService extends RevisableAbstractDataba
 		codingSchemeDao.updateEntryStateUId(codingSchemeUId, entryStateUId);
 	}
 	
+	/**
+	 * Gets the coding scheme dao.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the coding scheme dao
+	 */
 	private CodingSchemeDao getCodingSchemeDao(CodingSchemeUriVersionBasedEntryId id) {
 		return this.getCodingSchemeDao(id.getCodingSchemeUri(), id.getCodingSchemeVersion());
 	}
 	
+	/**
+	 * Gets the coding scheme dao.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @return the coding scheme dao
+	 */
 	private CodingSchemeDao getCodingSchemeDao(String uri, String version) {
 		return this.getDaoManager().getCodingSchemeDao(uri, version);
 	}
 
+	/**
+	 * Gets the entity service.
+	 * 
+	 * @return the entity service
+	 */
 	public EntityService getEntityService() {
 		return entityService;
 	}
 
+	/**
+	 * Sets the entity service.
+	 * 
+	 * @param entityService the new entity service
+	 */
 	public void setEntityService(EntityService entityService) {
 		this.entityService = entityService;
 	}
 
+	/**
+	 * Gets the property service.
+	 * 
+	 * @return the property service
+	 */
 	public PropertyService getPropertyService() {
 		return propertyService;
 	}
 
+	/**
+	 * Sets the property service.
+	 * 
+	 * @param propertyService the new property service
+	 */
 	public void setPropertyService(PropertyService propertyService) {
 		this.propertyService = propertyService;
 	}
 
+	/**
+	 * Gets the relation service.
+	 * 
+	 * @return the relation service
+	 */
 	public RelationService getRelationService() {
 		return relationService;
 	}
 
+	/**
+	 * Sets the relation service.
+	 * 
+	 * @param relationService the new relation service
+	 */
 	public void setRelationService(RelationService relationService) {
 		this.relationService = relationService;
 	}

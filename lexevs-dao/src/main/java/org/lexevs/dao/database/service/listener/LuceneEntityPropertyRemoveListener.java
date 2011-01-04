@@ -24,9 +24,24 @@ import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+/**
+ * The listener interface for receiving luceneEntityPropertyRemove events.
+ * The class that is interested in processing a luceneEntityPropertyRemove
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addLuceneEntityPropertyRemoveListener<code> method. When
+ * the luceneEntityPropertyRemove event occurs, that object's appropriate
+ * method is invoked.
+ * 
+ * @see LuceneEntityPropertyRemoveEvent
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class LuceneEntityPropertyRemoveListener extends
 		DefaultServiceEventListener {
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.listener.DefaultServiceEventListener#onPostPropertyRemove(org.lexevs.dao.database.service.event.property.PropertyUpdateEvent)
+	 */
 	@Override
 	public boolean onPostPropertyRemove(PropertyUpdateEvent event) {
 

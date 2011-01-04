@@ -31,17 +31,17 @@ import org.LexGrid.valueSets.ValueSetDefinitions;
 
 /**
  * The Interface ValueSetDefinitionService.
- * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface ValueSetDefinitionService {
 
 	/**
-	 * Insert value set definition into the system. 
+	 * Insert value set definition into the system.
+	 * 
 	 * @param definition the definition
 	 * @param systemReleaseUri the system release uri
 	 * @param mappings Supported Attribute mappings to be applied to the value set definition
-	 * @throws LBException
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public void insertValueSetDefinition(ValueSetDefinition definition, String systemReleaseUri, Mappings mappings) throws LBException;
 	
@@ -50,6 +50,8 @@ public interface ValueSetDefinitionService {
 	 * 
 	 * @param valueSetDefinitions the value set definitions
 	 * @param systemReleaseUri the system release uri
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public void insertValueSetDefinitions(ValueSetDefinitions valueSetDefinitions, String systemReleaseUri) throws LBException;
 	
@@ -58,16 +60,19 @@ public interface ValueSetDefinitionService {
 	 * 
 	 * @param valueSetDefinition the value set definition the definition belongs to.
 	 * @param definitionEntry the definition entry itself
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public void insertDefinitionEntry(ValueSetDefinition valueSetDefinition, DefinitionEntry definitionEntry) throws LBException;
 	
 	/**
-	 * Return all value set definition URIs that match the supplied key
-	 * @param key - null: return all value set definition URI's
-	 *            - " ":  return all value set definition URI's with no name
-	 *            - otherwise return all URIs that match the key
+	 * Return all value set definition URIs that match the supplied key.
+	 * 
+	 * @param valueSetDefinitionName the value set definition name
+	 * 
 	 * @return list of matching URIs
-	 * @throws LBException
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public List<String> getValueSetDefinitionURISForName(String valueSetDefinitionName) throws LBException;
 	
@@ -85,7 +90,7 @@ public interface ValueSetDefinitionService {
 	 * 
 	 * @param supportedTag SupportedAttribute tag like SupportedCodingScheme, SupportedConceptDomain etc.
 	 * @param value value of the supportedAttribute
-	 * @param uri
+	 * @param uri the uri
 	 * 
 	 * @return list of URIs
 	 */
@@ -102,28 +107,79 @@ public interface ValueSetDefinitionService {
 	 * Return the URI's of all unnamed value set definition(s).
 	 * 
 	 * @return value set definition URI's
-	 * @throws LBException
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public List<String> getAllValueSetDefinitionsWithNoName()  throws LBException;
 	
 	/**
 	 * Delete value set definition by value set definition URI.
 	 * 
-	 * @param valuesetdefinitionURI the value set definition URI
+	 * @param valueSetDefinitionURI the value set definition uri
 	 */
 	public void removeValueSetDefinition(String valueSetDefinitionURI);
 	
+	/**
+	 * Update value set definition.
+	 * 
+	 * @param valueSetDefinition the value set definition
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	public void updateValueSetDefinition(ValueSetDefinition valueSetDefinition) throws LBException;
 	
+	/**
+	 * Insert dependent changes.
+	 * 
+	 * @param valueSetDefinition the value set definition
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	public void insertDependentChanges(ValueSetDefinition valueSetDefinition) throws LBException;
 	
+	/**
+	 * Update versionable attributes.
+	 * 
+	 * @param valueSetDefinition the value set definition
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	public void updateVersionableAttributes(ValueSetDefinition valueSetDefinition) throws LBException;
 	
+	/**
+	 * Revise.
+	 * 
+	 * @param valueSetDefinition the value set definition
+	 * @param mapping the mapping
+	 * @param releaseURI the release uri
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	public void revise(ValueSetDefinition valueSetDefinition, Mappings mapping, String releaseURI) throws LBException;
 	
+	/**
+	 * Gets the value set definition by revision.
+	 * 
+	 * @param valueSetDefURI the value set def uri
+	 * @param revisionId the revision id
+	 * 
+	 * @return the value set definition by revision
+	 * 
+	 * @throws LBRevisionException the LB revision exception
+	 */
 	public ValueSetDefinition getValueSetDefinitionByRevision(String valueSetDefURI,
 			String revisionId) throws LBRevisionException;
 	
+	/**
+	 * Gets the value set definition by date.
+	 * 
+	 * @param valueSetDefURI the value set def uri
+	 * @param date the date
+	 * 
+	 * @return the value set definition by date
+	 * 
+	 * @throws LBRevisionException the LB revision exception
+	 */
 	public ValueSetDefinition getValueSetDefinitionByDate(String valueSetDefURI,
 			Date date) throws LBRevisionException;
 }

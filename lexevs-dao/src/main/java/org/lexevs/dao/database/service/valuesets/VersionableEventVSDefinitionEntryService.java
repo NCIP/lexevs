@@ -28,8 +28,14 @@ import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 
+/**
+ * The Class VersionableEventVSDefinitionEntryService.
+ */
 public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseService implements VSDefinitionEntryService {
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSDefinitionEntryService#insertVSDefinitionEntry(java.lang.String, org.LexGrid.valueSets.DefinitionEntry)
+	 */
 	@Override
 	public void insertVSDefinitionEntry(String valueSetDefinitionURI,
 			DefinitionEntry defEntry) {
@@ -42,6 +48,9 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 				.insertDefinitionEntry(valueSetDefUId, defEntry);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSDefinitionEntryService#removeVSDefinitionEntry(java.lang.String, org.LexGrid.valueSets.DefinitionEntry)
+	 */
 	@Override
 	public void removeVSDefinitionEntry(String valueSetDefinitionURI,
 			DefinitionEntry defEntry) {
@@ -60,6 +69,9 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		vsDefinitionEntryDao.deleteDefinitionEntry(vsDefinitionUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSDefinitionEntryService#updateVSDefinitionEntry(java.lang.String, org.LexGrid.valueSets.DefinitionEntry)
+	 */
 	@Override
 	public void updateVSDefinitionEntry(String valueSetDefinitionURI,
 			DefinitionEntry defEntry) {
@@ -80,6 +92,9 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 				defEntry.getEntryState());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSDefinitionEntryService#updateVSDefinitionEntryVersionableChanges(java.lang.String, org.LexGrid.valueSets.DefinitionEntry)
+	 */
 	@Override
 	public void updateVSDefinitionEntryVersionableChanges(
 			String valueSetDefinitionURI, DefinitionEntry defEntry) {
@@ -103,6 +118,9 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 				defEntry.getEntryState());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSDefinitionEntryService#revise(java.lang.String, org.LexGrid.valueSets.DefinitionEntry)
+	 */
 	@Override
 	public void revise(String valueSetDefinitionURI, DefinitionEntry defEntry) throws LBException {
 
@@ -126,6 +144,16 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		}
 	}
 
+	/**
+	 * Valid revision.
+	 * 
+	 * @param valueSetDefinitionURI the value set definition uri
+	 * @param defEntry the def entry
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validRevision(String valueSetDefinitionURI,
 			DefinitionEntry defEntry) throws LBException {
 		
@@ -187,6 +215,9 @@ public class VersionableEventVSDefinitionEntryService extends AbstractDatabaseSe
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.VSDefinitionEntryService#resolveDefinitionEntryByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public DefinitionEntry resolveDefinitionEntryByRevision(
 			String valueSetDefURI, String ruleOrder, String revisionId)

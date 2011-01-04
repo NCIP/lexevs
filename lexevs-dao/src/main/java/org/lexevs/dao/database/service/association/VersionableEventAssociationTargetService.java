@@ -39,9 +39,15 @@ import org.lexevs.dao.database.service.event.association.AssociationBatchInsertE
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+/**
+ * The Class VersionableEventAssociationTargetService.
+ */
 public class VersionableEventAssociationTargetService
 	extends RevisableAbstractDatabaseService<AssociationTarget,CodingSchemeUriVersionBasedEntryId> implements AssociationTargetService {
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#addDependentAttributesByRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, org.LexGrid.commonTypes.Versionable, java.lang.String)
+	 */
 	@Override
 	protected AssociationTarget addDependentAttributesByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, 
@@ -50,6 +56,9 @@ public class VersionableEventAssociationTargetService
 		return entry;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#doInsertDependentChanges(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected void doInsertDependentChanges(
 			CodingSchemeUriVersionBasedEntryId id,
@@ -57,6 +66,9 @@ public class VersionableEventAssociationTargetService
 		//
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#entryStateExists(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected boolean entryStateExists(
 			CodingSchemeUriVersionBasedEntryId id,
@@ -66,6 +78,9 @@ public class VersionableEventAssociationTargetService
 		return this.getAssociationTargetDao(id).entryStateExists(codingSchemeUid, entryStateUid);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getCurrentEntry(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected AssociationTarget getCurrentEntry(
 			CodingSchemeUriVersionBasedEntryId id, 
@@ -78,6 +93,9 @@ public class VersionableEventAssociationTargetService
 				associationTargetDao.getTripleByUid(codingSchemeUid, entryUId));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getCurrentEntryStateUid(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected String getCurrentEntryStateUid(
 			CodingSchemeUriVersionBasedEntryId id, 
@@ -87,6 +105,9 @@ public class VersionableEventAssociationTargetService
 		return this.getAssociationTargetDao(id).getEntryStateUId(codingSchemeUid, entryUid);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getEntryUid(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected String getEntryUid(
 			CodingSchemeUriVersionBasedEntryId id,
@@ -102,6 +123,9 @@ public class VersionableEventAssociationTargetService
 		return tripleId;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getHistoryEntryByRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, java.lang.String)
+	 */
 	@Override
 	protected AssociationTarget getHistoryEntryByRevisionId(
 			CodingSchemeUriVersionBasedEntryId id, 
@@ -115,6 +139,9 @@ public class VersionableEventAssociationTargetService
 				associationTargetDao.getHistoryTripleByRevision(codingSchemeUid, entryUid, revisionId));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#getLatestRevisionId(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String)
+	 */
 	@Override
 	protected String getLatestRevisionId(
 			CodingSchemeUriVersionBasedEntryId id,
@@ -126,6 +153,9 @@ public class VersionableEventAssociationTargetService
 		return associationTargetDao.getLatestRevision(codingSchemeUid, entryUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#insertIntoHistory(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, org.LexGrid.commonTypes.Versionable, java.lang.String)
+	 */
 	@Override
 	protected void insertIntoHistory(
 			CodingSchemeUriVersionBasedEntryId id,
@@ -151,6 +181,9 @@ public class VersionableEventAssociationTargetService
 					contextExist);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.RevisableAbstractDatabaseService#updateEntryVersionableAttributes(org.lexevs.dao.database.service.RevisableAbstractDatabaseService.CodingSchemeUriVersionBasedEntryId, java.lang.String, org.LexGrid.commonTypes.Versionable)
+	 */
 	@Override
 	protected String updateEntryVersionableAttributes(
 			CodingSchemeUriVersionBasedEntryId id, 
@@ -164,6 +197,9 @@ public class VersionableEventAssociationTargetService
 			associationTargetDao.updateVersionableChanges(codingSchemeUid, entryUId, revisedEntity);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#resolveAssociationTargetByRevision(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public AssociationTarget resolveAssociationTargetByRevision(
@@ -184,6 +220,9 @@ public class VersionableEventAssociationTargetService
 		return this.resolveEntryByRevision(id, tripleUid, revisionId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#getAssociationTarget(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public AssociationTarget getAssociationTarget(
@@ -202,6 +241,9 @@ public class VersionableEventAssociationTargetService
 				associationTargetDao.getTripleByUid(codingSchemeUid, tripleUid));
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#insertAssociationTarget(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationTarget)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONTARGET_ERROR)
@@ -249,6 +291,9 @@ public class VersionableEventAssociationTargetService
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#updateAssociationTarget(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationTarget)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=UPDATE_ASSOCIATIONTARGET_ERROR)
@@ -287,6 +332,9 @@ public class VersionableEventAssociationTargetService
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#removeAssociationTarget(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationTarget)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	@DatabaseErrorIdentifier(errorCode=REMOVE_ASSOCIATIONTARGET_ERROR)
@@ -322,6 +370,9 @@ public class VersionableEventAssociationTargetService
 				associationTargetUId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#revise(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource, org.LexGrid.relations.AssociationTarget)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public void revise(
@@ -343,6 +394,9 @@ public class VersionableEventAssociationTargetService
 				target);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.association.AssociationTargetService#revise(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationTarget)
+	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public void revise(
@@ -389,6 +443,13 @@ public class VersionableEventAssociationTargetService
 		}
 	}
 	
+	/**
+	 * Validate association source.
+	 * 
+	 * @param source the source
+	 * 
+	 * @return the association target
+	 */
 	private AssociationTarget validateAssociationSource(AssociationSource source) {
 		if(source == null || source.getTargetCount() == 0) {
 			return null;
@@ -398,10 +459,25 @@ public class VersionableEventAssociationTargetService
 		return source.getTarget(0);
 	}
 
+	/**
+	 * Gets the association target dao.
+	 * 
+	 * @param uri the uri
+	 * @param version the version
+	 * 
+	 * @return the association target dao
+	 */
 	private AssociationTargetDao getAssociationTargetDao(String uri, String version) {
 		return this.getDaoManager().getAssociationTargetDao(uri, version);
 	}
 	
+	/**
+	 * Gets the association target dao.
+	 * 
+	 * @param id the id
+	 * 
+	 * @return the association target dao
+	 */
 	private AssociationTargetDao getAssociationTargetDao(CodingSchemeUriVersionBasedEntryId id) {
 		return this.getAssociationTargetDao(id.getCodingSchemeUri(), id.getCodingSchemeVersion());
 	}	

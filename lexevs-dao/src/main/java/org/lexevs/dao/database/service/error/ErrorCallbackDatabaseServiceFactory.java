@@ -27,6 +27,8 @@ import org.springframework.core.annotation.AnnotationUtils;
 
 /**
  * A factory for creating ErrorCallbackDatabaseService objects.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class ErrorCallbackDatabaseServiceFactory {
 

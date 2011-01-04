@@ -27,6 +27,7 @@ import java.util.Date;
  */
 public interface DatabaseError {
 
+	/** The UNKNOW_ERROR_CODE Constant. */
 	public static String UNKNOWN_ERROR_CODE = "UNKNOWN_ERROR";
 
 	/**
@@ -50,8 +51,18 @@ public interface DatabaseError {
      */
     public Exception getErrorException();
     
+    /**
+     * Gets the unique error id.
+     * 
+     * @return the unique error id
+     */
     public String getUniqueErrorId();
     
+    /**
+     * Gets the error description.
+     * 
+     * @return the error description
+     */
     public String getErrorDescription();
     
     /**
@@ -61,5 +72,10 @@ public interface DatabaseError {
      */
     public String getErrorCode();
     
+    /**
+     * Gets the error message.
+     * 
+     * @return the error message
+     */
     public String getErrorMessage();
 }

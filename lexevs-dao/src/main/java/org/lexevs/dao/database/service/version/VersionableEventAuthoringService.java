@@ -54,14 +54,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class VersionableEventAuthoringService extends AbstractDatabaseService
 		implements AuthoringService {
 
+	/** The coding scheme service. */
 	private CodingSchemeService codingSchemeService = null;
 
+	/** The value set definition service. */
 	private ValueSetDefinitionService valueSetDefinitionService = null;
 
+	/** The pick list definition service. */
 	private PickListDefinitionService pickListDefinitionService = null;
 
+	/** The Constant LEXGRID_GENERATED_REVISION. */
 	public static final String LEXGRID_GENERATED_REVISION = "autoGen-";
 	
+	/** The revision comparator. */
 	private Comparator<Revision> revisionComparator = new Comparator<Revision>() {
 
 		@Override
@@ -88,6 +93,7 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		}
 	};
 	
+	/** The changed entry comparator. */
 	private Comparator<ChangedEntry> changedEntryComparator = new Comparator<ChangedEntry>() {
 
 		@Override
@@ -139,9 +145,10 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 * and pickLists loaded outside revision are wrapped under a system
 	 * generated revision object.
 	 * 
-	 * @param systemRelease
-	 * @param indexNewCodingScheme
-	 * @throws LBRevisionException
+	 * @param systemRelease the system release
+	 * @param indexNewCodingScheme the index new coding scheme
+	 * 
+	 * @throws LBRevisionException the LB revision exception
 	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
@@ -260,14 +267,12 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 * single or multiple instances of one or all of the entry point objects.
 	 * ChangedEntries are loaded by ascending order of relativeOrder.
 	 * 
-	 * @param revision
-	 *            - revision object to be applied.
-	 * @param systemReleaseURI
-	 *            - URI of the systemRelease (if any)
-	 * @param indexNewCodingScheme
-	 *            - Boolean value to indicate if the any newly loaded codingScheme
-	 *            in this revision needs to Lucene indexed or not.
-	 * @throws LBRevisionException
+	 * @param revision - revision object to be applied.
+	 * @param indexNewCodingScheme - Boolean value to indicate if the any newly loaded codingScheme
+	 * in this revision needs to Lucene indexed or not.
+	 * @param releaseURI the release uri
+	 * 
+	 * @throws LBRevisionException the LB revision exception
 	 */
 	@Override
 	@Transactional(rollbackFor=Exception.class)
@@ -353,13 +358,12 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	 * before loading. If invalid, LBRevisionException is thrown. Entry point
 	 * objects in lexEVS system are CodingScheme, ValueSet and PickList.
 	 * 
-	 * @param versionable
-	 * @param releaseURI
-	 *            - URI of the systemRelease (if any)
-	 * @param indexNewCodingScheme
-	 *            - Boolean value to indicate if the any newly loaded
-	 *            codingScheme in this revision needs to Lucene indexed or not.
-	 * @throws LBRevisionException
+	 * @param versionable the versionable
+	 * @param releaseURI - URI of the systemRelease (if any)
+	 * @param indexNewCodingScheme - Boolean value to indicate if the any newly loaded
+	 * codingScheme in this revision needs to Lucene indexed or not.
+	 * 
+	 * @throws LBRevisionException the LB revision exception
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void loadRevision(Versionable versionable, String releaseURI, Boolean indexNewCodingScheme)
@@ -399,6 +403,8 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	}
 	
 	/**
+	 * Gets the coding scheme service.
+	 * 
 	 * @return the codingSchemeService
 	 */
 	public CodingSchemeService getCodingSchemeService() {
@@ -406,13 +412,17 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	}
 
 	/**
-	 * @param codingSchemeService
+	 * Sets the coding scheme service.
+	 * 
+	 * @param codingSchemeService the coding scheme service
 	 */
 	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
 		this.codingSchemeService = codingSchemeService;
 	}
 
 	/**
+	 * Gets the value set definition service.
+	 * 
 	 * @return the valueSetDefinitionService
 	 */
 	public ValueSetDefinitionService getValueSetDefinitionService() {
@@ -420,8 +430,9 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	}
 
 	/**
-	 * @param valueSetDefinitionService
-	 *            the valueSetDefinitionService to set
+	 * Sets the value set definition service.
+	 * 
+	 * @param valueSetDefinitionService the valueSetDefinitionService to set
 	 */
 	public void setValueSetDefinitionService(
 			ValueSetDefinitionService valueSetDefinitionService) {
@@ -429,6 +440,8 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	}
 
 	/**
+	 * Gets the pick list definition service.
+	 * 
 	 * @return the pickListDefinitionService
 	 */
 	public PickListDefinitionService getPickListDefinitionService() {
@@ -436,14 +449,22 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 	}
 
 	/**
-	 * @param pickListDefinitionService
-	 *            the pickListDefinitionService to set
+	 * Sets the pick list definition service.
+	 * 
+	 * @param pickListDefinitionService the pickListDefinitionService to set
 	 */
 	public void setPickListDefinitionService(
 			PickListDefinitionService pickListDefinitionService) {
 		this.pickListDefinitionService = pickListDefinitionService;
 	}
 
+	/**
+	 * Gets the entry state.
+	 * 
+	 * @param revisionId the revision id
+	 * 
+	 * @return the entry state
+	 */
 	private EntryState getEntryState(String revisionId) {
 		EntryState entryState = new EntryState();
 		
@@ -453,18 +474,27 @@ public class VersionableEventAuthoringService extends AbstractDatabaseService
 		return entryState;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.version.AuthoringService#getSystemReleaseMetadataById(java.lang.String)
+	 */
 	@Override
 	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId) {
 		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();
 		return sysReleaseDao.getSystemReleaseMetadataById(systemReleaseId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.version.AuthoringService#getSystemReleaseMetadataByUri(java.lang.String)
+	 */
 	@Override
 	public SystemRelease getSystemReleaseMetadataByUri(String systemReleaseUri) {
 		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();
 		return sysReleaseDao.getSystemReleaseMetadataByUri(systemReleaseUri);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.version.AuthoringService#insertSystemReleaseMetadata(org.LexGrid.versions.SystemRelease)
+	 */
 	@Override
 	public String insertSystemReleaseMetadata(SystemRelease systemRelease) {
 		SystemReleaseDao sysReleaseDao = this.getDaoManager().getSystemReleaseDao();

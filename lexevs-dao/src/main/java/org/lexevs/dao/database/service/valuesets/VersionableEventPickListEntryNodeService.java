@@ -29,11 +29,18 @@ import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao.ReferenceType;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 
+/**
+ * The Class VersionableEventPickListEntryNodeService.
+ */
 public class VersionableEventPickListEntryNodeService extends
 		AbstractDatabaseService implements PickListEntryNodeService {
 
+	/** The vs property service. */
 	private VSPropertyService vsPropertyService = null;
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#insertPickListEntryNode(java.lang.String, org.LexGrid.valueSets.PickListEntryNode)
+	 */
 	@Override
 	public void insertPickListEntryNode(String pickListId,
 			PickListEntryNode pickListEntryNode) {
@@ -46,6 +53,9 @@ public class VersionableEventPickListEntryNodeService extends
 				.insertPickListEntry(pickListDefUId, pickListEntryNode);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#removePickListEntryNode(java.lang.String, org.LexGrid.valueSets.PickListEntryNode)
+	 */
 	@Override
 	public void removePickListEntryNode(String pickListId,
 			PickListEntryNode pickListEntryNode) {
@@ -73,6 +83,9 @@ public class VersionableEventPickListEntryNodeService extends
 		pickListEntryNodeDao.deletePLEntryNodeByUId(pickListEntryNodeUId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#updatePickListEntryNode(java.lang.String, org.LexGrid.valueSets.PickListEntryNode)
+	 */
 	@Override
 	public void updatePickListEntryNode(String pickListId,
 			PickListEntryNode pickListEntryNode) throws LBException {
@@ -100,6 +113,9 @@ public class VersionableEventPickListEntryNodeService extends
 		this.insertDependentChanges(pickListId, pickListEntryNode);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#updateVersionableAttributes(java.lang.String, org.LexGrid.valueSets.PickListEntryNode)
+	 */
 	@Override
 	public void updateVersionableAttributes(String pickListId,
 			PickListEntryNode pickListEntryNode) throws LBException {
@@ -127,6 +143,9 @@ public class VersionableEventPickListEntryNodeService extends
 		this.insertDependentChanges(pickListId, pickListEntryNode);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#insertDependentChanges(java.lang.String, org.LexGrid.valueSets.PickListEntryNode)
+	 */
 	@Override
 	public void insertDependentChanges(String pickListId,
 			PickListEntryNode pickListEntryNode) throws LBException {
@@ -153,6 +172,9 @@ public class VersionableEventPickListEntryNodeService extends
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#revise(java.lang.String, org.LexGrid.valueSets.PickListEntryNode)
+	 */
 	@Override
 	public void revise(String pickListId, PickListEntryNode pickListEntryNode)
 			throws LBException {
@@ -181,6 +203,9 @@ public class VersionableEventPickListEntryNodeService extends
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.PickListEntryNodeService#resolvePickListEntryNodeByRevision(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public PickListEntryNode resolvePickListEntryNodeByRevision(
 			String pickListId, String plEntryId, String revisionId)
@@ -193,6 +218,8 @@ public class VersionableEventPickListEntryNodeService extends
 	}
 	
 	/**
+	 * Gets the vs property service.
+	 * 
 	 * @return the vsPropertyService
 	 */
 	public VSPropertyService getVsPropertyService() {
@@ -200,13 +227,24 @@ public class VersionableEventPickListEntryNodeService extends
 	}
 
 	/**
-	 * @param vsPropertyService
-	 *            the vsPropertyService to set
+	 * Sets the vs property service.
+	 * 
+	 * @param vsPropertyService the vsPropertyService to set
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
 		this.vsPropertyService = vsPropertyService;
 	}
 
+	/**
+	 * Valid revision.
+	 * 
+	 * @param pickListId the pick list id
+	 * @param pickListEntryNode the pick list entry node
+	 * 
+	 * @return true, if successful
+	 * 
+	 * @throws LBException the LB exception
+	 */
 	private boolean validRevision(String pickListId,
 			PickListEntryNode pickListEntryNode) throws LBException {
 		
@@ -268,6 +306,12 @@ public class VersionableEventPickListEntryNodeService extends
 		return true;
 	}
 	
+	/**
+	 * Do add pl entry dependent entry.
+	 * 
+	 * @param pickListId the pick list id
+	 * @param pickListEntryNode the pick list entry node
+	 */
 	private void doAddPLEntryDependentEntry(String pickListId,
 			PickListEntryNode pickListEntryNode) {
 	
