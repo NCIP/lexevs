@@ -26,30 +26,28 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 
 /**
- * @author m029206
- *
- */
-/**
- * @author m029206
- *
+ * The Interface AssociationAuthoringOperation.
  */
 public interface AssociationAuthoringOperation {
 	
-	
 	/**
+	 * Creates the association.
+	 * 
 	 * @param createMappingScheme - create a mapping coding scheme if one does not exist
 	 * @param revision - revision data
 	 * @param entryState - revision data container granular to the versionable class.
 	 * @param mappingScheme - existing mapping scheme, required if adding mapped association
 	 * @param sourceCodeSystemIdentifier - minimum code system identification
 	 * @param targetCodeSystemIdentifier - minimum code system identification
-	 * @param sourceConceptCodeIdentifier - source concept code	
+	 * @param sourceConceptCodeIdentifier - source concept code
 	 * @param targetConceptCodeIdentifier - target concept code
 	 * @param relationsContainerName - relations container identifier
 	 * @param associationType - association type identifier
 	 * @param associationQualifiers - qualifications to add to this association
+	 * 
 	 * @return - returns a representation of this association as a LexGrid object.
-	 * @throws LBException
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public AssociationSource createAssociation(
 			boolean createMappingScheme,
@@ -66,20 +64,24 @@ public interface AssociationAuthoringOperation {
 			throws LBException;
 
 	/**
-	 * @param revision
-	 * @param entryState
-	 * @param scheme
-	 * @param relationsContainer
-	 * @param associationName
-	 * @param sourcCode
-	 * @param sourceNamespace
-	 * @param targetCode
-	 * @param targetNamespace
-	 * @param instanceId
-	 * @param status
-	 * @param isActive
-	 * @return
-	 * @throws LBException
+	 * Update association status.
+	 * 
+	 * @param revision the revision
+	 * @param entryState the entry state
+	 * @param scheme the scheme
+	 * @param relationsContainer the relations container
+	 * @param associationName the association name
+	 * @param sourcCode the sourc code
+	 * @param sourceNamespace the source namespace
+	 * @param targetCode the target code
+	 * @param targetNamespace the target namespace
+	 * @param instanceId the instance id
+	 * @param status the status
+	 * @param isActive the is active
+	 * 
+	 * @return true, if update association status
+	 * 
+	 * @throws LBException the LB exception
 	 */
 	public boolean updateAssociationStatus(
 			Revision revision, 
@@ -95,7 +97,13 @@ public interface AssociationAuthoringOperation {
 			String status, 
 			boolean isActive) throws LBException;
 
+	/**
+	 * Creates the lexical association.
+	 */
 	public void createLexicalAssociation();
 
+	/**
+	 * Creates the rule based association.
+	 */
 	public void createRuleBasedAssociation();
 }
