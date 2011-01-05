@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -158,7 +159,7 @@ public class ProtegeOwl2LG {
     private Map<String, String> owlDatatypeName2lgPropClass_ = null;
     private Map<String, String> owlDatatypeName2lgDatatype_ = null;
     private Map<String, String> owlClassName2Conceptcode_ = new HashMap<String, String>();
-    private Map<String, String> entityCode2NameSpace_ = new HashMap<String, String>();
+    private Set<String> registeredNameSpaceCode_ = new HashSet<String>();
     private Map<String, AssociationSource> lgAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
     private Map<String, String> owlInstanceName2code_ = null;
 
@@ -405,9 +406,9 @@ public class ProtegeOwl2LG {
         for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
             RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
             String lgConceptCode = resolveConceptID(namedClass);
+            String namespace = getNameSpace(namedClass.getNamespace());
             if (lgConceptCode != null) {
-                AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, entityCode2NameSpace_
-                        .get(lgConceptCode));
+                AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, namespace);
                 resolveEquivalentClassRelations(source, namedClass);
                 resolveSubClassOfRelations(source, namedClass);
                 resolveDisjointWithRelations(source, namedClass);
@@ -537,9 +538,9 @@ public class ProtegeOwl2LG {
         for (Iterator namedClasses = owlModel_.getUserDefinedRDFSNamedClasses().iterator(); namedClasses.hasNext();) {
             RDFSNamedClass namedClass = (RDFSNamedClass) namedClasses.next();
             String lgConceptCode = resolveConceptID(namedClass);
+            String namespace = getNameSpace(namedClass.getNamespace());
             if (lgConceptCode != null) {
-                AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, entityCode2NameSpace_
-                        .get(lgConceptCode));
+                AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, namespace);
                 resolveEquivalentClassRelations(source, namedClass);
                 resolveSubClassOfRelations(source, namedClass);
                 resolveDisjointWithRelations(source, namedClass);
@@ -880,10 +881,11 @@ public class ProtegeOwl2LG {
     protected Entity resolveConcept(RDFResource rdfResource) {
 
         String rdfName = getRDFResourceLocalName(rdfResource);
+
         if (isNoopNamespace(rdfName))
             return null;
-
-        if (owlClassName2Conceptcode_.containsKey(rdfName))
+        
+        if (owlClassName2Conceptcode_.containsKey(rdfResource.getURI()))
             return null;
 
         String label = resolveLabel(rdfResource);
@@ -917,7 +919,7 @@ public class ProtegeOwl2LG {
         addEntity(concept);
 
         // Remember the rdf to code mapping and return.
-        owlClassName2Conceptcode_.put(rdfName, concept.getEntityCode());
+        owlClassName2Conceptcode_.put(rdfResource.getURI(), concept.getEntityCode());
 
         return concept;
     }
@@ -935,7 +937,7 @@ public class ProtegeOwl2LG {
         if (isNoopNamespace(rdfName))
             return null;
 
-        if (owlClassName2Conceptcode_.containsKey(rdfName))
+        if (owlClassName2Conceptcode_.containsKey(rdfResource.getURI()))
             return null;
 
         String label = resolveLabel(rdfResource);
@@ -968,7 +970,7 @@ public class ProtegeOwl2LG {
         addEntity(lgEntity);
 
         // Remember the rdf to code mapping and return.
-        owlClassName2Conceptcode_.put(rdfName, lgEntity.getEntityCode());
+        owlClassName2Conceptcode_.put(rdfResource.getURI(), lgEntity.getEntityCode());
 
         return lgEntity;
     }
@@ -996,8 +998,10 @@ public class ProtegeOwl2LG {
             if (superClass.isAnonymous() && !rdfsNamedClass.hasEquivalentClass((RDFSClass) superClass)) {
                 // subclass can be a anonymous class.
                 // subclass only. we do not want to create it for equivalentclass.   
-                String lgCode = this.resolveAnonymousClass((OWLClass) superClass, source);
-                AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, entityCode2NameSpace_.get(lgCode));
+                OWLClass owlClass = (OWLClass) superClass;
+                String lgCode = this.resolveAnonymousClass(owlClass, source);
+                String namespace = getNameSpace(owlClass.getNamespace());
+                AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, namespace);
                 relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
             }
             else {
@@ -1018,8 +1022,10 @@ public class ProtegeOwl2LG {
      */
     protected void resolveEquivalentClassRelations(AssociationSource source, RDFSNamedClass rdfsNamedClass) {
         for (Iterator equivClasses = rdfsNamedClass.getEquivalentClasses().iterator(); equivClasses.hasNext();) {
-            String lgCode = resolveAnonymousClass((OWLClass) equivClasses.next(), source);
-            AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, entityCode2NameSpace_.get(lgCode));
+            OWLClass owlClass = (OWLClass) equivClasses.next();
+            String lgCode = resolveAnonymousClass(owlClass, source);
+            String namespace = getNameSpace(owlClass.getNamespace());
+            AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, namespace);
             relateAssociationSourceTarget(assocManager.getEquivalentClass(), source, target);
         }
     }
@@ -1303,7 +1309,7 @@ public class ProtegeOwl2LG {
         
         if (isNoopNamespace(rdfName))
             return null;
-
+        
         String label = resolveLabel(rdfResource);
 
         // Create the raw EMF individual and assign label as initial
@@ -1335,7 +1341,7 @@ public class ProtegeOwl2LG {
         resolveEntityProperties(lgInstance, rdfResource);
 
         // Remember the rdf to code mapping and return.
-        owlInstanceName2code_.put(rdfName, lgInstance.getEntityCode());
+        owlInstanceName2code_.put(rdfResource.getURI(), lgInstance.getEntityCode());
         return lgInstance;
     }
 
@@ -1663,9 +1669,10 @@ public class ProtegeOwl2LG {
      */
     protected String resolveAnonymousClass(OWLClass owlClass, AssociationSource assocSource) {
         String code = owlClass.getLocalName();
+        String namespace = getNameSpace(owlClass.getNamespace());
         // Check if this concept has already been processed. We do not want
         // duplicate concepts.
-        if (isEntityCodeRegistered(code)) {
+        if (isEntityCodeRegistered(namespace, code)) {
             return code;
         }
 
@@ -2391,7 +2398,6 @@ public class ProtegeOwl2LG {
             OWLObjectProperty owlProp = (OWLObjectProperty) props.next();
             String propertyName = getRDFResourceLocalName(owlProp);
             // Correlate all assigned labels to the primary ID.
-          
             String label = this.resolveLabel(owlProp);
             // Create and register a new association ...
             AssociationWrapper aw = new AssociationWrapper();
@@ -2539,10 +2545,13 @@ public class ProtegeOwl2LG {
      * @param code
      * @return boolean
      */
-    protected boolean isEntityCodeRegistered(String code) {
-        return entityCode2NameSpace_.containsKey(code);
+    protected boolean isEntityCodeRegistered(String namespace, String code) {
+        return registeredNameSpaceCode_.contains(bindNamespaceAndCode(namespace, code));
     }
 
+    private String bindNamespaceAndCode(String namespace, String code) {
+        return namespace + "#" + code;
+    }
     /**
      * Indicates whether the given string represents a null or empty resource.
      * 
@@ -2719,7 +2728,7 @@ public class ProtegeOwl2LG {
      */
     protected String resolveConceptID(RDFResource rdfResource) {
         String rdfLocalName = getRDFResourceLocalName(rdfResource);
-        String code = owlClassName2Conceptcode_.get(rdfLocalName);
+        String code = owlClassName2Conceptcode_.get(rdfResource.getURI());
         if (code != null)
             return code;
         // Updated on 05/28/08: if the concept ID is null,
@@ -2738,7 +2747,7 @@ public class ProtegeOwl2LG {
      */
     protected String resolveInstanceID(RDFResource rdfResource) {
         String rdfLocalName = getRDFResourceLocalName(rdfResource);
-        String code = owlInstanceName2code_.get(rdfLocalName);
+        String code = owlInstanceName2code_.get(rdfResource.getURI());
         if (code != null)
             return code;
         return null;
@@ -2809,7 +2818,7 @@ public class ProtegeOwl2LG {
     // /////////////////////////////////////////////
 
     protected void addEntity(Entity lgEntity) {
-        if (isEntityCodeRegistered(lgEntity.getEntityCode())) {
+        if (isEntityCodeRegistered(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode())) {
             messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
         }
@@ -2823,13 +2832,13 @@ public class ProtegeOwl2LG {
                 return;
             }
         }
-        entityCode2NameSpace_.put(lgEntity.getEntityCode(), lgEntity.getEntityCodeNamespace());
+        registeredNameSpaceCode_.add(bindNamespaceAndCode(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode()));
         if (lgEntity instanceof Entity)
             conceptCount_++;
     }
 
     protected void addEntity(AssociationEntity lgEntity) {
-        if (isEntityCodeRegistered(lgEntity.getEntityCode())) {
+        if (isEntityCodeRegistered(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode())) {
             messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
         }
@@ -2843,7 +2852,7 @@ public class ProtegeOwl2LG {
                 return;
             }
         }
-        entityCode2NameSpace_.put(lgEntity.getEntityCode(), lgEntity.getEntityCodeNamespace());
+        registeredNameSpaceCode_.add(bindNamespaceAndCode(lgEntity.getEntityCodeNamespace(),lgEntity.getEntityCode()));
         if (lgEntity instanceof Entity)
             conceptCount_++;
     }
