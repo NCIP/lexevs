@@ -20,6 +20,8 @@ package org.lexevs.exceptions;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.utility.DaoUtility;
 
 /**
  * The Class CodingSchemeParameterException.
@@ -39,5 +41,15 @@ public class CodingSchemeParameterException extends LBParameterException {
 	 */
 	public CodingSchemeParameterException(AbsoluteCodingSchemeVersionReference ref, String message) {
 		super("Coding Scheme URI: " + ref.getCodingSchemeURN() + " Version: " + ref.getCodingSchemeVersion() + " - " + message);
+	}
+	
+	/**
+	 * Instantiates a new coding scheme parameter exception.
+	 * 
+	 * @param codingScheme the coding scheme
+	 * @param message the message
+	 */
+	public CodingSchemeParameterException(CodingScheme codingScheme, String message) {
+		this(DaoUtility.createAbsoluteCodingSchemeVersionReference(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion()), message);
 	}
 }
