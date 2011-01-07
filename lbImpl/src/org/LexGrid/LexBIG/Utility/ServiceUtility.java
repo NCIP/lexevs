@@ -18,6 +18,9 @@
  */
 package org.LexGrid.LexBIG.Utility;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -37,9 +40,12 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.URIMap;
+import org.LexGrid.relations.AssociationEntity;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
@@ -563,4 +569,119 @@ public class ServiceUtility {
             throw new LBParameterException("URI: " + uri + " Version: " + version + " is not a Supplement of any Coding Scheme.");
         }  
     }
+    
+    public static AssociationEntity getAssociationEntity(String codingScheme, CodingSchemeVersionOrTag tagOrVersion, String associationLocalName) throws LBParameterException {
+        AbsoluteCodingSchemeVersionReference ref = 
+            getAbsoluteCodingSchemeVersionReference(codingScheme, tagOrVersion, true);
+        
+        return getAssociationEntity(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion(), associationLocalName);
+
+    }
+    
+    private static AssociationEntity getAssociationEntity(final String uri, final String version, final String associationLocalName) throws LBParameterException {
+        String entityCode;
+        String entityCodeNamespace;
+        String codingSchemeUri;
+        String codingSchemeVersion;
+        
+        SupportedAssociation sa = getSupportedAttribute(uri, version, associationLocalName, SupportedAssociation.class);
+        
+        if(sa == null){
+            throw new LBParameterException("Association with Local Name: " + associationLocalName + " is not supported. " +
+            		"Please add this to the Coding Scheme Supported Attributes if it is inteded to be used in the system.");
+        }
+        
+        if(StringUtils.isNotBlank(sa.getEntityCode())){
+            entityCode = sa.getEntityCode();
+        } else {
+            entityCode = associationLocalName;
+        }
+        
+        if(StringUtils.isNotBlank(sa.getEntityCodeNamespace())){
+            entityCodeNamespace = sa.getEntityCodeNamespace();
+        } else {
+            entityCodeNamespace = getCodingSchemeName(uri, version);
+        }
+        
+        if(StringUtils.isNotBlank(sa.getCodingScheme())){
+            String referencedCodingScheme = sa.getCodingScheme();
+            
+            SupportedCodingScheme scs = getSupportedAttribute(uri, version, referencedCodingScheme, SupportedCodingScheme.class);
+            
+            if(scs == null){
+                throw new LBParameterException("Association with Local Name: " + associationLocalName + " asserted itself" +
+                "as belonging to a Coding Scheme with Local Name: " + referencedCodingScheme + 
+                ". This Coding Scheme Local Name is not registered as a SupportedCodingScheme in the system.");
+            }
+            
+            String referencedCodingSchemeUri = scs.getUri();
+            
+            if(referencedCodingSchemeUri == null){
+                throw new LBParameterException("Association with Local Name: " + associationLocalName + " asserted itself" +
+                "as belonging to a Coding Scheme with Local Name: " + referencedCodingScheme + 
+                ". This Coding Scheme Local Name is registered as a SupportedCodingScheme in the system, but does not included a URI." +
+                " A URI in the SupportedCodingScheme is necessary to uniquely identify the requested Coding Scheme.");
+            }
+   
+            AbsoluteCodingSchemeVersionReference ref = 
+                getAbsoluteCodingSchemeVersionReference(referencedCodingSchemeUri, null, true);
+            
+            codingSchemeUri = ref.getCodingSchemeURN();
+            codingSchemeVersion = ref.getCodingSchemeVersion();
+            
+        } else {
+            codingSchemeUri = uri;
+            codingSchemeVersion = version;
+        }
+        
+        AssociationEntity associationEntity = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getEntityService().
+                    getAssociationEntity(
+                            codingSchemeUri, 
+                            codingSchemeVersion, 
+                            entityCode, 
+                            entityCodeNamespace);
+        
+        return associationEntity;
+
+    }
+    
+    public static <T extends URIMap> T getSupportedAttribute(final String uri, final String version, final String localName, final Class<T> uriMap) throws LBParameterException {
+
+        return 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService().executeInDaoLayer(new DaoCallback<T>(){
+
+            @Override
+            public T execute(DaoManager daoManager) {
+                String codingSchemeUid = daoManager.getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+                return daoManager.getCodingSchemeDao(uri, version).getUriMap(codingSchemeUid, localName, uriMap);
+            }
+
+        });
+    }
+    
+    public static String getSupportedAttributeLocalNameForUri(String codingScheme, CodingSchemeVersionOrTag tagOrVersion, String uri) throws LBException {
+        CodingScheme cs = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingScheme, tagOrVersion);
+        
+        List<URIMap> results = new ArrayList<URIMap>();
+        
+        List<URIMap> uriMaps = DaoUtility.getAllURIMappings(cs.getMappings());
+        for (URIMap map : uriMaps) {
+            if(StringUtils.equals(map.getUri(), uri)){
+                results.add(map);
+            }
+        }
+        
+        if(results.size() > 1){
+            throw new LBException("There are multiple Supported Attributes with URI: " + uri + ". Please ensure URIs are unique.");
+        }
+        
+        if(results.size() == 1){
+            return results.get(0).getLocalId();
+        } else {
+            return null;
+        } 
+    }
+   
 }
