@@ -1165,7 +1165,8 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 			init, clean, buildinfo, predef,
 			lexbig.jar"/>
 	<target name="build-pack" depends="build-lexbig-jar, pack"></target>
-	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
+	
+	<target name="resolve" depends="init,init-ivy" description="--> retrieve dependencies with ivy">
 		<ivy:retrieve pattern="${ivy.repos.dir}/[type]/[artifact].[revision](-[classifier]).[ext]"/>
     </target>
 	
