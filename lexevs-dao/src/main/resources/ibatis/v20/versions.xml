@@ -361,7 +361,7 @@
 		UPDATE
 			$prefix$entryState
 		SET
-			$prefix$entryState.prevEntryStateGuid = NULL
+			prevEntryStateGuid = NULL
 		WHERE
 			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</update>
