@@ -43,6 +43,7 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.HierarchyCheckingPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.OntologyFormatAddingPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
@@ -201,6 +202,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             loaderPostProcessorOption.getOptionValue().add(ApproxNumOfConceptsPostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getOptionValue().add(OntologyFormatAddingPostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getOptionValue().add(SupportedAttributePostProcessor.EXTENSION_NAME);
+            loaderPostProcessorOption.getOptionValue().add(HierarchyCheckingPostProcessor.EXTENSION_NAME);
             loaderPostProcessorOption.getPickList().addAll(this.getPostProcessorExtensionNames());
             
             loaderPostProcessorOption.setHelpText("User defined 'Post Processor' options to be run after\n" +
