@@ -37,21 +37,34 @@ import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
-import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
+/**
+ * The Class OntologyFormatAddingPostProcessor.
+ */
 public class OntologyFormatAddingPostProcessor extends AbstractExtendable implements LoaderPostProcessor {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2828520523031693573L;
     
+    /** The EXTENSION Name*/
     public static String EXTENSION_NAME = "OntologyFormatAddingPostProcessor";
 
+    /**
+     * Register.
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBException the LB exception
+     */
     public void register() throws LBParameterException, LBException {
         ExtensionRegistryImpl.instance().registerGenericExtension(
                 super.getExtensionDescription());
     }
  
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable#buildExtensionDescription()
+     */
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();
@@ -63,6 +76,9 @@ public class OntologyFormatAddingPostProcessor extends AbstractExtendable implem
         return ed;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor#runPostProcess(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.Extensions.Load.OntologyFormat)
+     */
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
         if(ontFormat == null) {
             LoggerFactory.getLogger().warn("Skipping: " + this.getName() +

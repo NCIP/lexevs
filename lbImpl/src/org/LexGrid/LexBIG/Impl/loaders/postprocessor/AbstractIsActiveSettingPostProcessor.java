@@ -58,6 +58,11 @@ public abstract class AbstractIsActiveSettingPostProcessor extends AbstractExten
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor#runPostProcess(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
      */
+    /**
+     * Run post process.
+     * 
+     * @param reference the reference
+     */
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference) {
         EntityIterator itr = new EntityIterator(
                 reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), pageSize);

@@ -39,17 +39,33 @@ import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+/**
+ * The Class ApproxNumOfConceptsPostProcessor.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable implements LoaderPostProcessor {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2828520523031693573L;
     
+    /** The EXTENSIO n_ name. */
     public static String EXTENSION_NAME = "ApproxNumOfConceptsPostProcessor";
 
+    /**
+     * Register.
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBException the LB exception
+     */
     public void register() throws LBParameterException, LBException {
         ExtensionRegistryImpl.instance().registerGenericExtension(
                 super.getExtensionDescription());
     }
  
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable#buildExtensionDescription()
+     */
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();
@@ -61,6 +77,9 @@ public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable impleme
         return ed;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor#runPostProcess(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.Extensions.Load.OntologyFormat)
+     */
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
         EntityService entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();

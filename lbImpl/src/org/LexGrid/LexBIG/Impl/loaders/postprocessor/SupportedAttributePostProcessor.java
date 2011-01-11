@@ -48,17 +48,33 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+/**
+ * The Class SupportedAttributePostProcessor.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class SupportedAttributePostProcessor extends AbstractExtendable implements LoaderPostProcessor {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2828520523031693573L;
     
+    /** The EXTENSION Name. */
     public static String EXTENSION_NAME = "SupportedAttributePostProcessor";
 
+    /**
+     * Register.
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBException the LB exception
+     */
     public void register() throws LBParameterException, LBException {
         ExtensionRegistryImpl.instance().registerGenericExtension(
                 super.getExtensionDescription());
     }
  
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable#buildExtensionDescription()
+     */
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();
@@ -70,6 +86,9 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         return ed;
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor#runPostProcess(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, org.LexGrid.LexBIG.Extensions.Load.OntologyFormat)
+     */
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
         CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         DaoCallbackService daoCallbackService  = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
@@ -94,6 +113,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         this.addSupportedAssociations(uri, version, daoCallbackService); 
     }
     
+    /**
+     * Adds the supported associations.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param daoCallbackService the dao callback service
+     */
     protected void addSupportedAssociations(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
@@ -125,6 +151,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
+    /**
+     * Adds the supported formats.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param daoCallbackService the dao callback service
+     */
     protected void addSupportedFormats(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
@@ -144,6 +177,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
+    /**
+     * Adds the supported languages.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param daoCallbackService the dao callback service
+     */
     protected void addSupportedLanguages(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
@@ -163,6 +203,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
+    /**
+     * Adds the supported entity types.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param daoCallbackService the dao callback service
+     */
     protected void addSupportedEntityTypes(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<String> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>(){
 
@@ -182,6 +229,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
+    /**
+     * Adds the supported properties.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param daoCallbackService the dao callback service
+     */
     protected void addSupportedProperties(final String uri, final String version, DaoCallbackService daoCallbackService) {
         List<NameAndValue> items = daoCallbackService.executeInDaoLayer(new DaoCallback<List<NameAndValue>>(){
 
@@ -202,6 +256,13 @@ public class SupportedAttributePostProcessor extends AbstractExtendable implemen
         }
     }
     
+    /**
+     * Insert uri map.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param uriMap the uri map
+     */
     protected void insertURIMap(String uri, String version, URIMap uriMap) {
         LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
             getCodingSchemeService().
