@@ -90,6 +90,7 @@ import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
+import org.LexGrid.LexBIG.Impl.loaders.postprocessor.HierarchyCheckingPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.OntologyFormatAddingPostProcessor;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -113,7 +114,6 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.event.SystemEventListener;
-import org.lexevs.system.service.SystemResourceService;
 
 /**
  * Implementation of the LexBIGService Interface.
@@ -130,7 +130,6 @@ public class LexBIGServiceImpl implements LexBIGService {
     private static LexBIGServiceImpl lexbigService_ = null;
     private static final long serialVersionUID = 6785772690490820208L;
     private DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-    private SystemResourceService systemResourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
     private Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
     private CodedNodeGraphFactory codedNodeGraphFactory = new CodedNodeGraphFactory();
     private CodedNodeSetFactory codedNodeSetFactory = new CodedNodeSetFactory();
@@ -617,5 +616,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new MappingExtensionImpl().register();
         new OntologyFormatAddingPostProcessor().register();
         new SupplementExtensionImpl().register();
+        new HierarchyCheckingPostProcessor().register();
     }
 }
