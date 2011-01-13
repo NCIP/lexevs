@@ -21,6 +21,7 @@ package org.LexGrid.valueset.impl;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +47,11 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitionReference;
+import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -805,6 +810,111 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		
 		vsdURIs = getValueSetDefinitionService().getValueSetDefinitionURIsWithConceptDomainAndUsageContext("Autos-Nomatch", usageContexts, null);
 		assertTrue(vsdURIs.size() == 0);
+	}
+	
+	/**
+	 * This test case is to test the functionality of resolving VSD references. 
+	 * We will create a VSD SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD that contains 2 definition Entries:
+	 * 		1. VSDReference - SRITEST:AUTO:GM_AND_IMMI_NODE
+	 * 		2. EntityReference - Ford concept only
+	 * Using this VSD, we will test two scenarios:
+	 * 1. We will resolve the VSD 'SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD' which references external VSD SRITEST:AUTO:GM_AND_IMMI_NODE. 
+	 * 		This will resolve the SRITEST:AUTO:GM_AND_IMMI_NODE that is available in the service.
+	 * 		This should return 3 concepts from SRITEST:AUTO:GM_AND_IMMI_NODE VSD and a FORD concept using Automobiles 1.1
+	 * 2. We will create referenced VSD SRITEST:AUTO:GM_AND_IMMI_NODE to return only GM concept 
+	 * 	  and pass this VSD as a parameter to resolve SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD.
+	 * 		This resolve method should use the passed VSD, not the one that is available in the service.
+	 * 		This should return 1 concept from SRITEST:AUTO:GM_AND_IMMI_NODE and a FORD concept using Automobiles 1.1	  
+	 */
+	public void testResolveVSDWithRefVSDObjects() throws LBException, URISyntaxException{
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setValueSetDefinitionName("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setDefaultCodingScheme("Automobiles");
+		vsd.setConceptDomain("Autos");
+		
+		DefinitionEntry de = new DefinitionEntry();
+		de.setRuleOrder(1L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		vsd.addDefinitionEntry(de);
+		
+		ValueSetDefinitionReference vsdRef = new ValueSetDefinitionReference();
+		vsdRef.setValueSetDefinitionURI("SRITEST:AUTO:GM_AND_IMMI_NODE");
+		de.setValueSetDefinitionReference(vsdRef);
+		
+		de = new DefinitionEntry();
+		de.setRuleOrder(2L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		EntityReference entityRef = new EntityReference();
+		entityRef.setEntityCode("Ford");
+		entityRef.setEntityCodeNamespace("Automobiles");
+		entityRef.setLeafOnly(false);
+		entityRef.setTransitiveClosure(false);
+		de.setEntityReference(entityRef);
+		
+		vsd.addDefinitionEntry(de);
+		
+		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
+		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
+		ResolvedValueSetDefinition rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(vsd, csvList, null, null);
+		
+		Set<String> codes = new HashSet<String>();
+		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
+		{
+			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
+			codes.add(rcr.getCode());
+		}
+		
+		// should return only GM, its immediate children concepts and Ford
+		assertTrue(codes.size() == 4);
+		assertTrue(codes.contains("GM"));
+		assertTrue(codes.contains("GMC"));
+		assertTrue(codes.contains("Chevy"));
+		assertTrue(codes.contains("Ford"));
+		
+		codes.clear();
+		
+		// Now lets create VSD SRITEST:AUTO:GM_AND_IMMI_NODE that will return only GM concept
+		ValueSetDefinition vsdR = new ValueSetDefinition();
+		vsdR.setValueSetDefinitionURI("SRITEST:AUTO:GM_AND_IMMI_NODE");
+		vsdR.setValueSetDefinitionName("SRITEST:AUTO:GM_AND_IMMI_NODE");
+		vsdR.setDefaultCodingScheme("Automobiles");
+		vsdR.setConceptDomain("Autos");
+		
+		de = new DefinitionEntry();
+		de.setRuleOrder(1L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		entityRef = new EntityReference();
+		entityRef.setEntityCode("GM");
+		entityRef.setEntityCodeNamespace("Automobiles");
+		entityRef.setLeafOnly(false);
+		entityRef.setTransitiveClosure(false);
+		
+		de.setEntityReference(entityRef);
+		
+		vsdR.addDefinitionEntry(de);
+		
+		// now lets call the resolve method by passing created VSD reference
+		HashMap<String, ValueSetDefinition> vsdRefList = new HashMap<String, ValueSetDefinition>();
+		vsdRefList.put("SRITEST:AUTO:GM_AND_IMMI_NODE", vsdR);
+		rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(vsd, csvList, null, vsdRefList, null);
+		
+		codes = new HashSet<String>();
+		while (rvdDef.getResolvedConceptReferenceIterator().hasNext())
+		{
+			ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
+			codes.add(rcr.getCode());
+		}
+		
+		// should return only GM and Ford concepts
+		assertTrue(codes.size() == 2);
+		assertTrue(codes.contains("GM"));
+		assertTrue(codes.contains("Ford"));
+		
+		codes.clear();
 	}
 	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
