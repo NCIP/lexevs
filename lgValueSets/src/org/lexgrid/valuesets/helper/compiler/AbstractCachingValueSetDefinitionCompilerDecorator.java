@@ -62,12 +62,13 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 		this.vsdServiceHelper = vsdServiceHelper;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.lexgrid.valuesets.helper.compiler.ValueSetDefinitionCompiler#compileValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, java.util.HashMap, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.helper.compiler.ValueSetDefinitionCompiler#compileValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition, java.util.HashMap, java.lang.String, java.util.HashMap)
 	 */
 	public CodedNodeSet compileValueSetDefinition(
 			final ValueSetDefinition vdd, HashMap<String, String> refVersions, 
-			String versionTag) {
+			String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs) {
 
 		HashCountingFieldCallback callback = 
 			new HashCountingFieldCallback(vdd);
@@ -87,6 +88,12 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 			uuid += NULL_STRING_HASH_CODE;
 		}
 		
+		if (referencedVSDs != null){
+			uuid += referencedVSDs.hashCode();
+		} else {
+			uuid += NULL_STRING_HASH_CODE;
+		}
+		
 		try {
 			CodedNodeSet cns = this.retrieveCodedNodeSet(uuid);
 			
@@ -96,7 +103,7 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 				
 				return cns;
 			} else {
-				cns = this.delegate.compileValueSetDefinition(vdd, refVersions, versionTag);
+				cns = this.delegate.compileValueSetDefinition(vdd, refVersions, versionTag, referencedVSDs);
 				
 				this.persistCodedNodeSet(uuid, cns);
 				

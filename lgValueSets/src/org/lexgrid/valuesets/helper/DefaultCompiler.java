@@ -62,9 +62,9 @@ public class DefaultCompiler implements ValueSetDefinitionCompiler {
 	
 	@Override
 	public CodedNodeSet compileValueSetDefinition(ValueSetDefinition vdd,
-			HashMap<String, String> refVersions, String versionTag)
+			HashMap<String, String> refVersions, String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs)
 			throws LBException {
-		return this.getCodedNodeSetForValueSet(vdd, refVersions, versionTag);
+		return this.getCodedNodeSetForValueSet(vdd, refVersions, versionTag, referencedVSDs);
 	}
 	
 	 /**
@@ -77,9 +77,12 @@ public class DefaultCompiler implements ValueSetDefinitionCompiler {
      *                2) If there is more than one version the one that uses the supplied versionTag will be used
      *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
      *                    marked "production" will be used
-     *                4) If there isn't one marked production, then the "latest" will be used     */
+     *                4) If there isn't one marked production, then the "latest" will be used    
+	 * @param referencedVSDs - List of ValueSetDefinitions referenced by vsDef. If provided, these ValueSetDefinitions will be used to resolve vsDef.
+	 */
     protected CodedNodeSet getCodedNodeSetForValueSet( 
-	        ValueSetDefinition vdd, HashMap<String, String> refVersions, String versionTag) 
+	        ValueSetDefinition vdd, HashMap<String, String> refVersions, String versionTag, 
+	        HashMap<String, ValueSetDefinition> referencedVSDs) 
                                                         throws LBException {
 	    CodedNodeSet finalNodeSet = null;
 	    
@@ -94,14 +97,28 @@ public class DefaultCompiler implements ValueSetDefinitionCompiler {
 		        if(vdDef.getCodingSchemeReference() != null) {
 		            product = helper.getNodeSetForCodingScheme(vdd, vdDef.getCodingSchemeReference().getCodingScheme(), refVersions, versionTag);
 		        } else if(vdDef.getValueSetDefinitionReference() != null) {
+		        	String refVSDURI = vdDef.getValueSetDefinitionReference().getValueSetDefinitionURI();
+		        	
+		        	// A value set definition can not reference to itself, this will cause a cycle  
+		        	if (vdd.getValueSetDefinitionURI().equalsIgnoreCase(refVSDURI))
+		        		throw new LBException("ValueSetDefinition can not reference itself");
+		        	
 		            ValueSetDefinition innerVdd = null;
                     try {
-                        innerVdd = vsds_.getValueSetDefinitionByUri(new URI(vdDef.getValueSetDefinitionReference().getValueSetDefinitionURI()));
+                    	
+                    	// check if referenced VSD is supplied, if so, we will use it to resolve and won't bother to look if that VSD is 
+                    	// available in the service
+                    	if (referencedVSDs != null)
+                    		innerVdd = referencedVSDs.get(refVSDURI);
+                    	
+                    	// look for referenced VSD in the terminology service if not supplied
+                    	if (innerVdd == null)
+                    		innerVdd = vsds_.getValueSetDefinitionByUri(new URI(vdDef.getValueSetDefinitionReference().getValueSetDefinitionURI()));
                     } catch (URISyntaxException e) {
                         // TODO This is a data error.  We whine in enough places that it isn't worth doing here
                     }
                     if(innerVdd != null)
-                        product = getCodedNodeSetForValueSet(innerVdd, refVersions, versionTag);   
+                        product = getCodedNodeSetForValueSet(innerVdd, refVersions, versionTag, referencedVSDs);   
 		        } else if(vdDef.getEntityReference() != null) {
 		            product = getNodeSetForEntityReference(vdd, vdDef.getEntityReference(), refVersions, versionTag);
 		        } else if (vdDef.getPropertyReference() != null) {

@@ -37,12 +37,12 @@ public interface ValueSetDefinitionCompiler {
 	 * @param vdd the vdd
 	 * @param refVersions the ref versions
 	 * @param versionTag the version tag
-	 * 
+	 * @param referencedVSDs - List of ValueSetDefinitions referenced by vsDef. If provided, these ValueSetDefinitions will be used to resolve vsDef.
 	 * @return the coded node set
 	 * 
 	 * @throws LBException the LB exception
 	 */
 	public CodedNodeSet compileValueSetDefinition(
 			ValueSetDefinition vdd, HashMap<String, String> refVersions, 
-			String versionTag) throws LBException;
+			String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs) throws LBException;
 }

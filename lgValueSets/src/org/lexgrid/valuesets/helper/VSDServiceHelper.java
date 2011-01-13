@@ -279,11 +279,12 @@ public class VSDServiceHelper {
 	 *                3) If the versionTag isn't supplied, or if none of the versions matches it, then the one
 	 *                    marked "production" will be used
 	 *                4) If there isn't one marked production, then the "latest" will be used
+	 * @param referencedVSDs - List of ValueSetDefinitions referenced by vsDef. If provided, these ValueSetDefinitions will be used to resolve vsDef.
 	 * @return ResolvedValueSetCodedNodeSet
 	 * @throws LBException
 	 */
     public ResolvedValueSetCodedNodeSet getResolvedCodedNodeSetForValueSet(
-	        ValueSetDefinition vdd, AbsoluteCodingSchemeVersionReferenceList csVersionsToUse, String versionTag) 
+	        ValueSetDefinition vdd, AbsoluteCodingSchemeVersionReferenceList csVersionsToUse, String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs) 
 	            throws LBException {
         ResolvedValueSetCodedNodeSet rval = new ResolvedValueSetCodedNodeSet();
         
@@ -291,7 +292,7 @@ public class VSDServiceHelper {
 		// TODO What should the behavior be if it is in the list but not supported by the service?  Warning?
 		HashMap<String, String> refVersions = pruneVersionList(csVersionsToUse);
 	
-		rval.setCodedNodeSet(getValueSetDefinitionCompiler().compileValueSetDefinition(vdd, refVersions, versionTag));
+		rval.setCodedNodeSet(getValueSetDefinitionCompiler().compileValueSetDefinition(vdd, refVersions, versionTag, referencedVSDs));
 		rval.setCodingSchemeVersionRefList(new AbsoluteCodingSchemeVersionReferenceList());
 		
 	    // Transfer the list of used versions

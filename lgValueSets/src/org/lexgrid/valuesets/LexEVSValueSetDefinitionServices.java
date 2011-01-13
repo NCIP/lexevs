@@ -20,6 +20,7 @@ package org.lexgrid.valuesets;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
@@ -195,6 +196,37 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public ResolvedValueSetDefinition resolveValueSetDefinition(ValueSetDefinition vsDef, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag, SortOptionList sortOptionList) throws LBException;
 
+	/**
+	 * Resolve a value set definition provided using the supplied set of coding scheme versions. 
+	 * This method also takes in list of ValueSetDefinitions (referencedVSDs) that are referenced by the ValueSetDefinition (vsDef).
+	 * If referencedVSDs list is provided, these ValueSetDefinitions will be used to resolve vsDef.	
+	 * 
+	 * @param valueSetDefinition
+	 * 			  value set definition object
+	 * @param csVersionList
+	 *            list of coding scheme versions to use in resolution. IF the
+	 *            value set definition uses a version that isn't mentioned in this list,
+	 *            the resolve function will return the codingScheme and version 
+	 *            that was used as a default for the resolution. 
+	 * @param versionTag 
+	 *            the tag (e.g. "devel", "production", ...) to be used to determine which coding scheme to be used
+	 * @param referencedVSDs
+	 * 			  List of ValueSetDefinitions referenced by vsDef. If provided, these ValueSetDefinitions will be used to resolve vsDef.	
+	 * @param sortOptionList
+	 *            List of sort options to apply during resolution. If supplied,
+	 *            the sort algorithms will be applied in the order provided. Any
+	 *            algorithms not valid to be applied in context of node set
+	 *            iteration, as specified in the sort extension description,
+	 *            will result in a parameter exception. Available algorithms can
+	 *            be retrieved through the LexBIGService getSortExtensions()
+	 *            method after being defined to the LexBIGServiceManager
+	 *            extension registry. 
+	 * @return Resolved Value Domain Definition
+	 * @throws LBException
+	 */
+	public ResolvedValueSetDefinition resolveValueSetDefinition(ValueSetDefinition vsDef, 
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs, SortOptionList sortOptionList) throws LBException;
+	
 	/**
 	 * Check whether childValueDSetDefinitionURI is a child of parentValueSetDefinitionURI.
 	 * 
