@@ -32,6 +32,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
@@ -188,13 +189,18 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			Query query) {
 		Filter boundaryDocFilter = 
 			this.getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
+		
+		Filter codingSchemeFilter = 
+			this.getCodingSchemeFilter(codingSchemeUri, version);
 
 		LuceneIndexTemplate template = getLuceneIndexTemplate(codingSchemeUri, version);
 
 		DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
 		DocIdSetIterator boundaryItr = boundaryDocIds.iterator();
 
-		DocIdSet queryDocIds = template.getDocIdSet(new QueryWrapperFilter(query));
+		DocIdSet queryDocIds = template.getDocIdSet(
+				new QueryWrapperFilter(new FilteredQuery(query, codingSchemeFilter)));
+		
 		DocIdSetIterator queryItr = queryDocIds.iterator();
 
 		BitSet bitSet = new BitSet();
