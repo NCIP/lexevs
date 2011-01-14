@@ -18,6 +18,7 @@
  */
 package org.LexGrid.valueset.impl;
 
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -53,6 +54,9 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitionReference;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.apache.commons.lang.StringUtils;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
@@ -916,7 +920,247 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		
 		codes.clear();
 	}
+
+	/**
+	 * This test case calls the export method by passing the VSD URI that is available in the 
+	 * service to export to StringBuffer in LexGrid XML format.
+	 * Then, unmarshal the received StringBuffer to VSD object and verify the values. 
+	 * 
+	 * @throws LBException
+	 * @throws URISyntaxException
+	 * @throws MarshalException
+	 * @throws ValidationException
+	 */
+	public void testExportValueSetDefinitionByURI() throws LBException, URISyntaxException, MarshalException, ValidationException{
+		StringBuffer sb = getValueSetDefinitionService().exportValueSetDefinition(new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		
+		Unmarshaller um = new Unmarshaller();
+		um.setValidation(false);
+		um.setClass(ValueSetDefinition.class);
+		
+		ValueSetDefinition vdDef = (ValueSetDefinition) um.unmarshal(new StringReader(sb.toString()));
+		
+		assertTrue(vdDef.getDefaultCodingScheme().equals("fungal_anatomy"));
+		assertTrue(vdDef.getDefinitionEntry().length == 2);
+		
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());
+		
+		// value domain definition source
+		List<Source> srcs = vdDef.getSourceAsReference();
+		assertTrue(srcs.size() == 2);
+		for(Source src : srcs)
+		{
+			String val = src.getContent();
+			if (val.equals("OBO"))
+			{
+				assertTrue(src.getRole().equals("role1"));
+				assertTrue(src.getSubRef().equals("subRef1"));
+			}
+			else if (val.equals("Fungal"))
+			{
+				assertTrue(src.getRole().equals("role2"));
+				assertTrue(src.getSubRef().equals("subRef2"));
+			}
+		}
+		srcs.clear();
+		
+		// value domain definition context		
+		assertTrue(vdDef.getRepresentsRealmOrContextAsReference().size() == 3);		
+		Iterator<String> cItr = vdDef.getRepresentsRealmOrContextAsReference().iterator();		
+		while(cItr.hasNext())
+		{
+			String context = cItr.next();
+			assertTrue(context.equals("OBO") || context.equals("Fungal") || context.equals("Anatomy"));
+		}
+		
+		Mappings maps = vdDef.getMappings();
+		List<SupportedAssociation> supAssns = maps.getSupportedAssociationAsReference();
+		
+        assertTrue(supAssns.size() == 3);
+        int matchCount = supAssns.size();
+        for (SupportedAssociation supAssn : supAssns)
+        {
+            // Note: there should be two matches here - one for the local and one for the global
+            // TODO Maybe we should eliminate duplicates?
+            if(supAssn.getUri().equals("urn:lsid:bioontology.org:fungal_anatomy:is_a")) {
+                matchCount--;
+                assertTrue(supAssn.getLocalId().equals("is_a"));
+            } else if(supAssn.getUri().equals("urn:oid:1.3.6.1.4.1.2114.108.1.8.1")) {
+                matchCount--;
+                assertTrue(supAssn.getLocalId().equals("hasSubtype"));
+            } else if(supAssn.getUri().equals("urn:oid:11.11.0.1")) {
+                matchCount--;
+                assertTrue(supAssn.getLocalId().equals("uses"));
+            }
+        }
+        assertTrue(matchCount == 0);
+        supAssns.clear();
+        
+        List<SupportedDataType> supDTs = maps.getSupportedDataTypeAsReference();
+        assertTrue(supDTs.size() == 3);
+        matchCount = supDTs.size();
+        for (SupportedDataType supDT : supDTs)
+        {
+            if(supDT.getLocalId().equals("testhtml")) {
+                matchCount--;
+                assertTrue(StringUtils.isEmpty(supDT.getUri()));
+                assertTrue(supDT.getContent().equals("test/html"));
+            } else if(supDT.getLocalId().equals("textplain")) {
+                matchCount--;
+                assertTrue(StringUtils.isEmpty(supDT.getUri()));
+                assertTrue(supDT.getContent().equals("text/plain"));
+            } if(supDT.getLocalId().equals("text")) {
+                matchCount--;
+                assertTrue(StringUtils.isEmpty(supDT.getUri()));
+                assertTrue(supDT.getContent().equals("text"));
+            }
+        }
+        assertTrue(matchCount == 0);
+        supDTs.clear();
+		
+		List<SupportedPropertyQualifier> supPQs = maps.getSupportedPropertyQualifierAsReference();
+		
+		for(SupportedPropertyQualifier supPQ : supPQs)
+		{
+			assertTrue(supPQ.getLocalId().equals("PropQual A Namuuuuu") || supPQ.getLocalId().equals("PropQual B Namuuuuu"));
+		}
+		supPQs.clear();
+		
+        List<SupportedSource> supSrcs = maps.getSupportedSourceAsReference();
+        assertTrue(supSrcs.size() == 4);
+        for(SupportedSource supSrc : supSrcs)
+        {
+            assertTrue(supSrc.getLocalId().equals("OBO") ||
+                       supSrc.getLocalId().equals("Fungal") || 
+                       supSrc.getLocalId().equals("lexgrid.org") || 
+                       supSrc.getLocalId().equals("_111101") );
+        }
+        supSrcs.clear();
+		
+		Property prop = (Property) vdDef.getProperties().getPropertyAsReference().get(0);
+		
+		assertTrue(prop.getValue().getContent().equals("microbial structure ontology AND HyphaInMycelium"));
+		
+		// property source
+		assertTrue(prop.getSourceAsReference().size() == 2);
+		Iterator<Source> srcItr = prop.getSourceAsReference().iterator();
+		while(srcItr.hasNext()){
+			Source source = srcItr.next();
+			
+			String srcValue = source.getContent();
+			String role = source.getRole();
+			String subRef = source.getSubRef();
+			
+			if (srcValue.equals("OBO"))
+			{
+				assertTrue(role.equals("PropRole1"));
+				assertTrue(subRef.equals("PropSubRef1"));
+			}
+			else 
+			{
+				assertTrue(role.equals("PropRole2"));
+				assertTrue(subRef.equals("PropSubRef2"));
+			}
+		}
+		
+		// property usage context
+		assertTrue(prop.getUsageContextAsReference().size() == 2);
+		cItr = prop.getUsageContextAsReference().iterator();
+		while(cItr.hasNext())
+		{
+			String context = cItr.next();
+			assertTrue(context.equals("PropUsageContext OBO") || context.equals("PropUsageContext Fungal"));
+		}
+		
+		
+		// property qualifier
+		assertTrue(prop.getPropertyQualifierAsReference().size() == 2);
+		Iterator<PropertyQualifier> pItr = prop.getPropertyQualifierAsReference().iterator();
+		while(pItr.hasNext())
+		{
+			PropertyQualifier pQual = pItr.next();
+			String value = pQual.getValue().getContent();
+//			String dataType = pQual.getValue().getDataType();
+			String type = pQual.getPropertyQualifierType();
+			String name = pQual.getPropertyQualifierName();
+			
+			assertTrue(value.equals("PropQualValue MicrobialStructureOntology") || value.equals("PropQualValue HyphaInMycelium"));
+			assertTrue(name.equals("PropQual A Namuuuuu") || name.equals("PropQual B Namuuuuu"));
+			assertTrue(type.equals("pQual Type A") || type.equals("pQual Type B"));
+		}
+		
+	}
 	
+	/**
+	 * This test case call the export method that takes in the VSD object and exports it to StringBuffer in LexGrid XML format.
+	 * So, for this, we will create a VSD and pass it to export.
+	 * Will get the exported StringBuffer, unmarshal it to VSD object and verify the values.
+	 * @throws LBException
+	 * @throws MarshalException
+	 * @throws ValidationException
+	 */
+	public void testExportValueSetDefinitionByObject() throws LBException, MarshalException, ValidationException{
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setValueSetDefinitionName("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setDefaultCodingScheme("Automobiles");
+		vsd.setConceptDomain("Autos");
+		
+		DefinitionEntry de = new DefinitionEntry();
+		de.setRuleOrder(1L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		vsd.addDefinitionEntry(de);
+		
+		ValueSetDefinitionReference vsdRef = new ValueSetDefinitionReference();
+		vsdRef.setValueSetDefinitionURI("SRITEST:AUTO:GM_AND_IMMI_NODE");
+		de.setValueSetDefinitionReference(vsdRef);
+		
+		de = new DefinitionEntry();
+		de.setRuleOrder(2L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		EntityReference entityRef = new EntityReference();
+		entityRef.setEntityCode("Ford");
+		entityRef.setEntityCodeNamespace("Automobiles");
+		entityRef.setLeafOnly(false);
+		entityRef.setTransitiveClosure(false);
+		de.setEntityReference(entityRef);
+		
+		vsd.addDefinitionEntry(de);
+		
+		StringBuffer sb = getValueSetDefinitionService().exportValueSetDefinition(vsd);
+		
+		Unmarshaller um = new Unmarshaller();
+		um.setValidation(false);
+		um.setClass(ValueSetDefinition.class);
+		
+		ValueSetDefinition vdDef = (ValueSetDefinition) um.unmarshal(new StringReader(sb.toString()));
+		
+		assertTrue(vdDef.getValueSetDefinitionURI().equals("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD"));
+		assertTrue(vdDef.getValueSetDefinitionName().equals("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD"));
+		assertTrue(vdDef.getDefaultCodingScheme().equals("Automobiles"));
+		assertTrue(vdDef.getConceptDomain().equals("Autos"));
+		assertTrue(vdDef.getDefinitionEntry().length == 2);
+		
+		for(DefinitionEntry defEntry : vdDef.getDefinitionEntryAsReference()){
+			vsdRef = defEntry.getValueSetDefinitionReference();
+			if (vsdRef != null)
+			{
+				assertTrue(vsdRef.getValueSetDefinitionURI().equals("SRITEST:AUTO:GM_AND_IMMI_NODE"));
+			} 
+			else
+			{
+				entityRef = defEntry.getEntityReference();
+				assertTrue(entityRef.getEntityCode().equals("Ford"));
+				assertTrue(entityRef.getEntityCodeNamespace().equals("Automobiles"));
+				assertFalse(entityRef.isLeafOnly());
+				assertFalse(entityRef.isTransitiveClosure());
+			}
+		}
+	}
+
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
