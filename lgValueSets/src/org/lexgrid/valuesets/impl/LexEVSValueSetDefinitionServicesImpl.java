@@ -19,6 +19,7 @@
 package org.lexgrid.valuesets.impl;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -811,7 +815,45 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		
 		return null;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetDefinition(java.net.URI, java.lang.String)
+	 */
+	@Override
+	public StringBuffer exportValueSetDefinition(URI valueSetDefinitionURI,
+			String valueSetDefinitionRevisionId) throws LBException {
+		ValueSetDefinition vsd = this.getValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionRevisionId);
+		
+		if (vsd == null)
+			throw new LBException("No Value Set Definition found matching URI : " + valueSetDefinitionURI.toString() 
+					+ " revisionId : " + valueSetDefinitionRevisionId);
+		
+		return this.exportValueSetDefinition(vsd);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetDefinition(org.LexGrid.valueSets.ValueSetDefinition)
+	 */
+	@Override
+	public StringBuffer exportValueSetDefinition(
+			ValueSetDefinition valueSetDefinition) throws LBException {
+		if (valueSetDefinition == null)
+			throw new LBException("Value Set Definition object can not be empty");
+		
+		StringWriter sw = new StringWriter();
+		try {
+			Marshaller.marshal(valueSetDefinition, sw);
+		} catch (MarshalException e) {
+			throw new LBException("Problem marshalling Value Set Definition object : " + e.getMessage());
+		} catch (ValidationException e) {
+			throw new LBException("Validation failed for Value Set Definition object : " + e.getMessage());
+		}
+		
+		return new StringBuffer(sw.toString());
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getValueSetDefinitionURIsForSupportedTagAndValue(java.lang.String, java.lang.String, java.lang.String)
@@ -909,4 +951,5 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return this.getDatabaseServiceManager().getValueSetDefinitionService();
 	}
 
+	
 }

@@ -301,6 +301,29 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public URI exportValueSetResolution(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId,  
 			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	
+	/**
+	 * Exports Value Set Definition to StringBuffer in LexGrid XML format.
+	 * 
+	 * @param valueSetDefinitionURI
+	 * 			Value Set Definition URI to be exported
+	 * @param valueSetDefintionRevisionId 
+	 * 			(Optional) The version of the value set definition
+	 * @return StringBuffer containing value set definition in LexGrid XML format
+	 * @throws LBException
+	 */
+	public StringBuffer exportValueSetDefinition(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId) throws LBException;
+	
+	/**
+	 * Exports supplied Value Set Definition to StringBuffer in LexGrid XML format.
+	 * 
+	 * @param valueSetDefinition
+	 * 			Value Set Definition object to be exported to StringBuffer in LexGrid XML format
+	 * @return StringBuffer containing value set definition in LexGrid XML format
+	 * @throws LBException
+	 */
+	public StringBuffer exportValueSetDefinition(ValueSetDefinition valueSetDefinition) throws LBException;
+	
 	/**
 	 * Return the URI's for the value set definition(s) for the supplied
 	 * value set definition name. If the name is null, returns everything. If the name is not
