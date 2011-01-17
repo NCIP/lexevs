@@ -397,6 +397,14 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 			return this.getCurrentEntry(id, entryUid);
 		} else {
 			
+			//Check to make sure a Revision with the given Id exists
+			if(! this.isValidRevisionId(revisionId)) {
+				throw new LBRevisionException(
+						"No Revision with Id: "
+								+ revisionId
+								+ " exists in the system.");
+			}
+			
 			CodingSchemeDao codingSchemeDao = 
 				getDaoManager().getCodingSchemeDao(
 						id.getCodingSchemeUri(), 
@@ -646,5 +654,12 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 		
 		return this.getDaoManager().
 			getCodingSchemeDao(uri, version).getCodingSchemeUIdByUriAndVersion(uri, version);
+	}
+	
+	protected boolean isValidRevisionId(String revisionId) {
+		String revisionUid = 
+			getDaoManager().getRevisionDao().getRevisionUIdById(revisionId);
+		
+		return ! (revisionUid == null);
 	}
 }
