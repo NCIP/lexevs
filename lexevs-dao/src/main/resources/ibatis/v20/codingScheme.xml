@@ -591,17 +591,13 @@
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$codingScheme cs
-		INNER JOIN
 			$prefix$entryState es
-		ON
-			cs.entryStateGuid = es.entryStateGuid
 		INNER JOIN
 			${defaultPrefix}revision rev
 		ON
 			es.revisionGuid = rev.revisionGuid
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			es.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
 		AND
 			es.changeType = 'NEW'
 	</select>
