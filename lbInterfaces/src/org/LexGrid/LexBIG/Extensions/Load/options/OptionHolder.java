@@ -85,6 +85,16 @@ public interface OptionHolder {
      * @return the uRI option
      */
     public URIOption getURIOption(String optionName);
+    
+    /**
+     * Gets the generic option.
+     * 
+     * @param optionName the option name
+     * @param optionClass the option class
+     * 
+     * @return the generic option
+     */
+    public <T> Option<T> getGenericOption(String optionName, Class<T> optionClass);
 
     /**
      * Gets the boolean options.
@@ -107,6 +117,11 @@ public interface OptionHolder {
      */
     public List<Option<String>> getStringOptions();
     
+    /**
+     * Gets the string array options.
+     * 
+     * @return the string array options
+     */
     public List<MultiValueOption<String>> getStringArrayOptions();
     
     /**
@@ -115,5 +130,11 @@ public interface OptionHolder {
      * @return the uRI options
      */
     public List<URIOption> getURIOptions();
-
+    
+    /**
+     * Gets the generic option.
+     * 
+     * @return the generic option
+     */
+    public List<Option<?>> getGenericOptions();
 }

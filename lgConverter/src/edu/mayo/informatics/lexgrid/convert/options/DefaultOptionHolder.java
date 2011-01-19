@@ -48,6 +48,9 @@ public class DefaultOptionHolder implements OptionHolder {
     /** The uri options. */
     private List<URIOption> uriOptions = new ArrayList<URIOption>();
     
+    /** The uri options. */
+    private List<Option<?>> genericOptions = new ArrayList<Option<?>>();
+    
     /** The resource uri allowed file types. */
     private List<String> resourceUriAllowedFileTypes = new ArrayList<String>();
     { resourceUriAllowedFileTypes.add("*"); }
@@ -89,20 +92,33 @@ public class DefaultOptionHolder implements OptionHolder {
     }
     
     /* (non-Javadoc)
-     * @see edu.mayo.informatics.lexgrid.convert.options.OptionHolderI#findOption(java.lang.String, java.util.List)
+     * @see org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder#getGenericOption(java.lang.String, java.lang.Class)
      */
-    /**
-     * Find option.
-     * 
-     * @param optionName the option name
-     * @param optionList the option list
-     * 
-     * @return the option< t>
+    public <T> Option<T> getGenericOption(String optionName, Class<T> optionClass) {
+        return findOption(optionName, optionClass, genericOptions);
+    }
+    
+    /* (non-Javadoc)
+     * @see edu.mayo.informatics.lexgrid.convert.options.OptionHolderI#findOption(java.lang.String, java.util.List)
      */
     public <T> Option<T> findOption(String optionName, List<Option<T>> optionList){
         for(Option<T> option : optionList){
             if(option.getOptionName().equals(optionName)){
                 return option;
+            }
+        }
+        throw new RuntimeException("Option:" + optionName + " not found.");
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Option<T> findOption(String optionName, Class<T> optionClass, List<Option<?>> optionList){
+        for(Option<?> option : optionList){
+            if(option.getOptionName().equals(optionName)){
+                try {
+                    return (Option<T>)option;
+                } catch (ClassCastException e) {
+                    throw new RuntimeException("Option:" + optionName + " is not of type: " + optionClass.getName() + ".");
+                }
             }
         }
         throw new RuntimeException("Option:" + optionName + " not found.");
@@ -215,6 +231,14 @@ public class DefaultOptionHolder implements OptionHolder {
 
     public void setUriOptions(List<URIOption> uriOptions) {
         this.uriOptions = uriOptions;
+    }
+
+    public List<Option<?>> getGenericOptions() {
+        return genericOptions;
+    }
+
+    public void setGenericOptions(List<Option<?>> genericOptions) {
+        this.genericOptions = genericOptions;
     }
 
     /**
