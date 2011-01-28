@@ -1,0 +1,154 @@
+<project name="CTS2 Model" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>
+		Buildfile for the Castor Rendering of the LexBIG data model
+	</description>
+
+	<ivy:settings file="../lbPackager/ivysettings.xml"/>
+	<property file="build.properties"/>
+	
+	<!-- set global properties for this build -->
+	<property name="generated" 	location="Castor/src"/>
+	<property name="dist"		location="dist"/>
+	<property name="classes"	location="Castor/classes"/>
+	<property name="docs"  		location="Castor/JavaDocs"/>
+	<property name="lib.dir" value="lib"/>
+	<property name="xsd.url" value="http://informatics.mayo.edu/svn/trunk/cts2/history/branches/psm-working/rest/schema"/>
+
+	<!-- bda related properties -->
+	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
+	<property file="bda.properties" location="${bda.build.dir}"/>
+	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
+	
+	<target name="init">
+		<path id="classpath">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>	
+		</path>
+	</target>
+
+	<target name="clean"  description="clean up" >
+		<!-- Delete the ${generated} and ${docs} directory trees -->
+		<delete dir="${dist}"/>
+		<delete dir="${docs}"/>
+		<delete dir="${generated}"/>
+		<delete dir="${classes}"/>
+	</target>
+	
+	<target name="genCastorFromXSD" depends="init" description="generate the Castor representation of the schema">
+		<echo>Generate Castor Java</echo>
+		<delete dir="${generated}"/>
+		<mkdir dir="${generated}"/>
+			
+		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="Association"/>
+  		</antcall>
+	
+		<antcall target="genCastorJava">
+   			<param name="xsdFile" value="CodeSystem"/>
+  		</antcall>
+	
+		<antcall target="genCastorJava">
+	   		<param name="xsdFile" value="CodeSystemService"/>
+	  	</antcall>
+		
+		<antcall target="genCastorJava">
+	   		<param name="xsdFile" value="CodeSystemVersion"/>
+	  	</antcall>
+			
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="ConceptDomain"/>
+		</antcall>
+			
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="ConceptDomainService"/>
+		</antcall>
+			
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="Core"/>
+		</antcall>
+			
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="Entity"/>
+		</antcall>
+			
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="ServiceRoot"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="Map"/>
+		</antcall>
+	
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="MapService"/>
+		</antcall>
+	
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="ValueSet"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="xsdFile" value="ValueSetResolution"/>
+		</antcall>
+
+  	</target>
+ 
+	<target name="genCastorJava" depends="init">
+		<echo>Generating Castor Java from Schema ${xsdFile} from ${xsd.url}/${xsdFile}.xsd</echo>
+		
+		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
+			<classpath refid="classpath"/>
+			<arg line="-is ${xsd.url}/${xsdFile}.xsd"/>
+			<arg line="-dest '${generated}'"/>
+			<arg line="-nomarshall"/>
+			<arg line="-types j2"/>
+			<arg line="-f"/>
+			<arg line="-verbose"/>
+		</java>
+
+	</target>
+
+	<target name="compile" depends="genCastorFromXSD" description="compile the source ">
+		<mkdir dir="${classes}"/>
+		<javac source="1.5" target="1.5" srcdir="${generated}" destdir="${classes}" debug="yes">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<target name="jar" depends="init, compile" description="generate the jar file" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/> 
+			
+		<!-- Put everything in ${build} into .jar file -->
+		<jar jarfile="${dist}/cts2-model.jar" basedir="${classes}"/>
+		<jar jarfile="${dist}/cts2-model-sources.jar" basedir="${generated}"/>
+	</target>
+
+	<target name="docs" depends="jar" description="Generate the javadocs">
+		<mkdir dir="${docs}"/>
+		<!--Create the javadocs-->
+		<javadoc destdir="${docs}" windowtitle="LexBIG" additionalparam="-breakiterator">
+			<package name="*"/>
+			<classpath>
+			      <path refid="classpath"/>
+			      <pathelement location="${dist}/*.jar"/>
+			</classpath>
+
+			<sourcepath location="${generated}"/>
+		</javadoc>
+		<jar jarfile="${dist}/cts2-javadoc.jar" basedir="${docs}"/>
+	</target>
+		
+	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
+		<ivy:retrieve />
+    </target>
+	
+	<target name="publish">
+		<ivy:publish resolver="nci-chain" pubrevision="${build.version}" overwrite="true">
+	  	 <artifacts pattern="${dist}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+	
+	<target name="all" depends="init, clean, resolve, genCastorFromXSD, compile, jar, docs, publish" description="all - init, clean, genCastorXML, compile, jar, docs"/>
+</project>
