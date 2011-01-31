@@ -533,6 +533,12 @@ public interface CodedNodeGraphService {
 			List<Sort> sorts, 
 			int start, 
 			int pageSize);
+	
+	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			List<ConceptReference> conceptReferences);
 
 	/**
 	 * Gets the mapping triples.
@@ -566,4 +572,5 @@ public interface CodedNodeGraphService {
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			String relationsContainerName);
+
 }

@@ -1503,6 +1503,40 @@
 			</isNotEmpty>
 	</select>
 	
+	<select id="getTripleUidsForMappingContainerAndCodes" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="Common.uidResult">
+		
+		SELECT
+			eate.entityAssnsGuid AS uidKey
+		FROM
+			$prefix$entityAssnsToEntity eate
+			
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			(eate.associationPredicateGuid = ap.associationPredicateGuid)
+			
+		INNER JOIN
+			$prefix$relation rel
+		ON 
+			(
+			ap.relationGuid = rel.relationGuid
+		AND
+			rel.codingSchemeGuid = #param1#
+		AND
+			rel.containerName = #param2#
+			)
+		
+		WHERE
+			eate.sourceEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
+			
+			OR
+			
+			eate.targetEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
+			
+	</select>
+	
 	<select id="getTriplesForMappingContainer" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		resultMap="mappingTripleSubjectResult">
@@ -1587,9 +1621,7 @@
 			rel.containerName = #param6#
 	</select>
 	
-	<select id="getTriplesForMappingContainerCount" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="int">
+	<sql id="getTriplesForMappingContainerCountFragment">
 		SELECT
 			COUNT(eate.entityAssnsGuid)
 		FROM
@@ -1598,16 +1630,24 @@
 		INNER JOIN
 			$prefix$associationPredicate ap
 		ON 
-			eate.associationPredicateGuid = ap.associationPredicateGuid
+			(eate.associationPredicateGuid = ap.associationPredicateGuid)
 			
 		INNER JOIN
 			$prefix$relation rel
 		ON 
+			(
 			ap.relationGuid = rel.relationGuid
 		AND
 			rel.codingSchemeGuid = #param1#
 		AND
 			rel.containerName = #param2#
+			)
+	</sql>
+	
+	<select id="getTriplesForMappingContainerCount" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultClass="int">
+		<include refid="getTriplesForMappingContainerCountFragment"/>
 	</select>
 	
 	<select id="getCodeMappingParticipationCount" remapResults="true"

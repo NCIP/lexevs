@@ -783,6 +783,26 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 								relationsContainerName, 
 								tripleUids);
 	}
+	
+	
+
+	@Override
+	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String relationsContainerName,
+			List<ConceptReference> conceptReferences) {
+		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+					codingSchemeUri, 
+					codingSchemeVersion).
+					getTripleUidsForMappingRelationsContainerAndCodes(
+							mappingCodingSchemeUid,  
+							relationsContainerName, 
+							conceptReferences);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getMappingTriplesCount(java.lang.String, java.lang.String, java.lang.String)
@@ -792,14 +812,14 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeUri,
 			String codingSchemeVersion, 
 			String relationsContainerName) {
-		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+	String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
 			getCodedNodeGraphDao(
-					codingSchemeUri, 
-					codingSchemeVersion).
-						getTriplesForMappingRelationsContainerCount(
-								mappingCodingSchemeUid, 
-								relationsContainerName);
+				codingSchemeUri, 
+				codingSchemeVersion).
+					getTriplesForMappingRelationsContainerCount(
+							mappingCodingSchemeUid, 
+							relationsContainerName);
 	}
 }

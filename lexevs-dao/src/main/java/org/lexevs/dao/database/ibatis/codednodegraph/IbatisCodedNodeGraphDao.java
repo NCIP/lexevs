@@ -70,8 +70,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_COUNT_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCountConceptReferences";
 	private static String GET_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getConceptReferences";
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainer";
+	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodes";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
+	
 	private static String GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeMappingParticipationCount";
 	
 	private static String GET_TRANSITIVE_TABLE_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTransitiveTableCount";
@@ -761,7 +763,26 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			(Integer) 
 				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL, bean);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getTripleUidsForMappingRelationsContainerAndCodes(
+			String mappingCodingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> conceptReferences) {
+		
+		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				mappingCodingSchemeUid,
+				relationsContainerName,
+				conceptReferences);
+		
+		bean.setPrefix(mappingSchemePrefix);
+
+		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_SQL, bean);
+	}
+
 	@CacheMethod
 	@Override
 	public boolean doesEntityParticipateInRelationships(
