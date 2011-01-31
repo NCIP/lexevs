@@ -46,16 +46,29 @@ import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+/**
+ * The Class MappingExtensionImpl.
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ */
 public class MappingExtensionImpl extends AbstractExtendable implements MappingExtension {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 6439060328876806104L;
     
+    /** The PAG e_ size. */
     protected static int PAGE_SIZE = 1000;
     
+    /**
+     * Instantiates a new mapping extension impl.
+     */
     public MappingExtensionImpl() {
         super();
     }
     
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable#buildExtensionDescription()
+     */
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription ed = new ExtensionDescription();
@@ -68,11 +81,20 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
         return ed;
     }
     
+    /**
+     * Register.
+     * 
+     * @throws LBParameterException the LB parameter exception
+     * @throws LBException the LB exception
+     */
     public void register() throws LBParameterException, LBException {
         ExtensionRegistryImpl.instance().registerGenericExtension(
                 super.getExtensionDescription());
     }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Generic.MappingExtension#resolveMapping(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, java.lang.String, java.util.List)
+     */
     @Override
     public ResolvedConceptReferencesIterator resolveMapping(
             String codingScheme,
@@ -103,7 +125,23 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
         return 
             new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
     }
+    
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Generic.MappingExtension#getMapping(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, java.lang.String)
+     */
+    public Mapping getMapping(
+            String codingScheme,
+            CodingSchemeVersionOrTag codingSchemeVersionOrTag, 
+            String relationsContainerName) throws LBException{
+        return new CodedNodeSetBackedMapping(
+                codingScheme, 
+                codingSchemeVersionOrTag,
+                relationsContainerName);
+    }
 
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Generic.MappingExtension#isMappingCodingScheme(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag)
+     */
     @Override
     public boolean isMappingCodingScheme(String codingScheme,
             CodingSchemeVersionOrTag codingSchemeVersionOrTag) throws LBParameterException {
@@ -146,6 +184,9 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
         return isMappingCodingScheme;
     }
     
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Generic.MappingExtension#getMappingCodingSchemesEntityParticipatesIn(java.lang.String, java.lang.String)
+     */
     @Override
     public AbsoluteCodingSchemeVersionReferenceList getMappingCodingSchemesEntityParticipatesIn(
             String entityCode,
@@ -174,6 +215,18 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
         return returnList;   
     }
 
+    /**
+     * Does code participate in mapping.
+     * 
+     * @param uri the uri
+     * @param version the version
+     * @param code the code
+     * @param namespace the namespace
+     * 
+     * @return true, if successful
+     * 
+     * @throws LBParameterException the LB parameter exception
+     */
     protected boolean doesCodeParticipateInMapping(
             final String uri,
             final String version,
