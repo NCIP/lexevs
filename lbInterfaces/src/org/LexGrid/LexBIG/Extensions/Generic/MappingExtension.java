@@ -23,7 +23,10 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 
 /**
@@ -40,22 +43,22 @@ public interface MappingExtension extends GenericExtension {
 	 */
 	public enum MappingSortOptionName {
 		
-		/** Sort by Source Code */
+		/** Sort by Source Code. */
 		SOURCE_CODE,
 		
-		/** Sort by Target Code */
+		/** Sort by Target Code. */
 		TARGET_CODE,
 		
-		/** Sort Source Entity Description */
+		/** Sort Source Entity Description. */
 		SOURCE_ENTITY_DESCRIPTION,
 		
-		/** Sort Target Entity Description */
+		/** Sort Target Entity Description. */
 		TARGET_ENTITY_DESCRIPTION,
 		
 		/** Sort by Relationship Name. */
 		RELATIONSHIP,
 		
-		/** Sort by a named Qualifier */
+		/** Sort by a named Qualifier. */
 		QUALIFIER
 	}
 	
@@ -66,10 +69,10 @@ public interface MappingExtension extends GenericExtension {
 	 */
 	public enum Direction  {
 		
-		/** Sort Ascending */
+		/** Sort Ascending. */
 		ASC,
 		
-		/** Sort Descending */
+		/** Sort Descending. */
 		DESC
 	}
 	
@@ -199,7 +202,7 @@ public interface MappingExtension extends GenericExtension {
 			CodingSchemeVersionOrTag codingSchemeVersionOrTag,
 			String relationsContainerName,
 			List<MappingSortOption> sortOptionList) throws LBParameterException;
-
+	
 	/**
 	 * Resolve a list of Mapping Coding Scheme References that the given
 	 * Entity participates in as either a Source or Target.
@@ -209,10 +212,63 @@ public interface MappingExtension extends GenericExtension {
 	 * @param entityCode the entity code
 	 * @param entityCodeNamespace the entity code namespace (Optional)
 	 * 
+	 * @return the mapping coding schemes entity participates in
+	 * 
 	 * @throws LBParameterException the LB parameter exception
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getMappingCodingSchemesEntityParticipatesIn(
 			String entityCode, 
 			String entityCodeNamespace)
-			throws LBParameterException;
+	throws LBParameterException;
+
+	/**
+	 * Gets the a mapping, which may be restricted and resolved.
+	 * 
+	 * @param codingScheme the mapping coding scheme
+	 * @param codingSchemeVersionOrTag the mapping coding scheme version or tag
+	 * @param relationsContainerName the relations container name
+	 * 
+	 * @return the mapping
+	 * 
+	 * @throws LBException the LB exception
+	 */
+	public Mapping getMapping(
+			String codingScheme,
+			CodingSchemeVersionOrTag codingSchemeVersionOrTag, 
+			String relationsContainerName) throws LBException;
+	
+	/**
+	 * A mapping, which may be restricted and resolved.
+	 */
+	public static interface Mapping extends Serializable {
+
+		/**
+		 * Restrict to matching designations.
+		 * 
+		 * @param matchText the match text
+		 * @param option the option
+		 * @param matchAlgorithm the match algorithm
+		 * @param language the language
+		 * 
+		 * @return the mapping
+		 * 
+		 * @throws LBInvocationException the LB invocation exception
+		 * @throws LBParameterException the LB parameter exception
+		 */
+		public Mapping restrictToMatchingDesignations(
+				String matchText,
+				SearchDesignationOption option, 
+				String matchAlgorithm, 
+				String language)
+		throws LBInvocationException,LBParameterException;
+
+		/**
+		 * Resolve mapping.
+		 * 
+		 * @return the resolved concept references iterator
+		 * 
+		 * @throws LBException the LB exception
+		 */
+		public ResolvedConceptReferencesIterator resolveMapping() throws LBException;
+	}
 }
