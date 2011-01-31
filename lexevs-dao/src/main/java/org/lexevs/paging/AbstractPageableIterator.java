@@ -60,6 +60,8 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	/** The decorate next. */
 	private boolean decorateNext = false;
 	
+	private boolean isExhausted = false;
+	
 	/**
 	 * Instantiates a new abstract pageable iterator.
 	 */
@@ -93,15 +95,25 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	 */
 	@Override
 	public boolean hasNext() {
+		if(isExhausted){
+			return false;
+		}
+		
 		pageIfNecessary();
 		
 		if(cache == null || cache.size() == 0) {
+			isExhausted = true;
 			return false;
 		}
 		
 		int cacheSize = cache.size();
 		
-		return inCachePosition < cacheSize;
+		boolean hasNext = inCachePosition < cacheSize;
+		
+		isExhausted = !hasNext;
+		
+		return hasNext;
+		
 	}
 
 	/* (non-Javadoc)
@@ -166,7 +178,9 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	 * @return the list<? extends t>
 	 */
 	protected List<? extends T> doExecutePage(){
-		return this.pager.doPage(this, globalPosition, pageSize);
+		List<? extends T> returnList = this.pager.doPage(this, globalPosition, pageSize);
+
+		return returnList;
 	}
 	
 	/**
