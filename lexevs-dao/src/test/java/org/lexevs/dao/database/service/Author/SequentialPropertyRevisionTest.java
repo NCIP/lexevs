@@ -37,7 +37,7 @@ import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.util.TestUtils;
 
-public class SequentialPropertyRevisionTest extends LexEvsDbUnitTestBase {
+public class SequentialPropertyRevisionTest extends BaseRevisionTest {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;

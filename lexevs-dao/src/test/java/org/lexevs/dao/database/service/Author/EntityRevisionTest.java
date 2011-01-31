@@ -28,6 +28,7 @@ import javax.annotation.Resource;
 
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.versions.SystemRelease;
+import org.apache.commons.lang.BooleanUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.service.entity.VersionableEventEntityService;
@@ -35,7 +36,7 @@ import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRe
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class EntityRevisionTest extends LexEvsDbUnitTestBase {
+public class EntityRevisionTest extends BaseRevisionTest {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;
@@ -166,8 +167,8 @@ public class EntityRevisionTest extends LexEvsDbUnitTestBase {
 		
 		assertNotNull(julyEntity);
 		
-		assertFalse(julyEntity.getIsAnonymous());
-		assertFalse(julyEntity.getIsDefined());
+		assertFalse(BooleanUtils.toBoolean(julyEntity.getIsAnonymous()));
+		assertFalse(BooleanUtils.toBoolean(julyEntity.getIsDefined()));
 		assertEquals(julyEntity.getDefinitionCount(), 2);
 
 		Entity septEntity = entityService.resolveEntityByRevision(

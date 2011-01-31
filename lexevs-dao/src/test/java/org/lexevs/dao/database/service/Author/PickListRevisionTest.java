@@ -34,7 +34,7 @@ import org.lexevs.dao.database.service.valuesets.VersionableEventPickListDefinit
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class PickListRevisionTest extends LexEvsDbUnitTestBase {
+public class PickListRevisionTest extends BaseRevisionTest {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;
@@ -91,8 +91,8 @@ public class PickListRevisionTest extends LexEvsDbUnitTestBase {
 						"picklistTestRelease2010Jan", 0);
 
 		assertNotNull(plDefinition1);
-		assertTrue("DomesticAutoMakers".equals(plDefinition1
-				.getEntityDescription().getContent()));
+		assertEquals("DomesticAutoMakers", plDefinition1
+				.getEntityDescription().getContent());
 	}
 
 	@Test

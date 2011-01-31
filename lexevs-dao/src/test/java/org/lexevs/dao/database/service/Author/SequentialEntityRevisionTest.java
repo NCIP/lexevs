@@ -33,7 +33,7 @@ import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRe
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class SequentialEntityRevisionTest extends LexEvsDbUnitTestBase {
+public class SequentialEntityRevisionTest extends BaseRevisionTest {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;

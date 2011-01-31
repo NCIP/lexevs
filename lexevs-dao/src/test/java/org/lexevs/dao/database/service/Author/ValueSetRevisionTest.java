@@ -33,7 +33,7 @@ import org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinit
 import org.lexevs.dao.database.service.version.VersionableEventAuthoringService;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 
-public class ValueSetRevisionTest extends LexEvsDbUnitTestBase {
+public class ValueSetRevisionTest extends BaseRevisionTest {
 
 	@Resource(name = "authoringService")
 	private VersionableEventAuthoringService service;
