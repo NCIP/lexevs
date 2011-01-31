@@ -101,6 +101,19 @@ public class AbstractPageableIteratorTest {
 		assertFalse(itr.hasNext());
 		
 	}
+	
+	@Test
+	public void testCallhasNextMultipleTimesWithNullReturn() {
+		Iterator<String> itr = getNullReturningTestIterator(5);
+		for(int i=0; i<99;i++) {
+			if(i < 5){
+				assertTrue(itr.hasNext());
+				itr.next();
+			} else {
+				assertFalse(itr.hasNext());
+			}
+		}	
+	}
 
 	private Iterator<String> getTestIterator(int pageSize){
 		return new AbstractPageableIterator<String>(pageSize) {
@@ -114,6 +127,37 @@ public class AbstractPageableIteratorTest {
 				
 				for(int i=position;i<pageSize+position && i<strings.length;i++) {
 					returnList.add(strings[i]);
+				}
+				
+				return returnList;
+			}
+			
+		};
+	}
+	
+	public static void main(String[] args){
+		Iterator<String> itr = getNullReturningTestIterator(5);
+		while(itr.hasNext()){
+			System.out.println(itr.next());
+		}
+		
+	}
+	
+	private static Iterator<String> getNullReturningTestIterator(final int size){
+		return new AbstractPageableIterator<String>(size) {
+			
+			private int counter = 0;
+
+			@Override
+			protected List<String> doPage(int position, int pageSize) {
+				if(position == size){
+					return null;
+				}
+				
+				List<String> returnList = new ArrayList<String>();
+
+				for(int i=0;i<pageSize;i++) {
+					returnList.add(Integer.toString(counter++));
 				}
 				
 				return returnList;
