@@ -21,8 +21,10 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -31,9 +33,11 @@ import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 
@@ -44,7 +48,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	protected String getTestID() {
 		return testID;
 	}
-	
+
 	public void testResolveMappingCount() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -183,6 +187,101 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		assertEquals(MAPPING_SCHEME_URI, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeURN());
 		assertEquals(MAPPING_SCHEME_VERSION, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion());
+	}
+	
+	public void testGetMapping() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		
+		assertNotNull(mapping);
+	}
+	
+	public void testResolveMapping() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertTrue(itr.hasNext());
+	}
+
+
+	public void testBothResolveMappingStrategies() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		
+		ResolvedConceptReferencesIterator itr1 = mapping.resolveMapping();
+	
+		Set<String> map1 = new HashSet<String>();
+
+		while(itr1.hasNext()){
+			map1.add(itr1.next().getCode());
+		}
+
+		ResolvedConceptReferencesIterator itr2 = mappingExtension.resolveMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings",
+				null);
+		
+		Set<String> map2 = new HashSet<String>();
+		while(itr2.hasNext()){
+			map2.add(itr2.next().getCode());
+		}
+
+		assertEquals(map1, map2);
+	}
+	
+	public void testResolveMappingWithRestriction() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		
+		mapping = mapping.restrictToMatchingDesignations("Jaguar", SearchDesignationOption.ALL, "LuceneQuery", null);
+		
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertTrue(itr.hasNext());
+		assertTrue(itr.next().getCode().equals("Jaguar"));
+		assertFalse(itr.hasNext());	
+	}
+	
+	public void testResolveMappingWithRestrictionMultiple() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		
+		mapping = mapping.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", null);
+		
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertTrue(itr.hasNext());
+		assertEquals("C0001",itr.next().getCode());
+		assertTrue(itr.next().getCode().equals("005"));
+		assertFalse(itr.hasNext());	
 	}
 	
 	private void checkResolvedConceptReference(ResolvedConceptReference next) {
