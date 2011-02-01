@@ -40,6 +40,13 @@ public class CodedNodeSetBackedMapping implements Mapping {
     
     /**
      * Instantiates a new coded node set backed mapping.
+     */
+    public CodedNodeSetBackedMapping(){
+        super();
+    }
+    
+    /**
+     * Instantiates a new coded node set backed mapping.
      * 
      * @param codingScheme the coding scheme
      * @param codingSchemeVersionOrTag the coding scheme version or tag
