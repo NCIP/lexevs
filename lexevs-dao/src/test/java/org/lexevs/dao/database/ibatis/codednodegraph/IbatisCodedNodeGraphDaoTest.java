@@ -2755,4 +2755,154 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertEquals(2,count);
 	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerAndCodesWithOne() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 'a-s-code', " +
+				" 'a-s-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("s-code");
+		
+		List<ConceptReference> refList = Arrays.asList(ref);
+
+		int count = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes(
+					"1", 
+					"c-name", 
+					refList
+					).size();
+		
+		assertEquals(1,count);
+	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerAndCodesWithOneSourceAndTarget() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 'a-s-code', " +
+				" 'a-s-ns1'," +
+				" 't-code1'," +
+				" 't-ns1'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		ConceptReference ref1 = new ConceptReference();
+		ref1.setCode("s-code");
+		
+		ConceptReference ref2 = new ConceptReference();
+		ref2.setCode("t-code");
+		
+		List<ConceptReference> refList = Arrays.asList(ref1,ref2);
+
+		int count = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes(
+					"1", 
+					"c-name", 
+					refList
+					).size();
+		
+		assertEquals(1,count);
+	}
+	
+	@Test
+	public void testGetTripleUidsForMappingRelationsContainerAndCodesWithTwo() {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+		"values ('1', 'csname', 'csuri', 'csversion')");
+		
+		template.execute("insert into " +
+				"relation (relationGuid, codingSchemeGuid, containerName) " +
+		"values ('1', '1', 'c-name')");
+		
+		template.execute("insert into " +
+				"associationpredicate (associationPredicateGuid," +
+				"relationGuid, associationName) values " +
+				"('1', '1', 'apname')");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('1'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 't-code'," +
+				" 't-ns'," +
+		" 'ai-id1', null, null, null, null, null, null, null, null)");
+		
+		template.execute("insert into entityassnstoentity" +
+				" values ('2'," +
+				" '1'," +
+				" 's-code', " +
+				" 's-ns'," +
+				" 'some-other-code'," +
+				" 'some-other-namespace'," +
+		" 'ai-id2', null, null, null, null, null, null, null, null)");
+		
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("s-code");
+		
+		List<ConceptReference> refList = Arrays.asList(ref);
+
+		int count = 
+			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes(
+					"1",  
+					"c-name", 
+					refList
+					).size();
+		
+		assertEquals(2,count);
+	}
 }
