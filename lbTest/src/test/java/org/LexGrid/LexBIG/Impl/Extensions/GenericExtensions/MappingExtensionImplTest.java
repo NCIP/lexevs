@@ -264,7 +264,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.next().getCode().equals("Jaguar"));
 		assertFalse(itr.hasNext());	
 	}
-	
+
 	public void testResolveMappingWithRestrictionMultiple() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
