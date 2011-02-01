@@ -12,7 +12,7 @@
 	<property name="classes"	location="Castor/classes"/>
 	<property name="docs"  		location="Castor/JavaDocs"/>
 	<property name="lib.dir" value="lib"/>
-	<property name="xsd.url" value="http://informatics.mayo.edu/svn/trunk/cts2/history/branches/psm-working/rest/schema"/>
+	<property name="xsd.url" value="http://informatics.mayo.edu/svn/trunk/cts2/spec/psm/rest/schema"/>
 
 	<!-- bda related properties -->
 	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
@@ -39,7 +39,7 @@
 		<echo>Generate Castor Java</echo>
 		<delete dir="${generated}"/>
 		<mkdir dir="${generated}"/>
-			
+	
 		<antcall target="genCastorJava">
    			<param name="xsdFile" value="Association"/>
   		</antcall>
@@ -83,11 +83,11 @@
 		<antcall target="genCastorJava">
 			<param name="xsdFile" value="MapService"/>
 		</antcall>
-	
+
 		<antcall target="genCastorJava">
 			<param name="xsdFile" value="ValueSet"/>
 		</antcall>
-		
+
 		<antcall target="genCastorJava">
 			<param name="xsdFile" value="ValueSetResolution"/>
 		</antcall>
