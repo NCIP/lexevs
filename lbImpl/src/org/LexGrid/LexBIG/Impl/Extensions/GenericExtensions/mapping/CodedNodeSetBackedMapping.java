@@ -80,7 +80,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
     public ResolvedConceptReferencesIterator resolveMapping() throws LBException {
         
         Iterator<ResolvedConceptReference> iterator = 
-            new MappingTripleIterator(
+            new RestrictingMappingTripleIterator(
                     mappingUri,
                     mappingVersion,
                     relationsContainerName, 

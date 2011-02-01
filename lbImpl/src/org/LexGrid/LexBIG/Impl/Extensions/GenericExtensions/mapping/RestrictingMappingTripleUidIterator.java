@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -51,7 +52,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     
     /** The resolved concept references iterator. */
     private ResolvedConceptReferencesIterator resolvedConceptReferencesIterator;
-
+    
+    private static int PAGE_SIZE = 50;
+    
+    private List<ConceptReference> inOrderConceptReferences = new ArrayList<ConceptReference>();
      
     /**
      * Instantiates a new restricting mapping triple uid iterator.
@@ -75,6 +79,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
             String version,
             String relationsContainerName, 
             CodedNodeSet codedNodeSet) throws LBException {
+        super(PAGE_SIZE);
       
         this.uri = uri;
         this.version = version;
@@ -114,7 +119,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     private List<ConceptReference> getConceptReferencesForPage(int pageSize){
         try {
             ResolvedConceptReferenceList list = resolvedConceptReferencesIterator.next(pageSize);
-            return DaoUtility.createList(ConceptReference.class, list.getResolvedConceptReference());
+            List<ConceptReference> returnList = DaoUtility.createList(ConceptReference.class, list.getResolvedConceptReference());
+            inOrderConceptReferences = returnList;
+            
+            return returnList;
         } catch (Exception e) {
            throw new RuntimeException(e);
         } 
@@ -134,5 +142,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     @Override
     protected void doRefresh(ResolvedConceptReferencesIterator refresh) {
         this.resolvedConceptReferencesIterator = refresh;
-    } 
+    }
+
+    protected List<ConceptReference> getInOrderConceptReferences() {
+        return inOrderConceptReferences;
+    }
+
 }

@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
-import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingTripleIterator.MappingAbsoluteCodingSchemeVersionReferences;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.AbstractMappingTripleIterator.MappingAbsoluteCodingSchemeVersionReferences;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.paging.AbstractPageableIterator;
