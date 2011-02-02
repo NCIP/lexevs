@@ -37,17 +37,17 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	private String indexName;
 	
 	private Resource indexDirectory;
+	
+	private LuceneDirectoryCreator luceneDirectoryCreator;
 
 	@Override
 	public Object getObject() throws Exception {
-		Directory directory = FSDirectory.getDirectory(this.indexDirectory.getFile());
-
-		return new NamedDirectory(
-				directory, indexName);
+		
+		return luceneDirectoryCreator.getDirectory(indexName, indexDirectory.getFile());
 	}
-
+	
 	@Override
-	public Class getObjectType() {
+	public Class<?> getObjectType() {
 		return NamedDirectory.class;
 	}
 
@@ -72,6 +72,14 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		return indexDirectory;
 	}
 	
+	public void setLuceneDirectoryCreator(LuceneDirectoryCreator luceneDirectoryCreator) {
+		this.luceneDirectoryCreator = luceneDirectoryCreator;
+	}
+
+	public LuceneDirectoryCreator getLuceneDirectoryCreator() {
+		return luceneDirectoryCreator;
+	}
+
 	public static class NamedDirectory {
 		private Directory directory;
 		private String indexName;
