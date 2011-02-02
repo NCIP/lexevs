@@ -15,7 +15,6 @@
 
 	<dependencies>
 		<dependency org="lexevs" name="lbInterfaces" rev="6.0.0-SNAPSHOT"/>
-		<dependency org="org.springframework" name="spring" rev="2.5.6"/>
     	<dependency org="commons-collections" name="commons-collections" rev="3.2.1"/>
     	<dependency org="commons-pool" name="commons-pool" rev="1.4" />
     	<dependency org="commons-lang" name="commons-lang" rev="2.4"/>
