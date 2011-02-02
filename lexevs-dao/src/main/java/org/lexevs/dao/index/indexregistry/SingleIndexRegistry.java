@@ -37,6 +37,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
@@ -73,6 +74,8 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	private Map<String,Filter> boundaryDocFilterMap = new HashMap<String,Filter>();
 	
+	private LuceneDirectoryCreator luceneDirectoryCreator;
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		luceneIndexNameToTemplateMap.put(singleIndexName, luceneIndexTemplate);
@@ -93,18 +96,11 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	protected NamedDirectory createIndexDirectory(String indexName) {
 		String baseIndexPath = systemVariables.getAutoLoadIndexLocation();
-		try {
-			FSDirectory directory =
-				FSDirectory.getDirectory(baseIndexPath + File.separator + indexName);
-			
-			NamedDirectory namedDirectory = new NamedDirectory(directory, indexName);
-			
-			luceneIndexNameToDirctoryMap.put(indexName, namedDirectory);
-			
-			return namedDirectory;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		NamedDirectory namedDirectory = luceneDirectoryCreator.getDirectory(indexName, new File(baseIndexPath));
+
+		luceneIndexNameToDirctoryMap.put(indexName, namedDirectory);
+
+		return namedDirectory;
 	}
 	
 	protected LuceneIndexTemplate createLuceneIndexTemplate(String indexName) {
@@ -289,6 +285,14 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 
 	public void setBoundaryDocFilterMap(Map<String, Filter> boundaryDocFilterMap) {
 		this.boundaryDocFilterMap = boundaryDocFilterMap;
+	}
+
+	public void setLuceneDirectoryCreator(LuceneDirectoryCreator luceneDirectoryCreator) {
+		this.luceneDirectoryCreator = luceneDirectoryCreator;
+	}
+
+	public LuceneDirectoryCreator getLuceneDirectoryCreator() {
+		return luceneDirectoryCreator;
 	}
 
 	protected static class CodingSchemeUriVersionPair {
