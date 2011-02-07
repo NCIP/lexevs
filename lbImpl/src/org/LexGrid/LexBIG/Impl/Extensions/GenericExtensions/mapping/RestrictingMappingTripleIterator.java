@@ -50,6 +50,11 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
     private CodedNodeSet sourceAndTargetCodesCodedNodeSet;
             
     private List<MappingSortOption> sortOptionList;
+    
+    public RestrictingMappingTripleIterator(){
+        super();
+    }
+    
     /**
      * Instantiates a new mapping triple iterator.
      * 
