@@ -57,6 +57,7 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
     private transient Thread cut_;
     private boolean resolveEntities_;
     int maxSizeSystemLimit = 0;
+    private boolean isExhausted = false;
     
     private CodeToReturnResolver codeToReturnResolver = new DefaultCodeToReturnResolver();
 
@@ -160,7 +161,6 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
             }
 
             if (pos_ == codesToReturn_.getAllCodes().size()) {
-                releaseResources();
                 return new ResolvedConceptReferenceList();
             }
 
@@ -368,6 +368,10 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
      */
     @LgClientSideSafe
     public boolean hasNext() throws LBResourceUnavailableException {
+        if(isExhausted){
+            return false;
+        }
+        
         if (codesToReturn_ == null) {
             throw new LBResourceUnavailableException("This iterator is no longer valid.");
         }
@@ -404,6 +408,7 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
         }
 
         if (answer == false) {
+            isExhausted = true;
             release();
         }
         return answer;
