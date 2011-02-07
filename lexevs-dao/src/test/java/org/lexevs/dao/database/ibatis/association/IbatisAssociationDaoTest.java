@@ -355,7 +355,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 					}
 				});
 
-		assertEquals(2, template.queryForObject(
+		assertEquals(new Integer(2), template.queryForObject(
 				"Select count(*) from entityassnquals", Integer.class));
 	}
 

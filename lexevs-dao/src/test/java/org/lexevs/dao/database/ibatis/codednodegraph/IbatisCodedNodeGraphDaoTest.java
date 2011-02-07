@@ -2799,7 +2799,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes(
 					"1", 
 					"c-name", 
-					refList
+					refList,
+					null
 					).size();
 		
 		assertEquals(1,count);
@@ -2851,6 +2852,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes(
 					"1", 
 					"c-name", 
+					refList,
 					refList
 					).size();
 		
@@ -2900,7 +2902,8 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 			ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes(
 					"1",  
 					"c-name", 
-					refList
+					refList,
+					null
 					).size();
 		
 		assertEquals(2,count);
