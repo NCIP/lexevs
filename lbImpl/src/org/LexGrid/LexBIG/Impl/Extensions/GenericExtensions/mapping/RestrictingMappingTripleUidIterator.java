@@ -74,6 +74,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     private static String SOURCE_ITERATOR = "source";
     private static String TARGET_ITERATOR = "target";
     private static String BOTH_ITERATOR = "both";
+    
+    public RestrictingMappingTripleUidIterator(){
+        super();
+    }
  
     /**
      * Instantiates a new restricting mapping triple uid iterator.
