@@ -29,7 +29,9 @@ import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * The Class RestrictingMappingTripleIterator.
@@ -41,9 +43,13 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 5709428653655124881L;
 
-    /** The coded node set. */
-    private CodedNodeSet codedNodeSet;
+    private CodedNodeSet sourceCodesCodedNodeSet;
+    
+    private CodedNodeSet targetCodesCodedNodeSet;
+    
+    private CodedNodeSet sourceAndTargetCodesCodedNodeSet;
             
+    private List<MappingSortOption> sortOptionList;
     /**
      * Instantiates a new mapping triple iterator.
      * 
@@ -58,9 +64,15 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
             String uri, 
             String version,
             String relationsContainerName,
-            CodedNodeSet codedNodeSet) throws LBParameterException {
+            CodedNodeSet sourceCodesCodedNodeSet,
+            CodedNodeSet targetCodesCodedNodeSet,
+            CodedNodeSet sourceAndTargetCodesCodedNodeSet,
+            List<MappingSortOption> sortOptionList) throws LBParameterException {
         super(uri,version, relationsContainerName);
-        this.codedNodeSet = codedNodeSet;
+        this.sourceCodesCodedNodeSet = sourceCodesCodedNodeSet;
+        this.targetCodesCodedNodeSet = targetCodesCodedNodeSet;
+        this.sourceAndTargetCodesCodedNodeSet = sourceAndTargetCodesCodedNodeSet;
+        this.sortOptionList = sortOptionList;
         this.initializetMappingTripleIterator();
     }
 
@@ -72,7 +84,7 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
         List<? extends ResolvedConceptReference> returnList = super.doPage(currentPosition, pageSize);
         
         try {
-            if(returnList != null){
+            if(returnList != null && CollectionUtils.isEmpty(this.sortOptionList)){
                 Collections.sort(returnList, new MapMatchComparator(this.getTripleUidIterator().getInOrderConceptReferences()));
             }
         } catch (Exception e) {
@@ -109,13 +121,18 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
      */
     @Override
     protected RestrictingMappingTripleUidIterator createTripleIterator() throws Exception {
+
         return new RestrictingMappingTripleUidIterator(
                 getUri(), 
-                getVersion(), 
+                getVersion(),
                 getRelationsContainerName(),
-                codedNodeSet);
+                getRefs(),
+                sourceCodesCodedNodeSet,
+                targetCodesCodedNodeSet,
+                sourceAndTargetCodesCodedNodeSet,
+                this.sortOptionList);
     }
-    
+
     /**
      * The Class MapMatchComparator.
      */
