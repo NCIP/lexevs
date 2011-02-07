@@ -22,10 +22,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 
@@ -241,14 +245,32 @@ public interface MappingExtension extends GenericExtension {
 	 * A mapping, which may be restricted and resolved.
 	 */
 	public static interface Mapping extends Serializable {
+		
+		/**
+		 * The Enum SearchContext. Used to specify whether the search
+		 * should apply to "Source" codes of the mapping, "Target" codes
+		 * of the mapping, or "Both" source and target codes.
+		 */
+		public enum SearchContext {
+			
+			/** Apply the restriction to the "Source" codes of the mapping. */
+			SOURCE_CODES, 
+			
+			/** Apply the restriction to the "Target" codes of the mapping. */
+			TARGET_CODES, 
+			
+			/** Apply the restriction to "Both" Target and Source codes of the mapping. */
+			BOTH
+		}
 
 		/**
 		 * Restrict to matching designations.
 		 * 
 		 * @param matchText the match text
 		 * @param option the option
-		 * @param matchAlgorithm the match algorithm
+		 * @param matchAlgorithm the match algorithms
 		 * @param language the language
+		 * @param searchContext the search context
 		 * 
 		 * @return the mapping
 		 * 
@@ -259,7 +281,74 @@ public interface MappingExtension extends GenericExtension {
 				String matchText,
 				SearchDesignationOption option, 
 				String matchAlgorithm, 
-				String language)
+				String language,
+				SearchContext searchContext)
+		throws LBInvocationException,LBParameterException;
+		
+		/**
+		 * Restrict to matching properties.
+		 * 
+		 * @param propertyNames the property names
+		 * @param propertyTypes the property types
+		 * @param sourceList the source list
+		 * @param contextList the context list
+		 * @param qualifierList the qualifier list
+		 * @param matchText the match text
+		 * @param matchAlgorithm the match algorithm
+		 * @param language the language
+		 * @param searchContext the search context
+		 * 
+		 * @return the mapping
+		 * 
+		 * @throws LBInvocationException the LB invocation exception
+		 * @throws LBParameterException the LB parameter exception
+		 */
+		public Mapping restrictToMatchingProperties(
+				LocalNameList propertyNames, 
+				PropertyType[] propertyTypes,
+				LocalNameList sourceList, 
+				LocalNameList contextList, 
+				NameAndValueList qualifierList,
+				String matchText, 
+				String matchAlgorithm, 
+				String language,
+				SearchContext searchContext)
+				throws LBInvocationException,LBParameterException;
+		
+		/**
+		 * Restrict to codes.
+		 * 
+		 * @param codeList the code list
+		 * @param searchContext the search context
+		 * 
+		 * @return the Mapping
+		 * 
+		 * @throws LBInvocationException the LB invocation exception
+		 * @throws LBParameterException the LB parameter exception
+		 */
+		public Mapping restrictToCodes(ConceptReferenceList codeList, SearchContext searchContext)
+			throws LBInvocationException,LBParameterException;
+		
+		/**
+		 * Restrict to relationship.
+		 * 
+		 * @param matchText the match text
+		 * @param option the option
+		 * @param matchAlgorithm the match algorithm
+		 * @param language the language
+		 * @param relationshipList the relationship list
+		 * 
+		 * @return the mapping
+		 * 
+		 * @throws LBInvocationException the LB invocation exception
+		 * @throws LBParameterException the LB parameter exception
+		 */
+		public Mapping restrictToRelationship(
+				String matchText,
+				SearchDesignationOption option, 
+				String matchAlgorithm, 
+				String language,
+				LocalNameList relationshipList)
 		throws LBInvocationException,LBParameterException;
 
 		/**
@@ -270,5 +359,16 @@ public interface MappingExtension extends GenericExtension {
 		 * @throws LBException the LB exception
 		 */
 		public ResolvedConceptReferencesIterator resolveMapping() throws LBException;
+		
+		/**
+		 * Resolve mapping.
+		 * 
+		 * @param sortOptionList the sort option list
+		 * 
+		 * @return the resolved concept references iterator
+		 * 
+		 * @throws LBException the LB exception
+		 */
+		public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException;
 	}
 }
