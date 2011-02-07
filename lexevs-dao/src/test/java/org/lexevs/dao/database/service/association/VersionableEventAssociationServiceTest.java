@@ -104,9 +104,9 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		versionableEventRelationService.insertRelation("uri", "v1", relations);
 	
 		JdbcTemplate template = new JdbcTemplate(dataSource);
-		assertEquals(1, template.queryForObject("Select count(*) from associationpredicate", Integer.class));
-		assertEquals(1, template.queryForObject("Select count(*) from entityassnstoentity", Integer.class));
-		assertEquals(1, template.queryForObject("Select count(*) from relation", Integer.class));
+		assertEquals(new Integer(1), template.queryForObject("Select count(*) from associationpredicate", Integer.class));
+		assertEquals(new Integer(1), template.queryForObject("Select count(*) from entityassnstoentity", Integer.class));
+		assertEquals(new Integer(1), template.queryForObject("Select count(*) from relation", Integer.class));
 
 	}
 	
@@ -155,9 +155,9 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		versionableEventRelationService.insertRelation("uri", "v1", relations);
 	
 		JdbcTemplate template = new JdbcTemplate(dataSource);
-		assertEquals(1, template.queryForObject("Select count(*) from associationpredicate", Integer.class));
-		assertEquals(2, template.queryForObject("Select count(*) from entityassnstoentity", Integer.class));
-		assertEquals(1, template.queryForObject("Select count(*) from relation", Integer.class));
+		assertEquals(new Integer(1), template.queryForObject("Select count(*) from associationpredicate", Integer.class));
+		assertEquals(new Integer(2), template.queryForObject("Select count(*) from entityassnstoentity", Integer.class));
+		assertEquals(new Integer(1), template.queryForObject("Select count(*) from relation", Integer.class));
 
 	}
 	
@@ -196,7 +196,7 @@ public class VersionableEventAssociationServiceTest extends LexEvsDbUnitTestBase
 		versionableEventAssociationService.insertAssociationSource("uri", "v1", "containerName", "aName", source);
 	
 		JdbcTemplate template = new JdbcTemplate(dataSource);
-		assertEquals(1, template.queryForObject("Select count(*) from entityassnstoentity", Integer.class));
+		assertEquals(new Integer(1), template.queryForObject("Select count(*) from entityassnstoentity", Integer.class));
 	}
 	
 	@Test
