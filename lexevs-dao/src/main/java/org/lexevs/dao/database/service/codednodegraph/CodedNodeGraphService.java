@@ -537,8 +537,21 @@ public interface CodedNodeGraphService {
 	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
 			String relationsContainerName,
-			List<ConceptReference> conceptReferences);
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences,
+			List<Sort> sorts,
+			int start, 
+			int pageSize);
+	
+	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences);
 
 	/**
 	 * Gets the mapping triples.
@@ -552,7 +565,8 @@ public interface CodedNodeGraphService {
 	 * 
 	 * @return the mapping triples
 	 */
-	public List<? extends ResolvedConceptReference> getMappingTriples(String codingSchemeUri,
+	public List<? extends ResolvedConceptReference> getMappingTriples(
+			String codingSchemeUri,
 			String codingSchemeVersion,
 			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
 			AbsoluteCodingSchemeVersionReference targetCodingScheme,
@@ -572,5 +586,12 @@ public interface CodedNodeGraphService {
 			String codingSchemeUri,
 			String codingSchemeVersion,
 			String relationsContainerName);
+	
+	public int getMappingTriplesCountForCodes(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences);
 
 }

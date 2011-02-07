@@ -783,15 +783,14 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 								relationsContainerName, 
 								tripleUids);
 	}
-	
-	
 
 	@Override
 	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
 			String codingSchemeUri, 
 			String codingSchemeVersion,
 			String relationsContainerName,
-			List<ConceptReference> conceptReferences) {
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences) {
 		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
@@ -801,7 +800,74 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					getTripleUidsForMappingRelationsContainerAndCodes(
 							mappingCodingSchemeUid,  
 							relationsContainerName, 
-							conceptReferences);
+							sourceConceptReferences,
+							targetConceptReferences);
+	}
+
+	@Override
+	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			AbsoluteCodingSchemeVersionReference sourceCodingScheme,
+			AbsoluteCodingSchemeVersionReference targetCodingScheme,
+			String relationsContainerName,
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences, 
+			List<Sort> sorts,
+			int start, 
+			int pageSize) {
+		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		String sourceCodingSchemeUid = null;
+		if(sourceCodingScheme != null) {
+			sourceCodingSchemeUid = 
+				this.getCodingSchemeUId(
+						sourceCodingScheme.getCodingSchemeURN(), 
+						sourceCodingScheme.getCodingSchemeVersion());
+		}
+		
+		String targetCodingSchemeUid = null;
+		if(targetCodingScheme != null) {
+			targetCodingSchemeUid = 
+				this.getCodingSchemeUId(
+						targetCodingScheme.getCodingSchemeURN(), 
+						targetCodingScheme.getCodingSchemeVersion());
+		}
+
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+					codingSchemeUri, 
+					codingSchemeVersion).
+					getTripleUidsForMappingRelationsContainerAndCodes(
+							mappingCodingSchemeUid,  
+							sourceCodingSchemeUid,
+							targetCodingSchemeUid,
+							relationsContainerName,
+							sourceConceptReferences, 
+							targetConceptReferences,
+							sorts,
+							start,
+							pageSize);
+	}
+
+	@Override
+	public int getMappingTriplesCountForCodes(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String relationsContainerName,
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences) {
+		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+				codingSchemeUri, 
+				codingSchemeVersion).
+					getTriplesForMappingRelationsContainerAndCodesCount(
+							mappingCodingSchemeUid, 
+							relationsContainerName,
+							sourceConceptReferences,
+							targetConceptReferences);
 	}
 
 	/* (non-Javadoc)

@@ -70,9 +70,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_COUNT_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCountConceptReferences";
 	private static String GET_CONCEPTREFERENCES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getConceptReferences";
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainer";
-	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodes";
+	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodesWithSort";
+	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_NO_SORT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodesNoSort";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
+	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerAndCodesCount";
 	
 	private static String GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeMappingParticipationCount";
 	
@@ -716,6 +718,26 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			String relationsContainerName,
 			List<String> tripleUids) {
 		
+		SequentialMappedParameterBean bean = getParameterBeanForGetTriples(
+				mappingCodingSchemeUid,
+				sourceCodingSchemeUid,
+				targetCodingSchemeUid,
+				relationsContainerName,
+				tripleUids);
+
+
+		List<TripleUidReferencingResolvedConceptReference> list = 
+			this.getSqlMapClientTemplate().queryForList(GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL, bean);
+		
+		return sortList(list, tripleUids);
+	}
+	
+	private SequentialMappedParameterBean getParameterBeanForGetTriples(
+			String mappingCodingSchemeUid,
+			String sourceCodingSchemeUid,
+			String targetCodingSchemeUid,
+			String relationsContainerName,
+			List<String> tripleUids){
 		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
 		String sourceSchemePrefix = null;
 		String targetSchemePrefix = null;
@@ -739,11 +761,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 
 		
 		bean.setPrefix(mappingSchemePrefix);
-
-		List<TripleUidReferencingResolvedConceptReference> list = 
-			this.getSqlMapClientTemplate().queryForList(GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL, bean);
 		
-		return sortList(list, tripleUids);
+		return bean;
 	}
 
 	@Override
@@ -768,19 +787,82 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	@Override
 	public List<String> getTripleUidsForMappingRelationsContainerAndCodes(
 			String mappingCodingSchemeUid, 
+			String sourceCodingSchemeUid,
+			String targetCodingSchemeUid, 
 			String relationsContainerName,
-			List<ConceptReference> conceptReferences) {
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences,
+			List<Sort> sortList, 
+			int start, 
+			int pageSize) {
+		
+		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		String sourceSchemePrefix = null;
+		String targetSchemePrefix = null;
+		
+		if(sourceCodingSchemeUid != null) {
+			sourceSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(sourceCodingSchemeUid);
+		}
+		
+		if(targetCodingSchemeUid != null) {
+			targetSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(targetCodingSchemeUid);
+		}
+		
+		MappingTripleParameterBean bean = new RestrictingMappingTripleParameterBean(
+				mappingSchemePrefix,
+				mappingCodingSchemeUid,
+				sourceCodingSchemeUid,
+				sourceSchemePrefix,
+				targetCodingSchemeUid,
+				targetSchemePrefix,
+				relationsContainerName,
+				sourceConceptReferences,
+				targetConceptReferences,
+				sortList);
+
+		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL, bean, start, pageSize);	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getTripleUidsForMappingRelationsContainerAndCodes(
+			String mappingCodingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences) {
 		
 		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
 		
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
 				mappingCodingSchemeUid,
 				relationsContainerName,
-				conceptReferences);
+				sourceConceptReferences, 
+				targetConceptReferences);
 		
 		bean.setPrefix(mappingSchemePrefix);
 
-		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_SQL, bean);
+		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_NO_SORT_SQL, bean);
+	}
+
+	@Override
+	public int getTriplesForMappingRelationsContainerAndCodesCount(
+			String mappingCodingSchemeUid, 
+			String relationsContainerName,
+			List<ConceptReference> sourceConceptReferences,
+			List<ConceptReference> targetConceptReferences) {
+		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		
+		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
+				mappingCodingSchemeUid,
+				relationsContainerName,
+				sourceConceptReferences,
+				sourceConceptReferences);
+
+		bean.setPrefix(mappingSchemePrefix);
+		
+		return 
+			(Integer) 
+				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL, bean);
 	}
 
 	@CacheMethod
@@ -817,6 +899,54 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		}
 
 		return returnList;
+	}
+	
+	public static class RestrictingMappingTripleParameterBean extends MappingTripleParameterBean {
+		
+		private List<ConceptReference> sourceConceptReferences;
+		private List<ConceptReference> targetConceptReferences;
+		
+		public RestrictingMappingTripleParameterBean(
+				String prefix,
+				String mappingCodingSchemeUid,
+				String sourceCodingSchemeUid, 
+				String sourceSchemePrefix,
+				String targetCodingSchemeUid, 
+				String targetSchemePrefix,
+				String relationsContainerName, 
+				List<ConceptReference> sourceConceptReferences,
+				List<ConceptReference> targetConceptReferences,
+				List<Sort> sortList){
+			super(  prefix,
+					mappingCodingSchemeUid,
+					sourceCodingSchemeUid, 
+					sourceSchemePrefix,
+					targetCodingSchemeUid, 
+					targetSchemePrefix,
+					relationsContainerName, 
+					sortList);
+			
+			this.sourceConceptReferences = sourceConceptReferences;
+			this.targetConceptReferences = targetConceptReferences;
+		}
+
+		public List<ConceptReference> getSourceConceptReferences() {
+			return sourceConceptReferences;
+		}
+
+		public void setSourceConceptReferences(
+				List<ConceptReference> sourceConceptReferences) {
+			this.sourceConceptReferences = sourceConceptReferences;
+		}
+
+		public List<ConceptReference> getTargetConceptReferences() {
+			return targetConceptReferences;
+		}
+
+		public void setTargetConceptReferences(
+				List<ConceptReference> targetConceptReferences) {
+			this.targetConceptReferences = targetConceptReferences;
+		}
 	}
 	
 	public static class MappingTripleParameterBean extends PrefixedTableParameterBean {
