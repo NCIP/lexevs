@@ -1411,10 +1411,8 @@
 			es.revisionGuid = rev.revisionGuid	
 	</select> 
 	
-	<select id="getTripleUidsForMappingContainer" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$MappingTripleParameterBean"
-		resultMap="Common.uidResult">
-		SELECT
+	<sql id="getTripleUidsForMappingContainerPre">
+			SELECT
 			eate.entityAssnsGuid AS uidKey
 		FROM
 			$prefix$entityAssnsToEntity eate
@@ -1487,8 +1485,10 @@
 			rel.codingSchemeGuid = #mappingCodingSchemeUid#
 		AND
 			rel.containerName = #relationsContainerName#
-		
-			<isNotEmpty property="sortList">
+	</sql>
+	
+	<sql id="getTripleUidsForMappingContainerPost">
+		<isNotEmpty property="sortList">
 			ORDER BY
 				<iterate property="sortList" conjunction=",">
 					<isNotPropertyAvailable property="sortList[].qualifierName">
@@ -1501,9 +1501,35 @@
 					</isPropertyAvailable>
 				</iterate>
 			</isNotEmpty>
+	</sql>
+	
+	<select id="getTripleUidsForMappingContainer" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$MappingTripleParameterBean"
+		resultMap="Common.uidResult">
+		<include refid="getTripleUidsForMappingContainerPre"/>
+		<include refid="getTripleUidsForMappingContainerPost"/>	
 	</select>
 	
-	<select id="getTripleUidsForMappingContainerAndCodes" remapResults="true"
+	<select id="getTripleUidsForMappingContainerAndCodesWithSort" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$RestrictingMappingTripleParameterBean"
+		resultMap="Common.uidResult">
+		<include refid="getTripleUidsForMappingContainerPre"/>
+			AND (
+				<isNotEmpty property="sourceConceptReferences">
+				eate.sourceEntityCode IN ( <iterate property="sourceConceptReferences" conjunction=",">#sourceConceptReferences[].code#</iterate> )
+				</isNotEmpty>
+	
+				<isNotEmpty property="targetConceptReferences">
+					<isNotEmpty property="sourceConceptReferences">
+					AND
+					</isNotEmpty>
+				eate.targetEntityCode IN ( <iterate property="targetConceptReferences" conjunction=",">#targetConceptReferences[].code#</iterate> )
+				</isNotEmpty>
+			)
+		<include refid="getTripleUidsForMappingContainerPost"/>	
+	</select>
+	
+	<select id="getTripleUidsForMappingContainerAndCodesNoSort" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		resultMap="Common.uidResult">
 		
@@ -1529,11 +1555,16 @@
 			)
 		
 		WHERE
+			<isNotEmpty property="param3">
 			eate.sourceEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
-			
-			OR
-			
-			eate.targetEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
+			</isNotEmpty>
+	
+			<isNotEmpty property="param4">
+				<isNotEmpty property="param3">
+				AND
+				</isNotEmpty>
+			eate.targetEntityCode IN ( <iterate property="param4" conjunction=",">#param4[].code#</iterate> )
+			</isNotEmpty>
 			
 	</select>
 	
