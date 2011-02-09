@@ -6,10 +6,10 @@
 	<!-- set global properties for this build -->
 	<property name="CastorFull"		location="CastorFull"/>
 	<property name="CastorGen" 		value="src"/>
-	<property name="dist"			location="lib"/>
+	<property name="dist"			location="target"/>
 	<property name="CastorClass"	value="classes"/>
 	<property name="CastorDocs"  	value="JavaDocs"/>
-	<property name="lib.dir" value="build/lib"/>
+	<property name="lib.dir" value="lib"/>
 	<property name="lbPackager.dir" value="../lbPackager"/>
 	
 	<!-- annotation directories -->
@@ -49,6 +49,7 @@
 		<ivy:settings file="${ivy.settings.file}" />
 		<ivy:cleancache />
 		<delete dir="${lib.dir}" />
+		<delete dir="${dist}" />
 	</target>
 
 	<target name="clean:dependencies">
@@ -93,6 +94,7 @@
 		<delete dir="${CastorFull}/${CastorDocs}"/>
 		<delete dir="${CastorFull}/${CastorGen}"/>
 		<delete dir="${CastorFull}/${CastorClass}"/>
+		<delete dir="${dist}"/>
 	</target>
 	
 	<target name="genCastorFromXSD" depends="init" description="generate the Castor representation of the schema">
@@ -124,34 +126,6 @@
    			<param name="xsdFile" value="versions"/>
   		</antcall>
   	</target>
-	
-	<target name="genCastorRESTFromXSD" depends="init" description="generate the Castor REST representation of the schema">
-		<echo>Generate Castor Java</echo>
-		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="builtins"/>
-  		</antcall>
-  		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="codingSchemes"/>
-  		</antcall>
-		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="commonTypes"/>
-  		</antcall>
-  		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="concepts"/>
-  		</antcall>
-  		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="naming"/>
-  		</antcall>
-  		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="relations"/>
-  		</antcall>
-		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="valueSets"/>
-  		</antcall>
-  		<antcall target="genCastorRESTJava">
-   			<param name="xsdFile" value="versions"/>
-  		</antcall>
-  	</target>
   	
 	<target name="add.methods">
 		<replaceregexp file="${entitySource}"
@@ -173,22 +147,6 @@
 			<!--arg line="-f"/-->
 			<arg line="-i master/${xsdFile}.xsd"/>
 			<arg line="-package org.LexGrid.${xsdFile}"/>
-			<arg line="-dest '${CastorFull}/${CastorGen}'"/>
-			<arg line="-line-separator win"/>
-			<!--arg line="-generateImportedSchemas"/-->			
-			<arg line="-types j2"/>
-			<arg line="-verbose"/>
-		</java>
-	</target>
-	
-	<target name="genCastorRESTJava" depends="init">
-		<echo>Generating Full Castor Java from Schema REST/${xsdFile}</echo>
-				
-		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
-			<classpath refid="classpath"/>
-			<!--arg line="-f"/-->
-			<arg line="-i master/REST/${xsdFile}.xsd"/>
-			<arg line="-package org.LexGrid.REST.${xsdFile}"/>
 			<arg line="-dest '${CastorFull}/${CastorGen}'"/>
 			<arg line="-line-separator win"/>
 			<!--arg line="-generateImportedSchemas"/-->			
@@ -331,17 +289,14 @@ public class]]></replacevalue>
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}"/>
 		<!-- Put everything in ${build} into .jar file -->
-		<jar jarfile="${dist}/lgModelCastor.jar" basedir="${CastorFull}/${CastorClass}">
-		</jar>
-		<!-- Put everything in ${build} and source into .jar file -->
-		<jar jarfile="${dist}/lgModelCastorWithSource.jar" basedir="${CastorFull}/${CastorClass}">
-			<fileset dir="${CastorFull}">
-				<include name="src/**/*"/>
-			</fileset>
-		</jar>
-		
-	</target>
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}.jar" basedir="${CastorFull}/${CastorClass}"/>
 
+		<!-- Put everything in ${build} and source into .jar file -->
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}-sources.jar">	
+			<fileset dir="${CastorFull}/${CastorGen}"/>
+			<fileset dir="${src}"/>
+		</jar>
+	</target>
 
 	<target name="docs" depends="init, compile" description="Generate the javadocs">
 		<mkdir dir="${CastorFull}/${CastorDocs}"/>
@@ -357,20 +312,19 @@ public class]]></replacevalue>
 		</javadoc>
 	</target>
 	
-	<!--target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
-	</target-->	
-	<target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorRESTFromXSD,annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
+	<target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorFromXSD,annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
 	</target>	
 	
-	<target name="all" depends="init, clean, genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs, ivy:">	
-		<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}.pom">
-   			<mapping conf="*" scope="compile"/>
-   		</ivy:makepom>
-		<ivy:publish resolver="nci-chain" pubrevision="6.0.0-SNAPSHOT" forcedeliver="true" overwrite="true">
-	  	 	<artifacts pattern="${dist}/[artifact].[ext]" />
-	  	 	<artifacts pattern="${dist}/[artifact]Castor.[ext]" />
-			<artifacts pattern="${dist}/[artifact]CastorWithSource.[ext]" />
+	<target name="all" depends="init, clean, genCastorFromXSD, genCastorFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar, publish" description="all - init, clean, genCastorXML, compile, jar, docs, publish"/>	
+	
+	<target name="publish" depends="jar" unless="publish.skip">
+	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="compile" scope="compile"/>
+	   		<mapping conf="test" scope="test"/>
+	   	</ivy:makepom>
+		<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>
-    <!--target name="all" depends="init, clean, genCastorFromXSD, genCastorRESTFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs"/-->
+
 </project>
