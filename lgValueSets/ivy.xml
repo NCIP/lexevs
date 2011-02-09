@@ -1,0 +1,19 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="lexevs-valuesets" revision="${vBuild}"/>
+    <configurations>
+		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
+	</configurations>
+	<publications>
+		<artifact name="lexevs-valuesets" type="pom" ext="pom" conf="pom"/>
+		<artifact name="lexevs-valuesets" type="jar" ext="jar" conf="default"/>
+		<artifact name="lexevs-valuesets" type="source" ext="jar"
+			 m:classifier="sources" conf="sources" />
+	</publications>
+	
+	<dependencies>
+		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
+   	 </dependencies>
+</ivy-module>
