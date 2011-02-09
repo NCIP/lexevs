@@ -5,14 +5,14 @@
 
 	<!-- set global properties for this build -->
 	<property name="generated" 	location="Castor/src"/>
-	<property name="dist"		location="lib"/>
+	<property name="dist"		location="target"/>
 	<property name="util.lib"   location="util.lib"/>
 	<property name="classes"	location="Castor/classes"/>
 	<property name="docs"  		location="Castor/JavaDocs"/>
 	<property name="core"       location="Castor/src/org/LexGrid/LexBIG/DataModel/Core"/>
 	<property name="collections"   location="Castor/src/org/LexGrid/LexBIG/DataModel/Collections"/>
 	<property name="loaderXSDs"	   location="master.preferences"/>
-	<property name="lib.dir" value="build/lib"/>
+	<property name="lib.dir" value="lib"/>
 
 	<!-- bda related properties -->
 	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
@@ -20,6 +20,7 @@
 	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
 	<property name="lgModel.project.dir" location="../lgModel"/>
 	<property name="lbPackager.dir" value="../lbPackager"/>
+	<property file="build.properties" location="${lbPackager.dir}"/>
 	
 	<!--*******************************************************************-->
 		<!--** IVY TARGETS AND DEPENDENCY PATHS **-->
@@ -57,8 +58,7 @@
 		<target name="ivy:setup-compile" depends="ivy:init">
 			<ivy:cachepath pathid="classpath" />
 			<ivy:resolve refresh="true" conf="compile" />
-			<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]"
-				conf="compile" />
+			<ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision].[ext]" conf="compile" />
 		</target>
 		<!--*******************************************************************-->
 		<!--** END IVY TARGETS AND DEPENDENCY PATHS **-->
@@ -72,6 +72,7 @@
 		<delete dir="${docs}"/>
 		<delete dir="${generated}"/>
 		<delete dir="${classes}"/>
+		<delete dir="${dist}"/>
 	</target>
 	
 	<target name="genCastorFromXSD" depends="init" description="generate the Castor representation of the schema">
@@ -163,8 +164,8 @@
 		<mkdir dir="${dist}"/> 
 			
 		<!-- Put everything in ${build} into .jar file -->
-		<jar jarfile="${dist}/lbModel.jar" basedir="${classes}"/>
-		<jar jarfile="${dist}/lbModel-sources.jar" basedir="${generated}"/>
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}.jar" basedir="${classes}"/>
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}-sources.jar" basedir="${generated}"/>
 
 	</target>
 	
@@ -182,7 +183,7 @@
 			<package name="*"/>
 			<classpath>
 			      <path refid="classpath"/>
-			      <pathelement location="${dist}/lbModel.jar"/>
+			      <pathelement location="${dist}/${ivy.module}-${ivy.revision}.jar"/>
 			</classpath>
 
 			<sourcepath location="${generated}"/>
@@ -232,12 +233,16 @@ public class]]></replacevalue>
 		</replace>
 	</target>
 	
-	<target name="all" depends="init, clean, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs" description="all - init, clean, genCastorXML, compile, jar, docs">
-		<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}.pom">
-			<mapping conf="*" scope="compile"/>
-		</ivy:makepom>
-		<ivy:publish resolver="nci-chain" pubrevision="6.0.0-SNAPSHOT" forcedeliver="true" overwrite="true">
-			<artifacts pattern="${dist}/[artifact].[ext]" />
+	<target name="all" depends="init, clean, genCastorFromXSD, core.aliases, annotate.class, compile, jar, docs, publish" description="all - init, clean, genCastorXML, compile, jar, docs"/>
+
+	<target name="publish" depends="jar" unless="publish.skip">
+	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="compile" scope="compile"/>
+	   		<mapping conf="test" scope="test"/>
+	   	</ivy:makepom>
+		<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>
+	
 </project>

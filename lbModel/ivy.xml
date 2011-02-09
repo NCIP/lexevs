@@ -1,18 +1,15 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-    <info organisation="lexevs" module="lbModel"/>
-     <configurations>
-  		<conf name="compile" description="Build Time dependencies"/>
-  		<conf name="test" description="Test Time dependencies"/>
-  		<conf name="runtime" description="Run Time dependencies"/>
-  		<conf name="sources" description="Source code"/>
+    <info organisation="lexevs" module="lexbig-model" revision="${vBuild}"/>
+    <configurations>
+		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
 	</configurations>
 	
 	<publications>
-	    <artifact name="lbModel" type="jar"/>
-	    <artifact name="lbModel" type="pom"/>
+	    <artifact name="lexbig-model" type="jar"/>
+	    <artifact name="lexbig-model" type="pom"/>
 	</publications>
     <dependencies>
-    	<dependency org="lexevs" name="lgModel" rev="6.0.0-SNAPSHOT"/>	
+    	<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>	
     	<dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>	
     	<dependency org="log4j" name="log4j" rev="1.2.8"/>   
     	<dependency org="xerces" name="xercesImpl" rev="2.8.0"/> 
