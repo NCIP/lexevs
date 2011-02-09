@@ -2,9 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/lbModel/lib/lbModel.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/jena/iri-0.8.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/jena/jena-2.6.3.jar"/>
+	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
