@@ -2,20 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lexrdf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/core/org.eclipse.core.commands_3.2.0.I20060327-0010.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/jface/org.eclipse.jface_3.2.0.I20060329-0010.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/jface/org.eclipse.jface.databinding_1.0.0.I20060330-1600.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/jface/org.eclipse.jface.text_3.2.0.v20060329-1600.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/prefuse/prefuse-2006.07.15-mod.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/meta-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/umls-loader"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-beanutils-1.8.0.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgValueSets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/eclipse/swt/windows/swt.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cts2Impl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/lexrdf"/>
+	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
