@@ -15,14 +15,13 @@
 <!--                                                                        -->
 <!-- ====================================================================== -->
 
-<project name="abstract-rrf-loader" default="package" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+<project name="abstract-rrf-loader" default="publish" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
 
   <!-- ====================================================================== -->
   <!-- Build environment properties                                           -->
   <!-- ====================================================================== -->
 
   <property file="build.properties"/>
-  <property file="${build.testOutputDir}/test.properties"/>
   <import file="../lbPackager/common-build.xml"/>
 
 </project>
