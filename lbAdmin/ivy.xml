@@ -1,0 +1,15 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="lexbig-admin" revision="${vBuild}"/>
+    <configurations>
+		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
+	</configurations>
+	<publications>
+		<artifact name="lexbig-admin" type="pom" ext="pom" conf="pom"/>
+		<artifact name="lexbig-admin" type="jar" ext="jar" conf="default"/>
+		<artifact name="lexbig-admin" type="source" ext="jar"
+			 m:classifier="sources" conf="sources" />
+	</publications>
+	<dependencies>
+   	    <dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/> 
+   	 </dependencies>
+</ivy-module>
