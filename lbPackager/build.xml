@@ -20,6 +20,7 @@ You may obtain a copy of the License at
 		Buildfile for external LexBIG packages.
 	</description>
 	<property environment="env"/> 
+	<property file="build.properties"/>
 
 	<!-- *************************************** -->
 	<!-- *** TO BE CUSTOMIZED FOR EACH BUILD *** -->
@@ -563,18 +564,14 @@ You may obtain a copy of the License at
 		<!-- Build distributed test jar (all impl & bvt tests) -->
 		<!-- Build impl tests for integration with test project -->
 		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lgConverter/test/java">
-				<include name="**/constants/*.java"/>
-				<include name="**/factory/*.java"/>
+		<ant dir="${lexevs.api.dir}/lbTest" antfile="${lexevs.api.dir}/lbTest/build.xml" target="all"/>
+		<copy file="${lexevs.api.dir}/lbTest/target/lexbig-test-${vBuild}-tests.jar" tofile="${pkg-test}/lbTest.jar"/>
+		<copy todir="${pkg-source}">
+			<fileset dir="${lexevs.api.dir}/lbTest/">
+			    <include name="**/lexbig-test-*-sources.jar"/>
 			</fileset>
-			<fileset dir="${lexevs.api.dir}/lbTest/src/test/java/" includes="**/*"/>
-			<fileset dir="${basedir}/bvt" includes="**/*.java"/>
 		</copy>
-		<antcall target="temp-scrub"/>
-		<antcall target="temp-compile"/>
-		<jar destfile="${pkg-test}/lbTest.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lbTest-src.jar" basedir="${temp.src}"/>
+
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-test}/lbTest.license.txt"/>
 		<copy todir="${pkg-test}">
 			<!-- Required library -->
