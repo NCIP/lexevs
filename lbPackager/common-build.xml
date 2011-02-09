@@ -56,7 +56,7 @@
     </target>
     
     <target name="ivy:clean" depends="clean:dependencies" description="Clean">
-        <ivy:settings file="${ivy.settings.file}" />
+       <!-- no-op for now -->
     </target>
     
     <target name="clean:dependencies">
