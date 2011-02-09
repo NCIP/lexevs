@@ -1,0 +1,33 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="cts2-impl" revision="${vBuild}"/>
+    <configurations>
+		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
+	</configurations>
+	<publications>
+		<artifact name="cts2-impl" type="pom" ext="pom" conf="pom"/>
+		<artifact name="cts2-impl" type="jar" ext="jar" conf="default"/>
+		<artifact name="cts2-impl" type="source" ext="jar"
+			 m:classifier="sources" conf="sources" />
+		<artifact name="cts2-impl" type="test" ext="jar"
+			 m:classifier="tests" conf="test"/>
+	</publications>
+	
+	<dependencies>
+		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE"/>
+		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE"/>
+		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE"/>
+		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE"/>
+		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE"/>
+		<dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE"/>
+		<dependency org="org.springframework" name="spring-orm" rev="3.0.5.RELEASE"/>
+		<dependency org="cglib" name="cglib" rev="2.2" />
+		<dependency org="asm" name="asm" rev="3.3"/>
+		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1"/>
+		<dependency org="junit" name="junit" rev="4.8.2"/> 
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}"/>
+		<dependency org="lexevs" name="cts2-model" rev="${vBuild}"/>
+   	 </dependencies>
+</ivy-module>
