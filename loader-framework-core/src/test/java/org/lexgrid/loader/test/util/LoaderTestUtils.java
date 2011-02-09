@@ -19,18 +19,7 @@
 package org.lexgrid.loader.test.util;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.util.Iterator;
 import java.util.logging.Logger;
-
-import javax.sql.DataSource;
-
-import org.lexevs.system.ResourceManager;
-
-import com.mchange.v2.c3p0.C3P0Registry;
-import com.mchange.v2.c3p0.DataSources;
 
 /**
  * The Class TestUtils.
@@ -100,7 +89,6 @@ public class LoaderTestUtils {
 
 	public static void cleanUpDatabase(){
 		shutdownnHsqldb();
-		destroyConnectionPool();
 		cleanTmpDirContents();
 	}
 	
@@ -166,19 +154,5 @@ public class LoaderTestUtils {
 			log.warning("Could not close HSQL Database -- already closed. " + e.getMessage());
 		}
 	}	
-	
-	public static void destroyConnectionPool() {
-		try {
-			Iterator itr = C3P0Registry.allPooledDataSources().iterator();
-			while(itr.hasNext()){
-				DataSources.destroy((DataSource)itr.next());
-			}
-			
-		} catch (Exception e) {
-			log.warning("Connection Pool not cleaned up.");
-			e.printStackTrace();
-		}
-	}
-	
 	
 }
