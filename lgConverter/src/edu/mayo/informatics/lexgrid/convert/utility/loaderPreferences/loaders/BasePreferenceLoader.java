@@ -79,7 +79,7 @@ public class BasePreferenceLoader {
      *         errors will be logged.
      */
     protected boolean validate(URI prefs, URL schema) {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.XML_NS_URI);
         try {
             // get the custom xsd schema describing the required format for my
             // XML files.
