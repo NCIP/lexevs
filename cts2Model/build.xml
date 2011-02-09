@@ -8,11 +8,11 @@
 	
 	<!-- set global properties for this build -->
 	<property name="generated" 	location="Castor/src"/>
-	<property name="dist"		location="dist"/>
+	<property name="dist"		location="target"/>
 	<property name="classes"	location="Castor/classes"/>
 	<property name="docs"  		location="Castor/JavaDocs"/>
 	<property name="lib.dir" value="lib"/>
-	<property name="xsd.url" value="http://informatics.mayo.edu/svn/trunk/cts2/spec/psm/rest/schema"/>
+	<property name="xsd.url" value="http://informatics.mayo.edu/svn/trunk/cts2/spec/psm/rest/"/>
 
 	<!-- bda related properties -->
 	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
@@ -41,65 +41,114 @@
 		<mkdir dir="${generated}"/>
 	
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
    			<param name="xsdFile" value="Association"/>
   		</antcall>
 	
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
    			<param name="xsdFile" value="CodeSystem"/>
   		</antcall>
-	
-		<antcall target="genCastorJava">
-	   		<param name="xsdFile" value="CodeSystemService"/>
-	  	</antcall>
 		
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 	   		<param name="xsdFile" value="CodeSystemVersion"/>
 	  	</antcall>
 			
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 			<param name="xsdFile" value="ConceptDomain"/>
 		</antcall>
 			
 		<antcall target="genCastorJava">
-			<param name="xsdFile" value="ConceptDomainService"/>
-		</antcall>
-			
-		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 			<param name="xsdFile" value="Core"/>
 		</antcall>
 			
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 			<param name="xsdFile" value="Entity"/>
-		</antcall>
-			
-		<antcall target="genCastorJava">
-			<param name="xsdFile" value="ServiceRoot"/>
 		</antcall>
 		
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 			<param name="xsdFile" value="Map"/>
-		</antcall>
-	
-		<antcall target="genCastorJava">
-			<param name="xsdFile" value="MapService"/>
 		</antcall>
 
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 			<param name="xsdFile" value="ValueSet"/>
 		</antcall>
 
 		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
 			<param name="xsdFile" value="ValueSetResolution"/>
 		</antcall>
-
+		
+		<!-- Services -->
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="AssociationServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="CodeSystemServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="CodeSystemVersionServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="ConceptDomainServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="CoreService"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="EntityDescriptionServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="MapServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="StatementServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="ValueSetDefinitionServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="ValueSetRuleResolutionServices"/>
+		</antcall>
+		
+		<antcall target="genCastorJava">
+			<param name="type" value="serviceSchema"/>
+			<param name="xsdFile" value="ValueSetServices"/>
+		</antcall>
+			
   	</target>
  
 	<target name="genCastorJava" depends="init">
-		<echo>Generating Castor Java from Schema ${xsdFile} from ${xsd.url}/${xsdFile}.xsd</echo>
+		<echo>Generating Castor Java from Schema ${xsdFile} from ${xsd.url}/${type}/${xsdFile}.xsd</echo>
 		
 		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
 			<classpath refid="classpath"/>
-			<arg line="-is ${xsd.url}/${xsdFile}.xsd"/>
+			<arg line="-is ${xsd.url}/${type}/${xsdFile}.xsd"/>
 			<arg line="-dest '${generated}'"/>
 			<arg line="-nomarshall"/>
 			<arg line="-types j2"/>
@@ -121,8 +170,8 @@
 		<mkdir dir="${dist}"/> 
 			
 		<!-- Put everything in ${build} into .jar file -->
-		<jar jarfile="${dist}/cts2-model.jar" basedir="${classes}"/>
-		<jar jarfile="${dist}/cts2-model-sources.jar" basedir="${generated}"/>
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}.jar" basedir="${classes}"/>
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}-sources.jar" basedir="${generated}"/>
 	</target>
 
 	<target name="docs" depends="jar" description="Generate the javadocs">
@@ -137,16 +186,20 @@
 
 			<sourcepath location="${generated}"/>
 		</javadoc>
-		<jar jarfile="${dist}/cts2-javadoc.jar" basedir="${docs}"/>
+		<jar jarfile="${dist}/${ivy.module}-${ivy.revision}-javadoc.jar" basedir="${docs}"/>
 	</target>
 		
 	<target name="resolve" depends="init" description="--> retrieve dependencies with ivy">
 		<ivy:retrieve />
     </target>
 	
-	<target name="publish">
-		<ivy:publish resolver="nci-chain" pubrevision="${build.version}" overwrite="true">
-	  	 <artifacts pattern="${dist}/[artifact].[ext]" />
+	<target name="publish" depends="jar" unless="publish.skip">
+	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="compile" scope="compile"/>
+	   		<mapping conf="test" scope="test"/>
+	   	</ivy:makepom>
+		<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>
 	
