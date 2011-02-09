@@ -50,7 +50,7 @@
     <target name="ivy:init" depends="ivy:clean">
         <property name="ivy.dep.file" value="${ivy.def.file}"/>
         <ivy:settings file="${ivy.settings.file}"  />
-    	
+        <ivy:resolve refresh="true"/>
     	<ivy:cachepath pathid="compile.classpath" conf="compile" />
     	<ivy:cachepath pathid="test.classpath" conf="test" />
     </target>
@@ -68,7 +68,6 @@
         description="Updates the local ivy repository for all build and test dependencies."/>
 
     <target name="ivy:setup-compile" depends="ivy:init">
-        <ivy:resolve refresh="true"/>
         <ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision](-[classifier]).[ext]" conf="runtime"/>
     	<copy todir="${lib.dir}/compile" failonerror="false">
     		<fileset dir="${extra.lib}"
@@ -88,7 +87,7 @@
   <!-- Compilation target                                                     -->
   <!-- ====================================================================== -->
 
-  <target name="compile" depends="ivy:setup-compile, clean" description="Compile the code">
+  <target name="compile" depends="ivy:setup-compile, clean" unless="no.source" description="Compile the code">
     <mkdir dir="${build.outputDir}"/>
     <javac destdir="${build.outputDir}" 
            nowarn="false" 
@@ -139,12 +138,7 @@
     <copy todir="${build.testOutputDir}" failonerror="false">
       <fileset dir="${build.testResourceDir}"/>
     </copy>
-  	
-  	<jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}-tests.jar" 
-  	         compress="true" 
-  	         index="false" 
-  	         basedir="${build.testOutputDir}" 
-  	         excludes="**/package.html"/>
+
   </target>
 
   <!-- ====================================================================== -->
@@ -240,24 +234,32 @@
   <!-- Package target                                                         -->
   <!-- ====================================================================== -->
 
-  <target name="package" depends="compile, compile-tests, test" description="Package the application">
-    <jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}.jar" 
-         compress="true" 
-         index="false" 
-         basedir="${build.outputDir}" 
-         excludes="**/package.html"/>
-    <jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}-sources.jar" 
-         compress="true" 
-         index="false" 
-         basedir="${build.srcDir}" 
-         excludes="**/package.html"/>
-  </target>
+  <target name="package" depends="jar, jar-test, test" description="Package the application"/>
 
   <!-- ====================================================================== -->
   <!-- A dummy target for the package named after the type it creates         -->
   <!-- ====================================================================== -->
 
-  <target name="jar" depends="package" description="Builds the jar for the application"/>
+  <target name="jar" depends="compile" unless="no.source" description="Builds the jar for the application">
+  		<jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}.jar" 
+  	         compress="true" 
+  	         index="false" 
+  	         basedir="${build.outputDir}" 
+  	         excludes="**/package.html"/>
+  	    <jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}-sources.jar" 
+  	         compress="true" 
+  	         index="false" 
+  	         basedir="${build.srcDir}" 
+  	         excludes="**/package.html"/>
+  </target>
+	
+  <target name="jar-test" depends="compile-tests" unless="no.tests" description="Builds the test jar for the application">
+  		<jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}-tests.jar" 
+  	         compress="true" 
+  	         index="false" 
+  	         basedir="${build.testOutputDir}" 
+  	         excludes="**/package.html"/>
+  </target>
 
   <!-- ====================================================================== -->
   <!-- Download dependencies target                                           -->
@@ -269,7 +271,7 @@
     </condition>
   </target>
 	
-   <target name="publish" depends="jar" unless="publish.skip">
+   <target name="publish" depends="package" unless="publish.skip">
    	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
    		<mapping conf="compile" scope="compile"/>
    		<mapping conf="test" scope="test"/>
