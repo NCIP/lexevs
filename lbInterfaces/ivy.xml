@@ -1,20 +1,17 @@
-<ivy-module version="2.0">
-    <info organisation="lexevs" module="lbInterfaces" revision="6.0.0-SNAPSHOT"/>
-     <configurations>
-  		<conf name="compile" description="Build Time dependencies"/>
-  		<conf name="test" description="Test Time dependencies"/>
-  		<conf name="runtime" description="Run Time dependencies"/>
-  		<conf name="sources" description="Source code"/>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="lexbig-interfaces" revision="${vBuild}"/>
+    <configurations>
+		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
 	</configurations>
-	
 	<publications>
-	    <artifact name="lbInterfaces" type="jar"/>
-	    <artifact name="lbInterfaces" type="pom"/>
-		<artifact name="lbInterfaces-sources" type="jar" conf="sources" ext="jar"/>
+		<artifact name="lexbig-interfaces" type="pom" ext="pom" conf="pom"/>
+		<artifact name="lexbig-interfaces" type="jar" ext="jar" conf="default"/>
+		<artifact name="lexbig-interfaces" type="source" ext="jar"
+			 m:classifier="sources" conf="sources" />
 	</publications>
     <dependencies>
-    	<dependency org="lexevs" name="lgModel" rev="6.0.0-SNAPSHOT"/>
-    	<dependency org="lexevs" name="lbModel" rev="6.0.0-SNAPSHOT"/>
+    	<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>
+    	<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
    		<dependency org="org.apache.lucene" name="lucene-core" rev="2.4.1"/> 	
     	<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" />
     </dependencies>
