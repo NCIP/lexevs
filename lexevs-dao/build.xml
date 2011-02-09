@@ -22,22 +22,5 @@
   <!-- ====================================================================== -->
   <property file="build.properties"/>
   <import file="${basedir}/../lbPackager/common-build.xml"/>
-	
-	<target name="publish" depends="jar" unless="publish.skip">
-		   	<ivy:makepom ivyfile="ivy.xml" pomfile="target/${ivy.module}.pom">
-		   		<mapping conf="*" scope="compile"/>
-		   	</ivy:makepom>
-			<ivy:publish resolver="nci-chain" overwrite="true">
-			   <artifacts pattern="target/[artifact].[ext]" />
-			</ivy:publish>
-			
-			<ivy:makepom ivyfile="ddlutils/lib/ivy.xml" pomfile="target/ddlUtils-1.0-PATCHED.pom">
-			   		<mapping conf="*" scope="compile"/>
-			   	</ivy:makepom>
-			<ivy:publish resolver="nci-chain" overwrite="true">
-				<artifacts pattern="ddlutils/lib/[artifact].[ext]" />
-				<artifacts pattern="target/[artifact].[ext]" />
-			</ivy:publish>
-			</target>
 
 </project>
