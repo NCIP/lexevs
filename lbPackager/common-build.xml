@@ -39,12 +39,7 @@
     <!-- ******************************************************************* -->
     <!-- ** IVY TARGETS AND DEPENDENCY PATHS                              ** -->
     <!-- ******************************************************************* -->
-	<path id="compile.classpath">
-		<fileset dir="${lib.dir}/compile">
-		        <include name="*.jar"/>
-		 </fileset>
-	</path>
-
+	
 	<property name="ivy.jar" location="${lbPackager.dir}/ivy/lib/ivy-2.1.0-rc1.jar" />
 
     <property name="ivy.settings.file" location="${lbPackager.dir}/ivysettings.xml" />
@@ -55,6 +50,9 @@
     <target name="ivy:init" depends="ivy:clean">
         <property name="ivy.dep.file" value="${ivy.def.file}"/>
         <ivy:settings file="${ivy.settings.file}"  />
+    	
+    	<ivy:cachepath pathid="compile.classpath" conf="compile" />
+    	<ivy:cachepath pathid="test.classpath" conf="test" />
     </target>
     
     <target name="ivy:clean" depends="clean:dependencies" description="Clean">
@@ -70,14 +68,13 @@
         description="Updates the local ivy repository for all build and test dependencies."/>
 
     <target name="ivy:setup-compile" depends="ivy:init">
-        <ivy:resolve refresh="true" conf="compile" />
-        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" conf="compile" />
+        <ivy:resolve refresh="true"/>
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision](-[classifier]).[ext]" conf="runtime"/>
     	<copy todir="${lib.dir}/compile" failonerror="false">
     		<fileset dir="${extra.lib}"
     			includes="*.jar"/>
     	</copy>
     </target>
-
 
   <!-- ====================================================================== -->
   <!-- Cleaning up target                                                     -->
@@ -118,8 +115,8 @@
 
   <target name="compile-tests" 
           depends="compile" 
-          description="Compile the test code" 
-          unless="test.skip">
+  		  unless="no.tests"
+          description="Compile the test code">
     <mkdir dir="${build.testOutputDir}"/>
     <javac destdir="${build.testOutputDir}" 
            nowarn="false" 
@@ -142,6 +139,12 @@
     <copy todir="${build.testOutputDir}" failonerror="false">
       <fileset dir="${build.testResourceDir}"/>
     </copy>
+  	
+  	<jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}-tests.jar" 
+  	         compress="true" 
+  	         index="false" 
+  	         basedir="${build.testOutputDir}" 
+  	         excludes="**/package.html"/>
   </target>
 
   <!-- ====================================================================== -->
@@ -176,12 +179,6 @@
         </fileset>
       </batchtest>
     </junit>
-  	
-  	<jar jarfile="${build.dir}/${module.name}-test.jar" 
-  			  	         compress="true" 
-  			  	         index="false" 
-  			  	         basedir="${build.testOutputDir}" 
-  			  	         excludes="**/package.html"/>
   </target>
 
   <target name="test-junit-present">
@@ -243,13 +240,13 @@
   <!-- Package target                                                         -->
   <!-- ====================================================================== -->
 
-  <target name="package" depends="compile, test" description="Package the application">
-    <jar jarfile="${build.dir}/${ivy.module}.jar" 
+  <target name="package" depends="compile, compile-tests, test" description="Package the application">
+    <jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}.jar" 
          compress="true" 
          index="false" 
          basedir="${build.outputDir}" 
          excludes="**/package.html"/>
-    <jar jarfile="${build.dir}/${ivy.module}-sources.jar" 
+    <jar jarfile="${build.dir}/${ivy.module}-${ivy.revision}-sources.jar" 
          compress="true" 
          index="false" 
          basedir="${build.srcDir}" 
@@ -273,13 +270,15 @@
   </target>
 	
    <target name="publish" depends="jar" unless="publish.skip">
-   	<ivy:makepom ivyfile="ivy.xml" pomfile="target/${ivy.module}.pom">
-   		<mapping conf="*" scope="compile"/>
+   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
+   		<mapping conf="compile" scope="compile"/>
+   		<mapping conf="test" scope="test"/>
    	</ivy:makepom>
-	<ivy:publish resolver="nci-chain" overwrite="true">
-	   <artifacts pattern="target/[artifact].[ext]" />
+	<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
+	   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 	</ivy:publish>
 	</target>
 
+	<target name="all" depends="publish"/>
 	
 </project>

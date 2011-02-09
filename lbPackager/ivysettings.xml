@@ -1,13 +1,42 @@
 <ivysettings>
+	<properties file="${ivy.project.dir}/build.properties" />
+	<properties file="build.properties" />
+	<property name="ivy.revision" value="${vBuild}"/>
 	<property name="nci.ivy.repo" value="http://gforge.nci.nih.gov/svnroot/commonlibrary/trunk/ivy-repo" />
+	<property name="bmidev.internal.snapshots.repo" value="http://bmidev4:8282/nexus-webapp-1.3.3/content/repositories/bmidev-internal-snapshots" />
+	
 	<settings defaultResolver="nci-chain" />
 	<caches defaultCacheDir="${user.home}/.ivy2/lexevs" useOrigin="true"/>
 	<resolvers>
+
+		<url name="bmidev-internal-snapshots" m2compatible="true">
+			<ivy
+				pattern="${bmidev.internal.snapshots.repo}/[organisation]/[module]/[revision]/ivy.xml" />
+			<artifact
+				pattern="${bmidev.internal.snapshots.repo}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
+		</url>
+	
 		<chain name="nci-chain">
-		 	<filesystem name="user-local-repo" local="true">
+		 	<filesystem name="user-local-repo" local="true" m2compatible="true">
 				<artifact pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 				<ivy pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/ivy.xml" />
 	  		</filesystem> 
+
+	  		<filesystem name="shared-libraries" m2compatible="true">
+     			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
+    		</filesystem>
+    		
+    		<filesystem name="shared-libraries-eclipse" m2compatible="true">
+     			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/eclipse/[organisation]/[revision]/[artifact].[ext]" />
+    		</filesystem>
+    		
+    		 <filesystem name="shared-libraries-eclipse-type2" m2compatible="true">
+     			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/eclipse/[organisation]/[artifact]-[revision].[ext]" />
+    		</filesystem>
+    		
+    		<filesystem name="shared-libraries-eclipse-type3" m2compatible="true">
+     			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/eclipse/[organisation]/[artifact]_[revision].[ext]" />
+    		</filesystem>
 	  		
 			<url name="ncicb-ivy-repo" m2compatible="false">
 				<ivy pattern="${nci.ivy.repo}/[organisation]/[module]/[revision]/ivy.xml" />

@@ -28,14 +28,6 @@ You may obtain a copy of the License at
 	<property name="prodTitle" value = "LexGrid Enterprise Vocabulary Services for caBIG(LexEVS)"/><!-- Product Title -->
 	<!--<property name="prodTitle" value = "LexGrid Vocabulary Services for NCBO(LexBIO)"/>--><!-- Product Title -->
 
-	<property name="vMajor" value="6"/> <!-- Product version - major release -->
-	<property name="vMinor" value="0"/> <!-- Product version - minor release -->
-	<property name="vPatch" value=""/> <!-- Product version - patch level -->
-	<property name="vCStat" value=""/> <!--Product version - candidate status (e.g. a= alpha, b=beta, rc=release candidate ) -->
-	<property name="vBuild" value="${vMajor}.${vMinor}${vPatch}${vCStat}"/> <!-- Product build id -->
-	
-	
-	
 	<target name="init-ivy">
 	
 		<!-- Ivy Properties -->
@@ -442,231 +434,125 @@ You may obtain a copy of the License at
 	</target>	
 
 	<target name="lgModel" description="packages the LexGrid model.">
-		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/lgModel" antfile="${lexevs.api.dir}/lgModel/build.xml" target="all"/>
-		<copy file="${lexevs.api.dir}/lgModel/lib/lgModelCastor.jar" todir="${temp.pkg}"/>
-		<copy file="${lexevs.api.dir}/lgModel/lib/lgModelCastorWithSource.jar" todir="${pkg-source}"/>
-		<copy toDir="${pkg-extlib}" flatten="true">
-			<fileset dir="${lexevs.api.dir}/lgModel/build/lib/compile"/>
-		</copy>
+		<antcall target="common-project-build">
+   			<param name="project" value="lgModel"/>
+			<param name="module" value="lexgrid-model"/>
+  		</antcall>
 	</target>
 		
 	<target name="Indexer"   description="packages Indexer classes">
-		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/Indexer" antfile="${lexevs.api.dir}/Indexer/build.xml" target="publish"/>
-		<copy file="${lexevs.api.dir}/Indexer/target/indexer.jar" todir="${temp.pkg}"/>
-		<copy toDir="${pkg-extlib}" flatten="true">
-			<fileset dir="${lexevs.api.dir}/Indexer/lib/compile"/>
-		</copy>
+		<antcall target="common-project-build">
+   			<param name="project" value="Indexer"/>
+			<param name="module" value="indexer"/>
+  		</antcall>
 	</target>
 	
 	<target name="lgResourceReader"  depends="lgUtility" description="packages lgResourceReader classes">	
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lgResourceReader/src" includes="**/*" />
-		</copy>
-		
-		<mkdir dir="${temp.bin}/resources" />
-		
-		<copy todir="${temp.bin}/resources">
-			<fileset dir="${lexevs.api.dir}/lgResourceReader/src/resources">
-				<include name="**/*.txt" />
-				<include name="**/*.obo" />
-			</fileset>
-		</copy>	
-		<antcall target="temp-compile" />
-		
-		<jar destfile="${temp.pkg}/lgResourceReader.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lgResourceReader-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="lgResourceReader"/>
+			<param name="module" value="lexgrid-resourcereader"/>
+  		</antcall>
 	</target>
 
 	<target name="lgUtility"   description="packages LexGrid Utility classes">
-		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/lgUtil" antfile="${lexevs.api.dir}/lgUtil/build.xml" target="publish"/>
-		<copy file="${lexevs.api.dir}/lgUtil/target/lgUtil.jar" todir="${temp.pkg}"/>
-		<copy file="${lexevs.api.dir}/lgUtil/target/lgUtil-sources.jar" todir="${pkg-source}"/>
-		<copy toDir="${pkg-extlib}" flatten="true">
-			<fileset dir="${lexevs.api.dir}/lgUtil/lib/"/>
-		</copy>
+		<antcall target="common-project-build">
+   			<param name="project" value="lgUtil"/>
+			<param name="module" value="lexgrid-util"/>
+  		</antcall>
 	</target>
 	
 	<target name="loader-framework-core"   description="packages Loader Framework classes">
-			<antcall target="temp-clean"/>
-			<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/loader-framework-core/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
-			<antcall target="temp-compile"/>
-			<jar destfile="${temp.pkg}/loader-framework-core.jar">
-				<fileset dir="${temp.bin}" includes="**/*"/>
-				<fileset dir="${lexevs.api.dir}/loader-framework-core/src/main/resources" includes="**/*"/>
-			</jar>
-			<jar destfile="${pkg-source}/loader-framework-core-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="loader-framework-core"/>
+			<param name="module" value="loader-framework-core"/>
+  		</antcall>
 	</target>
 	
 	<target name="abstract-rrf-loader"   description="packages Abstract RRF Loader classes">
-				<antcall target="temp-clean"/>
-				<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/abstract-rrf-loader/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
-				<antcall target="temp-compile"/>
-				<jar destfile="${temp.pkg}/abstract-rrf-loader.jar">
-					<fileset dir="${temp.bin}" includes="**/*"/>
-					<fileset dir="${lexevs.api.dir}/abstract-rrf-loader/src/main/resources" includes="**/*"/>
-				</jar>
-				<jar destfile="${pkg-source}/abstract-rrf-loader-src.jar" basedir="${temp.src}"/>
-	</target>
-	
-	<target name="persistence-layer"   description="packages Persistence Layer classes">
-				<antcall target="temp-clean"/>
-				<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/persistence-layer/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
-				<antcall target="temp-compile"/>
-				<jar destfile="${temp.pkg}/persistence-layer.jar">
-					<fileset dir="${temp.bin}" includes="**/*"/>
-					<fileset dir="${lexevs.api.dir}/persistence-layer/src/main/resources" includes="**/*"/>
-				</jar>
-				<jar destfile="${pkg-source}/persistence-layer-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="abstract-rrf-loader"/>
+			<param name="module" value="abstract-rrf-loader"/>
+  		</antcall>
 	</target>
 	
 	<target name="meta-loader"   description="packages Meta Loader classes">
-					<antcall target="temp-clean"/>
-					<copy todir="${temp.src}">
-						<fileset dir="${lexevs.api.dir}/meta-loader/src/main/java" includes="**/*" excludes="**/Test*"/>
-					</copy>
-					<antcall target="temp-compile"/>
-					<jar destfile="${temp.pkg}/meta-loader.jar">
-						<fileset dir="${temp.bin}" includes="**/*"/>
-						<fileset dir="${lexevs.api.dir}/meta-loader/src/main/resources" includes="**/*"/>
-					</jar>
-					<jar destfile="${pkg-source}/meta-loader-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="meta-loader"/>
+			<param name="module" value="meta-loader"/>
+  		</antcall>
 	</target>
 	
 	<target name="umls-loader"   description="packages Umls Loader classes">
-						<antcall target="temp-clean"/>
-						<copy todir="${temp.src}"><fileset dir="${lexevs.api.dir}/umls-loader/src/main/java" includes="**/*" excludes="**/Test*"/></copy>
-						<antcall target="temp-compile"/>
-						<jar destfile="${temp.pkg}/umls-loader.jar">
-								<fileset dir="${temp.bin}" includes="**/*"/>
-								<fileset dir="${lexevs.api.dir}/umls-loader/src/main/resources" includes="**/*"/>
-						</jar>
-						<jar destfile="${pkg-source}/umls-loader-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="umls-loader"/>
+			<param name="module" value="umls-loader"/>
+  		</antcall>
 	</target>
 				
 	<target name="lgConverter" depends="lgUtility, Indexer, lgResourceReader"  description="packages LexGrid Converter classes">
-		<antcall target="temp-clean"/>		
-		<antcall target="temp-scrub"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lgConverter/src">
-				<include name="cl/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/apiWrapper/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/directConversions/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/emfConversions/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/exceptions/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/formats/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/indexer/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/utility/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/options/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/inserter/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/validator/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/Conversions/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/exporters/**/*"/>
-				<include name="edu/mayo/informatics/lexgrid/convert/errorcallback/**/*"/>
-				<include name="UMLS_SAB_ISO_Map.txt"/>
-				<exclude name="*swt*/*"/>
-				<exclude name="**/*SWT*"/>
-			</fileset>
-		</copy>
-		
-		<copy todir="${temp.bin}">
-			<fileset dir="${lexevs.api.dir}/lgConverter/src">
-				<include name="**/*.txt"/>
-				<include name="**/*.obo" />
-				<include name="edu/mayo/informatics/lexgrid/convert/exporters/xml/lgxml/listeners/*.xml"/>
-			</fileset>
-		</copy>
-			
-		<antcall target="temp-compile"/>
-		<jar destfile="${temp.pkg}/lgConverter.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lgConverter-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="lgConverter"/>
+			<param name="module" value="lexgrid-converter"/>
+  		</antcall>
 	</target>
 	
-	
 	<target name="lbModel" depends="lgModel" description="packages the LexBIG model">
-		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/lbModel" antfile="${lexevs.api.dir}/lbModel/build.xml" target="all"/>
-		<copy file="${lexevs.api.dir}/lbModel/lib/lbModel.jar" todir="${temp.pkg}"/>
-		<copy file="${lexevs.api.dir}/lbModel/lib/lbModel-sources.jar" todir="${pkg-source}"/>
-		<copy toDir="${pkg-extlib}" flatten="true">
-			<fileset dir="${lexevs.api.dir}/lbModel/build/lib/compile"/>
-		</copy>
+		<antcall target="common-project-build">
+   			<param name="project" value="lbModel"/>
+			<param name="module" value="lexbig-model"/>
+  		</antcall>
 	</target>
 	
 	<target name="lexevs-dao" depends="lgModel,lbModel,Indexer,lgUtility" description="packages the LexEVS DAO">
-		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/lexevs-dao" antfile="${lexevs.api.dir}/lexevs-dao/build.xml" target="publish"/>
-		<copy file="${lexevs.api.dir}/lexevs-dao/target/lexevs-dao.jar" todir="${temp.pkg}"/>
-		<copy file="${lexevs.api.dir}/lexevs-dao/target/lexevs-dao-sources.jar" todir="${pkg-source}"/>
-		<copy toDir="${pkg-extlib}" flatten="true">
-			<fileset dir="${lexevs.api.dir}/lexevs-dao/lib/"/>
-		</copy>
+		<antcall target="common-project-build">
+   			<param name="project" value="lexevs-dao"/>
+			<param name="module" value="lexevs-dao"/>
+  		</antcall>
 	</target>
 
 	<target name="lbInterfaces" description="packages the LexBIG service interfaces">
-		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/lbInterfaces" antfile="${lexevs.api.dir}/lbInterfaces/build.xml" target="publish"/>
-		<copy file="${lexevs.api.dir}/lbInterfaces/target/lbInterfaces.jar" todir="${temp.pkg}"/>
-		<copy file="${lexevs.api.dir}/lbInterfaces/target/lbInterfaces-sources.jar" todir="${pkg-source}"/>
-		<copy toDir="${pkg-extlib}" flatten="true">
-			<fileset dir="${lexevs.api.dir}/lbInterfaces/lib/"/>
-		</copy>
+		<antcall target="common-project-build">
+   			<param name="project" value="lbInterfaces"/>
+			<param name="module" value="lexbig-interfaces"/>
+  		</antcall>
 	</target>
 
 	<target name="lbImpl" depends="lgModel, lgUtility, lbModel, lbInterfaces, lgConverter" description="packages the LexBIG service implementation">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lbImpl/src" includes="**/*"/>
-		</copy>
-		<antcall target="temp-compile"/>
-		<!--limiting javadoc to the Utility classes for lbImpl-->
-		<copy todir="${temp.doc}/org/LexGrid/LexBIG/Utility">
-			<fileset dir="${lexevs.api.dir}/lbImpl/src/org/LexGrid/LexBIG/Utility" includes="**/*"/>
-		</copy>
-		<jar destfile="${temp.pkg}/lbImpl.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lbImpl-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="lbImpl"/>
+			<param name="module" value="lexbig-impl"/>
+  		</antcall>
 	</target>
 	
 	<target name="lbAdmin" description="packages LexBIG administrative tools and classes">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lbAdmin/src" includes="**/*"/>
-		</copy>
-		<antcall target="temp-compile"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="lbAdmin"/>
+			<param name="module" value="lexbig-admin"/>
+  		</antcall>
 		<copy todir="${pkg-admin}">
 			<fileset dir="${lexevs.api.dir}/lbAdmin/scripts" includes="*"/>
 		</copy>
-		
-		<jar destfile="${temp.pkg}/lbAdmin.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lbAdmin-src.jar" basedir="${temp.src}"/>
 	</target>
 	
-	<target name="cts2" description="packages the LexEVS CTS2 Implementation">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/cts2Impl/src/main/java" includes="**/*"/>
-		</copy>
-		<antcall target="temp-compile"/>
-		
-		<jar destfile="${temp.pkg}/cts2.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/cts2-sources.jar" basedir="${temp.src}"/>
+	<target name="cts2" depends="lbImpl,cts2-model" description="packages the LexEVS CTS2 Implementation">
+		<antcall target="common-project-build">
+   			<param name="project" value="cts2Impl"/>
+			<param name="module" value="cts2-impl"/>
+  		</antcall>
+	</target>
+	
+	<target name="cts2-model" description="packages the LexEVS CTS2 Model Implementation">
+		<antcall target="common-project-build">
+   			<param name="project" value="cts2-model"/>
+			<param name="module" value="cts2-model"/>
+  		</antcall>
 	</target>
 
 	<target name="lbExamples" depends="lbImpl,lbAdmin" description="packages LexBIG example programs">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lbExamples/src" includes="**/*"/>
-		</copy>
-		<antcall target="temp-compile"/>
-		<copy todir="${pkg-examples}">
-			<fileset dir="${lexevs.api.dir}/lbExamples/scripts" includes="*"/>
-			<fileset dir="${temp.src}" includes="**/*"/>
-			<fileset dir="${temp.bin}" includes="**/*"/>
-		</copy>
-		<jar destfile="${pkg-source}/lbExamples-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="lbExamples"/>
+			<param name="module" value="lexbig-examples"/>
+  		</antcall>
 		<!-- Add test data -->
 		<copy todir="${pkg-examples}/resources">
 			<fileset dir="${lexevs.api.dir}/lbExamples/resources" includes="**/*"/>
@@ -704,22 +590,10 @@ You may obtain a copy of the License at
 	</target>
 	
 	<target name="lbGUI" description="packages LexGUI">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lbGui.dir}/src" includes="**/*"/>
-		</copy>
-		<copy todir="${temp.bin}/">
-			<fileset dir="${temp.src}">
-				<include name="**/*.gif" />
-			</fileset>
-		</copy>
-		<antcall target="temp-compile"/>
-		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-gui}/lbGUI.license.txt"/>
-		<jar destfile="${pkg-gui}/lbGUI.jar" basedir="${temp.bin}" duplicate="preserve">
-			<zipgroupfileset refid="gui-jars"/>
-			<zipgroupfileset refid="prefuse"/>
-		</jar>
-		<jar destfile="${pkg-source}/lbGUI-src.jar" basedir="${temp.src}"/>
+		<antcall target="common-project-build">
+   			<param name="project" value="lbGUI"/>
+			<param name="module" value="lexbig-gui"/>
+  		</antcall>
 		<!-- copy over the rest of the gui dependencies (these aren't in lbRuntime.jar-->
 		<copy todir="${pkg-gui}">
 			<fileset dir="${gui.libs.dir}">
@@ -731,7 +605,7 @@ You may obtain a copy of the License at
 				<include name="**/license/**"/>
 			</fileset>
   		</copy>
-		<!--create the start scripts-->
+		
 		<!--create the start scripts-->
 		<echo file="${pkg-gui}/Windows-lbGUI.bat">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
@@ -807,30 +681,41 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
           target: lgValueSets             
          ================================= -->
     <target name="lgValueSets" depends="" description="builds value sets source code">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lgValueSets/src" includes="**/*"/>
-		</copy>
-		<antcall target="temp-compile"/>
-		<jar destfile="${temp.pkg}/lgValueSets.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lgValueSets.jar" basedir="${temp.src}"/>
+    	<antcall target="common-project-build">
+            <param name="project" value="lgValueSets"/>
+            <param name="module" value="lexevs-valuesets"/>
+        </antcall>
     </target>
 	
     <target name="lexrdf" description="builds the lexrdf source code">
-		<antcall target="temp-clean"/>
-		<copy todir="${temp.src}">
-			<fileset dir="${lexevs.api.dir}/lexrdf/src" includes="**/*"/>
-		</copy>
-		<antcall target="temp-compile"/>
-		<jar destfile="${temp.pkg}/lexrdf.jar" basedir="${temp.bin}"/>
-		<jar destfile="${pkg-source}/lexrdf-sources.jar" basedir="${temp.src}"/>
+        <antcall target="common-project-build">
+                <param name="project" value="lexrdf"/>
+                <param name="module" value="lexevs-rdf"/>
+        </antcall>
     </target>
+	
+	<target name="common-project-build">
+		<antcall target="temp-clean"/>
+		<ant dir="${lexevs.api.dir}/${project}" antfile="${lexevs.api.dir}/${project}/build.xml" target="all"/>
+		<copy todir="${temp.pkg}">
+			<fileset dir="${lexevs.api.dir}/${project}/target/">
+			    <include name="${module}-*.jar"/>
+			    <exclude name="${module}-*-tests.jar"/>
+				<exclude name="${module}-*-sources.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${pkg-source}">
+			<fileset dir="${lexevs.api.dir}/${project}/">
+			    <include name="**/${module}-*-sources.jar"/>
+			</fileset>
+		</copy>
+	</target>
 	
 	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
 	<target name="lexbig.jar" depends="lbModel, lbInterfaces, lexevs-dao, lgConverter, lexrdf, lbImpl, lbAdmin, 
 		Indexer, lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
-		umls-loader, meta-loader, cts2, lbGUI, lbTest">
+		umls-loader, meta-loader, cts2-model, cts2, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
@@ -1181,5 +1066,18 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
         	<artifacts pattern="antbuild/runtime-components/[artifact].[ext]" />
 		</ivy:publish>
     </target>
+
+    <target name="publish-bmi-snapshots" depends="resolve"> 
+                <ivy:makepom ivyfile="ivy.xml" pomfile="antbuild/runtime-components/lexbig.pom">
+                         <mapping conf="*" scope="compile"/>
+                </ivy:makepom>
+        <ivy:publish resolver="bmidev-internal-snapshots"
+                                 forcedeliver="true"
+                     pubrevision="${vMajor}.${vMinor}-SNAPSHOT"
+                     overwrite="true">
+                <artifacts pattern="antbuild/runtime-components/[artifact].[ext]" />
+                </ivy:publish>
+    </target>
+
 
 </project>
