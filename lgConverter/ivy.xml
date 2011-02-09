@@ -1,0 +1,28 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="lexevs" module="lexgrid-converter" revision="${vBuild}"/>
+    <configurations>
+		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
+	</configurations>
+	<publications>
+		<artifact name="lexgrid-converter" type="pom" ext="pom" />
+		<artifact name="lexgrid-converter" type="jar" ext="jar" />
+		<artifact name="lexgrid-converter" type="source" ext="jar"
+			 m:classifier="sources" />
+	</publications>
+	<dependencies>
+	    <dependency org="protege" name="protege" rev="3.4.4"/>
+	    <dependency org="protege" name="protege-owl" rev="3.4.4"/>
+	    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4"/>
+	    <dependency org="commons-cli" name="commons-cli" rev="1.2"/>
+	    <dependency org="xml-apis" name="xml-apis" rev="2.0.2"/>
+	    <dependency org="claml" name="claml-model" rev="1.0.0"/>
+ 		<dependency org="lexevs" name="lexgrid-resourcereader" rev="${vBuild}"/>
+	 	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}"/>
+		<dependency org="lexevs" name="indexer" rev="${vBuild}"/>
+		
+   	 </dependencies>
+</ivy-module>
