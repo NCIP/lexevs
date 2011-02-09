@@ -4,8 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbModel"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbInterfaces"/>
-	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/data/BlankAccessDB.jar"/>
-	<classpathentry exported="true" kind="lib" path="/lgSharedLibraries/eclipse/swt/windows/swt.jar"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
