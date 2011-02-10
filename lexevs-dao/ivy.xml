@@ -12,68 +12,67 @@
 			 m:classifier="tests" conf="test"/>
 	</publications>
 	<dependencies>
-		<dependency org="apache" name="ddlUtils" rev="1.0-PATCHED"/>
-		<dependency org="args4j" name="args4j" rev="2.0.12"/>
-		<dependency org="oro" name="oro" rev="2.0.8"/>
-		<dependency org="commons-digester" name="commons-digester" rev="1.8"/>
-		<dependency org="commons-betwixt" name="commons-betwixt" rev="0.8"/>
-		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.3"/>
-		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}"/>
-		<dependency org="lexevs" name="indexer" rev="${vBuild}"/>
-		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.0.1"/>
-		<dependency org="org.codehaus.castor" name="castor-core" rev="1.3.1"/>
-		<dependency org="org.codehaus.castor" name="castor-xml" rev="1.3.1"/>
-		<dependency org="org.easymock" name="easymock" rev="2.4"/> 
-		<dependency org="org.easymock" name="easymockclassextension" rev="2.4"/> 
-		<dependency org="asm" name="asm" rev="3.1"/>
-		<dependency org="cglib" name="cglib" rev="2.2" />
-		<dependency org="org.aspectj" name="aspectjrt" rev="1.6.8"/>
-		<dependency org="org.aspectj" name="aspectjweaver" rev="1.6.8"/>
-		<dependency org="aopalliance" name="aopalliance" rev="1.0"/>
-		<dependency org="org.springframework" name="spring-aspects" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-test" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-jdbc" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-orm" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-tx" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework" name="spring-context-support" rev="3.0.5.RELEASE" />
-		<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" />
-		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="2.1.0.RELEASE" />
-		<dependency org="org.hibernate" name="hibernate-core" rev="3.3.2.GA" />
-		<dependency org="org.hibernate" name="hibernate-commons-annotations" rev="3.3.0.ga" />
-		<dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" />
-		<dependency org="org.hibernate" name="ejb3-persistence" rev="1.0.2.GA" />
-		<dependency org="org.compass-project" name="compass" rev="2.2.0" />
-		<dependency org="org.apache.lucene" name="lucene-core" rev="2.4.1" force="true"/>
-		<dependency org="org.apache.lucene" name="lucene-analyzers" rev="2.4.1" force="true"/>
-		<dependency org="org.apache.lucene" name="lucene-queries" rev="2.4.1" force="true"/>
-		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" />
-		<dependency org="log4j" name="log4j" rev="1.2.14" />
-		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false"/>
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" />
-		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.6" />
-		<dependency org="javax.transaction" name="jta" rev="1.1" />
-		<dependency org="javassist" name="javassist" rev="3.8.0.GA" />
-		<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.3.1" />
-		<dependency org="org.codehaus.jettison" name="jettison" rev="1.1" />
-		<dependency org="stax" name="stax-api" rev="1.0.1" />
-		<dependency org="org.hsqldb" name="hsqldb" rev="2.0.0" />
-		<dependency org="junit" name="junit" rev="4.8.2" force="true" /> 
-		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" rev="2.3.4.726"/>
-   		<dependency org="antlr" name="antlr" rev="2.7.7"/>
-   		<dependency org="org.dbunit" name="dbunit" rev="2.4.7"/>
-   		<dependency org="commons-io" name="commons-io" rev="1.4" />
-   	    <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" />
-   	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>	
-   	    <dependency org="javax.persistence" name="persistence-api" rev="1.0"/>
-   	   
+		<dependency org="apache" name="ddlUtils" rev="1.0-PATCHED" conf="default"/>
+		<dependency org="args4j" name="args4j" rev="2.0.12" conf="default"/>
+		<dependency org="oro" name="oro" rev="2.0.8" conf="default"/>
+		<dependency org="commons-digester" name="commons-digester" rev="1.8" conf="default"/>
+		<dependency org="commons-betwixt" name="commons-betwixt" rev="0.8" conf="default"/>
+		<dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.3" conf="default"/>
+		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="indexer" rev="${vBuild}" conf="default"/>
+		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.0.1" conf="default"/>
+		<dependency org="org.codehaus.castor" name="castor-core" rev="1.3.1" conf="default"/>
+		<dependency org="org.codehaus.castor" name="castor-xml" rev="1.3.1" conf="default"/>
+		<dependency org="org.easymock" name="easymock" rev="2.4" conf="default"/> 
+		<dependency org="org.easymock" name="easymockclassextension" rev="2.4" conf="default"/> 
+		<dependency org="asm" name="asm" rev="3.1" conf="default"/>
+		<dependency org="cglib" name="cglib" rev="2.2" conf="default" />
+		<dependency org="org.aspectj" name="aspectjrt" rev="1.6.8" conf="default"/>
+		<dependency org="org.aspectj" name="aspectjweaver" rev="1.6.8" conf="default"/>
+		<dependency org="aopalliance" name="aopalliance" rev="1.0" conf="default->*"/>
+		<dependency org="org.springframework" name="spring-aspects" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-test" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-jdbc" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-orm" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-tx" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-context-support" rev="3.0.5.RELEASE" conf="default" />
+		<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" conf="default" />
+		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="2.1.0.RELEASE" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-core" rev="3.3.2.GA" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-commons-annotations" rev="3.3.0.ga" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" conf="default" />
+		<dependency org="org.hibernate" name="ejb3-persistence" rev="1.0.2.GA" conf="default" />
+		<dependency org="org.compass-project" name="compass" rev="2.2.0" conf="default" />
+		<dependency org="org.apache.lucene" name="lucene-core" rev="2.4.1" force="true" conf="default"/>
+		<dependency org="org.apache.lucene" name="lucene-analyzers" rev="2.4.1" force="true" conf="default"/>
+		<dependency org="org.apache.lucene" name="lucene-queries" rev="2.4.1" force="true" conf="default"/>
+		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" conf="default" />
+		<dependency org="log4j" name="log4j" rev="1.2.14" conf="default" />
+		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false" conf="default->*"/>
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" conf="default" />
+		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.6" conf="default" />
+		<dependency org="javax.transaction" name="jta" rev="1.1" conf="default" />
+		<dependency org="javassist" name="javassist" rev="3.8.0.GA" conf="default" />
+		<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.3.1" conf="default" />
+		<dependency org="org.codehaus.jettison" name="jettison" rev="1.1" conf="default" />
+		<dependency org="stax" name="stax-api" rev="1.0.1" conf="default" />
+		<dependency org="org.hsqldb" name="hsqldb" rev="2.0.0" conf="default" />
+		<dependency org="junit" name="junit" rev="4.8.2" force="true" conf="default" /> 
+		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" rev="2.3.4.726" conf="default"/>
+   		<dependency org="antlr" name="antlr" rev="2.7.7" conf="default"/>
+   		<dependency org="org.dbunit" name="dbunit" rev="2.4.7" conf="default"/>
+   		<dependency org="commons-io" name="commons-io" rev="1.4" conf="default" />
+   	    <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="default" />
+   	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>	
+   	    <dependency org="javax.persistence" name="persistence-api" rev="1.0" conf="default->*"/>  
    	 </dependencies>
 </ivy-module>

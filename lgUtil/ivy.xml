@@ -11,10 +11,10 @@
 	</publications>
 
 	<dependencies>
-		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}"/>
-    	<dependency org="commons-collections" name="commons-collections" rev="3.2.1"/>
-    	<dependency org="commons-pool" name="commons-pool" rev="1.4" />
-    	<dependency org="commons-lang" name="commons-lang" rev="2.4"/>
-    	<dependency org="log4j" name="log4j" rev="1.2.8"/>  
+		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
+    	<dependency org="commons-collections" name="commons-collections" rev="3.2.1" conf="default"/>
+    	<dependency org="commons-pool" name="commons-pool" rev="1.4" conf="default"/>
+    	<dependency org="commons-lang" name="commons-lang" rev="2.4" conf="default"/>
+    	<dependency org="log4j" name="log4j" rev="1.2.8" conf="default" />
     </dependencies>
 </ivy-module>

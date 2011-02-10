@@ -11,9 +11,9 @@
 	</publications>
 	
 	<dependencies>
-		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
+		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
    	 </dependencies>
 </ivy-module>

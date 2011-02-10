@@ -12,6 +12,6 @@
 			 m:classifier="tests" conf="test"/>
 	</publications>
     <dependencies>
-    	<dependency org="lexevs" name="abstract-rrf-loader" rev="${vBuild}" />
+    	<dependency org="lexevs" name="abstract-rrf-loader" rev="${vBuild}" conf="default,test"/>
     </dependencies>
 </ivy-module>

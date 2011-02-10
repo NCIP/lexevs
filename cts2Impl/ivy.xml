@@ -13,22 +13,22 @@
 	</publications>
 	
 	<dependencies>
-		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1"/>
-		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE"/>
-		<dependency org="org.springframework" name="spring-orm" rev="3.0.5.RELEASE"/>
-		<dependency org="cglib" name="cglib" rev="2.2" />
-		<dependency org="asm" name="asm" rev="3.3"/>
-		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1"/>
-		<dependency org="junit" name="junit" rev="4.8.2"/> 
-		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}"/>
-		<dependency org="lexevs" name="cts2-model" rev="${vBuild}"/>
+		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1" conf="default"/>
+		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-orm" rev="3.0.5.RELEASE" conf="default"/>
+		<dependency org="cglib" name="cglib" rev="2.2" conf="default" />
+		<dependency org="asm" name="asm" rev="3.3" conf="default"/>
+		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1" conf="default"/>
+		<dependency org="junit" name="junit" rev="4.8.2" conf="default"/> 
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="cts2-model" rev="${vBuild}" conf="default"/>
    	 </dependencies>
 </ivy-module>

@@ -11,20 +11,20 @@
 			 m:classifier="sources" />
 	</publications>
 	<dependencies>
-		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
-		<dependency org="lexevs" name="cts2-impl" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}"/>
-		<dependency org="lexevs" name="meta-loader" rev="${vBuild}"/>
-		<dependency org="lexevs" name="umls-loader" rev="${vBuild}"/>
-		<dependency org="prefuse" name="prefuse" rev="2006.07.15-mod"/>
-		<dependency org="swt" name="swt" rev="windows"/>
-		<dependency org="jface" name="org.eclipse.jface" rev="3.2.0.I20060329-0010"/>
-		<dependency org="jface" name="org.eclipse.jface.databinding" rev="1.0.0.I20060330-1600"/>
-		<dependency org="jface" name="org.eclipse.jface.text" rev="3.2.0.v20060329-1600"/>
-		<dependency org="core" name="org.eclipse.core.commands" rev="3.2.0.I20060327-0010"/>
-		<dependency org="core" name="org.eclipse.core.runtime" rev="3.2.0.v20060603"/>
-		<dependency org="core" name="org.eclipse.equinox.common" rev="3.2.0.v20060603"/>
-		<dependency org="core" name="org.eclipse.equinox.preferences" rev="3.2.0.v20060601"/>
-		<dependency org="core" name="org.eclipse.osgi" rev="3.2.0.v20060601"/>
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="cts2-impl" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="meta-loader" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
+		<dependency org="prefuse" name="prefuse" rev="2006.07.15-mod" conf="default"/>
+		<dependency org="swt" name="swt" rev="windows" conf="default"/>
+		<dependency org="jface" name="org.eclipse.jface" rev="3.2.0.I20060329-0010" conf="default"/>
+		<dependency org="jface" name="org.eclipse.jface.databinding" rev="1.0.0.I20060330-1600" conf="default"/>
+		<dependency org="jface" name="org.eclipse.jface.text" rev="3.2.0.v20060329-1600" conf="default"/>
+		<dependency org="core" name="org.eclipse.core.commands" rev="3.2.0.I20060327-0010" conf="default"/>
+		<dependency org="core" name="org.eclipse.core.runtime" rev="3.2.0.v20060603" conf="default"/>
+		<dependency org="core" name="org.eclipse.equinox.common" rev="3.2.0.v20060603" conf="default"/>
+		<dependency org="core" name="org.eclipse.equinox.preferences" rev="3.2.0.v20060601" conf="default"/>
+		<dependency org="core" name="org.eclipse.osgi" rev="3.2.0.v20060601" conf="default"/>
    	 </dependencies>
 </ivy-module>

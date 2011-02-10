@@ -15,7 +15,7 @@
 <!--                                                                        -->
 <!-- ====================================================================== -->
 
-<project name="loader-framework-core" default="package" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+<project name="loader-framework-core" default="publish" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
 
   <!-- ====================================================================== -->
   <!-- Build environment properties                                           -->

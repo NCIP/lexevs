@@ -10,7 +10,7 @@
 			 m:classifier="sources" conf="sources" />
 	</publications>
 	<dependencies>
-   	    <dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/> 
-   	    <dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}"/> 
+   	    <dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+   	    <dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
    	 </dependencies>
 </ivy-module>

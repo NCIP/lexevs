@@ -12,9 +12,9 @@
 			 m:classifier="tests" conf="test"/>
 	</publications>
     <dependencies>
-   		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}"/>
-    	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="test"/>
-    	<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
-    	<dependency org="org.springframework" name="spring-oxm" rev="3.0.5.RELEASE" />
+   		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default"/>
+    	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default,test"/>
+    	<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+    	<dependency org="org.springframework" name="spring-oxm" rev="3.0.5.RELEASE" conf="default"/>
     </dependencies>
 </ivy-module>

@@ -10,8 +10,8 @@
 			 m:classifier="sources" conf="sources" />
 	</publications>
 	<dependencies>
-		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}"/>
-		<dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
+		<dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4" conf="default"/>
    	 </dependencies>
 </ivy-module>

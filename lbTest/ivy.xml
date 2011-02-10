@@ -1,4 +1,4 @@
-<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven" >
     <info organisation="lexevs" module="lexbig-test" revision="${vBuild}"/>
     <configurations>
 		<include file="${lbPackager.dir}/ivyconfigurations.xml"/>
@@ -10,18 +10,18 @@
 	</publications>
 	
 	<dependencies>
-		<dependency org="junit" name="junit" rev="4.8.2"/> 
-		<dependency org="groboutils" name="groboutils-core" rev="5"/> 
-		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexgrid-converter" rev="${vBuild}" conf="test"/>
-		<dependency org="lexevs" name="cts2-impl" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}"/>
-		<dependency org="lexevs" name="cts2-model" rev="${vBuild}"/>
-		<dependency org="lexevs" name="meta-loader" rev="${vBuild}"/>
-		<dependency org="lexevs" name="umls-loader" rev="${vBuild}"/>
-		<dependency org="lexevs" name="loader-framework-core" rev="${vBuild}"/>
-		<dependency org="lexevs" name="abstract-rrf-loader" rev="${vBuild}"/>
+		<dependency org="junit" name="junit" rev="4.8.2" conf="default"/> 
+		<dependency org="groboutils" name="groboutils-core" rev="5" conf="default"/> 
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexgrid-converter" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="cts2-impl" rev="${vBuild}"  conf="default"/>
+		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"  conf="default"/>
+		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="cts2-model" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="meta-loader" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="loader-framework-core" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="abstract-rrf-loader" rev="${vBuild}"  conf="default"/>
    	 </dependencies>
 </ivy-module>
