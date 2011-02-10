@@ -568,7 +568,7 @@ You may obtain a copy of the License at
 		<copy file="${lexevs.api.dir}/lbTest/target/lexbig-test-${vBuild}-tests.jar" tofile="${pkg-test}/lbTest.jar"/>
 		<copy todir="${pkg-source}">
 			<fileset dir="${lexevs.api.dir}/lbTest/">
-			    <include name="**/lexbig-test-*-sources.jar"/>
+			    <include name="**/lexbig-test-${vBuild}-sources.jar"/>
 			</fileset>
 		</copy>
 
