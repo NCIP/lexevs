@@ -82,8 +82,8 @@
 	
 	<target name="init" depends="ivy:setup">
 		<path id="classpath">
-			<fileset dir="${lib.dir}/compile">
-				<include name="*.jar"/>
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
 			</fileset>
 		</path>
 	</target>
