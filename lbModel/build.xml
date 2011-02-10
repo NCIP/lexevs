@@ -232,8 +232,13 @@ public class]]></replacevalue>
 
 	<target name="publish" depends="jar" unless="publish.skip">
 	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="master" scope="compile"/>
+	   		<mapping conf="default" scope="compile"/>
 	   		<mapping conf="compile" scope="compile"/>
 	   		<mapping conf="test" scope="test"/>
+	   		<mapping conf="runtime" scope="runtime"/>
+	   		<mapping conf="provided" scope="provided"/>
+	   		<mapping conf="system" scope="system"/>
 	   	</ivy:makepom>
 		<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
 		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
