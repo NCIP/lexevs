@@ -11,7 +11,7 @@
 		<artifact name="abstract-rrf-loader" type="test" ext="jar"
 			 m:classifier="tests" conf="test"/>
 	</publications>
-    <dependencies>
+    <dependencies defaultconf="default">
     	<dependency org="lexevs" name="loader-framework-core" rev="${vBuild}" />
     </dependencies>
 </ivy-module>
