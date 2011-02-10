@@ -50,7 +50,7 @@
     <target name="ivy:init" depends="ivy:clean">
         <property name="ivy.dep.file" value="${ivy.def.file}"/>
         <ivy:settings file="${ivy.settings.file}"  />
-        <ivy:resolve refresh="true"/>
+        <ivy:resolve refresh="true" conf="default"/>
     	<ivy:cachepath pathid="compile.classpath" conf="compile" />
     	<ivy:cachepath pathid="test.classpath" conf="test" />
     </target>
@@ -68,7 +68,7 @@
         description="Updates the local ivy repository for all build and test dependencies."/>
 
     <target name="ivy:setup-compile" depends="ivy:init">
-        <ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision](-[classifier]).[ext]" conf="runtime"/>
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision](-[classifier]).[ext]" conf="default"/>
     	<copy todir="${lib.dir}/compile" failonerror="false">
     		<fileset dir="${extra.lib}"
     			includes="*.jar"/>
