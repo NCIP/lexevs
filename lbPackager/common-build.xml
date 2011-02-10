@@ -50,9 +50,9 @@
     <target name="ivy:init" depends="ivy:clean">
         <property name="ivy.dep.file" value="${ivy.def.file}"/>
         <ivy:settings file="${ivy.settings.file}"  />
-        <ivy:resolve refresh="true" conf="default"/>
-    	<ivy:cachepath pathid="compile.classpath" conf="compile" />
-    	<ivy:cachepath pathid="test.classpath" conf="test" />
+        <ivy:resolve refresh="true" conf="default,test"/>
+    	<ivy:cachepath pathid="compile.classpath" conf="default" />
+    	<ivy:cachepath pathid="test.classpath" conf="default,test" />
     </target>
     
     <target name="ivy:clean" depends="clean:dependencies" description="Clean">
@@ -130,7 +130,7 @@
         <pathelement location="${build.testDir}"/>
       </src>
       <classpath>
-        <path refid="compile.classpath"/>
+        <path refid="test.classpath"/>
         <pathelement location="${build.outputDir}"/>
       </classpath>
     </javac>
