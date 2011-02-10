@@ -60,10 +60,10 @@
 		description="Updates the local ivy repository for all build and test dependencies." />
 
 	<target name="ivy:setup-compile" depends="ivy:init">
-		<ivy:cachepath pathid="compile.classpath" />
-		<ivy:resolve refresh="true" conf="compile" />
+		<ivy:cachepath pathid="compile.classpath" conf="default"/>
+		<ivy:resolve refresh="true" conf="default" />
 		<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]"
-			conf="compile" />
+			conf="default" />
 	</target>
 	<!--*******************************************************************-->
 	<!--** END IVY TARGETS AND DEPENDENCY PATHS **-->
