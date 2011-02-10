@@ -28,13 +28,13 @@
 		<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.1.0-rc1.jar" />
 
 		<target name="ivy:init">
-
-		<path id="ivy.lib.path">
-				<fileset dir="${ivy.jar.dir}" includes="*.jar" />
-			</path>
-			<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"
-				classpathref="ivy.lib.path" />
-			<ivy:settings file="${ivy.settings.file}" />
+	
+			<path id="ivy.lib.path">
+					<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+				</path>
+				<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"
+					classpathref="ivy.lib.path" />
+				<ivy:settings file="${ivy.settings.file}" />
 		</target>
 
 		<target name="ivy:clean" depends="clean:dependencies"
@@ -52,16 +52,15 @@
 			description="Updates the local ivy repository for all build and test dependencies." />
 
 		<target name="ivy:setup-compile" depends="ivy:init">
-			<ivy:cachepath pathid="classpath" />
-			<ivy:resolve refresh="true" conf="compile" />
-			<ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision].[ext]" conf="compile" />
+			<ivy:resolve refresh="true" conf="default" />
+			<ivy:cachepath pathid="classpath" conf="default"/>
+			<ivy:retrieve pattern="${lib.dir}/[conf]/[type]/[artifact]-[revision].[ext]" conf="default" />
 		</target>
 		<!--*******************************************************************-->
 		<!--** END IVY TARGETS AND DEPENDENCY PATHS **-->
 		<!--*******************************************************************-->
 	
-	<target name="init" depends="ivy:setup">
-	</target>
+	<target name="init" depends="ivy:setup"/>
 
 	<target name="clean"  description="clean up" >
 		<!-- Delete the ${generated} and ${docs} directory trees -->
