@@ -18,6 +18,8 @@
  */
 package org.lexevs.system.service;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -43,6 +45,11 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	/** The delegate system resource service. */
 	private SystemResourceService delegateSystemResourceService;
 	
+	@Override
+	public List<AbsoluteCodingSchemeVersionReference> getMatchingCodingSchemeResources(CodingSchemeMatcher codingSchemeMatcher) {
+		return primarySystemResourceService.getMatchingCodingSchemeResources(codingSchemeMatcher);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.lexevs.system.service.SystemResourceService#containsCodingSchemeResource(java.lang.String, java.lang.String)
 	 */

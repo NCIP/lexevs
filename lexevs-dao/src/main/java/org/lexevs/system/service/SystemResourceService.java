@@ -18,6 +18,8 @@
  */
 package org.lexevs.system.service;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -49,6 +51,22 @@ public interface SystemResourceService {
 	 * @return the string
 	 */
 	public String createNewTablesForLoad();
+	
+	
+	/**
+	 * The Interface CodingSchemeMatcher.
+	 */
+	public static interface CodingSchemeMatcher {
+		public boolean isMatch(CodingSchemeAliasHolder aliasHolder);
+	}
+	
+	/**
+	 * Gets the matching coding scheme resources.
+	 *
+	 * @param codingSchemeMatcher the coding scheme matcher
+	 * @return the matching coding scheme resources
+	 */
+	public List<AbsoluteCodingSchemeVersionReference> getMatchingCodingSchemeResources(CodingSchemeMatcher codingSchemeMatcher);
 	
 	/**
 	 * Adds the coding scheme resource to system.
