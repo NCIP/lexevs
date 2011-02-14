@@ -38,7 +38,6 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.registry.setup.LexEvsDatabaseSchemaSetup;
-import org.lexevs.system.service.LexEvsResourceManagingService.CodingSchemeAliasHolder;
 import org.lexevs.util.TestUtils.DummyPersistenceScheme;
 import org.springframework.jdbc.core.JdbcTemplate;
 
