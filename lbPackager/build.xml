@@ -544,7 +544,7 @@ You may obtain a copy of the License at
 	
 	<target name="cts2-model" description="packages the LexEVS CTS2 Model Implementation">
 		<antcall target="common-project-build">
-   			<param name="project" value="cts2Model"/>
+   			<param name="project" value="cts2-model"/>
 			<param name="module" value="cts2-model"/>
   		</antcall>
 	</target>
