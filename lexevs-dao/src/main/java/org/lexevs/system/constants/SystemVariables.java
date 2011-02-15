@@ -41,6 +41,7 @@ import org.lexevs.system.utility.CryptoUtility;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SystemVariables {
+	public static String LG_CONFIG_FILE_SYSTEM_VARIABLE = "LG_CONFIG_FILE";
     public static String CONFIG_FILE_NAME = "lbconfig.props";
     private static String OVERRIDE_SINGLE_DB_PROP = "OVERRIDE_SINGLE_DB";
     private Hashtable<String, SQLConnectionInfo> sqlServers_;
@@ -165,7 +166,7 @@ public class SystemVariables {
 
     private Properties loadPropsFile(Logger logger) throws Exception {
         try {
-            PropertiesUtility.systemVariable = "LG_CONFIG_FILE";
+            PropertiesUtility.systemVariable = LG_CONFIG_FILE_SYSTEM_VARIABLE;
             String location = PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
                     + CONFIG_FILE_NAME, this.getClass().getName(), logger);
             Properties props = new Properties();
