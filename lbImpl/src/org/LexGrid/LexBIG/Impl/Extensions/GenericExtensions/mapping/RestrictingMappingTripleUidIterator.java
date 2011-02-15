@@ -71,9 +71,15 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     
     private List<MappingSortOption> sortOptionList;
     
+    private List<ConceptReference> sourceResolvedIteratorConceptReferences;
+    
+    private List<ConceptReference> targetResolvedIteratorConceptReferences;
+    
     private static String SOURCE_ITERATOR = "source";
     private static String TARGET_ITERATOR = "target";
     private static String BOTH_ITERATOR = "both";
+    
+    private boolean nullsortOptionListPageComplete = false;
     
     public RestrictingMappingTripleUidIterator(){
         super();
@@ -131,6 +137,21 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                 this.targetCodesResolvedConceptReferencesIterator = targetCodesCodedNodeSet.resolve(null, null, null, null, false);
             }
         }
+        
+        if(isSortingEnabled()){
+            if(sourceAndTargetCodesResolvedConceptReferencesIterator != null){
+                this.sourceResolvedIteratorConceptReferences = 
+                    this.buildResolvedConceptReferenceList(sourceAndTargetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
+                
+                this.targetResolvedIteratorConceptReferences = sourceResolvedIteratorConceptReferences;
+            } else {
+                this.sourceResolvedIteratorConceptReferences = 
+                    this.buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, PAGE_SIZE);
+                
+                this.targetResolvedIteratorConceptReferences = 
+                    this.buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
+            }
+        }
     } 
   
     /* (non-Javadoc)
@@ -146,7 +167,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
             throw new RuntimeException(e);
         }
 
-        if(this.sortOptionList == null){
+        if(!isSortingEnabled()){
 
             return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
                 getTripleUidsForMappingRelationsContainerForCodes(
@@ -174,14 +195,23 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     }
     
     private boolean hasMoreToPage() throws LBResourceUnavailableException{
-       return ((this.sourceCodesResolvedConceptReferencesIterator != null && 
-                this.sourceCodesResolvedConceptReferencesIterator.hasNext())
-                ||
-               (this.targetCodesResolvedConceptReferencesIterator != null && 
-                this.targetCodesResolvedConceptReferencesIterator.hasNext())
-                ||
-               (this.sourceAndTargetCodesResolvedConceptReferencesIterator != null && 
-                this.sourceAndTargetCodesResolvedConceptReferencesIterator.hasNext()));
+        if(isSortingEnabled()){
+            if(!this.nullsortOptionListPageComplete){
+                this.nullsortOptionListPageComplete = true;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return ((this.sourceCodesResolvedConceptReferencesIterator != null && 
+                    this.sourceCodesResolvedConceptReferencesIterator.hasNext())
+                    ||
+                   (this.targetCodesResolvedConceptReferencesIterator != null && 
+                    this.targetCodesResolvedConceptReferencesIterator.hasNext())
+                    ||
+                   (this.sourceAndTargetCodesResolvedConceptReferencesIterator != null && 
+                    this.sourceAndTargetCodesResolvedConceptReferencesIterator.hasNext()));
+        }
     }
     
     private enum SourceOrTarget {SOURCE,TARGET}
@@ -194,27 +224,35 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
      * @return the concept references for page
      */
     private List<ConceptReference> getConceptReferencesForPage(int pageSize, SourceOrTarget sourceOrTarget){
-        try {
-            if(this.sourceAndTargetCodesResolvedConceptReferencesIterator != null){
-
-                List<ConceptReference> list = buildResolvedConceptReferenceList(sourceAndTargetCodesResolvedConceptReferencesIterator, pageSize);
-               
-                return list;
-
+        if(isSortingEnabled()){
+            if(sourceOrTarget.equals(SourceOrTarget.SOURCE)){
+                return this.sourceResolvedIteratorConceptReferences;
             } else {
-                if(sourceOrTarget.equals(SourceOrTarget.SOURCE)){
-                    List<ConceptReference> list = buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, pageSize);
+                return this.targetResolvedIteratorConceptReferences;
+            }
+        } else {
+            try {
+                if(this.sourceAndTargetCodesResolvedConceptReferencesIterator != null){
+
+                    List<ConceptReference> list = buildResolvedConceptReferenceList(sourceAndTargetCodesResolvedConceptReferencesIterator, pageSize);
 
                     return list;
+
                 } else {
-                    List<ConceptReference> list = buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, pageSize);
-                  
-                    return list;
+                    if(sourceOrTarget.equals(SourceOrTarget.SOURCE)){
+                        List<ConceptReference> list = buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, pageSize);
+
+                        return list;
+                    } else {
+                        List<ConceptReference> list = buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, pageSize);
+
+                        return list;
+                    }
                 }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } 
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } 
+        }
     }
     
     private List<ConceptReference> buildResolvedConceptReferenceList(ResolvedConceptReferencesIterator iterator, int pageSize) throws LBResourceUnavailableException, LBInvocationException{
@@ -224,7 +262,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         } else {
             
             List<ConceptReference> list = null;
-            if(CollectionUtils.isEmpty(sortOptionList)){
+            if(!isSortingEnabled()){
                 list = DaoUtility.createList(ConceptReference.class, iterator.next(pageSize).getResolvedConceptReference());
             } else {
                 list = new ArrayList<ConceptReference>();
@@ -234,7 +272,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                 }
             }
 
-            if(CollectionUtils.isEmpty(sortOptionList)){
+            if(!isSortingEnabled()){
                 inOrderConceptReferences.addAll(list);
             }
             
@@ -254,6 +292,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         
         return map;
     }
+    
+    private boolean isSortingEnabled(){
+        return CollectionUtils.isNotEmpty(this.sortOptionList);
+    }
 
     /* (non-Javadoc)
      * @see org.lexevs.paging.AbstractRefereshingPageableIterator#doRefresh(java.lang.Object)
@@ -269,4 +311,23 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         return inOrderConceptReferences;
     }
 
+    protected List<ConceptReference> getSourceResolvedIteratorConceptReferences() {
+        return sourceResolvedIteratorConceptReferences;
+    }
+
+    protected List<ConceptReference> getTargetResolvedIteratorConceptReferences() {
+        return targetResolvedIteratorConceptReferences;
+    }
+
+    protected ResolvedConceptReferencesIterator getSourceCodesResolvedConceptReferencesIterator() {
+        return sourceCodesResolvedConceptReferencesIterator;
+    }
+
+    protected ResolvedConceptReferencesIterator getTargetCodesResolvedConceptReferencesIterator() {
+        return targetCodesResolvedConceptReferencesIterator;
+    }
+
+    protected ResolvedConceptReferencesIterator getSourceAndTargetCodesResolvedConceptReferencesIterator() {
+        return sourceAndTargetCodesResolvedConceptReferencesIterator;
+    }
 }

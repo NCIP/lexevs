@@ -12,6 +12,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -22,6 +23,9 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.apache.commons.collections.CollectionUtils;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * The Class CodedNodeSetBackedMapping.
@@ -83,14 +87,22 @@ public class CodedNodeSetBackedMapping implements Mapping {
     public ResolvedConceptReferencesIterator resolveMapping() throws LBException {
         Iterator<ResolvedConceptReference> iterator;
         
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        int count;
+        
         if(areAllCodedNodeSetsNull()){
-           iterator = new MappingTripleIterator(
+            iterator = new MappingTripleIterator(
                     mappingUri,
                     mappingVersion,
                     relationsContainerName,
                     null);
+            
+            count = service.getMappingTriplesCount(mappingUri, mappingVersion, relationsContainerName);
+            
         } else {
-            iterator = 
+            RestrictingMappingTripleIterator restrictingIterator = 
                 new RestrictingMappingTripleIterator(
                         mappingUri,
                         mappingVersion,
@@ -99,15 +111,61 @@ public class CodedNodeSetBackedMapping implements Mapping {
                         this.targetCodesCodedNodeSet,
                         this.sourceAndTargetCodesCodedNodeSet,
                         null);
+            
+            iterator = restrictingIterator;
+            
+            count = this.estimateMappingNumber(
+                    restrictingIterator.getTripleUidIterator().getSourceCodesResolvedConceptReferencesIterator(),
+                    restrictingIterator.getTripleUidIterator().getTargetCodesResolvedConceptReferencesIterator(),
+                    restrictingIterator.getTripleUidIterator().getSourceAndTargetCodesResolvedConceptReferencesIterator());      
         }
         
         return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator);
+            new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
+    }
+    
+    protected int estimateMappingNumber(
+            ResolvedConceptReferencesIterator sourceResolvedConceptReferencesIterator, 
+            ResolvedConceptReferencesIterator targetResolvedConceptReferencesIterator, 
+            ResolvedConceptReferencesIterator sourceAndTargetresolvedConceptReferencesIterator) throws LBResourceUnavailableException{
+        if(sourceResolvedConceptReferencesIterator == null && 
+                targetResolvedConceptReferencesIterator == null &&
+                sourceAndTargetresolvedConceptReferencesIterator == null){
+            return IteratorBackedResolvedConceptReferencesIterator.UNKNOWN_NUMBER;
+        }
+        
+        //if the sourceAndTarget iterator is there -- the other two must be null
+        if(sourceAndTargetresolvedConceptReferencesIterator != null){
+            return sourceAndTargetresolvedConceptReferencesIterator.numberRemaining() / 2;
+        }
+
+        if(sourceResolvedConceptReferencesIterator == null){
+            return targetResolvedConceptReferencesIterator.numberRemaining();
+        }
+
+        if(targetResolvedConceptReferencesIterator == null){
+            return sourceResolvedConceptReferencesIterator.numberRemaining();
+        }
+
+        return (sourceResolvedConceptReferencesIterator.numberRemaining()
+                +
+                sourceResolvedConceptReferencesIterator.numberRemaining())
+                /
+                2;
     }
     
     @Override
     public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException {
+        if(CollectionUtils.isEmpty(sortOptionList)){
+            return this.resolveMapping();
+        }
+        
         Iterator<ResolvedConceptReference> iterator;
+        
+        CodedNodeGraphService service = 
+            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
+        
+        int count;
         
         if(areAllCodedNodeSetsNull()){
            iterator = new MappingTripleIterator(
@@ -115,8 +173,11 @@ public class CodedNodeSetBackedMapping implements Mapping {
                     mappingVersion,
                     relationsContainerName,
                     sortOptionList);
+           
+           count = service.getMappingTriplesCount(mappingUri, mappingVersion, relationsContainerName);
+           
         } else {
-            iterator = 
+            RestrictingMappingTripleIterator restrictingIterator = 
                 new RestrictingMappingTripleIterator(
                         mappingUri,
                         mappingVersion,
@@ -125,10 +186,19 @@ public class CodedNodeSetBackedMapping implements Mapping {
                         this.targetCodesCodedNodeSet,
                         this.sourceAndTargetCodesCodedNodeSet,
                         sortOptionList);
+            
+            count = service.getMappingTriplesCountForCodes(
+                    mappingUri, 
+                    mappingVersion, 
+                    relationsContainerName, 
+                    restrictingIterator.getTripleUidIterator().getSourceResolvedIteratorConceptReferences(), 
+                    restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences());
+            
+            iterator = restrictingIterator;
         }
         
         return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator);
+            new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
     }
     
     @Override
