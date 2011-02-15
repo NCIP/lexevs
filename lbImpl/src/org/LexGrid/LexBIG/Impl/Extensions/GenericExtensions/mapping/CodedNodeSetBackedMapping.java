@@ -135,8 +135,9 @@ public class CodedNodeSetBackedMapping implements Mapping {
         }
         
         //if the sourceAndTarget iterator is there -- the other two must be null
-        if(sourceAndTargetresolvedConceptReferencesIterator != null){
-            return sourceAndTargetresolvedConceptReferencesIterator.numberRemaining() / 2;
+        if(sourceAndTargetresolvedConceptReferencesIterator != null){   
+            int number = sourceAndTargetresolvedConceptReferencesIterator.numberRemaining();
+            return this.getEstimateNumber(number);
         }
 
         if(sourceResolvedConceptReferencesIterator == null){
@@ -147,13 +148,20 @@ public class CodedNodeSetBackedMapping implements Mapping {
             return sourceResolvedConceptReferencesIterator.numberRemaining();
         }
 
-        return (sourceResolvedConceptReferencesIterator.numberRemaining()
-                +
-                sourceResolvedConceptReferencesIterator.numberRemaining())
-                /
-                2;
+        int number = sourceResolvedConceptReferencesIterator.numberRemaining()
+                    +
+                    sourceResolvedConceptReferencesIterator.numberRemaining();
+        return this.getEstimateNumber(number);     
     }
     
+    private int getEstimateNumber(int number){
+        if(number == 0 || number == 1){
+            return number;
+        } else {
+            return number / 2;
+        }
+    }
+
     @Override
     public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException {
         if(CollectionUtils.isEmpty(sortOptionList)){
