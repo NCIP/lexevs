@@ -1666,19 +1666,36 @@
 		INNER JOIN
 			$prefix$relation rel
 		ON 
-			(
-			ap.relationGuid = rel.relationGuid
-		AND
-			rel.codingSchemeGuid = #param1#
-		AND
-			rel.containerName = #param2#
-			)
+			(ap.relationGuid = rel.relationGuid)
 	</sql>
 	
 	<select id="getTriplesForMappingContainerCount" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		resultClass="int">
 		<include refid="getTriplesForMappingContainerCountFragment"/>
+		WHERE
+			rel.codingSchemeGuid = #param1#
+		AND
+			rel.containerName = #param2#	
+	</select>
+	
+	<select id="getTriplesForMappingContainerAndCodesCount" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultClass="int">
+		<include refid="getTriplesForMappingContainerCountFragment"/>
+		
+		WHERE
+			rel.codingSchemeGuid = #param1#
+		AND
+			rel.containerName = #param2#
+
+			<isNotEmpty property="param3" prepend="AND">
+			eate.sourceEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
+			</isNotEmpty>
+	
+			<isNotEmpty property="param4" prepend="AND">
+			eate.targetEntityCode IN ( <iterate property="param4" conjunction=",">#param4[].code#</iterate> )
+			</isNotEmpty>
 	</select>
 	
 	<select id="getCodeMappingParticipationCount" remapResults="true"
