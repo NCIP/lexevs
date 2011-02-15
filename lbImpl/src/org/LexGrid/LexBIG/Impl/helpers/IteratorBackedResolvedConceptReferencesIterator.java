@@ -33,7 +33,7 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
 
     private static final long serialVersionUID = -9172975996526240085L;
     
-    private static int UNKNOWN_NUMBER = -1;
+    public static int UNKNOWN_NUMBER = -1;
     private int count;
 
     private Iterator<ResolvedConceptReference> iterator;
@@ -62,7 +62,7 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
 
     @Override
     public ResolvedConceptReference next() throws LBResourceUnavailableException, LBInvocationException {
-        if(count != UNKNOWN_NUMBER) {
+        if(count != UNKNOWN_NUMBER && count > 0) {
             count--;
         }
         return this.iterator.next();
@@ -76,6 +76,9 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
         }
         if(count != UNKNOWN_NUMBER) {
             count -= returnList.getResolvedConceptReferenceCount();
+            if(count < 0){
+                count = 0;
+            }
         }
         return returnList;
     }
@@ -88,7 +91,11 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
 
     @Override
     public boolean hasNext() throws LBResourceUnavailableException {
-        return this.iterator.hasNext();
+        boolean hasNext = this.iterator.hasNext();
+        if(!hasNext){
+            count = 0;
+        }
+        return hasNext;
     }
 
     @Override
