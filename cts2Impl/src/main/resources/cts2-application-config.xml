@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="baseService" class="org.cts2.internal.profile.DefaultBaseService">
+		<property name="queryService" ref="defaultQueryService" />
+	</bean>
+	
+	<bean id="lexBIGServiceImpl" class="org.LexGrid.LexBIG.Impl.LexBIGServiceImpl"
+		factory-method="defaultInstance"/>
+
+	<bean id="dozerBeanMapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
+		<property name="mappingFiles" value="classpath*:mapper/dozer/*Mapper.xml" />
+	</bean>
+
+	<bean id="baseDozerBeanMapper" class="org.cts2.internal.mapper.BaseDozerBeanMapper">
+		<property name="dozerBeanMapper" ref="dozerBeanMapper" />
+	</bean>
+	
+	<bean id="abstractBaseService" class="org.cts2.internal.profile.AbstractBaseService" abstract="true">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+	</bean>
+
+	<bean id="defaultQueryService" class="org.cts2.internal.profile.query.DefaultQueryService">
+		<property name="codeSystemQuery" ref="lexEvsCodeSystemQuery" />
+	</bean>
+
+	<bean id="lexEvsCodeSystemQuery" class="org.cts2.internal.profile.query.LexEvsCodeSystemQuery" parent="abstractBaseService">
+		<property name="directoryURIFactory" ref="codeSystemDirectoryURIFactory" />
+	</bean>
+	
+	<!-- Directory URI Factories -->
+	<bean id="abstractDirectoryURIFactory" abstract="true">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="beanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	
+	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<!-- End Directory URI Factories -->
+	
+</beans>
