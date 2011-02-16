@@ -580,7 +580,7 @@ You may obtain a copy of the License at
 		
 		<jar destfile="${pkg-test}/lbTest.jar" update="true">
 		    <fileset dir="${temp.bin}">
-		        <include name="*.class"/>
+		        <include name="**/*.class"/>
 		    </fileset>
 		</jar>
 
