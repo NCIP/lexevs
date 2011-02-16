@@ -226,6 +226,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
 			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences,
 			List<Sort> sortList, 
 			int start, 
 			int pageSize);
@@ -234,7 +235,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String mappingCodingSchemeUid, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences);
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences);
 	
 	public List<? extends ResolvedConceptReference> getTriplesForMappingRelationsContainer(
 			String mappingCodingSchemeUid, 
@@ -247,7 +249,8 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String mappingCodingSchemeUid, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences);
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences);
 	
 	public int getTriplesForMappingRelationsContainerCount(
 			String mappingCodingSchemeUid, 

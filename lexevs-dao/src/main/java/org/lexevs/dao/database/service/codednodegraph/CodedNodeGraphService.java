@@ -542,6 +542,7 @@ public interface CodedNodeGraphService {
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
 			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences,
 			List<Sort> sorts,
 			int start, 
 			int pageSize);
@@ -551,7 +552,8 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences);
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences);
 
 	/**
 	 * Gets the mapping triples.
@@ -592,6 +594,7 @@ public interface CodedNodeGraphService {
 			String codingSchemeVersion, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences);
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences);
 
 }

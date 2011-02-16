@@ -790,7 +790,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeVersion,
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences) {
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences) {
 		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
@@ -801,7 +802,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 							mappingCodingSchemeUid,  
 							relationsContainerName, 
 							sourceConceptReferences,
-							targetConceptReferences);
+							targetConceptReferences,
+							sourceOrTargetConceptReferences);
 	}
 
 	@Override
@@ -813,6 +815,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
 			List<ConceptReference> targetConceptReferences, 
+			List<ConceptReference> sourceOrTargetConceptReferences,
 			List<Sort> sorts,
 			int start, 
 			int pageSize) {
@@ -845,6 +848,7 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 							relationsContainerName,
 							sourceConceptReferences, 
 							targetConceptReferences,
+							sourceOrTargetConceptReferences,
 							sorts,
 							start,
 							pageSize);
@@ -856,7 +860,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 			String codingSchemeVersion, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences) {
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences) {
 		String mappingCodingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
 		
 		return this.getDaoManager().
@@ -867,7 +872,8 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 							mappingCodingSchemeUid, 
 							relationsContainerName,
 							sourceConceptReferences,
-							targetConceptReferences);
+							targetConceptReferences,
+							sourceOrTargetConceptReferences);
 	}
 
 	/* (non-Javadoc)

@@ -792,6 +792,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
 			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences,
 			List<Sort> sortList, 
 			int start, 
 			int pageSize) {
@@ -818,6 +819,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				relationsContainerName,
 				sourceConceptReferences,
 				targetConceptReferences,
+				sourceOrTargetConceptReferences,
 				sortList);
 
 		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL, bean, start, pageSize);	
@@ -829,7 +831,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			String mappingCodingSchemeUid, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences) {
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences) {
 		
 		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
 		
@@ -837,7 +840,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				mappingCodingSchemeUid,
 				relationsContainerName,
 				sourceConceptReferences, 
-				targetConceptReferences);
+				targetConceptReferences,
+				sourceOrTargetConceptReferences);
 		
 		bean.setPrefix(mappingSchemePrefix);
 
@@ -849,14 +853,16 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			String mappingCodingSchemeUid, 
 			String relationsContainerName,
 			List<ConceptReference> sourceConceptReferences,
-			List<ConceptReference> targetConceptReferences) {
+			List<ConceptReference> targetConceptReferences,
+			List<ConceptReference> sourceOrTargetConceptReferences) {
 		String mappingSchemePrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(mappingCodingSchemeUid);
 		
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
 				mappingCodingSchemeUid,
 				relationsContainerName,
 				sourceConceptReferences,
-				sourceConceptReferences);
+				sourceConceptReferences,
+				sourceOrTargetConceptReferences);
 
 		bean.setPrefix(mappingSchemePrefix);
 		
@@ -905,6 +911,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		private List<ConceptReference> sourceConceptReferences;
 		private List<ConceptReference> targetConceptReferences;
+		private List<ConceptReference> sourceOrTargetConceptReferences;
 		
 		public RestrictingMappingTripleParameterBean(
 				String prefix,
@@ -916,6 +923,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				String relationsContainerName, 
 				List<ConceptReference> sourceConceptReferences,
 				List<ConceptReference> targetConceptReferences,
+				List<ConceptReference> sourceOrTargetConceptReferences,
 				List<Sort> sortList){
 			super(  prefix,
 					mappingCodingSchemeUid,
@@ -928,6 +936,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			
 			this.sourceConceptReferences = sourceConceptReferences;
 			this.targetConceptReferences = targetConceptReferences;
+			this.sourceOrTargetConceptReferences = sourceOrTargetConceptReferences;
 		}
 
 		public List<ConceptReference> getSourceConceptReferences() {
@@ -946,6 +955,15 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		public void setTargetConceptReferences(
 				List<ConceptReference> targetConceptReferences) {
 			this.targetConceptReferences = targetConceptReferences;
+		}
+
+		public List<ConceptReference> getSourceOrTargetConceptReferences() {
+			return sourceOrTargetConceptReferences;
+		}
+
+		public void setSourceOrTargetConceptReferences(
+				List<ConceptReference> sourceOrTargetConceptReferences) {
+			this.sourceOrTargetConceptReferences = sourceOrTargetConceptReferences;
 		}
 	}
 	
