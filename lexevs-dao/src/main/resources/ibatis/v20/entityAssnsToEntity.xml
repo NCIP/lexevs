@@ -1514,18 +1514,23 @@
 		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$RestrictingMappingTripleParameterBean"
 		resultMap="Common.uidResult">
 		<include refid="getTripleUidsForMappingContainerPre"/>
-			AND (
-				<isNotEmpty property="sourceConceptReferences">
-				eate.sourceEntityCode IN ( <iterate property="sourceConceptReferences" conjunction=",">#sourceConceptReferences[].code#</iterate> )
-				</isNotEmpty>
+			<isNotEmpty property="sourceConceptReferences" prepend="AND">
+			eate.sourceEntityCode IN ( <iterate property="sourceConceptReferences" conjunction=",">#sourceConceptReferences[].code#</iterate> )
+			</isNotEmpty>
 	
-				<isNotEmpty property="targetConceptReferences">
-					<isNotEmpty property="sourceConceptReferences">
-					AND
-					</isNotEmpty>
-				eate.targetEntityCode IN ( <iterate property="targetConceptReferences" conjunction=",">#targetConceptReferences[].code#</iterate> )
-				</isNotEmpty>
+			<isNotEmpty property="targetConceptReferences" prepend="AND">
+			eate.targetEntityCode IN ( <iterate property="targetConceptReferences" conjunction=",">#targetConceptReferences[].code#</iterate> )
+			</isNotEmpty>
+			
+			<isNotEmpty property="sourceOrTargetConceptReferences" prepend="AND">
+			(
+				eate.sourceEntityCode IN ( <iterate property="sourceOrTargetConceptReferences" conjunction=",">#sourceOrTargetConceptReferences[].code#</iterate> )
+				
+				OR
+				
+				eate.targetEntityCode IN ( <iterate property="sourceOrTargetConceptReferences" conjunction=",">#sourceOrTargetConceptReferences[].code#</iterate> )
 			)
+			</isNotEmpty>
 		<include refid="getTripleUidsForMappingContainerPost"/>	
 	</select>
 	
@@ -1546,26 +1551,30 @@
 		INNER JOIN
 			$prefix$relation rel
 		ON 
-			(
-			ap.relationGuid = rel.relationGuid
-		AND
+			(ap.relationGuid = rel.relationGuid)
+		
+		WHERE
 			rel.codingSchemeGuid = #param1#
 		AND
 			rel.containerName = #param2#
-			)
-		
-		WHERE
-			<isNotEmpty property="param3">
+
+			<isNotEmpty property="param3" prepend="AND">
 			eate.sourceEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
 			</isNotEmpty>
 	
-			<isNotEmpty property="param4">
-				<isNotEmpty property="param3">
-				AND
-				</isNotEmpty>
+			<isNotEmpty property="param4" prepend="AND">
 			eate.targetEntityCode IN ( <iterate property="param4" conjunction=",">#param4[].code#</iterate> )
 			</isNotEmpty>
 			
+			<isNotEmpty property="param5" prepend="AND">
+			(
+				eate.sourceEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+				
+				OR
+				
+				eate.targetEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+			)
+			</isNotEmpty>	
 	</select>
 	
 	<select id="getTriplesForMappingContainer" remapResults="true"
@@ -1695,6 +1704,16 @@
 	
 			<isNotEmpty property="param4" prepend="AND">
 			eate.targetEntityCode IN ( <iterate property="param4" conjunction=",">#param4[].code#</iterate> )
+			</isNotEmpty>
+			
+			<isNotEmpty property="param5" prepend="AND">
+			(
+				eate.sourceEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+				
+				OR
+				
+				eate.targetEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+			)
 			</isNotEmpty>
 	</select>
 	
