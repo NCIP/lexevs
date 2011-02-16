@@ -349,6 +349,10 @@ public class CodedNodeSetBackedMapping implements Mapping {
     }
     
     protected void doRestrict(DoRestrict doRestrict, SearchContext searchContext) throws LBParameterException, LBInvocationException{
+        
+        if(searchContext == null){
+            throw new LBParameterException("SearchContext cannot be null", "searchContext");
+        }
 
         CodedNodeSet cns = this.getCodedNodeSet(searchContext);
 
