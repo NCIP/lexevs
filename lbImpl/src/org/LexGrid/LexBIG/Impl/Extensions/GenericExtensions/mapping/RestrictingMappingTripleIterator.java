@@ -49,8 +49,6 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
     private CodedNodeSet targetCodesCodedNodeSet;
     
     private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
-    
-    private List<RelationshipRestriction> relationshipRestrictions;
             
     private List<MappingSortOption> sortOptionList;
    
