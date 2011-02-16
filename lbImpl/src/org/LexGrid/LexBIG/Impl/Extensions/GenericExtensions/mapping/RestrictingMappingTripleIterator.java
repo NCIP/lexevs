@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.CodedNodeSetBackedMapping.RelationshipRestriction;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -48,13 +49,11 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
     private CodedNodeSet targetCodesCodedNodeSet;
     
     private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
+    
+    private List<RelationshipRestriction> relationshipRestrictions;
             
     private List<MappingSortOption> sortOptionList;
-    
-    public RestrictingMappingTripleIterator(){
-        super();
-    }
-    
+   
     /**
      * Instantiates a new mapping triple iterator.
      * 
@@ -72,6 +71,7 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
             CodedNodeSet sourceCodesCodedNodeSet,
             CodedNodeSet targetCodesCodedNodeSet,
             CodedNodeSet sourceOrTargetCodesCodedNodeSet,
+            List<RelationshipRestriction> relationshipRestrictions,
             List<MappingSortOption> sortOptionList) throws LBParameterException {
         super(uri,version, relationsContainerName);
         this.sourceCodesCodedNodeSet = sourceCodesCodedNodeSet;

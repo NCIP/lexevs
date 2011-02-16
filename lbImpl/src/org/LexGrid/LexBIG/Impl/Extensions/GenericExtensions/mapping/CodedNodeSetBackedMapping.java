@@ -1,5 +1,7 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.helpers.IteratorBackedResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
@@ -25,6 +28,7 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
@@ -43,6 +47,9 @@ public class CodedNodeSetBackedMapping implements Mapping {
     private CodedNodeSet targetCodesCodedNodeSet;
     
     private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
+    
+    private List<RelationshipRestriction> relationshipRestrictions = 
+        new ArrayList<RelationshipRestriction>();
     
     /** The mapping uri. */
     private String mappingUri;
@@ -85,43 +92,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
      */
     @Override
     public ResolvedConceptReferencesIterator resolveMapping() throws LBException {
-        Iterator<ResolvedConceptReference> iterator;
-        
-        CodedNodeGraphService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService();
-        
-        int count;
-        
-        if(areAllCodedNodeSetsNull()){
-            iterator = new MappingTripleIterator(
-                    mappingUri,
-                    mappingVersion,
-                    relationsContainerName,
-                    null);
-            
-            count = service.getMappingTriplesCount(mappingUri, mappingVersion, relationsContainerName);
-            
-        } else {
-            RestrictingMappingTripleIterator restrictingIterator = 
-                new RestrictingMappingTripleIterator(
-                        mappingUri,
-                        mappingVersion,
-                        relationsContainerName, 
-                        this.sourceCodesCodedNodeSet,
-                        this.targetCodesCodedNodeSet,
-                        this.sourceOrTargetCodesCodedNodeSet,
-                        null);
-            
-            iterator = restrictingIterator;
-            
-            count = this.estimateMappingNumber(
-                    restrictingIterator.getTripleUidIterator().getSourceCodesResolvedConceptReferencesIterator(),
-                    restrictingIterator.getTripleUidIterator().getTargetCodesResolvedConceptReferencesIterator(),
-                    restrictingIterator.getTripleUidIterator().getSourceOrTargetCodesResolvedConceptReferencesIterator());      
-        }
-        
-        return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
+        return this.resolveMapping(null);
     }
     
     protected int estimateMappingNumber(
@@ -161,12 +132,32 @@ public class CodedNodeSetBackedMapping implements Mapping {
             return number / 2;
         }
     }
+    
+    protected void processRelationshipRestrictions() throws LBException {        
+        if(CollectionUtils.isEmpty(this.relationshipRestrictions)){
+            return;
+        }
+        
+        for(RelationshipRestriction restriction : this.relationshipRestrictions){
+            CodedNodeGraph cng = this.createCodedNodeGraph();
+            
+            String[] associationNames = 
+                DaoUtility.localNameListToString(restriction.getRelationshipNames()).toArray(new String[restriction.relationshipNames.getEntryCount()]);
+            
+            cng = cng.restrictToAssociations(
+                    Constructors.createNameAndValueList(associationNames), null);
+            
+            cng = cng.restrictToTargetCodes(restriction.codedNodeSet);
+            
+            this.targetCodesCodedNodeSet = 
+                this.getCodedNodeSet(SearchContext.TARGET_CODES).intersect(
+                        cng.toNodeList(null, false, true, 0, -1));
+        }
+    }
 
     @Override
-    public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException {
-        if(CollectionUtils.isEmpty(sortOptionList)){
-            return this.resolveMapping();
-        }
+    public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException {      
+        processRelationshipRestrictions();
         
         Iterator<ResolvedConceptReference> iterator;
         
@@ -193,15 +184,23 @@ public class CodedNodeSetBackedMapping implements Mapping {
                         this.sourceCodesCodedNodeSet,
                         this.targetCodesCodedNodeSet,
                         this.sourceOrTargetCodesCodedNodeSet,
+                        this.relationshipRestrictions,
                         sortOptionList);
             
-            count = service.getMappingTriplesCountForCodes(
-                    mappingUri, 
-                    mappingVersion, 
-                    relationsContainerName, 
-                    restrictingIterator.getTripleUidIterator().getSourceResolvedIteratorConceptReferences(), 
-                    restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences(),
-                    restrictingIterator.getTripleUidIterator().getSourceOrTargetResolvedIteratorConceptReferences());
+            if(CollectionUtils.isNotEmpty(sortOptionList)){
+                count = service.getMappingTriplesCountForCodes(
+                        mappingUri, 
+                        mappingVersion, 
+                        relationsContainerName, 
+                        restrictingIterator.getTripleUidIterator().getSourceResolvedIteratorConceptReferences(), 
+                        restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences(),
+                        restrictingIterator.getTripleUidIterator().getSourceOrTargetResolvedIteratorConceptReferences());
+            } else {
+                count = this.estimateMappingNumber(
+                        restrictingIterator.getTripleUidIterator().getSourceCodesResolvedConceptReferencesIterator(),
+                        restrictingIterator.getTripleUidIterator().getTargetCodesResolvedConceptReferencesIterator(),
+                        restrictingIterator.getTripleUidIterator().getSourceOrTargetCodesResolvedConceptReferencesIterator());     
+            }
             
             iterator = restrictingIterator;
         }
@@ -300,7 +299,13 @@ public class CodedNodeSetBackedMapping implements Mapping {
             String matchAlgorithm,
             String language, 
             LocalNameList relationshipList) throws LBInvocationException, LBParameterException {
-          throw new RuntimeException();
+        
+        CodedNodeSet cns = this.createCodedNodeSet();
+        cns = cns.restrictToMatchingDesignations(matchText, option, matchAlgorithm, language);
+ 
+        this.relationshipRestrictions.add(new RelationshipRestriction(cns, relationshipList));
+        
+        return this;
     }
     
     private CodedNodeSet getCodedNodeSet(SearchContext searchContext) throws LBParameterException{
@@ -331,10 +336,22 @@ public class CodedNodeSetBackedMapping implements Mapping {
         throw new RuntimeException("Invalid SearchContext.");
     }
     
-    public CodedNodeSet createCodedNodeSet() throws LBParameterException{
+    protected CodedNodeSet createCodedNodeSet() throws LBParameterException{
         try {
             return LexBIGServiceImpl.defaultInstance().
                 getNodeSet(
+                        this.mappingUri, 
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion), 
+                        null);
+        } catch (LBException e) {
+            throw new LBParameterException(e.getMessage());
+        }
+    }
+    
+    protected CodedNodeGraph createCodedNodeGraph() throws LBParameterException{
+        try {
+            return LexBIGServiceImpl.defaultInstance().
+                getNodeGraph(
                         this.mappingUri, 
                         Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion), 
                         null);
@@ -375,6 +392,36 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 break;
             }
         }
+    }
+    
+    protected class RelationshipRestriction implements Serializable {
+  
+        private static final long serialVersionUID = -171885936580958085L;
+        private CodedNodeSet codedNodeSet;
+        private LocalNameList relationshipNames;
+        
+        protected RelationshipRestriction(){
+            super();
+        }
+
+        protected RelationshipRestriction(CodedNodeSet codedNodeSet, LocalNameList relationshipNames) {
+            super();
+            this.codedNodeSet = codedNodeSet;
+            this.relationshipNames = relationshipNames;
+        }
+
+        public CodedNodeSet getCodedNodeSet() {
+            return codedNodeSet;
+        }
+        public void setCodedNodeSet(CodedNodeSet codedNodeSet) {
+            this.codedNodeSet = codedNodeSet;
+        }
+        public LocalNameList getRelationshipNames() {
+            return relationshipNames;
+        }
+        public void setRelationshipName(LocalNameList relationshipNames) {
+            this.relationshipNames = relationshipNames;
+        }   
     }
 
     /**
