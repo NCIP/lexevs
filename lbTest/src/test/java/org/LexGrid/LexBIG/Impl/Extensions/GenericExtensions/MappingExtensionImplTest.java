@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
@@ -100,6 +101,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 		
+		@SuppressWarnings("rawtypes")
 		List<Tuple<String>> expectedTuples = new ArrayList(Arrays.asList(
 				new Tuple<String>("Jaguar", "E0001"),
 				new Tuple<String>("A0001", "R0001"),
@@ -260,7 +262,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("Jaguar", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("Jaguar", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
@@ -278,14 +280,14 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("Jaguar", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("Jaguar", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertEquals(1,itr.numberRemaining());
 	}
 
-	public void testResolveMappingWithRestrictionBoth() throws LBException {
+	public void testResolveMappingWithRestrictionEither() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 	
@@ -294,7 +296,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
@@ -304,7 +306,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());	
 	}
 	
-	public void testResolveMappingWithRestrictionBothCount() throws LBException {
+	public void testResolveMappingWithRestrictionEitherFromBothFromSourceAndTarget() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 	
@@ -313,11 +315,35 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("ford OR engine", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
+		
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertTrue(itr.hasNext());
+		ConceptReference ref = itr.next();
+		
+		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar"));
+		assertTrue(itr.hasNext());
+		
+		ref = itr.next();
+		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar"));
+		assertFalse(itr.hasNext());	
+	}
+	
+	public void testResolveMappingWithRestrictionEitherCount() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		
+		mapping = mapping.restrictToMatchingDesignations("car", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 
-		assertEquals(1, itr.numberRemaining());
+		assertTrue(itr.numberRemaining() > 0);
 	}
 	
 	public void testResolveMappingWithRestrictionSource() throws LBException {
@@ -431,7 +457,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertEquals(1, itr.numberRemaining());
 	}
 	
-	public void testResolveMappingWithRestrictionSourceAndTargetAndBoth() throws LBException {
+	public void testResolveMappingWithRestrictionSourceAndTargetAndEither() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 	
@@ -442,7 +468,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		mapping = mapping.restrictToMatchingDesignations("jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_CODES);
 		mapping = mapping.restrictToMatchingDesignations("engine", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.TARGET_CODES);
-		mapping = mapping.restrictToMatchingDesignations("engine OR jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("engine OR jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
@@ -453,7 +479,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testResolveMappingWithRestrictionSourceAndTargetAndBothCount() throws LBException {
+	public void testResolveMappingWithRestrictionSourceAndTargetAndEitherCount() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 	
@@ -464,14 +490,14 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		mapping = mapping.restrictToMatchingDesignations("jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_CODES);
 		mapping = mapping.restrictToMatchingDesignations("engine", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.TARGET_CODES);
-		mapping = mapping.restrictToMatchingDesignations("engine OR jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("engine OR jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertEquals(1, itr.numberRemaining());
 	}
 	
-	public void testResolveMappingWithRestrictionSourceAndTargetAndBothWrongBoth() throws LBException {
+	public void testResolveMappingWithRestrictionSourceAndTargetAndBothWrongEither() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 	
@@ -482,14 +508,14 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		mapping = mapping.restrictToMatchingDesignations("jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_CODES);
 		mapping = mapping.restrictToMatchingDesignations("engine", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.TARGET_CODES);
-		mapping = mapping.restrictToMatchingDesignations("___INVALID___", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("___INVALID___", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
-		
+
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testResolveMappingWithRestrictionSourceAndTargetAndBothWrongBothCount() throws LBException {
+	public void testResolveMappingWithRestrictionSourceAndTargetAndBothWrongEitherCount() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
 	
@@ -500,7 +526,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		mapping = mapping.restrictToMatchingDesignations("jaguar", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_CODES);
 		mapping = mapping.restrictToMatchingDesignations("engine", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.TARGET_CODES);
-		mapping = mapping.restrictToMatchingDesignations("___INVALID___", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("___INVALID___", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
@@ -516,7 +542,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		MappingSortOption so = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.ASC);
 
@@ -537,7 +563,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		MappingSortOption so = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.ASC);
 
@@ -558,7 +584,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		MappingSortOption so = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.DESC);
 
@@ -578,7 +604,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.BOTH);
+		mapping = mapping.restrictToMatchingDesignations("*", SearchDesignationOption.ALL, "LuceneQuery", null,  SearchContext.SOURCE_OR_TARGET_CODES);
 		
 		MappingSortOption so = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.DESC);
 
@@ -626,6 +652,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
+			@SuppressWarnings("rawtypes")
 			Tuple other = (Tuple) obj;
 			if (!getOuterType().equals(other.getOuterType()))
 				return false;
