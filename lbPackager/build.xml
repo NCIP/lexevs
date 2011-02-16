@@ -156,9 +156,12 @@ You may obtain a copy of the License at
 
 	<!--define the dependencies path variable needed for the runtime -->
 		<path id="dependencies.path">
+
 			<fileset dir="${pkg-extlib}" id="extLib">
 				<include name="**/*.jar"/>
 			</fileset>
+			
+			<!-- We should be able to use IVY for these
 			<fileset dir="${icu4j.libs.dir}" id="icu4j">
 				<include name="*"/>
 			</fileset>
@@ -265,7 +268,7 @@ You may obtain a copy of the License at
 			<fileset dir="${claml.libs.dir}" id="claml">
 				<include name="*"/>
 			</fileset>
-			
+			-->
 		</path>
 		
 		<path id="master.classpath">
@@ -716,6 +719,12 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<copy todir="${pkg-source}">
 			<fileset dir="${lexevs.api.dir}/${project}/">
 			    <include name="**/${module}-*-sources.jar"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/${project}/">
+			    <include name="lib/**/*.jar"/>
 			</fileset>
 		</copy>
 	</target>
