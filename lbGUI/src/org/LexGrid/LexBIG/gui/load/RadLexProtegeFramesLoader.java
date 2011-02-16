@@ -96,7 +96,7 @@ public class RadLexProtegeFramesLoader extends LoadExportBaseShell {
 
 		Button fileChooseButton = Utility.getFileChooseButton(options, file,
 				new String[] { "*.pprj" },
-				new String[] { "ProtÃ©gÃ© project file (pprj)" });
+				new String[] { "Protégé project file (pprj)" });
 
 		gd = new GridData(SWT.CENTER);
 		gd.widthHint = 60;
