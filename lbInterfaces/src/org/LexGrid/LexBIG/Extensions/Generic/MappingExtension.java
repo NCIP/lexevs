@@ -259,8 +259,11 @@ public interface MappingExtension extends GenericExtension {
 			/** Apply the restriction to the "Target" codes of the mapping. */
 			TARGET_CODES, 
 			
-			/** Apply the restriction to "Both" Target and Source codes of the mapping. */
-			BOTH
+			/** Apply the restriction to Either the Source OR Target codes of the mapping. 
+			 *  A result will be returned if the restriction matches the Source codes OR
+			 *  the Target codes of the mapping.
+			 */
+			SOURCE_OR_TARGET_CODES
 		}
 
 		/**
