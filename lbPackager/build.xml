@@ -563,7 +563,6 @@ You may obtain a copy of the License at
 	<target name="lbTest" description="packages LexBIG verification tests">
 		<!-- Build distributed test jar (all impl & bvt tests) -->
 		<!-- Build impl tests for integration with test project -->
-		<antcall target="temp-clean"/>
 		<ant dir="${lexevs.api.dir}/lbTest" antfile="${lexevs.api.dir}/lbTest/build.xml" target="all"/>
 		<copy file="${lexevs.api.dir}/lbTest/target/lexbig-test-${vBuild}-tests.jar" tofile="${pkg-test}/lbTest.jar"/>
 		<copy todir="${pkg-source}">
@@ -571,6 +570,19 @@ You may obtain a copy of the License at
 			    <include name="**/lexbig-test-${vBuild}-sources.jar"/>
 			</fileset>
 		</copy>
+		
+		<antcall target="temp-clean"/>
+		<copy todir="${temp.src}">
+			<fileset dir="${basedir}/bvt" includes="**/*.java"/>
+		</copy>
+		<antcall target="temp-scrub"/>
+		<antcall target="temp-compile"/>
+		
+		<jar destfile="${pkg-test}/lbTest.jar" update="true">
+		    <fileset dir="${temp.bin}">
+		        <include name="*.class"/>
+		    </fileset>
+		</jar>
 
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-test}/lbTest.license.txt"/>
 		<copy todir="${pkg-test}">
