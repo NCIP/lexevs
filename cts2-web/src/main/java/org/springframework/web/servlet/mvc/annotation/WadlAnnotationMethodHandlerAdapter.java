@@ -64,9 +64,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cts2.web.rest.controller.annotation.WadlRequestMapping;
 import org.cts2.web.rest.wadl.Wadl;
 import org.cts2.web.rest.wadl.Wadl.WadlRequestMappingInfo;
+import org.cts2.web.rest.wadl.annotation.WadlRequestMapping;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;

@@ -16,28 +16,34 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.web.rest.util;
+package org.cts2.web.rest.wadl.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The Class WadlUtils.
+ * The Interface WadlRequestMapping.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class WadlUtils {
-
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface WadlRequestMapping {
+	
 	/**
-	 * Replace path parameters with wildcards.
+	 * Resource id.
 	 *
-	 * @param path the path
 	 * @return the string
 	 */
-	public static String replacePathParametersWithWildcards(String path){
-		path = path.replaceAll("\\{.*\\}", "*");
-		
-		if(!path.startsWith("/")){
-			path = "/" + path;
-		}
-		
-		return path;
-	}
+	String resourceId();
+	
+	/**
+	 * Method id.
+	 *
+	 * @return the string
+	 */
+	String methodId() default "";
+
 }

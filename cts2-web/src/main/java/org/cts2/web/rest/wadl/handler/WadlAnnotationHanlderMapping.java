@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.web.rest.wadl;
+package org.cts2.web.rest.wadl.handler;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,8 +25,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.cts2.web.rest.controller.annotation.WadlRequestMapping;
-import org.cts2.web.rest.util.WadlUtils;
+import org.cts2.web.rest.wadl.Wadl;
+import org.cts2.web.rest.wadl.WadlUtils;
+import org.cts2.web.rest.wadl.annotation.WadlRequestMapping;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;

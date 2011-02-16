@@ -23,7 +23,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.cts2.web.rest.controller.annotation.WadlRequestMapping;
+import org.cts2.web.rest.wadl.annotation.WadlRequestMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
