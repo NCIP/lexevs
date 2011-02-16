@@ -47,7 +47,7 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
     
     private CodedNodeSet targetCodesCodedNodeSet;
     
-    private CodedNodeSet sourceAndTargetCodesCodedNodeSet;
+    private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
             
     private List<MappingSortOption> sortOptionList;
     
@@ -71,12 +71,12 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
             String relationsContainerName,
             CodedNodeSet sourceCodesCodedNodeSet,
             CodedNodeSet targetCodesCodedNodeSet,
-            CodedNodeSet sourceAndTargetCodesCodedNodeSet,
+            CodedNodeSet sourceOrTargetCodesCodedNodeSet,
             List<MappingSortOption> sortOptionList) throws LBParameterException {
         super(uri,version, relationsContainerName);
         this.sourceCodesCodedNodeSet = sourceCodesCodedNodeSet;
         this.targetCodesCodedNodeSet = targetCodesCodedNodeSet;
-        this.sourceAndTargetCodesCodedNodeSet = sourceAndTargetCodesCodedNodeSet;
+        this.sourceOrTargetCodesCodedNodeSet = sourceOrTargetCodesCodedNodeSet;
         this.sortOptionList = sortOptionList;
         this.initializetMappingTripleIterator();
     }
@@ -134,7 +134,7 @@ public class RestrictingMappingTripleIterator extends AbstractMappingTripleItera
                 getRefs(),
                 sourceCodesCodedNodeSet,
                 targetCodesCodedNodeSet,
-                sourceAndTargetCodesCodedNodeSet,
+                sourceOrTargetCodesCodedNodeSet,
                 this.sortOptionList);
     }
 

@@ -42,7 +42,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
     
     private CodedNodeSet targetCodesCodedNodeSet;
     
-    private CodedNodeSet sourceAndTargetCodesCodedNodeSet;
+    private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
     
     /** The mapping uri. */
     private String mappingUri;
@@ -109,7 +109,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
                         relationsContainerName, 
                         this.sourceCodesCodedNodeSet,
                         this.targetCodesCodedNodeSet,
-                        this.sourceAndTargetCodesCodedNodeSet,
+                        this.sourceOrTargetCodesCodedNodeSet,
                         null);
             
             iterator = restrictingIterator;
@@ -117,7 +117,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
             count = this.estimateMappingNumber(
                     restrictingIterator.getTripleUidIterator().getSourceCodesResolvedConceptReferencesIterator(),
                     restrictingIterator.getTripleUidIterator().getTargetCodesResolvedConceptReferencesIterator(),
-                    restrictingIterator.getTripleUidIterator().getSourceAndTargetCodesResolvedConceptReferencesIterator());      
+                    restrictingIterator.getTripleUidIterator().getSourceOrTargetCodesResolvedConceptReferencesIterator());      
         }
         
         return 
@@ -192,7 +192,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
                         relationsContainerName, 
                         this.sourceCodesCodedNodeSet,
                         this.targetCodesCodedNodeSet,
-                        this.sourceAndTargetCodesCodedNodeSet,
+                        this.sourceOrTargetCodesCodedNodeSet,
                         sortOptionList);
             
             count = service.getMappingTriplesCountForCodes(
@@ -200,7 +200,8 @@ public class CodedNodeSetBackedMapping implements Mapping {
                     mappingVersion, 
                     relationsContainerName, 
                     restrictingIterator.getTripleUidIterator().getSourceResolvedIteratorConceptReferences(), 
-                    restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences());
+                    restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences(),
+                    restrictingIterator.getTripleUidIterator().getSourceOrTargetResolvedIteratorConceptReferences());
             
             iterator = restrictingIterator;
         }
@@ -238,7 +239,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
     private boolean areAllCodedNodeSetsNull(){
         return this.sourceCodesCodedNodeSet == null &&
             this.targetCodesCodedNodeSet == null &&
-            this.sourceAndTargetCodesCodedNodeSet == null;
+            this.sourceOrTargetCodesCodedNodeSet == null;
     }
 
     @Override
@@ -319,11 +320,11 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 return this.targetCodesCodedNodeSet;
             }
             
-            case BOTH : {
-                if(this.sourceAndTargetCodesCodedNodeSet == null){
-                    this.sourceAndTargetCodesCodedNodeSet = this.createCodedNodeSet();
+            case SOURCE_OR_TARGET_CODES : {
+                if(this.sourceOrTargetCodesCodedNodeSet == null){
+                    this.sourceOrTargetCodesCodedNodeSet = this.createCodedNodeSet();
                 }
-                return this.sourceAndTargetCodesCodedNodeSet;
+                return this.sourceOrTargetCodesCodedNodeSet;
             }
         }
         
@@ -351,7 +352,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
 
         CodedNodeSet cns = this.getCodedNodeSet(searchContext);
 
-        doRestrict.restrict(cns);
+        cns = doRestrict.restrict(cns);
 
         switch(searchContext){
 
@@ -365,8 +366,8 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 break;
             }
     
-            case BOTH : {
-                this.sourceAndTargetCodesCodedNodeSet = cns;
+            case SOURCE_OR_TARGET_CODES : {
+                this.sourceOrTargetCodesCodedNodeSet = cns;
                 break;
             }
         }

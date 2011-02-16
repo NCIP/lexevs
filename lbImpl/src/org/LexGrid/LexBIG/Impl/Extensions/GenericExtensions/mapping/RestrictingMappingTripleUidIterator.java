@@ -42,6 +42,11 @@ import org.lexevs.paging.AbstractRefereshingPageableIterator;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPageableIterator<Map<String,ResolvedConceptReferencesIterator>,String> {
+    
+    private static ConceptReference INVALID_CONCEPT_REFERENCE = new ConceptReference();
+    static {
+        INVALID_CONCEPT_REFERENCE.setCode("__INVALID__CONCEPT__REFERENCE__");
+    }
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 5709428653655124881L;
@@ -60,7 +65,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     
     private ResolvedConceptReferencesIterator targetCodesResolvedConceptReferencesIterator;
     
-    private ResolvedConceptReferencesIterator sourceAndTargetCodesResolvedConceptReferencesIterator;
+    private ResolvedConceptReferencesIterator sourceOrTargetCodesResolvedConceptReferencesIterator;
     
     /** The refs. */
     private MappingAbsoluteCodingSchemeVersionReferences refs;
@@ -74,6 +79,8 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     private List<ConceptReference> sourceResolvedIteratorConceptReferences;
     
     private List<ConceptReference> targetResolvedIteratorConceptReferences;
+    
+    private List<ConceptReference> sourceOrTargetResolvedIteratorConceptReferences;
     
     private static String SOURCE_ITERATOR = "source";
     private static String TARGET_ITERATOR = "target";
@@ -102,58 +109,38 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
             MappingAbsoluteCodingSchemeVersionReferences refs,
             CodedNodeSet sourceCodesCodedNodeSet,
             CodedNodeSet targetCodesCodedNodeSet,
-            CodedNodeSet sourceAndTargetCodesCodedNodeSet,
+            CodedNodeSet sourceOrTargetCodesCodedNodeSet,
             List<MappingSortOption> sortOptionList) throws LBException {
         super(PAGE_SIZE);
-      
+
         this.uri = uri;
         this.version = version;
         this.relationsContainerName = relationsContainerName;
         this.refs = refs;
         this.sortOptionList = sortOptionList;
-        
-        if(sourceAndTargetCodesCodedNodeSet != null){
-            if(sourceCodesCodedNodeSet != null && targetCodesCodedNodeSet != null){
-                sourceCodesCodedNodeSet = sourceCodesCodedNodeSet.intersect(sourceAndTargetCodesCodedNodeSet);
-                targetCodesCodedNodeSet = targetCodesCodedNodeSet.intersect(sourceAndTargetCodesCodedNodeSet);
-                
-                this.sourceCodesResolvedConceptReferencesIterator = sourceCodesCodedNodeSet.resolve(null, null, null, null, false);
-                this.targetCodesResolvedConceptReferencesIterator = targetCodesCodedNodeSet.resolve(null, null, null, null, false);
-            } else if(sourceCodesCodedNodeSet == null && targetCodesCodedNodeSet == null){
-                this.sourceAndTargetCodesResolvedConceptReferencesIterator = sourceAndTargetCodesCodedNodeSet.resolve(null, null, null, null, false);  
-            } else if(sourceCodesCodedNodeSet == null && targetCodesCodedNodeSet != null){
-                targetCodesCodedNodeSet = targetCodesCodedNodeSet.union(sourceAndTargetCodesCodedNodeSet);
-                this.targetCodesResolvedConceptReferencesIterator = targetCodesCodedNodeSet.resolve(null, null, null, null, false);  
-            } else if(sourceCodesCodedNodeSet != null && targetCodesCodedNodeSet == null){
-                sourceCodesCodedNodeSet = sourceCodesCodedNodeSet.union(sourceAndTargetCodesCodedNodeSet);
-                this.sourceCodesResolvedConceptReferencesIterator = sourceCodesCodedNodeSet.resolve(null, null, null, null, false);  
-            }
-        } else {
-            if(sourceCodesCodedNodeSet != null){
-                this.sourceCodesResolvedConceptReferencesIterator = sourceCodesCodedNodeSet.resolve(null, null, null, null, false);
-            }
-            
-            if(targetCodesCodedNodeSet != null){
-                this.targetCodesResolvedConceptReferencesIterator = targetCodesCodedNodeSet.resolve(null, null, null, null, false);
-            }
+
+        if(sourceCodesCodedNodeSet != null){
+            this.sourceCodesResolvedConceptReferencesIterator = sourceCodesCodedNodeSet.resolve(null, null, null, null, false);
         }
-        
+        if(targetCodesCodedNodeSet != null){
+            this.targetCodesResolvedConceptReferencesIterator = targetCodesCodedNodeSet.resolve(null, null, null, null, false);
+        }
+        if(sourceOrTargetCodesCodedNodeSet != null){
+            this.sourceOrTargetCodesResolvedConceptReferencesIterator = sourceOrTargetCodesCodedNodeSet.resolve(null, null, null, null, false);
+        }
+
         if(isSortingEnabled()){
-            if(sourceAndTargetCodesResolvedConceptReferencesIterator != null){
-                this.sourceResolvedIteratorConceptReferences = 
-                    this.buildResolvedConceptReferenceList(sourceAndTargetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
-                
-                this.targetResolvedIteratorConceptReferences = sourceResolvedIteratorConceptReferences;
-            } else {
-                this.sourceResolvedIteratorConceptReferences = 
-                    this.buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, PAGE_SIZE);
-                
-                this.targetResolvedIteratorConceptReferences = 
-                    this.buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
-            }
+            this.sourceResolvedIteratorConceptReferences = 
+                this.buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, PAGE_SIZE);
+
+            this.targetResolvedIteratorConceptReferences = 
+                this.buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
+
+            this.sourceOrTargetResolvedIteratorConceptReferences = 
+                this.buildResolvedConceptReferenceList(sourceOrTargetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
         }
     } 
-  
+
     /* (non-Javadoc)
      * @see org.lexevs.paging.AbstractPageableIterator#doPage(int, int)
      */
@@ -166,6 +153,14 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         } catch (LBResourceUnavailableException e) {
             throw new RuntimeException(e);
         }
+        
+        List<ConceptReference> sourceConceptReferences;
+        List<ConceptReference> targetConceptReferences;
+        List<ConceptReference> sourceOrTargetConceptReferences;
+
+        sourceConceptReferences = getConceptReferencesForPage(pageSize, SourceOrTarget.SOURCE);
+        targetConceptReferences = getConceptReferencesForPage(pageSize, SourceOrTarget.TARGET);
+        sourceOrTargetConceptReferences = getConceptReferencesForPage(pageSize, SourceOrTarget.SOURCE_OR_TARGET);
 
         if(!isSortingEnabled()){
 
@@ -174,10 +169,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                         uri, 
                         version, 
                         relationsContainerName, 
-                        getConceptReferencesForPage(pageSize, SourceOrTarget.SOURCE),
-                        getConceptReferencesForPage(pageSize, SourceOrTarget.TARGET));
+                        sourceConceptReferences,
+                        targetConceptReferences,
+                        sourceOrTargetConceptReferences);
         } else {
-
 
             return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
                 getTripleUidsForMappingRelationsContainerForCodes(
@@ -186,8 +181,9 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                         refs.getSourceCodingScheme(),
                         refs.getTargetCodingScheme(),
                         relationsContainerName, 
-                        getConceptReferencesForPage(pageSize, SourceOrTarget.SOURCE),
-                        getConceptReferencesForPage(pageSize, SourceOrTarget.TARGET),
+                        sourceConceptReferences,
+                        targetConceptReferences,
+                        sourceOrTargetConceptReferences,
                         DaoUtility.mapMappingSortOptionListToSort(sortOptionList).getSorts(),
                         currentPosition,
                         pageSize);
@@ -209,12 +205,12 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                    (this.targetCodesResolvedConceptReferencesIterator != null && 
                     this.targetCodesResolvedConceptReferencesIterator.hasNext())
                     ||
-                   (this.sourceAndTargetCodesResolvedConceptReferencesIterator != null && 
-                    this.sourceAndTargetCodesResolvedConceptReferencesIterator.hasNext()));
+                   (this.sourceOrTargetCodesResolvedConceptReferencesIterator != null && 
+                    this.sourceOrTargetCodesResolvedConceptReferencesIterator.hasNext()));
         }
     }
     
-    private enum SourceOrTarget {SOURCE,TARGET}
+    private enum SourceOrTarget {SOURCE,TARGET,SOURCE_OR_TARGET}
     
     /**
      * Gets the concept references for page.
@@ -225,28 +221,34 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
      */
     private List<ConceptReference> getConceptReferencesForPage(int pageSize, SourceOrTarget sourceOrTarget){
         if(isSortingEnabled()){
-            if(sourceOrTarget.equals(SourceOrTarget.SOURCE)){
-                return this.sourceResolvedIteratorConceptReferences;
-            } else {
-                return this.targetResolvedIteratorConceptReferences;
+            switch (sourceOrTarget){
+                case SOURCE: {
+                    return this.sourceResolvedIteratorConceptReferences;
+                }
+                case TARGET: {
+                    return this.targetResolvedIteratorConceptReferences;
+                }
+                case SOURCE_OR_TARGET: {
+                    return this.sourceOrTargetResolvedIteratorConceptReferences;
+                }
+                default: {
+                    throw new RuntimeException(sourceOrTarget + " not recognized.");
+                }
             }
         } else {
             try {
-                if(this.sourceAndTargetCodesResolvedConceptReferencesIterator != null){
-
-                    List<ConceptReference> list = buildResolvedConceptReferenceList(sourceAndTargetCodesResolvedConceptReferencesIterator, pageSize);
-
-                    return list;
-
-                } else {
-                    if(sourceOrTarget.equals(SourceOrTarget.SOURCE)){
-                        List<ConceptReference> list = buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, pageSize);
-
-                        return list;
-                    } else {
-                        List<ConceptReference> list = buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, pageSize);
-
-                        return list;
+                switch (sourceOrTarget){
+                    case SOURCE: {
+                        return this.buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, pageSize);
+                    }
+                    case TARGET: {
+                        return this.buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, pageSize);
+                    }
+                    case SOURCE_OR_TARGET: {
+                        return this.buildResolvedConceptReferenceList(sourceOrTargetCodesResolvedConceptReferencesIterator, pageSize);
+                    }
+                    default: {
+                        throw new RuntimeException(sourceOrTarget + " not recognized.");
                     }
                 }
             } catch (Exception e) {
@@ -261,15 +263,21 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
             return null;
         } else {
             
-            List<ConceptReference> list = null;
+            List<ConceptReference> list = new ArrayList<ConceptReference>();
             if(!isSortingEnabled()){
                 list = DaoUtility.createList(ConceptReference.class, iterator.next(pageSize).getResolvedConceptReference());
             } else {
-                list = new ArrayList<ConceptReference>();
                 while(iterator.hasNext()){ 
                     list.addAll(
                             DaoUtility.createList(ConceptReference.class, iterator.next(pageSize).getResolvedConceptReference()));
                 }
+            }
+            
+            //If the list is empty, that means the restriction restricted everything.
+            //We must then pass in an invalid code to prevent matches, because by default
+            //an empty list will match all.
+            if(list.isEmpty()){
+                list.add(INVALID_CONCEPT_REFERENCE);
             }
 
             if(!isSortingEnabled()){
@@ -288,7 +296,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         Map<String,ResolvedConceptReferencesIterator> map = new HashMap<String,ResolvedConceptReferencesIterator>();
         map.put(SOURCE_ITERATOR, sourceCodesResolvedConceptReferencesIterator);
         map.put(TARGET_ITERATOR, targetCodesResolvedConceptReferencesIterator);
-        map.put(BOTH_ITERATOR, sourceAndTargetCodesResolvedConceptReferencesIterator);
+        map.put(BOTH_ITERATOR, sourceOrTargetCodesResolvedConceptReferencesIterator);
         
         return map;
     }
@@ -304,7 +312,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     protected void doRefresh(Map<String,ResolvedConceptReferencesIterator> refresh) {
         this.sourceCodesResolvedConceptReferencesIterator = refresh.get(SOURCE_ITERATOR);
         this.targetCodesResolvedConceptReferencesIterator = refresh.get(TARGET_ITERATOR);
-        this.sourceAndTargetCodesResolvedConceptReferencesIterator = refresh.get(BOTH_ITERATOR);
+        this.sourceOrTargetCodesResolvedConceptReferencesIterator = refresh.get(BOTH_ITERATOR);
     }
 
     protected List<ConceptReference> getInOrderConceptReferences() {
@@ -327,7 +335,11 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         return targetCodesResolvedConceptReferencesIterator;
     }
 
-    protected ResolvedConceptReferencesIterator getSourceAndTargetCodesResolvedConceptReferencesIterator() {
-        return sourceAndTargetCodesResolvedConceptReferencesIterator;
+    protected ResolvedConceptReferencesIterator getSourceOrTargetCodesResolvedConceptReferencesIterator() {
+        return sourceOrTargetCodesResolvedConceptReferencesIterator;
+    }
+
+    protected List<ConceptReference> getSourceOrTargetResolvedIteratorConceptReferences() {
+        return sourceOrTargetResolvedIteratorConceptReferences;
     }
 }
