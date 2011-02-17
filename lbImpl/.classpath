@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgConverter"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lexevs-dao"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgConverter"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lexrdf"/>
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="classes"/>
