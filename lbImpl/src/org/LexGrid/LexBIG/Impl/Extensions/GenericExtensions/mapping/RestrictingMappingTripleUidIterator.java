@@ -43,7 +43,7 @@ import org.lexevs.paging.AbstractRefereshingPageableIterator;
  */
 public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPageableIterator<Map<String,ResolvedConceptReferencesIterator>,String> {
     
-    private static ConceptReference INVALID_CONCEPT_REFERENCE = new ConceptReference();
+    protected static ConceptReference INVALID_CONCEPT_REFERENCE = new ConceptReference();
     static {
         INVALID_CONCEPT_REFERENCE.setCode("__INVALID__CONCEPT__REFERENCE__");
     }
@@ -265,7 +265,9 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
             
             List<ConceptReference> list = new ArrayList<ConceptReference>();
             if(!isSortingEnabled()){
-                list = DaoUtility.createList(ConceptReference.class, iterator.next(pageSize).getResolvedConceptReference());
+                if(iterator.hasNext()){
+                    list = DaoUtility.createList(ConceptReference.class, iterator.next(pageSize).getResolvedConceptReference());
+                }
             } else {
                 while(iterator.hasNext()){ 
                     list.addAll(

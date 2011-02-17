@@ -10,6 +10,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -26,8 +27,11 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.util.PrintUtility;
 import org.apache.commons.collections.CollectionUtils;
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -133,26 +137,83 @@ public class CodedNodeSetBackedMapping implements Mapping {
         }
     }
     
+    //TODO: Find a more efficient way of doing this
     protected void processRelationshipRestrictions() throws LBException {        
         if(CollectionUtils.isEmpty(this.relationshipRestrictions)){
             return;
         }
         
+        int ITERATOR_PAGE_SIZE = 100;
+        
         for(RelationshipRestriction restriction : this.relationshipRestrictions){
-            CodedNodeGraph cng = this.createCodedNodeGraph();
             
-            String[] associationNames = 
-                DaoUtility.localNameListToString(restriction.getRelationshipNames()).toArray(new String[restriction.relationshipNames.getEntryCount()]);
+            List<String> associationNames = 
+                DaoUtility.localNameListToString(restriction.getRelationshipNames());
             
-            cng = cng.restrictToAssociations(
-                    Constructors.createNameAndValueList(associationNames), null);
+            CodedNodeSet cns = restriction.getCodedNodeSet();
             
-            cng = cng.restrictToTargetCodes(restriction.codedNodeSet);
+            ResolvedConceptReferencesIterator itr = 
+                cns.resolve(null, null, null, null, false);
             
-            this.targetCodesCodedNodeSet = 
-                this.getCodedNodeSet(SearchContext.TARGET_CODES).intersect(
-                        cng.toNodeList(null, false, true, 0, -1));
+            List<ConceptReference> targetCodes = new ArrayList<ConceptReference>(); 
+            
+            while(itr.hasNext()){
+                targetCodes.addAll(DaoUtility.createList(ConceptReference.class, itr.next(ITERATOR_PAGE_SIZE).getResolvedConceptReference()));
+            }
+            
+            for(ConceptReference conceptReference : targetCodes) {
+                conceptReference.setCodeNamespace(null);
+            }
+            
+            List<ConceptReference> requiredSourceCodes = this.getRequiredSourcesCodesFromRelationshipRestriction(targetCodes, associationNames);
+            
+            for(ConceptReference conceptReference : requiredSourceCodes) {
+                conceptReference.setCodeNamespace(null);
+            }
+            
+            if(CollectionUtils.isEmpty(requiredSourceCodes)){
+                requiredSourceCodes = new
+                    ArrayList<ConceptReference>();
+                
+                requiredSourceCodes.add(RestrictingMappingTripleUidIterator.INVALID_CONCEPT_REFERENCE);
+            }
+            
+            ConceptReferenceList crl = new ConceptReferenceList();
+            crl.setConceptReference(requiredSourceCodes.toArray(new ConceptReference[requiredSourceCodes.size()]));
+            
+            this.sourceCodesCodedNodeSet =
+                this.getCodedNodeSet(SearchContext.SOURCE_CODES).restrictToCodes(crl);
         }
+    }
+
+    protected List<ConceptReference> getRequiredSourcesCodesFromRelationshipRestriction(final List<ConceptReference> targetCodes, final List<String> associations){
+        return LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+            getDaoCallbackService().
+            executeInDaoLayer(new DaoCallback<List<ConceptReference>>() {
+    
+                @Override
+                public List<ConceptReference> execute(DaoManager daoManager) {
+                    String codingSchemeUid = 
+                        daoManager.getCodingSchemeDao(mappingUri, mappingVersion).
+                        getCodingSchemeUIdByUriAndVersion(mappingUri, mappingVersion);
+  
+                    return daoManager.getCodedNodeGraphDao(mappingUri, mappingVersion).
+                        getConceptReferencesContainingObject(
+                                codingSchemeUid, 
+                                relationsContainerName, 
+                                targetCodes,
+                                associations,
+                                null, 
+                                null,
+                                null, 
+                                null, 
+                                null,
+                                null,
+                                0, 
+                                -1);
+                }
+            });
     }
 
     @Override
