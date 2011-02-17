@@ -148,7 +148,7 @@
 		</java>
 	</target>
 
-	<target name="compile" depends="genCastorFromXSD, annotate.class" description="compile the source ">
+	<target name="compile" depends="genCastorFromXSD, annotate.class, core.aliases" description="compile the source ">
 		<mkdir dir="${classes}"/>
 		<javac source="1.5" target="1.5" srcdir="${generated}" destdir="${classes}" debug="yes">
 			<classpath refid="classpath"/>
