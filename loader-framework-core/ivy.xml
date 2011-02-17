@@ -16,5 +16,6 @@
     	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default,test"/>
     	<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
     	<dependency org="org.springframework" name="spring-oxm" rev="3.0.5.RELEASE" conf="default"/>
+    	<dependency org="org.springframework" name="spring-xml" rev="3.0.5.RELEASE" conf="default"/>
     </dependencies>
 </ivy-module>
