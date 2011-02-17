@@ -53,6 +53,10 @@ public class MetaData {
 
     private final Logger logger = Logger.getLogger("Indexer.MetaData");
     
+    public MetaData() {
+       super();
+    }
+    
     public MetaData(Resource rootLocation) throws InternalErrorException, IOException {
         this(rootLocation.getFile());
     }
@@ -311,7 +315,7 @@ public class MetaData {
         }
     }
 
-    private synchronized void writeFile(boolean unlockWhenDone) throws InternalErrorException {
+    protected synchronized void writeFile(boolean unlockWhenDone) throws InternalErrorException {
         try {
             XMLOutputter xmlFormatter = new XMLOutputter(Format.getPrettyFormat());
 
