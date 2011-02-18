@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://dozer.sourceforge.net
+    http://dozer.sourceforge.net/schema/beanmapping.xsd">
+    <mapping map-id="assocPredicate2Cts2Association" type="one-way">
+        <class-a>org.LexGrid.relations.AssociationPredicate</class-a>
+        <class-b>org.cts2.association.Association</class-b>
+        		<field>
+        		    <a>associationName</a>
+        		    <b>predicate.name</b>
+		</field>
+    </mapping>
+</mappings>
