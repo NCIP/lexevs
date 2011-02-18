@@ -80,7 +80,7 @@ public class CodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI<CodeSyste
 	 * @see org.cts2.uri.DirectoryURI#restrict(org.cts2.core.Filter)
 	 */
 	@Override
-	public CodeSystemDirectory restrict(Filter filter) {
+	public CodeSystemDirectoryURI restrict(Filter filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}

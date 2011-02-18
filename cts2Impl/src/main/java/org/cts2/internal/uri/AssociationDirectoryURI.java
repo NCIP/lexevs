@@ -64,7 +64,7 @@ public class AssociationDirectoryURI extends AbstractLexEvsDirectoryURI<Associat
 	 * @see org.cts2.uri.DirectoryURI#restrict(org.cts2.core.Filter)
 	 */
 	@Override
-	public AssociationDirectory restrict(Filter filter) {
+	public AssociationDirectoryURI restrict(Filter filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
