@@ -53,5 +53,5 @@ public interface DirectoryURI<T extends Directory> {
 	 * @param filter the filter
 	 * @return the t
 	 */
-	public T restrict(Filter filter);
+	public DirectoryURI<T> restrict(Filter filter);
 }
