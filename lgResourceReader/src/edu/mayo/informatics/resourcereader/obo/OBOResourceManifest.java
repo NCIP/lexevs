@@ -40,8 +40,8 @@ public class OBOResourceManifest extends OBO implements ResourceManifest {
     private URI relationshipsURL = null;
     private URI abbreviationsURL = null;
 
-    private String defaultRelationshipFile = "resources/default_relationship.obo";
-    private String defaultXrefFile = "resources/default_GO_xrf_abbs.obo";
+    private String defaultRelationshipFile = "default_relationship.obo";
+    private String defaultXrefFile = "default_GO_xrf_abbs.obo";
 
     public OBOResourceManifest(CachingMessageDirectorIF rLogger) {
         super(rLogger);
