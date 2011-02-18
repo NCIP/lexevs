@@ -10,8 +10,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.test.LexEvsTestRunner.LoadContent;
-import org.cts.test.BaseCts2Test;
+import org.cts.test.BaseCts2UnitTest;
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.internal.profile.query.LexEvsCodeSystemQuery;
 import org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory;
@@ -20,7 +19,7 @@ import org.cts2.uri.DirectoryURI;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 
-public class LexEvsCodeSystemQueryTest extends BaseCts2Test {
+public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
 	
 	@Resource
 	private LexEvsCodeSystemQuery lexEvsCodeSystemQuery;
@@ -39,12 +38,6 @@ public class LexEvsCodeSystemQueryTest extends BaseCts2Test {
 	@Test
 	public void testIsAvailableThroughBaseService(){
 		assertNotNull(baseService.getQueryService().getCodeSystemQuery());
-	}
-	
-	@Test
-	@LoadContent(contentPath="classpath:content/Automobiles.xml")
-	public void testGetAllCodeSystemsNotNull(){
-		assertNotNull(lexEvsCodeSystemQuery.getAllCodeSystems());
 	}
 	
 	@Test

@@ -6,12 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
-import org.cts.test.BaseCts2Test;
+import org.cts.test.BaseCts2UnitTest;
 import org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry;
 import org.cts2.internal.mapper.BaseDozerBeanMapper;
 import org.junit.Test;
 
-public class BaseDozerBeanMapperTest extends BaseCts2Test{
+public class BaseDozerBeanMapperTest extends BaseCts2UnitTest{
 	
 	@Resource
 	private BaseDozerBeanMapper baseDozerBeanMapper;
