@@ -586,6 +586,12 @@ You may obtain a copy of the License at
 		        <include name="**/*.class"/>
 		    </fileset>
 		</jar>
+		
+		<copy todir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lbTest/">
+			    <include name="lib/**/*.jar"/>
+			</fileset>
+		</copy>
 
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-test}/lbTest.license.txt"/>
 		<copy todir="${pkg-test}">
