@@ -868,7 +868,7 @@
 	</bean>
 	
 	<bean id="defaultLuceneDirectoryCreator" 
-		class="org.lexevs.dao.index.lucenesupport.DefaultLuceneDirectoryCreator" parent="loggingBean"/>
+		class="org.lexevs.dao.index.lucenesupport.DefaultLuceneDirectoryCreator"/>
 
 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
 	depends-on="commonIndexDirectory">
