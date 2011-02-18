@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<import resource="classpath:lexevsDao.xml" />
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    	<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+    	<property name="url" value="jdbc:hsqldb:mem:."/>
+    	<property name="username" value="sa"/>
+    	<property name="password" value=""/>
+    </bean>
+    
+    <bean id="defaultLuceneDirectoryCreator" 
+		class="org.lexevs.dao.test.InMemoryLuceneDirectoryCreator"/>
+		
+	<bean name="abstractDirectoryFactory" class="org.lexevs.dao.test.InMemoryDirectoryFactory"/>
+	
+	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.test.InMemoryIndexMetaDataFactory"/>
+	
+	 <bean id="systemVariables" class="org.lexevs.system.constants.SystemVariables">
+    	<constructor-arg ref="loggerFactory"/>
+    	<constructor-arg>
+    		<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    			<property name="location" value="classpath:lbconfig.props"/>
+    		</bean>
+    	</constructor-arg>
+  
+    </bean>
+
+</beans>
