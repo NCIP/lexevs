@@ -57,7 +57,7 @@ public interface BaseQueryService<T extends Directory> {
 	 * @param filter the filter
 	 * @return the t
 	 */
-	public T restrict(DirectoryURI<T> directoryUri, Filter filter);
+	public DirectoryURI<T> restrict(DirectoryURI<T> directoryUri, Filter filter);
 
 
 }
