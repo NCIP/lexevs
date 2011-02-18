@@ -25,7 +25,7 @@
 		<dependency org="asm" name="asm" rev="3.3" conf="default"/>
 		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1" conf="default"/>
 		<dependency org="junit" name="junit" rev="4.8.2" conf="default"/> 
-		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default,test"/>
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
