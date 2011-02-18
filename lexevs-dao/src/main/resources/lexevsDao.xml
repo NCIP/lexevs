@@ -837,8 +837,10 @@
 		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
 	</bean>
 	
-	<bean id="commonIndexDirectory"
-		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory">
+	<bean id="abstractDirectoryFactory"
+		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory" abstract="true"/>
+	
+	<bean id="commonIndexDirectory" parent="abstractDirectoryFactory">
 		<property name="indexDirectory" ref="commonIndexLocation" />
 		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
 		<property name="indexName">
@@ -854,8 +856,7 @@
 		</property>
 	</bean>
 	
-	<bean id="metadataIndexDirectory"
-		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory">
+	<bean id="metadataIndexDirectory" parent="abstractDirectoryFactory">
 		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
 		<property name="indexDirectory" ref="metadataIndexLocation" />
 		<property name="indexName" value="MetaDataIndex" />
@@ -866,7 +867,8 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
-	<bean id="defaultLuceneDirectoryCreator" class="org.lexevs.dao.index.lucenesupport.DefaultLuceneDirectoryCreator"/>
+	<bean id="defaultLuceneDirectoryCreator" 
+		class="org.lexevs.dao.index.lucenesupport.DefaultLuceneDirectoryCreator" parent="loggingBean"/>
 
 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
 	depends-on="commonIndexDirectory">
