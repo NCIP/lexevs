@@ -10,6 +10,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.test.LexEvsTestRunner.LoadContent;
 import org.cts.test.BaseCts2Test;
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.internal.profile.query.LexEvsCodeSystemQuery;
@@ -41,6 +42,7 @@ public class LexEvsCodeSystemQueryTest extends BaseCts2Test {
 	}
 	
 	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml")
 	public void testGetAllCodeSystemsNotNull(){
 		assertNotNull(lexEvsCodeSystemQuery.getAllCodeSystems());
 	}
