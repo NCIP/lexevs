@@ -55,6 +55,9 @@ public class MetaData {
     
     public MetaData() {
        super();
+       
+       document_ = new Document(new Element("IndexerServiceMetaData"));
+       root_ = document_.getRootElement();
     }
     
     public MetaData(Resource rootLocation) throws InternalErrorException, IOException {
