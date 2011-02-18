@@ -18,6 +18,7 @@
  */
 package org.cts2.internal.profile.query;
 
+import org.cts2.profile.query.AssociationQuery;
 import org.cts2.profile.query.CodeSystemQuery;
 import org.cts2.profile.query.QueryService;
 
@@ -31,6 +32,10 @@ public class DefaultQueryService implements QueryService{
 	/** The code system query. */
 	private CodeSystemQuery codeSystemQuery;
 	
+	/** The association query. */
+	private AssociationQuery associationQuery;
+
+
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.query.QueryService#getCodeSystemQuery()
 	 */
@@ -45,5 +50,21 @@ public class DefaultQueryService implements QueryService{
 	 */
 	public void setCodeSystemQuery(CodeSystemQuery codeSystemQuery) {
 		this.codeSystemQuery = codeSystemQuery;
+	}
+
+	@Override
+	public AssociationQuery getAssociationQuery() {
+		// TODO Auto-generated method stub
+		return associationQuery;
+	}
+	
+	
+	/**
+	 * Sets the association query
+	 * 
+	 * @param associationQuery is the new association query
+	 */
+	public void setAssociationQuery(AssociationQuery associationQuery) {
+		this.associationQuery = associationQuery;
 	}
 }

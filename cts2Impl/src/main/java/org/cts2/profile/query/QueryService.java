@@ -32,4 +32,12 @@ public interface QueryService {
 	 * @return the code system query
 	 */
 	public CodeSystemQuery getCodeSystemQuery();
+	
+	/**
+	 * Gets the association query
+	 * 
+	 * @return the association query
+	 */
+	public AssociationQuery getAssociationQuery();
+	
 }
