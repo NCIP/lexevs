@@ -33,20 +33,20 @@ import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * The Class LexEvsTestRunner.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsTestRunner extends BlockJUnit4ClassRunner {
+public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
 
 	/**
 	 * Instantiates a new lex evs test runner.
