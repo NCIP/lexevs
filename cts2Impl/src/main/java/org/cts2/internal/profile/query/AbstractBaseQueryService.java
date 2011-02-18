@@ -52,7 +52,7 @@ public abstract class AbstractBaseQueryService<T extends Directory> extends Abst
 	 * @see org.cts2.profile.query.BaseQueryService#restrict(org.cts2.uri.DirectoryURI, org.cts2.core.Filter)
 	 */
 	@Override
-	public T restrict(DirectoryURI<T> directoryUri, Filter filter) {
+	public DirectoryURI<T> restrict(DirectoryURI<T> directoryUri, Filter filter) {
 		return directoryUri.restrict(filter);
 	}
 }
