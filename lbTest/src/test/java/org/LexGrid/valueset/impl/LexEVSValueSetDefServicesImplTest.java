@@ -18,6 +18,13 @@
  */
 package org.LexGrid.valueset.impl;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,8 +45,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -1159,6 +1166,77 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 				assertFalse(entityRef.isTransitiveClosure());
 			}
 		}
+	}
+	
+	
+	/**
+	 * 
+	 * @throws LBException
+	 * @throws URISyntaxException
+	 * @throws IOException
+	 */
+	@Test
+	public void testExportVSResolutionByVSDObject() throws LBException, URISyntaxException, IOException{
+		
+		File tempExportFile = new File(System.getProperty("java.io.tmpdir"));		
+
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setValueSetDefinitionName("VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setDefaultCodingScheme("Automobiles");
+		vsd.setConceptDomain("Autos");
+		
+		DefinitionEntry de = new DefinitionEntry();
+		de.setRuleOrder(1L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		vsd.addDefinitionEntry(de);
+		
+		ValueSetDefinitionReference vsdRef = new ValueSetDefinitionReference();
+		vsdRef.setValueSetDefinitionURI("SRITEST:AUTO:GM_AND_IMMI_NODE");
+		de.setValueSetDefinitionReference(vsdRef);
+		
+		de = new DefinitionEntry();
+		de.setRuleOrder(2L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		EntityReference entityRef = new EntityReference();
+		entityRef.setEntityCode("Ford");
+		entityRef.setEntityCodeNamespace("Automobiles");
+		entityRef.setLeafOnly(false);
+		entityRef.setTransitiveClosure(false);
+		de.setEntityReference(entityRef);
+		
+		vsd.addDefinitionEntry(de);
+		
+		// Start the value set resolution export
+		getValueSetDefinitionService().exportValueSetResolution(vsd, null, tempExportFile.toURI(), null, null, true, false);
+		
+		File tempInStreamFile = new File(System.getProperty("java.io.tmpdir") + File.separator + 
+		"VSDREF_GM_IMMI_NODE_AND_FORD" + "_" + "UNASSIGNED" + ".xml");
+		
+		
+		// create an input stream for the exported content
+		InputStream is = new FileInputStream(tempInStreamFile);
+		
+		assertTrue(is != null);
+		
+		// start reading the contents, that is stream the file
+		if (is != null) {
+			try {
+				DataInputStream in = new DataInputStream(is);
+		        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			    String strLine;
+			    //Read File Line By Line
+			    while ((strLine = br.readLine()) != null)   {
+			      // Print the content on the console
+			      System.out.println (strLine);
+			    }
+			}finally {
+					is.close();
+					tempInStreamFile.delete();
+			}
+		} 
 	}
 
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
