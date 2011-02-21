@@ -303,6 +303,32 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
+	 * Resolve and Exports contents of supplied Value Set Definition object 
+	 * as Coding Scheme in LexGrid canonical XML format.
+	 * 
+	 * @param valueSetDefinition
+	 * 			  value set definition object
+	 * @param referencedVSDs
+	 * 			  List of ValueSetDefinitions referenced by valueSetDefinition. If provided, these ValueSetDefinitions will be used to resolve valueSetDefinition.	
+	 * @param exportDestination
+	 * 			Location to save the definition
+	 * @param csVersionList 
+	 * 			A list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 * 			the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag 
+	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     * @param overwrite
+	 * 			True: to override the existing file.
+	 * @param failOnAllErrors
+	 * 			True: stops exporting if any error.
+	 * @return URI of destination if successfully exported.
+	 * @throws LBException
+	 */
+	public URI exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	
+	/**
 	 * Exports Value Set Definition to StringBuffer in LexGrid XML format.
 	 * 
 	 * @param valueSetDefinitionURI
@@ -406,9 +432,9 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	/**
 	 * Returns list of Value Set Definition URIs that contain supplied SupportedAttribute Tag and Value.
 	 * 
-	 * @param supportedTag SupportedAttribute tag like SupportedCodingScheme, SupportedConceptDomain etc.
-	 * @param value value of the supportedAttribute
-	 * @param uri
+	 * @param supportedTag - Supported Attribute tag like CodingScheme, ConceptDomain, Source, Property etc.
+	 * @param value - value of the supported attribute
+	 * @param uri - uri of the supported attribute
 	 * @return list of URIs
 	 */
 	public List<String> getValueSetDefinitionURIsForSupportedTagAndValue(String supportedTag, String value, String uri);

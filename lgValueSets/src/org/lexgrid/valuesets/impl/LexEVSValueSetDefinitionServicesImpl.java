@@ -818,6 +818,54 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 
 	/*
 	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetResolution(org.LexGrid.valueSets.ValueSetDefinition, java.util.HashMap, java.net.URI, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, boolean, boolean)
+	 */
+	@Override
+	public URI exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException {
+		
+		if (valueSetDefinition == null)
+			throw new LBException("Value Set Definition can not be empty.");
+		
+		ResolvedValueSetCodedNodeSet rvscns = getServiceHelper().getResolvedCodedNodeSetForValueSet(valueSetDefinition, csVersionList, 
+				csVersionTag, referencedVSDs);
+		
+		if (rvscns != null)
+		{
+			CodedNodeSet cns = rvscns.getCodedNodeSet();
+			if (cns != null)
+			{
+				LexGridExport exporter;
+		        try {
+		            exporter = (LexGridExport)getLexBIGService().getServiceManager(null).getExporter(LexGridExport.name);
+		        } catch (LBException e) {
+		            throw new RuntimeException(e);
+		        }
+		        
+		        exporter.setCns(cns);
+		        exporter.exportValueSetResolution(valueSetDefinition, referencedVSDs, exportDestination, overwrite, failOnAllErrors, true);
+		            
+		        while (exporter.getStatus().getEndTime() == null) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {				
+					}
+				}
+		        
+		        if (exporter.getReferences() != null)
+				{
+					URI[] uris = exporter.getReferences();
+					return uris[0];
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetDefinition(java.net.URI, java.lang.String)
 	 */
 	@Override
