@@ -33,6 +33,11 @@
 		<property name="directoryURIFactory" ref="codeSystemDirectoryURIFactory" />
 	</bean>
 	
+	<bean id="lexEvsAssociationQuery" class="org.cts2.internal.profile.query.LexEvsAssociationQuery" parent="abstractBaseService">
+		<property name="directoryURIFactory" ref="associationDirectoryURIFactory" />
+	</bean>
+
+	
 	<!-- Directory URI Factories -->
 	<bean id="abstractDirectoryURIFactory" abstract="true">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
@@ -40,6 +45,7 @@
 	</bean>
 	
 	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<!-- End Directory URI Factories -->
 	
 </beans>
