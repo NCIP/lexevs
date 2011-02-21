@@ -19,7 +19,9 @@
 package org.LexGrid.LexBIG.Impl.exporters;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
@@ -29,6 +31,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.logging.LoggerFactory;
 
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
@@ -148,6 +151,23 @@ public abstract class BaseExporter {
             this.setResourceUri(destination);
             this.setValueSetDefinitionURI(valueSetDefinitionURI);
             this.setValueSetDefinitionRevisionId(valueSetDefinitionRevisionId);
+            this.setExportValueSetResolution(true);
+        } catch (LBInvocationException e) {
+           throw new RuntimeException(e);
+        }
+        baseExport(this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue());
+    }
+    
+    public void exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, URI destination) {
+        try {
+            setInUse();
+            this.setResourceUri(destination);
+            try {
+                this.setValueSetDefinitionURI(new URI(valueSetDefinition.getValueSetDefinitionURI()));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            this.setValueSetDefinitionRevisionId(valueSetDefinition.getEntryState() == null ? "UNASSIGNED" : valueSetDefinition.getEntryState().getContainingRevision());
             this.setExportValueSetResolution(true);
         } catch (LBInvocationException e) {
            throw new RuntimeException(e);

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -72,6 +73,7 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
 
     private CodedNodeGraph cng;
     private CodedNodeSet cns;
+    private ValueSetDefinition vsd;
 
     public void setCns(CodedNodeSet cns) {
         this.cns = cns;
@@ -254,9 +256,10 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         
         ValueSetDefinitionService vsdServ = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
         
-        ValueSetDefinition vsd = null;
+//        ValueSetDefinition vsd = null;
         try {
-            vsd = vsdServ.getValueSetDefinitionByRevision(this.getValueSetDefinitionURI().toString(), this.getValueSetDefinitionRevisionId());
+            if (vsd == null) // if null, we are exported the VSD that is in LexGrid repository
+                vsd = vsdServ.getValueSetDefinitionByRevision(this.getValueSetDefinitionURI().toString(), this.getValueSetDefinitionRevisionId());
         } catch (LBRevisionException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -554,4 +557,17 @@ public class LexGridExport extends BaseExporter implements LexGrid_Exporter {
         super.exportValueSetResolution(valueSetDefinitionURI, valueSetDefinitionRevisionId, destination);
     }    
     
+    /*
+     * (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter#exportValueSetResolution(org.LexGrid.valueSets.ValueSetDefinition, java.util.HashMap, java.net.URI, boolean, boolean, boolean)
+     */
+    @Override
+    public void exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs,
+            URI destination, boolean overwrite, boolean stopOnErros, boolean async) throws LBException {
+        super.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
+        super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).setOptionValue(overwrite);
+        
+        vsd = valueSetDefinition;
+        super.exportValueSetResolution(valueSetDefinition, referencedVSDs, destination);
+    } 
 }
