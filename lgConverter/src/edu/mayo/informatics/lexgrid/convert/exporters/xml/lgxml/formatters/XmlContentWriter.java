@@ -18,6 +18,10 @@
  */
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters;
 
+import java.io.IOException;
+import java.io.PipedReader;
+import java.io.PipedWriter;
+import java.io.Reader;
 import java.io.Writer;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -119,6 +123,43 @@ public class XmlContentWriter {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * This method exports the data in LexGRID XML format to a PipedWriter which can be read using Reader as it writes.     
+     */
+    public Reader marshalToXml(final Object obj, final CodedNodeGraph cng, final CodedNodeSet cns, final int pageSize,
+            final boolean useStreaming, final boolean validate, final LgMessageDirectorIF messager) {
+        final PipedReader in = new PipedReader();
+        final Marshaller marshaller = ns_marshaller;
+        try {
+            new Thread(new Runnable() {
+                PipedWriter out = new PipedWriter(in);
+                
+                public void run() {         
+                    try {
+                        MarshalListener listener = null;
+                        if (useStreaming == true) {
+                            listener = new StreamingLexGridMarshalListener(marshaller, cng, cns, pageSize, messager);
+                        } else {
+                            listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize);
+                        }                        
+                        
+                        marshaller.setValidation(validate);
+                        marshaller.setMarshalListener(listener);
+                        marshaller.setWriter(out);
+                        marshaller.marshal(obj);
+                        out.close(); // close the writer after the marshaling job done
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        return in;
     }
 
 }
