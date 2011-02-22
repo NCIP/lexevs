@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -1239,6 +1240,59 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		} 
 	}
 
+	public void testExportVSResolutionByVSDObjectToWriter() throws LBException, URISyntaxException, IOException{
+		
+		ValueSetDefinition vsd = new ValueSetDefinition();
+		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setValueSetDefinitionName("VSDREF_GM_IMMI_NODE_AND_FORD");
+		vsd.setDefaultCodingScheme("Automobiles");
+		vsd.setConceptDomain("Autos");
+		
+		DefinitionEntry de = new DefinitionEntry();
+		de.setRuleOrder(1L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		vsd.addDefinitionEntry(de);
+		
+		ValueSetDefinitionReference vsdRef = new ValueSetDefinitionReference();
+		vsdRef.setValueSetDefinitionURI("SRITEST:AUTO:GM_AND_IMMI_NODE");
+		de.setValueSetDefinitionReference(vsdRef);
+		
+		de = new DefinitionEntry();
+		de.setRuleOrder(2L);
+		de.setOperator(DefinitionOperator.OR);
+		
+		EntityReference entityRef = new EntityReference();
+		entityRef.setEntityCode("Ford");
+		entityRef.setEntityCodeNamespace("Automobiles");
+		entityRef.setLeafOnly(false);
+		entityRef.setTransitiveClosure(false);
+		de.setEntityReference(entityRef);
+		
+		vsd.addDefinitionEntry(de);
+		
+		// Start the value set resolution export
+		Reader reader =  getValueSetDefinitionService().exportValueSetResolution(vsd, null, null, null, false);
+		
+		if (reader != null) {
+			StringBuffer buf = new StringBuffer(); 
+	        try { 
+	            for(int c = reader.read(); c != -1; c = reader.read()) { 
+	                buf.append((char)c); 
+	            } 
+	            System.out.println(buf.toString()); 
+	        } catch(IOException e) { 
+	            throw e; 
+	        } finally { 
+	            try { 
+	                reader.close(); 
+	            } catch(Exception e) { 
+	                // ignored 
+	            } 
+	        } 
+		}
+	}
+	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
