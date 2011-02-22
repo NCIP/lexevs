@@ -18,6 +18,7 @@
  */
 package org.lexgrid.valuesets;
 
+import java.io.Reader;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
@@ -327,6 +328,26 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public URI exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
 			URI exportDestination, AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
+	
+	/**
+	 * Resolve and Exports contents of supplied Value Set Definition object as Coding Scheme in LexGrid canonical XML format.
+	 * 
+	 * @param valueSetDefinition
+	 * 			  value set definition object
+	 * @param referencedVSDs
+	 * 			  List of ValueSetDefinitions referenced by valueSetDefinition. If provided, these ValueSetDefinitions will be used to resolve valueSetDefinition.	
+	 * @param csVersionList 
+	 * 			A list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 * 			the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag 
+	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     * @param failOnAllErrors
+	 * 			True: stops exporting if any error.
+	 * @return URI of destination if successfully exported.
+	 * @throws LBException
+	 */
+	public Reader exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, boolean failOnAllErrors) throws LBException;
 	
 	/**
 	 * Exports Value Set Definition to StringBuffer in LexGrid XML format.

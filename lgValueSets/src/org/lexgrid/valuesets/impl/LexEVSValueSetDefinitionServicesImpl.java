@@ -19,6 +19,7 @@
 package org.lexgrid.valuesets.impl;
 
 import java.io.File;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,14 +51,17 @@ import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entities;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -76,6 +80,8 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
 
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters.XmlContentWriter;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 
 /**
@@ -864,6 +870,71 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetResolution(org.LexGrid.valueSets.ValueSetDefinition, java.util.HashMap, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, boolean)
+	 */
+	@Override
+	public Reader exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, boolean failOnAllErrors) throws LBException {
+		
+		if (valueSetDefinition == null)
+			throw new LBException("Value Set Definition can not be empty.");
+		
+		ResolvedValueSetCodedNodeSet rvscns = getServiceHelper().getResolvedCodedNodeSetForValueSet(valueSetDefinition, csVersionList, 
+				csVersionTag, referencedVSDs);
+		
+		if (rvscns != null)
+		{
+			CodedNodeSet cns = rvscns.getCodedNodeSet();
+			if (cns != null)
+			{
+				return exportValueSetResolutionDataToWriter(valueSetDefinition, cns);
+			}
+		}
+		
+		return null;
+	}
+	
+	private Reader exportValueSetResolutionDataToWriter(ValueSetDefinition vsd, CodedNodeSet cns){
+        
+        String codingSchemeUri = vsd.getValueSetDefinitionURI();
+        String codingSchemeVersion = vsd.getEntryState() == null ? "UNASSIGNED" : vsd.getEntryState().getContainingRevision();
+        
+        String codingSchemeName = StringUtils.isEmpty(vsd.getValueSetDefinitionName()) ? codingSchemeUri : vsd.getValueSetDefinitionName();
+
+        CodingScheme cs = null;
+        
+        cs = new CodingScheme();
+        
+        cs.setCodingSchemeName(codingSchemeName);
+        cs.setCodingSchemeURI(codingSchemeUri);
+        cs.setRepresentsVersion(codingSchemeVersion);
+        if (vsd.getEffectiveDate() != null)
+            cs.setEffectiveDate(vsd.getEffectiveDate());
+        if (vsd.getExpirationDate() != null)
+            cs.setExpirationDate(vsd.getExpirationDate());
+        cs.setEntryState(vsd.getEntryState());
+        cs.setFormalName(codingSchemeName);
+        cs.setIsActive(vsd.getIsActive());
+        cs.setMappings(vsd.getMappings());
+        cs.setOwner(vsd.getOwner());
+        cs.setProperties(vsd.getProperties());
+        cs.setSource(vsd.getSource());
+        cs.setStatus(vsd.getStatus());
+            
+        
+        Entities entities = new Entities();
+        Entity entity = new Entity();
+        entity.setEntityCode(LexGridConstants.MR_FLAG);
+        entities.addEntity(entity);
+        cs.setEntities(entities);
+        
+        XmlContentWriter xmlContentWriter = new XmlContentWriter();
+        return xmlContentWriter.marshalToXml(cs, null, cns, 5, true, false, this.getLogger()); 
+        
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetDefinition(java.net.URI, java.lang.String)
