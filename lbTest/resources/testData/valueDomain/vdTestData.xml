@@ -33,7 +33,7 @@
             <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
         </lgVD:mappings>
         <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:EveryThing" valueSetDefinitionName="All Automobiles nodes" defaultCodingScheme="Automobiles" conceptDomain="Autos" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
-            <lgCommon:entryState containingRevision="R001" relativeOrder="1" changeType="NEW" prevRevision="R00A"/>
+            <lgCommon:entityDescription>Description of VSD SRITEST:AUTO:EveryThing</lgCommon:entityDescription> 
             <lgVD:mappings>
                 <lgNaming:supportedConceptDomain localId="Autos" uri="urn:oid:11.11.0.1">Autos</lgNaming:supportedConceptDomain>
                 <lgNaming:supportedContext localId="Automobiles">Automobiles</lgNaming:supportedContext>

@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -70,6 +69,8 @@ import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+
+import com.healthmarketscience.rmiio.SerializableInputStream;
 
 /**
  * JUnit for Value Set Definition Services.
@@ -1272,7 +1273,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		vsd.addDefinitionEntry(de);
 		
 		// Start the value set resolution export
-		Reader reader =  getValueSetDefinitionService().exportValueSetResolution(vsd, null, null, null, false);
+		SerializableInputStream reader =  getValueSetDefinitionService().exportValueSetResolution(vsd, null, null, null, false);
 		
 		if (reader != null) {
 			StringBuffer buf = new StringBuffer(); 
