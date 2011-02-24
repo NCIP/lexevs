@@ -19,9 +19,8 @@
 package org.cts2.internal.profile;
 
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.cts2.core.Directory;
 import org.cts2.internal.uri.factory.DirectoryURIFactory;
-import org.cts2.profile.query.BaseQueryService;
+import org.cts2.uri.DirectoryURI;
 
 /**
  * The Class AbstractBaseService.
@@ -29,7 +28,7 @@ import org.cts2.profile.query.BaseQueryService;
  * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBaseService<T extends Directory> implements BaseQueryService<T>{
+public abstract class AbstractBaseService<T extends DirectoryURI> {
 	
 	/** The lex big service. */
 	private LexBIGService lexBigService;

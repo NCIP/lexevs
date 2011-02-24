@@ -3,7 +3,7 @@ package org.cts2.internal.profile.query;
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
 import org.cts2.profile.query.AssociationQuery;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.AssociationDirectoryURI;
 
 /**
  * The class LexEVSAssociationQuery
@@ -11,24 +11,17 @@ import org.cts2.uri.DirectoryURI;
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
  */
-public class LexEvsAssociationQuery extends AbstractBaseQueryService<AssociationDirectory> implements AssociationQuery{
+public class LexEvsAssociationQuery extends AbstractDirectoryResolvableQueryService
+	<AssociationDirectoryURI, AssociationDirectory, AssociationList> implements AssociationQuery {
 
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.query.AssociationQuery#getAllAssociations()
 	 */
 	@Override
-	public DirectoryURI<AssociationDirectory> getAllAssociations() {
+	public AssociationDirectoryURI getAllAssociations() {
 		return this.getDirectoryURIFactory().getDirectoryURI();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.AssociationQuery#resolveAsList(org.cts2.uri.DirectoryURI)
-	 */
-	@Override
-	public AssociationList resolveAsList(
-			DirectoryURI<AssociationDirectory> directoryUri) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }

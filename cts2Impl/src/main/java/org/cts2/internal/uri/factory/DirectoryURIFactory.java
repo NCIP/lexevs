@@ -18,7 +18,6 @@
  */
 package org.cts2.internal.uri.factory;
 
-import org.cts2.core.Directory;
 import org.cts2.uri.DirectoryURI;
 
 /**
@@ -26,13 +25,13 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface DirectoryURIFactory<T extends Directory> {
+public interface DirectoryURIFactory<T extends DirectoryURI> {
 	
 	/**
 	 * Gets the directory uri.
 	 *
 	 * @return the directory uri
 	 */
-	public DirectoryURI<T> getDirectoryURI();
+	public T getDirectoryURI();
 
 }

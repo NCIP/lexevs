@@ -16,42 +16,31 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.uri;
+package org.cts2.internal.profile.query;
 
 import org.cts2.core.Directory;
-import org.cts2.core.Filter;
+import org.cts2.directory.Resolvable;
+import org.cts2.directory.Restrictable;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.uri.DirectoryURI;
 
 /**
- * The Interface DirectoryURI.
+ * The Class AbstractBaseQueryService.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface DirectoryURI<T extends Directory> {
+public abstract class AbstractDirectoryResolvableQueryService
+	<U extends Resolvable<D,L> & Restrictable<U> & DirectoryURI, 
+	D extends Directory<U>, 
+	L extends Directory<U>>
+	extends AbstractBaseQueryService<U> {
 
-	/**
-	 * Resolve.
-	 *
-	 * @param queryControl the query control
-	 * @param readContext the read context
-	 * @return the t
-	 */
-	public T resolve(QueryControl queryControl, ReadContext readContext);
+	public D resolve(U directoryURI, QueryControl queryControl, ReadContext readContext) {
+		return directoryURI.resolve(queryControl, readContext);
+	}
 	
-	/**
-	 * Count.
-	 *
-	 * @param readContext the read context
-	 * @return the int
-	 */
-	public int count(ReadContext readContext);
-
-	/**
-	 * Restrict.
-	 *
-	 * @param filter the filter
-	 * @return the t
-	 */
-	public DirectoryURI<T> restrict(Filter filter);
+	public L resolveAsList(U directoryURI, QueryControl queryControl, ReadContext readContext) {
+		return directoryURI.resolveAsList(queryControl, readContext);
+	}
 }

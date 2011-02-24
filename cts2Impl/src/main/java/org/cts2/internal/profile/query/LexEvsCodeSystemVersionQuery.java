@@ -18,26 +18,33 @@
  */
 package org.cts2.internal.profile.query;
 
+import java.util.List;
+
 import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.codesystemversion.CodeSystemVersionList;
+import org.cts2.core.EntityReference;
+import org.cts2.core.types.RestrictionType;
 import org.cts2.profile.query.CodeSystemVersionQuery;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.service.core.types.ActiveOrAll;
+import org.cts2.uri.CodeSystemVersionDirectoryURI;
 
 /**
  * The Class LexEvsCodeSystemVersionQuery.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsCodeSystemVersionQuery extends AbstractBaseQueryService<CodeSystemVersionDirectory> implements CodeSystemVersionQuery {
+public class LexEvsCodeSystemVersionQuery 
+	extends AbstractDirectoryResolvableQueryService<CodeSystemVersionDirectoryURI,CodeSystemVersionDirectory,CodeSystemVersionList> implements CodeSystemVersionQuery {
 
-
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.CodeSystemVersionQuery#resolveAsList(org.cts2.uri.DirectoryURI)
-	 */
 	@Override
-	public CodeSystemVersionList resolveAsList(
-			DirectoryURI<CodeSystemVersionDirectory> directoryUri) {
+	public CodeSystemVersionDirectoryURI restrictToEntities(
+			CodeSystemVersionDirectoryURI codeSystemQueryURI,
+			List<EntityReference> entities, 
+			RestrictionType allOrSome,
+			ActiveOrAll active) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 }

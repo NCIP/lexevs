@@ -21,30 +21,18 @@ package org.cts2.internal.profile.query;
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.codesystem.CodeSystemList;
 import org.cts2.profile.query.CodeSystemQuery;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
  * The Class LexEvsCodeSystemQuery.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsCodeSystemQuery extends AbstractBaseQueryService<CodeSystemDirectory> implements CodeSystemQuery {
+public class LexEvsCodeSystemQuery extends AbstractDirectoryResolvableQueryService<CodeSystemDirectoryURI,CodeSystemDirectory,CodeSystemList> 
+	implements CodeSystemQuery{
 
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.CodeSystemQuery#getAllCodeSystems()
-	 */
 	@Override
-	public DirectoryURI<CodeSystemDirectory> getAllCodeSystems() {
+	public CodeSystemDirectoryURI getAllCodeSystems() {
 		return this.getDirectoryURIFactory().getDirectoryURI();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.CodeSystemQuery#resolveAsList(org.cts2.uri.DirectoryURI)
-	 */
-	@Override
-	public CodeSystemList resolveAsList(
-			DirectoryURI<CodeSystemDirectory> directoryUri) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

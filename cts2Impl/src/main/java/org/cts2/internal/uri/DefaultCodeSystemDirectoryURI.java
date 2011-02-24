@@ -18,22 +18,21 @@
  */
 package org.cts2.internal.uri;
 
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.codesystem.CodeSystemDirectory;
-import org.cts2.codesystem.CodeSystemDirectoryEntry;
+import org.cts2.codesystem.CodeSystemList;
 import org.cts2.core.Filter;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
  * The Class CodeSystemDirectoryURI.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI<CodeSystemDirectory> {
+public class DefaultCodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI implements CodeSystemDirectoryURI {
 
 	/**
 	 * Instantiates a new code system directory uri.
@@ -41,47 +40,48 @@ public class CodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI<CodeSyste
 	 * @param lexBIGService the lex big service
 	 * @param beanMapper the bean mapper
 	 */
-	public CodeSystemDirectoryURI(LexBIGService lexBIGService,
+	public DefaultCodeSystemDirectoryURI(LexBIGService lexBIGService,
 			BeanMapper beanMapper) {
 		super(lexBIGService, beanMapper);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.uri.DirectoryURI#resolve(org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
-	 */
-	@Override
-	public CodeSystemDirectory resolve(
-			QueryControl queryControl,
-			ReadContext readContext) {
-
-		CodeSystemDirectory directory = new CodeSystemDirectory();
-		try {
-			for(CodingSchemeRendering csr : this.getLexBIGService().getSupportedCodingSchemes().getCodingSchemeRendering()){
-				directory.addEntry(getBeanMapper().map(csr.getCodingSchemeSummary(), CodeSystemDirectoryEntry.class));
-			}
-		} catch (LBInvocationException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return directory;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.cts2.uri.DirectoryURI#count(org.cts2.service.core.ReadContext)
-	 */
 	@Override
 	public int count(ReadContext readContext) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
+	public Object marshall() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.uri.DirectoryURI#restrict(org.cts2.core.Filter)
-	 */
+	@Override
+	public void unmarshall() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public CodeSystemDirectoryURI restrict(Filter filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public CodeSystemDirectory resolve(
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeSystemList resolveAsList(
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

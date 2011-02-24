@@ -18,10 +18,10 @@
  */
 package org.cts2.internal.profile.query;
 
-import org.cts2.core.Directory;
 import org.cts2.core.Filter;
+import org.cts2.directory.Restrictable;
 import org.cts2.internal.profile.AbstractBaseService;
-import org.cts2.service.core.QueryControl;
+import org.cts2.profile.query.BaseQueryService;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
 
@@ -30,29 +30,16 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBaseQueryService<T extends Directory> extends AbstractBaseService<T>{
+public abstract class AbstractBaseQueryService
+	<U extends Restrictable<U> & DirectoryURI> extends AbstractBaseService<U> implements BaseQueryService<U>{
 
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.BaseQueryService#resolve(org.cts2.uri.DirectoryURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
-	 */
 	@Override
-	public T resolve(DirectoryURI<T> directoryUri, QueryControl queryControl, ReadContext readContext) {
-		return directoryUri.resolve(queryControl, readContext);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.BaseQueryService#count(org.cts2.uri.DirectoryURI, org.cts2.service.core.ReadContext)
-	 */
-	@Override
-	public int count(DirectoryURI<T> directoryUri, ReadContext readContext) {
+	public int count(U directoryUri, ReadContext readContext) {
 		return directoryUri.count(readContext);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.BaseQueryService#restrict(org.cts2.uri.DirectoryURI, org.cts2.core.Filter)
-	 */
+
 	@Override
-	public DirectoryURI<T> restrict(DirectoryURI<T> directoryUri, Filter filter) {
+	public  U restrict(U directoryUri, Filter filter) {
 		return directoryUri.restrict(filter);
-	}
+	}	
 }

@@ -19,7 +19,6 @@
 package org.cts2.internal.uri.factory;
 
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.cts2.core.Directory;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.uri.DirectoryURI;
 
@@ -28,7 +27,7 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractDirectoryURIFactory<T extends Directory> implements DirectoryURIFactory<T>{
+public abstract class AbstractDirectoryURIFactory<T extends DirectoryURI> implements DirectoryURIFactory<T>{
 
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
@@ -40,8 +39,8 @@ public abstract class AbstractDirectoryURIFactory<T extends Directory> implement
 	 * @see org.cts2.internal.uri.factory.DirectoryURIFactory#getDirectoryURI()
 	 */
 	@Override
-	public DirectoryURI<T> getDirectoryURI() {
-		DirectoryURI<T> directoryURI = this.doGetDirectoryURI();
+	public T getDirectoryURI() {
+		T directoryURI = this.doGetDirectoryURI();
 		
 		return this.decorateDirectoryURI(directoryURI);
 	}
@@ -51,7 +50,7 @@ public abstract class AbstractDirectoryURIFactory<T extends Directory> implement
 	 *
 	 * @return the directory uri
 	 */
-	protected abstract DirectoryURI<T> doGetDirectoryURI();
+	protected abstract T doGetDirectoryURI();
 	
 	/**
 	 * Decorate directory uri.
@@ -59,7 +58,7 @@ public abstract class AbstractDirectoryURIFactory<T extends Directory> implement
 	 * @param directoryURI the directory uri
 	 * @return the directory uri
 	 */
-	protected DirectoryURI<T> decorateDirectoryURI(DirectoryURI<T> directoryURI){
+	protected T decorateDirectoryURI(T directoryURI){
 		return directoryURI;
 	}
 

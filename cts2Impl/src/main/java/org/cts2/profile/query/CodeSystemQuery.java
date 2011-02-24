@@ -20,27 +20,27 @@ package org.cts2.profile.query;
 
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.codesystem.CodeSystemList;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.ReadContext;
+import org.cts2.uri.CodeSystemDirectoryURI;
+
 
 /**
  * The Interface CodeSystemQuery.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodeSystemQuery extends BaseQueryService<CodeSystemDirectory>{
+public interface CodeSystemQuery extends BaseQueryService<CodeSystemDirectoryURI>{
 	
 	/**
 	 * Gets the all code systems.
 	 *
 	 * @return the all code systems
 	 */
-	public DirectoryURI<CodeSystemDirectory> getAllCodeSystems();
+	public CodeSystemDirectoryURI getAllCodeSystems();
 	
-	/**
-	 * Resolve as list.
-	 *
-	 * @param directoryUri the directory uri
-	 * @return the code system list
-	 */
-	public CodeSystemList resolveAsList(DirectoryURI<CodeSystemDirectory> directoryUri);
+	public CodeSystemDirectory resolve(CodeSystemDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	
+	public CodeSystemList resolveAsList(CodeSystemDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	
 }

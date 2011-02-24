@@ -18,9 +18,8 @@
  */
 package org.cts2.profile.query;
 
-import org.cts2.core.Directory;
 import org.cts2.core.Filter;
-import org.cts2.service.core.QueryControl;
+import org.cts2.directory.Restrictable;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
 
@@ -29,18 +28,8 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface BaseQueryService<T extends Directory> {
+public interface BaseQueryService<U extends DirectoryURI & Restrictable<U>> {
 
-	/**
-	 * Resolve.
-	 *
-	 * @param directoryUri the directory uri
-	 * @param queryControl the query control
-	 * @param readContext the read context
-	 * @return the t
-	 */
-	public T resolve(DirectoryURI<T> directoryUri, QueryControl queryControl, ReadContext readContext);
-	
 	/**
 	 * Count.
 	 *
@@ -48,7 +37,7 @@ public interface BaseQueryService<T extends Directory> {
 	 * @param readContext the read context
 	 * @return the int
 	 */
-	public int count(DirectoryURI<T> directoryUri, ReadContext readContext);
+	public int count(U directoryUri, ReadContext readContext);
 	
 	/**
 	 * Restrict.
@@ -57,7 +46,5 @@ public interface BaseQueryService<T extends Directory> {
 	 * @param filter the filter
 	 * @return the t
 	 */
-	public DirectoryURI<T> restrict(DirectoryURI<T> directoryUri, Filter filter);
-
-
+	public U restrict(U restrictable, Filter filter);
 }

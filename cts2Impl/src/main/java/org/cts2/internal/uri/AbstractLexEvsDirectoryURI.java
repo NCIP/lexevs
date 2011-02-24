@@ -19,7 +19,6 @@
 package org.cts2.internal.uri;
 
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.cts2.core.Directory;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.uri.DirectoryURI;
 
@@ -28,7 +27,7 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractLexEvsDirectoryURI<T extends Directory> implements DirectoryURI<T> {
+public abstract class AbstractLexEvsDirectoryURI implements DirectoryURI {
 	
 	/** The lex big service. */
 	private LexBIGService lexBIGService;
@@ -46,6 +45,8 @@ public abstract class AbstractLexEvsDirectoryURI<T extends Directory> implements
 		this.lexBIGService = lexBIGService;
 		this.beanMapper = beanMapper;
 	}
+
+	
 
 	/**
 	 * Gets the lex big service.

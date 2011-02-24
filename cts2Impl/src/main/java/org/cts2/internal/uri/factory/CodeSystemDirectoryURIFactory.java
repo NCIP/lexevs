@@ -18,22 +18,21 @@
  */
 package org.cts2.internal.uri.factory;
 
-import org.cts2.codesystem.CodeSystemDirectory;
-import org.cts2.internal.uri.CodeSystemDirectoryURI;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.internal.uri.DefaultCodeSystemDirectoryURI;
+import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
  * A factory for creating CodeSystemDirectoryURI objects.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemDirectory> {
+public class CodeSystemDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemDirectoryURI> {
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
 	 */
 	@Override
-	protected DirectoryURI<CodeSystemDirectory> doGetDirectoryURI() {
-		return new CodeSystemDirectoryURI(this.getLexBigService(), this.getBeanMapper());
+	protected CodeSystemDirectoryURI doGetDirectoryURI() {
+		return new DefaultCodeSystemDirectoryURI(this.getLexBigService(), this.getBeanMapper());
 	}
 }

@@ -15,7 +15,7 @@ import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.internal.profile.query.LexEvsCodeSystemQuery;
 import org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory;
 import org.cts2.profile.BaseService;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.CodeSystemDirectoryURI;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 
@@ -56,9 +56,14 @@ public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
 		lexEvsCodeSystemQuery.setLexBigService(lbs);
 		codeSystemDirectoryURIFactory.setLexBigService(lbs);
 		
-		DirectoryURI<CodeSystemDirectory> directoryUri = lexEvsCodeSystemQuery.getAllCodeSystems();
+		CodeSystemDirectoryURI directoryUri = lexEvsCodeSystemQuery.getAllCodeSystems();
+		
 		CodeSystemDirectory csd = directoryUri.resolve(null, null);
 		assertNotNull(csd);
 		assertTrue(csd.getEntryCount() > 0);
+
+		CodeSystemDirectory directory = lexEvsCodeSystemQuery.resolve(directoryUri, null, null);
+		
+		assertNotNull(directory);
 	}
 }
