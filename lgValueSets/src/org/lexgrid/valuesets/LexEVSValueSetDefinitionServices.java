@@ -18,7 +18,6 @@
  */
 package org.lexgrid.valuesets;
 
-import java.io.Reader;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
@@ -35,6 +34,8 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+
+import com.healthmarketscience.rmiio.SerializableInputStream;
 
 /**
  * Value Set Definition Services.
@@ -330,7 +331,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
-	 * Resolve and Exports contents of supplied Value Set Definition object as Coding Scheme in LexGrid canonical XML format.
+	 * Resolves and Exports contents of supplied Value Set Definition object as Coding Scheme in LexGrid canonical XML format.
 	 * 
 	 * @param valueSetDefinition
 	 * 			  value set definition object
@@ -343,10 +344,10 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
      * @param failOnAllErrors
 	 * 			True: stops exporting if any error.
-	 * @return URI of destination if successfully exported.
+	 * @return SerializableInputStream Serialized Input Stream. Made this serializable to support Distributed API.
 	 * @throws LBException
 	 */
-	public Reader exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+	public SerializableInputStream exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, boolean failOnAllErrors) throws LBException;
 	
 	/**

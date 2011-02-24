@@ -19,7 +19,9 @@
 package org.lexgrid.valuesets.impl;
 
 import java.io.File;
-import java.io.Reader;
+import java.io.IOException;
+import java.io.PipedReader;
+import java.io.PipedWriter;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +52,7 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -57,16 +60,20 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.proxy.CastorProxy;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
+import org.castor.xml.XMLProperties;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -78,10 +85,15 @@ import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.admin.Util;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import org.lexgrid.valuesets.helper.LexEVSMarshaller;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
 
+import com.healthmarketscience.rmiio.SerializableInputStream;
+import com.ibatis.common.io.ReaderInputStream;
+
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
-import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.formatters.XmlContentWriter;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.LexGridMarshalListener;
+import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.StreamingLexGridMarshalListener;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 
 /**
@@ -875,7 +887,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#exportValueSetResolution(org.LexGrid.valueSets.ValueSetDefinition, java.util.HashMap, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, boolean)
 	 */
 	@Override
-	public Reader exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+	public SerializableInputStream exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, boolean failOnAllErrors) throws LBException {
 		
 		if (valueSetDefinition == null)
@@ -896,7 +908,15 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return null;
 	}
 	
-	private Reader exportValueSetResolutionDataToWriter(ValueSetDefinition vsd, CodedNodeSet cns){
+	/**
+	 * Generate LexGrid Coding Scheme object for the Value Set Resolution
+	 * 
+	 * @param vsd Value Set Definition
+	 * @param cns Coded Node Set for the VSD
+	 * @return Serialized Input Stream
+	 * @throws LBException
+	 */
+	private SerializableInputStream exportValueSetResolutionDataToWriter(ValueSetDefinition vsd, CodedNodeSet cns) throws LBException{
         
         String codingSchemeUri = vsd.getValueSetDefinitionURI();
         String codingSchemeVersion = vsd.getEntryState() == null ? "UNASSIGNED" : vsd.getEntryState().getContainingRevision();
@@ -930,9 +950,82 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         entities.addEntity(entity);
         cs.setEntities(entities);
         
-        XmlContentWriter xmlContentWriter = new XmlContentWriter();
-        return xmlContentWriter.marshalToXml(cs, null, cns, 5, true, false, this.getLogger()); 
+        return marshalToXml(cs, null, cns, 5, true, false, this.getLogger()); 
         
+    }
+	
+	/** The namespace cognizant marshaller. */
+    private LexEVSMarshaller ns_marshaller;
+    {
+        ns_marshaller = new LexEVSMarshaller();
+        ns_marshaller.setProperty(XMLProperties.USE_INDENTATION, "true");
+        ns_marshaller.setMarshalAsDocument(true);
+        ns_marshaller.setMarshalExtendedType(false);
+        ns_marshaller.setSuppressNamespaces(false);
+        ns_marshaller.setSchemaLocation(LexGridConstants.lgSchemaLocation); // mct
+        ns_marshaller.setSupressXMLDeclaration(true);
+        ns_marshaller.setSuppressXSIType(false);
+        ns_marshaller.setValidation(true);
+        // ns_marshaller.setEncoding("UTF-8");
+        ns_marshaller.setProperty(XMLProperties.PROXY_INTERFACES, CastorProxy.class.getCanonicalName());
+        ns_marshaller.setNamespaceMapping("lgBuiltin", LexGridConstants.lgBuiltin);
+        ns_marshaller.setNamespaceMapping("lgCommon", LexGridConstants.lgCommon);
+        ns_marshaller.setNamespaceMapping("lgCon", LexGridConstants.lgCon);
+        ns_marshaller.setNamespaceMapping("lgCS", LexGridConstants.lgCS);
+        ns_marshaller.setNamespaceMapping("lgNaming", LexGridConstants.lgNaming);
+        ns_marshaller.setNamespaceMapping("lgRel", LexGridConstants.lgRel);
+        ns_marshaller.setNamespaceMapping("lgVD", LexGridConstants.lgVD);
+        ns_marshaller.setNamespaceMapping("lgVer", LexGridConstants.lgVer);
+        ns_marshaller.setNamespaceMapping("xsi", LexGridConstants.lgXSI); // mct
+        ns_marshaller.setInternalContext(ns_marshaller.getInternalContext());
+
+    }
+    
+	 /**
+     * This method exports the data in LexGRID XML format to a PipedWriter which can be read using Reader as it writes.     
+	 * @throws LBException 
+     */
+    public SerializableInputStream marshalToXml(final Object obj, final CodedNodeGraph cng, final CodedNodeSet cns, final int pageSize,
+            final boolean useStreaming, final boolean validate, final LgMessageDirectorIF messager) throws LBException {
+        final PipedReader in = new PipedReader();
+        final Marshaller marshaller = ns_marshaller;
+        try {
+            new Thread(new Runnable() {
+                PipedWriter out = new PipedWriter(in);
+                
+                public void run() {         
+                    try {
+                        MarshalListener listener = null;
+                        if (useStreaming == true) {
+                            listener = new StreamingLexGridMarshalListener(marshaller, cng, cns, pageSize, messager);
+                        } else {
+                            listener = new LexGridMarshalListener(marshaller, cng, cns, pageSize);
+                        }                        
+                        
+                        marshaller.setValidation(validate);
+                        marshaller.setMarshalListener(listener);
+                        marshaller.setWriter(out);
+                        marshaller.marshal(obj);
+                        out.close(); // close the writer after the marshaling job done
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
+        } catch (IOException e) {
+        	md_.error("Problem marshalling value set resolution : " + e.getMessage());
+        	throw new LBException("Problem marshalling value set resolution : " + e.getMessage());
+        } 
+        
+        SerializableInputStream sris = null;
+        try {
+			sris = new SerializableInputStream(new ReaderInputStream(in));
+		} catch (IOException e) {
+			md_.error("Problem generating SeriablizableInputStream : " + e.getMessage());
+        	throw new LBException("Problem generating SeriablizableInputStream : " + e.getMessage());
+		}
+        
+        return sris;
     }
 
 	/*
