@@ -15,5 +15,6 @@
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
+		<dependency org="com.healthmarketscience.rmiio" name="rmiio" rev="2.0.2" conf="default"/>
    	 </dependencies>
 </ivy-module>
