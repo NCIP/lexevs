@@ -23,10 +23,10 @@ import java.util.List;
 import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.codesystemversion.CodeSystemVersionList;
 import org.cts2.core.EntityReference;
-import org.cts2.core.types.RestrictionType;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.service.core.types.ActiveOrAll;
+import org.cts2.service.core.types.RestrictionType;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
 
 /**
