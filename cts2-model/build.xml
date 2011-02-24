@@ -7,6 +7,7 @@
 	
 	<!-- set global properties for this build -->
 	<property name="generated" 	location="Castor/src"/>
+	<property name="src" 	location="src/main/java"/>
 	<property name="castor.src" 	location="src/castor/java"/>
 	<property name="dist"		location="target"/>
 	<property name="classes"	location="Castor/classes"/>
@@ -21,10 +22,6 @@
 	
 	<path id="classpath">
 		<path refid="ivy.path"/>
-	
-		<fileset dir="${classes}">
-			<include name="*"/>
-		</fileset>   	
 	</path>
 	
 	<!--*******************************************************************-->
@@ -190,18 +187,17 @@
 	<target name="genCastorJava" depends="init">
 		<echo>Generating Castor Java from Schema ${xsdFile} from ${xsd.url}/${type}/${xsdFile}.xsd</echo>
 		
-		<path id="castor-classpath">
+		<path id="compile-classpath">
 			<path refid="classpath"/>
 			<pathelement location="${classes}"/>
 		</path>
 		
 		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
-			<classpath refid="castor-classpath"/>
+			<classpath refid="compile-classpath"/>
 			<arg line="-is ${xsd.url}/${type}/${xsdFile}.xsd"/>
 			<arg line="-dest '${generated}'"/>
 			<arg line="-nomarshall"/>
 			<arg line="-types j2"/>
-			<!-- arg line="-f"/ -->
 			<arg line="-verbose"/>
 			<arg line="-binding-file binding.xml"/>
 			<arg line="-classPrinter modifying-writer"/>
@@ -211,8 +207,11 @@
 
 	<target name="compile" depends="genCastorFromXSD" description="compile the source ">
 		<mkdir dir="${classes}"/>
-		<javac source="1.5" target="1.5" srcdir="${generated}" destdir="${classes}" debug="yes">
+			
+		<javac source="1.5" target="1.5" destdir="${classes}" debug="yes">
 			<classpath refid="classpath"/>
+			<src path="${generated}" />
+			<src path="${src}" />
 		</javac>
 	</target>
 	
