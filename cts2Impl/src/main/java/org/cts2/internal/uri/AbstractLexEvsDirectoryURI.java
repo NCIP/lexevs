@@ -18,8 +18,10 @@
  */
 package org.cts2.internal.uri;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.internal.mapper.BeanMapper;
+import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
 
 /**
@@ -27,13 +29,15 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractLexEvsDirectoryURI implements DirectoryURI {
+public abstract class AbstractLexEvsDirectoryURI<T> implements DirectoryURI {
 	
 	/** The lex big service. */
 	private LexBIGService lexBIGService;
 	
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
+	
+	private T lexeEvsBackingObject;
 	
 	/**
 	 * Instantiates a new abstract lex evs directory uri.
@@ -44,9 +48,19 @@ public abstract class AbstractLexEvsDirectoryURI implements DirectoryURI {
 	protected AbstractLexEvsDirectoryURI(LexBIGService lexBIGService, BeanMapper beanMapper){
 		this.lexBIGService = lexBIGService;
 		this.beanMapper = beanMapper;
+		
+		try {
+			this.lexeEvsBackingObject = this.initializeLexEvsBackingObject();
+		} catch (LBException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
+	protected abstract T initializeLexEvsBackingObject() throws LBException;
 	
+	protected T getLexEvsBackingObject(){
+		return this.lexeEvsBackingObject;
+	}
 
 	/**
 	 * Gets the lex big service.

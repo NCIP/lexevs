@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration( 
-		value = "/cts2-application-config-test.xml"
+		value = "/cts2-application-config-integration-test.xml"
 )
 public class BaseCts2IntegrationTest extends BaseContentLoadingInMemoryTest {
 	

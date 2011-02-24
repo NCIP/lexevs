@@ -18,12 +18,14 @@
  */
 package org.cts2.internal.uri;
 
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.codesystem.CodeSystemList;
-import org.cts2.core.Filter;
+import org.cts2.core.FilterComponent;
 import org.cts2.internal.mapper.BeanMapper;
-import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.CodeSystemDirectoryURI;
 
@@ -32,7 +34,8 @@ import org.cts2.uri.CodeSystemDirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultCodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI implements CodeSystemDirectoryURI {
+public class DefaultCodeSystemDirectoryURI 
+	extends AbstractResolvingDirectoryURI<CodingSchemeRenderingList, CodeSystemDirectoryURI, CodeSystemDirectory, CodeSystemList> implements CodeSystemDirectoryURI {
 
 	/**
 	 * Instantiates a new code system directory uri.
@@ -47,8 +50,7 @@ public class DefaultCodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI im
 
 	@Override
 	public int count(ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.getLexEvsBackingObject().getCodingSchemeRenderingCount();
 	}
 
 	@Override
@@ -59,29 +61,37 @@ public class DefaultCodeSystemDirectoryURI extends AbstractLexEvsDirectoryURI im
 
 	@Override
 	public void unmarshall() {
+		// TODO Auto-generated method stub	
+	}
+
+	@Override
+	protected CodeSystemDirectory doResolve(
+			CodingSchemeRenderingList lexEvsBackingObject, 
+			NameOrURI format,
+			long maxToReturn, 
+			ReadContext readContext) {
+		return this.getBeanMapper().map(this.getLexEvsBackingObject(), CodeSystemDirectory.class);
+	}
+
+	@Override
+	protected CodeSystemList doResolveAsList(
+			CodingSchemeRenderingList lexEvsBackingObject, 
+			NameOrURI format,
+			long maxToReturn, 
+			ReadContext readContext) {
+		return this.getBeanMapper().map(this.getLexEvsBackingObject(), CodeSystemList.class);
+	}
+
+	@Override
+	protected void applyFilterComponent(
+			CodingSchemeRenderingList lexEvsBackingObject,
+			FilterComponent filterComponent) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public CodeSystemDirectoryURI restrict(Filter filter) {
-		// TODO Auto-generated method stub
-		return null;
+	protected CodingSchemeRenderingList initializeLexEvsBackingObject() throws LBException{
+		return this.getLexBIGService().getSupportedCodingSchemes();
 	}
-
-	@Override
-	public CodeSystemDirectory resolve(
-			QueryControl queryControl, ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CodeSystemList resolveAsList(
-			QueryControl queryControl, ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 }
