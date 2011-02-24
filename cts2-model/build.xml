@@ -7,6 +7,7 @@
 	
 	<!-- set global properties for this build -->
 	<property name="generated" 	location="Castor/src"/>
+	<property name="castor.src" 	location="src/castor/java"/>
 	<property name="dist"		location="target"/>
 	<property name="classes"	location="Castor/classes"/>
 	<property name="docs"  		location="Castor/JavaDocs"/>
@@ -17,6 +18,14 @@
 	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
 	<property file="bda.properties" location="${bda.build.dir}"/>
 	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
+	
+	<path id="classpath">
+		<path refid="ivy.path"/>
+	
+		<fileset dir="${classes}">
+			<include name="*"/>
+		</fileset>   	
+	</path>
 	
 	<!--*******************************************************************-->
 		<!--** IVY TARGETS AND DEPENDENCY PATHS **-->
@@ -70,11 +79,11 @@
 		<delete dir="${classes}"/>
 	</target>
 	
-	<target name="genCastorFromXSD" depends="init" description="generate the Castor representation of the schema">
+	<target name="genCastorFromXSD" depends="compile-castor-src" description="generate the Castor representation of the schema">
 		<echo>Generate Castor Java</echo>
 		<delete dir="${generated}"/>
 		<mkdir dir="${generated}"/>
-	
+		
 		<antcall target="genCastorJava">
 			<param name="type" value="schema"/>
    			<param name="xsdFile" value="Association"/>
@@ -181,14 +190,21 @@
 	<target name="genCastorJava" depends="init">
 		<echo>Generating Castor Java from Schema ${xsdFile} from ${xsd.url}/${type}/${xsdFile}.xsd</echo>
 		
+		<path id="castor-classpath">
+			<path refid="classpath"/>
+			<pathelement location="${classes}"/>
+		</path>
+		
 		<java classname="org.exolab.castor.builder.SourceGenerator" fork="true">
-			<classpath refid="classpath"/>
+			<classpath refid="castor-classpath"/>
 			<arg line="-is ${xsd.url}/${type}/${xsdFile}.xsd"/>
 			<arg line="-dest '${generated}'"/>
 			<arg line="-nomarshall"/>
 			<arg line="-types j2"/>
-			<arg line="-f"/>
+			<!-- arg line="-f"/ -->
 			<arg line="-verbose"/>
+			<arg line="-binding-file binding.xml"/>
+			<arg line="-classPrinter modifying-writer"/>
 		</java>
 
 	</target>
@@ -196,6 +212,13 @@
 	<target name="compile" depends="genCastorFromXSD" description="compile the source ">
 		<mkdir dir="${classes}"/>
 		<javac source="1.5" target="1.5" srcdir="${generated}" destdir="${classes}" debug="yes">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+	
+	<target name="compile-castor-src" depends="init">
+		<mkdir dir="${classes}"/>
+		<javac source="1.5" target="1.5" srcdir="${castor.src}" destdir="${classes}" debug="true">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
