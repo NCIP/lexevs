@@ -23,6 +23,5 @@
 		<dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="loader-framework-core" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="abstract-rrf-loader" rev="${vBuild}"  conf="default"/>
-		<dependency org="com.healthmarketscience.rmiio" name="rmiio" rev="2.0.2" conf="default"/>
    	 </dependencies>
 </ivy-module>

@@ -70,8 +70,6 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
-import com.healthmarketscience.rmiio.SerializableInputStream;
-
 /**
  * JUnit for Value Set Definition Services.
  * 
@@ -1241,6 +1239,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		} 
 	}
 
+	@Test
 	public void testExportVSResolutionByVSDObjectToWriter() throws LBException, URISyntaxException, IOException{
 		
 		ValueSetDefinition vsd = new ValueSetDefinition();
@@ -1273,7 +1272,31 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		vsd.addDefinitionEntry(de);
 		
 		// Start the value set resolution export
-		SerializableInputStream reader =  getValueSetDefinitionService().exportValueSetResolution(vsd, null, null, null, false);
+		InputStream reader =  getValueSetDefinitionService().exportValueSetResolution(vsd, null, null, null, false);
+		
+		if (reader != null) {
+			StringBuffer buf = new StringBuffer(); 
+	        try { 
+	            for(int c = reader.read(); c != -1; c = reader.read()) { 
+	                buf.append((char)c); 
+	            } 
+	            System.out.println(buf.toString()); 
+	        } catch(IOException e) { 
+	            throw e; 
+	        } finally { 
+	            try { 
+	                reader.close(); 
+	            } catch(Exception e) { 
+	                // ignored 
+	            } 
+	        } 
+		}
+	}
+	
+	@Test
+	public void testExportVSDURIResolution() throws LBException, URISyntaxException, IOException{
+		// Start the value set resolution export
+		InputStream reader =  getValueSetDefinitionService().exportValueSetResolution(new URI("SRITEST:AUTO:EveryThing"), null, null, null, false);
 		
 		if (reader != null) {
 			StringBuffer buf = new StringBuffer(); 
