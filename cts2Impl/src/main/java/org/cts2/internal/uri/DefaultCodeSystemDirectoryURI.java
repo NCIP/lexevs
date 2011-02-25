@@ -68,7 +68,7 @@ public class DefaultCodeSystemDirectoryURI
 	protected CodeSystemDirectory doResolve(
 			CodingSchemeRenderingList lexEvsBackingObject, 
 			NameOrURI format,
-			long maxToReturn, 
+			Long maxToReturn, 
 			ReadContext readContext) {
 		return this.getBeanMapper().map(this.getLexEvsBackingObject(), CodeSystemDirectory.class);
 	}
@@ -77,7 +77,7 @@ public class DefaultCodeSystemDirectoryURI
 	protected CodeSystemList doResolveAsList(
 			CodingSchemeRenderingList lexEvsBackingObject, 
 			NameOrURI format,
-			long maxToReturn, 
+			Long maxToReturn, 
 			ReadContext readContext) {
 		return this.getBeanMapper().map(this.getLexEvsBackingObject(), CodeSystemList.class);
 	}

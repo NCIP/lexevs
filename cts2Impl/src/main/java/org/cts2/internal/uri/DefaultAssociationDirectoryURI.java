@@ -61,7 +61,7 @@ public class DefaultAssociationDirectoryURI
 	@Override
 	protected AssociationDirectory doResolve(
 			CodedNodeGraph lexEvsBackingObject, NameOrURI format,
-			long maxToReturn, ReadContext readContext) {
+			Long maxToReturn, ReadContext readContext) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -69,7 +69,7 @@ public class DefaultAssociationDirectoryURI
 	@Override
 	protected AssociationList doResolveAsList(
 			CodedNodeGraph lexEvsBackingObject, NameOrURI format,
-			long maxToReturn, ReadContext readContext) {
+			Long maxToReturn, ReadContext readContext) {
 		// TODO Auto-generated method stub
 		return null;
 	}

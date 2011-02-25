@@ -20,7 +20,6 @@ package org.cts2.internal.uri;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.codesystemversion.CodeSystemVersionList;
@@ -71,7 +70,7 @@ public class DefaultCodeSystemVersionDirectoryURI
 	@Override
 	protected CodeSystemVersionDirectory doResolve(
 			CodingSchemeRenderingList lexEvsBackingObject, NameOrURI format,
-			long maxToReturn, ReadContext readContext) {
+			Long maxToReturn, ReadContext readContext) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -79,7 +78,7 @@ public class DefaultCodeSystemVersionDirectoryURI
 	@Override
 	protected CodeSystemVersionList doResolveAsList(
 			CodingSchemeRenderingList lexEvsBackingObject, NameOrURI format,
-			long maxToReturn, ReadContext readContext) {
+			Long maxToReturn, ReadContext readContext) {
 		// TODO Auto-generated method stub
 		return null;
 	}

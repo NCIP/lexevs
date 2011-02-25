@@ -30,28 +30,40 @@ public abstract class AbstractResolvingDirectoryURI
 	}
 
 	@Override
-	public D resolve(final QueryControl queryControl, final ReadContext readContext) {
-		return new AbstractTimedMethodCallback<D>(queryControl.getTimeLimit()){
+	public D resolve(QueryControl queryControl, final ReadContext readContext) {
+		final QueryControl validatedQueryControl = validateQueryControl(queryControl);
+		return new AbstractTimedMethodCallback<D>(validatedQueryControl.getTimeLimit()){
 
 			@Override
 			protected D doExecuteMethod() {
-				return doResolve(getLexEvsBackingObject(), queryControl.getFormat(), queryControl.getMaxToReturn(), readContext);
+				return doResolve(getLexEvsBackingObject(), validatedQueryControl.getFormat(), validatedQueryControl.getMaxToReturn(), readContext);
 			}
 			
 		}.executeMethod();
 	}
 	
-	protected abstract D doResolve(T lexEvsBackingObject, NameOrURI format, long maxToReturn, ReadContext readContext);
+	protected abstract D doResolve(T lexEvsBackingObject, NameOrURI format, Long maxToReturn, ReadContext readContext);
 	
-	protected abstract L doResolveAsList(T lexEvsBackingObject, NameOrURI format, long maxToReturn, ReadContext readContext);
+	protected abstract L doResolveAsList(T lexEvsBackingObject, NameOrURI format, Long maxToReturn, ReadContext readContext);
+	
+	//TODO: throw some sort of validation exception
+	protected QueryControl validateQueryControl(QueryControl queryControl){
+		if(queryControl == null){
+			return new QueryControl();
+		} else {
+			return queryControl;
+		}
+	}
 
 	@Override
 	public L resolveAsList(final QueryControl queryControl, final ReadContext readContext) {
-		return new AbstractTimedMethodCallback<L>(queryControl.getTimeLimit()){
+		final QueryControl validatedQueryControl = validateQueryControl(queryControl);
+		
+		return new AbstractTimedMethodCallback<L>(validatedQueryControl.getTimeLimit()){
 
 			@Override
 			protected L doExecuteMethod() {
-				return doResolveAsList(getLexEvsBackingObject(), queryControl.getFormat(), queryControl.getMaxToReturn(), readContext);
+				return doResolveAsList(getLexEvsBackingObject(), validatedQueryControl.getFormat(), validatedQueryControl.getMaxToReturn(), readContext);
 			}
 			
 		}.executeMethod();
