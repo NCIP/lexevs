@@ -18,6 +18,7 @@
  */
 package org.lexgrid.valuesets;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
@@ -34,8 +35,6 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
-
-import com.healthmarketscience.rmiio.SerializableInputStream;
 
 /**
  * Value Set Definition Services.
@@ -305,6 +304,26 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
             String csVersionTag, boolean overwrite, boolean failOnAllErrors) throws LBException;
 	
 	/**
+	 * Resolves and Exports contents of Value Set Resolution as Coding Scheme in LexGrid canonical XML format.
+	 * 
+	 * @param valueSetDefinitionURI
+	 * 			value set definition URI to be resolved
+	 * @param valueSetDefinitionRevisionId
+	 * 			value set definition revision id to be used
+	 * @param csVersionList 
+	 * 			A list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 * 			the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag 
+	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     * @param failOnAllErrors
+	 * 			True: stops exporting if any error.
+	 * @return InputStream Resolved contents of value set in LexGrid Coding Scheme XML format.
+	 * @throws LBException
+	 */
+	public InputStream exportValueSetResolution(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId,  
+			AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, boolean failOnAllErrors) throws LBException;
+	
+	/**
 	 * Resolve and Exports contents of supplied Value Set Definition object 
 	 * as Coding Scheme in LexGrid canonical XML format.
 	 * 
@@ -344,10 +363,10 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * 			the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
      * @param failOnAllErrors
 	 * 			True: stops exporting if any error.
-	 * @return SerializableInputStream Serialized Input Stream. Made this serializable to support Distributed API.
+	 * @return InputStream Resolved contents of value set in LexGrid Coding Scheme XML format.
 	 * @throws LBException
 	 */
-	public SerializableInputStream exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
+	public InputStream exportValueSetResolution(ValueSetDefinition valueSetDefinition, HashMap<String, ValueSetDefinition> referencedVSDs, 
 			AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, boolean failOnAllErrors) throws LBException;
 	
 	/**
