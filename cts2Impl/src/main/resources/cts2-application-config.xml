@@ -14,7 +14,7 @@
 		factory-method="defaultInstance"/>
 
 	<bean id="dozerBeanMapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
-		<property name="mappingFiles" value="classpath*:mapper/dozer/*Mapper.xml" />
+		<property name="mappingFiles" value="classpath*:mapper/dozer/*.xml" />
 	</bean>
 
 	<bean id="baseDozerBeanMapper" class="org.cts2.internal.mapper.BaseDozerBeanMapper">
