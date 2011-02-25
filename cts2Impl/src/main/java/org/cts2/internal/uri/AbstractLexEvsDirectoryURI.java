@@ -21,7 +21,6 @@ package org.cts2.internal.uri;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.internal.mapper.BeanMapper;
-import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
 
 /**

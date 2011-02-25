@@ -19,11 +19,11 @@
 package org.cts2.internal.profile.query;
 
 import org.cts2.core.Filter;
-import org.cts2.directory.Restrictable;
 import org.cts2.internal.profile.AbstractBaseService;
 import org.cts2.profile.query.BaseQueryService;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Class AbstractBaseQueryService.

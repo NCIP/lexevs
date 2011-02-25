@@ -6,9 +6,9 @@ import java.util.Comparator;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
-import org.cts2.directory.Restrictable;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.operation.Restrictable;
 
 public abstract class AbstractRestrictingDirectoryURI
 	<T,U extends DirectoryURI & Restrictable<U>> extends AbstractLexEvsDirectoryURI<T> implements Restrictable<U>{

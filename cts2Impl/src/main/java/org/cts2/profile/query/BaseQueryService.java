@@ -19,9 +19,9 @@
 package org.cts2.profile.query;
 
 import org.cts2.core.Filter;
-import org.cts2.directory.Restrictable;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface BaseQueryService.

@@ -19,11 +19,11 @@
 package org.cts2.internal.profile.query;
 
 import org.cts2.core.Directory;
-import org.cts2.directory.Resolvable;
-import org.cts2.directory.Restrictable;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.operation.Resolvable;
+import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Class AbstractBaseQueryService.

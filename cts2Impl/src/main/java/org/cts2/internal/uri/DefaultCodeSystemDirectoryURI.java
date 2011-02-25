@@ -86,7 +86,8 @@ public class DefaultCodeSystemDirectoryURI
 	protected void applyFilterComponent(
 			CodingSchemeRenderingList lexEvsBackingObject,
 			FilterComponent filterComponent) {
-		// TODO Auto-generated method stub
+
+//
 		
 	}
 
