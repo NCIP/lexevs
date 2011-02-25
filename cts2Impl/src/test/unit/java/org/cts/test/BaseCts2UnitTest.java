@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration( 
-		value = "/cts2-application-config-test.xml")
+		value = "/cts2-application-config-unit-test.xml")
 public class BaseCts2UnitTest {
 	
 	@Test
