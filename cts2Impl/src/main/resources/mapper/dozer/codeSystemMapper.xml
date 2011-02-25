@@ -2,8 +2,34 @@
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+          
+    <mapping>
+   		<class-a>org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList</class-a>
+		<class-b>org.cts2.codesystem.CodeSystemDirectory</class-b>
+		
+		<field>
+			<a>codingSchemeRendering</a>
+			<b>entry</b>
+		</field>
+    </mapping>
+    
+    <mapping>
+		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering
+		</class-a>
+		<class-b>org.cts2.codesystem.CodeSystemDirectoryEntry
+		</class-b>
+		
+		<field>
+			<a>codingSchemeSummary.codingSchemeURI</a>
+			<b>about</b>
+		</field>
+		<field>
+			<a>codingSchemeSummary.localName</a>
+			<b>codeSystemName</b>
+		</field>
+	</mapping>
 	
-	<mapping map-id="csSummary2codeSystemVersionDirectoryEntryMap" type="one-way" wildcard="false">
+	<mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering
 		</class-a>
 		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry
@@ -31,10 +57,10 @@
 			<b>versionOf.content</b>
 		</field>	
 				
-		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">
-			<a>codingSchemeSummary</a>
-			<b>about</b>
-		</field>
+<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
+<!--			<a>codingSchemeSummary</a>-->
+<!--			<b>about</b>-->
+<!--		</field>-->
 
 		<field>
 			<a>codingSchemeSummary.codingSchemeURI</a>
