@@ -16,36 +16,24 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.directory;
+package org.cts2.uri.operation;
 
-import org.cts2.core.Directory;
-import org.cts2.service.core.QueryControl;
-import org.cts2.service.core.ReadContext;
+import org.cts2.core.Filter;
+import org.cts2.uri.DirectoryURI;
 
 /**
- * The Interface Resolvable.
+ * The Interface Restrictable.
  *
- * @param <D> the
- * @param <L> the
+ * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface Resolvable<D extends Directory<?>, L extends Directory<?>> {
+public interface Restrictable<T extends DirectoryURI> {
 
 	/**
-	 * Resolve.
+	 * Restrict.
 	 *
-	 * @param queryControl the query control
-	 * @param readContext the read context
-	 * @return the d
+	 * @param filter the filter
+	 * @return the t
 	 */
-	public D resolve(QueryControl queryControl, ReadContext readContext);
-	
-	/**
-	 * Resolve as list.
-	 *
-	 * @param queryControl the query control
-	 * @param readContext the read context
-	 * @return the l
-	 */
-	public L resolveAsList(QueryControl queryControl, ReadContext readContext);
+	public T restrict(Filter filter);
 }

@@ -18,10 +18,10 @@
  */
 package org.cts2.uri;
 
-import org.cts2.directory.Resolvable;
-import org.cts2.directory.Restrictable;
 import org.cts2.map.MapVersionDirectory;
 import org.cts2.map.MapVersionList;
+import org.cts2.uri.operation.Resolvable;
+import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.

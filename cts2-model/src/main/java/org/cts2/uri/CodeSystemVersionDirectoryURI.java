@@ -20,8 +20,8 @@ package org.cts2.uri;
 
 import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.codesystemversion.CodeSystemVersionList;
-import org.cts2.directory.Resolvable;
-import org.cts2.directory.Restrictable;
+import org.cts2.uri.operation.Resolvable;
+import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.

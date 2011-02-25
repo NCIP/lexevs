@@ -18,8 +18,8 @@
  */
 package org.cts2.uri;
 
-import org.cts2.directory.Resolvable;
-import org.cts2.directory.Restrictable;
+import org.cts2.uri.operation.Resolvable;
+import org.cts2.uri.operation.Restrictable;
 import org.cts2.valuesetresolution.ResolutionRuleDirectory;
 import org.cts2.valuesetresolution.ResolutionRuleList;
 

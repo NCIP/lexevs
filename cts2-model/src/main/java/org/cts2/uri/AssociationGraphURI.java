@@ -18,7 +18,7 @@
  */
 package org.cts2.uri;
 
-import org.cts2.directory.Restrictable;
+import org.cts2.uri.operation.Restrictable;
 
 
 /**
