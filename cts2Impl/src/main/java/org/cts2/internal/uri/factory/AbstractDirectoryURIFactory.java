@@ -68,7 +68,7 @@ public abstract class AbstractDirectoryURIFactory<T extends DirectoryURI> implem
 	 * @return the bean mapper
 	 */
 	public BeanMapper getBeanMapper() {
-		return beanMapper;
+		return this.beanMapper;
 	}
 
 	/**
@@ -95,6 +95,6 @@ public abstract class AbstractDirectoryURIFactory<T extends DirectoryURI> implem
 	 * @return the lex big service
 	 */
 	public LexBIGService getLexBigService() {
-		return lexBigService;
+		return this.lexBigService;
 	}	
 }

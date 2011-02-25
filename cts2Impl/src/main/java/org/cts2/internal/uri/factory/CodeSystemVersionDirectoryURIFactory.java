@@ -16,43 +16,23 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.mapper;
+package org.cts2.internal.uri.factory;
 
-import org.dozer.DozerBeanMapper;
+import org.cts2.internal.uri.DefaultCodeSystemVersionDirectoryURI;
+import org.cts2.uri.CodeSystemVersionDirectoryURI;
 
 /**
- * The Class BaseDozerBeanMapper.
- *
+ * A factory for creating CodeSystemVersionDirectoryURIFactory objects.
+ * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class BaseDozerBeanMapper implements BeanMapper{
+public class CodeSystemVersionDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
 
-	/** The dozer bean mapper. */
-	private DozerBeanMapper dozerBeanMapper;
-	
 	/* (non-Javadoc)
-	 * @see org.cts2.internal.mapper.BeanMapper#map(java.lang.Object, java.lang.Class)
+	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
 	 */
-	public <T> T map(Object source, Class<T> targetClass){
-		return this.dozerBeanMapper.map(source, targetClass);
+	@Override
+	protected CodeSystemVersionDirectoryURI doGetDirectoryURI() {
+		return new DefaultCodeSystemVersionDirectoryURI(this.getLexBigService(), this.getBeanMapper());
 	}
-
-	/**
-	 * Gets the dozer bean mapper.
-	 *
-	 * @return the dozer bean mapper
-	 */
-	public DozerBeanMapper getDozerBeanMapper() {
-		return this.dozerBeanMapper;
-	}
-
-	/**
-	 * Sets the dozer bean mapper.
-	 *
-	 * @param dozerBeanMapper the new dozer bean mapper
-	 */
-	public void setDozerBeanMapper(DozerBeanMapper dozerBeanMapper) {
-		this.dozerBeanMapper = dozerBeanMapper;
-	}
-
 }

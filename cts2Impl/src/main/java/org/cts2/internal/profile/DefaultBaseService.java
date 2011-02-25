@@ -44,6 +44,6 @@ public class DefaultBaseService implements BaseService {
 	 * @see org.cts2.profile.BaseService#getQueryService()
 	 */
 	public QueryService getQueryService() {
-		return queryService;
+		return this.queryService;
 	}
 }

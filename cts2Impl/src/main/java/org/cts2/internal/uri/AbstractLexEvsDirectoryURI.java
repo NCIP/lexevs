@@ -67,7 +67,7 @@ public abstract class AbstractLexEvsDirectoryURI<T> implements DirectoryURI {
 	 * @return the lex big service
 	 */
 	protected LexBIGService getLexBIGService(){
-		return lexBIGService;
+		return this.lexBIGService;
 	}
 
 	/**
@@ -94,6 +94,6 @@ public abstract class AbstractLexEvsDirectoryURI<T> implements DirectoryURI {
 	 * @return the bean mapper
 	 */
 	public BeanMapper getBeanMapper() {
-		return beanMapper;
+		return this.beanMapper;
 	}
 }

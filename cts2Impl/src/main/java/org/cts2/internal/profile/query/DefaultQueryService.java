@@ -40,7 +40,7 @@ public class DefaultQueryService implements QueryService{
 	 * @see org.cts2.profile.query.QueryService#getCodeSystemQuery()
 	 */
 	public CodeSystemQuery getCodeSystemQuery() {
-		return codeSystemQuery;
+		return this.codeSystemQuery;
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class DefaultQueryService implements QueryService{
 	@Override
 	public AssociationQuery getAssociationQuery() {
 		// TODO Auto-generated method stub
-		return associationQuery;
+		return this.associationQuery;
 	}
 	
 	

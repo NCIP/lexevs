@@ -59,17 +59,17 @@ public class BaseServiceFactory implements FactoryBean<BaseService> {
 	 */
 	public synchronized BaseService getBaseService(){
 		
-		if(baseService == null){
+		if(this.baseService == null){
 			
 			if(StringUtils.isNotBlank(this.lgConfigFile)){
 				System.setProperty(SystemVariables.LG_CONFIG_FILE_SYSTEM_VARIABLE, this.lgConfigFile);
 			}
 			
 			ApplicationContext appContext = new ClassPathXmlApplicationContext(APPLICATION_CONFIG_CONTEXT);
-			baseService = appContext.getBean(BaseService.class);
+			this.baseService = appContext.getBean(BaseService.class);
 		}
 		
-		return baseService;
+		return this.baseService;
 	}
 
 	/* (non-Javadoc)
@@ -111,6 +111,6 @@ public class BaseServiceFactory implements FactoryBean<BaseService> {
 	 * @return the lg config file
 	 */
 	public String getLgConfigFile() {
-		return lgConfigFile;
+		return this.lgConfigFile;
 	}
 }

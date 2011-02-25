@@ -51,7 +51,7 @@ public abstract class AbstractBaseService<T extends DirectoryURI> {
 	 * @return the lex big service
 	 */
 	public LexBIGService getLexBigService() {
-		return lexBigService;
+		return this.lexBigService;
 	}
 
 	/**
@@ -69,6 +69,6 @@ public abstract class AbstractBaseService<T extends DirectoryURI> {
 	 * @return the directory uri factory
 	 */
 	public DirectoryURIFactory<T> getDirectoryURIFactory() {
-		return directoryURIFactory;
+		return this.directoryURIFactory;
 	}
 }

@@ -68,11 +68,11 @@ public abstract class AbstractResolvingDirectoryURI
 		@Override
 		public E executeMethod() {
 
-			if(time == null){
+			if(this.time == null){
 				return doExecuteMethod();
 			} else {
 
-				Future<E> result = executorService.submit(new Callable<E>(){
+				Future<E> result = AbstractResolvingDirectoryURI.this.executorService.submit(new Callable<E>(){
 
 					@Override
 					public E call() throws Exception {
@@ -82,7 +82,7 @@ public abstract class AbstractResolvingDirectoryURI
 				});
 
 				try {
-					return result.get(time, TimeUnit.MILLISECONDS);
+					return result.get(this.time, TimeUnit.MILLISECONDS);
 				} catch (TimeoutException e) {
 					throw new RuntimeException("Operation has timed out.");
 				} catch (Exception e) {
