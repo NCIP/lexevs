@@ -3,98 +3,281 @@
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
 	
-	<mapping map-id="csSummary2codeSystemVersionDirectoryEntryMap" type="one-way">
-		<class-a>org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary
+	<mapping map-id="csSummary2codeSystemVersionDirectoryEntryMap" type="one-way" wildcard="false">
+		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering
 		</class-a>
 		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry
 		</class-b>
-<!--		<field>-->
-<!--			<a>codingSchemeURI</a>-->
-<!--			<b>codeSystemName.uri</b>-->
-<!--		</field>-->
-<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
+		<field>
+			<a>codingSchemeSummary.representsVersion</a>
+			<b>codeSystemVersionName</b>
+		</field>
+		<field>
+			<a>renderingDetail.versionTags.tag[0]</a>
+			<b>codeSystemVersionTag[0].content</b>	
+			<!-- a-hint>java.lang.String</a-hint>
+			<b-hint>org.cts2.core.VersionTagReference</b-hint-->		
+		</field>
+<!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
 <!--			<a>this</a>-->
-<!--			<b>codeSystemName.href</b>-->
+<!--			<b>versionOf.domain</b>-->
 <!--		</field>-->
-<!--		<field>-->
-<!--			<a>localName</a>-->
-<!--			<b>codeSystemName.content</b>-->
+		<field>
+			<a>codingSchemeSummary.codingSchemeURI</a>
+			<b>versionOf.meaning</b>
+		</field>	
+		<field>
+			<a>codingSchemeSummary.formalName</a>
+			<b>versionOf.content</b>
+		</field>	
+				
+		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">
+			<a>codingSchemeSummary</a>
+			<b>about</b>
+		</field>
+
+		<field>
+			<a>codingSchemeSummary.codingSchemeURI</a>
+			<b>about</b>
+		</field>
+<!--		<field custom-converter-id="cts2ResourceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
+<!--			<a>this</a>-->
+<!--			<b>describedResourceType</b>-->
+<!--		</field>-->
+		<field>
+			<a>codingSchemeSummary.codingSchemeURI</a>
+			<b>about</b>
+		</field>
+		<field>
+			<a>codingSchemeSummary.formalName</a>
+			<b>formalName</b>
+		</field>		
+		<field>
+			<a>codingSchemeSummary.codingSchemeDescription.content</a>
+			<b>resourceSynopsis.value</b>
+		</field>	
+		
+		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">
+			<a>codingSchemeSummary</a>
+			<b>completeResource</b>
+		</field>
+		<field>
+			<a>codingSchemeSummary.formalName</a>
+			<b>resourceName</b>
+		</field>	
+<!--		<field custom-converter-id="cts2ResourceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
+<!--			<a>this</a>-->
+<!--			<b>type</b>-->
+<!--		</field>				-->
+	</mapping>
+	
+	<mapping map-id="csVersionTag2codeSystemVersionTag" type="one-way">
+		<class-a>java.lang.String</class-a>
+		<class-b>org.cts2.core.VersionTagReference</class-b>
+		<!-- field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">
+			<a>null</a>
+			<b>domain</b>
+		</field-->
+		<field>
+			<a>this</a>
+			<b>content</b>
+		</field>
+	</mapping>
+	
+	<mapping map-id="codingScheme2codeSystemVersionDirectoryEntryMap" type="one-way" wildcard="false">
+		<class-a>org.LexGrid.codingSchemes.CodingScheme
+		</class-a>
+		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry
+		</class-b>
+		<field>
+			<a>representsVersion</a>
+			<b>codeSystemVersionName</b>
+		</field>
+		<field>
+			<a>renderingDetail.versionTags.tag[0]</a>
+			<b>codeSystemVersionTag[0].content</b>		
+		</field>		
+		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">
+			<a>this</a>
+			<b>versionOf.meaning</b>
+		</field>
+		<field>
+			<a>codingSchemeName</a>
+			<b>versionOf.content</b>
+		</field>
+		<field>
+			<a>formalName</a>
+			<b>formalName</b>
+		</field>
+		<field>
+			<a>codingSchemeURI</a>
+			<b>about</b>
+		</field>
+		<field>
+			<a>codingSchemeDescription.content</a>
+			<b>resourceSynopsis.value</b>
+		</field>
+	</mapping>
+		
+	<mapping map-id="codeSystemVersionMap" wildcard="false">
+		<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>
+		<class-b>org.cts2.codesystemversion.CodeSystemVersion</class-b>
+		
+		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-mappings">
+			<a>this</a>
+			<b>associations</b>					
+		</field>
+		<field>
+			<a>representsVersion</a>
+			<b>codeSystemVersionName</b>
+		</field>
+<!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="LANGUAGE">-->
+<!--			<a>this</a>-->
+<!--			<b>defaultLanguage.domain</b>-->
+<!--		</field>-->
+		<field>
+			<a>defaultLanguage</a>
+			<b>defaultLanguage.content</b>
+		</field>
+		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entities">
+			<a>this</a>
+			<b>entityDescriptions</b>					
+		</field>	
+<!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
+<!--			<a>this</a>-->
+<!--			<b>versionOf.domain</b>-->
+<!--		</field>	-->
+		<field>
+			<a>formalName</a>
+			<b>versionOf.content</b>
+		</field>
+		
+		<field custom-converter-id="finalizableStateConverterId" custom-converter-param="FINAL">
+			<a>this</a>
+			<b>state</b>
+		</field>
+		<field>
+			<a>codingSchemeURI</a>
+			<b>about</b>
+		</field>
+<!--		<field custom-converter-id="cts2ResourceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
+<!--			<a>this</a>-->
+<!--			<b>describedResourceType</b>-->
 <!--		</field>-->
 		<field>
 			<a>formalName</a>
 			<b>formalName</b>
 		</field>
+		<field>
+			<a>localName</a>
+			<b>keyword</b>
+		</field>
+		<field custom-converter-id="propertiesConverterId" >
+			<a>this</a>
+			<b>property</b>
+		</field>
+<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
+<!--			<a>this</a>-->
+<!--			<b>resourceID</b>-->
+<!--		</field>-->
+		<field>
+			<a>entityDescription.content</a>
+			<b>resourceSynopsis.value</b>
+		</field>
+		<!-- field custom-converter-id="entityReferenceTypeConverterId" custom-converter-param="NAMED_ENTITY">
+			<a>this</a>
+			<b>resourceTypes[0].entityReferenceType</b>
+			<b-deep-index-hint>org.cts2.core.EntityReference</b-deep-index-hint>
+		</field-->
+		<field>
+			<a>copyright.content</a>
+			<b>rights.value</b>
+		</field>
+<!--		<field map-id="sourceMap">-->
+<!--			<a>source</a>-->
+<!--			<b>sources</b>-->
+<!--		</field>-->
+		
+		<field custom-converter-id="entryStateConverterId">
+			<a>isActive</a>
+			<b>entryState</b>
+		</field>
 <!--		<field>-->
-<!--			<a>representsVersion</a>-->
-<!--			<b>codeSystemVersionName</b>-->
+<!--			<a>codingSchemeURI</a>-->
+<!--			<b>entryID</b>-->
+<!--		</field>-->
+		<!-- field custom-converter-id="referenceTypeConverterId" custom-converter-param="OWNER">
+			<a>this</a>
+			<b>owner.domain</b>
+		</field-->
+<!--		<field>-->
+<!--			<a>owner</a>-->
+<!--			<b>owner.name</b>-->
+<!--		</field>-->
+<!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="STATUS">-->
+<!--			<a>this</a>-->
+<!--			<b>status.domain</b>-->
 <!--		</field>-->
 <!--		<field>-->
-<!--			<a>codingSchemeDescription</a>-->
-<!--			<b>description</b>-->
+<!--			<a>status</a>-->
+<!--			<b>status.name</b>-->
 <!--		</field>-->
+		
+<!--		<field map-id="changeDescriptionMap">-->
+<!--			<a>this</a>-->
+<!--			<b>changeDescription</b>-->
+<!--		</field>-->
+	</mapping>	
+	
+	<mapping map-id="codeSystemPropertyMap" wildcard="false">
+		<class-a>org.LexGrid.commonTypes.Property</class-a>
+		<class-b>org.cts2.core.Property</class-b>
+		<!-- field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-statement">
+			<a>this</a>
+			<b>correspondingStatement</b>
+		</field-->
+		<field>
+			<a>propertyName</a>
+			<b>externalIdentifier</b>
+		</field>
+<!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
+<!--			<a>this</a>-->
+<!--			<b>sourceCodingSchemeVersion.codeSystem.domain</b>-->
+<!--		</field>-->
+		<field custom-converter-id="getCodingSchemeFromProperty-Id">
+			<a>this</a>
+			<b>sourceCodingSchemeVersion.codeSystem.content</b>
+		</field>
+		<field>
+			<a>value.content</a>
+			<b>value.value</b>
+		</field>
 	</mapping>
 	
-<!--	<mapping map-id="codingScheme2codeSystemVersionDirectoryEntryMap" type="one-way">-->
-<!--		<class-a>org.LexGrid.codingSchemes.CodingScheme-->
-<!--		</class-a>-->
-<!--		<class-b>org.terms.CodeSystem.CodeSystemVersionDirectoryEntry-->
-<!--		</class-b>-->
-<!--		<field>-->
-<!--			<a>codingSchemeURI</a>-->
-<!--			<b>codeSystemName.uri</b>-->
-<!--		</field>-->
-<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
-<!--			<a>this</a>-->
-<!--			<b>codeSystemName.href</b>-->
-<!--		</field>-->
-<!--		<field>-->
-<!--			<a>codingSchemeName</a>-->
-<!--			<b>codeSystemName.content</b>-->
-<!--		</field>-->
-<!--		<field>-->
-<!--			<a>formalName</a>-->
-<!--			<b>formalName</b>-->
-<!--		</field>-->
-<!--		<field>-->
-<!--			<a>representsVersion</a>-->
-<!--			<b>codeSystemVersionName</b>-->
-<!--		</field>-->
-<!--		<field>-->
-<!--			<a>codingSchemeDescription</a>-->
-<!--			<b>description</b>-->
-<!--		</field>-->
-<!--	</mapping>-->
-<!--		-->
-<!--	<mapping map-id="codeSystemVersionMap">-->
-<!--		<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>-->
-<!--		<class-b>org.terms.CodeSystem.CodeSystemVersion</class-b>-->
-<!--		<field>-->
-<!--			<a>codingSchemeURI</a>-->
-<!--			<b>versionOf.uri</b>-->
-<!--		</field>-->
-<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
-<!--			<a>this</a>-->
-<!--			<b>versionOf.href</b>	-->
-<!--		</field>-->
-<!--		<field>-->
-<!--			<a>codingSchemeName</a>-->
-<!--			<b>versionOf.content</b>					-->
-<!--		</field>-->
-<!--		<field>-->
-<!--			<a>codingSchemeName</a>-->
-<!--			<b>codeSystemVersionName</b>					-->
-<!--		</field>	-->
-<!--		<field>-->
-<!--			<a>defaultLanguage</a>-->
-<!--			<b>defaultLanguage</b>					-->
-<!--		</field>	-->
-<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="entities">-->
-<!--			<a>this</a>-->
-<!--			<b>entityDescriptions</b>					-->
-<!--		</field>	-->
-<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="mappings">-->
-<!--			<a>this</a>-->
-<!--			<b>systemizations</b>					-->
-<!--		</field>					-->
-<!--	</mapping>	-->
+	<mapping map-id="sourceMap">
+		<class-a>org.LexGrid.commonTypes.Source</class-a>
+		<class-b>org.cts2.core.SourceAndRoleReference</class-b>
+		<field>
+			<a>content</a>
+			<b>content</b>
+		</field>
+		<field>
+			<a>role</a>
+			<b>role.content</b>
+		</field>
+	</mapping>
+	
+	<mapping map-id="changeDescriptionMap">
+		<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>
+		<class-b>org.cts2.core.ChangeDescription</class-b>
+		
+		<field custom-converter-id="changeTypeConverterId">
+			<a>entryState.changeType</a>
+			<b>changeType</b>
+		</field>
+		<field>
+			<a>effectiveDate</a>
+			<b>effectiveDate</b>
+		</field>
+	</mapping>
 </mappings>
