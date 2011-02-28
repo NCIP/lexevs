@@ -569,9 +569,10 @@ public class DisplayCodedNodeSet {
 			final StringBuffer text = new StringBuffer();
 			String codingSchemeName = rcr.getCodingSchemeName() == null ? rcr.getCodeNamespace() : rcr.getCodingSchemeName();
 			String uri = rcr.getCodingSchemeURI() == null ? rcr.getCodeNamespace() : rcr.getCodingSchemeName();
+			String codingSchemeVersion = rcr.getCodingSchemeVersion();
 			
 			text.append("<b>Coding Scheme:</b> " +  codingSchemeName
-					+ " - " + uri + "\n");
+					+ " - " + uri + " - " + codingSchemeVersion + "\n");
 			text.append("<b>Entity Code:</b> " + rcr.getConceptCode() + "\n");
 			
 			fieldHelper(text, rcr.getCodeNamespace(),
