@@ -30,7 +30,7 @@ import org.cts2.uri.CodeSystemDirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodeSystemQuery extends BaseQueryService<CodeSystemDirectoryURI>{
+public interface CodeSystemQueryService extends BaseQueryService<CodeSystemDirectoryURI>{
 	
 	/**
 	 * Gets the all code systems.

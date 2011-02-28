@@ -26,15 +26,19 @@
 	</bean>
 
 	<bean id="defaultQueryService" class="org.cts2.internal.profile.query.DefaultQueryService">
-		<property name="codeSystemQuery" ref="lexEvsCodeSystemQuery" />
+		<property name="codeSystemQueryService" ref="lexEvsCodeSystemQueryService" />
 	</bean>
 
-	<bean id="lexEvsCodeSystemQuery" class="org.cts2.internal.profile.query.LexEvsCodeSystemQuery" parent="abstractBaseService">
+	<bean id="lexEvsCodeSystemQueryService" class="org.cts2.internal.profile.query.LexEvsCodeSystemQueryService" parent="abstractBaseService">
 		<property name="directoryURIFactory" ref="codeSystemDirectoryURIFactory" />
 	</bean>
 	
-	<bean id="lexEvsAssociationQuery" class="org.cts2.internal.profile.query.LexEvsAssociationQuery" parent="abstractBaseService">
+	<bean id="lexEvsAssociationQueryService" class="org.cts2.internal.profile.query.LexEvsAssociationQueryService" parent="abstractBaseService">
 		<property name="directoryURIFactory" ref="associationDirectoryURIFactory" />
+	</bean>
+	
+	<bean id="lexEvsEntityDescriptionQueryService" class="org.cts2.internal.profile.query.LexEvsEntityDescriptionQueryService" parent="abstractBaseService">
+		<property name="directoryURIFactory" ref="entityDirectoryURIFactory" />
 	</bean>
 
 	
@@ -46,6 +50,7 @@
 	
 	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<!-- End Directory URI Factories -->
 	
 </beans>

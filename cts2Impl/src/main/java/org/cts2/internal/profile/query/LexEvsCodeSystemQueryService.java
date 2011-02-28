@@ -18,38 +18,21 @@
  */
 package org.cts2.internal.profile.query;
 
-import org.cts2.profile.query.AssociationQueryService;
+import org.cts2.codesystem.CodeSystemDirectory;
+import org.cts2.codesystem.CodeSystemList;
 import org.cts2.profile.query.CodeSystemQueryService;
-import org.cts2.profile.query.QueryService;
+import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
- * The Class DefaultQueryService.
+ * The Class LexEvsCodeSystemQuery.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultQueryService implements QueryService{
-	
-	/** The code system query. */
-	private CodeSystemQueryService codeSystemQueryService;
-	
-	/** The association query. */
-	private AssociationQueryService associationQueryService;
+public class LexEvsCodeSystemQueryService extends AbstractDirectoryResolvableQueryService<CodeSystemDirectoryURI,CodeSystemDirectory,CodeSystemList> 
+	implements CodeSystemQueryService {
 
-	public CodeSystemQueryService getCodeSystemQueryService() {
-		return codeSystemQueryService;
-	}
-
-	public void setCodeSystemQueryService(
-			CodeSystemQueryService codeSystemQueryService) {
-		this.codeSystemQueryService = codeSystemQueryService;
-	}
-
-	public AssociationQueryService getAssociationQueryService() {
-		return associationQueryService;
-	}
-
-	public void setAssociationQueryService(
-			AssociationQueryService associationQueryService) {
-		this.associationQueryService = associationQueryService;
+	@Override
+	public CodeSystemDirectoryURI getAllCodeSystems() {
+		return this.getDirectoryURIFactory().getDirectoryURI();
 	}
 }

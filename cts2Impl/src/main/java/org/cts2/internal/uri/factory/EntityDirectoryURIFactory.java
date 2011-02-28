@@ -16,23 +16,24 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.profile.query;
+package org.cts2.internal.uri.factory;
 
-import org.cts2.codesystem.CodeSystemDirectory;
-import org.cts2.codesystem.CodeSystemList;
-import org.cts2.profile.query.CodeSystemQuery;
-import org.cts2.uri.CodeSystemDirectoryURI;
+import org.cts2.internal.uri.DefaultEntityDirectoryURI;
+import org.cts2.uri.EntityDirectoryURI;
+
 
 /**
- * The Class LexEvsCodeSystemQuery.
- *
+ * A factory for creating CodeSystemVersionDirectoryURIFactory objects.
+ * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsCodeSystemQuery extends AbstractDirectoryResolvableQueryService<CodeSystemDirectoryURI,CodeSystemDirectory,CodeSystemList> 
-	implements CodeSystemQuery{
+public class EntityDirectoryURIFactory extends AbstractDirectoryURIFactory<EntityDirectoryURI> {
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
+	 */
 	@Override
-	public CodeSystemDirectoryURI getAllCodeSystems() {
-		return this.getDirectoryURIFactory().getDirectoryURI();
+	protected EntityDirectoryURI doGetDirectoryURI() {
+		return new DefaultEntityDirectoryURI(this.getLexBigService(), this.getBeanMapper());
 	}
 }

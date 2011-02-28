@@ -23,7 +23,7 @@ import java.util.List;
 import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.codesystemversion.CodeSystemVersionList;
 import org.cts2.core.EntityReference;
-import org.cts2.profile.query.CodeSystemVersionQuery;
+import org.cts2.profile.query.CodeSystemVersionQueryService;
 import org.cts2.service.core.types.ActiveOrAll;
 import org.cts2.service.core.types.RestrictionType;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
@@ -33,8 +33,9 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsCodeSystemVersionQuery 
-	extends AbstractDirectoryResolvableQueryService<CodeSystemVersionDirectoryURI,CodeSystemVersionDirectory,CodeSystemVersionList> implements CodeSystemVersionQuery {
+public class LexEvsCodeSystemVersionQueryService 
+	extends AbstractDirectoryResolvableQueryService<CodeSystemVersionDirectoryURI,CodeSystemVersionDirectory,CodeSystemVersionList> 
+	implements CodeSystemVersionQueryService {
 
 	@Override
 	public CodeSystemVersionDirectoryURI restrictToEntities(

@@ -31,13 +31,13 @@ public interface QueryService {
 	 *
 	 * @return the code system query
 	 */
-	public CodeSystemQuery getCodeSystemQuery();
+	public CodeSystemQueryService getCodeSystemQueryService();
 	
 	/**
 	 * Gets the association query
 	 * 
 	 * @return the association query
 	 */
-	public AssociationQuery getAssociationQuery();
+	public AssociationQueryService getAssociationQueryService();
 	
 }

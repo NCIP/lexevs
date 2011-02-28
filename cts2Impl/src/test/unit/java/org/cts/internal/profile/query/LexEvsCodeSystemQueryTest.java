@@ -12,7 +12,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts.test.BaseCts2UnitTest;
 import org.cts2.codesystem.CodeSystemDirectory;
-import org.cts2.internal.profile.query.LexEvsCodeSystemQuery;
+import org.cts2.internal.profile.query.LexEvsCodeSystemQueryService;
 import org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory;
 import org.cts2.profile.BaseService;
 import org.cts2.uri.CodeSystemDirectoryURI;
@@ -22,7 +22,7 @@ import org.junit.Test;
 public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
 	
 	@Resource
-	private LexEvsCodeSystemQuery lexEvsCodeSystemQuery;
+	private LexEvsCodeSystemQueryService lexEvsCodeSystemQuery;
 	
 	@Resource
 	private BaseService baseService;
@@ -37,7 +37,7 @@ public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
 	
 	@Test
 	public void testIsAvailableThroughBaseService(){
-		assertNotNull(baseService.getQueryService().getCodeSystemQuery());
+		assertNotNull(baseService.getQueryService().getCodeSystemQueryService());
 	}
 	
 	@Test

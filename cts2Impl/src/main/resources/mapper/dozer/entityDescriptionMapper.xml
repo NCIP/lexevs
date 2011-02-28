@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
 	
-	<mapping map-id="entityDirectoryEntryMap" type="one-way">
+	<mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference</class-a>
 		<class-b>org.cts2.entity.EntityDirectoryEntry</class-b>
 		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity">
@@ -48,7 +48,7 @@
 <!--		</field>				-->
 	</mapping>
 	
-	<mapping map-id="namedEntityDescriptionMap" type="one-way" map-null="false">
+	<mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference</class-a>
 		<class-b>org.cts2.entity.NamedEntityDescription</class-b>
 <!--		<field custom-converter-id="definitionStateConverterId">-->
@@ -123,7 +123,7 @@
 		</field-->				
 	</mapping>
 	
-	<mapping map-id="designationMap">
+	<mapping>
 		<class-a>org.LexGrid.concepts.Presentation</class-a>
 		<class-b>org.cts2.entity.Designation</class-b>
 		<!-- field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity-statement">
@@ -166,7 +166,7 @@
 		</field-->
 	</mapping>
 
-	<mapping map-id="definitionMap">
+	<mapping>
 		<class-a>org.LexGrid.concepts.Definition</class-a>
 		<class-b>org.cts2.core.Definition</class-b>
 <!--		<field custom-converter-id="preferenceConverterId">-->
@@ -206,7 +206,7 @@
 		</field-->		
 	</mapping>
 
-	<mapping map-id="commentMap">
+	<mapping>
 		<class-a>org.LexGrid.concepts.Comment</class-a>
 		<class-b>org.cts2.core.Comment</class-b>	
 		<!-- field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity-statement">
@@ -232,7 +232,7 @@
 		</field-->			
 	</mapping>
 			
-	<mapping map-id="usageContextMap" map-null="false">
+	<mapping>
 		<class-a>java.lang.String</class-a>
 		<class-b>org.cts2.core.ContextReference</class-b>
 <!--		<field>-->

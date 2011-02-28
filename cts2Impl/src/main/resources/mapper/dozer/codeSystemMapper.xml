@@ -14,10 +14,8 @@
     </mapping>
     
     <mapping>
-		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering
-		</class-a>
-		<class-b>org.cts2.codesystem.CodeSystemDirectoryEntry
-		</class-b>
+		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering</class-a>
+		<class-b>org.cts2.codesystem.CodeSystemDirectoryEntry</class-b>
 		
 		<field>
 			<a>codingSchemeSummary.codingSchemeURI</a>
@@ -27,13 +25,16 @@
 			<a>codingSchemeSummary.localName</a>
 			<b>codeSystemName</b>
 		</field>
+		<field>
+			<a>codingSchemeSummary.codingSchemeDescription</a>
+			<b>resourceSynopsis</b>
+		</field>
+
 	</mapping>
 	
 	<mapping>
-		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering
-		</class-a>
-		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry
-		</class-b>
+		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering</class-a>
+		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry</class-b>
 		<field>
 			<a>codingSchemeSummary.representsVersion</a>
 			<b>codeSystemVersionName</b>
@@ -79,14 +80,14 @@
 			<b>formalName</b>
 		</field>		
 		<field>
-			<a>codingSchemeSummary.codingSchemeDescription.content</a>
-			<b>resourceSynopsis.value</b>
+			<a>codingSchemeSummary.codingSchemeDescription</a>
+			<b>resourceSynopsis</b>
 		</field>	
 		
-		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">
-			<a>codingSchemeSummary</a>
-			<b>completeResource</b>
-		</field>
+<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
+<!--			<a>codingSchemeSummary</a>-->
+<!--			<b>completeResource</b>-->
+<!--		</field>-->
 		<field>
 			<a>codingSchemeSummary.formalName</a>
 			<b>resourceName</b>

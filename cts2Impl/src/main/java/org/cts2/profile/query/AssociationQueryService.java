@@ -28,7 +28,7 @@ import org.cts2.uri.AssociationDirectoryURI;
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
  */
-public interface AssociationQuery extends BaseQueryService<AssociationDirectoryURI> {
+public interface AssociationQueryService extends BaseQueryService<AssociationDirectoryURI> {
 
 	/**
 	 * @return All associations in the Code System.

@@ -18,29 +18,23 @@
  */
 package org.cts2.profile.query;
 
-import java.util.List;
-
-import org.cts2.codesystemversion.CodeSystemVersionDirectory;
-import org.cts2.codesystemversion.CodeSystemVersionList;
-import org.cts2.core.EntityReference;
+import org.cts2.entity.EntityDirectory;
+import org.cts2.entity.EntityList;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
-import org.cts2.service.core.types.ActiveOrAll;
-import org.cts2.service.core.types.RestrictionType;
-import org.cts2.uri.CodeSystemVersionDirectoryURI;
+import org.cts2.uri.EntityDirectoryURI;
 
 /**
  * The Interface CodeSystemVersionQuery.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodeSystemVersionQuery extends BaseQueryService<CodeSystemVersionDirectoryURI>{
+public interface EntityDescriptionQueryService extends BaseQueryService<EntityDirectoryURI>{
 	
-	//TODO: 'entities aren't supposed to be a List, I'm pretty sure -- but there is on 'EntityReferenceList' in the model... ask Harold.
-	public CodeSystemVersionDirectoryURI restrictToEntities(CodeSystemVersionDirectoryURI codeSystemQueryURI, List<EntityReference> entities, RestrictionType allOrSome, ActiveOrAll active);
+	public EntityDirectoryURI getEntities();
 	
-	public CodeSystemVersionDirectory resolve(CodeSystemVersionDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	public EntityDirectory resolve(EntityDirectoryURI entityQueryURI, QueryControl queryControl, ReadContext readContext);
 	
-	public CodeSystemVersionList resolveAsList(CodeSystemVersionDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	public EntityList resolveAsList(EntityDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
 
 }

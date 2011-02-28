@@ -11,10 +11,10 @@ import org.cts2.test.BaseCts2IntegrationTest;
 import org.cts2.uri.CodeSystemDirectoryURI;
 import org.junit.Test;
 
-public class LexEvsCodeSystemQueryTestIT extends BaseCts2IntegrationTest {
+public class LexEvsCodeSystemQueryServiceTestIT extends BaseCts2IntegrationTest {
 	
 	@Resource
-	private LexEvsCodeSystemQuery lexEvsCodeSystemQuery;
+	private LexEvsCodeSystemQueryService lexEvsCodeSystemQuery;
 	
 	@Test
 	public void testInit(){
