@@ -60,6 +60,8 @@ public class DirectoryURIMethodAddingModifier implements JClassModifier{
 	/** The GENERICS. */
 	private static String GENERICS = "<T>";
 	
+	private static String DIRECTORY_CLASS_DECLARATION = "public abstract class Directory";
+	
 	/** The GENERI c_ simpl e_ type. */
 	private static SimpleJType GENERIC_SIMPLE_TYPE = new SimpleJType("T");
 	
@@ -69,8 +71,6 @@ public class DirectoryURIMethodAddingModifier implements JClassModifier{
 	@Override
 	public void prePrintModifyJClass(JClass jClass, String outputDir,
 			String lineSeparator, String header) {
-		jClass.changeLocalName(this.addGenerics(jClass.getLocalName()));
-		
 		jClass.removeConstructor(jClass.getConstructors()[0]);
 
 		this.adjustField(jClass, PREV_FIELD, GENERIC_SIMPLE_TYPE);
@@ -99,9 +99,9 @@ public class DirectoryURIMethodAddingModifier implements JClassModifier{
 	 *
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	private enum MethodType {/** The GET. */
-GET,/** The SET. */
-SET}
+	private enum MethodType {
+		GET,
+		SET}
 	
 	/**
 	 * Adjust j method.
@@ -186,19 +186,18 @@ SET}
 	public void postPrintModifyJClass(JClass jClass, String outputDir,
 			String lineSeparator, String header) {
 
-		File file = new File(jClass.getFilename(outputDir));
-
-		String newPath = this.removeGenerics(file.getAbsolutePath());
-		
-		System.out.println(newPath);
 		try {
-			FileUtils.moveFile(file, new File(newPath));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+			File file = new File(jClass.getFilename(outputDir));
 
-		jClass.changeLocalName(this.removeGenerics(jClass.getLocalName()));
+			String originalFile = FileUtils.readFileToString(file);
+			
+			String modifiedFile = 
+				originalFile.replaceFirst(DIRECTORY_CLASS_DECLARATION, addGenerics(DIRECTORY_CLASS_DECLARATION));
+			
+			FileUtils.writeStringToFile(file, modifiedFile);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/* (non-Javadoc)
