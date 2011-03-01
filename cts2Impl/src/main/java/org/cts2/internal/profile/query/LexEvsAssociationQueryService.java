@@ -11,8 +11,9 @@ import org.cts2.uri.AssociationDirectoryURI;
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
  */
-public class LexEvsAssociationQueryService extends AbstractDirectoryResolvableQueryService
-	<AssociationDirectoryURI, AssociationDirectory, AssociationList> implements AssociationQueryService {
+public class LexEvsAssociationQueryService extends 
+	AbstractDirectoryResolvableQueryService<AssociationDirectoryURI, AssociationDirectory, AssociationList> 
+	implements AssociationQueryService {
 
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.query.AssociationQuery#getAllAssociations()
@@ -21,7 +22,4 @@ public class LexEvsAssociationQueryService extends AbstractDirectoryResolvableQu
 	public AssociationDirectoryURI getAllAssociations() {
 		return this.getDirectoryURIFactory().getDirectoryURI();
 	}
-
-	
-
 }

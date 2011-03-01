@@ -28,7 +28,8 @@ import org.cts2.uri.CodeSystemDirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsCodeSystemQueryService extends AbstractDirectoryResolvableQueryService<CodeSystemDirectoryURI,CodeSystemDirectory,CodeSystemList> 
+public class LexEvsCodeSystemQueryService 
+	extends AbstractDirectoryResolvableQueryService<CodeSystemDirectoryURI,CodeSystemDirectory,CodeSystemList> 
 	implements CodeSystemQueryService {
 
 	@Override

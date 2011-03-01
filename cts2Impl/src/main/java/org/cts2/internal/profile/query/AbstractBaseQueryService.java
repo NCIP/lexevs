@@ -30,8 +30,9 @@ import org.cts2.uri.operation.Restrictable;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBaseQueryService
-	<U extends Restrictable<U> & DirectoryURI> extends AbstractBaseService<U> implements BaseQueryService<U>{
+public abstract class AbstractBaseQueryService<U extends Restrictable<U> & DirectoryURI>
+	extends AbstractBaseService<U> 
+	implements BaseQueryService<U>{
 
 	@Override
 	public int count(U directoryUri, ReadContext readContext) {
