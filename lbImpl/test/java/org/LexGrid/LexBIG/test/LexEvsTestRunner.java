@@ -86,6 +86,8 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
 	    super.runChild(method, notifier);
 	    
 	    LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropAllTables();
+	    
+	    LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
 	}
 	
 	/**
