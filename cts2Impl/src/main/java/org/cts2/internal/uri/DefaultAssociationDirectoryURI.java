@@ -30,34 +30,53 @@ import org.cts2.service.core.ReadContext;
 import org.cts2.uri.AssociationDirectoryURI;
 
 /**
- * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ * The Class DefaultAssociationDirectoryURI.
  *
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
 public class DefaultAssociationDirectoryURI 
 	extends AbstractResolvingDirectoryURI<CodedNodeGraph, AssociationDirectoryURI, AssociationDirectory, AssociationList> implements AssociationDirectoryURI{
 
+	/**
+	 * Instantiates a new default association directory uri.
+	 *
+	 * @param lexBIGService the lex big service
+	 * @param beanMapper the bean mapper
+	 */
 	public DefaultAssociationDirectoryURI(LexBIGService lexBIGService,
 			BeanMapper beanMapper) {
 		super(lexBIGService, beanMapper);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#count(org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public int count(ReadContext readContext) {
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#marshall()
+	 */
 	@Override
 	public Object marshall() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#unmarshall()
+	 */
 	@Override
 	public void unmarshall() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractResolvingDirectoryURI#doResolve(java.lang.Object, org.cts2.service.core.NameOrURI, java.lang.Long, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	protected AssociationDirectory doResolve(
 			CodedNodeGraph lexEvsBackingObject, NameOrURI format,
@@ -66,6 +85,9 @@ public class DefaultAssociationDirectoryURI
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractResolvingDirectoryURI#doResolveAsList(java.lang.Object, org.cts2.service.core.NameOrURI, java.lang.Long, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	protected AssociationList doResolveAsList(
 			CodedNodeGraph lexEvsBackingObject, NameOrURI format,
@@ -74,6 +96,9 @@ public class DefaultAssociationDirectoryURI
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractRestrictingDirectoryURI#applyFilterComponent(java.lang.Object, org.cts2.core.FilterComponent)
+	 */
 	@Override
 	protected void applyFilterComponent(CodedNodeGraph lexEvsBackingObject,
 			FilterComponent filterComponent) {
@@ -81,6 +106,9 @@ public class DefaultAssociationDirectoryURI
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractLexEvsDirectoryURI#initializeLexEvsBackingObject()
+	 */
 	@Override
 	protected CodedNodeGraph initializeLexEvsBackingObject() throws LBException {
 		// TODO Auto-generated method stub

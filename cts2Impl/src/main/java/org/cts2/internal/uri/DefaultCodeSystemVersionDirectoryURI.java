@@ -49,24 +49,36 @@ public class DefaultCodeSystemVersionDirectoryURI
 		super(lexBIGService, beanMapper);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#count(org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public int count(ReadContext readContext) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#marshall()
+	 */
 	@Override
 	public Object marshall() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#unmarshall()
+	 */
 	@Override
 	public void unmarshall() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractResolvingDirectoryURI#doResolve(java.lang.Object, org.cts2.service.core.NameOrURI, java.lang.Long, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	protected CodeSystemVersionDirectory doResolve(
 			CodingSchemeRenderingList lexEvsBackingObject, NameOrURI format,
@@ -75,6 +87,9 @@ public class DefaultCodeSystemVersionDirectoryURI
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractResolvingDirectoryURI#doResolveAsList(java.lang.Object, org.cts2.service.core.NameOrURI, java.lang.Long, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	protected CodeSystemVersionList doResolveAsList(
 			CodingSchemeRenderingList lexEvsBackingObject, NameOrURI format,
@@ -83,6 +98,9 @@ public class DefaultCodeSystemVersionDirectoryURI
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractRestrictingDirectoryURI#applyFilterComponent(java.lang.Object, org.cts2.core.FilterComponent)
+	 */
 	@Override
 	protected void applyFilterComponent(CodingSchemeRenderingList lexEvsBackingObject,
 			FilterComponent filterComponent) {
@@ -90,6 +108,9 @@ public class DefaultCodeSystemVersionDirectoryURI
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.AbstractLexEvsDirectoryURI#initializeLexEvsBackingObject()
+	 */
 	@Override
 	protected CodingSchemeRenderingList initializeLexEvsBackingObject() throws LBException {
 		return this.getLexBIGService().getSupportedCodingSchemes();

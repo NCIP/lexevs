@@ -26,6 +26,7 @@ import org.cts2.uri.DirectoryURI;
 /**
  * The Class AbstractLexEvsDirectoryURI.
  *
+ * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public abstract class AbstractLexEvsDirectoryURI<T> implements DirectoryURI {
@@ -36,6 +37,7 @@ public abstract class AbstractLexEvsDirectoryURI<T> implements DirectoryURI {
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
 	
+	/** The lexe evs backing object. */
 	private T lexeEvsBackingObject;
 	
 	/**
@@ -55,8 +57,19 @@ public abstract class AbstractLexEvsDirectoryURI<T> implements DirectoryURI {
 		}
 	}
 
+	/**
+	 * Initialize lex evs backing object.
+	 *
+	 * @return the t
+	 * @throws LBException the LB exception
+	 */
 	protected abstract T initializeLexEvsBackingObject() throws LBException;
 	
+	/**
+	 * Gets the lex evs backing object.
+	 *
+	 * @return the lex evs backing object
+	 */
 	protected T getLexEvsBackingObject(){
 		return this.lexeEvsBackingObject;
 	}
