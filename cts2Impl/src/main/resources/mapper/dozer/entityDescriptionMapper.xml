@@ -6,20 +6,16 @@
 	<mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference</class-a>
 		<class-b>org.cts2.entity.EntityDirectoryEntry</class-b>
-		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity">
-			<a>this</a>
-			<b>completeResource</b>
-		</field>
 		<field>
-			<a>entity.entityCode</a>
+			<a>code</a>
 			<b>resourceName</b>
 		</field>
 		<field>
-			<a>entity.entityCode</a>
+			<a>code</a>
 			<b>localEntityName.name</b>
 		</field>		
 		<field>
-			<a>entity.entityCodeNamespace</a>
+			<a>codeNamespace</a>
 			<b>localEntityName.namespace</b>
 		</field>		
 <!--		<field custom-converter-id="entryStateConverterId">-->
