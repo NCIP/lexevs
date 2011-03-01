@@ -60,7 +60,7 @@ public class ResolvedConceptReferencesIteratorAdapter implements Iterator<Resolv
      *
      * @param iterator the iterator
      */
-    private ResolvedConceptReferencesIteratorAdapter(ResolvedConceptReferencesIterator iterator){
+    public ResolvedConceptReferencesIteratorAdapter(ResolvedConceptReferencesIterator iterator){
         this(iterator, DEFAULT_EXCEPTION_HANDLER);
     }
     
