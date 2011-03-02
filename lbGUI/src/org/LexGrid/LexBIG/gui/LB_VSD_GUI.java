@@ -50,6 +50,7 @@ import org.LexGrid.LexBIG.gui.valueSetsView.PickListContentProvider;
 import org.LexGrid.LexBIG.gui.valueSetsView.PickListLabelProvider;
 import org.LexGrid.LexBIG.gui.valueSetsView.ValueSetDefCodingSchemeFilter;
 import org.LexGrid.LexBIG.gui.valueSetsView.ValueSetDefConceptDomainFilter;
+import org.LexGrid.LexBIG.gui.valueSetsView.ValueSetDefEntityCodeFilter;
 import org.LexGrid.LexBIG.gui.valueSetsView.ValueSetDefIsEntityInValueSetFilter;
 import org.LexGrid.LexBIG.gui.valueSetsView.ValueSetDefIsSubSet;
 import org.LexGrid.LexBIG.gui.valueSetsView.ValueSetDefResolveCSFilter;
@@ -929,6 +930,19 @@ public class LB_VSD_GUI{
                 // not used
             }
 
+        });
+        
+        MenuItem filterByEntityCode = new MenuItem(queryMenu, SWT.NONE);
+        filterByEntityCode.setText("Value Set Definition by Entity Code");
+        filterByEntityCode.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent arg0) {                
+                new ValueSetDefEntityCodeFilter(LB_VSD_GUI.this, shell_);
+            }
+
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // not used
+            }
         });
         
         MenuItem checkForSubset = new MenuItem(queryMenu, SWT.NONE);
