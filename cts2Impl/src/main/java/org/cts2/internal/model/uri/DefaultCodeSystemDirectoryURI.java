@@ -16,27 +16,26 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.uri;
+package org.cts2.internal.model.uri;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.cts2.codesystemversion.CodeSystemVersionDirectory;
-import org.cts2.codesystemversion.CodeSystemVersionList;
+import org.cts2.codesystem.CodeSystemDirectory;
+import org.cts2.codesystem.CodeSystemList;
 import org.cts2.core.FilterComponent;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.ReadContext;
-import org.cts2.uri.CodeSystemVersionDirectoryURI;
+import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
  * The Class CodeSystemDirectoryURI.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultCodeSystemVersionDirectoryURI 
-	extends AbstractResolvingDirectoryURI<CodingSchemeRenderingList, CodeSystemVersionDirectoryURI, CodeSystemVersionDirectory, CodeSystemVersionList> 
-	implements CodeSystemVersionDirectoryURI {
+public class DefaultCodeSystemDirectoryURI 
+	extends AbstractResolvingDirectoryURI<CodingSchemeRenderingList, CodeSystemDirectoryURI, CodeSystemDirectory, CodeSystemList> implements CodeSystemDirectoryURI {
 
 	/**
 	 * Instantiates a new code system directory uri.
@@ -44,7 +43,7 @@ public class DefaultCodeSystemVersionDirectoryURI
 	 * @param lexBIGService the lex big service
 	 * @param beanMapper the bean mapper
 	 */
-	public DefaultCodeSystemVersionDirectoryURI(LexBIGService lexBIGService,
+	public DefaultCodeSystemDirectoryURI(LexBIGService lexBIGService,
 			BeanMapper beanMapper) {
 		super(lexBIGService, beanMapper);
 	}
@@ -54,8 +53,7 @@ public class DefaultCodeSystemVersionDirectoryURI
 	 */
 	@Override
 	public int count(ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.getLexEvsBackingObject().getCodingSchemeRenderingCount();
 	}
 
 	/* (non-Javadoc)
@@ -72,49 +70,48 @@ public class DefaultCodeSystemVersionDirectoryURI
 	 */
 	@Override
 	public void unmarshall() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.AbstractResolvingDirectoryURI#doResolve(java.lang.Object, org.cts2.service.core.NameOrURI, java.lang.Long, org.cts2.service.core.ReadContext)
 	 */
 	@Override
-	protected CodeSystemVersionDirectory doResolve(
-			CodingSchemeRenderingList lexEvsBackingObject, NameOrURI format,
-			Long maxToReturn, ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return null;
+	protected CodeSystemDirectory doResolve(
+			CodingSchemeRenderingList lexEvsBackingObject, 
+			NameOrURI format,
+			Long maxToReturn, 
+			ReadContext readContext) {
+		return this.getBeanMapper().map(this.getLexEvsBackingObject(), CodeSystemDirectory.class);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.AbstractResolvingDirectoryURI#doResolveAsList(java.lang.Object, org.cts2.service.core.NameOrURI, java.lang.Long, org.cts2.service.core.ReadContext)
 	 */
 	@Override
-	protected CodeSystemVersionList doResolveAsList(
-			CodingSchemeRenderingList lexEvsBackingObject, NameOrURI format,
-			Long maxToReturn, ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return null;
+	protected CodeSystemList doResolveAsList(
+			CodingSchemeRenderingList lexEvsBackingObject, 
+			NameOrURI format,
+			Long maxToReturn, 
+			ReadContext readContext) {
+		return this.getBeanMapper().map(this.getLexEvsBackingObject(), CodeSystemList.class);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.AbstractRestrictingDirectoryURI#applyFilterComponent(java.lang.Object, org.cts2.core.FilterComponent)
 	 */
 	@Override
-	protected void applyFilterComponent(CodingSchemeRenderingList lexEvsBackingObject,
+	protected void applyFilterComponent(
+			CodingSchemeRenderingList lexEvsBackingObject,
 			FilterComponent filterComponent) {
-		// TODO Auto-generated method stub
-		
+		//TODO:
 	}
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.AbstractLexEvsDirectoryURI#initializeLexEvsBackingObject()
 	 */
 	@Override
-	protected CodingSchemeRenderingList initializeLexEvsBackingObject() throws LBException {
+	protected CodingSchemeRenderingList initializeLexEvsBackingObject() throws LBException{
 		return this.getLexBIGService().getSupportedCodingSchemes();
 	}
-
-	
 }

@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.uri;
+package org.cts2.internal.model.uri;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;

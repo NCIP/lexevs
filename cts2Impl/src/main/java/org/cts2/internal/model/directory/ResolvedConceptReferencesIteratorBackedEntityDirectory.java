@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.directory;
+package org.cts2.internal.model.directory;
 
 import java.util.Iterator;
 import java.util.List;

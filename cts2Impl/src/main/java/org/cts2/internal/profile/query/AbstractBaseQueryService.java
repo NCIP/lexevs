@@ -19,6 +19,7 @@
 package org.cts2.internal.profile.query;
 
 import org.cts2.core.Filter;
+import org.cts2.internal.model.uri.factory.DirectoryURIFactory;
 import org.cts2.internal.profile.AbstractBaseService;
 import org.cts2.profile.query.BaseQueryService;
 import org.cts2.service.core.ReadContext;
@@ -31,8 +32,11 @@ import org.cts2.uri.operation.Restrictable;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public abstract class AbstractBaseQueryService<U extends Restrictable<U> & DirectoryURI>
-	extends AbstractBaseService<U> 
+	extends AbstractBaseService 
 	implements BaseQueryService<U>{
+	
+	/** The directory uri factory. */
+	private DirectoryURIFactory<U> directoryURIFactory;
 
 	@Override
 	public int count(U directoryUri, ReadContext readContext) {
@@ -43,4 +47,22 @@ public abstract class AbstractBaseQueryService<U extends Restrictable<U> & Direc
 	public  U restrict(U directoryUri, Filter filter) {
 		return directoryUri.restrict(filter);
 	}	
+	
+	/**
+	 * Sets the directory uri factory.
+	 *
+	 * @param directoryURIFactory the new directory uri factory
+	 */
+	public void setDirectoryURIFactory(DirectoryURIFactory<U> directoryURIFactory) {
+		this.directoryURIFactory = directoryURIFactory;
+	}
+
+	/**
+	 * Gets the directory uri factory.
+	 *
+	 * @return the directory uri factory
+	 */
+	public DirectoryURIFactory<U> getDirectoryURIFactory() {
+		return this.directoryURIFactory;
+	}
 }

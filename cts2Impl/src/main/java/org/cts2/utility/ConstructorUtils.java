@@ -16,22 +16,40 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.uri.factory;
+package org.cts2.utility;
 
-import org.cts2.uri.DirectoryURI;
+import org.cts2.service.core.NameOrURI;
 
 /**
- * A factory for creating DirectoryURI objects.
+ * The Class ConstructorUtils.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface DirectoryURIFactory<T extends DirectoryURI> {
+public class ConstructorUtils {
+
+	/**
+	 * Uri to name or uri.
+	 *
+	 * @param uri the uri
+	 * @return the name or uri
+	 */
+	public static NameOrURI uriToNameOrURI(String uri){
+		NameOrURI nameOrUri = new NameOrURI();
+		nameOrUri.setUri(uri);
+		
+		return nameOrUri;
+	}
 	
 	/**
-	 * Gets the directory uri.
+	 * Name to name or uri.
 	 *
-	 * @return the directory uri
+	 * @param name the name
+	 * @return the name or uri
 	 */
-	public T getDirectoryURI();
-
+	public static NameOrURI nameToNameOrURI(String name){
+		NameOrURI nameOrUri = new NameOrURI();
+		nameOrUri.setName(name);
+		
+		return nameOrUri;
+	}
 }

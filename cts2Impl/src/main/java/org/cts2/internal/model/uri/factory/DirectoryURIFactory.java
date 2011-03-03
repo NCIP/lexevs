@@ -16,23 +16,22 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.uri.factory;
+package org.cts2.internal.model.uri.factory;
 
-import org.cts2.internal.uri.DefaultCodeSystemVersionDirectoryURI;
-import org.cts2.uri.CodeSystemVersionDirectoryURI;
+import org.cts2.uri.DirectoryURI;
 
 /**
- * A factory for creating CodeSystemVersionDirectoryURIFactory objects.
- * 
+ * A factory for creating DirectoryURI objects.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemVersionDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
-
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
+public interface DirectoryURIFactory<T extends DirectoryURI> {
+	
+	/**
+	 * Gets the directory uri.
+	 *
+	 * @return the directory uri
 	 */
-	@Override
-	protected CodeSystemVersionDirectoryURI doGetDirectoryURI() {
-		return new DefaultCodeSystemVersionDirectoryURI(this.getLexBigService(), this.getBeanMapper());
-	}
+	public T getDirectoryURI();
+
 }

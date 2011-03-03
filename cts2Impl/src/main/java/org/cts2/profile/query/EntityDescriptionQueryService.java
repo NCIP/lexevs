@@ -18,8 +18,10 @@
  */
 package org.cts2.profile.query;
 
+import org.cts2.core.VersionTagReference;
 import org.cts2.entity.EntityDirectory;
 import org.cts2.entity.EntityList;
+import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.EntityDirectoryURI;
@@ -36,5 +38,9 @@ public interface EntityDescriptionQueryService extends BaseQueryService<EntityDi
 	public EntityDirectory resolve(EntityDirectoryURI entityQueryURI, QueryControl queryControl, ReadContext readContext);
 	
 	public EntityList resolveAsList(EntityDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	
+	public EntityList restrictToCodeSystems(EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystems, VersionTagReference tag);
+	
+	public EntityList restrictToCodeSystemVersions(EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystemVersions);
 
 }

@@ -18,9 +18,11 @@
  */
 package org.cts2.internal.profile.query;
 
+import org.cts2.core.VersionTagReference;
 import org.cts2.entity.EntityDirectory;
 import org.cts2.entity.EntityList;
 import org.cts2.profile.query.EntityDescriptionQueryService;
+import org.cts2.service.core.NameOrURI;
 import org.cts2.uri.EntityDirectoryURI;
 
 /**
@@ -37,6 +39,21 @@ public class LexEvsEntityDescriptionQueryService
 		return this.getDirectoryURIFactory().getDirectoryURI();
 	}
 
-	
-	
+	@Override
+	public EntityList restrictToCodeSystems(
+			EntityDirectoryURI codeSystemQueryURI, 
+			NameOrURI codeSystems,
+			VersionTagReference tag) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityList restrictToCodeSystemVersions(
+			EntityDirectoryURI codeSystemQueryURI, 
+			NameOrURI codeSystemVersions) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

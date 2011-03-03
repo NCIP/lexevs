@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.uri;
+package org.cts2.internal.model.uri;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -24,8 +24,8 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.core.FilterComponent;
 import org.cts2.entity.EntityDirectory;
 import org.cts2.entity.EntityList;
-import org.cts2.internal.directory.ResolvedConceptReferencesIteratorBackedEntityDirectory;
 import org.cts2.internal.mapper.BeanMapper;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityDirectory;
 import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.ReadContext;

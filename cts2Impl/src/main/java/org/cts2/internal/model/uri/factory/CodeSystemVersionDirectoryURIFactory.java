@@ -16,35 +16,23 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.profile;
+package org.cts2.internal.model.uri.factory;
 
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.cts2.internal.model.uri.DefaultCodeSystemVersionDirectoryURI;
+import org.cts2.uri.CodeSystemVersionDirectoryURI;
 
 /**
- * The Class AbstractBaseService.
- *
+ * A factory for creating CodeSystemVersionDirectoryURIFactory objects.
+ * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBaseService {
-	
-	/** The lex big service. */
-	private LexBIGService lexBigService;
+public class CodeSystemVersionDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
 
-	/**
-	 * Sets the lex big service.
-	 *
-	 * @param lexBigService the new lex big service
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
 	 */
-	public void setLexBigService(LexBIGService lexBigService) {
-		this.lexBigService = lexBigService;
-	}
-
-	/**
-	 * Gets the lex big service.
-	 *
-	 * @return the lex big service
-	 */
-	public LexBIGService getLexBigService() {
-		return this.lexBigService;
+	@Override
+	protected CodeSystemVersionDirectoryURI doGetDirectoryURI() {
+		return new DefaultCodeSystemVersionDirectoryURI(this.getLexBigService(), this.getBeanMapper());
 	}
 }

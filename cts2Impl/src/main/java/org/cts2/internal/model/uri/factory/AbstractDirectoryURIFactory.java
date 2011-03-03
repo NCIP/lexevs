@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.uri.factory;
+package org.cts2.internal.model.uri.factory;
 
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.internal.mapper.BeanMapper;
