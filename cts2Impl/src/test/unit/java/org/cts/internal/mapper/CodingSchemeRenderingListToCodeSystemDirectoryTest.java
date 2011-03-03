@@ -8,7 +8,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.junit.Test;
 
-public class CsrlToCsdTest extends BaseDozerBeanMapperTest {
+public class CodingSchemeRenderingListToCodeSystemDirectoryTest extends BaseDozerBeanMapperTest {
 	
 	@Test
 	public void CodingSchemeRenderingListToCodeSystemDirectoryCount(){

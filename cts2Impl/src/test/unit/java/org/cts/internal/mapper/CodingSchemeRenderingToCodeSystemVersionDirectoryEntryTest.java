@@ -8,7 +8,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry;
 import org.junit.Test;
 
-public class CsrToCsvdeTest extends BaseDozerBeanMapperTest {
+public class CodingSchemeRenderingToCodeSystemVersionDirectoryEntryTest extends BaseDozerBeanMapperTest {
 	
 	@Test
 	public void testFormalName(){

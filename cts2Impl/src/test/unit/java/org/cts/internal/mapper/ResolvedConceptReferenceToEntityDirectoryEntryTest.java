@@ -6,7 +6,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.cts2.entity.EntityDirectoryEntry;
 import org.junit.Test;
 
-public class RcrToEdeTest extends BaseDozerBeanMapperTest {
+public class ResolvedConceptReferenceToEntityDirectoryEntryTest extends BaseDozerBeanMapperTest {
 	
 	@Test
 	public void testGetCode(){
