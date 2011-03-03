@@ -40,6 +40,13 @@
 	<bean id="lexEvsEntityDescriptionQueryService" class="org.cts2.internal.profile.query.LexEvsEntityDescriptionQueryService" parent="abstractBaseService">
 		<property name="directoryURIFactory" ref="entityDirectoryURIFactory" />
 	</bean>
+	
+	
+	<!--  Read Services -->
+	<bean id="lexEvsCodeSystemVersionReadService" class="org.cts2.internal.profile.read.LexEvsCodeSystemVersionReadService" parent="abstractBaseService">
+		<property name="codeSystemVersionFactory" ref="codeSystemVersionFactory" />
+	</bean>
+	<!--  -->
 
 	
 	<!-- Directory URI Factories -->
@@ -48,9 +55,21 @@
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	
-	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
-	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
-	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<!-- End Directory URI Factories -->
+	
+	<bean id="codeSystemVersionFactory" class="org.cts2.internal.model.resource.factory.CodeSystemVersionFactory">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="beanMapper" ref="baseDozerBeanMapper" />
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+		<property name="entityDirectoryUriFactory" ref="entityDirectoryURIFactory" />
+		<property name="entityDescriptionQueryService" ref="lexEvsEntityDescriptionQueryService" />
+	</bean>
+	
+	<bean id="lexEvsIdentityConverter" class="org.cts2.internal.lexevs.identity.LexEvsIdentityConverter">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+	</bean>
 	
 </beans>

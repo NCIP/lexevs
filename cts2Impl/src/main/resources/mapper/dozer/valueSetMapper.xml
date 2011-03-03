@@ -2,5 +2,18 @@
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+          
+    <mapping>
+    	<class-a>org.LexGrid.valueSets.ValueSetDefinition</class-a>
+    	<class-b>org.cts2.valueset.ValueSetDefinition</class-b>
+    </mapping>
+    
+    <mapping>
+    	<class-a>org.LexGrid.valueSets.PropertyReference</class-a>
+    	<class-b>org.cts2.valueset.PropertyQueryReference</class-b>
+    </mapping>
+
+    
+    
 
 </mappings>        

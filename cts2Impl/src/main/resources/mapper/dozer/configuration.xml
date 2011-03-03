@@ -2,8 +2,17 @@
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
-    <configuration>
-    	<stop-on-errors>true</stop-on-errors>
-    	<trim-strings>true</trim-strings>
-    </configuration>
+	<configuration>
+		<stop-on-errors>true</stop-on-errors>
+		<trim-strings>true</trim-strings>
+
+		<custom-converters>
+			<converter type="org.cts2.internal.mapper.converter.DefinitionOperatorToSetOperatorConverter">
+				<class-a>org.LexGrid.valueSets.types.DefinitionOperator</class-a>
+				<class-b>org.cts2.core.types.SetOperator</class-b>
+			</converter>
+		</custom-converters>
+
+	</configuration>
+
 </mappings>

@@ -39,12 +39,12 @@
 			<a>codingSchemeSummary.representsVersion</a>
 			<b>codeSystemVersionName</b>
 		</field>
-		<field>
-			<a>renderingDetail.versionTags.tag[0]</a>
-			<b>codeSystemVersionTag[0].content</b>	
-			<!-- a-hint>java.lang.String</a-hint>
-			<b-hint>org.cts2.core.VersionTagReference</b-hint-->		
-		</field>
+<!--		<field>-->
+<!--			<a>renderingDetail.versionTags.tag[0]</a>-->
+<!--			<b>codeSystemVersionTag[0].content</b>	-->
+<!--			 a-hint>java.lang.String</a-hint>-->
+<!--			<b-hint>org.cts2.core.VersionTagReference</b-hint		-->
+<!--		</field>-->
 <!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
 <!--			<a>this</a>-->
 <!--			<b>versionOf.domain</b>-->
@@ -98,7 +98,7 @@
 <!--		</field>				-->
 	</mapping>
 	
-	<mapping map-id="csVersionTag2codeSystemVersionTag" type="one-way">
+	<mapping>
 		<class-a>java.lang.String</class-a>
 		<class-b>org.cts2.core.VersionTagReference</class-b>
 		<!-- field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">
@@ -111,7 +111,7 @@
 		</field>
 	</mapping>
 	
-	<mapping map-id="codingScheme2codeSystemVersionDirectoryEntryMap" type="one-way" wildcard="false">
+	<mapping>
 		<class-a>org.LexGrid.codingSchemes.CodingScheme
 		</class-a>
 		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectoryEntry
@@ -120,14 +120,14 @@
 			<a>representsVersion</a>
 			<b>codeSystemVersionName</b>
 		</field>
-		<field>
-			<a>renderingDetail.versionTags.tag[0]</a>
-			<b>codeSystemVersionTag[0].content</b>		
-		</field>		
-		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">
-			<a>this</a>
-			<b>versionOf.meaning</b>
-		</field>
+<!--		<field>-->
+<!--			<a>renderingDetail.versionTags.tag[0]</a>-->
+<!--			<b>codeSystemVersionTag[0].content</b>		-->
+<!--		</field>		-->
+<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
+<!--			<a>this</a>-->
+<!--			<b>versionOf.meaning</b>-->
+<!--		</field>-->
 		<field>
 			<a>codingSchemeName</a>
 			<b>versionOf.content</b>
@@ -141,19 +141,19 @@
 			<b>about</b>
 		</field>
 		<field>
-			<a>codingSchemeDescription.content</a>
-			<b>resourceSynopsis.value</b>
+			<a>entityDescription</a>
+			<b>resourceSynopsis</b>
 		</field>
 	</mapping>
 		
-	<mapping map-id="codeSystemVersionMap" wildcard="false">
+	<mapping wildcard="false">
 		<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>
 		<class-b>org.cts2.codesystemversion.CodeSystemVersion</class-b>
 		
-		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-mappings">
-			<a>this</a>
-			<b>associations</b>					
-		</field>
+<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-mappings">-->
+<!--			<a>this</a>-->
+<!--			<b>associations</b>					-->
+<!--		</field>-->
 		<field>
 			<a>representsVersion</a>
 			<b>codeSystemVersionName</b>
@@ -166,10 +166,10 @@
 			<a>defaultLanguage</a>
 			<b>defaultLanguage.content</b>
 		</field>
-		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entities">
-			<a>this</a>
-			<b>entityDescriptions</b>					
-		</field>	
+<!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entities">-->
+<!--			<a>this</a>-->
+<!--			<b>entityDescriptions</b>					-->
+<!--		</field>	-->
 <!--		<field custom-converter-id="referenceTypeConverterId" custom-converter-param="CODE_SYSTEM_VERSION">-->
 <!--			<a>this</a>-->
 <!--			<b>versionOf.domain</b>-->
@@ -179,10 +179,10 @@
 			<b>versionOf.content</b>
 		</field>
 		
-		<field custom-converter-id="finalizableStateConverterId" custom-converter-param="FINAL">
-			<a>this</a>
-			<b>state</b>
-		</field>
+<!--		<field custom-converter-id="finalizableStateConverterId" custom-converter-param="FINAL">-->
+<!--			<a>this</a>-->
+<!--			<b>state</b>-->
+<!--		</field>-->
 		<field>
 			<a>codingSchemeURI</a>
 			<b>about</b>
@@ -199,10 +199,10 @@
 			<a>localName</a>
 			<b>keyword</b>
 		</field>
-		<field custom-converter-id="propertiesConverterId" >
-			<a>this</a>
-			<b>property</b>
-		</field>
+<!--		<field custom-converter-id="propertiesConverterId" >-->
+<!--			<a>this</a>-->
+<!--			<b>property</b>-->
+<!--		</field>-->
 <!--		<field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem">-->
 <!--			<a>this</a>-->
 <!--			<b>resourceID</b>-->
@@ -225,10 +225,10 @@
 <!--			<b>sources</b>-->
 <!--		</field>-->
 		
-		<field custom-converter-id="entryStateConverterId">
-			<a>isActive</a>
-			<b>entryState</b>
-		</field>
+<!--		<field custom-converter-id="entryStateConverterId">-->
+<!--			<a>isActive</a>-->
+<!--			<b>entryState</b>-->
+<!--		</field>-->
 <!--		<field>-->
 <!--			<a>codingSchemeURI</a>-->
 <!--			<b>entryID</b>-->

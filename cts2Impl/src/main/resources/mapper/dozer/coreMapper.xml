@@ -13,4 +13,27 @@
 		</field>
     </mapping>
   
+      <mapping>
+   		<class-a>org.LexGrid.commonTypes.VersionableAndDescribable</class-a>
+		<class-b>org.cts2.core.ResourceDescription</class-b>
+		
+		<field>
+			<a>entityDescription</a>
+			<b>resourceSynopsis</b>
+		</field>
+    </mapping>
+    
+     <mapping>
+   		<class-a>org.LexGrid.commonTypes.Describable</class-a>
+		<class-b>org.cts2.core.ResourceDescription</class-b>
+		
+		<field>
+			<a>entityDescription</a>
+			<b>resourceSynopsis</b>
+		</field>
+    </mapping>
+  
+  
+  
+  
 </mappings>
