@@ -538,7 +538,6 @@ You may obtain a copy of the License at
 		</copy>
 	</target>
 	
-	<!--
 	<target name="cts2" depends="lbImpl,cts2-model" description="packages the LexEVS CTS2 Implementation">
 		<antcall target="common-project-build">
    			<param name="project" value="cts2Impl"/>
@@ -552,7 +551,6 @@ You may obtain a copy of the License at
 			<param name="module" value="cts2-model"/>
   		</antcall>
 	</target>
-	-->
 
 	<target name="lbExamples" depends="lbImpl,lbAdmin" description="packages LexBIG example programs">
 		<antcall target="common-project-build">
@@ -738,10 +736,11 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 	</target>
 	
 	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
-	<target name="lexbig.jar" depends="lbModel, lbInterfaces, lexevs-dao, lgConverter, lexrdf, lbImpl, lbAdmin, 
+	<target name="lexbig.jar" depends="lbModel, lbInterfaces, 
+		lexevs-dao, lgConverter, lexrdf, lbImpl, lbAdmin, 
 		Indexer, lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
-		umls-loader, meta-loader, lbGUI, lbTest">
+		umls-loader, meta-loader, cts2-model, cts2, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
