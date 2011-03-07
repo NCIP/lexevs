@@ -18,7 +18,6 @@
  */
 package org.cts2.internal.model.uri.factory;
 
-import org.cts2.internal.model.uri.DefaultCodeSystemDirectoryURI;
 import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
@@ -26,13 +25,12 @@ import org.cts2.uri.CodeSystemDirectoryURI;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemDirectoryURI> {
+public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
-	 */
 	@Override
-	protected CodeSystemDirectoryURI doGetDirectoryURI() {
-		return new DefaultCodeSystemDirectoryURI(this.getLexBigService(), this.getBeanMapper());
+	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 }

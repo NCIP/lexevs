@@ -18,7 +18,6 @@
  */
 package org.cts2.internal.model.uri.factory;
 
-import org.cts2.internal.model.uri.DefaultAssociationDirectoryURI;
 import org.cts2.uri.AssociationDirectoryURI;
 
 /**
@@ -28,14 +27,13 @@ import org.cts2.uri.AssociationDirectoryURI;
  *
  */
 public class AssociationDirectoryURIFactory extends
-		AbstractDirectoryURIFactory<AssociationDirectoryURI> {
+		AbstractCompositeDirectoryURIFactory<AssociationDirectoryURI> {
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
-	 */
 	@Override
-	protected AssociationDirectoryURI doGetDirectoryURI() {
-		return new DefaultAssociationDirectoryURI(this.getLexBigService(), this.getBeanMapper());
+	protected AssociationDirectoryURI doBuildDirectoryURI() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 
 }

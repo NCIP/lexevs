@@ -18,6 +18,8 @@
  */
 package org.cts2.internal.model.uri.factory;
 
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.cts2.internal.model.uri.DefaultCodeSystemVersionDirectoryURI;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
 
@@ -26,13 +28,21 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemVersionDirectoryURIFactory extends AbstractDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
+public class CodeSystemVersionDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
 	 */
 	@Override
-	protected CodeSystemVersionDirectoryURI doGetDirectoryURI() {
-		return new DefaultCodeSystemVersionDirectoryURI(this.getLexBigService(), this.getBeanMapper());
+	protected CodeSystemVersionDirectoryURI doBuildDirectoryURI() {
+		CodingSchemeRenderingList codingSchemeRenderingList;
+		
+		try {
+			codingSchemeRenderingList = this.getLexBigService().getSupportedCodingSchemes();
+		} catch (LBInvocationException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return new DefaultCodeSystemVersionDirectoryURI(codingSchemeRenderingList, this.getBeanMapper());
 	}
 }

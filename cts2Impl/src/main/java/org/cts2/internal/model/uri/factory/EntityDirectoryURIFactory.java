@@ -18,7 +18,6 @@
  */
 package org.cts2.internal.model.uri.factory;
 
-import org.cts2.internal.model.uri.DefaultEntityDirectoryURI;
 import org.cts2.uri.EntityDirectoryURI;
 
 
@@ -27,13 +26,12 @@ import org.cts2.uri.EntityDirectoryURI;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class EntityDirectoryURIFactory extends AbstractDirectoryURIFactory<EntityDirectoryURI> {
+public class EntityDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<EntityDirectoryURI> {
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
-	 */
 	@Override
-	protected EntityDirectoryURI doGetDirectoryURI() {
-		return new DefaultEntityDirectoryURI(this.getLexBigService(), this.getBeanMapper());
+	protected EntityDirectoryURI doBuildDirectoryURI() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 }

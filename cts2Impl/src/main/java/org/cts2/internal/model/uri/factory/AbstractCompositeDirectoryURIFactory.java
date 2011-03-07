@@ -27,41 +27,22 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractDirectoryURIFactory<T extends DirectoryURI> implements DirectoryURIFactory<T>{
+public abstract class AbstractCompositeDirectoryURIFactory<T extends DirectoryURI> implements DirectoryURIFactory<T>{
 
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
 	
 	/** The lex big service. */
 	private LexBIGService lexBigService;
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.uri.factory.DirectoryURIFactory#getDirectoryURI()
-	 */
+
 	@Override
 	public T getDirectoryURI() {
-		T directoryURI = this.doGetDirectoryURI();
-		
-		return this.decorateDirectoryURI(directoryURI);
+		return  
+			this.doBuildDirectoryURI();	
 	}
 	
-	/**
-	 * Do get directory uri.
-	 *
-	 * @return the directory uri
-	 */
-	protected abstract T doGetDirectoryURI();
+	protected abstract T doBuildDirectoryURI();
 	
-	/**
-	 * Decorate directory uri.
-	 *
-	 * @param directoryURI the directory uri
-	 * @return the directory uri
-	 */
-	protected T decorateDirectoryURI(T directoryURI){
-		return directoryURI;
-	}
-
 	/**
 	 * Gets the bean mapper.
 	 *
