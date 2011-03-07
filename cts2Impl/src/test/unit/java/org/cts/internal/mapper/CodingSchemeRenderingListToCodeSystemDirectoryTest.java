@@ -11,7 +11,7 @@ import org.junit.Test;
 public class CodingSchemeRenderingListToCodeSystemDirectoryTest extends BaseDozerBeanMapperTest {
 	
 	@Test
-	public void CodingSchemeRenderingListToCodeSystemDirectoryCount(){
+	public void CodingSchemeRenderingList_To_CodeSystemDirectory_Count(){
 		
 		CodingSchemeRenderingList csrl = new CodingSchemeRenderingList();
 		CodingSchemeRendering csr = new CodingSchemeRendering();
@@ -23,7 +23,7 @@ public class CodingSchemeRenderingListToCodeSystemDirectoryTest extends BaseDoze
 	}
 	
 	@Test
-	public void CodingSchemeRenderingListToCodeSystemDirectoryUriToAbout(){
+	public void CodingSchemeRenderingList_To_CodeSystemDirectoryUri_About(){
 		
 		CodingSchemeRenderingList csrl = new CodingSchemeRenderingList();
 		CodingSchemeRendering csr = new CodingSchemeRendering();
