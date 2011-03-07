@@ -14,6 +14,16 @@
     </mapping>
     
     <mapping>
+   		<class-a>org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList</class-a>
+		<class-b>org.cts2.codesystemversion.CodeSystemVersionDirectory</class-b>
+		
+		<field>
+			<a>codingSchemeRendering</a>
+			<b>entry</b>
+		</field>
+    </mapping>
+    
+    <mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering</class-a>
 		<class-b>org.cts2.codesystem.CodeSystemDirectoryEntry</class-b>
 		

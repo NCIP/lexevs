@@ -33,6 +33,10 @@
 		<property name="directoryURIFactory" ref="codeSystemDirectoryURIFactory" />
 	</bean>
 	
+	<bean id="lexEvsCodeSystemVersionQueryService" class="org.cts2.internal.profile.query.LexEvsCodeSystemVersionQueryService" parent="abstractBaseService">
+		<property name="directoryURIFactory" ref="codeSystemVersionDirectoryURIFactory" />
+	</bean>
+	
 	<bean id="lexEvsAssociationQueryService" class="org.cts2.internal.profile.query.LexEvsAssociationQueryService" parent="abstractBaseService">
 		<property name="directoryURIFactory" ref="associationDirectoryURIFactory" />
 	</bean>
@@ -55,6 +59,7 @@
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	
+	<bean id="codeSystemVersionDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemVersionDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
