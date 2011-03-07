@@ -21,6 +21,7 @@ package org.cts2.internal.lexevs.identity;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -63,6 +64,12 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 		} else {
 			return this.codeSystemVersionDocumentUriToCodingSchemeReference(nameOrUri.getUri());
 		}
+	}
+
+	@Override
+	public ConceptReference nameOrUriToConceptReference(NameOrURI nameOrUri) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/* (non-Javadoc)

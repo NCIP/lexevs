@@ -1,6 +1,7 @@
 package org.cts2.internal.lexevs.identity;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.cts2.service.core.NameOrURI;
 
 public interface LexEvsIdentityConverter {
@@ -11,7 +12,10 @@ public interface LexEvsIdentityConverter {
 	 * @param nameOrUri the name or uri
 	 * @return the absolute coding scheme version reference
 	 */
-	public abstract AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(
+	public AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(
+			NameOrURI nameOrUri);
+	
+	public ConceptReference nameOrUriToConceptReference(
 			NameOrURI nameOrUri);
 
 	/**
@@ -20,7 +24,7 @@ public interface LexEvsIdentityConverter {
 	 * @param codeSystemVersionName the code system version name
 	 * @return the absolute coding scheme version reference
 	 */
-	public abstract AbsoluteCodingSchemeVersionReference codeSystemVersionNameToCodingSchemeReference(
+	public AbsoluteCodingSchemeVersionReference codeSystemVersionNameToCodingSchemeReference(
 			String codeSystemVersionName);
 
 	/**
@@ -29,7 +33,7 @@ public interface LexEvsIdentityConverter {
 	 * @param ref the ref
 	 * @return the string
 	 */
-	public abstract String codingSchemeReferenceToCodeSystemVersionName(
+	public String codingSchemeReferenceToCodeSystemVersionName(
 			AbsoluteCodingSchemeVersionReference ref);
 
 	/**
@@ -38,7 +42,7 @@ public interface LexEvsIdentityConverter {
 	 * @param codeSystemVersionDocumentUri the code system version document uri
 	 * @return the absolute coding scheme version reference
 	 */
-	public abstract AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
+	public AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
 			String codeSystemVersionDocumentUri);
 
 }
