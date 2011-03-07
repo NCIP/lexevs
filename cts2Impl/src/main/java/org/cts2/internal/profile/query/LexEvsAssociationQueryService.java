@@ -3,6 +3,8 @@ package org.cts2.internal.profile.query;
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
 import org.cts2.profile.query.AssociationQueryService;
+import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.ReadContext;
 import org.cts2.uri.AssociationDirectoryURI;
 
 /**
@@ -12,14 +14,29 @@ import org.cts2.uri.AssociationDirectoryURI;
  *
  */
 public class LexEvsAssociationQueryService extends 
-	AbstractDirectoryResolvableQueryService<AssociationDirectoryURI, AssociationDirectory, AssociationList> 
+	AbstractBaseQueryService<AssociationDirectoryURI> 
 	implements AssociationQueryService {
 
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.query.AssociationQuery#getAllAssociations()
-	 */
 	@Override
 	public AssociationDirectoryURI getAllAssociations() {
-		return this.getDirectoryURIFactory().getDirectoryURI();
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public AssociationDirectory resolve(
+			AssociationDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AssociationList resolveAsList(
+			AssociationDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -23,6 +23,8 @@ import org.cts2.entity.EntityDirectory;
 import org.cts2.entity.EntityList;
 import org.cts2.profile.query.EntityDescriptionQueryService;
 import org.cts2.service.core.NameOrURI;
+import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.ReadContext;
 import org.cts2.uri.EntityDirectoryURI;
 
 /**
@@ -31,18 +33,32 @@ import org.cts2.uri.EntityDirectoryURI;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LexEvsEntityDescriptionQueryService 
-	extends AbstractDirectoryResolvableQueryService<EntityDirectoryURI,EntityDirectory,EntityList> 
+	extends AbstractBaseQueryService<EntityDirectoryURI> 
 	implements EntityDescriptionQueryService {
 
 	@Override
 	public EntityDirectoryURI getEntities() {
-		return this.getDirectoryURIFactory().getDirectoryURI();
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityDirectory resolve(EntityDirectoryURI entityQueryURI,
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityList resolveAsList(EntityDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public EntityList restrictToCodeSystems(
-			EntityDirectoryURI codeSystemQueryURI, 
-			NameOrURI codeSystems,
+			EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystems,
 			VersionTagReference tag) {
 		// TODO Auto-generated method stub
 		return null;
@@ -50,10 +66,11 @@ public class LexEvsEntityDescriptionQueryService
 
 	@Override
 	public EntityList restrictToCodeSystemVersions(
-			EntityDirectoryURI codeSystemQueryURI, 
-			NameOrURI codeSystemVersions) {
+			EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystemVersions) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
+	
 }

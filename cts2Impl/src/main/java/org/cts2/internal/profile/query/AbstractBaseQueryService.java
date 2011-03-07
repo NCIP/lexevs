@@ -24,16 +24,13 @@ import org.cts2.internal.profile.AbstractBaseService;
 import org.cts2.profile.query.BaseQueryService;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
-import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Class AbstractBaseQueryService.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBaseQueryService<U extends Restrictable<U> & DirectoryURI>
-	extends AbstractBaseService 
-	implements BaseQueryService<U>{
+public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends AbstractBaseService implements BaseQueryService<U>{
 	
 	/** The directory uri factory. */
 	private DirectoryURIFactory<U> directoryURIFactory;
@@ -43,9 +40,10 @@ public abstract class AbstractBaseQueryService<U extends Restrictable<U> & Direc
 		return directoryUri.count(readContext);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public  U restrict(U directoryUri, Filter filter) {
-		return directoryUri.restrict(filter);
+		return (U) directoryUri.restrict(filter);
 	}	
 	
 	/**

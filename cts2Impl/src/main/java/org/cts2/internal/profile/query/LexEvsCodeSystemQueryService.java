@@ -21,6 +21,8 @@ package org.cts2.internal.profile.query;
 import org.cts2.codesystem.CodeSystemDirectory;
 import org.cts2.codesystem.CodeSystemList;
 import org.cts2.profile.query.CodeSystemQueryService;
+import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.ReadContext;
 import org.cts2.uri.CodeSystemDirectoryURI;
 
 /**
@@ -29,11 +31,30 @@ import org.cts2.uri.CodeSystemDirectoryURI;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LexEvsCodeSystemQueryService 
-	extends AbstractDirectoryResolvableQueryService<CodeSystemDirectoryURI,CodeSystemDirectory,CodeSystemList> 
+	extends AbstractBaseQueryService<CodeSystemDirectoryURI> 
 	implements CodeSystemQueryService {
 
 	@Override
 	public CodeSystemDirectoryURI getAllCodeSystems() {
-		return this.getDirectoryURIFactory().getDirectoryURI();
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public CodeSystemDirectory resolve(
+			CodeSystemDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CodeSystemList resolveAsList(
+			CodeSystemDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, ReadContext readContext) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

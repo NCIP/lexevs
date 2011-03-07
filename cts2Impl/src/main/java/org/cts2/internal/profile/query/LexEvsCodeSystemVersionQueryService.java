@@ -24,6 +24,8 @@ import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.codesystemversion.CodeSystemVersionList;
 import org.cts2.core.EntityReference;
 import org.cts2.profile.query.CodeSystemVersionQueryService;
+import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.ReadContext;
 import org.cts2.service.core.types.ActiveOrAll;
 import org.cts2.service.core.types.RestrictionType;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
@@ -33,10 +35,9 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsCodeSystemVersionQueryService 
-	extends AbstractDirectoryResolvableQueryService<CodeSystemVersionDirectoryURI,CodeSystemVersionDirectory,CodeSystemVersionList> 
+public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryService<CodeSystemVersionDirectoryURI> 
 	implements CodeSystemVersionQueryService {
-
+	
 	@Override
 	public CodeSystemVersionDirectoryURI restrictToEntities(
 			CodeSystemVersionDirectoryURI codeSystemQueryURI,
@@ -47,5 +48,24 @@ public class LexEvsCodeSystemVersionQueryService
 		return null;
 	}
 
+	@Override
+	public CodeSystemVersionDirectory resolve(
+			CodeSystemVersionDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, 
+			ReadContext readContext) {
+		return codeSystemQueryURI.get(queryControl, readContext, CodeSystemVersionDirectory.class);
+	}
 
+	@Override
+	public CodeSystemVersionList resolveAsList(
+			CodeSystemVersionDirectoryURI codeSystemQueryURI,
+			QueryControl queryControl, 
+			ReadContext readContext) {
+		return codeSystemQueryURI.get(queryControl, readContext, CodeSystemVersionList.class);
+	}
+
+	@Override
+	public CodeSystemVersionDirectoryURI getCodeSystemVersions() {
+		return this.getDirectoryURIFactory().getDirectoryURI();
+	}
 }
