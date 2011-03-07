@@ -73,7 +73,7 @@
 		<property name="entityDescriptionQueryService" ref="lexEvsEntityDescriptionQueryService" />
 	</bean>
 	
-	<bean id="lexEvsIdentityConverter" class="org.cts2.internal.lexevs.identity.LexEvsIdentityConverter">
+	<bean id="lexEvsIdentityConverter" class="org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
 	</bean>
 	
