@@ -57,7 +57,7 @@ public class LexEVSAssociationQueryTest extends BaseCts2UnitTest {
 		codeSystemDirectoryURIFactory.setLexBigService(lbs);
 		
 		AssociationDirectoryURI directoryUri = associationQuery.getAllAssociations();
-		AssociationDirectory ad = directoryUri.resolve(null, null);
+		AssociationDirectory ad = directoryUri.get(null, null, AssociationDirectory.class);
 		assertNotNull(ad);
 		assertTrue(ad.getEntryCount() > 0);
 	}

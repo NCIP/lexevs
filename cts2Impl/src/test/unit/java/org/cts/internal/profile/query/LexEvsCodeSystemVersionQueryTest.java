@@ -11,28 +11,28 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts.test.BaseCts2UnitTest;
-import org.cts2.codesystem.CodeSystemDirectory;
-import org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory;
-import org.cts2.internal.profile.query.LexEvsCodeSystemQueryService;
+import org.cts2.codesystemversion.CodeSystemVersionDirectory;
+import org.cts2.internal.model.uri.factory.CodeSystemVersionDirectoryURIFactory;
+import org.cts2.internal.profile.query.LexEvsCodeSystemVersionQueryService;
 import org.cts2.profile.BaseService;
-import org.cts2.uri.CodeSystemDirectoryURI;
+import org.cts2.uri.CodeSystemVersionDirectoryURI;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 
-public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
+public class LexEvsCodeSystemVersionQueryTest extends BaseCts2UnitTest {
 	
 	@Resource
-	private LexEvsCodeSystemQueryService lexEvsCodeSystemQuery;
+	private LexEvsCodeSystemVersionQueryService lexEvsCodeSystemVersionQuery;
 	
 	@Resource
 	private BaseService baseService;
 	
 	@Resource
-	private CodeSystemDirectoryURIFactory codeSystemDirectoryURIFactory;
+	private CodeSystemVersionDirectoryURIFactory codeSystemVersonDirectoryURIFactory;
 	
 	@Test
 	public void testInit(){
-		assertNotNull(lexEvsCodeSystemQuery);
+		assertNotNull(lexEvsCodeSystemVersionQuery);
 	}
 	
 	@Test
@@ -53,16 +53,16 @@ public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
 		EasyMock.expect(lbs.getSupportedCodingSchemes()).andReturn(csrl).anyTimes();
 		EasyMock.replay(lbs);
 		
-		lexEvsCodeSystemQuery.setLexBigService(lbs);
-		codeSystemDirectoryURIFactory.setLexBigService(lbs);
+		lexEvsCodeSystemVersionQuery.setLexBigService(lbs);
+		codeSystemVersonDirectoryURIFactory.setLexBigService(lbs);
 		
-		CodeSystemDirectoryURI directoryUri = lexEvsCodeSystemQuery.getAllCodeSystems();
+		CodeSystemVersionDirectoryURI directoryUri = lexEvsCodeSystemVersionQuery.getCodeSystemVersions();
 		
-		CodeSystemDirectory csd = directoryUri.get(null, null, CodeSystemDirectory.class);
-		assertNotNull(csd);
-		assertTrue(csd.getEntryCount() > 0);
+		CodeSystemVersionDirectory csvd = directoryUri.get(null, null, CodeSystemVersionDirectory.class);
+		assertNotNull(csvd);
+		assertTrue(csvd.getEntryCount() > 0);
 
-		CodeSystemDirectory directory = lexEvsCodeSystemQuery.resolve(directoryUri, null, null);
+		CodeSystemVersionDirectory directory = lexEvsCodeSystemVersionQuery.resolve(directoryUri, null, null);
 		
 		assertNotNull(directory);
 	}
