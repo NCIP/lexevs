@@ -26,5 +26,4 @@ package org.cts2.uri;
  */
 public interface StatementDirectoryURI 
 	extends DirectoryURI {
-	
 }

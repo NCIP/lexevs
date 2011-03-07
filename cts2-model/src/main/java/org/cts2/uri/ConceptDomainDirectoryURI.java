@@ -18,10 +18,6 @@
  */
 package org.cts2.uri;
 
-import org.cts2.conceptdomain.ConceptDomainDirectory;
-import org.cts2.conceptdomain.ConceptDomainList;
-import org.cts2.uri.operation.Resolvable;
-import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
@@ -29,7 +25,6 @@ import org.cts2.uri.operation.Restrictable;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface ConceptDomainDirectoryURI 
-	extends DirectoryURI, Restrictable<ConceptDomainDirectoryURI>, 
-		Resolvable<ConceptDomainDirectory,ConceptDomainList>{
-	
+	extends DirectoryURI{
 }
+

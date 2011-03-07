@@ -18,7 +18,6 @@
  */
 package org.cts2.uri;
 
-import org.cts2.uri.operation.Restrictable;
 
 
 /**
@@ -27,6 +26,6 @@ import org.cts2.uri.operation.Restrictable;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface AssociationGraphURI 
-extends DirectoryURI, Restrictable<AssociationGraphURI> {
-	
+	extends DirectoryURI{
 }
+

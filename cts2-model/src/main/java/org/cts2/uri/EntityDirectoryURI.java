@@ -18,18 +18,13 @@
  */
 package org.cts2.uri;
 
-import org.cts2.entity.EntityDirectory;
-import org.cts2.entity.EntityList;
-import org.cts2.uri.operation.Resolvable;
-import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface EntityDirectoryURI 
-	extends DirectoryURI, Restrictable<EntityDirectoryURI>, 
-		Resolvable<EntityDirectory,EntityList>{
-	
+public interface EntityDirectoryURI  
+	extends DirectoryURI{
 }
+

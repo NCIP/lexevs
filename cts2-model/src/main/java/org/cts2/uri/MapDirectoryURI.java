@@ -18,10 +18,6 @@
  */
 package org.cts2.uri;
 
-import org.cts2.map.MapDirectory;
-import org.cts2.map.MapList;
-import org.cts2.uri.operation.Resolvable;
-import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
@@ -29,7 +25,5 @@ import org.cts2.uri.operation.Restrictable;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface MapDirectoryURI 
-	extends DirectoryURI, Restrictable<MapDirectoryURI>, 
-		Resolvable<MapDirectory,MapList>{
-	
+	extends DirectoryURI {
 }

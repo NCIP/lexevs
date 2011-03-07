@@ -18,10 +18,6 @@
  */
 package org.cts2.uri;
 
-import org.cts2.codesystem.CodeSystemDirectory;
-import org.cts2.codesystem.CodeSystemList;
-import org.cts2.uri.operation.Resolvable;
-import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface CodeSystemDirectoryURI.
@@ -29,6 +25,5 @@ import org.cts2.uri.operation.Restrictable;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface CodeSystemDirectoryURI 
-extends DirectoryURI, Restrictable<CodeSystemDirectoryURI>, Resolvable<CodeSystemDirectory,CodeSystemList>{
-	
+	extends DirectoryURI {
 }

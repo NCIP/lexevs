@@ -18,10 +18,6 @@
  */
 package org.cts2.uri;
 
-import org.cts2.uri.operation.Resolvable;
-import org.cts2.uri.operation.Restrictable;
-import org.cts2.valueset.ValueSetDirectory;
-import org.cts2.valueset.ValueSetList;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
@@ -29,7 +25,5 @@ import org.cts2.valueset.ValueSetList;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface ValueSetDirectoryURI 
-	extends DirectoryURI, Restrictable<ValueSetDirectoryURI>, 
-		Resolvable<ValueSetDirectory,ValueSetList>{
-	
+	extends DirectoryURI{
 }

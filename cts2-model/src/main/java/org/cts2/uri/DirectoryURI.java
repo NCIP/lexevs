@@ -18,6 +18,9 @@
  */
 package org.cts2.uri;
 
+import org.cts2.core.Directory;
+import org.cts2.core.Filter;
+import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 
 /**
@@ -27,23 +30,11 @@ import org.cts2.service.core.ReadContext;
  */
 public interface DirectoryURI {
 	
-	/**
-	 * Count.
-	 *
-	 * @param readContext the read context
-	 * @return the int
-	 */
+	public <T extends Directory<?>> T get(QueryControl queryControl, ReadContext readContext, Class<T> content);
+
 	public int count(ReadContext readContext);
 	
-	/**
-	 * Marshall.
-	 *
-	 * @return the object
-	 */
-	public Object marshall();
+	public DirectoryURI restrict(Filter filter);
 	
-	/**
-	 * Unmarshall.
-	 */
-	public void unmarshall();
+
 }
