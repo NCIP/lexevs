@@ -42,5 +42,7 @@ public interface CodeSystemVersionQueryService extends BaseQueryService<CodeSyst
 	public CodeSystemVersionDirectory resolve(CodeSystemVersionDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
 	
 	public CodeSystemVersionList resolveAsList(CodeSystemVersionDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	
+	public CodeSystemVersionDirectoryURI getCodeSystemVersions();
 
 }

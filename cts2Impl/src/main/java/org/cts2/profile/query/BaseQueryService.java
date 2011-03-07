@@ -21,14 +21,13 @@ package org.cts2.profile.query;
 import org.cts2.core.Filter;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
-import org.cts2.uri.operation.Restrictable;
 
 /**
  * The Interface BaseQueryService.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface BaseQueryService<U extends DirectoryURI & Restrictable<U>> {
+public interface BaseQueryService<U extends DirectoryURI> {
 
 	/**
 	 * Count.
