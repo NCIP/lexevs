@@ -71,7 +71,7 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
 	        dbOps = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
 	     try {
 	    	dbOps.createAllTables();
-        } catch (Exception e1) {
+        } catch (Exception e) {
             //
         }
 
@@ -87,7 +87,11 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
 	    
 	    LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropAllTables();
 	    
-	    LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
+	    try {
+            LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
+        } catch (Exception e) {
+            //
+        }
 	}
 	
 	/**
