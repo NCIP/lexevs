@@ -21,8 +21,10 @@ package org.lexevs.dao.database.ibatis.codingscheme;
 import javax.annotation.Resource;
 
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,11 +40,19 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Resource
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 	
+	@Before
+	public void loadCodingScheme() throws Exception{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+				"values ('1', 'csname', 'csuri', 'csversion')");
+	}
+	
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithHistoryFromHistoryWithMultiple() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
 			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
@@ -70,8 +80,6 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithLocalName() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
 			"values ('1', '1', 'localName', 'local name', '2')");
@@ -105,8 +113,6 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithSource() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('1', 'csname', 'csuri', 'csversion1', '1')");
 		
 		template.execute("Insert into csmultiattrib (csMultiAttribGuid, codingSchemeGuid, attributetype, attributevalue, entrystateguid) " +
 			"values ('1', '1', 'source', 'a source', '2')");
@@ -140,8 +146,6 @@ public class IbatisCodingSchemeDaoHistoryTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void getHistoryCodingSchemeByRevisionWithHistoryFromHistory() {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
-			"values ('1', 'csname', 'csuri', 'csversion2', '1')");
 		
 		template.execute("Insert into h_codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion, entrystateguid) " +
 			"values ('1', 'csname', 'csuri', 'csversion2', '2')");
