@@ -30,5 +30,10 @@
 		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="cts2-model" rev="${vBuild}" conf="default"/>
+		<dependency org="akka" name="akka-actor" rev="1.0-RC3" conf="default"/>
+		<dependency org="org.scala-lang" name="scala-library" rev="2.8.1" conf="default"/>
+		<dependency org="net.lag" name="configgy" rev="2.0.0" conf="default"/>
+		<dependency org="com.eaio.uuid" name="uuid" rev="3.2" conf="default"/>
+		<dependency org="com.google.guava" name="guava" rev="r07" conf="default"/>
    	 </dependencies>
 </ivy-module>
