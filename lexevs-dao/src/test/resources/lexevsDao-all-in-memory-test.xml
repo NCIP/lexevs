@@ -29,4 +29,10 @@
   
     </bean>
 
+	<bean id="testCacheBean" class="org.lexevs.dao.test.TestCacheBean"/>
+	
+	<bean id="defaultPrefixResolver" class="org.lexevs.dao.test.StaticPrefixResolver">
+		<property name="prefix" value=""/>
+	</bean>
+	
 </beans>
