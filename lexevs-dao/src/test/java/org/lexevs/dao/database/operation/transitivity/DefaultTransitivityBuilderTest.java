@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
@@ -46,16 +47,19 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	@Resource
 	private LexEvsResourceManagingService lexEvsResourceManagingService;
 	
-	@Test
-	public void getRegistryEntryForCodingSchemeName() throws Exception {
+	@Before
+	public void loadCodingScheme() throws Exception{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
 		
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
 				"values ('1', 'csname', 'csuri', 'csversion')");
-		
-		lexEvsResourceManagingService.refresh();
+	}
+	
+	@Test
+	public void getRegistryEntryForCodingSchemeName() throws Exception {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
@@ -99,11 +103,6 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	public void getDistinctSourceTriples() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
-		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('1', 'csname', 'csuri', 'csversion')");
-		
 		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
@@ -141,10 +140,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	public void getTransitiveAssociationPredicateIds() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('1', 'csname', 'csuri', 'csversion')");
-		
+			
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
@@ -163,8 +159,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		template.execute("Insert into entitytype (entityGuid, entityType) " +
 				"values ('1', 'association')");
 		
-		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
-		lexEvsResourceManagingService.refresh();
+		this.lexEvsResourceManagingService.refresh();
 		
 		List<String> transitiveAssocs = 
 			defaultTransitivityBuilder.getTransitiveAssociationPredicateIds("csuri", "csversion");
@@ -176,13 +171,6 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void isTransitive() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		
-		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
-		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('1', 'csname', 'csuri', 'csversion')");
-		
-		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
@@ -212,12 +200,6 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	public void isNotTransitive() throws Exception {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
-		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('1', 'csname', 'csuri', 'csversion')");
-		
-		lexEvsResourceManagingService.refresh();
 		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnNamespace, assnEntityCode) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
@@ -249,9 +231,6 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('1', 'csname', 'csuri', 'csversion')");
-		
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
@@ -279,8 +258,6 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 				" 't-ns1'," +
 				" 'ai-id', null, null, null, null, null, null, null, null)");
 		
-		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
-		lexEvsResourceManagingService.refresh();
 		
 		defaultTransitivityBuilder.computeTransitivityTable("csuri", "csversion");
 		
@@ -309,9 +286,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-				"values ('1', 'csname', 'csuri', 'csversion')");
-		
+			
 		template.execute("Insert into cssupportedattrib (csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnCodingScheme, assnEntityCode, assnNamespace) " +
 				"values ('1', '1', 'Association', 'test-assoc', 'csname', 'ae-code', 'ae-codens')");
 
@@ -347,10 +322,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 				" 't-code2'," +
 				" 't-ns2'," +
 				" 'ai-id2', null, null, null, null, null, null, null, null)");
-
-		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
-		lexEvsResourceManagingService.refresh();
-		
+	
 		defaultTransitivityBuilder.computeTransitivityTable("csuri", "csversion");
 		
 		int count = template.queryForInt("select count(*) from entityassnstoentitytr");

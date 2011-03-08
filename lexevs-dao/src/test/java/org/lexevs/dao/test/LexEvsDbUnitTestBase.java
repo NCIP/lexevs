@@ -25,7 +25,6 @@ import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.dataset.IDataSet;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.cache.MethodCachingProxy;
@@ -35,7 +34,9 @@ import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.service.event.registry.ExtensionLoadingListenerRegistry;
 import org.lexevs.dao.database.setup.schemacheck.CountBasedLexGridSchemaCheck;
 import org.lexevs.dao.database.type.DatabaseType;
+import org.lexevs.registry.service.Registry;
 import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -46,7 +47,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/lexevsDao-test.xml"})
+@ContextConfiguration(locations={"/lexevsDao-all-in-memory-test.xml"})
 public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 
 	/** The data source. */
@@ -73,11 +74,12 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	@Resource
 	protected PrimaryKeyIncrementer primaryKeyIncrementer;
 	
-    @BeforeClass
-    public static void setSystemProp() {
-        System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
-    }
-    
+	@Resource
+	protected LexEvsResourceManagingService lexEvsResourceManagingService;
+	
+	@Resource
+	protected Registry registry;
+ 
 	@Resource
 	private ExtensionLoadingListenerRegistry extensionLoadingListenerRegistry;
 
