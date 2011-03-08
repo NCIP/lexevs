@@ -18,12 +18,16 @@
  */
 package org.cts2.internal.profile.read;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.internal.model.resource.factory.CodeSystemVersionFactory;
 import org.cts2.profile.read.CodeSystemVersionReadService;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.utility.ExecutionUtils;
 
 /**
  * The Class LexEvsCodeSystemVersionReadService.
@@ -60,11 +64,11 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	
 	@Override
 	public CodeSystemVersion read(
-			NameOrURI id, 
+			final NameOrURI id, 
 			QueryControl queryControl, 
 			ReadContext readContext) {
 		
-		return this.doRead(id);
+		return this.doRead(id, queryControl, readContext);
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +81,6 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 			ReadContext readContext) {
 		throw new RuntimeException("Not implemented yet.");
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.read.CodeSystemVersionReadService#getCodeSystemVersionByExternalId(org.cts2.service.core.NameOrURI, java.lang.String, org.cts2.service.core.QueryControl)
@@ -104,10 +107,17 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.profile.read.AbstractBaseReadService#doRead(org.cts2.service.core.NameOrURI)
 	 */
-	protected CodeSystemVersion doRead(NameOrURI nameOrUri) {
-		return this.codeSystemVersionFactory.getCodeSystemVersion(nameOrUri);
-	}
+	protected CodeSystemVersion doRead(final NameOrURI nameOrUri, QueryControl queryControl, 
+			ReadContext readContext) {
+		return ExecutionUtils.callWithTimeout(new Callable<CodeSystemVersion>(){
 
+			@Override
+			public CodeSystemVersion call() throws Exception {
+				return codeSystemVersionFactory.getCodeSystemVersion(nameOrUri);
+			}
+			
+		}, queryControl, TimeUnit.MILLISECONDS);	
+	}
 
 	/**
 	 * Gets the code system version factory.
@@ -127,6 +137,4 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 			CodeSystemVersionFactory codeSystemVersionFactory) {
 		this.codeSystemVersionFactory = codeSystemVersionFactory;
 	}
-	
-	
 }
