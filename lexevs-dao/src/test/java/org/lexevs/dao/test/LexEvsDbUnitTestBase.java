@@ -36,7 +36,7 @@ import org.lexevs.dao.database.setup.schemacheck.CountBasedLexGridSchemaCheck;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.constants.SystemVariables;
-import org.lexevs.system.service.LexEvsResourceManagingService;
+import org.lexevs.system.service.DelegatingSystemResourceService;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -75,7 +75,7 @@ public class LexEvsDbUnitTestBase extends DataSourceBasedDBTestCase {
 	protected PrimaryKeyIncrementer primaryKeyIncrementer;
 	
 	@Resource
-	protected LexEvsResourceManagingService lexEvsResourceManagingService;
+	protected DelegatingSystemResourceService delegatingSystemResourceService;
 	
 	@Resource
 	protected Registry registry;
