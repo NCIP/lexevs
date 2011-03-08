@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Direction;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionName;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
@@ -44,6 +45,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNames
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.registry.utility.RegistryUtility;
 import org.lexevs.util.TestUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -59,13 +61,20 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	/** The ibatis association dao. */
 	@Resource
 	private IbatisCodedNodeGraphDao ibatisCodedNodeGraphDao;
+	
+	@Before
+	public void loadCodingScheme() throws Exception{
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		registry.addNewItem(RegistryUtility.codingSchemeToRegistryEntry("csuri", "csversion"));
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+				"values ('1', 'csname', 'csuri', 'csversion')");
+	}
 
 	@Test
 	public void testListCodeRelationshipsNoTransitive() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('1', 'csname', 'csuri', 'csversion')");
 
 		template.execute("insert into " +
 				"relation (relationGuid, codingSchemeGuid, containerName) " +
@@ -97,9 +106,6 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	public void testListCodeRelationshipsEntityTypeRestriction() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('1', 'csname', 'csuri', 'csversion')");
-		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('1', '1', 's-code', 's-ns')");
 	
@@ -141,10 +147,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void testListCodeRelationshipsEntityTypeRestrictionOneWrong() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('1', 'csname', 'csuri', 'csversion')");
-		
+	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('1', '1', 's-code', 's-ns')");
 	
@@ -186,8 +189,6 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	public void testListCodeRelationshipsEntityTypeRestrictionBothWrong() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('1', 'csname', 'csuri', 'csversion')");
 		
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('1', '1', 's-code', 's-ns')");
@@ -229,10 +230,7 @@ public class IbatisCodedNodeGraphDaoTest extends LexEvsDbUnitTestBase {
 	@Test
 	public void testListCodeRelationshipsEntityTypeRestrictionTwoTypes() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-
-		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
-		"values ('1', 'csname', 'csuri', 'csversion')");
-		
+	
 		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
 			"values ('1', '1', 's-code', 's-ns')");
 	
