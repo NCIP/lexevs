@@ -21,9 +21,6 @@ package org.cts2.internal.profile.read;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.profile.AbstractBaseService;
 import org.cts2.profile.read.BaseReadService;
-import org.cts2.service.core.NameOrURI;
-import org.cts2.service.core.QueryControl;
-import org.cts2.service.core.ReadContext;
 
 /**
  * The Class AbstractBaseReadService.
@@ -39,34 +36,7 @@ public abstract class AbstractBaseReadService<T> extends AbstractBaseService imp
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.read.BaseReadService#read(org.cts2.service.core.NameOrURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
 	 */
-	@Override
-	public T read(
-			NameOrURI id, 
-			QueryControl queryControl, 
-			ReadContext readContext) {
-		
-		return this.doRead(id);
-	}
 	
-	/**
-	 * Do read.
-	 *
-	 * @param nameOrUri the name or uri
-	 * @return the t
-	 */
-	protected abstract T doRead(NameOrURI nameOrUri);
-
-	/* (non-Javadoc)
-	 * @see org.cts2.profile.read.BaseReadService#exists(org.cts2.service.core.NameOrURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
-	 */
-	@Override
-	public boolean exists(
-			NameOrURI id, 
-			QueryControl queryControl,
-			ReadContext readContext) {
-		throw new RuntimeException("Not implemented yet.");
-	}
-
 	/**
 	 * Gets the bean mapper.
 	 *

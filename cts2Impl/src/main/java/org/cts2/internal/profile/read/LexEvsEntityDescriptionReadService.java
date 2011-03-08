@@ -19,8 +19,10 @@
 package org.cts2.internal.profile.read;
 
 import org.cts2.codesystemversion.CodeSystemVersion;
-import org.cts2.internal.model.resource.factory.CodeSystemVersionFactory;
+import org.cts2.entity.EntityDescription;
+import org.cts2.internal.model.resource.factory.EntityDescriptionFactory;
 import org.cts2.profile.read.EntityDescriptionReadService;
+import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
@@ -32,9 +34,33 @@ import org.cts2.service.core.ReadContext;
  */
 public class LexEvsEntityDescriptionReadService extends AbstractBaseReadService<CodeSystemVersion> implements EntityDescriptionReadService {
 
+	/** The code system version factory. */
+	private EntityDescriptionFactory entityDescriptionFactory;
+
 	@Override
-	protected CodeSystemVersion doRead(NameOrURI nameOrUri) {
+	public EntityDescription read(
+			EntityNameOrURI id,
+			NameOrURI codeSystemVersion, 
+			QueryControl queryControl,
+			ReadContext readContext) {
+		return this.entityDescriptionFactory.getEntityDescription(id, codeSystemVersion);
+	}
+
+	@Override
+	public boolean exists(
+			EntityNameOrURI id, 
+			NameOrURI codeSystemVersion,
+			QueryControl queryControl, 
+			ReadContext readContext) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
+	}
+
+	public void setEntityDescriptionFactory(EntityDescriptionFactory entityDescriptionFactory) {
+		this.entityDescriptionFactory = entityDescriptionFactory;
+	}
+
+	public EntityDescriptionFactory getEntityDescriptionFactory() {
+		return entityDescriptionFactory;
 	}
 }

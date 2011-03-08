@@ -14,4 +14,14 @@ public interface CodeSystemVersionReadService extends BaseReadService<CodeSystem
 	public boolean getCodeSystemVersionByExternalId(NameOrURI codeSystem, String externalIdentifier, QueryControl queryControl);
 	
 	public boolean getCodeSystemVersionForCodeSystem(NameOrURI codeSystem, NameOrURI tag, QueryControl queryControl);
+	
+	public CodeSystemVersion read(
+			NameOrURI id, 
+			QueryControl queryControl, 
+			ReadContext readContext);
+
+	public boolean exists(
+			NameOrURI id, 
+			QueryControl queryControl,
+			ReadContext readContext);
 }

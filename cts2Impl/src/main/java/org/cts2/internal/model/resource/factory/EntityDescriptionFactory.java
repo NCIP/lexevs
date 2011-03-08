@@ -25,6 +25,7 @@ import org.LexGrid.concepts.Entity;
 import org.cts2.entity.EntityDescription;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.BeanMapper;
+import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -42,13 +43,13 @@ public class EntityDescriptionFactory {
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
 		
 	public EntityDescription getEntityDescription(
-			NameOrURI entityDescriptionNameOrUri, 
+			EntityNameOrURI entityDescriptionNameOrUri, 
 			NameOrURI codeSystemVersionNameOrUri){
 		AbsoluteCodingSchemeVersionReference ref = 
 			this.lexEvsIdentityConverter.nameOrUriToAbsoluteCodingSchemeVersionReference(codeSystemVersionNameOrUri);
 		
 		ConceptReference conceptReference = 
-			this.lexEvsIdentityConverter.nameOrUriToConceptReference(entityDescriptionNameOrUri);
+			this.lexEvsIdentityConverter.entityNameOrUriToConceptReference(entityDescriptionNameOrUri);
 		
 		Entity entity = 
 			LexEvsServiceLocator.getInstance().

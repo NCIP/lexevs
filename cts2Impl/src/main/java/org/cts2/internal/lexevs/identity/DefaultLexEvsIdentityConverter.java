@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
+import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.CodingSchemeAliasHolder;
@@ -67,7 +68,7 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	}
 
 	@Override
-	public ConceptReference nameOrUriToConceptReference(NameOrURI nameOrUri) {
+	public ConceptReference entityNameOrUriToConceptReference(EntityNameOrURI nameOrUri) {
 		// TODO Auto-generated method stub
 		return null;
 	}

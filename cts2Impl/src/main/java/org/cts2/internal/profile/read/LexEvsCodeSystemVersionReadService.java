@@ -57,6 +57,27 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 			ReadContext context) {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public CodeSystemVersion read(
+			NameOrURI id, 
+			QueryControl queryControl, 
+			ReadContext readContext) {
+		
+		return this.doRead(id);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.read.BaseReadService#exists(org.cts2.service.core.NameOrURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
+	 */
+	@Override
+	public boolean exists(
+			NameOrURI id, 
+			QueryControl queryControl,
+			ReadContext readContext) {
+		throw new RuntimeException("Not implemented yet.");
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.read.CodeSystemVersionReadService#getCodeSystemVersionByExternalId(org.cts2.service.core.NameOrURI, java.lang.String, org.cts2.service.core.QueryControl)
@@ -83,7 +104,6 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.profile.read.AbstractBaseReadService#doRead(org.cts2.service.core.NameOrURI)
 	 */
-	@Override
 	protected CodeSystemVersion doRead(NameOrURI nameOrUri) {
 		return this.codeSystemVersionFactory.getCodeSystemVersion(nameOrUri);
 	}

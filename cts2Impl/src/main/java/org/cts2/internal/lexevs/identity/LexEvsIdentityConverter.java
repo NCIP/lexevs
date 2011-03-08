@@ -2,6 +2,7 @@ package org.cts2.internal.lexevs.identity;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 
 public interface LexEvsIdentityConverter {
@@ -15,8 +16,8 @@ public interface LexEvsIdentityConverter {
 	public AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(
 			NameOrURI nameOrUri);
 	
-	public ConceptReference nameOrUriToConceptReference(
-			NameOrURI nameOrUri);
+	public ConceptReference entityNameOrUriToConceptReference(
+			EntityNameOrURI nameOrUri);
 
 	/**
 	 * Code system version name to coding scheme reference.
