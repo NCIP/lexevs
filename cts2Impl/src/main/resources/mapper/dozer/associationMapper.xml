@@ -18,6 +18,10 @@
 			<a>entity.entityCode</a>
 			<b>subject.localEntityName.name</b>
 		</field>
+		<field>
+			<a>entity.entityCodeNamespace</a>
+			<b>subject.localEntityName.namespace</b>
+		</field>
 	</mapping>
 	<mapping type="one-way">
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept</class-a>
@@ -25,6 +29,10 @@
 		<field>
 			<a>referencedEntry.entityCode</a>
 			<b>target.entity.localEntityName.name</b>
+		</field>
+		<field>
+			<a>referencedEntry.entityCodeNamespace</a>
+			<b>target.entity.localEntityName.namespace</b>
 		</field>
 	</mapping>
 
