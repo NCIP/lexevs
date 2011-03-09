@@ -18,7 +18,7 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 		lbAssoc.setAssociationName("is_a");
 		org.cts2.association.Association cts2Assoc = baseDozerBeanMapper.map(
 				lbAssoc, org.cts2.association.Association.class);
-		assertEquals("is_a", cts2Assoc.getPredicate().getContent());
+		assertEquals("is_a", cts2Assoc.getPredicate().getMeaning());
 	}
 
 	@Test

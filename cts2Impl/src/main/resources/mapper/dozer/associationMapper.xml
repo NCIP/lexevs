@@ -7,7 +7,7 @@
 		<class-b>org.cts2.association.Association</class-b>
 		<field>
 			<a>associationName</a>
-			<b>predicate.content</b>
+			<b>predicate.meaning</b>
 		</field>
 	</mapping>
 	<mapping type="one-way">
