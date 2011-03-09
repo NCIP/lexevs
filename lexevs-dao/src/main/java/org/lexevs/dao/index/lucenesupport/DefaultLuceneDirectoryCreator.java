@@ -21,8 +21,10 @@ package org.lexevs.dao.index.lucenesupport;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.NIOFSDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 
 /**
@@ -36,7 +38,13 @@ public class DefaultLuceneDirectoryCreator implements LuceneDirectoryCreator{
 	public NamedDirectory getDirectory(String indexName, File baseDirectory) {
 		Directory directory;
 		try {
-			directory = FSDirectory.getDirectory(baseDirectory);
+			
+			if(SystemUtils.IS_OS_WINDOWS){
+				directory = FSDirectory.getDirectory(baseDirectory);
+			} else {
+				directory = NIOFSDirectory.getDirectory(baseDirectory);
+			}
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
