@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.lang.StringUtils;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
@@ -82,6 +83,13 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 		
 		return this.getCodeSystemVersionNameMatch(codeSystemVersionName);
 	}
+
+	@Override
+	public String codingSchemeToCodeSystemVersionName(
+			CodingScheme codingScheme) {
+		return this.constructCodeSystemVersionName(codingScheme.getCodingSchemeName(), 
+				codingScheme.getRepresentsVersion());
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#codingSchemeReferenceToCodeSystemVersionName(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
@@ -107,7 +115,8 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 		
 		return this.getCodeSystemVersionDocumentUriMatch(codeSystemVersionDocumentUri);
 	}
-	
+
+
 	@Override
 	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(
 			AbsoluteCodingSchemeVersionReference ref) {

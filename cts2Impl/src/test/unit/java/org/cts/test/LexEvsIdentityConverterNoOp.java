@@ -2,6 +2,7 @@ package org.cts.test;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
@@ -32,6 +33,12 @@ public class LexEvsIdentityConverterNoOp implements LexEvsIdentityConverter {
 	@Override
 	public String codingSchemeReferenceToCodeSystemVersionName(
 			AbsoluteCodingSchemeVersionReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public String codingSchemeToCodeSystemVersionName(CodingScheme codingScheme) {
 		// TODO Auto-generated method stub
 		return null;
 	}
