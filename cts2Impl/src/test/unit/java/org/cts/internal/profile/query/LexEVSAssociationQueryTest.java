@@ -17,6 +17,7 @@ import org.cts2.internal.profile.query.LexEvsAssociationQueryService;
 import org.cts2.profile.BaseService;
 import org.cts2.uri.AssociationDirectoryURI;
 import org.easymock.classextension.EasyMock;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LexEVSAssociationQueryTest extends BaseCts2UnitTest {
@@ -41,6 +42,7 @@ public class LexEVSAssociationQueryTest extends BaseCts2UnitTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testResolveDirectoryURINotNull() throws LBInvocationException{
 		LexBIGService lbs = EasyMock.createMock(LexBIGService.class);
 		

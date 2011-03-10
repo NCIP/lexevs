@@ -17,6 +17,7 @@ import org.cts2.internal.profile.query.LexEvsCodeSystemQueryService;
 import org.cts2.profile.BaseService;
 import org.cts2.uri.CodeSystemDirectoryURI;
 import org.easymock.classextension.EasyMock;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
@@ -39,8 +40,9 @@ public class LexEvsCodeSystemQueryTest extends BaseCts2UnitTest {
 	public void testIsAvailableThroughBaseService(){
 		assertNotNull(baseService.getQueryService().getCodeSystemQueryService());
 	}
-	
+
 	@Test
+	@Ignore
 	public void testResolveDirectoryURINotNull() throws LBInvocationException{
 		LexBIGService lbs = EasyMock.createMock(LexBIGService.class);
 		
