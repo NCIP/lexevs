@@ -18,12 +18,15 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 		lbAssoc.setAssociationName("is_a");
 		org.cts2.association.Association cts2Assoc = baseDozerBeanMapper.map(
 				lbAssoc, org.cts2.association.Association.class);
-		assertEquals("is_a", cts2Assoc.getPredicate().getMeaning());
+		assertEquals("is_a", cts2Assoc.getPredicate().getContent());
 	}
 
 	@Test
 	public void AssociationToResolvedCodedNodeReferenceTest() {
 		ResolvedCodedNodeReference rcnr = new ResolvedCodedNodeReference();
+		rcnr.setCodingSchemeName("NCI Thesaurus");
+		rcnr.setCodingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+		rcnr.setCodingSchemeVersion("12.10a");
 		Entity entity = new Entity();
 		entity.setEntityCode("C1234");
 		entity.setEntityCodeNamespace("NCIt");
