@@ -41,6 +41,7 @@ public class LexEVSAssociationQueryTest extends BaseCts2UnitTest {
 		assertNotNull(baseService.getQueryService().getCodeSystemQueryService());
 	}
 	
+	/*
 	@Test
 	@Ignore
 	public void testResolveDirectoryURINotNull() throws LBInvocationException{
@@ -63,5 +64,5 @@ public class LexEVSAssociationQueryTest extends BaseCts2UnitTest {
 		assertNotNull(ad);
 		assertTrue(ad.getEntryCount() > 0);
 	}
-
+	*/
 }
