@@ -1,0 +1,53 @@
+package org.cts.test;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
+import org.cts2.service.core.EntityNameOrURI;
+import org.cts2.service.core.NameOrURI;
+
+public class LexEvsIdentityConverterNoOp implements LexEvsIdentityConverter {
+
+	@Override
+	public AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(
+			NameOrURI nameOrUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ConceptReference entityNameOrUriToConceptReference(
+			EntityNameOrURI nameOrUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbsoluteCodingSchemeVersionReference codeSystemVersionNameToCodingSchemeReference(
+			String codeSystemVersionName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String codingSchemeReferenceToCodeSystemVersionName(
+			AbsoluteCodingSchemeVersionReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
+			String codeSystemVersionDocumentUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(
+			AbsoluteCodingSchemeVersionReference ref) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

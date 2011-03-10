@@ -36,6 +36,9 @@ public interface LexEvsIdentityConverter {
 	 */
 	public String codingSchemeReferenceToCodeSystemVersionName(
 			AbsoluteCodingSchemeVersionReference ref);
+	
+	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(
+			AbsoluteCodingSchemeVersionReference ref);
 
 	/**
 	 * Code system version document uri to coding scheme reference.

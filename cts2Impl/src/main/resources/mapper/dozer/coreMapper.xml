@@ -33,7 +33,14 @@
 		</field>
     </mapping>
   
-  
-  
+	<mapping>
+		<class-a>java.lang.String</class-a>
+		<class-b>org.cts2.core.VersionTagReference</class-b>
+		
+		<field>
+			<a>this</a>
+			<b>content</b>
+		</field>
+	</mapping>
   
 </mappings>

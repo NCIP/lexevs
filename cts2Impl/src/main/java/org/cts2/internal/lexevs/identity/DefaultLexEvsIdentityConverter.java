@@ -40,10 +40,10 @@ import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
 public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	
 	/** The DEFAUL t_ nam e_ conca t_ string. */
-	public static String DEFAULT_NAME_CONCAT_STRING = "_";
+	public static String DEFAULT_NAME_CONCAT_STRING = ":";
 	
 	/** The DEFAUL t_ ur i_ conca t_ string. */
-	public static String DEFAULT_URI_CONCAT_STRING = "<::>";
+	public static String DEFAULT_URI_CONCAT_STRING = ":";
 	
 	/** The name concat string. */
 	private String nameConcatString = DEFAULT_NAME_CONCAT_STRING;
@@ -108,6 +108,13 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 		return this.getCodeSystemVersionDocumentUriMatch(codeSystemVersionDocumentUri);
 	}
 	
+	@Override
+	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(
+			AbsoluteCodingSchemeVersionReference ref) {
+
+		return this.constructCodeSystemVersionDocumentUri(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+	}
+
 	/**
 	 * Gets the code system version name match.
 	 *
