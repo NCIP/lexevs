@@ -17,8 +17,14 @@
 		<property name="mappingFiles" value="classpath*:mapper/dozer/*.xml" />
 		<property name="customConvertersWithId">
 			<map>
+				<entry key="codeSystemVersionIdentityConverter">
+					<ref bean="codeSystemVersionIdentityConverter"/>
+				</entry>
 				<entry key="codeSystemVersionDirectoryEntryIdentityConverter">
 					<ref bean="codeSystemVersionDirectoryEntryIdentityConverter"/>
+				</entry>
+				<entry key="uriMapConverter">
+					<ref bean="uriMapConverter"/>
 				</entry>
 			</map>
 		</property>   
@@ -28,6 +34,13 @@
 	<bean id="codeSystemVersionDirectoryEntryIdentityConverter" 
 		class="org.cts2.internal.mapper.converter.CodeSystemVersionDirectoryEntryIdentityConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="codeSystemVersionIdentityConverter" 
+		class="org.cts2.internal.mapper.converter.CodeSystemVersionIdentityConverter">
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="uriMapConverter" 
+		class="org.cts2.internal.mapper.converter.URIMapConverter">
 	</bean>
 	<!--  End Dozer Custom Converters -->
 
