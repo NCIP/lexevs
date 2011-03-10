@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedDataType;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.easymock.classextension.EasyMock;
@@ -53,7 +55,7 @@ public class CodingSchemeRToCodeSystemVersionTest extends BaseDozerBeanMapperTes
 	@Test
 	@DirtiesContext
 	public void Map_CodingSchemeName_To_CodeSystemVersionName(){
-		LexEvsIdentityConverter converter = EasyMock.createMock(LexEvsIdentityConverter.class);
+		LexEvsIdentityConverter converter = EasyMock.createNiceMock(LexEvsIdentityConverter.class);
 		
 		CodingScheme mockCs = (CodingScheme)EasyMock.anyObject();
 		
@@ -70,5 +72,54 @@ public class CodingSchemeRToCodeSystemVersionTest extends BaseDozerBeanMapperTes
 		assertEquals("test_cs_name:v1", csv.getCodeSystemVersionName());
 	}
 	
+	@Test
+	@DirtiesContext
+	public void Map_CodingScheme_To_CodeSystemVersionDocumentURI(){
+		LexEvsIdentityConverter converter = EasyMock.createNiceMock(LexEvsIdentityConverter.class);
+		
+		CodingScheme mockCs = (CodingScheme)EasyMock.anyObject();
+		
+		EasyMock.expect(converter.codingSchemeToCodeSystemVersionDocumentUri(
+				mockCs)).andReturn("test_cs_uri:v1:RRF").anyTimes();
+		
+		EasyMock.replay(converter);	
 
+		this.converter.setLexEvsIdentityConverter(converter);
+		
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+		
+		assertEquals("test_cs_uri:v1:RRF", csv.getDocumentURI());
+	}
+	
+	@Test
+	@DirtiesContext
+	public void Map_CodingScheme_Copyright_To_CodeSystemVersionDocumentURI(){
+		LexEvsIdentityConverter converter = EasyMock.createNiceMock(LexEvsIdentityConverter.class);
+		
+		CodingScheme mockCs = (CodingScheme)EasyMock.anyObject();
+		
+		EasyMock.expect(converter.codingSchemeToCodeSystemVersionDocumentUri(
+				mockCs)).andReturn("test_cs_uri:v1:RRF").anyTimes();
+		
+		EasyMock.replay(converter);	
+
+		this.converter.setLexEvsIdentityConverter(converter);
+		
+		cs.getCopyright().setDataType("d");
+		
+		cs.setMappings(new Mappings());
+		SupportedDataType datatype = new SupportedDataType();
+		datatype.setUri("datatypeUri");
+		datatype.setLocalId("d");
+		cs.getMappings().addSupportedDataType(datatype);
+		
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+		
+		assertEquals("test copyright", csv.getRights().getValue());
+		
+		assertEquals("d", csv.getRights().getFormat().getContent());
+		assertEquals("datatypeUri", csv.getRights().getFormat().getHref());
+	}
 }

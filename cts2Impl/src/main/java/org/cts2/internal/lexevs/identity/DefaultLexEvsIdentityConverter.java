@@ -116,6 +116,11 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 		return this.getCodeSystemVersionDocumentUriMatch(codeSystemVersionDocumentUri);
 	}
 
+	@Override
+	public String codingSchemeToCodeSystemVersionDocumentUri(
+			CodingScheme codingScheme) {
+		return this.constructCodeSystemVersionDocumentUri(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
+	}
 
 	@Override
 	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(

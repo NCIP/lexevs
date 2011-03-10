@@ -53,4 +53,7 @@ public interface LexEvsIdentityConverter {
 	public AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
 			String codeSystemVersionDocumentUri);
 
+	public String codingSchemeToCodeSystemVersionDocumentUri(
+			CodingScheme codingScheme);
+
 }

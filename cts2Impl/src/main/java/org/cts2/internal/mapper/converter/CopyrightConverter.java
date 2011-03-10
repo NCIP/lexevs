@@ -19,50 +19,71 @@
 package org.cts2.internal.mapper.converter;
 
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.URIMap;
 import org.cts2.codesystemversion.CodeSystemVersion;
-import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
+import org.cts2.core.DataTypeReference;
+import org.cts2.core.OpaqueData;
 import org.dozer.DozerConverter;
+import org.lexevs.dao.database.constants.classifier.mapping.StringToClassMappingClassifier;
+import org.lexevs.dao.database.utility.DaoUtility;
 
 /**
  * The Class DefinitionOperatorToSetOperatorConverter.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemVersionIdentityConverter extends DozerConverter<CodingScheme,CodeSystemVersion> {
+public class CopyrightConverter extends DozerConverter<CodingScheme,CodeSystemVersion> {
+	private StringToClassMappingClassifier classifier = new StringToClassMappingClassifier();
 
-	private LexEvsIdentityConverter lexEvsIdentityConverter;
-	
-	public CodeSystemVersionIdentityConverter() {
+	public CopyrightConverter() {
 		super(CodingScheme.class, CodeSystemVersion.class);
 	}
 
 	@Override
 	public CodingScheme convertFrom(CodeSystemVersion csv, CodingScheme cs) {
-		//this.lexEvsIdentityConverter.codingSchemeToCodeSystemVersionName(cs);
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public CodeSystemVersion convertTo(CodingScheme cs, CodeSystemVersion csv) {
-		String codeSystemVersionName = 
-			this.lexEvsIdentityConverter.codingSchemeToCodeSystemVersionName(cs);
+		Text copyright = cs.getCopyright();
 		
-		String codeSystemVersionDocumentUri = 
-			this.lexEvsIdentityConverter.codingSchemeToCodeSystemVersionDocumentUri(cs);
+		if(copyright == null){
+			return csv;
+		}
 		
-		csv.setCodeSystemVersionName(codeSystemVersionName);
-		csv.setDocumentURI(codeSystemVersionDocumentUri);
+		if(csv == null){
+			csv = new CodeSystemVersion();
+		}
+		
+		OpaqueData od = new OpaqueData();
+		od.setValue(copyright.getContent());
+		csv.setRights(od);
+
+		String datatype = cs.getCopyright().getDataType();
+		
+		if(datatype != null){
+			
+			try {
+				URIMap uriMap = 
+					DaoUtility.getURIMap(cs, SupportedDataType.class, datatype);
+				
+				DataTypeReference dataTypeRef = new DataTypeReference();
+				dataTypeRef.setContent(uriMap.getLocalId());
+				dataTypeRef.setHref(uriMap.getUri());
+				
+				csv.getRights().setFormat(dataTypeRef);
+			
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} 
+		}
+
+		csv.setRights(od);
 		
 		return csv;
 	}
-
-	public LexEvsIdentityConverter getLexEvsIdentityConverter() {
-		return lexEvsIdentityConverter;
-	}
-
-	public void setLexEvsIdentityConverter(
-			LexEvsIdentityConverter lexEvsIdentityConverter) {
-		this.lexEvsIdentityConverter = lexEvsIdentityConverter;
-	}
-
 }

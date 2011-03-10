@@ -44,6 +44,13 @@ public class LexEvsIdentityConverterNoOp implements LexEvsIdentityConverter {
 	}
 
 	@Override
+	public String codingSchemeToCodeSystemVersionDocumentUri(
+			CodingScheme codingScheme) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
 			String codeSystemVersionDocumentUri) {
 		// TODO Auto-generated method stub

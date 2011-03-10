@@ -23,8 +23,8 @@
 				<entry key="codeSystemVersionDirectoryEntryIdentityConverter">
 					<ref bean="codeSystemVersionDirectoryEntryIdentityConverter"/>
 				</entry>
-				<entry key="uriMapConverter">
-					<ref bean="uriMapConverter"/>
+				<entry key="copyrightConverter">
+					<ref bean="copyrightConverter"/>
 				</entry>
 			</map>
 		</property>   
@@ -39,8 +39,8 @@
 		class="org.cts2.internal.mapper.converter.CodeSystemVersionIdentityConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
-	<bean id="uriMapConverter" 
-		class="org.cts2.internal.mapper.converter.URIMapConverter">
+	<bean id="copyrightConverter" 
+		class="org.cts2.internal.mapper.converter.CopyrightConverter">
 	</bean>
 	<!--  End Dozer Custom Converters -->
 

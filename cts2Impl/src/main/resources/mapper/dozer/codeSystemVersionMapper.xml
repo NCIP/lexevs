@@ -48,7 +48,7 @@
 		</field>
 	</mapping>
 	
-	<mapping>
+	<mapping wildcard="false">
 		<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>
 		<class-b>org.cts2.codesystemversion.CodeSystemVersion</class-b>
 		
@@ -57,12 +57,11 @@
 			<b>about</b>
 		</field>
 		
-		<field custom-converter-id="uriMapConverter">
-			<a>defaultLanguage</a>
-			<b>defaultLanguage</b>
+		<field custom-converter-id="copyrightConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>
-		
-		
+
 		<field custom-converter-id="codeSystemVersionIdentityConverter">
 			<a>this</a>
 			<b>this</b>
