@@ -113,7 +113,7 @@
   <!-- ====================================================================== -->
 
   <target name="compile-tests" 
-          depends="compile" 
+          depends="compile,check-run-tests" 
   		  unless="no.tests"
           description="Compile the test code">
     <mkdir dir="${build.testOutputDir}"/>
@@ -146,7 +146,7 @@
   <!-- ====================================================================== -->
   <target name="test" 
           depends="compile-tests"
-  		  unless="test.skip"
+  		  if="do-run-tests"
           description="Run the test cases">
     <mkdir dir="${test.reports}"/>
     <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="true" dir=".">
@@ -175,32 +175,10 @@
     </junit>
   </target>
 
-  <target name="test-junit-present">
-    <available classname="junit.framework.Test" property="junit.present"/>
-  </target>
-
-  <target name="test-junit-status" 
-          depends="test-junit-present">
-    <condition property="junit.missing">
-      <and>
-        <isfalse value="${junit.present}"/>
-        <isfalse value="${test.skip}"/>
-      </and>
-    </condition>
-    <condition property="junit.skipped">
-      <or>
-        <isfalse value="${junit.present}"/>
-        <istrue value="${test.skip}"/>
-      </or>
-    </condition>
-  </target>
-
-  <target name="junit-missing" 
-          depends="test-junit-status" 
-          if="junit.missing">
-    <echo>=================================== WARNING ===================================</echo>
-    <echo> JUnit is not present in your $ANT_HOME/lib directory. Tests not executed.</echo>
-    <echo>===============================================================================</echo>
+  <target name="check-run-tests">
+  	<condition property="do-run-tests">
+  		<isfalse value="${test.skip}"/>
+  	</condition>
   </target>
 
   <!-- ====================================================================== -->
