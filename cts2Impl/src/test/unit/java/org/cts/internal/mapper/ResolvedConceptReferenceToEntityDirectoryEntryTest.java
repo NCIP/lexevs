@@ -17,7 +17,6 @@ public class ResolvedConceptReferenceToEntityDirectoryEntryTest extends BaseDoze
 		ref.setCode("test code");
 		ref.setCodeNamespace("test namespace");
 		mapped = baseDozerBeanMapper.map(ref, EntityDirectoryEntry.class);
-
 	}
 	
 	@Test
