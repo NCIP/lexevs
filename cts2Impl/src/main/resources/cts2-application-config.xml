@@ -10,7 +10,7 @@
 		<property name="queryService" ref="defaultQueryService" />
 	</bean>
 	
-	<bean id="lexBIGServiceImpl" class="org.LexGrid.LexBIG.Impl.LexBIGServiceImpl">
+	<bean id="lexBIGServiceImpl" class="org.LexGrid.LexBIG.Impl.LexBIGServiceImpl"
 		factory-method="defaultInstance"/>
 
 	<bean id="dozerBeanMapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
