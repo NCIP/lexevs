@@ -61,6 +61,14 @@
 			<b-deep-index-hint>org.cts2.core.EntityReference</b-deep-index-hint>
 		</field-->
 		<field>
+			<a>code</a>
+			<b>entityId.name</b>
+		</field>
+		<field>
+			<a>codeNamespace</a>
+			<b>entityId.namespace</b>
+		</field>
+		<field>
 			<a>codingSchemeURI</a>
 			<b>describingCodeSystemVersion.meaning</b>			
 		</field>
@@ -73,14 +81,14 @@
 			<b>resourceType[0].entityReferenceType</b>
 			<b-deep-index-hint>org.cts2.core.EntityReference</b-deep-index-hint>
 		</field-->
-		<field custom-converter-id="designationConverterId">
+		<!-- <field custom-converter-id="designationConverterId">
 			<a>this</a>
 			<b>designation</b>
-		</field>
-		<field custom-converter-id="definitionConverterId">
+		</field> -->
+		<!-- <field custom-converter-id="definitionConverterId">
 			<a>this</a>
 			<b>definition</b>
-		</field>	
+		</field> -->	
 <!--		<field custom-converter-id="commentConverterId">-->
 <!--			<a>this</a>-->
 <!--			<b>comment</b>-->
