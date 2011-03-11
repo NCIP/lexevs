@@ -63,5 +63,11 @@ public class LexEvsIdentityConverterNoOp implements LexEvsIdentityConverter {
 		return null;
 	}
 
+	@Override
+	public String nsUriAndCodeToUri(String nsUri, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
