@@ -1,23 +1,20 @@
 package org.cts2.internal.mapper.converter;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedNamespace;
 import org.apache.commons.lang.StringUtils;
 import org.cts2.entity.EntityDirectoryEntry;
 import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
-import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.dozer.DozerConverter;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 public class EntityDirectoryEntryAboutConverter extends
 		DozerConverter<ResolvedConceptReference, EntityDirectoryEntry> {
-
+	
+	private CodingSchemeService codingSchemeService;
+	
 	public EntityDirectoryEntryAboutConverter() {
 		super(ResolvedConceptReference.class, EntityDirectoryEntry.class);
 	}
@@ -36,10 +33,8 @@ public class EntityDirectoryEntryAboutConverter extends
 				|| StringUtils.isBlank(conRef.getCodeNamespace())) {
 			return dirEntry;
 		}
-		CodingSchemeService service = LexEvsServiceLocator.getInstance()
-				.getDatabaseServiceManager().getCodingSchemeService();
 
-		CodingScheme cs = service.getCodingSchemeByUriAndVersion(
+		CodingScheme cs = codingSchemeService.getCodingSchemeByUriAndVersion(
 				conRef.getCodingSchemeURI(), conRef.getCodingSchemeVersion());
 
 		if (cs != null) {
@@ -57,6 +52,14 @@ public class EntityDirectoryEntryAboutConverter extends
 		}
 
 		return dirEntry;
+	}
+
+	public void setCodingSchemeService(CodingSchemeService codingSchemeService) {
+		this.codingSchemeService = codingSchemeService;
+	}
+
+	public CodingSchemeService getCodingSchemeService() {
+		return codingSchemeService;
 	}
 
 }

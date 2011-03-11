@@ -78,6 +78,57 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 		
 		assertEquals("test_about", returned.getAbout());
 	}
+	
+	@Test
+	public void Test_Read_CodeSystemVersion_By_Name() throws LBInvocationException{
+		
+		CodeSystemVersionFactory factory = 
+			EasyMock.createMock(CodeSystemVersionFactory.class);
+		
+		NameOrURI id = new NameOrURI();
+		
+		CodeSystemVersion csv = new CodeSystemVersion();
+		csv.setCodeSystemVersionName("test:name");
+		csv.setDocumentURI("doc:uri");
+		
+		EasyMock.expect(factory.getCodeSystemVersion(id)).andReturn(csv);
+		
+		
+		EasyMock.replay(factory);
+		lexEvsCodeSystemVersionReadService.setCodeSystemVersionFactory(factory);
+		
+		CodeSystemVersion returned =
+				lexEvsCodeSystemVersionReadService.read(id, null, null);
+		
+		assertEquals("test:name", returned.getCodeSystemVersionName());
+		assertEquals("test:name", returned.getDocumentURI());
+	}
+	
+	@Test
+	public void Test_Read_CodeSystemVersion_By_DocumentURI() throws LBInvocationException{
+		
+		CodeSystemVersionFactory factory = 
+			EasyMock.createMock(CodeSystemVersionFactory.class);
+		
+		NameOrURI id = new NameOrURI();
+		id.setName("test:name");
+		
+		CodeSystemVersion csv = new CodeSystemVersion();
+		csv.setCodeSystemVersionName("test:name");
+		csv.setDocumentURI("doc:uri");
+		
+		EasyMock.expect(factory.getCodeSystemVersion(id)).andReturn(csv);
+		
+		
+		EasyMock.replay(factory);
+		lexEvsCodeSystemVersionReadService.setCodeSystemVersionFactory(factory);
+		
+		CodeSystemVersion returned =
+				lexEvsCodeSystemVersionReadService.read(id, null, null);
+		
+		assertEquals("test:name", returned.getCodeSystemVersionName());
+		assertEquals("test:name", returned.getDocumentURI());
+	}
 
 	@Test(expected=Exception.class)
 	public void Test_Exceed_Timeout() throws LBInvocationException{
