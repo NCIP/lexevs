@@ -93,7 +93,7 @@ public class IsoMapFactory extends LoggingBean implements FactoryBean {
 		}
 	}
 	
-	private String getPath() {
+	protected String getPath() {
 		String configPath = 
 			lexEvsServiceLocator.getSystemResourceService().
 				getSystemVariables().getConfigFileLocation();
