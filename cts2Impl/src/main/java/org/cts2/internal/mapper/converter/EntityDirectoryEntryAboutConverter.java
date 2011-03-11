@@ -52,10 +52,14 @@ public class EntityDirectoryEntryAboutConverter extends
 			try {
 				SupportedNamespace sns = DaoUtility.getURIMap(cs,
 						SupportedNamespace.class, conRef.getCodeNamespace());
+				String uri;
 				if (sns != null && !StringUtils.isBlank(sns.getUri())) {
-					String uri = lexEvsIdentityConverter.nsUriAndCodeToUri(sns.getUri(), conRef.getCode());
-					dirEntry.setAbout(uri);
+					uri = lexEvsIdentityConverter.nsUriAndCodeToUri(sns.getUri(), conRef.getCode());
 				}
+				else {
+					uri = lexEvsIdentityConverter.nsUriAndCodeToUri(cs.getCodingSchemeURI(), conRef.getCode());
+				}
+				dirEntry.setAbout(uri);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
