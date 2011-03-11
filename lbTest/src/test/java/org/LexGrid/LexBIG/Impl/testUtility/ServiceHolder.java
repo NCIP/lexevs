@@ -27,6 +27,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.util.config.PropertiesUtility;
+import org.apache.commons.lang.BooleanUtils;
+import org.lexevs.dao.test.BaseInMemoryLexEvsTest;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -37,6 +39,8 @@ import org.lexevs.system.constants.SystemVariables;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class ServiceHolder {
+	public static final String ALL_IN_MEMORY_SYSTEM_VARIABLE = "in-memory";
+	
     private static Properties[] configs_;
     private static int currentConfig_ = 0;
     private static ArrayList<TestServerConfig> serverConfigs;
@@ -55,7 +59,7 @@ public class ServiceHolder {
      */
     public static ServiceHolder instance() {
         if (sh_ == null) {
-            sh_ = new ServiceHolder(true);
+            sh_ = new ServiceHolder(false);
         }
         return sh_;
 
@@ -121,6 +125,14 @@ public class ServiceHolder {
                 }
             } else {
                 singleConfigMode_ = true;
+              
+                boolean inMemory = 
+                	BooleanUtils.toBoolean(System.getProperty(ALL_IN_MEMORY_SYSTEM_VARIABLE));
+                
+                if(inMemory){
+                	BaseInMemoryLexEvsTest.initInMemory();
+                }
+                
                 lbsi_ = LexBIGServiceImpl.defaultInstance();
             }
 
