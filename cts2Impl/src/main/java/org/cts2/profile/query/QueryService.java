@@ -40,4 +40,10 @@ public interface QueryService {
 	 */
 	public AssociationQueryService getAssociationQueryService();
 	
+	/**
+	 * Gets the value set definition query
+	 * 
+	 * @return the value set definition query
+	 */
+	public ValueSetDefinitionQueryService getValueSetDefinitionQueryService();
 }

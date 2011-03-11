@@ -21,6 +21,7 @@ package org.cts2.internal.profile.query;
 import org.cts2.profile.query.AssociationQueryService;
 import org.cts2.profile.query.CodeSystemQueryService;
 import org.cts2.profile.query.QueryService;
+import org.cts2.profile.query.ValueSetDefinitionQueryService;
 
 /**
  * The Class DefaultQueryService.
@@ -34,6 +35,9 @@ public class DefaultQueryService implements QueryService{
 	
 	/** The association query. */
 	private AssociationQueryService associationQueryService;
+	
+	/** The value set definition query. */
+	private ValueSetDefinitionQueryService valueSetDefinitionQueryService;
 
 	public CodeSystemQueryService getCodeSystemQueryService() {
 		return codeSystemQueryService;
@@ -51,5 +55,14 @@ public class DefaultQueryService implements QueryService{
 	public void setAssociationQueryService(
 			AssociationQueryService associationQueryService) {
 		this.associationQueryService = associationQueryService;
+	}
+
+	public ValueSetDefinitionQueryService getValueSetDefinitionQueryService() {
+		return valueSetDefinitionQueryService;
+	}
+
+	public void setValueSetDefinitionQueryService(
+			ValueSetDefinitionQueryService valueSetDefinitionQueryService) {
+		this.valueSetDefinitionQueryService = valueSetDefinitionQueryService;
 	}
 }
