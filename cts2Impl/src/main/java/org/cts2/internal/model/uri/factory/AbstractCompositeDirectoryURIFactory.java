@@ -21,6 +21,8 @@ package org.cts2.internal.model.uri.factory;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.uri.DirectoryURI;
+import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 
 /**
  * A factory for creating AbstractDirectoryURI objects.
@@ -34,6 +36,12 @@ public abstract class AbstractCompositeDirectoryURIFactory<T extends DirectoryUR
 	
 	/** The lex big service. */
 	private LexBIGService lexBigService;
+	
+	/** The LexEVS Value Set Definition Service. */
+	private LexEVSValueSetDefinitionServices lexEVSValueSetDefinitionService;
+
+	/** The LexEVS Pick List Definition Service. */
+	private LexEVSPickListDefinitionServices lexEVSPickListDefinitionService;
 
 	@Override
 	public T getDirectoryURI() {
@@ -77,5 +85,35 @@ public abstract class AbstractCompositeDirectoryURIFactory<T extends DirectoryUR
 	 */
 	public LexBIGService getLexBigService() {
 		return this.lexBigService;
+	}
+
+	/**
+	 * @return the lexEVSValueSetDefinitionService
+	 */
+	public LexEVSValueSetDefinitionServices getLexEVSValueSetDefinitionService() {
+		return lexEVSValueSetDefinitionService;
+	}
+
+	/**
+	 * @param lexEVSValueSetDefinitionService the lexEVSValueSetDefinitionService to set
+	 */
+	public void setLexEVSValueSetDefinitionService(
+			LexEVSValueSetDefinitionServices lexEVSValueSetDefinitionService) {
+		this.lexEVSValueSetDefinitionService = lexEVSValueSetDefinitionService;
+	}
+
+	/**
+	 * @return the lexEVSPickListDefinitionService
+	 */
+	public LexEVSPickListDefinitionServices getLexEVSPickListDefinitionService() {
+		return lexEVSPickListDefinitionService;
+	}
+
+	/**
+	 * @param lexEVSPickListDefinitionService the lexEVSPickListDefinitionService to set
+	 */
+	public void setLexEVSPickListDefinitionService(
+			LexEVSPickListDefinitionServices lexEVSPickListDefinitionService) {
+		this.lexEVSPickListDefinitionService = lexEVSPickListDefinitionService;
 	}	
 }

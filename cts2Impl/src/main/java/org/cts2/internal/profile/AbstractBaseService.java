@@ -19,6 +19,8 @@
 package org.cts2.internal.profile;
 
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 
 /**
  * The Class AbstractBaseService.
@@ -30,6 +32,12 @@ public abstract class AbstractBaseService {
 	/** The lex big service. */
 	private LexBIGService lexBigService;
 
+	/** The LexEVS Value Set Definition Service. */
+	private LexEVSValueSetDefinitionServices lexEVSValueSetDefinitionService;
+
+	/** The LexEVS Pick List Definition Service. */
+	private LexEVSPickListDefinitionServices lexEVSPickListDefinitionService;
+	
 	/**
 	 * Sets the lex big service.
 	 *
@@ -46,5 +54,35 @@ public abstract class AbstractBaseService {
 	 */
 	public LexBIGService getLexBigService() {
 		return this.lexBigService;
+	}
+
+	/**
+	 * @return the lexEVSValueSetDefinitionService
+	 */
+	public LexEVSValueSetDefinitionServices getLexEVSValueSetDefinitionService() {
+		return lexEVSValueSetDefinitionService;
+	}
+
+	/**
+	 * @param lexEVSValueSetDefinitionService the lexEVSValueSetDefinitionService to set
+	 */
+	public void setLexEVSValueSetDefinitionService(
+			LexEVSValueSetDefinitionServices lexEVSValueSetDefinitionService) {
+		this.lexEVSValueSetDefinitionService = lexEVSValueSetDefinitionService;
+	}
+
+	/**
+	 * @return the lexEVSPickListDefinitionService
+	 */
+	public LexEVSPickListDefinitionServices getLexEVSPickListDefinitionService() {
+		return lexEVSPickListDefinitionService;
+	}
+
+	/**
+	 * @param lexEVSPickListDefinitionService the lexEVSPickListDefinitionService to set
+	 */
+	public void setLexEVSPickListDefinitionService(
+			LexEVSPickListDefinitionServices lexEVSPickListDefinitionService) {
+		this.lexEVSPickListDefinitionService = lexEVSPickListDefinitionService;
 	}
 }

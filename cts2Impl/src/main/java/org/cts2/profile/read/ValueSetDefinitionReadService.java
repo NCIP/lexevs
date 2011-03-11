@@ -44,10 +44,12 @@ public interface ValueSetDefinitionReadService extends BaseReadService<ValueSetD
 	 * @param queryControl
 	 * @param context
 	 */
-	public ValueSetDefinition getDefinitionForValueSet(NameOrURI valueSet, NameOrURI tag, QueryControl queryControl, ReadContext context);
+	public ValueSetDefinition getDefinitionForValueSet(NameOrURI valueSet, NameOrURI tag, 
+			QueryControl queryControl, ReadContext context);
 
 	/**
-	 * 
+	 * Retrieve entity directory URI for the specified value set definition.
+	 *  
 	 * @param valueSetDefinitionURI
 	 * @param codeSystemVersionList
 	 * @param tag
@@ -67,6 +69,7 @@ public interface ValueSetDefinitionReadService extends BaseReadService<ValueSetD
 	public ValueSetDefinition read(URI valueSetDefinitionURI, QueryControl queryControl, ReadContext context);
 
 	/**
+	 * Resolve and return resolved value set directory for specified value set definition.
 	 * 
 	 * @param valueSetDefinitionURI
 	 * @param codeSystemVersionList

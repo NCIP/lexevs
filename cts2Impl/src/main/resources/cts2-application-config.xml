@@ -12,7 +12,13 @@
 	
 	<bean id="lexBIGServiceImpl" class="org.LexGrid.LexBIG.Impl.LexBIGServiceImpl"
 		factory-method="defaultInstance"/>
+		
+	<bean id="lexEVSValueSetDefinitionServiceImpl" class="org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl"
+		factory-method="defaultInstance"/>
 
+	<bean id="lexEVSPickListDefinitionServiceImpl" class="org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl"
+		factory-method="defaultInstance"/>
+		
 	<bean id="dozerBeanMapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
 		<property name="mappingFiles" value="classpath*:mapper/dozer/*.xml" />
 		<property name="customConvertersWithId">
@@ -63,6 +69,8 @@
 	
 	<bean id="abstractBaseService" class="org.cts2.internal.profile.AbstractBaseService" abstract="true">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="lexEVSValueSetDefinitionService" ref="lexEVSValueSetDefinitionServiceImpl" />
+		<property name="lexEVSPickListDefinitionService" ref="lexEVSPickListDefinitionServiceImpl" />
 	</bean>
 
 	<bean id="defaultQueryService" class="org.cts2.internal.profile.query.DefaultQueryService">
@@ -89,6 +97,8 @@
 	<!--  Read Services -->
 	<bean id="lexEvsCodeSystemVersionReadService" class="org.cts2.internal.profile.read.LexEvsCodeSystemVersionReadService" parent="abstractBaseService">
 		<property name="codeSystemVersionFactory" ref="codeSystemVersionFactory" />
+	</bean>
+	<bean id="lexEvsValueSetDefinitionReadService" class="org.cts2.internal.profile.read.LexEvsValueSetDefinitionReadService" parent="abstractBaseService">
 	</bean>
 	<!--  -->
 
