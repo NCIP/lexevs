@@ -5,7 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedData;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.junit.Test;
 
 public class CTS2AssociationToLexEVSRelationsElements extends
@@ -24,9 +26,6 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 	@Test
 	public void AssociationToResolvedCodedNodeReferenceTest() {
 		ResolvedCodedNodeReference rcnr = new ResolvedCodedNodeReference();
-		rcnr.setCodingSchemeName("NCI Thesaurus");
-		rcnr.setCodingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
-		rcnr.setCodingSchemeVersion("12.10a");
 		Entity entity = new Entity();
 		entity.setEntityCode("C1234");
 		entity.setEntityCodeNamespace("NCIt");
@@ -38,7 +37,22 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 		assertEquals("NCIt", cts2Assoc.getSubject().getLocalEntityName()
 				.getNamespace());
 	}
-
+	public void AssociationToCodingSchemeTest(){
+		CodingScheme cs = new CodingScheme();
+		cs.setCodingSchemeName("NCI Thesaurus");
+		cs.setCodingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+		org.cts2.association.Association cts2Assoc = baseDozerBeanMapper.map(
+				cs, org.cts2.association.Association.class);
+		assertEquals("NCI Thesaurus", cts2Assoc.getAssertedBy().getContent());
+		assertEquals("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", cts2Assoc.getAssertedBy().getMeaning());
+	}
+	public void AssociationToSupportedCodingScheme(){
+		SupportedCodingScheme supCodingScheme = new SupportedCodingScheme();
+		supCodingScheme.setUri("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+		org.cts2.association.Association cts2Assoc = baseDozerBeanMapper.map(
+				supCodingScheme, org.cts2.association.Association.class);
+		assertEquals("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#",cts2Assoc.getPredicate().getMeaning());
+	}
 	@Test
 	public void AssociationToAssociatedConceptTest() {
 		AssociatedConcept ac = new AssociatedConcept();

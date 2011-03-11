@@ -10,6 +10,14 @@
 			<b>predicate.content</b>
 		</field>
 	</mapping>
+	<mapping>
+		<class-a>org.LexGrid.naming.SupportedCodingScheme</class-a>
+		<class-b>org.cts2.association.Association</class-b>
+		<field>
+			<a>uri</a>
+			<b>predicate.meaning</b>
+		</field>
+	</mapping>
 	<mapping type="one-way">
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference
 		</class-a>
@@ -21,6 +29,18 @@
 		<field>
 			<a>entity.entityCodeNamespace</a>
 			<b>subject.localEntityName.namespace</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+	<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>
+	<class-b>org.cts2.association.Association</class-b>
+		<field>
+		<a>codingSchemeURI</a>
+		<b>assertedBy.meaning</b>
+		</field>
+		<field>
+		<a>codinSchemeName</a>
+		<b>assertedBy.content</b>
 		</field>
 	</mapping>
 	<mapping type="one-way">
@@ -44,4 +64,10 @@
 			<b>externalStatementId</b>
 		</field>
 	</mapping>
+<!--	<mapping>-->
+<!--		<class-a>-->
+<!--		</class-a>-->
+<!--		<class-b>org.cts2.association.AssociationDirectoryEntry-->
+<!--	</class-b>-->
+<!--	</mapping>-->
 </mappings>
