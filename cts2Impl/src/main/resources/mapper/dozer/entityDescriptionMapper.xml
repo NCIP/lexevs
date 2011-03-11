@@ -17,6 +17,10 @@
 		<field>
 			<a>codeNamespace</a>
 			<b>localEntityName.namespace</b>
+		</field>
+		<field custom-converter-id="EntityDirectoryEntryAboutConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>		
 <!--		<field custom-converter-id="entryStateConverterId">-->
 <!--			<a>entity.isActive</a>-->
