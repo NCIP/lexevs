@@ -1432,8 +1432,13 @@
 				$sourceSchemePrefix$entity sourceEntity
 			ON (
 				sourceEntity.entityCode = eate.sourceEntityCode
+				
+				<!-- We can't count on namespaces being the same across coding schemes.
+					 We'd have to join with the supported attrib table to get the ns uri,
+					 which could be expensive. For now, disregard namespace.
 				AND
 				sourceEntity.entityCodeNamespace = eate.sourceEntityCodeNamespace
+				-->
 				AND
 				sourceEntity.codingSchemeGuid = #sourceCodingSchemeUid#
 				)
@@ -1443,8 +1448,13 @@
 				$targetSchemePrefix$entity targetEntity
 			ON (
 				targetEntity.entityCode = eate.targetEntityCode
+				
+				<!-- We can't count on namespaces being the same across coding schemes.
+					 We'd have to join with the supported attrib table to get the ns uri,
+					 which could be expensive. For now, disregard namespace.
 				AND
 				targetEntity.entityCodeNamespace = eate.targetEntityCodeNamespace
+				-->
 				AND
 				targetEntity.codingSchemeGuid = #targetCodingSchemeUid#
 				)
