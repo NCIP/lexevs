@@ -16,16 +16,12 @@ public class ResolvedConceptReferenceToEntityDirectoryEntryTest extends BaseDoze
 	private ResolvedConceptReference ref;
 	private EntityDirectoryEntry mapped;
 	
-	@Resource 
-	private EntityDirectoryEntryAboutConverter converter;
 	
 	@Before
 	public void initialize() {
 		ref = new ResolvedConceptReference();
 		ref.setCode("test code");
 		ref.setCodeNamespace("test namespace");
-		LexEvsIdentityConverter lexEvsIdentityConverter = new DefaultLexEvsIdentityConverter();
-		converter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		mapped = baseDozerBeanMapper.map(ref, EntityDirectoryEntry.class);
 		
 	}
@@ -46,7 +42,7 @@ public class ResolvedConceptReferenceToEntityDirectoryEntryTest extends BaseDoze
 	
 	@Test
 	public void testCTS2About() {
-		
+		assertEquals(null, mapped.getAbout());
 	}
 	
 }
