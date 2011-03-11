@@ -23,7 +23,6 @@ import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.URIMap;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.core.LanguageReference;
-import org.cts2.core.OpaqueData;
 import org.dozer.DozerConverter;
 import org.lexevs.dao.database.utility.DaoUtility;
 

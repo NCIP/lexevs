@@ -11,6 +11,11 @@
 				<class-a>org.LexGrid.valueSets.types.DefinitionOperator</class-a>
 				<class-b>org.cts2.core.types.SetOperator</class-b>
 			</converter>
+
+			<converter type="org.cts2.internal.mapper.converter.IsActiveToEntryStateConverter">
+				<class-a>java.lang.Boolean</class-a>
+				<class-b>org.cts2.core.types.EntryState</class-b>
+			</converter>
 		</custom-converters>
 
 	</configuration>

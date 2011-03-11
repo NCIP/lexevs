@@ -13,6 +13,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedDataType;
 import org.LexGrid.naming.SupportedLanguage;
 import org.cts2.codesystemversion.CodeSystemVersion;
+import org.cts2.core.types.EntryState;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Before;
@@ -170,6 +171,15 @@ public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest
 	}
 	
 	@Test
+	public void Map_CodingScheme_IsActive(){
+
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+		
+		assertEquals(EntryState.ACTIVE,csv.getEntryState());
+	}
+	
+	@Test
 	public void Map_CodingScheme_localNames(){
 
 		CodeSystemVersion csv = 
@@ -185,4 +195,14 @@ public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest
 		
 		assertArrayEquals(expected,result);
 	}
+	
+	@Test
+	public void Map_CodingScheme_RepresentsVersion(){
+
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+		
+		assertEquals("v1",csv.getOfficialResourceVersionId());
+	}
+
 }

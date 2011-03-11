@@ -56,7 +56,7 @@
 			<a>codingSchemeURI</a>
 			<b>about</b>
 		</field>
-					
+		
 		<field>
 			<a>formalName</a>
 			<b>formalName</b>
@@ -65,6 +65,11 @@
 		<field>
 			<a>localName</a>
 			<b>keyword</b>
+		</field>
+		
+		<field>
+			<a>representsVersion</a>
+			<b>officialResourceVersionId</b>
 		</field>
 		
 		<field custom-converter-id="copyrightConverter">

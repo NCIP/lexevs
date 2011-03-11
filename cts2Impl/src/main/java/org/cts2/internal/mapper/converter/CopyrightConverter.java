@@ -26,7 +26,6 @@ import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.core.DataTypeReference;
 import org.cts2.core.OpaqueData;
 import org.dozer.DozerConverter;
-import org.lexevs.dao.database.constants.classifier.mapping.StringToClassMappingClassifier;
 import org.lexevs.dao.database.utility.DaoUtility;
 
 /**

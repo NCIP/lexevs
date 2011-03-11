@@ -13,7 +13,7 @@
 		</field>
     </mapping>
   
-      <mapping>
+      <mapping wildcard="false">
    		<class-a>org.LexGrid.commonTypes.VersionableAndDescribable</class-a>
 		<class-b>org.cts2.core.ResourceDescription</class-b>
 		
@@ -23,7 +23,7 @@
 		</field>
     </mapping>
     
-     <mapping>
+     <mapping wildcard="false">
    		<class-a>org.LexGrid.commonTypes.Describable</class-a>
 		<class-b>org.cts2.core.ResourceDescription</class-b>
 		
@@ -31,7 +31,18 @@
 			<a>entityDescription</a>
 			<b>resourceSynopsis</b>
 		</field>
+		
     </mapping>
+    
+    <mapping wildcard="false">
+		<class-a>org.LexGrid.commonTypes.Versionable</class-a>
+		<class-b>org.cts2.core.Changeable</class-b>
+    
+    	<field>
+			<a>isActive</a>
+			<b>entryState</b>
+		</field>
+	</mapping>
   
 	<mapping>
 		<class-a>java.lang.String</class-a>
