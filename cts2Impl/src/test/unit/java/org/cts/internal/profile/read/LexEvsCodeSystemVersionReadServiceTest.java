@@ -101,7 +101,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 				lexEvsCodeSystemVersionReadService.read(id, null, null);
 		
 		assertEquals("test:name", returned.getCodeSystemVersionName());
-		assertEquals("test:name", returned.getDocumentURI());
+		assertEquals("doc:uri", returned.getDocumentURI());
 	}
 	
 	@Test
@@ -127,7 +127,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 				lexEvsCodeSystemVersionReadService.read(id, null, null);
 		
 		assertEquals("test:name", returned.getCodeSystemVersionName());
-		assertEquals("test:name", returned.getDocumentURI());
+		assertEquals("doc:uri", returned.getDocumentURI());
 	}
 
 	@Test(expected=Exception.class)
