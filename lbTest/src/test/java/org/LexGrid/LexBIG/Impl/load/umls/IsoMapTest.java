@@ -25,9 +25,13 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
+import org.easymock.classextension.EasyMock;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.constants.SystemVariables;
+import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.loader.logging.StatusTrackingLogger;
 import org.lexgrid.loader.rrf.factory.IsoMapFactory;
 
@@ -39,8 +43,45 @@ import org.lexgrid.loader.rrf.factory.IsoMapFactory;
 @SuppressWarnings("unchecked")
 public class IsoMapTest extends TestCase {
 
+	private IsoMapFactory factory;
+	
+	@Before
+	public void setUp() throws Exception {
+		final SystemResourceService mockSrs = EasyMock.createMock(SystemResourceService.class);
+		
+		SystemVariables sv = EasyMock.createMock(SystemVariables.class);
+		
+		EasyMock.expect(sv.getConfigFileLocation()).andReturn(
+				System.getProperty("java.io.tmpdir") + File.separator + "lbconfig.props").anyTimes();
+		
+		EasyMock.expect(mockSrs.getSystemVariables()).andReturn(sv).anyTimes();
+		
+		LexEvsServiceLocator testLocator = new LexEvsServiceLocator(){
+
+			@Override
+			public SystemResourceService getSystemResourceService() {
+				return mockSrs;
+			}
+			
+		};
+		
+		EasyMock.replay(mockSrs,sv);
+
+		factory = new IsoMapFactory(){
+
+			@Override
+			protected String getPath() {
+				return super.getPath();
+			}
+			
+		};
+		
+		factory.setLogger(new TestStatusTrackingLogger());
+		factory.setLexEvsServiceLocator(testLocator);
+	}
+
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
 		//can't delete the file without a gc... strange.
 		System.gc();
 		if(!this.getFile().delete()) {
@@ -50,10 +91,6 @@ public class IsoMapTest extends TestCase {
 	
 	@Test
 	public void testGetIsoMap() throws Exception {
-		IsoMapFactory factory = new IsoMapFactory();
-		factory.setLogger(new TestStatusTrackingLogger());
-		factory.setLexEvsServiceLocator(LexEvsServiceLocator.getInstance());
-		
 		Map<String,String> isoMap = (Map<String, String>) factory.getObject();
 		
 		assertTrue(isoMap.size() > 0);
@@ -61,9 +98,6 @@ public class IsoMapTest extends TestCase {
 	
 	@Test
 	public void testGetIsoMapWithAddition() throws Exception {
-		IsoMapFactory factory = new IsoMapFactory();
-		factory.setLogger(new TestStatusTrackingLogger());
-		factory.setLexEvsServiceLocator(LexEvsServiceLocator.getInstance());
 
 		File newFile = this.getFile();
 		try {
@@ -86,16 +120,8 @@ public class IsoMapTest extends TestCase {
 	public void testGetIsoMapWithOverride() throws Exception {
 		//overriding AOD=urn:oid:2.16.840.1.113883.6.112
 		
-		IsoMapFactory factory = new IsoMapFactory();
-		factory.setLogger(new TestStatusTrackingLogger());
-		factory.setLexEvsServiceLocator(LexEvsServiceLocator.getInstance());
-		
 		Map<String,String> isoMap = (Map<String, String>) factory.getObject();
 		assertEquals("urn:oid:2.16.840.1.113883.6.112", isoMap.get("AOD"));
-		
-		factory = new IsoMapFactory();
-		factory.setLogger(new TestStatusTrackingLogger());
-		factory.setLexEvsServiceLocator(LexEvsServiceLocator.getInstance());
 		
 		File newFile = this.getFile();
 		newFile.createNewFile();
@@ -186,10 +212,6 @@ public class IsoMapTest extends TestCase {
 	}
 	
 	private String getPath() {
-		String configPath = 
-		LexEvsServiceLocator.getInstance().getSystemResourceService().
-			getSystemVariables().getConfigFileLocation();
-		
-		return configPath.substring(0, configPath.lastIndexOf(File.separator) + 1) + IsoMapFactory.ISO_MAP_FILE_NAME;
+		return System.getProperty("java.io.tmpdir") + File.separator + IsoMapFactory.ISO_MAP_FILE_NAME;
 	}
 }
