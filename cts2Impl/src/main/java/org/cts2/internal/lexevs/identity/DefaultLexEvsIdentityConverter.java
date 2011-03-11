@@ -261,20 +261,4 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	public void setLexBigService(LexBIGService lexBigService) {
 		this.lexBigService = lexBigService;
 	}
-
-	@Override
-	public String namespaceAndCodeToUri(CodingScheme cs, String namespace, String code) {
-		for (SupportedNamespace sns: cs.getMappings().getSupportedNamespace()) {
-			if (sns.getLocalId().equals(namespace)) {
-				if (!StringUtils.isEmpty(sns.getUri())) {
-					return sns.getUri() + this.uriConcatString + code;
-				}
-				else {
-					return namespace + this.uriConcatString + code;
-				}
-			}
-					
-		}
-		return namespace + this.uriConcatString + code;
-	}
 }

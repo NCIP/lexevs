@@ -55,13 +55,4 @@ public interface LexEvsIdentityConverter {
 	
 	public String codingSchemeToCodeSystemVersionDocumentUri(
 			CodingScheme codingScheme);
-
-	
-	/**
-	 * Generated about URI based on namespace URI and entity code 
-	 * @param nsUri
-	 * @param code
-	 * @return
-	 */
-	public String namespaceAndCodeToUri(CodingScheme cs, String namespace, String code);
 }
