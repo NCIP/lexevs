@@ -19,14 +19,12 @@
 package org.cts2.internal.mapper.converter;
 
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.Text;
-import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.URIMap;
 import org.cts2.codesystemversion.CodeSystemVersion;
-import org.cts2.core.DataTypeReference;
+import org.cts2.core.LanguageReference;
 import org.cts2.core.OpaqueData;
 import org.dozer.DozerConverter;
-import org.lexevs.dao.database.constants.classifier.mapping.StringToClassMappingClassifier;
 import org.lexevs.dao.database.utility.DaoUtility;
 
 /**
@@ -34,9 +32,9 @@ import org.lexevs.dao.database.utility.DaoUtility;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CopyrightConverter extends DozerConverter<CodingScheme,CodeSystemVersion> {
+public class DefaultLanguageConverter extends DozerConverter<CodingScheme,CodeSystemVersion> {
 
-	public CopyrightConverter() {
+	public DefaultLanguageConverter() {
 		super(CodingScheme.class, CodeSystemVersion.class);
 	}
 
@@ -48,41 +46,36 @@ public class CopyrightConverter extends DozerConverter<CodingScheme,CodeSystemVe
 
 	@Override
 	public CodeSystemVersion convertTo(CodingScheme cs, CodeSystemVersion csv) {
-		Text copyright = cs.getCopyright();
+		String language = cs.getDefaultLanguage();
 		
-		if(copyright == null){
+		if(language == null){
 			return csv;
 		}
 		
 		if(csv == null){
 			csv = new CodeSystemVersion();
 		}
-		
-		OpaqueData od = new OpaqueData();
-		od.setValue(copyright.getContent());
-		csv.setRights(od);
 
-		String datatype = cs.getCopyright().getDataType();
-		
-		if(datatype != null){
-			
-			try {
-				URIMap uriMap = 
-					DaoUtility.getURIMap(cs, SupportedDataType.class, datatype);
-				
-				DataTypeReference dataTypeRef = new DataTypeReference();
-				dataTypeRef.setContent(uriMap.getLocalId());
-				dataTypeRef.setHref(uriMap.getUri());
-				
-				csv.getRights().setFormat(dataTypeRef);
-			
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} 
-		}
+		try {
+			URIMap uriMap = 
+				DaoUtility.getURIMap(cs, SupportedLanguage.class, language);
 
-		csv.setRights(od);
-		
+			if(uriMap == null){
+				return csv;
+			}
+
+			LanguageReference languageRef = new LanguageReference();
+			languageRef.setContent(uriMap.getLocalId());
+			languageRef.setHref(uriMap.getUri());
+
+			languageRef.setContent(language);
+
+			csv.setDefaultLanguage(languageRef);
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
+
 		return csv;
 	}
 }

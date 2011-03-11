@@ -10,6 +10,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedLanguage;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.easymock.classextension.EasyMock;
@@ -121,5 +122,32 @@ public class CodingSchemeRToCodeSystemVersionTest extends BaseDozerBeanMapperTes
 		
 		assertEquals("d", csv.getRights().getFormat().getContent());
 		assertEquals("datatypeUri", csv.getRights().getFormat().getHref());
+	}
+	
+	@Test
+	@DirtiesContext
+	public void Map_CodingScheme_DefaultLanguage_To_DefaultLanguage(){
+		LexEvsIdentityConverter converter = EasyMock.createNiceMock(LexEvsIdentityConverter.class);
+		
+		CodingScheme mockCs = (CodingScheme)EasyMock.anyObject();
+		
+		EasyMock.expect(converter.codingSchemeToCodeSystemVersionDocumentUri(
+				mockCs)).andReturn("test_cs_uri:v1:RRF").anyTimes();
+		
+		EasyMock.replay(converter);	
+
+		this.converter.setLexEvsIdentityConverter(converter);
+	
+		cs.setMappings(new Mappings());
+		SupportedLanguage language = new SupportedLanguage();
+		language.setUri("languageUri");
+		language.setLocalId("ENG");
+		cs.getMappings().addSupportedLanguage(language);
+		
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+		
+		assertEquals("ENG", csv.getDefaultLanguage().getContent());
+		assertEquals("languageUri", csv.getDefaultLanguage().getHref());
 	}
 }

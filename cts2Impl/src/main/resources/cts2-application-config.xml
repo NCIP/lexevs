@@ -26,6 +26,9 @@
 				<entry key="copyrightConverter">
 					<ref bean="copyrightConverter"/>
 				</entry>
+				<entry key="defaultLanguageConverter">
+					<ref bean="defaultLanguageConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -41,6 +44,9 @@
 	</bean>
 	<bean id="copyrightConverter" 
 		class="org.cts2.internal.mapper.converter.CopyrightConverter">
+	</bean>
+	<bean id="defaultLanguageConverter" 
+		class="org.cts2.internal.mapper.converter.DefaultLanguageConverter">
 	</bean>
 	<!--  End Dozer Custom Converters -->
 
