@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
 
-public class CodingSchemeRToCodeSystemVersionTest extends BaseDozerBeanMapperTest {
+public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest {
 	
 	@Resource
 	private org.cts2.internal.mapper.converter.CodeSystemVersionIdentityConverter converter;
@@ -149,5 +149,25 @@ public class CodingSchemeRToCodeSystemVersionTest extends BaseDozerBeanMapperTes
 		
 		assertEquals("ENG", csv.getDefaultLanguage().getContent());
 		assertEquals("languageUri", csv.getDefaultLanguage().getHref());
+	}
+	
+	@Test
+	@DirtiesContext
+	public void Map_CodingScheme_EntityDescription(){
+		LexEvsIdentityConverter converter = EasyMock.createNiceMock(LexEvsIdentityConverter.class);
+		
+		CodingScheme mockCs = (CodingScheme)EasyMock.anyObject();
+		
+		EasyMock.expect(converter.codingSchemeToCodeSystemVersionDocumentUri(
+				mockCs)).andReturn("test_cs_uri:v1:RRF").anyTimes();
+		
+		EasyMock.replay(converter);	
+
+		this.converter.setLexEvsIdentityConverter(converter);
+	
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+		
+		assertEquals("test description", csv.getResourceSynopsis().getValue());
 	}
 }
