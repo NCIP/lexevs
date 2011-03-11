@@ -60,6 +60,7 @@ import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 import org.springframework.util.ReflectionUtils.MethodCallback;
@@ -345,7 +346,7 @@ public class DaoUtility {
 				if(value == null) {
 					nullProperties.add(removeLeadingUnderscore(field.getName()));
 				}
-				if(value instanceof Collection && ((Collection)value).size() == 0) {
+				if(value instanceof Collection && ((Collection<?>)value).size() == 0) {
 					nullProperties.add(
 							removeTrailingList(
 									removeLeadingUnderscore(field.getName()))
@@ -382,19 +383,35 @@ public class DaoUtility {
 	 * Return the URIMap(a supported item in mapping section) according the a given localId
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends URIMap> T getURIMap(CodingScheme cs, Class<T> uriMapClass, String localId) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public static <T extends URIMap> T getURIMap(CodingScheme cs, Class<T> uriMapClass, String localId) {
+		if(cs == null || cs.getMappings() == null){
+			return null;
+		}
+		
 		final String getPrefix = "get";
 		final String getSuffix = "AsReference";
+
+		List<T> uriMapList =
+			(List<T>) ReflectionUtils.invokeMethod(
+						ReflectionUtils.findMethod(Mappings.class, getPrefix+uriMapClass.getSimpleName()+getSuffix), cs.getMappings());
 		
-		Mappings mappings = cs.getMappings();
-		Method m = mappings.getClass().getMethod(getPrefix+uriMapClass.getSimpleName()+getSuffix, null);
-		m.setAccessible(true);
-		List<T> list = (List<T>) m.invoke(mappings, null);
-		for (URIMap map : list) {
-			if (map.getLocalId().equalsIgnoreCase(localId))
-				return (T) map;
+		List<T> returnList = new ArrayList<T>();
+		
+		for (T map : uriMapList) {
+			if (map.getLocalId().equalsIgnoreCase(localId)){
+				returnList.add(map);
+			}
 		}
-		return null;
+		
+		if(CollectionUtils.isEmpty(returnList)){
+			return null;
+		}
+		
+		if(returnList.size() > 1){
+			throw new IllegalStateException("Two URIMaps found with the same LocalID: " + localId);
+		}
+		
+		return returnList.get(0);
 	}
 	
 	/**
