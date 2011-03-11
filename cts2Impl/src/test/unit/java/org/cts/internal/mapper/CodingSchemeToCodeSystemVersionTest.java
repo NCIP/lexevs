@@ -170,4 +170,14 @@ public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest
 		
 		assertEquals("test description", csv.getResourceSynopsis().getValue());
 	}
+	
+	@Test
+	@DirtiesContext
+	public void Map_CodingScheme_FormalName(){
+
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+
+		assertEquals("test_formal_name", csv.getFormalName());
+	}
 }

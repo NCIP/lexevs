@@ -36,7 +36,7 @@
 			<a>codingSchemeSummary.formalName</a>
 			<b>formalName</b>
 		</field>	
-			
+		
 		<field>
 			<a>codingSchemeSummary.codingSchemeDescription</a>
 			<b>resourceSynopsis</b>
@@ -55,6 +55,11 @@
 		<field>
 			<a>codingSchemeURI</a>
 			<b>about</b>
+		</field>
+					
+		<field>
+			<a>formalName</a>
+			<b>formalName</b>
 		</field>
 		
 		<field custom-converter-id="copyrightConverter">
