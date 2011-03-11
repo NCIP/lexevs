@@ -177,6 +177,18 @@ public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest
 			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
 		
 		assertEquals(EntryState.ACTIVE,csv.getEntryState());
+		
+		cs.setIsActive(false);
+		csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+	
+		assertEquals(EntryState.INACTIVE,csv.getEntryState());
+		
+		cs.setIsActive(null);
+		csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+	
+		assertNull(csv.getEntryState());
 	}
 	
 	@Test
