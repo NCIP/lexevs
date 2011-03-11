@@ -31,7 +31,9 @@
     <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>    
     <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
     <lgNaming:supportedNamespace localId="Automobiles" uri="urn:oid:11.11.0.1" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+    <lgNaming:supportedNamespace localId="Automobiles_Different_NS" uri="urn:oid:11.11.0.1.Different" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
     <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">GermanMadePartsNamespace</lgNaming:supportedNamespace>
+    <lgNaming:supportedNamespace localId="GermanMadePartsNamespace_Different_NS" uri="urn:oid:11.11.0.2.Different" equivalentCodingScheme="GermanMadeParts">GermanMadePartsNamespace</lgNaming:supportedNamespace>
     <lgNaming:supportedProperty localId="definition">definition</lgNaming:supportedProperty>
     <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
     <lgNaming:supportedProperty localId="genericProperty" >genericProperty</lgNaming:supportedProperty>
@@ -68,6 +70,9 @@
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Ford">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
+      </lgRel:source>
+       <lgRel:source sourceEntityCodeNamespace="Automobiles_Different_NS" sourceEntityCode="C0002">
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace_Different_NS" targetEntityCode="P0001" />
       </lgRel:source>
 	</lgRel:associationPredicate>         
   </relations>
