@@ -17,6 +17,15 @@ public class EntityDirectoryEntryAboutConverter extends
 	private CodingSchemeService codingSchemeService;
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
 	
+	public LexEvsIdentityConverter getLexEvsIdentityConverter() {
+		return lexEvsIdentityConverter;
+	}
+
+	public void setLexEvsIdentityConverter(
+			LexEvsIdentityConverter lexEvsIdentityConverter) {
+		this.lexEvsIdentityConverter = lexEvsIdentityConverter;
+	}
+
 	public EntityDirectoryEntryAboutConverter() {
 		super(ResolvedConceptReference.class, EntityDirectoryEntry.class);
 	}
