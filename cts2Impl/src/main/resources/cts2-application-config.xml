@@ -53,6 +53,7 @@
 	</bean>
 	<bean id="entityDirectoryEntryAboutConverter"
 		class="org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter">
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<!--  End Dozer Custom Converters -->
 
