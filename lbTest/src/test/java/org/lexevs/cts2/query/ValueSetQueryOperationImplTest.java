@@ -31,7 +31,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
@@ -81,7 +81,7 @@ public class ValueSetQueryOperationImplTest extends Cts2BaseTest{
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		AbsoluteCodingSchemeVersionReference ref =  
 			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
 		

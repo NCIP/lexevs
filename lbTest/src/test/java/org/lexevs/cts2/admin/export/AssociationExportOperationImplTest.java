@@ -26,7 +26,7 @@ import java.io.FileReader;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -62,7 +62,7 @@ public class AssociationExportOperationImplTest extends Cts2BaseTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		AbsoluteCodingSchemeVersionReference ref = 
 			Constructors.createAbsoluteCodingSchemeVersionReference(Cts2TestConstants.CTS2_AUTOMOBILES_URI, Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
 		

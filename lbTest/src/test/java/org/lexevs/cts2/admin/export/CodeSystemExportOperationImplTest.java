@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -72,7 +72,7 @@ public class CodeSystemExportOperationImplTest {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		AbsoluteCodingSchemeVersionReference ref = 
 			Constructors.createAbsoluteCodingSchemeVersionReference(Cts2TestConstants.CTS2_AUTOMOBILES_URI, Cts2TestConstants.CTS2_AUTOMOBILES_VERSION);
 		
@@ -103,7 +103,7 @@ public class CodeSystemExportOperationImplTest {
 	@Test
 	public void testExportCodeSystemContent() throws LBException, URISyntaxException, MarshalException, ValidationException, FileNotFoundException {
 		
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		
 		org.LexGrid.LexBIG.Impl.exporters.LexGridExport exporter;
         try {

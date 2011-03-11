@@ -24,7 +24,7 @@ import java.io.File;
 import java.util.Date;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -49,7 +49,7 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.factory.Supporte
  */
 public class CodeSystemLoadOperationTest {
 
-	private static LexBIGService lbs_ = LexBIGServiceImpl.defaultInstance();
+	private static LexBIGService lbs_ = ServiceHolder.instance().getLexBIGService();
 	private CodeSystemLoadOperation csLoadOp_ = new LexEvsCTS2Impl().getAdminOperation().getCodeSystemLoadOperation();
 	
 	@BeforeClass

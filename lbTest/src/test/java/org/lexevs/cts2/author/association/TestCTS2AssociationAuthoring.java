@@ -28,8 +28,8 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
+import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -73,7 +73,7 @@ public class TestCTS2AssociationAuthoring {
 	public void setUp() {
 		associationAuthoringOp = new AssociationAuthoringOperationImpl();
 		authoring = new LexEVSAuthoringServiceImpl();
-		lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		csvt = new CodingSchemeVersionOrTag();
 		csvt.setVersion("1.0");
 
@@ -101,7 +101,7 @@ public class TestCTS2AssociationAuthoring {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		AbsoluteCodingSchemeVersionReference ref1 = 
 			Constructors.createAbsoluteCodingSchemeVersionReference(TARGET_URN, TARGET_VERSION);
 		
