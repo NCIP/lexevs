@@ -10,6 +10,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedNamespace;
 import org.cts2.entity.EntityDirectoryEntry;
+import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
+import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Before;
@@ -48,6 +50,8 @@ public class ResolvedConceptReferenceToEntityDirectoryEntryTest extends BaseDoze
 		EasyMock.replay(css);
 		
 		this.entityDirectoryEntryAboutConverter.setCodingSchemeService(css);
+		LexEvsIdentityConverter lexEvsIdentityConverter = new DefaultLexEvsIdentityConverter();
+		this.entityDirectoryEntryAboutConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		
 		mapped = baseDozerBeanMapper.map(ref, EntityDirectoryEntry.class);
 		
