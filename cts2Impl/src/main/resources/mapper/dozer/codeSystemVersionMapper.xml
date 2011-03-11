@@ -62,6 +62,11 @@
 			<b>formalName</b>
 		</field>
 		
+		<field>
+			<a>localName</a>
+			<b>keyword</b>
+		</field>
+		
 		<field custom-converter-id="copyrightConverter">
 			<a>this</a>
 			<b>this</b>

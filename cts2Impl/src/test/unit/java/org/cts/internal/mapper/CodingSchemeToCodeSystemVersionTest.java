@@ -1,7 +1,8 @@
 package org.cts.internal.mapper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -152,19 +153,7 @@ public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest
 	}
 	
 	@Test
-	@DirtiesContext
 	public void Map_CodingScheme_EntityDescription(){
-		LexEvsIdentityConverter converter = EasyMock.createNiceMock(LexEvsIdentityConverter.class);
-		
-		CodingScheme mockCs = (CodingScheme)EasyMock.anyObject();
-		
-		EasyMock.expect(converter.codingSchemeToCodeSystemVersionDocumentUri(
-				mockCs)).andReturn("test_cs_uri:v1:RRF").anyTimes();
-		
-		EasyMock.replay(converter);	
-
-		this.converter.setLexEvsIdentityConverter(converter);
-	
 		CodeSystemVersion csv = 
 			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
 		
@@ -172,12 +161,28 @@ public class CodingSchemeToCodeSystemVersionTest extends BaseDozerBeanMapperTest
 	}
 	
 	@Test
-	@DirtiesContext
 	public void Map_CodingScheme_FormalName(){
 
 		CodeSystemVersion csv = 
 			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
 
 		assertEquals("test_formal_name", csv.getFormalName());
+	}
+	
+	@Test
+	public void Map_CodingScheme_localNames(){
+
+		CodeSystemVersion csv = 
+			this.baseDozerBeanMapper.map(cs, CodeSystemVersion.class);
+
+		assertEquals(2, csv.getKeyword().length);
+		
+		String[] result = csv.getKeyword();
+		String[] expected = new String[]{"ln1", "ln2"};
+		
+		Arrays.sort(result);
+		Arrays.sort(expected);
+		
+		assertArrayEquals(expected,result);
 	}
 }
