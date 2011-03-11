@@ -29,6 +29,9 @@
 				<entry key="defaultLanguageConverter">
 					<ref bean="defaultLanguageConverter"/>
 				</entry>
+				<entry key="entityDirectoryEntryAboutConverter">
+					<ref bean="entityDirectoryEntryAboutConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -47,6 +50,9 @@
 	</bean>
 	<bean id="defaultLanguageConverter" 
 		class="org.cts2.internal.mapper.converter.DefaultLanguageConverter">
+	</bean>
+	<bean id="entityDirectoryEntryAboutConverter"
+		class="org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter">
 	</bean>
 	<!--  End Dozer Custom Converters -->
 
