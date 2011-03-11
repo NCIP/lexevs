@@ -55,4 +55,6 @@ public interface LexEvsIdentityConverter {
 	
 	public String codingSchemeToCodeSystemVersionDocumentUri(
 			CodingScheme codingScheme);
+	
+	public String nsUriAndCodeToUri(String nsUri, String code);
 }

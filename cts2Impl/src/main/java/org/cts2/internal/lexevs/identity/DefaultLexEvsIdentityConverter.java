@@ -261,4 +261,9 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	public void setLexBigService(LexBIGService lexBigService) {
 		this.lexBigService = lexBigService;
 	}
+
+	@Override
+	public String nsUriAndCodeToUri(String nsUri, String code) {
+		return nsUri + this.uriConcatString + code;
+	}
 }

@@ -6,6 +6,7 @@ import org.LexGrid.naming.SupportedNamespace;
 import org.apache.commons.lang.StringUtils;
 import org.cts2.entity.EntityDirectoryEntry;
 import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
+import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.dozer.DozerConverter;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -14,6 +15,7 @@ public class EntityDirectoryEntryAboutConverter extends
 		DozerConverter<ResolvedConceptReference, EntityDirectoryEntry> {
 	
 	private CodingSchemeService codingSchemeService;
+	private LexEvsIdentityConverter lexEvsIdentityConverter;
 	
 	public EntityDirectoryEntryAboutConverter() {
 		super(ResolvedConceptReference.class, EntityDirectoryEntry.class);
@@ -42,9 +44,8 @@ public class EntityDirectoryEntryAboutConverter extends
 				SupportedNamespace sns = DaoUtility.getURIMap(cs,
 						SupportedNamespace.class, conRef.getCodeNamespace());
 				if (sns != null && !StringUtils.isBlank(sns.getUri())) {
-					dirEntry.setAbout(sns.getUri()
-							+ DefaultLexEvsIdentityConverter.DEFAULT_URI_CONCAT_STRING
-							+ conRef.getCode());
+					String uri = lexEvsIdentityConverter.nsUriAndCodeToUri(sns.getUri(), conRef.getCode());
+					dirEntry.setAbout(uri);
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
