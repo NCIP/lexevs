@@ -39,7 +39,7 @@
 		<b>assertedBy.meaning</b>
 		</field>
 		<field>
-		<a>codinSchemeName</a>
+		<a>codingSchemeName</a>
 		<b>assertedBy.content</b>
 		</field>
 	</mapping>
@@ -70,4 +70,57 @@
 <!--		<class-b>org.cts2.association.AssociationDirectoryEntry-->
 <!--	</class-b>-->
 <!--	</mapping>-->
+	<mapping type="one-way">
+		<class-a>org.LexGrid.LexBIG.DataModel.Core.Association</class-a>
+		<class-b>org.cts2.association.AssociationDirectoryEntry</class-b>
+		<field>
+			<a>associationName</a>
+			<b>predicate.content</b>
+		</field>
+	</mapping>
+	<mapping>
+		<class-a>org.LexGrid.naming.SupportedCodingScheme</class-a>
+		<class-b>org.cts2.association.AssociationDirectoryEntry</class-b>
+		<field>
+			<a>uri</a>
+			<b>predicate.meaning</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference
+		</class-a>
+		<class-b>org.cts2.association.AssociationDirectoryEntry</class-b>
+		<field>
+			<a>entity.entityCode</a>
+			<b>subject.localEntityName.name</b>
+		</field>
+		<field>
+			<a>entity.entityCodeNamespace</a>
+			<b>subject.localEntityName.namespace</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+	<class-a>org.LexGrid.codingSchemes.CodingScheme</class-a>
+	<class-b> org.cts2.association.AssociationDirectoryEntry</class-b>
+		<field>
+		<a>codingSchemeURI</a>
+		<b>assertedBy.meaning</b>
+		</field>
+		<field>
+		<a>codingSchemeName</a>
+		<b>assertedBy.content</b>
+		</field>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept</class-a>
+		<class-b>org.cts2.association.AssociationDirectoryEntry</class-b>
+		<field>
+			<a>referencedEntry.entityCode</a>
+			<b>target.entity.localEntityName.name</b>
+		</field>
+		<field>
+			<a>referencedEntry.entityCodeNamespace</a>
+			<b>target.entity.localEntityName.namespace</b>
+		</field>
+	</mapping>
 </mappings>
