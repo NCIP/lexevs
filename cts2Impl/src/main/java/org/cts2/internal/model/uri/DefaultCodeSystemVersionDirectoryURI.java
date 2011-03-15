@@ -76,14 +76,14 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 		return this.codingSchemeRenderingList.getCodingSchemeRenderingCount();
 	}
 	
-	protected CodingSchemeRenderingList restrictToActiveOrAll(ActiveOrAll activeOrAll){
+	protected CodingSchemeRenderingList restrictToActiveOrAll(CodingSchemeRenderingList csrl, ActiveOrAll activeOrAll){
 		if(activeOrAll == null){
-			return this.codingSchemeRenderingList;
+			return csrl;
 		}
 		
 		CodingSchemeRenderingList returnList = new CodingSchemeRenderingList();
 		
-		for (CodingSchemeRendering csr : this.codingSchemeRenderingList.getCodingSchemeRendering()) {
+		for (CodingSchemeRendering csr : csrl.getCodingSchemeRendering()) {
 			boolean active = 
 				csr.getRenderingDetail().getVersionStatus().equals(CodingSchemeVersionStatus.ACTIVE);
 			
@@ -109,14 +109,18 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	protected <D extends Directory<?>> D doGet(
 			NameOrURI format,
 			QueryControl queryControl, 
-			ReadContext readContext, 
+			final ReadContext readContext, 
 			final Class<D> resolveClass) {
 		
 		return ExecutionUtils.callWithTimeout(new Callable<D>(){
 
 			@Override
 			public D call() throws Exception {
-				return beanMapper.map(codingSchemeRenderingList, resolveClass);
+				CodingSchemeRenderingList csrl = restrictToActiveOrAll(codingSchemeRenderingList, readContext.getActive());
+				
+				return beanMapper.map(
+						csrl, 
+						resolveClass);
 			}
 			
 		}, queryControl);
