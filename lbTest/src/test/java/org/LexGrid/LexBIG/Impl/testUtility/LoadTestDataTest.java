@@ -34,7 +34,6 @@ import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
@@ -546,9 +545,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
     
-    private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
-    	return LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-    }
-
-	
+    private LexBIGServiceManager getLexBIGServiceManager() throws LBException {
+    	return ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+    }	
 }
