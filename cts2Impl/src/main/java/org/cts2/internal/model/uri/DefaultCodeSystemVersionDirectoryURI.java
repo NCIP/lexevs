@@ -21,12 +21,15 @@ package org.cts2.internal.model.uri;
 import java.util.concurrent.Callable;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.cts2.core.Directory;
 import org.cts2.core.FilterComponent;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.service.core.types.ActiveOrAll;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
 import org.cts2.utility.ExecutionUtils;
 
@@ -70,8 +73,33 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	 */
 	@Override
 	protected int doCount(ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.codingSchemeRenderingList.getCodingSchemeRenderingCount();
+	}
+	
+	protected CodingSchemeRenderingList restrictToActiveOrAll(ActiveOrAll activeOrAll){
+		if(activeOrAll == null){
+			return this.codingSchemeRenderingList;
+		}
+		
+		CodingSchemeRenderingList returnList = new CodingSchemeRenderingList();
+		
+		for (CodingSchemeRendering csr : this.codingSchemeRenderingList.getCodingSchemeRendering()) {
+			boolean active = 
+				csr.getRenderingDetail().getVersionStatus().equals(CodingSchemeVersionStatus.ACTIVE);
+			
+			switch (activeOrAll) {
+				case ACTIVE_ONLY : {
+					if(!active){
+						break;
+					}
+				} 
+				default : {
+					returnList.addCodingSchemeRendering(csr);
+				}
+			}
+		}
+		
+		return returnList;
 	}
 
 	/* (non-Javadoc)

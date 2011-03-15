@@ -64,7 +64,7 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	
 	@Override
 	public CodeSystemVersion read(
-			final NameOrURI id, 
+			NameOrURI id, 
 			QueryControl queryControl, 
 			ReadContext readContext) {
 		
@@ -79,7 +79,10 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 			NameOrURI id, 
 			QueryControl queryControl,
 			ReadContext readContext) {
-		throw new RuntimeException("Not implemented yet.");
+		return this.doRead(
+				id, 
+				queryControl, 
+				readContext) != null;
 	}
 
 	/* (non-Javadoc)
@@ -107,8 +110,11 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.profile.read.AbstractBaseReadService#doRead(org.cts2.service.core.NameOrURI)
 	 */
-	protected CodeSystemVersion doRead(final NameOrURI nameOrUri, QueryControl queryControl, 
+	protected CodeSystemVersion doRead(
+			final NameOrURI nameOrUri, 
+			QueryControl queryControl, 
 			ReadContext readContext) {
+
 		return ExecutionUtils.callWithTimeout(new Callable<CodeSystemVersion>(){
 
 			@Override
