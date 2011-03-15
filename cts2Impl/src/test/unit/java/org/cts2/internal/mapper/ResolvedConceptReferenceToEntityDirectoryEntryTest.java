@@ -1,4 +1,4 @@
-package org.cts.internal.mapper;
+package org.cts2.internal.mapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

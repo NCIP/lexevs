@@ -1,4 +1,4 @@
-package org.cts.test;
+package org.cts2.test;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;

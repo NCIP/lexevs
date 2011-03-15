@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.cts.internal.profile.query;
+package org.cts2.internal.profile.query;
 
 import static org.junit.Assert.*;
 

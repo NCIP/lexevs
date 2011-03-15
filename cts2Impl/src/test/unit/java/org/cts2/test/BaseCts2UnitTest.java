@@ -1,4 +1,4 @@
-package org.cts.test;
+package org.cts2.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

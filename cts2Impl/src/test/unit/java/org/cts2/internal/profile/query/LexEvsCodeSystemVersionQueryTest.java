@@ -1,4 +1,4 @@
-package org.cts.internal.profile.query;
+package org.cts2.internal.profile.query;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -9,12 +9,12 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.cts.test.BaseCts2UnitTest;
 import org.cts2.codesystemversion.CodeSystemVersionDirectory;
 import org.cts2.internal.model.uri.factory.CodeSystemVersionDirectoryURIFactory;
 import org.cts2.internal.profile.query.LexEvsCodeSystemVersionQueryService;
 import org.cts2.profile.BaseService;
 import org.cts2.service.core.QueryControl;
+import org.cts2.test.BaseCts2UnitTest;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;

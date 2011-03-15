@@ -8,9 +8,9 @@
 
 	<import resource="classpath:cts2-application-config.xml"/>
 	
-	<bean id="lexBIGServiceImpl" class="org.cts.test.LexBIGServiceNoOp"/>
+	<bean id="lexBIGServiceImpl" class="org.cts2.test.LexBIGServiceNoOp"/>
 
-	<bean id="lexEvsIdentityConverter" class="org.cts.test.LexEvsIdentityConverterNoOp"/>
+	<bean id="lexEvsIdentityConverter" class="org.cts2.test.LexEvsIdentityConverterNoOp"/>
 	
 
 </beans>

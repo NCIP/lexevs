@@ -1,4 +1,4 @@
-package org.cts.test;
+package org.cts2.test;
 
 import java.util.Date;
 

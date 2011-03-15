@@ -1,16 +1,16 @@
 /**
  * 
  */
-package org.cts.internal.profile.read;
+package org.cts2.internal.profile.read;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import javax.annotation.Resource;
 
-import org.cts.test.BaseCts2UnitTest;
 import org.cts2.internal.profile.read.LexEvsValueSetDefinitionReadService;
 import org.cts2.profile.BaseService;
+import org.cts2.test.BaseCts2UnitTest;
 import org.junit.Test;
 
 /**

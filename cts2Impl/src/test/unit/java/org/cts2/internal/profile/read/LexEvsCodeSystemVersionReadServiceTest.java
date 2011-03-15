@@ -1,4 +1,4 @@
-package org.cts.internal.profile.read;
+package org.cts2.internal.profile.read;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.cts.test.BaseCts2UnitTest;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.internal.model.resource.factory.CodeSystemVersionFactory;
 import org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory;
@@ -14,6 +13,7 @@ import org.cts2.internal.profile.read.LexEvsCodeSystemVersionReadService;
 import org.cts2.profile.BaseService;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
+import org.cts2.test.BaseCts2UnitTest;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 

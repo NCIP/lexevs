@@ -1,4 +1,4 @@
-package org.cts.internal.util;
+package org.cts2.internal.util;
 
 import static org.junit.Assert.*;
 
