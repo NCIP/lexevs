@@ -45,7 +45,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.util.PrintUtility;
 
 public class MappingExtensionImplTest extends LexBIGServiceTestCase {
     final static String testID = "MappingExtensionImplTest";
@@ -714,10 +713,13 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
-		assertEquals("Ford",itr.next().getCode());
 		
-		assertTrue(itr.hasNext());
-		assertEquals("C0001",itr.next().getCode());
+		String[] expectedCodes = new String[]{"C0001", "Ford"};
+		String[] codes = new String[]{itr.next().getCode(), itr.next().getCode()};
+		
+		Arrays.sort(expectedCodes);
+		Arrays.sort(codes);
+		assertTrue(Arrays.equals(codes, expectedCodes));
 		
 		assertFalse(itr.hasNext());
 	}
