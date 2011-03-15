@@ -84,10 +84,10 @@
 	<resultMap  id="entityReferenceResult" class="entityReference">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
-		<result property="leafOnly" column="leafOnly"/>
+		<result property="leafOnly" column="leafOnly" typeHandler="numericBooleanTypeHandler"/>
 		<result property="referenceAssociation" column="referenceAssociation"/>
-		<result property="targetToSource" column="targetToSource"/>
-		<result property="transitiveClosure" column="transitiveClosure"/>
+		<result property="targetToSource" column="targetToSource" typeHandler="numericBooleanTypeHandler"/>
+		<result property="transitiveClosure" column="transitiveClosure" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	
 	<resultMap  id="propertyReferenceResult" class="propertyReference">
