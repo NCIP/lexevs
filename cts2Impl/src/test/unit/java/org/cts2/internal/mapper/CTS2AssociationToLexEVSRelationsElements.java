@@ -161,6 +161,41 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 		assertEquals(codingSchemeName, cts2Assoc.getAssertedBy().getContent());
 		assertEquals(codingSchemeURI, cts2Assoc.getAssertedBy().getMeaning());
 	}
+	@Test
+	public void AssociationGraphToResolvedCodedNodeReferenceTest() {
+		ResolvedCodedNodeReference rcnr = new ResolvedCodedNodeReference();
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptCode);
+		entity.setEntityCodeNamespace(nameSpace);
+		rcnr.setEntity(entity);
+		org.cts2.association.AssociationGraph cts2Assoc = baseDozerBeanMapper.map(
+				rcnr, org.cts2.association.AssociationGraph.class);
+		assertEquals(conceptCode, cts2Assoc.getFocusEntity().getLocalEntityName()
+				.getName());
+		assertEquals(nameSpace, cts2Assoc.getFocusEntity().getLocalEntityName()
+				.getNamespace());
+	}
+	@Test
+	public void GraphNodeToLexBIGAssociationgTest() {
 
-	
+		org.LexGrid.LexBIG.DataModel.Core.Association lbAssoc = new org.LexGrid.LexBIG.DataModel.Core.Association();
+		lbAssoc.setAssociationName(association);
+		org.cts2.association.GraphNode cts2Assoc = baseDozerBeanMapper.map(
+				lbAssoc, org.cts2.association.GraphNode.class);
+		assertEquals(association, cts2Assoc.getPredicate().getContent());
+	}
+	@Test
+	public void GraphNodeToAssociatedConceptTest() {
+		AssociatedConcept ac = new AssociatedConcept();
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptCode1);
+		entity.setEntityCodeNamespace(nameSpace);
+		ac.setReferencedEntry(entity);
+		org.cts2.association.GraphNode cts2Assoc = baseDozerBeanMapper.map(
+				ac, org.cts2.association.GraphNode.class);
+		assertEquals(conceptCode1, cts2Assoc.getTarget().getEntity()
+				.getLocalEntityName().getName());
+
+	}
+
 }
