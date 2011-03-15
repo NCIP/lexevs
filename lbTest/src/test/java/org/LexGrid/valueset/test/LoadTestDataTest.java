@@ -19,7 +19,6 @@
 package org.LexGrid.valueset.test;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -30,8 +29,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.junit.Test;
@@ -70,7 +69,7 @@ public class LoadTestDataTest extends TestCase {
     }
 	
 	private void loadXML(String fileName, String tag)throws LBException, InterruptedException {
-        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
         LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
                 .getLoader("LexGrid_Loader");
@@ -95,7 +94,7 @@ public class LoadTestDataTest extends TestCase {
 	 * @throws LBException
 	 */
 	public void testLoadObo() throws InterruptedException, LBException {
-		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
 
