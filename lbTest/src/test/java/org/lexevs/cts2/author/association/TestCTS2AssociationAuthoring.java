@@ -22,8 +22,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -66,11 +64,9 @@ public class TestCTS2AssociationAuthoring {
 	public static String TARGET_VERSION = "1.0";
 	public static String TARGET_URN = "urn:oid:cts:1.1.1";
 
-	private static List<String> revIds_ = new ArrayList<String>();
-	
-
 	@Before
 	public void setUp() {
+		lbs = ServiceHolder.instance().getLexBIGService();
 		associationAuthoringOp = new AssociationAuthoringOperationImpl();
 		authoring = new LexEVSAuthoringServiceImpl();
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
@@ -100,8 +96,7 @@ public class TestCTS2AssociationAuthoring {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		
-		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+
 		AbsoluteCodingSchemeVersionReference ref1 = 
 			Constructors.createAbsoluteCodingSchemeVersionReference(TARGET_URN, TARGET_VERSION);
 		
