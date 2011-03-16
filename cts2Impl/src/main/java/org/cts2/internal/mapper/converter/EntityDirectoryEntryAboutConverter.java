@@ -11,6 +11,11 @@ import org.dozer.DozerConverter;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.utility.DaoUtility;
 
+/**
+ * 
+ * @author <a href="mailto:lian.zonghui@mayo.edu">Zonghui Lian</a>
+ *
+ */
 public class EntityDirectoryEntryAboutConverter extends
 		DozerConverter<ResolvedConceptReference, EntityDirectoryEntry> {
 	
