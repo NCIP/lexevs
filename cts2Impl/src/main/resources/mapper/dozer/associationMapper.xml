@@ -43,6 +43,14 @@
 			<a>codingSchemeName</a>
 			<b>assertedBy.content</b>
 		</field>
+		<field>
+			<a>codingSchemeURI</a>
+			<b>assertedIn.meaning</b>
+		</field>
+		<field>
+			<a>codingSchemeName</a>
+			<b>assertedIn.content</b>
+		</field>
 	</mapping>
 	<mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept</class-a>

@@ -160,6 +160,8 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 				cs, org.cts2.association.Association.class);
 		assertEquals(codingSchemeName, cts2Assoc.getAssertedBy().getContent());
 		assertEquals(codingSchemeURI, cts2Assoc.getAssertedBy().getMeaning());
+		assertEquals(codingSchemeName, cts2Assoc.getAssertedIn().getContent());
+		assertEquals(codingSchemeURI, cts2Assoc.getAssertedIn().getMeaning());
 	}
 	@Test
 	public void AssociationGraphToResolvedCodedNodeReferenceTest() {
