@@ -131,21 +131,34 @@
 		</field-->				
 	</mapping>
 	
+	
 	<mapping>
 		<class-a>org.LexGrid.concepts.Presentation</class-a>
 		<class-b>org.cts2.entity.Designation</class-b>
-		<!-- field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity-statement">
-			<a>this</a>
-			<b>correspondingStatement</b>
-		</field-->
+		<field-exclude>
+			<a>degreeOfFidelity</a>
+			<b>degreeOfFidelity</b>
+		</field-exclude>
 		<field>
 			<a>degreeOfFidelity</a>
 			<b>degreeOfFidelity.content</b>
-		</field>	
+		</field>
+		<field-exclude>
+		    <a>language</a>
+		    <b>language</b>
+   		</field-exclude>
+		<field>
+			<a>language</a>
+			<b>language.content</b>
+		</field>
 		<field>
 			<a>propertyId</a>
 			<b>externalIdentifier</b>
 		</field>		
+		<field>
+			<a>value.content</a>
+			<b>value</b>
+		</field>
 <!--		<field>-->
 <!--			<a>representationalForm</a>-->
 <!--			<b>representationalForm.name</b>-->
@@ -154,11 +167,11 @@
 <!--			<a>isPreferred</a>-->
 <!--			<b>usage</b>-->
 <!--		</field>-->
-		<field map-id="usageContextMap">
+<!-- 		<field map-id="usageContextMap">
 			<a>usageContext</a>
 			<b>usageContext</b>
 			<b-hint>org.terms.Core.ContextReference</b-hint>
-		</field>
+		</field> -->
 <!--		<field>-->
 <!--			<a>value</a>-->
 <!--			<b>value.value</b>-->
