@@ -23,7 +23,6 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.util.PrintUtility;
 
 public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
 
@@ -39,15 +38,14 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	
     	ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
     	
-    	PrintUtility.print(list);
-    	
-    	assertEquals(10,list.getResolvedConceptReferenceCount());
+    	assertEquals(11,list.getResolvedConceptReferenceCount());
     	
     	DataTestUtils.isConceptReferencePresent(list, "E0001");
     	DataTestUtils.isConceptReferencePresent(list, "Jaguar");
     	DataTestUtils.isConceptReferencePresent(list, "A0001");
     	DataTestUtils.isConceptReferencePresent(list, "R0001");
     	DataTestUtils.isConceptReferencePresent(list, "C0001");
+    	DataTestUtils.isConceptReferencePresent(list, "C0002");
     	DataTestUtils.isConceptReferencePresent(list, "T0001");
     	DataTestUtils.isConceptReferencePresent(list, "005");
     	DataTestUtils.isConceptReferencePresent(list, "P0001");
@@ -75,12 +73,11 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	
     	ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
     	
-    	PrintUtility.print(list);
-    	
-    	assertEquals(7,list.getResolvedConceptReference().length);
+    	assertEquals(8,list.getResolvedConceptReference().length);
     	
     	/*
     	"C0001"
+    	"C0002"
     	"005"
     	"Ford"
     	"T0001"
@@ -90,6 +87,7 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	DataTestUtils.isConceptReferencePresent(list, "Jaguar");
     	DataTestUtils.isConceptReferencePresent(list, "R0001");
     	DataTestUtils.isConceptReferencePresent(list, "C0001");
+    	DataTestUtils.isConceptReferencePresent(list, "C0002");
     	DataTestUtils.isConceptReferencePresent(list, "T0001");
     	DataTestUtils.isConceptReferencePresent(list, "005");
     	DataTestUtils.isConceptReferencePresent(list, "Ford");	
