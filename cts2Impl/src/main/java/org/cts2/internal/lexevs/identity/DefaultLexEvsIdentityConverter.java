@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.lang.StringUtils;
+import org.cts2.entity.types.DesignationRole;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -272,5 +273,13 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	@Override
 	public String nsUriAndCodeToUri(String nsUri, String code) {
 		return nsUri + this.uriConcatString + code;
+	}
+
+	@Override
+	public DesignationRole preferredtoDestinationRole(boolean b) {
+		if (b == true)
+			return DesignationRole.PREFERRED;
+		else
+			return DesignationRole.ALTERNATIVE;
 	}
 }
