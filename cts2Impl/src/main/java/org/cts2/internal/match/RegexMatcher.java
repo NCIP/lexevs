@@ -27,11 +27,21 @@ import java.util.regex.Pattern;
  */
 public class RegexMatcher extends AbstractNonScoringMatcher {
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.match.AbstractNonScoringMatcher#isMatch(java.lang.String, java.lang.String)
+	 */
 	@Override
 	protected boolean isMatch(String matchText, String cadidate) {
 		return this.regexMatch(matchText, cadidate);
 	}
 
+	/**
+	 * Regex match.
+	 *
+	 * @param matchText the match text
+	 * @param cadidate the cadidate
+	 * @return true, if successful
+	 */
 	protected boolean regexMatch(String matchText, String cadidate){
 		Pattern pattern = Pattern.compile(matchText);
 		java.util.regex.Matcher matcher = pattern.matcher(cadidate);

@@ -49,6 +49,12 @@ public class SoundexMatcher extends AbstractMatcher {
 		return this.normalizeScore(score, Math.min(matchTextEncodedLength, candidateEncodedLength));
 	}
 	
+	/**
+	 * Gets the encoded string length.
+	 *
+	 * @param text the text
+	 * @return the encoded string length
+	 */
 	private int getEncodedStringLength(String text){
 		return this.refinedSoundex.encode(text).length();
 	}
@@ -57,6 +63,7 @@ public class SoundexMatcher extends AbstractMatcher {
 	 * Normalize score.
 	 *
 	 * @param score the score
+	 * @param shortestEncodedLength the shortest encoded length
 	 * @return the float
 	 */
 	protected float normalizeScore(float score, int shortestEncodedLength){

@@ -25,10 +25,15 @@ package org.cts2.internal.match;
  */
 public class WildcardMatcher extends RegexMatcher {
 	
+	/** The WILDCARD. */
 	public static String WILDCARD = "*";
 	
+	/** The MATC h_ al l_ regex. */
 	public static String MATCH_ALL_REGEX = ".*";
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.match.RegexMatcher#regexMatch(java.lang.String, java.lang.String)
+	 */
 	@Override
 	protected boolean regexMatch(String matchText, String cadidate) {
 		matchText = matchText.replace(WILDCARD, MATCH_ALL_REGEX);
