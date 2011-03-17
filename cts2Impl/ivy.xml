@@ -13,7 +13,6 @@
 	</publications>
 	
 	<dependencies>
-		<dependency org="net.sf.dozer" name="dozer" rev="5.3.1" conf="default"/>
 		<dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" conf="default"/>
 		<dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" conf="default"/>
 		<dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" conf="default"/>
