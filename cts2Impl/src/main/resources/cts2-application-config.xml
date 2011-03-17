@@ -38,6 +38,12 @@
 				<entry key="entityDirectoryEntryAboutConverter">
 					<ref bean="entityDirectoryEntryAboutConverter"/>
 				</entry>
+				<entry key="definitionOperatorToSetOperatorConverter">
+					<ref bean="definitionOperatorToSetOperatorConverter"/>
+				</entry>
+				<entry key="definitionEntryToValueSetDefinitionEntryConverter">
+					<ref bean="definitionEntryToValueSetDefinitionEntryConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -60,6 +66,13 @@
 	<bean id="entityDirectoryEntryAboutConverter"
 		class="org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="definitionOperatorToSetOperatorConverter"
+		class="org.cts2.internal.mapper.converter.DefinitionOperatorToSetOperatorConverter">
+	</bean>
+	<bean id="definitionEntryToValueSetDefinitionEntryConverter"
+		class="org.cts2.internal.mapper.converter.DefinitionEntryToValueSetDefinitionEntryConverter">
+		<property name="definitionOperatorToSetOperatorConverter" ref="definitionOperatorToSetOperatorConverter" />
 	</bean>
 	<!--  End Dozer Custom Converters -->
 
@@ -99,6 +112,7 @@
 		<property name="codeSystemVersionFactory" ref="codeSystemVersionFactory" />
 	</bean>
 	<bean id="lexEvsValueSetDefinitionReadService" class="org.cts2.internal.profile.read.LexEvsValueSetDefinitionReadService" parent="abstractBaseService">
+		<property name="valueSetDefinitionFactory" ref="valueSetDefinitionFactory" />
 	</bean>
 	<!--  -->
 
@@ -121,6 +135,11 @@
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 		<property name="entityDirectoryUriFactory" ref="entityDirectoryURIFactory" />
 		<property name="entityDescriptionQueryService" ref="lexEvsEntityDescriptionQueryService" />
+	</bean>
+	
+	<bean id="valueSetDefinitionFactory" class="org.cts2.internal.model.resource.factory.ValueSetDefinitionFactory">
+		<property name="lexEVSValueSetDefinitionService" ref="lexEVSValueSetDefinitionServiceImpl" />
+		<property name="beanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	
 	<bean id="lexEvsIdentityConverter" class="org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter">

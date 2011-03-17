@@ -7,7 +7,6 @@ import org.cts2.core.NameOrURIList;
 import org.cts2.core.VersionTagReference;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
-import org.cts2.uri.DirectoryURI;
 import org.cts2.valueset.ResolvedValueSetDirectory;
 import org.cts2.valueset.ValueSetDefinition;
 
@@ -46,18 +45,6 @@ public interface ValueSetDefinitionReadService extends BaseReadService<ValueSetD
 	 */
 	public ValueSetDefinition getDefinitionForValueSet(NameOrURI valueSet, NameOrURI tag, 
 			QueryControl queryControl, ReadContext context);
-
-	/**
-	 * Retrieve entity directory URI for the specified value set definition.
-	 *  
-	 * @param valueSetDefinitionURI
-	 * @param codeSystemVersionList
-	 * @param tag
-	 * @param queryControl
-	 * @param context
-	 */
-	public DirectoryURI getEntities(URI valueSetDefinitionURI, NameOrURIList codeSystemVersionList, 
-			VersionTagReference tag, QueryControl queryControl, ReadContext context);
 
 	/**
 	 * Retrieve the specified value set definition.

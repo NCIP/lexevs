@@ -3,17 +3,34 @@
 	xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
           
-    <mapping>
+    <mapping map-null="false">
     	<class-a>org.LexGrid.valueSets.ValueSetDefinition</class-a>
     	<class-b>org.cts2.valueset.ValueSetDefinition</class-b>
+    	
+    	<field>
+			<a>valueSetDefinitionURI</a>
+			<b>about</b>
+		</field>
+    	<field>
+			<a>valueSetDefinitionURI</a>
+			<b>formalName</b>
+		</field>
+		<field>
+			<a>definitionEntry</a>
+			<b>entry</b>
+		</field>
+		
     </mapping>
     
-    <mapping>
-    	<class-a>org.LexGrid.valueSets.PropertyReference</class-a>
-    	<class-b>org.cts2.valueset.PropertyQueryReference</class-b>
-    </mapping>
-
-    
-    
+    <mapping map-null="false">
+    	<class-a>org.LexGrid.valueSets.ValueSetDefinition</class-a>
+    	<class-b>org.cts2.core.ValueSetReference</class-b>
+    	
+    	<field>
+			<a>valueSetDefinitionURI</a>
+			<b>content</b>
+		</field>
+		
+    </mapping>   
 
 </mappings>        

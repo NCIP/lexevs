@@ -16,6 +16,11 @@
 				<class-a>java.lang.Boolean</class-a>
 				<class-b>org.cts2.core.types.EntryState</class-b>
 			</converter>
+			
+			<converter type="org.cts2.internal.mapper.converter.DefinitionEntryToValueSetDefinitionEntryConverter">
+				<class-a>org.LexGrid.valueSets.DefinitionEntry</class-a>
+				<class-b>org.cts2.valueset.ValueSetDefinitionEntry</class-b>
+			</converter>
 		</custom-converters>
 
 	</configuration>
