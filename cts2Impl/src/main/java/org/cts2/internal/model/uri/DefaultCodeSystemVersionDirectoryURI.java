@@ -28,7 +28,6 @@ import org.cts2.core.Directory;
 import org.cts2.core.Filter;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.uri.restrict.IterableBasedResolvingRestrictionHandler;
-import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.service.core.types.ActiveOrAll;
@@ -122,7 +121,6 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	 */
 	@Override
 	protected <D extends Directory<?>> D doGet(
-			NameOrURI format,
 			QueryControl queryControl, 
 			final ReadContext readContext, 
 			final Class<D> resolveClass) {
