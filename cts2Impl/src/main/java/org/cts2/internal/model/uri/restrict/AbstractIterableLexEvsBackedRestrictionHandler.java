@@ -19,9 +19,7 @@
 package org.cts2.internal.model.uri.restrict;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 
 import org.cts2.core.Filter;
@@ -33,20 +31,17 @@ import org.cts2.core.types.TargetReferenceType;
 import org.cts2.internal.match.MatchAlgorithm;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
 
+import com.google.common.collect.Iterables;
+
 /**
  * The Class AbstractIterableLexEvsBackedRestrictionHandler.
  *
- * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> implements ListBasedResolvingRestrictionHandler<T> {
+public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends AbstractRestrictionHandler implements IterableBasedResolvingRestrictionHandler<T> {
 	
-	/** The DEFAUL t_ scor e_ threshold. */
 	private static float DEFAULT_SCORE_THRESHOLD = 0.5f;
-
-	/** The FILTE r_ orde r_ comparator. */
-	private Comparator<FilterComponent> FILTER_ORDER_COMPARATOR = new FilterOrderComparator();
-
+	
 	/** The resolvable model attribute references. */
 	private List<ResolvableModelAttributeReference<T>> resolvableModelAttributeReferences;
 	
@@ -87,16 +82,12 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> implemen
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.ListBasedResolvingRestrictionHandler#restrict(java.util.List, org.cts2.core.Filter)
 	 */
-	public List<T> restrict(List<T> originalState, Filter filter) {
-		originalState = Collections.unmodifiableList(originalState);
+	public Iterable<T> restrict(Iterable<T> originalState, Filter filter) {
+		originalState = Iterables.unmodifiableIterable(originalState);
 		
-		List<FilterComponent> filterComponents = new ArrayList<FilterComponent>();
+		List<FilterComponent> filterComponents = this.sortFilterComponents(filter);
 		
-		filterComponents = Arrays.asList(filter.getComponent());
-		
-		Collections.sort(filterComponents, FILTER_ORDER_COMPARATOR);
-		
-		List<T> restrictedState = new ArrayList<T>();
+		Collection<T> restrictedState = new ArrayList<T>();
 		
 		for (FilterComponent filterComponent : filterComponents) {
 			switch (filterComponent.getFilterOperator()){
@@ -126,7 +117,7 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> implemen
 	 * @param minScore the min score
 	 * @return the list
 	 */
-	protected List<T> doRestrict(List<T> originalState, FilterComponent filterComponent, float minScore){
+	protected Collection<T> doRestrict(Iterable<T> originalState, FilterComponent filterComponent, float minScore){
 		MatchAlgorithm algorithm = this.getMatchAlgorithm(filterComponent.getMatchAlgorithm());
 		
 		TargetReferenceType referenceType = filterComponent.getFilterComponent().getReferenceType();
@@ -218,27 +209,21 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> implemen
 		//TODO: validate this instead of returning null
 		return null;
 	}
-	
+
 	/**
-	 * The Class FilterOrderComparator.
+	 * Gets the match algorithms.
 	 *
-	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+	 * @return the match algorithms
 	 */
-	private static class FilterOrderComparator implements Comparator<FilterComponent>{
-
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(FilterComponent o1, FilterComponent o2) {
-			return (int) (o1.getComponentOrder() - o2.getComponentOrder());
-		}
-	}
-
 	public List<MatchAlgorithm> getMatchAlgorithms() {
 		return matchAlgorithms;
 	}
 
+	/**
+	 * Sets the match algorithms.
+	 *
+	 * @param matchAlgorithms the new match algorithms
+	 */
 	public void setMatchAlgorithms(List<MatchAlgorithm> matchAlgorithms) {
 		this.matchAlgorithms = matchAlgorithms;
 	}

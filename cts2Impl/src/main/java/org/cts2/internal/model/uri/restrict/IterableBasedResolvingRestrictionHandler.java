@@ -18,8 +18,6 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
-import java.util.List;
-
 import org.cts2.core.Filter;
 
 /**
@@ -28,7 +26,7 @@ import org.cts2.core.Filter;
  * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface ListBasedResolvingRestrictionHandler<T> extends ResolvingRestrictionHandler<T> {
+public interface IterableBasedResolvingRestrictionHandler<T> extends ResolvingRestrictionHandler<T> {
 
 	/**
 	 * Restrict.
@@ -37,6 +35,6 @@ public interface ListBasedResolvingRestrictionHandler<T> extends ResolvingRestri
 	 * @param filter the filter
 	 * @return the list
 	 */
-	public List<T> restrict(List<T> originalState, Filter filter);
+	public Iterable<T> restrict(Iterable<T> originalState, Filter filter);
 	
 }
