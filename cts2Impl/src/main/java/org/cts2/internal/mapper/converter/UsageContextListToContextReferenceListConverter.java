@@ -16,20 +16,16 @@ public class UsageContextListToContextReferenceListConverter extends DozerConver
 
 	@Override
 	public Designation convertTo(Presentation source, Designation destination) {
-//		List<ContextReference> list = new ArrayList<ContextReference>();
 		for (String content: source.getUsageContext()) {
 			ContextReference context = new ContextReference();
 			context.setContent(content);
 			destination.addUsageContext(context);
-//			list.add(context);
 		}
-//		destination.setUsageContext((ContextReference[]) list.toArray());
 		return destination;
 	}
 
 	@Override
 	public Presentation convertFrom(Designation source, Presentation destination) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
