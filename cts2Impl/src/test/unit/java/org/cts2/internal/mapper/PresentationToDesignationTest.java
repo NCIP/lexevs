@@ -25,9 +25,21 @@ public class PresentationToDesignationTest extends BaseDozerBeanMapperTest{
 		Text value = new Text();
 		value.setContent("testValue");
 		presentation.setValue(value);
+		
+		presentation.addUsageContext("test usage context 1");
+		presentation.addUsageContext("test usage context 2");
+		presentation.addUsageContext("test usage context 3");
 	
 		designation = baseDozerBeanMapper.map(presentation, Designation.class);
 		
+//		// renderURI
+//		designation.setCorrespondingStatement(correspondingStatement);
+//		// enum: PREFERRED, ALTERNATIVE, HIDDEN
+//		designation.setDesignationRole(designationRole); 
+//		designation.setDesignationType(designationType);
+//		designation.setFormat(format);
+//		designation.setSchema(schema);
+//		designation.setUsageContext(vUsageContextArray);
 	}
 	
 	@Test
@@ -48,5 +60,12 @@ public class PresentationToDesignationTest extends BaseDozerBeanMapperTest{
 	@Test 
 	public void testGetLanguange() {
 		assertEquals("en", designation.getLanguage().getContent());
+	}
+	
+	@Test
+	public void testGetUsageContext() {
+		assertEquals("test usage context 1", designation.getUsageContext(0).getContent());
+		assertEquals("test usage context 2", designation.getUsageContext(1).getContent());
+		assertEquals("test usage context 3", designation.getUsageContext(2).getContent());
 	}
 }
