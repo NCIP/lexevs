@@ -38,6 +38,12 @@
 				<entry key="entityDirectoryEntryAboutConverter">
 					<ref bean="entityDirectoryEntryAboutConverter"/>
 				</entry>
+				<entry key="usageContextListToContextReferenceListConverter">
+					<ref bean="usageContextListToContextReferenceListConverter"/>
+				</entry>
+				<entry key="preferredToDesignationRoleConverter">
+					<ref bean="preferredToDesignationRoleConverter" />
+				</entry>
 				<entry key="definitionOperatorToSetOperatorConverter">
 					<ref bean="definitionOperatorToSetOperatorConverter"/>
 				</entry>
@@ -65,6 +71,13 @@
 	</bean>
 	<bean id="entityDirectoryEntryAboutConverter"
 		class="org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter">
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="usageContextListToContextReferenceListConverter"
+		class="org.cts2.internal.mapper.converter.UsageContextListToContextReferenceListConverter">
+	</bean>
+	<bean id="preferredToDesignationRoleConverter"
+		class="org.cts2.internal.mapper.converter.PreferredToDesignationRoleConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<bean id="definitionOperatorToSetOperatorConverter"
@@ -112,7 +125,7 @@
 		<property name="codeSystemVersionFactory" ref="codeSystemVersionFactory" />
 	</bean>
 	<bean id="lexEvsValueSetDefinitionReadService" class="org.cts2.internal.profile.read.LexEvsValueSetDefinitionReadService" parent="abstractBaseService">
-		<property name="valueSetDefinitionFactory" ref="valueSetDefinitionFactory" />
+		<property name="valueSetDefinitionFactory" ref="valueSetDefinitionFactory" />	
 	</bean>
 	<!--  -->
 
@@ -141,7 +154,7 @@
 		<property name="lexEVSValueSetDefinitionService" ref="lexEVSValueSetDefinitionServiceImpl" />
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
 	</bean>
-	
+		
 	<bean id="lexEvsIdentityConverter" class="org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
 	</bean>
