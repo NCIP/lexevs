@@ -131,6 +131,14 @@
 		</field-->				
 	</mapping>
 	
+	<mapping map-id="context">
+		<class-a>java.lang.String</class-a>
+		<class-b>org.cts2.core.ContextReference</class-b>
+		<field>
+			<a>this</a>
+			<b>content</b>
+		</field>
+	</mapping>
 	
 	<mapping>
 		<class-a>org.LexGrid.concepts.Presentation</class-a>
@@ -158,6 +166,12 @@
 		<field>
 			<a>value.content</a>
 			<b>value</b>
+		</field>
+		<field map-id="context">
+			<a>usageContextList</a>
+			<b>usageContext</b>
+			<a-hint>java.lang.String</a-hint>
+			<b-hint>org.cts2.core.ContextReference</b-hint>
 		</field>
 <!--		<field>-->
 <!--			<a>representationalForm</a>-->
@@ -253,12 +267,12 @@
 		</field-->			
 	</mapping>
 			
-	<mapping>
+<!-- 	<mapping>
 		<class-a>java.lang.String</class-a>
 		<class-b>org.cts2.core.ContextReference</class-b>
-<!--		<field>-->
-<!--			<a>this</a>-->
-<!--			<b>name</b>-->
-<!--		</field>-->
-	</mapping>	
+		<field>
+			<a>this</a>
+			<b>name</b>
+		</field>
+	</mapping> -->	
 </mappings>
