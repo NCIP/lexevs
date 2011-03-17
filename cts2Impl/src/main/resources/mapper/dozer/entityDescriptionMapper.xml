@@ -131,16 +131,7 @@
 		</field-->				
 	</mapping>
 	
-	<mapping map-id="context">
-		<class-a>java.lang.String</class-a>
-		<class-b>org.cts2.core.ContextReference</class-b>
-		<field>
-			<a>this</a>
-			<b>content</b>
-		</field>
-	</mapping>
-	
-	<mapping>
+	<mapping wildcard="false">
 		<class-a>org.LexGrid.concepts.Presentation</class-a>
 		<class-b>org.cts2.entity.Designation</class-b>
 		<field-exclude>
@@ -152,9 +143,9 @@
 			<b>degreeOfFidelity.content</b>
 		</field>
 		<field-exclude>
-		    <a>language</a>
-		    <b>language</b>
-   		</field-exclude>
+			<a>language</a>
+			<b>language</b>
+		</field-exclude>
 		<field>
 			<a>language</a>
 			<b>language.content</b>
@@ -167,11 +158,9 @@
 			<a>value.content</a>
 			<b>value</b>
 		</field>
-		<field map-id="context">
-			<a>usageContextList</a>
-			<b>usageContext</b>
-			<a-hint>java.lang.String</a-hint>
-			<b-hint>org.cts2.core.ContextReference</b-hint>
+		<field custom-converter-id="usageContextListToContextReferenceListConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>
 <!--		<field>-->
 <!--			<a>representationalForm</a>-->
