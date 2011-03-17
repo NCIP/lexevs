@@ -36,14 +36,21 @@ public class SoundexMatcher extends AbstractMatcher {
 	 */
 	@Override
 	protected float doMatchScore(String matchText, String cadidate) {
-		int score;
+		float score;
 		try {
 			score = this.refinedSoundex.difference(matchText, cadidate);
 		} catch (EncoderException e) {
 			throw new IllegalStateException(e);
 		}
 		
-		return this.normalizeScore(score);
+		int matchTextEncodedLength = this.getEncodedStringLength(matchText);
+		int candidateEncodedLength = this.getEncodedStringLength(cadidate);
+
+		return this.normalizeScore(score, Math.min(matchTextEncodedLength, candidateEncodedLength));
+	}
+	
+	private int getEncodedStringLength(String text){
+		return this.refinedSoundex.encode(text).length();
 	}
 	
 	/**
@@ -52,7 +59,7 @@ public class SoundexMatcher extends AbstractMatcher {
 	 * @param score the score
 	 * @return the float
 	 */
-	protected float normalizeScore(int score){
-		return score / 4;
+	protected float normalizeScore(float score, int shortestEncodedLength){
+		return score / shortestEncodedLength;
 	}
 }
