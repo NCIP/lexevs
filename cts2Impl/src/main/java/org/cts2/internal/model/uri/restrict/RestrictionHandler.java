@@ -16,20 +16,31 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
+package org.cts2.internal.model.uri.restrict;
 
-import org.cts2.uri.CodeSystemDirectoryURI;
+import java.util.List;
+
+import org.cts2.core.ModelAttributeReference;
+import org.cts2.core.PredicateReference;
 
 /**
- * A factory for creating CodeSystemDirectoryURI objects.
- * 
+ * The Interface RestrictionHandler.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
+public interface RestrictionHandler {
 
-	@Override
-	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/**
+	 * Gets the supported predicate references.
+	 *
+	 * @return the supported predicate references
+	 */
+	public List<? extends PredicateReference> getSupportedPredicateReferences();
+	
+	/**
+	 * Gets the supported model attributes.
+	 *
+	 * @return the supported model attributes
+	 */
+	public List<? extends ModelAttributeReference> getSupportedModelAttributes();
 }

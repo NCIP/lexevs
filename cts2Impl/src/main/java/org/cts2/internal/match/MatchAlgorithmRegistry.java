@@ -16,20 +16,30 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
+package org.cts2.internal.match;
 
-import org.cts2.uri.CodeSystemDirectoryURI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A factory for creating CodeSystemDirectoryURI objects.
- * 
+ * The Class MatchAlgorithmRegistry.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
+public class MatchAlgorithmRegistry {
 
-	@Override
-	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Gets the available match algorithms.
+	 *
+	 * @return the available match algorithms
+	 */
+	public static List<MatchAlgorithm> getAvailableMatchAlgorithms(){
+		List<MatchAlgorithm> returnList = new ArrayList<MatchAlgorithm>();
+		
+		BaseCompositeMatchAlgorithm contains = new BaseCompositeMatchAlgorithm("contains", new ContainsMatcher());
+		
+		returnList.add(contains);
+		
+		return returnList;
 	}
 }

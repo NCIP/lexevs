@@ -16,39 +16,53 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.profile.query;
-
-import java.util.List;
-
-import org.cts2.core.Filter;
-import org.cts2.core.ModelAttributeReference;
-import org.cts2.service.core.ReadContext;
-import org.cts2.uri.DirectoryURI;
+package org.cts2.internal.match;
 
 /**
- * The Interface BaseQueryService.
+ * The Class AbstractMatcher.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface BaseQueryService<U extends DirectoryURI> {
+public abstract class AbstractNonScoringMatcher extends AbstractMatcher {
+	
+	/** The N o_ match. */
+	protected static float NO_MATCH = 0f;
+	
+	/** The EXAC t_ match. */
+	protected static float EXACT_MATCH = 1f;
 
 	/**
-	 * Count.
+	 * Boolean to score.
 	 *
-	 * @param directoryUri the directory uri
-	 * @param readContext the read context
-	 * @return the int
+	 * @param isMatch the is match
+	 * @return the float
 	 */
-	public int count(U directoryUri, ReadContext readContext);
+	private float booleanToScore(boolean isMatch){
+		if(isMatch){
+			return EXACT_MATCH;
+		} else {
+			return NO_MATCH;
+		}
+	}
 	
 	/**
-	 * Restrict.
+	 * Do is match.
 	 *
-	 * @param directoryUri the directory uri
-	 * @param filter the filter
-	 * @return the t
+	 * @param matchText the match text
+	 * @param cadidate the cadidate
+	 * @return true, if successful
 	 */
-	public U restrict(U restrictable, Filter filter);
+	protected float doMatchScore(String matchText, String cadidate){
+		return this.booleanToScore(
+				this.isMatch(matchText, cadidate));
+	}
 	
-	public List<? extends ModelAttributeReference> getSupportedModelAttributes();
+	/**
+	 * Checks if is match.
+	 *
+	 * @param matchText the match text
+	 * @param cadidate the cadidate
+	 * @return true, if is match
+	 */
+	protected abstract boolean isMatch(String matchText, String cadidate);
 }

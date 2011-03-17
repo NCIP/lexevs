@@ -18,20 +18,21 @@
  */
 package org.cts2.internal.model.uri;
 
-import java.util.concurrent.Callable;
+import java.util.Arrays;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.cts2.core.Directory;
-import org.cts2.core.FilterComponent;
+import org.cts2.core.Filter;
 import org.cts2.internal.mapper.BeanMapper;
+import org.cts2.internal.model.uri.restrict.ListBasedResolvingRestrictionHandler;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.service.core.types.ActiveOrAll;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
-import org.cts2.utility.ExecutionUtils;
 
 /**
  * The Class DefaultCodeSystemVersionDirectoryURI.
@@ -45,7 +46,8 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
-
+	
+	private ListBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
 	/**
 	 * Instantiates a new default code system version directory uri.
 	 *
@@ -54,18 +56,31 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	 */
 	public DefaultCodeSystemVersionDirectoryURI(
 			CodingSchemeRenderingList codingSchemeRenderingList,
+			ListBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler,
 			BeanMapper beanMapper) {
 		super();
 		this.codingSchemeRenderingList = codingSchemeRenderingList;
+		this.restrictionHandler = restrictionHandler;
 		this.beanMapper = beanMapper;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractDirectoryURI#doRestrict(org.cts2.core.FilterComponent)
-	 */
 	@Override
-	protected void doRestrict(FilterComponent filterComponent) {
-		// TODO Auto-generated method stub
+	public CodeSystemVersionDirectoryURI restrict(Filter filter) {
+		List<CodingSchemeRendering> originalState = 
+			Arrays.asList(this.codingSchemeRenderingList.getCodingSchemeRendering());
+		
+		List<CodingSchemeRendering> restrictedList = 
+			this.restrictionHandler.restrict(originalState, filter);
+		
+		CodingSchemeRenderingList newRenderingList = new CodingSchemeRenderingList();
+		
+		for(CodingSchemeRendering newItem : restrictedList){
+			newRenderingList.addCodingSchemeRendering(newItem);
+		}
+		
+		this.codingSchemeRenderingList = newRenderingList;
+		
+		return this;
 	}
 
 	/* (non-Javadoc)
@@ -111,18 +126,12 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 			QueryControl queryControl, 
 			final ReadContext readContext, 
 			final Class<D> resolveClass) {
-		
-		return ExecutionUtils.callWithTimeout(new Callable<D>(){
 
-			@Override
-			public D call() throws Exception {
-				CodingSchemeRenderingList csrl = restrictToActiveOrAll(codingSchemeRenderingList, readContext.getActive());
-				
-				return beanMapper.map(
-						csrl, 
-						resolveClass);
-			}
-			
-		}, queryControl);
+		CodingSchemeRenderingList csrl = restrictToActiveOrAll(codingSchemeRenderingList, readContext.getActive());
+
+		return beanMapper.map(
+				csrl, 
+				resolveClass);
 	}
+
 }

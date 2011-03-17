@@ -55,6 +55,4 @@ public class LexEvsCodeSystemQueryService
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 }

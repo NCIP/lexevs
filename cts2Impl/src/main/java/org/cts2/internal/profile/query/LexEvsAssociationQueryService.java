@@ -27,16 +27,14 @@ public class LexEvsAssociationQueryService extends
 	public AssociationDirectory resolve(
 			AssociationDirectoryURI codeSystemQueryURI,
 			QueryControl queryControl, ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return null;
+		return codeSystemQueryURI.get(queryControl, readContext, AssociationDirectory.class);
 	}
 
 	@Override
 	public AssociationList resolveAsList(
 			AssociationDirectoryURI codeSystemQueryURI,
 			QueryControl queryControl, ReadContext readContext) {
-		// TODO Auto-generated method stub
-		return null;
+		return codeSystemQueryURI.get(queryControl, readContext, AssociationList.class);
 	}
 
 }

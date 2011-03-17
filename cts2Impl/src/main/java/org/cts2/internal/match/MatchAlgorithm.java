@@ -16,20 +16,28 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
-
-import org.cts2.uri.CodeSystemDirectoryURI;
+package org.cts2.internal.match;
 
 /**
- * A factory for creating CodeSystemDirectoryURI objects.
- * 
+ * The Interface MatchAlgorithm.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
+public interface MatchAlgorithm {
 
-	@Override
-	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/**
+	 * Checks if is match.
+	 *
+	 * @param matchText the match text
+	 * @param compareString the compare string
+	 * @return true, if is match
+	 */
+	public float matchScore(String matchText, String compareString);
+	
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName();
 }

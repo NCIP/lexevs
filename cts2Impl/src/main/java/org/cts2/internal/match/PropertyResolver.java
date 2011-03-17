@@ -16,20 +16,25 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
+package org.cts2.internal.match;
 
-import org.cts2.uri.CodeSystemDirectoryURI;
+import java.util.List;
+
+import org.cts2.service.core.NameOrURI;
 
 /**
- * A factory for creating CodeSystemDirectoryURI objects.
- * 
+ * The Interface PropertyResolver.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
+public interface PropertyResolver {
+	
+	/**
+	 * Resolve property.
+	 *
+	 * @param reference the reference
+	 * @return the list
+	 */
+	public List<String> resolveProperty(NameOrURI reference);
 
-	@Override
-	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

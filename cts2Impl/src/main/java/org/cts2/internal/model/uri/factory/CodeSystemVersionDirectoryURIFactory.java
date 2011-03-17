@@ -19,8 +19,10 @@
 package org.cts2.internal.model.uri.factory;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.cts2.internal.model.uri.DefaultCodeSystemVersionDirectoryURI;
+import org.cts2.internal.model.uri.restrict.ListBasedResolvingRestrictionHandler;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
 
 /**
@@ -29,6 +31,8 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class CodeSystemVersionDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
+	
+	private ListBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
@@ -43,6 +47,14 @@ public class CodeSystemVersionDirectoryURIFactory extends AbstractCompositeDirec
 			throw new RuntimeException(e);
 		}
 		
-		return new DefaultCodeSystemVersionDirectoryURI(codingSchemeRenderingList, this.getBeanMapper());
+		return new DefaultCodeSystemVersionDirectoryURI(codingSchemeRenderingList, this.restrictionHandler, this.getBeanMapper());
+	}
+
+	public void setRestrictionHandler(ListBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler) {
+		this.restrictionHandler = restrictionHandler;
+	}
+
+	public ListBasedResolvingRestrictionHandler<CodingSchemeRendering> getRestrictionHandler() {
+		return restrictionHandler;
 	}
 }

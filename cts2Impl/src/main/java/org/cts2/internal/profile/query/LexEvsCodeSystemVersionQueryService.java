@@ -61,7 +61,7 @@ public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryServic
 			CodeSystemVersionDirectoryURI codeSystemQueryURI,
 			QueryControl queryControl, 
 			ReadContext readContext) {
-		return codeSystemQueryURI.get(queryControl, readContext, CodeSystemVersionList.class);
+		return codeSystemQueryURI.get(queryControl, readContext, CodeSystemVersionList.class);	
 	}
 
 	@Override

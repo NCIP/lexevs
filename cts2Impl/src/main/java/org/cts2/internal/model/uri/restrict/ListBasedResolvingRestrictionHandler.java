@@ -16,20 +16,27 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
+package org.cts2.internal.model.uri.restrict;
 
-import org.cts2.uri.CodeSystemDirectoryURI;
+import java.util.List;
+
+import org.cts2.core.Filter;
 
 /**
- * A factory for creating CodeSystemDirectoryURI objects.
- * 
+ * The Interface ListBasedResolvingRestrictionHandler.
+ *
+ * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
+public interface ListBasedResolvingRestrictionHandler<T> extends ResolvingRestrictionHandler<T> {
 
-	@Override
-	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/**
+	 * Restrict.
+	 *
+	 * @param originalState the original state
+	 * @param filter the filter
+	 * @return the list
+	 */
+	public List<T> restrict(List<T> originalState, Filter filter);
+	
 }

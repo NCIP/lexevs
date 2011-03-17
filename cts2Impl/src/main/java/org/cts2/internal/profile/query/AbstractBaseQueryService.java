@@ -18,8 +18,12 @@
  */
 package org.cts2.internal.profile.query;
 
+import java.util.List;
+
 import org.cts2.core.Filter;
+import org.cts2.core.ModelAttributeReference;
 import org.cts2.internal.model.uri.factory.DirectoryURIFactory;
+import org.cts2.internal.model.uri.restrict.RestrictionHandler;
 import org.cts2.internal.profile.AbstractBaseService;
 import org.cts2.profile.query.BaseQueryService;
 import org.cts2.service.core.ReadContext;
@@ -34,6 +38,8 @@ public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends A
 	
 	/** The directory uri factory. */
 	private DirectoryURIFactory<U> directoryURIFactory;
+	
+	private RestrictionHandler restrictionHandler;
 
 	@Override
 	public int count(U directoryUri, ReadContext readContext) {
@@ -62,5 +68,10 @@ public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends A
 	 */
 	public DirectoryURIFactory<U> getDirectoryURIFactory() {
 		return this.directoryURIFactory;
+	}
+
+	@Override
+	public List<? extends ModelAttributeReference> getSupportedModelAttributes() {
+		return this.restrictionHandler.getSupportedModelAttributes();
 	}
 }

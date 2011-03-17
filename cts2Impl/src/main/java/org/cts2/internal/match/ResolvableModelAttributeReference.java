@@ -16,21 +16,41 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
+package org.cts2.internal.match;
 
-import org.cts2.uri.DirectoryURI;
+import org.cts2.core.ModelAttributeReference;
 
 /**
- * A factory for creating DirectoryURI objects.
+ * The Class ResolvableModelAttributeReference.
  *
+ * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface DirectoryURIFactory<T extends DirectoryURI> {
+public class ResolvableModelAttributeReference<T> extends ModelAttributeReference {
+	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 5500382462242484409L;
+	
+	/** The attribute resolver. */
+	private AttributeResolver<T> attributeResolver;
 	
 	/**
-	 * Gets the directory uri.
+	 * Instantiates a new resolvable model attribute reference.
 	 *
-	 * @return the directory uri
+	 * @param attributeResolver the attribute resolver
 	 */
-	public T getDirectoryURI();
+	public ResolvableModelAttributeReference(AttributeResolver<T> attributeResolver){
+		this.attributeResolver = attributeResolver;
+	}
+	
+	/**
+	 * Gets the model attribute value.
+	 *
+	 * @param modelObject the model object
+	 * @return the model attribute value
+	 */
+	public String getModelAttributeValue(T modelObject){
+		return this.attributeResolver.resolveAttribute(modelObject);
+	}
+
 }

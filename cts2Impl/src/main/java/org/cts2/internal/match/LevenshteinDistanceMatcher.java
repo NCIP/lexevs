@@ -16,20 +16,37 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.internal.model.uri.factory;
+package org.cts2.internal.match;
 
-import org.cts2.uri.CodeSystemDirectoryURI;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * A factory for creating CodeSystemDirectoryURI objects.
- * 
+ * The Class LevenshteinDistanceMatcher.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemDirectoryURI> {
+public class LevenshteinDistanceMatcher extends AbstractMatcher {
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.match.AbstractMatcher#doIsMatch(java.lang.String, java.lang.String)
+	 */
 	@Override
-	protected CodeSystemDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
+	protected float doMatchScore(String matchText, String cadidate) {
+		int longestString = 
+			Math.max(matchText.length(), cadidate.length());
+		
+		int score = StringUtils.getLevenshteinDistance(matchText, cadidate);
+		return this.normalize(score, longestString);
+	}
+	
+	/**
+	 * Normalize.
+	 *
+	 * @param score the score
+	 * @param longestString the longest string
+	 * @return the float
+	 */
+	protected float normalize(int score, int longestString){
+		return 1 - (score / longestString);
 	}
 }
