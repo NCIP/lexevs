@@ -31,7 +31,6 @@ import org.cts2.core.NameOrURI;
 import org.cts2.core.PredicateReference;
 import org.cts2.core.types.TargetReferenceType;
 import org.cts2.internal.match.MatchAlgorithm;
-import org.cts2.internal.match.MatchAlgorithmRegistry;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
 
 /**
@@ -60,7 +59,6 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> implemen
 	public AbstractIterableLexEvsBackedRestrictionHandler(){
 		super();
 		this.resolvableModelAttributeReferences = this.registerSupportedModelAttributes();
-		this.matchAlgorithms = MatchAlgorithmRegistry.getAvailableMatchAlgorithms();
 	}
 	
 	/* (non-Javadoc)
@@ -235,5 +233,13 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> implemen
 		public int compare(FilterComponent o1, FilterComponent o2) {
 			return (int) (o1.getComponentOrder() - o2.getComponentOrder());
 		}
+	}
+
+	public List<MatchAlgorithm> getMatchAlgorithms() {
+		return matchAlgorithms;
+	}
+
+	public void setMatchAlgorithms(List<MatchAlgorithm> matchAlgorithms) {
+		this.matchAlgorithms = matchAlgorithms;
 	}
 }
