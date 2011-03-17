@@ -27,7 +27,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.cts2.core.Directory;
 import org.cts2.core.Filter;
 import org.cts2.internal.mapper.BeanMapper;
-import org.cts2.internal.model.uri.restrict.ListBasedResolvingRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.IterableBasedResolvingRestrictionHandler;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
@@ -47,7 +47,7 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
 	
-	private ListBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
+	private IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
 	/**
 	 * Instantiates a new default code system version directory uri.
 	 *
@@ -56,7 +56,7 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	 */
 	public DefaultCodeSystemVersionDirectoryURI(
 			CodingSchemeRenderingList codingSchemeRenderingList,
-			ListBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler,
+			IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler,
 			BeanMapper beanMapper) {
 		super();
 		this.codingSchemeRenderingList = codingSchemeRenderingList;
@@ -69,7 +69,7 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 		List<CodingSchemeRendering> originalState = 
 			Arrays.asList(this.codingSchemeRenderingList.getCodingSchemeRendering());
 		
-		List<CodingSchemeRendering> restrictedList = 
+		Iterable<CodingSchemeRendering> restrictedList = 
 			this.restrictionHandler.restrict(originalState, filter);
 		
 		CodingSchemeRenderingList newRenderingList = new CodingSchemeRenderingList();
