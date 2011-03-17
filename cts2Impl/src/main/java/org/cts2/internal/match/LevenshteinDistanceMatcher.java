@@ -46,7 +46,7 @@ public class LevenshteinDistanceMatcher extends AbstractMatcher {
 	 * @param longestString the longest string
 	 * @return the float
 	 */
-	protected float normalize(int score, int longestString){
-		return 1 - (score / longestString);
+	protected float normalize(float score, int longestString){
+		return 1f - (score / longestString);
 	}
 }
