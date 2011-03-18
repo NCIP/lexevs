@@ -41,8 +41,8 @@
 				<entry key="usageContextListToContextReferenceListConverter">
 					<ref bean="usageContextListToContextReferenceListConverter"/>
 				</entry>
-				<entry key="preferredToDesignationRoleConverter">
-					<ref bean="preferredToDesignationRoleConverter" />
+				<entry key="presentationPreferredToDesignationRoleConverter">
+					<ref bean="presentationPreferredToDesignationRoleConverter" />
 				</entry>
 				<entry key="definitionOperatorToSetOperatorConverter">
 					<ref bean="definitionOperatorToSetOperatorConverter"/>
@@ -76,8 +76,8 @@
 	<bean id="usageContextListToContextReferenceListConverter"
 		class="org.cts2.internal.mapper.converter.UsageContextListToContextReferenceListConverter">
 	</bean>
-	<bean id="preferredToDesignationRoleConverter"
-		class="org.cts2.internal.mapper.converter.PreferredToDesignationRoleConverter">
+	<bean id="presentationPreferredToDesignationRoleConverter"
+		class="org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<bean id="definitionOperatorToSetOperatorConverter"
