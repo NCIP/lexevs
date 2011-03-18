@@ -20,7 +20,7 @@
 		</field>
 	</mapping>
 	<mapping>
-		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference
+		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference
 		</class-a>
 		<class-b>org.cts2.association.Association</class-b>
 		<field>
@@ -91,7 +91,7 @@
 		</field>
 	</mapping>
 	<mapping>
-		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference
+		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference
 		</class-a>
 		<class-b>org.cts2.association.AssociationDirectoryEntry</class-b>
 		<field>
@@ -129,7 +129,7 @@
 	</mapping>
 	<!-- AssociationGraph and GraphNode mappings -->
 	<mapping>
-		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference
+		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference
 		</class-a>
 		<class-b>org.cts2.association.AssociationGraph</class-b>
 		<field>
@@ -159,6 +159,14 @@
 		<field>
 			<a>referencedEntry.entityCodeNamespace</a>
 			<b>target.entity.localEntityName.namespace</b>
+		</field>
+	</mapping>
+	<mapping>
+		<class-a>org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList</class-a>
+		<class-b>org.cts2.association.AssociationDirectory</class-b>
+		<field>
+			<a>resolvedConceptReference</a>
+			<b>entry</b>
 		</field>
 	</mapping>
 </mappings>

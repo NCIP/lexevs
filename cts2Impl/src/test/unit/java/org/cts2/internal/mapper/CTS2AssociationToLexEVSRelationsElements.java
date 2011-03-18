@@ -2,9 +2,11 @@ package org.cts2.internal.mapper;
 
 import static org.junit.Assert.assertEquals;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedData;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedCodedNodeReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedCodingScheme;
@@ -31,8 +33,8 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 	}
 
 	@Test
-	public void AssociationDirectoryEntryToResolvedCodedNodeReferenceTest() {
-		ResolvedCodedNodeReference rcnr = new ResolvedCodedNodeReference();
+	public void AssociationDirectoryEntryToResolvedConceptReferenceTest() {
+		ResolvedConceptReference rcnr = new ResolvedConceptReference();
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptCode);
 		entity.setEntityCodeNamespace(nameSpace);
@@ -106,8 +108,8 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 	}
 
 	@Test
-	public void AssociationToResolvedCodedNodeReferenceTest() {
-		ResolvedCodedNodeReference rcnr = new ResolvedCodedNodeReference();
+	public void AssociationToResolvedConcepteferenceTest() {
+		ResolvedConceptReference rcnr = new ResolvedConceptReference();
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptCode);
 		entity.setEntityCodeNamespace(nameSpace);
@@ -164,8 +166,8 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 		assertEquals(codingSchemeURI, cts2Assoc.getAssertedIn().getMeaning());
 	}
 	@Test
-	public void AssociationGraphToResolvedCodedNodeReferenceTest() {
-		ResolvedCodedNodeReference rcnr = new ResolvedCodedNodeReference();
+	public void AssociationGraphToResolvedConceptReferenceTest() {
+		ResolvedConceptReference rcnr = new ResolvedConceptReference();
 		Entity entity = new Entity();
 		entity.setEntityCode(conceptCode);
 		entity.setEntityCodeNamespace(nameSpace);
@@ -198,6 +200,20 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 		assertEquals(conceptCode1, cts2Assoc.getTarget().getEntity()
 				.getLocalEntityName().getName());
 
+	}
+	@Test
+	public void ResolvedConceptReferenceListToAssociationDiretory(){
+		ResolvedConceptReferenceList rcrl = new ResolvedConceptReferenceList();
+		ResolvedConceptReference rcr = new ResolvedConceptReference();
+		Entity entity = new Entity();
+		entity.setEntityCode(conceptCode1);
+		entity.setEntityCodeNamespace(nameSpace);
+		rcr.setEntity(entity);
+		rcrl.addResolvedConceptReference(rcr);
+		org.cts2.association.AssociationDirectory cts2Assoc = baseDozerBeanMapper.map(
+				rcrl, org.cts2.association.AssociationDirectory.class);
+		assertEquals(conceptCode1, cts2Assoc.getEntry(0).getSubject().getLocalEntityName().getName());
+		assertEquals(nameSpace, cts2Assoc.getEntry(0).getSubject().getLocalEntityName().getNamespace());
 	}
 
 }
