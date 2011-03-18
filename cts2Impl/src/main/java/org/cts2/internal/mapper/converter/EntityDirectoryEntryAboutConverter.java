@@ -5,7 +5,6 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.SupportedNamespace;
 import org.apache.commons.lang.StringUtils;
 import org.cts2.entity.EntityDirectoryEntry;
-import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.dozer.DozerConverter;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
