@@ -5,11 +5,11 @@ import org.cts2.entity.Designation;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.dozer.DozerConverter;
 
-public class PreferredToDesignationRoleConverter extends
+public class PresentationPreferredToDesignationRoleConverter extends
 		DozerConverter<Presentation, Designation> {
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
 
-	public PreferredToDesignationRoleConverter() {
+	public PresentationPreferredToDesignationRoleConverter() {
 		super(Presentation.class, Designation.class);
 	}
 
