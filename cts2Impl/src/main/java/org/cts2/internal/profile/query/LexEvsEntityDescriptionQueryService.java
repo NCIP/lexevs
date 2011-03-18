@@ -57,7 +57,7 @@ public class LexEvsEntityDescriptionQueryService
 	}
 
 	@Override
-	public EntityList restrictToCodeSystems(
+	public EntityDirectoryURI restrictToCodeSystems(
 			EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystems,
 			VersionTagReference tag) {
 		// TODO Auto-generated method stub
@@ -65,7 +65,7 @@ public class LexEvsEntityDescriptionQueryService
 	}
 
 	@Override
-	public EntityList restrictToCodeSystemVersions(
+	public EntityDirectoryURI restrictToCodeSystemVersions(
 			EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystemVersions) {
 		// TODO Auto-generated method stub
 		return null;

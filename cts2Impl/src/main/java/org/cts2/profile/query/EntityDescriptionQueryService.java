@@ -39,8 +39,8 @@ public interface EntityDescriptionQueryService extends BaseQueryService<EntityDi
 	
 	public EntityList resolveAsList(EntityDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
 	
-	public EntityList restrictToCodeSystems(EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystems, VersionTagReference tag);
+	public EntityDirectoryURI restrictToCodeSystems(EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystems, VersionTagReference tag);
 	
-	public EntityList restrictToCodeSystemVersions(EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystemVersions);
+	public EntityDirectoryURI restrictToCodeSystemVersions(EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystemVersions);
 
 }
