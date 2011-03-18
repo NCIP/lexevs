@@ -1,16 +1,13 @@
 package org.cts2.internal.mapper.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.LexGrid.concepts.Presentation;
 import org.cts2.core.ContextReference;
 import org.cts2.entity.Designation;
 import org.dozer.DozerConverter;
 
-public class UsageContextListToContextReferenceListConverter extends DozerConverter<Presentation, Designation>{
+public class PresentationUsageContextListToContextReferenceListConverter extends DozerConverter<Presentation, Designation>{
 
-	public UsageContextListToContextReferenceListConverter() {
+	public PresentationUsageContextListToContextReferenceListConverter() {
 		super(Presentation.class, Designation.class);
 	}
 

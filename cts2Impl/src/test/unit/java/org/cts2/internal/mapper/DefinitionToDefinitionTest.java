@@ -34,14 +34,14 @@ public class DefinitionToDefinitionTest extends BaseDozerBeanMapperTest{
 		this.converter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		
 		ctsDef = baseDozerBeanMapper.map(lgDef, org.cts2.core.Definition.class);
-//		ctsDef.setAssertedByCodeSystemVersion(assertedByCodeSystemVersion)
-//		ctsDef.setAssertedInCodeSystemVersion(assertedInCodeSystemVersion)
-//		ctsDef.setCorrespondingStatement(correspondingStatement)
-//		ctsDef.setDefinitionRole(definitionRole)
+//		ctsDef.setAssertedByCodeSystemVersion(assertedByCodeSystemVersion)	n/a
+//		ctsDef.setAssertedInCodeSystemVersion(assertedInCodeSystemVersion)	n/a
+//		ctsDef.setCorrespondingStatement(correspondingStatement) 	n/a
+//		ctsDef.setDefinitionRole(definitionRole) done
 //		ctsDef.setExternalIdentifier(externalIdentifier) 	done
-//		ctsDef.setFormat(format)
+//		ctsDef.setFormat(format)		done
 //		ctsDef.setLanguage(language) 	done
-//		ctsDef.setSchema(schema)
+//		ctsDef.setSchema(schema)		n/a
 //		ctsDef.setUsageContext(usageContext)
 //		ctsDef.setValue(value)  	done
 	}

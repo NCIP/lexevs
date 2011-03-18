@@ -38,8 +38,8 @@
 				<entry key="entityDirectoryEntryAboutConverter">
 					<ref bean="entityDirectoryEntryAboutConverter"/>
 				</entry>
-				<entry key="usageContextListToContextReferenceListConverter">
-					<ref bean="usageContextListToContextReferenceListConverter"/>
+				<entry key="presentationUsageContextListToContextReferenceListConverter">
+					<ref bean="presentationUsageContextListToContextReferenceListConverter"/>
 				</entry>
 				<entry key="presentationPreferredToDesignationRoleConverter">
 					<ref bean="presentationPreferredToDesignationRoleConverter" />
@@ -76,8 +76,8 @@
 		class="org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
-	<bean id="usageContextListToContextReferenceListConverter"
-		class="org.cts2.internal.mapper.converter.UsageContextListToContextReferenceListConverter">
+	<bean id="presentationUsageContextListToContextReferenceListConverter"
+		class="org.cts2.internal.mapper.converter.PresentationUsageContextListToContextReferenceListConverter">
 	</bean>
 	<bean id="presentationPreferredToDesignationRoleConverter"
 		class="org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter">

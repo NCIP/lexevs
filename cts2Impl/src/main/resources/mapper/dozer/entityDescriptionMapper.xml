@@ -158,7 +158,7 @@
 			<a>value.content</a>
 			<b>value</b>
 		</field>
-		<field custom-converter-id="usageContextListToContextReferenceListConverter">
+		<field custom-converter-id="presentationUsageContextListToContextReferenceListConverter">
 			<a>this</a>
 			<b>this</b>
 		</field>
