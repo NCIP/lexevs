@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.lang.StringUtils;
+import org.cts2.core.types.DefinitionRole;
 import org.cts2.entity.types.DesignationRole;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
@@ -281,5 +282,13 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 			return DesignationRole.PREFERRED;
 		else
 			return DesignationRole.ALTERNATIVE;
+	}
+
+	@Override
+	public DefinitionRole preferredtoDefinitionRole(boolean b) {
+		if (b == true)
+			return DefinitionRole.NORMATIVE;
+		else 
+			return DefinitionRole.INFORMATIVE;
 	}
 }

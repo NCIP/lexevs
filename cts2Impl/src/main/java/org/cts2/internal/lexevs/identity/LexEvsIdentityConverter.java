@@ -4,6 +4,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.cts2.core.types.DefinitionRole;
 import org.cts2.entity.types.DesignationRole;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
@@ -64,4 +65,6 @@ public interface LexEvsIdentityConverter {
 	public String nsUriAndCodeToUri(String nsUri, String code);
 	
 	public DesignationRole preferredtoDestinationRole(boolean b);
+	
+	public DefinitionRole preferredtoDefinitionRole(boolean b);
 }
