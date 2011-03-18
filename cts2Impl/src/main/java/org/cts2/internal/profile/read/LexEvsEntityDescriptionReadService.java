@@ -52,7 +52,8 @@ public class LexEvsEntityDescriptionReadService extends AbstractBaseReadService<
 			NameOrURI codeSystemVersion,
 			QueryControl queryControl, 
 			ReadContext readContext) {
-		// TODO Auto-generated method stub
+		if (this.entityDescriptionFactory.getEntityDescription(id, codeSystemVersion) != null)
+			return true;
 		return false;
 	}
 
