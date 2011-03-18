@@ -29,12 +29,13 @@ import org.cts2.uri.EntityDirectoryURI;
 
 /**
  * The Class LexEvsCodeSystemQuery.
- *
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * 
+ * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a> <a
+ *         href="mailto:lian.zonghui@mayo.edu">Zonghui Lian</a>
  */
-public class LexEvsEntityDescriptionQueryService 
-	extends AbstractBaseQueryService<EntityDirectoryURI> 
-	implements EntityDescriptionQueryService {
+public class LexEvsEntityDescriptionQueryService extends
+		AbstractBaseQueryService<EntityDirectoryURI> implements
+		EntityDescriptionQueryService {
 
 	@Override
 	public EntityDirectoryURI getEntities() {
@@ -46,14 +47,16 @@ public class LexEvsEntityDescriptionQueryService
 	public EntityDirectory resolve(EntityDirectoryURI entityQueryURI,
 			QueryControl queryControl, ReadContext readContext) {
 		// TODO Auto-generated method stub
-		return null;
+		return entityQueryURI.get(queryControl, readContext,
+				EntityDirectory.class);
 	}
 
 	@Override
 	public EntityList resolveAsList(EntityDirectoryURI codeSystemQueryURI,
 			QueryControl queryControl, ReadContext readContext) {
 		// TODO Auto-generated method stub
-		return null;
+		return codeSystemQueryURI.get(queryControl, readContext,
+				EntityList.class);
 	}
 
 	@Override
