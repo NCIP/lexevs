@@ -10,14 +10,14 @@ import org.cts2.entity.Designation;
 import org.cts2.entity.types.DesignationRole;
 import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
-import org.cts2.internal.mapper.converter.PreferredToDesignationRoleConverter;
+import org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PresentationToDesignationTest extends BaseDozerBeanMapperTest{
 
 	@Resource 
-	private PreferredToDesignationRoleConverter converter;
+	private PresentationPreferredToDesignationRoleConverter converter;
 	private Presentation presentation;
 	private Designation designation;
 	
