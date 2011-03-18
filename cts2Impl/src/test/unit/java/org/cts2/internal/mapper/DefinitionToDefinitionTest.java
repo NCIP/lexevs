@@ -9,7 +9,6 @@ import org.cts2.core.types.DefinitionRole;
 import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.converter.DefinitionPreferredToDefinitionRoleConverter;
-import org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,6 +28,8 @@ public class DefinitionToDefinitionTest extends BaseDozerBeanMapperTest{
 		t.setDataType("string");
 		t.setContent("content");
 		lgDef.setValue(t);
+		lgDef.addUsageContext("usage context 1");
+		lgDef.addUsageContext("usage context 2");
 		
 		LexEvsIdentityConverter lexEvsIdentityConverter = new DefaultLexEvsIdentityConverter();
 		this.converter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
@@ -69,6 +70,11 @@ public class DefinitionToDefinitionTest extends BaseDozerBeanMapperTest{
 	@Test
 	public void testGetIsPrefferred(){
 		assertEquals(DefinitionRole.INFORMATIVE, ctsDef.getDefinitionRole());
+	}
+	
+	@Test
+	public void testGetUsageContext() {
+		assertEquals("usage context 1", ctsDef.getUsageContext().getContent());
 	}
 
 }

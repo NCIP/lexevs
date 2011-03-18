@@ -41,6 +41,9 @@
 				<entry key="presentationUsageContextListToContextReferenceListConverter">
 					<ref bean="presentationUsageContextListToContextReferenceListConverter"/>
 				</entry>
+				<entry key="definitionUsageContextListToContextReferenceListConverter">
+					<ref bean="definitionUsageContextListToContextReferenceListConverter"/>
+				</entry>
 				<entry key="presentationPreferredToDesignationRoleConverter">
 					<ref bean="presentationPreferredToDesignationRoleConverter" />
 				</entry>
@@ -78,6 +81,9 @@
 	</bean>
 	<bean id="presentationUsageContextListToContextReferenceListConverter"
 		class="org.cts2.internal.mapper.converter.PresentationUsageContextListToContextReferenceListConverter">
+	</bean>
+	<bean id="definitionUsageContextListToContextReferenceListConverter"
+		class="org.cts2.internal.mapper.converter.DefinitionUsageContextListToContextReferenceListConverter">
 	</bean>
 	<bean id="presentationPreferredToDesignationRoleConverter"
 		class="org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter">
