@@ -170,7 +170,7 @@
 			<a>propertyName</a>
 			<b>designationType.content</b>
 		</field>
-		<field custom-converter-id="preferredToDesignationRoleConverter">
+		<field custom-converter-id="presentationPreferredToDesignationRoleConverter">
 			<a>this</a>
 			<b>this</b>
 		</field>
@@ -203,22 +203,36 @@
 		</field-->
 	</mapping>
 
-	<mapping>
+	<mapping wildcard="false">
 		<class-a>org.LexGrid.concepts.Definition</class-a>
 		<class-b>org.cts2.core.Definition</class-b>
 <!--		<field custom-converter-id="preferenceConverterId">-->
 <!--			<a>isPreferred</a>-->
 <!--			<b>usage</b>-->
 <!--		</field>-->
-		<field map-id="usageContextMap">
-			<a>usageContext</a>
-			<b>usageContext</b>
-			<b-hint>org.terms.Core.ContextReference</b-hint>
-		</field>			
+<!--		<field map-id="usageContextMap">-->
+<!--			<a>usageContext</a>-->
+<!--			<b>usageContext</b>-->
+<!--			<b-hint>org.terms.Core.ContextReference</b-hint>-->
+<!--		</field>			-->
 		<field>
 			<a>propertyId</a>
 			<b>externalIdentifier</b>
-		</field>	
+		</field>
+		<field>
+			<a>language</a>
+			<b>language.content</b>
+		</field>
+		<field>
+			<a>value.content</a>
+			<b>value</b>
+		</field>
+		<field>
+			<a>value.dataType</a>
+			<b>format.content</b>
+		</field>
+<!--		<field custom-converter-id="">-->
+<!--		</field>-->
 		<!-- field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity-statement">
 			<a>this</a>
 			<b>href</b>
