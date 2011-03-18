@@ -44,6 +44,9 @@
 				<entry key="presentationPreferredToDesignationRoleConverter">
 					<ref bean="presentationPreferredToDesignationRoleConverter" />
 				</entry>
+				<entry key="definitionPreferredToDefinitionRoleConverter">
+					<ref bean="definitionPreferredToDefinitionRoleConverter" />
+				</entry>
 				<entry key="definitionOperatorToSetOperatorConverter">
 					<ref bean="definitionOperatorToSetOperatorConverter"/>
 				</entry>
@@ -78,6 +81,10 @@
 	</bean>
 	<bean id="presentationPreferredToDesignationRoleConverter"
 		class="org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter">
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="definitionPreferredToDefinitionRoleConverter"
+		class="org.cts2.internal.mapper.converter.DefinitionPreferredToDefinitionRoleConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<bean id="definitionOperatorToSetOperatorConverter"
