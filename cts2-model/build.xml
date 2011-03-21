@@ -212,12 +212,15 @@
 			<classpath refid="classpath"/>
 			<src path="${generated}" />
 			<src path="${src}" />
+			<src path="${castor.src}"/>
+			<exclude name="**/printer/**"/>	
 		</javac>
 	</target>
 	
 	<target name="compile-castor-src" depends="init">
 		<mkdir dir="${classes}"/>
 		<javac source="1.5" target="1.5" srcdir="${castor.src}" destdir="${classes}" debug="true">
+			<include name="**/printer/**"/>	
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
