@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.lang.StringUtils;
+import org.cts2.constant.ExternalCts2Constants;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.VersionTagReference;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
@@ -39,6 +40,7 @@ import org.cts2.internal.match.OperationExecutingModelAttributeReference;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference.Operation;
 import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.service.core.NameOrURI;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The Class DefaultEntityDescriptionRestrictionHandler.
@@ -46,7 +48,7 @@ import org.cts2.service.core.NameOrURI;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class DefaultEntityDescriptionRestrictionHandler 
-	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeSet> implements EntityDescriptionRestrictionHandler {
+	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeSet> implements EntityDescriptionRestrictionHandler, InitializingBean {
 
 	/** The lex evs identity converter. */
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
@@ -57,6 +59,11 @@ public class DefaultEntityDescriptionRestrictionHandler
 	/** The match algorithm reference to search name. */
 	private Map<MatchAlgorithmReference,String> matchAlgorithmReferenceToSearchName = 
 		new HashMap<MatchAlgorithmReference,String>();
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.registerSupportedMatchAlgorithmReferences();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.AbstractNonIterableLexEvsBackedRestrictionHandler#registerSupportedModelAttributeReferences()
@@ -69,10 +76,9 @@ public class DefaultEntityDescriptionRestrictionHandler
 		OperationExecutingModelAttributeReference<CodedNodeSet> restrictToDesignations = 
 			new OperationExecutingModelAttributeReference<CodedNodeSet>(
 					new RestrictToMatchingDesignationsOperation());
-		
-		
-		//TODO: this is just for demonstration purposes.
-		restrictToDesignations.setContent("designations");
+
+		restrictToDesignations.setContent(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_NAME);
+		restrictToDesignations.setMeaning(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_URI);
 		
 		returnList.add(restrictToDesignations);
 		
@@ -193,9 +199,9 @@ public class DefaultEntityDescriptionRestrictionHandler
 		MatchAlgorithmReference ref = new MatchAlgorithmReference();
 		
 		String searchName = moduleDescription.getName();
-		
-		//TODO: set uri, etc.
+
 		ref.setContent(searchName);
+		ref.setMeaning(ExternalCts2Constants.CTS2_URI + ExternalCts2Constants.CONCAT_STRING + searchName);
 		
 		this.matchAlgorithmReferenceToSearchName.put(ref, searchName);
 		

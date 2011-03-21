@@ -35,8 +35,15 @@ import org.cts2.internal.match.OperationExecutingModelAttributeReference;
 public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T> extends AbstractRestrictionHandler implements NonIterableBasedResolvingRestrictionHandler<T> {
 
 	/** The operation executing model attribute reference. */
-	private List<OperationExecutingModelAttributeReference<T>> operationExecutingModelAttributeReference;
+	private List<OperationExecutingModelAttributeReference<T>> operationExecutingModelAttributeReferences;
 	
+	
+	
+	public AbstractNonIterableLexEvsBackedRestrictionHandler() {
+		super();
+		this.operationExecutingModelAttributeReferences = this.registerSupportedModelAttributeReferences();
+	}
+
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler#restrict(java.lang.Object, org.cts2.core.Filter)
 	 */
@@ -79,8 +86,12 @@ public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T> exten
 	 * @return the operation executing model attribute reference
 	 */
 	private OperationExecutingModelAttributeReference<T> getOperationExecutingModelAttributeReference(NameOrURI nameOrUri){
-		for(OperationExecutingModelAttributeReference<T> modelAttribute : this.operationExecutingModelAttributeReference){
+		for(OperationExecutingModelAttributeReference<T> modelAttribute : this.operationExecutingModelAttributeReferences){
 			if(modelAttribute.getContent().equals(nameOrUri.getName())){
+				return modelAttribute;
+			}
+			
+			if(modelAttribute.getMeaning().equals(nameOrUri.getUri())){
 				return modelAttribute;
 			}
 		}
@@ -104,6 +115,6 @@ public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T> exten
 	 */
 	@Override
 	public List<OperationExecutingModelAttributeReference<T>> getSupportedModelAttributeReferences() {
-		return this.operationExecutingModelAttributeReference;
+		return this.operationExecutingModelAttributeReferences;
 	}
 }
