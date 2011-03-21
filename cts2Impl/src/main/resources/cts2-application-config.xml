@@ -38,6 +38,9 @@
 				<entry key="entityDirectoryEntryAboutConverter">
 					<ref bean="entityDirectoryEntryAboutConverter"/>
 				</entry>
+				<entry key="namedEntityDescriptionAboutConverter">
+					<ref bean="namedEntityDescriptionAboutConverter"/>
+				</entry>
 				<entry key="presentationUsageContextListToContextReferenceListConverter">
 					<ref bean="presentationUsageContextListToContextReferenceListConverter"/>
 				</entry>
@@ -77,6 +80,10 @@
 	</bean>
 	<bean id="entityDirectoryEntryAboutConverter"
 		class="org.cts2.internal.mapper.converter.EntityDirectoryEntryAboutConverter">
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="namedEntityDescriptionAboutConverter"
+		class="org.cts2.internal.mapper.converter.NamedEntityDescriptionAboutConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<bean id="presentationUsageContextListToContextReferenceListConverter"
