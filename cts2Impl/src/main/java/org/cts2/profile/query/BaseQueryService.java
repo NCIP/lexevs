@@ -21,6 +21,7 @@ package org.cts2.profile.query;
 import java.util.List;
 
 import org.cts2.core.Filter;
+import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.ModelAttributeReference;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
@@ -28,6 +29,7 @@ import org.cts2.uri.DirectoryURI;
 /**
  * The Interface BaseQueryService.
  *
+ * @param <U> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface BaseQueryService<U extends DirectoryURI> {
@@ -44,11 +46,23 @@ public interface BaseQueryService<U extends DirectoryURI> {
 	/**
 	 * Restrict.
 	 *
-	 * @param directoryUri the directory uri
+	 * @param restrictable the restrictable
 	 * @param filter the filter
 	 * @return the t
 	 */
 	public U restrict(U restrictable, Filter filter);
 	
-	public List<? extends ModelAttributeReference> getSupportedModelAttributes();
+	/**
+	 * Gets the supported model attribute references.
+	 *
+	 * @return the supported model attribute references
+	 */
+	public List<? extends ModelAttributeReference> getSupportedModelAttributeReferences();
+	
+	/**
+	 * Gets the supported match algorithm references.
+	 *
+	 * @return the supported match algorithm references
+	 */
+	public List<? extends MatchAlgorithmReference> getSupportedMatchAlgorithmReferences();
 }
