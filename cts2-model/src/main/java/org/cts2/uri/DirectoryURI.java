@@ -36,5 +36,5 @@ public interface DirectoryURI {
 	
 	public DirectoryURI restrict(Filter filter);
 	
-
+	public String marshall();
 }
