@@ -38,6 +38,9 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
 public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryService<CodeSystemVersionDirectoryURI> 
 	implements CodeSystemVersionQueryService {
 	
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.CodeSystemVersionQueryService#restrictToEntities(org.cts2.uri.CodeSystemVersionDirectoryURI, java.util.List, org.cts2.service.core.types.RestrictionType, org.cts2.service.core.types.ActiveOrAll)
+	 */
 	@Override
 	public CodeSystemVersionDirectoryURI restrictToEntities(
 			CodeSystemVersionDirectoryURI codeSystemVersionDirectoryURI,
@@ -47,6 +50,9 @@ public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryServic
 		return codeSystemVersionDirectoryURI.restrictToEntities(entities, allOrSome, active);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.CodeSystemVersionQueryService#resolve(org.cts2.uri.CodeSystemVersionDirectoryURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public CodeSystemVersionDirectory resolve(
 			CodeSystemVersionDirectoryURI codeSystemVersionDirectoryURI,
@@ -55,6 +61,9 @@ public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryServic
 		return codeSystemVersionDirectoryURI.get(queryControl, readContext, CodeSystemVersionDirectory.class);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.CodeSystemVersionQueryService#resolveAsList(org.cts2.uri.CodeSystemVersionDirectoryURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public CodeSystemVersionList resolveAsList(
 			CodeSystemVersionDirectoryURI codeSystemVersionDirectoryURI,
@@ -63,6 +72,9 @@ public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryServic
 		return codeSystemVersionDirectoryURI.get(queryControl, readContext, CodeSystemVersionList.class);	
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.CodeSystemVersionQueryService#getCodeSystemVersions()
+	 */
 	@Override
 	public CodeSystemVersionDirectoryURI getCodeSystemVersions() {
 		return this.getDirectoryURIFactory().getDirectoryURI();
