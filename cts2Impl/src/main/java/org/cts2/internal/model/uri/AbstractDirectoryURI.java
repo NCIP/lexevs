@@ -30,4 +30,10 @@ public abstract class AbstractDirectoryURI<T extends DirectoryURI> implements Di
 			return queryControl;
 		}
 	}
+
+	@Override
+	public String marshall() {
+		//TODO: Apply this to a REST Context -- let decorators control this, etc...
+		return this.toString();
+	}
 }
