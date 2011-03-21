@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.apache.commons.lang.StringUtils;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -130,26 +131,33 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
      * @throws Exception the exception
      */
     protected void load(LoadContent content) throws Exception {
-        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+        String[] paths = StringUtils.split(content.contentPath(), ',');
         
-        Resource resource = this.getResource(content.contentPath());
-
-        Loader loader =  lbsm.getLoader(content.loader());
-        
-        loader.getOptions().getBooleanOption(BaseLoader.ASYNC_OPTION).setOptionValue(false);
-        
-        loader.load(resource.getURI());
-
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+        for(String path : paths){
+            LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+            
+            Resource resource = this.getResource(path);
+    
+            Loader loader =  lbsm.getLoader(content.loader());
+            
+            loader.getOptions().getBooleanOption(BaseLoader.ASYNC_OPTION).setOptionValue(false);
+            
+            loader.load(resource.getURI());
+    
+            assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+            assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+    
+            lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+    
+            lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+        }
     }
     
     /**
      * Inits the url handler.
+     *
+     * @param path the path
+     * @return the resource
      */
     public Resource getResource(String path){
         DefaultResourceLoader resourceLoader = new DefaultResourceLoader(
