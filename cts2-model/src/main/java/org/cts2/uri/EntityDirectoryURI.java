@@ -18,6 +18,9 @@
  */
 package org.cts2.uri;
 
+import org.cts2.core.VersionTagReference;
+import org.cts2.service.core.NameOrURI;
+
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
@@ -26,5 +29,22 @@ package org.cts2.uri;
  */
 public interface EntityDirectoryURI  
 	extends DirectoryURI{
+	
+	/**
+	 * Restrict to code systems.
+	 *
+	 * @param codeSystems the code systems
+	 * @param tag the tag
+	 * @return the entity directory uri
+	 */
+	public EntityDirectoryURI restrictToCodeSystems(NameOrURI codeSystems, VersionTagReference tag);
+	
+	/**
+	 * Restrict to code system versions.
+	 *
+	 * @param codeSystemVersions the code system versions
+	 * @return the entity directory uri
+	 */
+	public EntityDirectoryURI restrictToCodeSystemVersions(NameOrURI codeSystemVersions);
 }
 
