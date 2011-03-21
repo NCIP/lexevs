@@ -41,12 +41,12 @@ public class UrlBasedDirectoryUriFactory {
      * @return the DirectoryURI
      */
     @SuppressWarnings("unchecked")
-	public static <T extends DirectoryURI> T createUrlBasedDirectoryUri(String uri, Class<T> targetClass) {
+	public static <T extends DirectoryURI> T createUrlBasedDirectoryUri(String url, Class<T> targetClass) {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(UrlStringBasedDirectoryURI.class);
         enhancer.setInterfaces(new Class[]{targetClass});
         enhancer.setCallback(NoOp.INSTANCE);
-        return (T)enhancer.create(new Class[]{String.class}, new Object[]{uri});
+        return (T)enhancer.create(new Class[]{String.class}, new Object[]{url});
    }
 
     /**
