@@ -3,7 +3,6 @@ package org.cts2.internal.mapper;
 import static org.junit.Assert.assertEquals;
 
 import org.LexGrid.commonTypes.Text;
-import org.cts2.entity.EntityDirectoryEntry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ public class PropertyToPropertyTest extends BaseDozerBeanMapperTest {
 
 	@Before
 	public void initialize() {
-		org.LexGrid.commonTypes.Property lgProp = new org.LexGrid.commonTypes.Property();
+		lgProp = new org.LexGrid.commonTypes.Property();
 		lgProp.setPropertyId("propertyId");
 		Text t = new Text();
 		t.setContent("content");
