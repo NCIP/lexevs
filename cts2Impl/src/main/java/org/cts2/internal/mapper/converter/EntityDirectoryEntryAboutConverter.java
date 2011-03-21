@@ -20,6 +20,11 @@ public class EntityDirectoryEntryAboutConverter extends
 	
 	private CodingSchemeService codingSchemeService;
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
+
+
+	public EntityDirectoryEntryAboutConverter() {
+		super(ResolvedConceptReference.class, EntityDirectoryEntry.class);
+	}
 	
 	public LexEvsIdentityConverter getLexEvsIdentityConverter() {
 		return lexEvsIdentityConverter;
@@ -28,10 +33,6 @@ public class EntityDirectoryEntryAboutConverter extends
 	public void setLexEvsIdentityConverter(
 			LexEvsIdentityConverter lexEvsIdentityConverter) {
 		this.lexEvsIdentityConverter = lexEvsIdentityConverter;
-	}
-
-	public EntityDirectoryEntryAboutConverter() {
-		super(ResolvedConceptReference.class, EntityDirectoryEntry.class);
 	}
 
 	@Override

@@ -48,7 +48,7 @@
 <!--		</field>				-->
 	</mapping>
 	
-	<mapping>
+	<mapping wildcard="false">
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference</class-a>
 		<class-b>org.cts2.entity.NamedEntityDescription</class-b>
 <!--		<field custom-converter-id="definitionStateConverterId">-->
@@ -75,6 +75,10 @@
 		<field>
 			<a>codingSchemeName</a>
 			<b>describingCodeSystemVersion.content</b>			
+		</field>
+		<field custom-converter-id="namedEntityDescriptionAboutConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>
 		<!-- field custom-converter-id="entityReferenceTypeConverterId" custom-converter-param="NAMED_ENTITY">
 			<a>this</a>
