@@ -10,13 +10,12 @@ import java.util.List;
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
 import org.cts2.core.MatchAlgorithmReference;
-import org.cts2.core.NameOrURI;
-import org.cts2.core.PropertyReference;
 import org.cts2.core.types.SetOperator;
 import org.cts2.core.types.TargetReferenceType;
 import org.cts2.internal.match.AttributeResolver;
 import org.cts2.internal.match.MatchAlgorithm;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
+import org.cts2.test.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -97,7 +96,7 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		TestThing one = new TestThing("this", "that");
 		TestThing two = new TestThing("something", "else");
 		
-		FilterComponent testFilterComponent = this.buildFilterComponent(
+		FilterComponent testFilterComponent = TestUtils.buildFilterComponent(
 				0, SetOperator.UNION, "firstAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "this");
 		
 		Collection<TestThing> returnList = 
@@ -113,7 +112,7 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		TestThing one = new TestThing("this", "that");
 		TestThing two = new TestThing("something", "else");
 		
-		FilterComponent testFilterComponent = this.buildFilterComponent(
+		FilterComponent testFilterComponent = TestUtils.buildFilterComponent(
 				0, SetOperator.UNION, "firstAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "__INVALID__");
 		
 		Collection<TestThing> returnList = 
@@ -128,10 +127,10 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		TestThing two = new TestThing("something", "else");
 		TestThing three = new TestThing("run", "jump");
 		
-		FilterComponent testFilterComponent = this.buildFilterComponent(
+		FilterComponent testFilterComponent = TestUtils.buildFilterComponent(
 				0, SetOperator.UNION, "firstAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "run");
 		
-		Filter filter = this.buildFilter(testFilterComponent);
+		Filter filter = TestUtils.buildFilter(testFilterComponent);
 		
 		List<TestThing> returnList = new ArrayList<TestThing>();
 		IterableRestriction<TestThing> restriction = this.handler.restrict(filter);
@@ -149,13 +148,13 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		TestThing two = new TestThing("something", "else");
 		TestThing three = new TestThing("run", "jump");
 		
-		FilterComponent testFilterComponent1 = this.buildFilterComponent(
+		FilterComponent testFilterComponent1 = TestUtils.buildFilterComponent(
 				0, SetOperator.UNION, "firstAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "run");
 		
-		FilterComponent testFilterComponent2 = this.buildFilterComponent(
+		FilterComponent testFilterComponent2 = TestUtils.buildFilterComponent(
 				1, SetOperator.UNION, "secondAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "else");
 		
-		Filter filter = this.buildFilter(testFilterComponent1,testFilterComponent2);
+		Filter filter = TestUtils.buildFilter(testFilterComponent1,testFilterComponent2);
 		
 		List<TestThing> returnList = new ArrayList<TestThing>();
 		
@@ -172,16 +171,16 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		TestThing two = new TestThing("something", "else");
 		TestThing three = new TestThing("run", "jump");
 		
-		FilterComponent testFilterComponent1 = this.buildFilterComponent(
+		FilterComponent testFilterComponent1 = TestUtils.buildFilterComponent(
 				0, SetOperator.UNION, "firstAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "run");
 		
-		FilterComponent testFilterComponent2 = this.buildFilterComponent(
+		FilterComponent testFilterComponent2 = TestUtils.buildFilterComponent(
 				1, SetOperator.UNION, "firstAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "something");
 		
-		FilterComponent testFilterComponent3 = this.buildFilterComponent(
+		FilterComponent testFilterComponent3 = TestUtils.buildFilterComponent(
 				2, SetOperator.SUBTRACT, "secondAttribute", TargetReferenceType.ATTRIBUTE, "test-algorithm", "else");
 		
-		Filter filter = this.buildFilter(testFilterComponent1,testFilterComponent2,testFilterComponent3);
+		Filter filter = TestUtils.buildFilter(testFilterComponent1,testFilterComponent2,testFilterComponent3);
 		
 		List<TestThing> returnList = new ArrayList<TestThing>();
 		IterableRestriction<TestThing> restriction = this.handler.restrict(filter);
@@ -191,45 +190,6 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		assertEquals(1, returnList.size());
 		
 		assertEquals("run", returnList.get(0).testAttribute);
-	}
-	
-	private Filter buildFilter(FilterComponent... filterComponents){
-		Filter filter = new Filter();
-		filter.setComponent(filterComponents);
-		
-		return filter;
-	}
-	
-	private FilterComponent buildFilterComponent(
-			long order, 
-			SetOperator operator, 
-			String propetyRefName, 
-			TargetReferenceType type, 
-			String matchAlgorithm, 
-			String matchValue){
-		
-		FilterComponent testFilterComponent = new FilterComponent();
-		testFilterComponent.setComponentOrder(order);
-		testFilterComponent.setFilterOperator(operator);
-		
-		PropertyReference pref = new PropertyReference();
-		pref.setReferenceType(type);
-		
-		NameOrURI nameOrURI = new NameOrURI();
-		nameOrURI.setName(propetyRefName);
-		
-		pref.setReferenceTarget(nameOrURI);
-		
-		testFilterComponent.setFilterComponent(pref);
-		
-		MatchAlgorithmReference ref = new MatchAlgorithmReference();
-		ref.setContent(matchAlgorithm);
-		
-		testFilterComponent.setMatchAlgorithm(ref);
-		
-		testFilterComponent.setMatchValue(matchValue);
-		
-		return testFilterComponent;
 	}
 	
 	private static class TestThing {

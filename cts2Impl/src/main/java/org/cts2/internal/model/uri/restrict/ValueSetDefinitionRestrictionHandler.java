@@ -23,10 +23,11 @@ import java.util.List;
 
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.cts2.core.MatchAlgorithmReference;
+import org.cts2.internal.match.AttributeResolver;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
 
 /**
- * The Class CodeSystemVersionRestrictionHandler.
+ * The Class ValueSetDefinitionRestrictionHandler.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
@@ -40,7 +41,24 @@ public class ValueSetDefinitionRestrictionHandler extends AbstractIterableLexEvs
 		List<ResolvableModelAttributeReference<ValueSetDefinition>> returnList = 
 			new ArrayList<ResolvableModelAttributeReference<ValueSetDefinition>>();
 		
+		
+		
+		AttributeResolver<ValueSetDefinition> valueSetDefinitionNameResolver = new AttributeResolver<ValueSetDefinition>(){
+
+			@Override
+			public String resolveAttribute(ValueSetDefinition modelObject) {
+				return modelObject.getValueSetDefinitionName();
+			}
+		};
 	
+		//TODO: Example only
+		ResolvableModelAttributeReference<ValueSetDefinition> valueSetDefinitionName = new ResolvableModelAttributeReference<ValueSetDefinition>(valueSetDefinitionNameResolver);
+		valueSetDefinitionName.setContent("valueSetDefinitionName");
+		
+		returnList.add(valueSetDefinitionName);
+		
+		
+		
 		return returnList;
 	}
 	
