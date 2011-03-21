@@ -67,10 +67,12 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvs
 	 * @param beanMapper the bean mapper
 	 */
 	public DefaultCodeSystemVersionDirectoryURI(
+			LexBIGService lexBigService,
 			CodingSchemeRenderingList codingSchemeRenderingList,
 			IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler,
 			BeanMapper beanMapper) {
 		super(restrictionHandler);
+		this.lexBigService = lexBigService;
 		this.codingSchemeRenderingList = codingSchemeRenderingList;
 		this.beanMapper = beanMapper;
 	}

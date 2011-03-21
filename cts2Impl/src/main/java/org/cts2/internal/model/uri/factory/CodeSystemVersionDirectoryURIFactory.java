@@ -47,7 +47,7 @@ public class CodeSystemVersionDirectoryURIFactory extends AbstractCompositeDirec
 			throw new RuntimeException(e);
 		}
 		
-		return new DefaultCodeSystemVersionDirectoryURI(codingSchemeRenderingList, this.restrictionHandler, this.getBeanMapper());
+		return new DefaultCodeSystemVersionDirectoryURI(this.getLexBigService(), codingSchemeRenderingList, this.restrictionHandler, this.getBeanMapper());
 	}
 
 	public void setRestrictionHandler(IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler) {

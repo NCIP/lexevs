@@ -117,5 +117,4 @@ public class LexEvsEntityDescriptionQueryServiceTestIT extends BaseCts2Integrati
 		
 		assertEquals(1,ed.getEntryCount());
 	}
-	
 }

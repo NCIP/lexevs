@@ -37,12 +37,41 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
 public interface CodeSystemVersionQueryService extends BaseQueryService<CodeSystemVersionDirectoryURI>{
 	
 	//TODO: 'entities aren't supposed to be a List, I'm pretty sure -- but there is on 'EntityReferenceList' in the model... ask Harold.
+	/**
+	 * Restrict to entities.
+	 *
+	 * @param codeSystemQueryURI the code system query uri
+	 * @param entities the entities
+	 * @param allOrSome the all or some
+	 * @param active the active
+	 * @return the code system version directory uri
+	 */
 	public CodeSystemVersionDirectoryURI restrictToEntities(CodeSystemVersionDirectoryURI codeSystemQueryURI, List<EntityReference> entities, RestrictionType allOrSome, ActiveOrAll active);
 	
+	/**
+	 * Resolve.
+	 *
+	 * @param codeSystemQueryURI the code system query uri
+	 * @param queryControl the query control
+	 * @param readContext the read context
+	 * @return the code system version directory
+	 */
 	public CodeSystemVersionDirectory resolve(CodeSystemVersionDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
 	
+	/**
+	 * Resolve as list.
+	 *
+	 * @param codeSystemQueryURI the code system query uri
+	 * @param queryControl the query control
+	 * @param readContext the read context
+	 * @return the code system version list
+	 */
 	public CodeSystemVersionList resolveAsList(CodeSystemVersionDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
 	
+	/**
+	 * Gets the code system versions.
+	 *
+	 * @return the code system versions
+	 */
 	public CodeSystemVersionDirectoryURI getCodeSystemVersions();
-
 }

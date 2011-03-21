@@ -41,7 +41,7 @@ public class DefaultCodeSystemVersionDirectoryURITest {
 		
 		csrl.addCodingSchemeRendering(csr);
 		
-		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null);
+		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null, null);
 		
 		CodingSchemeRenderingList returnList = 
 			uri.restrictToActiveOrAll(csrl, ActiveOrAll.ACTIVE_ONLY);
@@ -60,7 +60,7 @@ public class DefaultCodeSystemVersionDirectoryURITest {
 		
 		csrl.addCodingSchemeRendering(csr);
 		
-		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null);
+		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null, null);
 		
 		CodingSchemeRenderingList returnList = 
 			uri.restrictToActiveOrAll(csrl, ActiveOrAll.ACTIVE_ONLY);
@@ -83,7 +83,7 @@ public class DefaultCodeSystemVersionDirectoryURITest {
 		csrl.addCodingSchemeRendering(csr);
 		csrl.addCodingSchemeRendering(csr2);
 		
-		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null);
+		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null, null);
 		
 		CodingSchemeRenderingList returnList = 
 			uri.restrictToActiveOrAll(csrl, ActiveOrAll.ACTIVE_ONLY);
@@ -106,7 +106,7 @@ public class DefaultCodeSystemVersionDirectoryURITest {
 		csrl.addCodingSchemeRendering(csr);
 		csrl.addCodingSchemeRendering(csr2);
 		
-		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null);
+		DefaultCodeSystemVersionDirectoryURI uri = new DefaultCodeSystemVersionDirectoryURI(null, null, null, null);
 		
 		CodingSchemeRenderingList returnList = 
 			uri.restrictToActiveOrAll(csrl, ActiveOrAll.ACTIVE_AND_INACTIVE);
