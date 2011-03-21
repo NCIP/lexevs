@@ -53,7 +53,7 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends 
 	 */
 	public AbstractIterableLexEvsBackedRestrictionHandler(){
 		super();
-		this.resolvableModelAttributeReferences = this.registerSupportedModelAttributes();
+		this.resolvableModelAttributeReferences = this.registerSupportedModelAttributeReferences();
 	}
 	
 	/* (non-Javadoc)
@@ -68,7 +68,7 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends 
 	 * @see org.cts2.internal.model.uri.restrict.ResolvingRestrictionHandler#getSupportedModelAttributes()
 	 */
 	@Override
-	public List<ResolvableModelAttributeReference<T>> getSupportedModelAttributes() {
+	public List<ResolvableModelAttributeReference<T>> getSupportedModelAttributeReferences() {
 		return this.resolvableModelAttributeReferences;
 	}
 	
@@ -77,38 +77,45 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends 
 	 *
 	 * @return the list
 	 */
-	public abstract List<ResolvableModelAttributeReference<T>> registerSupportedModelAttributes();
+	public abstract List<ResolvableModelAttributeReference<T>> registerSupportedModelAttributeReferences();
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.ListBasedResolvingRestrictionHandler#restrict(java.util.List, org.cts2.core.Filter)
 	 */
-	public Iterable<T> restrict(Iterable<T> originalState, Filter filter) {
-		originalState = Iterables.unmodifiableIterable(originalState);
-		
-		List<FilterComponent> filterComponents = this.sortFilterComponents(filter);
-		
-		Collection<T> restrictedState = new ArrayList<T>();
-		
-		for (FilterComponent filterComponent : filterComponents) {
-			switch (filterComponent.getFilterOperator()){
-				case UNION : {
-					restrictedState.addAll(this.doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
-					break;
+	public IterableRestriction<T> restrict(final Filter filter) {
+		return new IterableRestriction<T>(){
+
+			@Override
+			public Iterable<T> processRestriction(Iterable<T> originalState) {
+
+				originalState = Iterables.unmodifiableIterable(originalState);
+
+				List<FilterComponent> filterComponents = sortFilterComponents(filter);
+
+				Collection<T> restrictedState = new ArrayList<T>();
+
+				for (FilterComponent filterComponent : filterComponents) {
+					switch (filterComponent.getFilterOperator()){
+						case UNION : {
+							restrictedState.addAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
+							break;
+						}
+						case INTERSECT: {
+							restrictedState.retainAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
+							break;
+						}
+						case SUBTRACT: {
+							restrictedState.removeAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
+							break;
+						}
+					}	
 				}
-				case INTERSECT: {
-					restrictedState.retainAll(this.doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
-					break;
-				}
-				case SUBTRACT: {
-					restrictedState.removeAll(this.doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
-					break;
-				}
-			}
-		}	
-		
-		return restrictedState;
+
+				return restrictedState;
+			};
+		};
 	}
-	
+
 	/**
 	 * Do restrict.
 	 *
@@ -177,23 +184,6 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends 
 	}
 	
 	/**
-	 * Gets the match algorithm.
-	 *
-	 * @param reference the reference
-	 * @return the match algorithm
-	 */
-	private MatchAlgorithm getMatchAlgorithm(MatchAlgorithmReference reference){
-		for(MatchAlgorithm matchAlgorithm : this.matchAlgorithms){
-			if(matchAlgorithm.getName().equals(reference.getContent())){
-				return matchAlgorithm;
-			}
-		}
-		
-		//TODO: validate this instead of returning null
-		return null;
-	}
-	
-	/**
 	 * Gets the resolvable model attribute references.
 	 *
 	 * @param nameOrUri the name or uri
@@ -209,7 +199,24 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends 
 		//TODO: validate this instead of returning null
 		return null;
 	}
-
+	
+	/**
+	 * Gets the match algorithm.
+	 *
+	 * @param reference the reference
+	 * @return the match algorithm
+	 */
+	protected MatchAlgorithm getMatchAlgorithm(MatchAlgorithmReference reference){
+		for(MatchAlgorithm matchAlgorithm : this.matchAlgorithms){
+			if(matchAlgorithm.getName().equals(reference.getContent())){
+				return matchAlgorithm;
+			}
+		}
+		
+		//TODO: validate this instead of returning null
+		return null;
+	}
+	
 	/**
 	 * Gets the match algorithms.
 	 *

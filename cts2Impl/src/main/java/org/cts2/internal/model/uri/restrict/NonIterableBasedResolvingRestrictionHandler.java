@@ -23,10 +23,9 @@ import org.cts2.core.Filter;
 /**
  * The Interface ListBasedResolvingRestrictionHandler.
  *
- * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface NonIterableBasedResolvingRestrictionHandler<T> extends RestrictionHandler {
+public interface NonIterableBasedResolvingRestrictionHandler<T> extends OperationRestrictionHandler<T> {
 
 	/**
 	 * Restrict.
@@ -35,6 +34,6 @@ public interface NonIterableBasedResolvingRestrictionHandler<T> extends Restrict
 	 * @param filter the filter
 	 * @return the list
 	 */
-	public T restrict(T originalState, Filter filter);
+	public Restriction<T> restrict(Filter filter);
 	
 }

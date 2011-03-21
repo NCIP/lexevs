@@ -22,65 +22,88 @@ import java.util.List;
 
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
-
+import org.cts2.core.NameOrURI;
+import org.cts2.core.PredicateReference;
+import org.cts2.internal.match.OperationExecutingModelAttributeReference;
 
 /**
- * The Class AbstractIterableLexEvsBackedRestrictionHandler.
+ * The Class AbstractNonIterableLexEvsBackedRestrictionHandler.
  *
  * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T> extends AbstractRestrictionHandler implements NonIterableBasedResolvingRestrictionHandler<T> {
 
+	/** The operation executing model attribute reference. */
+	private List<OperationExecutingModelAttributeReference<T>> operationExecutingModelAttributeReference;
+	
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler#restrict(java.lang.Object, org.cts2.core.Filter)
 	 */
 	@Override
-	public T restrict(T originalState, Filter filter) {
+	public Restriction<T> restrict(final Filter filter) {
 		
-		List<FilterComponent> filterComponents = this.sortFilterComponents(filter);
-		
-		for (FilterComponent filterComponent : filterComponents) {
-			switch (filterComponent.getFilterOperator()){
-				case UNION : {
-					this.doUnion(originalState, filterComponent);
-					break;
-				}
-				case INTERSECT: {
-					this.doIntersect(originalState, filterComponent);
-					break;
-				}
-				case SUBTRACT: {
-					this.doSubtract(originalState, filterComponent);
-					break;
-				}
+		return new Restriction<T>(){
+
+			@Override
+			public T processRestriction(T state) {
+				List<FilterComponent> filterComponents = sortFilterComponents(filter);
+				
+				for (FilterComponent filterComponent : filterComponents) {
+					OperationExecutingModelAttributeReference<T> operation = 
+						getOperationExecutingModelAttributeReference(filterComponent.getFilterComponent().getReferenceTarget());
+					
+					state = operation.executeOperation(
+							state, 
+							filterComponent.getFilterOperator(), 
+							filterComponent.getMatchValue(),
+							filterComponent.getMatchAlgorithm());
+				}	
+				
+				return state;
 			}
-		}	
-		
-		return originalState;
+		};
 	}
 	
 	/**
-	 * Do union.
+	 * Register supported model attribute references.
 	 *
-	 * @param originalState the original state
-	 * @param filterComponent the filter component
+	 * @return the list
 	 */
-	protected abstract void doUnion(T originalState, FilterComponent filterComponent);
+	public abstract List<OperationExecutingModelAttributeReference<T>> registerSupportedModelAttributeReferences();
 	
 	/**
-	 * Do intersect.
+	 * Gets the operation executing model attribute reference.
 	 *
-	 * @param originalState the original state
-	 * @param filterComponent the filter component
+	 * @param nameOrUri the name or uri
+	 * @return the operation executing model attribute reference
 	 */
-	protected abstract void doIntersect(T originalState, FilterComponent filterComponent);
+	private OperationExecutingModelAttributeReference<T> getOperationExecutingModelAttributeReference(NameOrURI nameOrUri){
+		for(OperationExecutingModelAttributeReference<T> modelAttribute : this.operationExecutingModelAttributeReference){
+			if(modelAttribute.getContent().equals(nameOrUri.getName())){
+				return modelAttribute;
+			}
+		}
+		
+		//TODO: validate this instead of returning null
+		return null;
+	}
 	
-	/**
-	 * Do subtract.
-	 *
-	 * @param originalState the original state
-	 * @param filterComponent the filter component
+	
+	
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.RestrictionHandler#getSupportedPredicateReferences()
 	 */
-	protected abstract void doSubtract(T originalState, FilterComponent filterComponent);
+	@Override
+	public List<PredicateReference> getSupportedPredicateReferences() {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.ResolvingRestrictionHandler#getSupportedModelAttributes()
+	 */
+	@Override
+	public List<OperationExecutingModelAttributeReference<T>> getSupportedModelAttributeReferences() {
+		return this.operationExecutingModelAttributeReference;
+	}
 }

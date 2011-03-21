@@ -18,27 +18,26 @@
  */
 package org.cts2.internal.model.uri;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
-import org.cts2.core.Directory;
-import org.cts2.core.Filter;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.uri.restrict.IterableBasedResolvingRestrictionHandler;
-import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.service.core.types.ActiveOrAll;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
+
+import scala.actors.threadpool.Arrays;
+
+import com.google.common.collect.Iterables;
 
 /**
  * The Class DefaultCodeSystemVersionDirectoryURI.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirectoryURI<CodeSystemVersionDirectoryURI> implements CodeSystemVersionDirectoryURI{
+public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvsBackedResolvingDirectoryURI<CodingSchemeRendering,CodeSystemVersionDirectoryURI> 
+	implements CodeSystemVersionDirectoryURI{
 	
 	/** The coding scheme rendering list. */
 	private CodingSchemeRenderingList codingSchemeRenderingList;
@@ -46,40 +45,20 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
 	
-	private IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
 	/**
 	 * Instantiates a new default code system version directory uri.
 	 *
 	 * @param codingSchemeRenderingList the coding scheme rendering list
+	 * @param restrictionHandler the restriction handler
 	 * @param beanMapper the bean mapper
 	 */
 	public DefaultCodeSystemVersionDirectoryURI(
 			CodingSchemeRenderingList codingSchemeRenderingList,
 			IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler,
 			BeanMapper beanMapper) {
-		super();
+		super(restrictionHandler);
 		this.codingSchemeRenderingList = codingSchemeRenderingList;
-		this.restrictionHandler = restrictionHandler;
 		this.beanMapper = beanMapper;
-	}
-
-	@Override
-	public CodeSystemVersionDirectoryURI restrict(Filter filter) {
-		List<CodingSchemeRendering> originalState = 
-			Arrays.asList(this.codingSchemeRenderingList.getCodingSchemeRendering());
-		
-		Iterable<CodingSchemeRendering> restrictedList = 
-			this.restrictionHandler.restrict(originalState, filter);
-		
-		CodingSchemeRenderingList newRenderingList = new CodingSchemeRenderingList();
-		
-		for(CodingSchemeRendering newItem : restrictedList){
-			newRenderingList.addCodingSchemeRendering(newItem);
-		}
-		
-		this.codingSchemeRenderingList = newRenderingList;
-		
-		return this;
 	}
 
 	/* (non-Javadoc)
@@ -90,6 +69,13 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 		return this.codingSchemeRenderingList.getCodingSchemeRenderingCount();
 	}
 	
+	/**
+	 * Restrict to active or all.
+	 *
+	 * @param csrl the csrl
+	 * @param activeOrAll the active or all
+	 * @return the coding scheme rendering list
+	 */
 	protected CodingSchemeRenderingList restrictToActiveOrAll(CodingSchemeRenderingList csrl, ActiveOrAll activeOrAll){
 		if(activeOrAll == null){
 			return csrl;
@@ -117,19 +103,35 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractResolvingDirec
 	}
 
 	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractResolvingDirectoryURI#doGet(org.cts2.service.core.NameOrURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext, java.lang.Class)
+	 * @see org.cts2.internal.model.uri.AbstractIterableLexEvsBackedResolvingDirectoryURI#getOriginalState()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	protected <D extends Directory<?>> D doGet(
-			QueryControl queryControl, 
-			final ReadContext readContext, 
-			final Class<D> resolveClass) {
-
-		CodingSchemeRenderingList csrl = restrictToActiveOrAll(codingSchemeRenderingList, readContext.getActive());
-
-		return beanMapper.map(
-				csrl, 
-				resolveClass);
+	protected Iterable<CodingSchemeRendering> getOriginalState() {
+		return Arrays.asList(this.codingSchemeRenderingList.getCodingSchemeRendering());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.AbstractIterableLexEvsBackedResolvingDirectoryURI#transform(java.lang.Iterable, java.lang.Class)
+	 */
+	@Override
+	protected <O> O transform(
+			Iterable<CodingSchemeRendering> lexevsObject,
+			Class<O> clazz) {
+		CodingSchemeRenderingList csrl = new CodingSchemeRenderingList();
+		csrl.setCodingSchemeRendering(Iterables.toArray(lexevsObject,CodingSchemeRendering.class));
+		
+		return this.beanMapper.map(csrl, clazz);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.AbstractIterableLexEvsBackedResolvingDirectoryURI#clone()
+	 */
+	@Override
+	protected CodeSystemVersionDirectoryURI clone() {
+		//TODO: implement no-destructive clone
+		return this;
+	}
 }

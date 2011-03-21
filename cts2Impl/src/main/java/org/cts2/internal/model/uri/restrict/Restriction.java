@@ -18,22 +18,18 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
-import org.cts2.core.Filter;
-
 /**
- * The Interface ListBasedResolvingRestrictionHandler.
+ * The Interface Restriction.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface IterableBasedResolvingRestrictionHandler<T> extends ResolvingRestrictionHandler<T> {
+public interface Restriction<T> {
 
 	/**
-	 * Restrict.
+	 * Process restriction.
 	 *
-	 * @param originalState the original state
-	 * @param filter the filter
-	 * @return the list
+	 * @param state the state
+	 * @return the t
 	 */
-	public IterableRestriction<T> restrict(Filter filter);
-	
+	public T processRestriction(T state);
 }

@@ -20,6 +20,7 @@ package org.cts2.internal.model.uri.restrict;
 
 import java.util.List;
 
+import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.ModelAttributeReference;
 import org.cts2.core.PredicateReference;
 
@@ -42,5 +43,12 @@ public interface RestrictionHandler {
 	 *
 	 * @return the supported model attributes
 	 */
-	public List<? extends ModelAttributeReference> getSupportedModelAttributes();
+	public List<? extends ModelAttributeReference> getSupportedModelAttributeReferences();
+	
+	/**
+	 * Gets the supported match algorithm references.
+	 *
+	 * @return the supported match algorithm references
+	 */
+	public List<? extends MatchAlgorithmReference> getSupportedMatchAlgorithmReferences();
 }

@@ -25,7 +25,6 @@ import org.cts2.internal.match.ResolvableModelAttributeReference;
 /**
  * The Interface ResolvingRestrictionHandler.
  *
- * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface ResolvingRestrictionHandler<T> extends RestrictionHandler {
@@ -33,6 +32,6 @@ public interface ResolvingRestrictionHandler<T> extends RestrictionHandler {
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.RestrictionHandler#getSupportedModelAttributes()
 	 */
-	public List<ResolvableModelAttributeReference<T>> getSupportedModelAttributes();	
+	public List<ResolvableModelAttributeReference<T>> getSupportedModelAttributeReferences();	
 	
 }

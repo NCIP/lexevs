@@ -18,22 +18,20 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
-import org.cts2.core.Filter;
+import java.util.List;
+
+import org.cts2.internal.match.OperationExecutingModelAttributeReference;
 
 /**
- * The Interface ListBasedResolvingRestrictionHandler.
+ * The Interface ResolvingRestrictionHandler.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface IterableBasedResolvingRestrictionHandler<T> extends ResolvingRestrictionHandler<T> {
+public interface OperationRestrictionHandler<T> extends RestrictionHandler {
 
-	/**
-	 * Restrict.
-	 *
-	 * @param originalState the original state
-	 * @param filter the filter
-	 * @return the list
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.RestrictionHandler#getSupportedModelAttributes()
 	 */
-	public IterableRestriction<T> restrict(Filter filter);
+	public List<OperationExecutingModelAttributeReference<T>> getSupportedModelAttributeReferences();	
 	
 }

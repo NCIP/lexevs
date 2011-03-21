@@ -18,14 +18,16 @@
  */
 package org.cts2.internal.model.uri;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.cts2.core.Directory;
-import org.cts2.core.Filter;
+import org.cts2.core.VersionTagReference;
+import org.cts2.entity.EntityDirectory;
+import org.cts2.entity.EntityList;
 import org.cts2.internal.mapper.BeanMapper;
-import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
-import org.cts2.service.core.QueryControl;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityDirectory;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityList;
+import org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler;
+import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.EntityDirectoryURI;
 
@@ -34,15 +36,13 @@ import org.cts2.uri.EntityDirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultEntityDirectoryURI extends AbstractResolvingDirectoryURI<EntityDirectoryURI> implements EntityDirectoryURI {
+public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeSet,EntityDirectoryURI> implements EntityDirectoryURI {
 	
+	/** The coded node set. */
 	private CodedNodeSet codedNodeSet;
 	
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
-	
-	/** The restriction handler. */
-	private NonIterableBasedResolvingRestrictionHandler<CodedNodeSet> restrictionHandler;
 	
 	/**
 	 * Instantiates a new default code system version directory uri.
@@ -53,42 +53,11 @@ public class DefaultEntityDirectoryURI extends AbstractResolvingDirectoryURI<Ent
 	 */
 	public DefaultEntityDirectoryURI(
 			CodedNodeSet codedNodeSet,
-			NonIterableBasedResolvingRestrictionHandler<CodedNodeSet> restrictionHandler,
+			EntityDescriptionRestrictionHandler restrictionHandler,
 			BeanMapper beanMapper) {
-		super();
+		super(restrictionHandler);
 		this.codedNodeSet = codedNodeSet;
-		this.restrictionHandler = restrictionHandler;
 		this.beanMapper = beanMapper;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractResolvingDirectoryURI#doGet(org.cts2.service.core.NameOrURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext, java.lang.Class)
-	 */
-	@Override
-	protected <D extends Directory<?>> D doGet(
-			QueryControl queryControl, 
-			ReadContext readContext,
-			Class<D> resolveClass) {
-		//TODO: deal with ReadContext, format, etc...
-		ResolvedConceptReferenceList list;
-		try {
-			list = this.codedNodeSet.resolveToList(null, null, null, null, false, queryControl.getMaxToReturn().intValue());
-		} catch (LBException e) {
-			//TODO: throw real CTS2 exception here
-			throw new RuntimeException(e);
-		} 
-		
-		return this.beanMapper.map(list, resolveClass);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractDirectoryURI#restrict(org.cts2.core.Filter)
-	 */
-	@Override
-	public EntityDirectoryURI restrict(Filter filter) {
-		this.codedNodeSet = this.restrictionHandler.restrict(this.codedNodeSet, filter);
-		
-		return this;
 	}
 	
 	/* (non-Javadoc)
@@ -97,10 +66,83 @@ public class DefaultEntityDirectoryURI extends AbstractResolvingDirectoryURI<Ent
 	@Override
 	protected int doCount(ReadContext readContext) {
 		try {
-			return this.codedNodeSet.resolve(null, null, null, null, false).numberRemaining();
+			return 
+				this.runRestrictions(getOriginalState()).resolve(null, null, null, null, false).numberRemaining();
 		} catch (LBException e) {
-			//TODO: throw real CTS2 exception here
-			throw new RuntimeException(e);
+			//TODO: real cts2 exception here
+			throw new IllegalStateException();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.AbstractNonIterableLexEvsBackedResolvingDirectoryURI#getOriginalState()
+	 */
+	@Override
+	protected CodedNodeSet getOriginalState() {
+		return this.codedNodeSet;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.AbstractNonIterableLexEvsBackedResolvingDirectoryURI#transform(java.lang.Object, java.lang.Class)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	protected <O> O transform(
+			CodedNodeSet lexevsObject, Class<O> clazz) {
+		try {
+			if(clazz.equals(EntityDirectory.class)){
+				return (O) new ResolvedConceptReferencesIteratorBackedEntityDirectory(lexevsObject, this.beanMapper);
+			}
+			if(clazz.equals(EntityList.class)){
+				return (O) new ResolvedConceptReferencesIteratorBackedEntityList(lexevsObject, this.beanMapper);
+			}
+		} catch (LBException e) {
+			//TODO: real cts2 exception here
+			throw new IllegalStateException();
+		}
+		
+		//TODO: real cts2 exception here
+		throw new IllegalStateException();
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.EntityDirectoryURI#restrictToCodeSystems(org.cts2.service.core.NameOrURI, org.cts2.core.VersionTagReference)
+	 */
+	@Override
+	public EntityDirectoryURI restrictToCodeSystems(
+			NameOrURI codeSystems,
+			VersionTagReference tag) {
+		this.getRestrictionHandler().restrictToCodeSystems(codeSystems, tag);
+		
+		return clone();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.EntityDirectoryURI#restrictToCodeSystemVersions(org.cts2.service.core.NameOrURI)
+	 */
+	@Override
+	public EntityDirectoryURI restrictToCodeSystemVersions(
+			NameOrURI codeSystemVersions) {
+		this.getRestrictionHandler().restrictToCodeSystemVersions(codeSystemVersions);
+		
+		return clone();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.AbstractNonIterableLexEvsBackedResolvingDirectoryURI#clone()
+	 */
+	@Override
+	protected EntityDirectoryURI clone() {
+		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.AbstractNonIterableLexEvsBackedResolvingDirectoryURI#getRestrictionHandler()
+	 */
+	@Override
+	protected EntityDescriptionRestrictionHandler getRestrictionHandler() {
+		return (EntityDescriptionRestrictionHandler) super.getRestrictionHandler();
 	}
 }

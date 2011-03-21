@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
+import org.cts2.core.MatchAlgorithmReference;
 
 /**
  * The Class AbstractRestrictionHandler.
@@ -35,6 +36,9 @@ public abstract class AbstractRestrictionHandler implements RestrictionHandler {
 
 	/** The FILTE r_ orde r_ comparator. */
 	private Comparator<FilterComponent> FILTER_ORDER_COMPARATOR = new FilterOrderComparator();
+
+	/** The match algorithm references. */
+	private List<MatchAlgorithmReference> matchAlgorithmReferences;
 	
 	/**
 	 * The Class FilterOrderComparator.
@@ -52,6 +56,8 @@ public abstract class AbstractRestrictionHandler implements RestrictionHandler {
 		}
 	}
 	
+	
+	
 	/**
 	 * Sort filter components.
 	 *
@@ -64,5 +70,20 @@ public abstract class AbstractRestrictionHandler implements RestrictionHandler {
 		Collections.sort(filterComponents, FILTER_ORDER_COMPARATOR);
 
 		return filterComponents;
+	}
+		
+	/**
+	 * Register supported match algorithm references.
+	 *
+	 * @return the list
+	 */
+	public abstract List<MatchAlgorithmReference> registerSupportedMatchAlgorithmReferences();
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.RestrictionHandler#getSupportedMatchAlgorithmReferences()
+	 */
+	@Override
+	public List<? extends MatchAlgorithmReference> getSupportedMatchAlgorithmReferences() {
+		return this.matchAlgorithmReferences;
 	}
 }

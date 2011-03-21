@@ -21,10 +21,8 @@ package org.cts2.internal.model.uri.restrict;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.cts2.core.MatchAlgorithmReference;
-import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
-import org.cts2.internal.match.AttributeResolver;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
 
 /**
@@ -32,45 +30,23 @@ import org.cts2.internal.match.ResolvableModelAttributeReference;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodeSystemVersionRestrictionHandler extends AbstractIterableLexEvsBackedRestrictionHandler<CodingSchemeRendering>{
-	
-	/** The lex evs identity converter. */
-	private LexEvsIdentityConverter lexEvsIdentityConverter;
+public class ValueSetDefinitionRestrictionHandler extends AbstractIterableLexEvsBackedRestrictionHandler<ValueSetDefinition>{
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.AbstractIterableLexEvsBackedRestrictionHandler#registerSupportedModelAttributes()
 	 */
 	@Override
-	public List<ResolvableModelAttributeReference<CodingSchemeRendering>> registerSupportedModelAttributeReferences() {
-		List<ResolvableModelAttributeReference<CodingSchemeRendering>> returnList = 
-			new ArrayList<ResolvableModelAttributeReference<CodingSchemeRendering>>();
+	public List<ResolvableModelAttributeReference<ValueSetDefinition>> registerSupportedModelAttributeReferences() {
+		List<ResolvableModelAttributeReference<ValueSetDefinition>> returnList = 
+			new ArrayList<ResolvableModelAttributeReference<ValueSetDefinition>>();
 		
-		ResolvableModelAttributeReference<CodingSchemeRendering> codeSystmeVersionName = 
-			new ResolvableModelAttributeReference<CodingSchemeRendering>(new CodeSystemVersionNameAttributeResolver());
-		
-		returnList.add(codeSystmeVersionName);
-		
+	
 		return returnList;
 	}
 	
-	/**
-	 * The Class CodeSystemVersionNameAttributeResolver.
-	 *
-	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractRestrictionHandler#registerSupportedMatchAlgorithmReferences()
 	 */
-	private class CodeSystemVersionNameAttributeResolver implements AttributeResolver<CodingSchemeRendering> {
-
-		/* (non-Javadoc)
-		 * @see org.cts2.internal.match.AttributeResolver#resolveAttribute(java.lang.Object)
-		 */
-		@Override
-		public String resolveAttribute(
-				CodingSchemeRendering modelObject) {
-			
-			return lexEvsIdentityConverter.codingSchemeSummaryToCodeSystemVersionName(modelObject.getCodingSchemeSummary());
-		}
-	}
-
 	@Override
 	public List<MatchAlgorithmReference> registerSupportedMatchAlgorithmReferences() {
 		// TODO Auto-generated method stub

@@ -32,7 +32,7 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 			new AbstractIterableLexEvsBackedRestrictionHandler<TestThing>(){
 
 				@Override
-				public List<ResolvableModelAttributeReference<TestThing>> registerSupportedModelAttributes() {
+				public List<ResolvableModelAttributeReference<TestThing>> registerSupportedModelAttributeReferences() {
 					List<ResolvableModelAttributeReference<TestThing>> returnList = new ArrayList<ResolvableModelAttributeReference<TestThing>>();
 					
 					ResolvableModelAttributeReference<TestThing> ref = new ResolvableModelAttributeReference<TestThing>(
@@ -62,6 +62,12 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 					returnList.add(ref2);
 					
 					return returnList;
+				}
+
+				@Override
+				public List<MatchAlgorithmReference> registerSupportedMatchAlgorithmReferences() {
+					// TODO Auto-generated method stub
+					return null;
 				}
 		};
 		
@@ -128,7 +134,9 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		Filter filter = this.buildFilter(testFilterComponent);
 		
 		List<TestThing> returnList = new ArrayList<TestThing>();
-		Iterables.addAll(returnList,this.handler.restrict(Arrays.asList(one,two,three), filter));
+		IterableRestriction<TestThing> restriction = this.handler.restrict(filter);
+		
+		Iterables.addAll(returnList, restriction.processRestriction(Arrays.asList(one,two,three)));
 		
 		assertEquals(1, returnList.size());
 		
@@ -150,7 +158,10 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		Filter filter = this.buildFilter(testFilterComponent1,testFilterComponent2);
 		
 		List<TestThing> returnList = new ArrayList<TestThing>();
-		Iterables.addAll(returnList, this.handler.restrict(Arrays.asList(one,two,three), filter));
+		
+		IterableRestriction<TestThing> restriction = this.handler.restrict(filter);
+		
+		Iterables.addAll(returnList, restriction.processRestriction(Arrays.asList(one,two,three)));
 		
 		assertEquals(2, returnList.size());
 	}
@@ -173,7 +184,9 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		Filter filter = this.buildFilter(testFilterComponent1,testFilterComponent2,testFilterComponent3);
 		
 		List<TestThing> returnList = new ArrayList<TestThing>();
-		Iterables.addAll(returnList, this.handler.restrict(Arrays.asList(one,two,three), filter));
+		IterableRestriction<TestThing> restriction = this.handler.restrict(filter);
+		
+		Iterables.addAll(returnList, restriction.processRestriction(Arrays.asList(one,two,three)));
 
 		assertEquals(1, returnList.size());
 		
