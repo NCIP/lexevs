@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ModuleDescriptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ModuleDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -181,6 +182,12 @@ public class DefaultEntityDescriptionRestrictionHandler
 	@Override
 	public List<MatchAlgorithmReference> registerSupportedMatchAlgorithmReferences() {
 		List<MatchAlgorithmReference> returnList = new ArrayList<MatchAlgorithmReference>();
+		
+		ModuleDescriptionList matchAlgorithms = this.lexBigService.getMatchAlgorithms();
+		
+		if(matchAlgorithms == null || matchAlgorithms.getModuleDescriptionCount() == 0){
+			return returnList;
+		}
 		
 		for(ModuleDescription moduleDescription : this.lexBigService.getMatchAlgorithms().getModuleDescription()){
 			returnList.add(this.buildMatchAlgorithmReference(moduleDescription));
