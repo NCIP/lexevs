@@ -18,6 +18,12 @@
  */
 package org.cts2.internal.model.uri.factory;
 
+import junit.framework.Assert;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.cts2.internal.model.uri.DefaultEntityDirectoryURI;
+import org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler;
+import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.uri.EntityDirectoryURI;
 
 
@@ -28,10 +34,26 @@ import org.cts2.uri.EntityDirectoryURI;
  */
 public class EntityDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<EntityDirectoryURI> {
 
+	private EntityDescriptionRestrictionHandler entityDescriptionRestrictionHandler;
+	
 	@Override
 	protected EntityDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.assertNotNull(this.entityDescriptionRestrictionHandler);
+		
+		try {
+			return new DefaultEntityDirectoryURI(ProfileUtils.unionAll(this.getLexBigService()), this.entityDescriptionRestrictionHandler, this.getBeanMapper());
+		} catch (LBException e) {
+			//TODO: CTS2 exception
+			throw new RuntimeException(e);
+		}
 	}
 
+	public void setEntityDescriptionRestrictionHandler(
+			EntityDescriptionRestrictionHandler entityDescriptionRestrictionHandler) {
+		this.entityDescriptionRestrictionHandler = entityDescriptionRestrictionHandler;
+	}
+
+	public EntityDescriptionRestrictionHandler getEntityDescriptionRestrictionHandler() {
+		return entityDescriptionRestrictionHandler;
+	}
 }

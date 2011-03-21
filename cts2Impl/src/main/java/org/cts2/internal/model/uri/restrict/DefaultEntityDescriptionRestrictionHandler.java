@@ -220,4 +220,21 @@ public class DefaultEntityDescriptionRestrictionHandler
 		//TODO: throw real CTS2 exception
 		throw new IllegalStateException();
 	}
+
+	public LexEvsIdentityConverter getLexEvsIdentityConverter() {
+		return lexEvsIdentityConverter;
+	}
+
+	public void setLexEvsIdentityConverter(
+			LexEvsIdentityConverter lexEvsIdentityConverter) {
+		this.lexEvsIdentityConverter = lexEvsIdentityConverter;
+	}
+
+	public LexBIGService getLexBigService() {
+		return lexBigService;
+	}
+
+	public void setLexBigService(LexBIGService lexBigService) {
+		this.lexBigService = lexBigService;
+	}
 }
