@@ -147,7 +147,6 @@
 	<bean id="lexEvsValueSetDefinitionReadService" class="org.cts2.internal.profile.read.LexEvsValueSetDefinitionReadService" parent="abstractBaseService">
 		<property name="valueSetDefinitionFactory" ref="valueSetDefinitionFactory" />	
 	</bean>
-	<!--  -->
 
 	
 	<!-- Directory URI Factories -->

@@ -80,6 +80,23 @@
 			<a>this</a>
 			<b>this</b>
 		</field>
+		<field>
+			<a>entity.presentation</a>
+			<b>designation</b>
+		</field>
+		<field>
+			<a>entity.property</a>
+			<b>property</b>
+		</field>
+		<field>
+			<a>entity.comment</a>
+			<b>comment</b>
+		</field>
+		<field>
+			<a>entity.definition</a>
+			<b>definition</b>
+		</field>
+		
 		<!-- field custom-converter-id="entityReferenceTypeConverterId" custom-converter-param="NAMED_ENTITY">
 			<a>this</a>
 			<b>resourceType[0].entityReferenceType</b>

@@ -94,6 +94,5 @@ public class PresentationToDesignationTest extends BaseDozerBeanMapperTest{
 	@Test
 	public void testGetIsPreferred() {
 		assertEquals(DesignationRole.ALTERNATIVE, designation.getDesignationRole());
-		
 	}
 }
