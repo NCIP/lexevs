@@ -265,32 +265,52 @@
 		</field-->		
 	</mapping>
 
-	<mapping>
+	<mapping wildcard="false">
 		<class-a>org.LexGrid.concepts.Comment</class-a>
 		<class-b>org.cts2.core.Comment</class-b>	
-		<!-- field custom-converter-id="renderingURIGeneratorId" custom-converter-param="codesystem-entity-statement">
-			<a>this</a>
-			<b>href</b>
-		</field-->			
 		<field>
 			<a>propertyId</a>
 			<b>externalIdentifier</b>
 		</field>				
-<!--		<field>-->
-<!--			<a>value.content</a>-->
-<!--			<b>value.value</b>-->
-<!--		</field>	-->
-		<!-- field>
+		<field>
+			<a>value.content</a>
+			<b>value</b>
+		</field>	
+		<field>
 			<a>language</a>
 			<b>language.content</b>
 		</field>
-		<field map-id="sourceMap">
+		<field>
+			<a>value.dataType</a>
+			<b>format.content</b>
+		</field>
+		<!-- <field map-id="sourceMap">
 			<a>sourceAsReference</a>
 			<b>sourceAsReference</b>
 			<b-hint>org.terms.Core.SourceReference</b-hint>
 		</field-->			
 	</mapping>
-			
+		
+	<mapping wildcard="false">
+		<class-a>org.LexGrid.commonTypes.Property</class-a>
+		<class-b>org.cts2.core.Property</class-b>
+		<field>
+			<a>propertyId</a>
+			<b>externalIdentifier</b>
+		</field>
+		<field>
+			<a>value.content</a>
+			<b>value.value</b>
+		</field>
+		<field>
+			<a>value.dataType</a>
+			<b>value.format.content</b>
+		</field>
+		<field>
+			<a>language</a>
+			<b>value.language.content</b>
+		</field>
+	</mapping>	
 <!-- 	<mapping>
 		<class-a>java.lang.String</class-a>
 		<class-b>org.cts2.core.ContextReference</class-b>
