@@ -21,13 +21,16 @@ package org.cts2.internal.profile;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.cts2.core.EntityReference;
 
 /**
  * The Class ProfileUtils.
@@ -75,6 +78,20 @@ public class ProfileUtils {
 			if(csr.getRenderingDetail().getVersionStatus().equals(CodingSchemeVersionStatus.ACTIVE)){
 				returnList.add(Constructors.createAbsoluteCodingSchemeVersionReference(csr.getCodingSchemeSummary()));
 			}
+		}
+		
+		return returnList;
+	}
+	
+	public static ConceptReferenceList entityReferenceToConceptReferenceList(List<EntityReference> entities){
+		ConceptReferenceList returnList = new ConceptReferenceList();
+		
+		for(EntityReference entityReference : entities) {
+			ConceptReference ref = new ConceptReference();
+			ref.setCode(entityReference.getLocalEntityName().getName());
+			ref.setCodeNamespace(entityReference.getLocalEntityName().getNamespace());
+			
+			returnList.addConceptReference(ref);
 		}
 		
 		return returnList;

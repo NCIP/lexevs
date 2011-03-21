@@ -40,28 +40,27 @@ public class LexEvsCodeSystemVersionQueryService extends AbstractBaseQueryServic
 	
 	@Override
 	public CodeSystemVersionDirectoryURI restrictToEntities(
-			CodeSystemVersionDirectoryURI codeSystemQueryURI,
+			CodeSystemVersionDirectoryURI codeSystemVersionDirectoryURI,
 			List<EntityReference> entities, 
 			RestrictionType allOrSome,
 			ActiveOrAll active) {
-		// TODO Auto-generated method stub
-		return null;
+		return codeSystemVersionDirectoryURI.restrictToEntities(entities, allOrSome, active);
 	}
 
 	@Override
 	public CodeSystemVersionDirectory resolve(
-			CodeSystemVersionDirectoryURI codeSystemQueryURI,
+			CodeSystemVersionDirectoryURI codeSystemVersionDirectoryURI,
 			QueryControl queryControl, 
 			ReadContext readContext) {
-		return codeSystemQueryURI.get(queryControl, readContext, CodeSystemVersionDirectory.class);
+		return codeSystemVersionDirectoryURI.get(queryControl, readContext, CodeSystemVersionDirectory.class);
 	}
 
 	@Override
 	public CodeSystemVersionList resolveAsList(
-			CodeSystemVersionDirectoryURI codeSystemQueryURI,
+			CodeSystemVersionDirectoryURI codeSystemVersionDirectoryURI,
 			QueryControl queryControl, 
 			ReadContext readContext) {
-		return codeSystemQueryURI.get(queryControl, readContext, CodeSystemVersionList.class);	
+		return codeSystemVersionDirectoryURI.get(queryControl, readContext, CodeSystemVersionList.class);	
 	}
 
 	@Override
