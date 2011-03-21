@@ -17,7 +17,8 @@
  * 
  */
 package org.cts2.castor.fieldhandler;
-import org.exolab.castor.mapping.AbstractFieldHandler;
+import org.cts2.uri.DirectoryURI;
+import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 
 /**
@@ -25,53 +26,36 @@ import org.exolab.castor.mapping.AbstractFieldHandler;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DirectoryURIFieldHandler extends AbstractFieldHandler {
+public class DirectoryURIFieldHandler extends GeneralizedFieldHandler {
 
 	/* (non-Javadoc)
-	 * @see org.exolab.castor.mapping.AbstractFieldHandler#getValue(java.lang.Object)
+	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#convertUponGet(java.lang.Object)
 	 */
 	@Override
-	public Object getValue(Object arg0) throws IllegalStateException {
+	public Object convertUponGet(Object directoryURI) {
+		if(directoryURI == null){
+			return null;
+		}
 		
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.exolab.castor.mapping.AbstractFieldHandler#newInstance(java.lang.Object)
-	 */
-	@Override
-	public Object newInstance(Object arg0) throws IllegalStateException {
+		DirectoryURI uri = (DirectoryURI)directoryURI;
 		
+		return uri.marshall();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#convertUponSet(java.lang.Object)
+	 */
+	@Override
+	public Object convertUponSet(Object arg0) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.exolab.castor.mapping.AbstractFieldHandler#newInstance(java.lang.Object, java.lang.Object[])
+	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#getFieldType()
 	 */
 	@Override
-	public Object newInstance(Object arg0, Object[] arg1)
-			throws IllegalStateException {
-
-		return null;
+	public Class<?> getFieldType() {
+		return DirectoryURI.class;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.exolab.castor.mapping.AbstractFieldHandler#resetValue(java.lang.Object)
-	 */
-	@Override
-	public void resetValue(Object arg0) throws IllegalStateException,
-			IllegalArgumentException {
-	
-		System.out.println(arg0);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.exolab.castor.mapping.AbstractFieldHandler#setValue(java.lang.Object, java.lang.Object)
-	 */
-	@Override
-	public void setValue(Object arg0, Object arg1)
-			throws IllegalStateException, IllegalArgumentException {
-		System.out.println(arg1);
-	}
-
 }
