@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedNamespace;
 import org.cts2.entity.NamedEntityDescription;
@@ -32,6 +33,25 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 		ref.setCodingSchemeName("codingSchemeName");
 		ref.setCodingSchemeURI("testUri");
 		ref.setCodingSchemeVersion("testVersion");
+		
+		org.LexGrid.concepts.Presentation presentation1 = new org.LexGrid.concepts.Presentation();
+		presentation1.setDegreeOfFidelity("degree of fidelity");
+		presentation1.setPropertyId("presentation 1");
+		Text t1 = new Text();
+		t1.setContent("1 content");
+		t1.setDataType("string");
+		presentation1.setValue(t1);
+		org.LexGrid.concepts.Presentation presentation2 = new org.LexGrid.concepts.Presentation();
+		presentation2.setDegreeOfFidelity("degree of fidelity");
+		presentation2.setPropertyId("presentation 2");
+		Text t2 = new Text();
+		t2.setContent("2 content");
+		t2.setDataType("string");
+		presentation1.setValue(t2);
+		
+		ref.getEntity().addPresentation(presentation1);
+		ref.getEntity().addPresentation(presentation2);
+		
 		
 		CodingSchemeService css = EasyMock.createMock(CodingSchemeService.class);
 		
