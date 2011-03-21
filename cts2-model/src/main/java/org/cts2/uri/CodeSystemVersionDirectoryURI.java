@@ -18,6 +18,11 @@
  */
 package org.cts2.uri;
 
+import java.util.List;
+
+import org.cts2.core.EntityReference;
+import org.cts2.service.core.types.ActiveOrAll;
+import org.cts2.service.core.types.RestrictionType;
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
@@ -26,4 +31,17 @@ package org.cts2.uri;
  */
 public interface CodeSystemVersionDirectoryURI 
 	extends DirectoryURI {
+	
+	/**
+	 * Restrict to entities.
+	 *
+	 * @param entities the entities
+	 * @param allOrSome the all or some
+	 * @param active the active
+	 * @return the code system version directory uri
+	 */
+	public CodeSystemVersionDirectoryURI restrictToEntities(
+			List<EntityReference> entities, 
+			RestrictionType allOrSome,
+			ActiveOrAll active);
 }
