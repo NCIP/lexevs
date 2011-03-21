@@ -21,6 +21,7 @@ package org.cts2.internal.profile.query;
 import java.util.List;
 
 import org.cts2.core.Filter;
+import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.ModelAttributeReference;
 import org.cts2.internal.model.uri.factory.DirectoryURIFactory;
 import org.cts2.internal.model.uri.restrict.RestrictionHandler;
@@ -32,25 +33,49 @@ import org.cts2.uri.DirectoryURI;
 /**
  * The Class AbstractBaseQueryService.
  *
+ * @param <U> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends AbstractBaseService implements BaseQueryService<U>{
+public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends AbstractBaseService implements BaseQueryService<U> {
 	
 	/** The directory uri factory. */
 	private DirectoryURIFactory<U> directoryURIFactory;
 	
+	/** The restriction handler. */
 	private RestrictionHandler restrictionHandler;
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.BaseQueryService#count(org.cts2.uri.DirectoryURI, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public int count(U directoryUri, ReadContext readContext) {
 		return directoryUri.count(readContext);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.BaseQueryService#restrict(org.cts2.uri.DirectoryURI, org.cts2.core.Filter)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public  U restrict(U directoryUri, Filter filter) {
 		return (U) directoryUri.restrict(filter);
 	}	
+
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.BaseQueryService#getSupportedModelAttributeReferences()
+	 */
+	@Override
+	public List<? extends ModelAttributeReference> getSupportedModelAttributeReferences() {
+		return this.restrictionHandler.getSupportedModelAttributeReferences();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.BaseQueryService#getSupportedMatchAlgorithmReferences()
+	 */
+	@Override
+	public List<? extends MatchAlgorithmReference> getSupportedMatchAlgorithmReferences() {
+		return this.restrictionHandler.getSupportedMatchAlgorithmReferences();
+	}
 	
 	/**
 	 * Sets the directory uri factory.
@@ -69,9 +94,22 @@ public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends A
 	public DirectoryURIFactory<U> getDirectoryURIFactory() {
 		return this.directoryURIFactory;
 	}
+	
+	/**
+	 * Gets the restriction handler.
+	 *
+	 * @return the restriction handler
+	 */
+	public RestrictionHandler getRestrictionHandler() {
+		return restrictionHandler;
+	}
 
-	@Override
-	public List<? extends ModelAttributeReference> getSupportedModelAttributes() {
-		return this.restrictionHandler.getSupportedModelAttributes();
+	/**
+	 * Sets the restriction handler.
+	 *
+	 * @param restrictionHandler the new restriction handler
+	 */
+	public void setRestrictionHandler(RestrictionHandler restrictionHandler) {
+		this.restrictionHandler = restrictionHandler;
 	}
 }

@@ -28,7 +28,7 @@ import org.cts2.service.core.ReadContext;
 import org.cts2.uri.EntityDirectoryURI;
 
 /**
- * The Class LexEvsCodeSystemQuery.
+ * The Class LexEvsEntityDescriptionQueryService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a> <a
  *         href="mailto:lian.zonghui@mayo.edu">Zonghui Lian</a>
@@ -37,40 +37,50 @@ public class LexEvsEntityDescriptionQueryService extends
 		AbstractBaseQueryService<EntityDirectoryURI> implements
 		EntityDescriptionQueryService {
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.EntityDescriptionQueryService#getEntities()
+	 */
 	@Override
 	public EntityDirectoryURI getEntities() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDirectoryURIFactory().getDirectoryURI();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.EntityDescriptionQueryService#resolve(org.cts2.uri.EntityDirectoryURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public EntityDirectory resolve(EntityDirectoryURI entityQueryURI,
 			QueryControl queryControl, ReadContext readContext) {
-		// TODO Auto-generated method stub
 		return entityQueryURI.get(queryControl, readContext,
 				EntityDirectory.class);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.EntityDescriptionQueryService#resolveAsList(org.cts2.uri.EntityDirectoryURI, org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext)
+	 */
 	@Override
 	public EntityList resolveAsList(EntityDirectoryURI codeSystemQueryURI,
 			QueryControl queryControl, ReadContext readContext) {
-		// TODO Auto-generated method stub
 		return codeSystemQueryURI.get(queryControl, readContext,
 				EntityList.class);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.EntityDescriptionQueryService#restrictToCodeSystems(org.cts2.uri.EntityDirectoryURI, org.cts2.service.core.NameOrURI, org.cts2.core.VersionTagReference)
+	 */
 	@Override
 	public EntityDirectoryURI restrictToCodeSystems(
-			EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystems,
+			EntityDirectoryURI entityDirectoryUri, NameOrURI codeSystems,
 			VersionTagReference tag) {
-		// TODO Auto-generated method stub
-		return null;
+		return entityDirectoryUri.restrictToCodeSystems(codeSystems, tag);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.query.EntityDescriptionQueryService#restrictToCodeSystemVersions(org.cts2.uri.EntityDirectoryURI, org.cts2.service.core.NameOrURI)
+	 */
 	@Override
 	public EntityDirectoryURI restrictToCodeSystemVersions(
-			EntityDirectoryURI codeSystemQueryURI, NameOrURI codeSystemVersions) {
-		// TODO Auto-generated method stub
-		return null;
+			EntityDirectoryURI entityDirectoryUri, NameOrURI codeSystemVersions) {
+		return entityDirectoryUri.restrictToCodeSystemVersions(codeSystemVersions);
 	}
 }
