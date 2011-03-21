@@ -10,10 +10,12 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedNamespace;
+import org.cts2.core.types.DefinitionRole;
 import org.cts2.entity.NamedEntityDescription;
 import org.cts2.entity.types.DesignationRole;
 import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
+import org.cts2.internal.mapper.converter.DefinitionPreferredToDefinitionRoleConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionAboutConverter;
 import org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter;
 import org.easymock.classextension.EasyMock;
@@ -26,10 +28,14 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 	@Resource
 	private NamedEntityDescriptionAboutConverter namedEntityDescriptionAboutConverter;
 	@Resource
-	private PresentationPreferredToDesignationRoleConverter converter;
+	private PresentationPreferredToDesignationRoleConverter presentationConverter;
+	@Resource 
+	private DefinitionPreferredToDefinitionRoleConverter definitionConverter;
+	
 	private ResolvedConceptReference ref;
 	private NamedEntityDescription mapped;
 
+	
 	@Before
 	public void initialize() {
 		ref = new ResolvedConceptReference();
@@ -44,33 +50,18 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 		entity.setEntityCodeNamespace("testNamespace");
 		
 		ref.setEntity(entity);
-
+		
 		//presentation
-		org.LexGrid.concepts.Presentation presentation1 = new org.LexGrid.concepts.Presentation();
-		presentation1.setDegreeOfFidelity("testFed");
-		presentation1.setPropertyId("testPropertyID");
-		presentation1.setLanguage("en");
-		Text value = new Text();
-		value.setContent("testValue");
-		value.setDataType("string");
-		presentation1.setValue(value);
-		presentation1.setPropertyName("property name");
-		presentation1.addUsageContext("test usage context 1");
-		presentation1.addUsageContext("test usage context 2");
-		presentation1.addUsageContext("test usage context 3");
-		org.LexGrid.concepts.Presentation presentation2 = new org.LexGrid.concepts.Presentation();
-		presentation2.setDegreeOfFidelity("degree of fidelity");
-		presentation2.setPropertyId("presentation 2");
-		Text t2 = new Text();
-		t2.setContent("2 content");
-		t2.setDataType("string");
-		
-		ref.getEntity().addPresentation(presentation1);
-		ref.getEntity().addPresentation(presentation2);
-		
+		this.initPresentations();
+
 		//property
+		this.initProperties();
 		
+		//comment
+		this.initComments();
 		
+		//definition
+		this.initDefinitions();
 		
 		CodingSchemeService css = EasyMock.createMock(CodingSchemeService.class);
 		
@@ -89,7 +80,8 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 		this.namedEntityDescriptionAboutConverter.setCodingSchemeService(css);
 		LexEvsIdentityConverter lexEvsIdentityConverter = new DefaultLexEvsIdentityConverter();
 		this.namedEntityDescriptionAboutConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
-		this.converter.setLexEvsIdentityConverter(lexEvsIdentityConverter);		
+		this.presentationConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
+		definitionConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		
 		mapped = baseDozerBeanMapper.map(ref, NamedEntityDescription.class);
 //		mapped.setAbout(about)
@@ -149,5 +141,116 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 		assertEquals(DesignationRole.ALTERNATIVE, mapped.getDesignation(0).getDesignationRole());
 	}
 	
+	@Test
+	public void testGetPropertyCount() {
+		assertEquals(2, mapped.getPropertyCount());
+	}
 	
+	@Test
+	public void testGetProperty() {
+		assertEquals("propertyId", mapped.getProperty(0).getExternalIdentifier());
+		assertEquals("content", mapped.getProperty(0).getValue().getValue());
+		assertEquals("string", mapped.getProperty(0).getValue().getFormat().getContent());
+		assertEquals("test lang", mapped.getProperty(0).getValue().getLanguage().getContent());
+	}
+
+	@Test
+	public void testGetCommentCount() {
+		assertEquals(2, mapped.getNoteCount());
+	}
+	
+	@Test
+	public void testGetComment(){
+		assertEquals("content", mapped.getNote(0).getValue());
+		assertEquals("testLanguage", mapped.getNote(0).getLanguage().getContent());
+		assertEquals("string", mapped.getNote(0).getFormat().getContent());
+		assertEquals("propertyId", mapped.getNote(0).getExternalIdentifier());
+	}
+	
+	@Test
+	public void testGetDefinitionCount(){
+		assertEquals(2, mapped.getDefinitionCount());
+	}
+	
+	@Test
+	public void testGetDefinition(){
+		assertEquals("test propertyid", mapped.getDefinition(0).getExternalIdentifier());
+		assertEquals("test language", mapped.getDefinition(0).getLanguage().getContent());
+		assertEquals("content", mapped.getDefinition(0).getValue());
+		assertEquals("string", mapped.getDefinition(0).getFormat().getContent());
+		assertEquals(DefinitionRole.INFORMATIVE, mapped.getDefinition(0).getDefinitionRole());
+		assertEquals("usage context 1", mapped.getDefinition(0).getUsageContext().getContent());
+	}
+	
+	private void initProperties() {
+		org.LexGrid.commonTypes.Property prop1 = new org.LexGrid.commonTypes.Property();
+		prop1.setPropertyId("propertyId");
+		Text t = new Text();
+		t.setContent("content");
+		t.setDataType("string");
+		prop1.setValue(t);
+		prop1.setLanguage("test lang");
+		org.LexGrid.commonTypes.Property prop2 = new org.LexGrid.commonTypes.Property();
+		prop2.setPropertyId("prop2");
+		
+		ref.getEntity().addProperty(prop1);
+		ref.getEntity().addProperty(prop2);
+	}
+	
+	private void initComments() {
+		org.LexGrid.concepts.Comment com1 = new org.LexGrid.concepts.Comment();
+		com1.setLanguage("testLanguage");
+		Text t = new Text();
+		t.setContent("content");
+		t.setDataType("string");
+		com1.setValue(t);
+		com1.setPropertyId("propertyId");
+		org.LexGrid.concepts.Comment com2 = new org.LexGrid.concepts.Comment();
+		com2.setLanguage("testLanguage2");
+		com2.setPropertyId("propertyId2");
+		
+		ref.getEntity().addComment(com1);
+		ref.getEntity().addComment(com2);
+	}
+	
+	private void initDefinitions() {
+		org.LexGrid.concepts.Definition def1 = new org.LexGrid.concepts.Definition();
+		def1.setPropertyId("test propertyid");
+		def1.setLanguage("test language");
+		Text t = new Text();
+		t.setDataType("string");
+		t.setContent("content");
+		def1.setValue(t);
+		def1.addUsageContext("usage context 1");
+		def1.addUsageContext("usage context 2");
+		org.LexGrid.concepts.Definition def2 = new org.LexGrid.concepts.Definition();
+		def2.setPropertyId("test propertyid 2");
+		
+		ref.getEntity().addDefinition(def1);
+		ref.getEntity().addDefinition(def2);
+	}
+	
+	private void initPresentations() {
+		org.LexGrid.concepts.Presentation presentation1 = new org.LexGrid.concepts.Presentation();
+		presentation1.setDegreeOfFidelity("testFed");
+		presentation1.setPropertyId("testPropertyID");
+		presentation1.setLanguage("en");
+		Text value = new Text();
+		value.setContent("testValue");
+		value.setDataType("string");
+		presentation1.setValue(value);
+		presentation1.setPropertyName("property name");
+		presentation1.addUsageContext("test usage context 1");
+		presentation1.addUsageContext("test usage context 2");
+		presentation1.addUsageContext("test usage context 3");
+		org.LexGrid.concepts.Presentation presentation2 = new org.LexGrid.concepts.Presentation();
+		presentation2.setDegreeOfFidelity("degree of fidelity");
+		presentation2.setPropertyId("presentation 2");
+		Text t2 = new Text();
+		t2.setContent("2 content");
+		t2.setDataType("string");
+		
+		ref.getEntity().addPresentation(presentation1);
+		ref.getEntity().addPresentation(presentation2);
+	}
 }

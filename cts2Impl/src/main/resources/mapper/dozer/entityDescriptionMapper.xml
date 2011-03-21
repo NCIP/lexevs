@@ -90,7 +90,7 @@
 		</field>
 		<field>
 			<a>entity.comment</a>
-			<b>comment</b>
+			<b>note</b>
 		</field>
 		<field>
 			<a>entity.definition</a>
