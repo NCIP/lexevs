@@ -31,7 +31,7 @@ public class AssociationDirectoryURIFactory extends
 
 	@Override
 	protected AssociationDirectoryURI doBuildDirectoryURI() {
-		// TODO Auto-generated method stub
+	
 		return null;
 	}
 

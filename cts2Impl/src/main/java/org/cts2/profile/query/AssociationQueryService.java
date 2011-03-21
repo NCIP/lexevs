@@ -18,24 +18,140 @@
  */
 package org.cts2.profile.query;
 
+import java.util.List;
+
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
+import org.cts2.core.EntityReference;
+import org.cts2.core.TargetExpression;
+import org.cts2.service.core.EntityNameOrURI;
+import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.service.core.types.ActiveOrAll;
+import org.cts2.service.core.types.RestrictionType;
 import org.cts2.uri.AssociationDirectoryURI;
+import org.cts2.uri.CodeSystemVersionDirectoryURI;
+import org.cts2.uri.EntityDirectoryURI;
 
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
- *
+ * 
  */
-public interface AssociationQueryService extends BaseQueryService<AssociationDirectoryURI> {
+public interface AssociationQueryService extends
+		BaseQueryService<AssociationDirectoryURI> {
 
 	/**
-	 * @return All associations in the Code System.
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
 	 */
-	public AssociationDirectoryURI getAllAssociations();
-	
-	public AssociationDirectory resolve(AssociationDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
-	
-	public AssociationList resolveAsList(AssociationDirectoryURI codeSystemQueryURI, QueryControl queryControl, ReadContext readContext);
+	public EntityDirectoryURI getAllSourceAndTargetEntities(
+			EntityDirectoryURI directory, QueryControl queryControl,
+			ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getPredicates(AssociationDirectoryURI directory,
+			QueryControl queryControl, ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getSourceEntities(
+			AssociationDirectoryURI directory, QueryControl queryControl,
+			ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getTargetEntities(
+			AssociationDirectoryURI directory, QueryControl queryControl,
+			ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public AssociationDirectory resolve(AssociationDirectoryURI directory,
+			QueryControl queryControl, ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public AssociationList resolveAsList(AssociationDirectoryURI directory,
+			QueryControl queryControl, ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param codeSystemVersion
+	 */
+	public AssociationDirectoryURI restrictToCodeSystemVersion(
+			AssociationDirectoryURI directory, NameOrURI codeSystemVersion);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param predicate
+	 */
+	public AssociationDirectoryURI restrictToPredicate(
+			AssociationDirectoryURI directory, EntityNameOrURI predicate);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param sourceEntity
+	 */
+	public AssociationDirectoryURI restrictToSourceEntity(
+			AssociationDirectoryURI directory, EntityNameOrURI sourceEntity);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param entity
+	 */
+	public AssociationDirectoryURI restrictToSourceOrTargetEntity(
+			AssociationDirectoryURI directory, EntityNameOrURI entity);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param target
+	 */
+	public AssociationDirectoryURI restrictToTargetEntity(
+			AssociationDirectoryURI directory, EntityNameOrURI target);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param target
+	 */
+	public AssociationDirectoryURI restrictToTargetExpression(
+			AssociationDirectoryURI directory, TargetExpression target);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param target
+	 */
+	public AssociationDirectoryURI restrictToTargetLiteral(
+			AssociationDirectoryURI directory, String target);
+
 }
