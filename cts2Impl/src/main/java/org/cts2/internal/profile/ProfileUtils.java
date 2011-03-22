@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -83,6 +84,7 @@ public class ProfileUtils {
 		return returnList;
 	}
 	
+	
 	public static ConceptReferenceList entityReferenceToConceptReferenceList(List<EntityReference> entities){
 		ConceptReferenceList returnList = new ConceptReferenceList();
 		
@@ -95,5 +97,23 @@ public class ProfileUtils {
 		}
 		
 		return returnList;
+	}
+	
+	public static CodedNodeGraph unionAllGraphs(LexBIGService lexBigService) throws LBException {
+		CodedNodeGraph cng = null;
+		for(CodingSchemeRendering csr : lexBigService.getSupportedCodingSchemes().getCodingSchemeRendering()){
+			CodedNodeGraph newCns = lexBigService.getNodeGraph(
+					csr.getCodingSchemeSummary().getCodingSchemeURI(),
+					Constructors.createCodingSchemeVersionOrTagFromVersion(csr.getCodingSchemeSummary().getRepresentsVersion()),
+					null);
+			
+			if(cng == null){
+				cng = newCns;
+			} else {
+				cng = cng.union(newCns);
+			}
+		}
+		
+		return cng;
 	}
 }
