@@ -59,6 +59,9 @@
 				<entry key="definitionEntryToValueSetDefinitionEntryConverter">
 					<ref bean="definitionEntryToValueSetDefinitionEntryConverter"/>
 				</entry>
+				<entry key="namedEntityDescriptionPropertyListConverter">
+					<ref bean="namedEntityDescriptionPropertyListConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -106,6 +109,10 @@
 	<bean id="definitionEntryToValueSetDefinitionEntryConverter"
 		class="org.cts2.internal.mapper.converter.DefinitionEntryToValueSetDefinitionEntryConverter">
 		<property name="definitionOperatorToSetOperatorConverter" ref="definitionOperatorToSetOperatorConverter" />
+	</bean>
+	<bean id="namedEntityDescriptionPropertyListConverter"
+		class="org.cts2.internal.mapper.converter.NamedEntityDescriptionPropertyListConverter">
+		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	<!--  End Dozer Custom Converters -->
 
