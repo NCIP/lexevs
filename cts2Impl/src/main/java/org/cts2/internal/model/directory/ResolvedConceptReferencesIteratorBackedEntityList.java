@@ -28,8 +28,8 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.cts2.entity.EntityList;
 import org.cts2.entity.EntityListEntry;
-import org.cts2.internal.directory.iterator.DirectoryEntryIterator;
 import org.cts2.internal.mapper.BeanMapper;
+import org.cts2.internal.model.directory.iterator.DirectoryEntryIterator;
 import org.cts2.internal.util.PagingList;
 
 /**
