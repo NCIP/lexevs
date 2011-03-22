@@ -9,6 +9,8 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedNamespace;
 import org.cts2.core.types.DefinitionRole;
 import org.cts2.entity.NamedEntityDescription;
@@ -73,10 +75,16 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		cs.getMappings().addSupportedNamespace(new SupportedNamespace());
 		cs.getMappings().getSupportedNamespace(0).setLocalId("test-namespace");
 		cs.getMappings().getSupportedNamespace(0).setUri("test-namespace-uri");
+		cs.getMappings().addSupportedLanguage(new SupportedLanguage());
+		cs.getMappings().getSupportedLanguage(0).setLocalId("test lang");
+		cs.getMappings().getSupportedLanguage(0).setUri("test lang uri");
+		cs.getMappings().addSupportedDataType(new SupportedDataType());
+		cs.getMappings().getSupportedDataType(0).setLocalId("string");
+		cs.getMappings().getSupportedDataType(0).setUri("string uri");
 		cs.setRepresentsVersion("testVersion");
 		cs.setCodingSchemeURI("testUri");
 		
-		EasyMock.expect(css.getCodingSchemeByUriAndVersion("testUri", "testVersion")).andReturn(cs).times(1);
+		EasyMock.expect(css.getCodingSchemeByUriAndVersion("testUri", "testVersion")).andReturn(cs).times(2);
 		
 		EasyMock.replay(css);
 		
@@ -86,6 +94,7 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		this.presentationConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		definitionConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		namedEntityDescriptionPropertyListConverter.setBaseDozerBeanMapper(baseDozerBeanMapper);
+		namedEntityDescriptionPropertyListConverter.setCodingSchemeService(css);
 		
 		mapped = baseDozerBeanMapper.map(ref, NamedEntityDescription.class);
 //		mapped.setAbout(about)
@@ -155,7 +164,9 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		assertEquals("propertyId", mapped.getProperty(0).getExternalIdentifier());
 		assertEquals("content", mapped.getProperty(0).getValue().getValue());
 		assertEquals("string", mapped.getProperty(0).getValue().getFormat().getContent());
+		assertEquals("string uri", mapped.getProperty(0).getValue().getFormat().getMeaning());
 		assertEquals("test lang", mapped.getProperty(0).getValue().getLanguage().getContent());
+		assertEquals("test lang uri", mapped.getProperty(0).getValue().getLanguage().getMeaning());
 	}
 
 	@Test
