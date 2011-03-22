@@ -20,14 +20,19 @@ package org.cts2.internal.model.uri.restrict;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.core.MatchAlgorithmReference;
+import org.cts2.core.VersionTagReference;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
+import org.cts2.service.core.NameOrURI;
 
 /**
- * The Class DefaultAssociationRestrictionHandler.
+ * The Class DefaultEntityDescriptionRestrictionHandler.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
@@ -40,16 +45,61 @@ public class DefaultAssociationRestrictionHandler
 	/** The lex big service. */
 	private LexBIGService lexBigService;
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler#restrictToCodeSystems(org.cts2.service.core.NameOrURI, org.cts2.core.VersionTagReference)
+	 */
+	@Override
+	public Restriction<CodedNodeGraph> restrictToCodeSystems(
+			NameOrURI codeSystems,
+			VersionTagReference tag) {
+		//TODO: decide strategy for implementing CodeSystem profile.
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler#restrictToCodeSystemVersions(org.cts2.service.core.NameOrURI)
+	 */
+	@Override
+	public Restriction<CodedNodeGraph> restrictToCodeSystemVersions(
+			final NameOrURI codeSystemVersions) {
+		
+		return new Restriction<CodedNodeGraph>(){
+
+			@Override
+			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+				AbsoluteCodingSchemeVersionReference ref = 
+					lexEvsIdentityConverter.nameOrUriToAbsoluteCodingSchemeVersionReference(codeSystemVersions);
+				
+				try {
+					CodedNodeGraph versionToRestrictTo = 
+						lexBigService.getNodeGraph(ref.getCodingSchemeURN(), 
+								Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()), null);
+					
+					return state.intersect(versionToRestrictTo);
+				} catch (LBException e) {
+					//TODO: throw real CTS2 exception
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractNonIterableLexEvsBackedRestrictionHandler#registerSupportedModelAttributeReferences()
+	 */
 	@Override
 	public List<OperationExecutingModelAttributeReference<CodedNodeGraph>> registerSupportedModelAttributeReferences() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractRestrictionHandler#registerSupportedMatchAlgorithmReferences()
+	 */
 	@Override
 	public List<MatchAlgorithmReference> registerSupportedMatchAlgorithmReferences() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 }
