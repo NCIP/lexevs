@@ -7,7 +7,6 @@ import org.LexGrid.naming.SupportedLanguage;
 import org.apache.commons.lang.StringUtils;
 import org.cts2.core.EntryDescription;
 import org.cts2.entity.NamedEntityDescription;
-import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.BaseDozerBeanMapper;
 import org.dozer.DozerConverter;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
