@@ -31,35 +31,35 @@ import org.cts2.service.core.ReadContext;
 
 /**
  * The Class LexEvsCodeSystemVersionReadService.
- *
+ * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsEntityDescriptionReadService extends AbstractBaseReadService<CodeSystemVersion> implements EntityDescriptionReadService {
+public class LexEvsEntityDescriptionReadService extends
+		AbstractBaseReadService<CodeSystemVersion> implements
+		EntityDescriptionReadService {
 
 	/** The code system version factory. */
 	private EntityDescriptionFactory entityDescriptionFactory;
 
 	@Override
-	public EntityDescription read(
-			EntityNameOrURI id,
-			NameOrURI codeSystemVersion, 
-			QueryControl queryControl,
+	public EntityDescription read(EntityNameOrURI id,
+			NameOrURI codeSystemVersion, QueryControl queryControl,
 			ReadContext readContext) {
-		return this.entityDescriptionFactory.getEntityDescription(id, codeSystemVersion);
+		return this.entityDescriptionFactory.getEntityDescription(id,
+				codeSystemVersion);
 	}
 
 	@Override
-	public boolean exists(
-			EntityNameOrURI id, 
-			NameOrURI codeSystemVersion,
-			QueryControl queryControl, 
-			ReadContext readContext) {
-		if (this.entityDescriptionFactory.getEntityDescription(id, codeSystemVersion) != null)
+	public boolean exists(EntityNameOrURI id, NameOrURI codeSystemVersion,
+			QueryControl queryControl, ReadContext readContext) {
+		if (this.entityDescriptionFactory.getEntityDescription(id,
+				codeSystemVersion) != null)
 			return true;
 		return false;
 	}
 
-	public void setEntityDescriptionFactory(EntityDescriptionFactory entityDescriptionFactory) {
+	public void setEntityDescriptionFactory(
+			EntityDescriptionFactory entityDescriptionFactory) {
 		this.entityDescriptionFactory = entityDescriptionFactory;
 	}
 
@@ -70,7 +70,7 @@ public class LexEvsEntityDescriptionReadService extends AbstractBaseReadService<
 	@Override
 	public EntityList readEntityDescriptions(EntityNameOrURI id,
 			QueryControl queryControl, ReadContext context) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

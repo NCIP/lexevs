@@ -23,6 +23,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.concepts.Entity;
 import org.cts2.entity.EntityDescription;
+import org.cts2.entity.EntityList;
+import org.cts2.entity.EntityListEntry;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.service.core.EntityNameOrURI;
@@ -63,6 +65,14 @@ public class EntityDescriptionFactory {
 						null);
 		
 		return this.beanMapper.map(entity, EntityDescription.class);
+	}
+	
+	public EntityList getEntityDescriptionList() {
+		EntityList list = new EntityList();
+		EntityListEntry entry = new EntityListEntry();
+		
+		list.addEntry(entry);
+		return null;
 	}
 
 	/**
