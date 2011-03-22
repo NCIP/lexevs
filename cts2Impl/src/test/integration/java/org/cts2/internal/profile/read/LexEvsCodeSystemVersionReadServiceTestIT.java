@@ -24,7 +24,7 @@ public class LexEvsCodeSystemVersionReadServiceTestIT extends BaseCts2Integratio
 	@LoadContent(contentPath="classpath:content/Automobiles.xml")
 	public void testResolveCodeSystemVersion(){
 		CodeSystemVersion codeSystemVersion = 
-			lexEvsCodeSystemVersionReadService.read(ConstructorUtils.nameToNameOrURI("Automobiles_1.0"), null, null);
+			lexEvsCodeSystemVersionReadService.read(ConstructorUtils.nameToNameOrURI("Automobiles:1.0"), null, null);
 		
 		assertEquals("urn:oid:11.11.0.1", codeSystemVersion.getAbout());
 	}
