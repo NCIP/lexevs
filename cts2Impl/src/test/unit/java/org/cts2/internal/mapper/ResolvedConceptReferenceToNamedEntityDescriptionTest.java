@@ -17,13 +17,14 @@ import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.converter.DefinitionPreferredToDefinitionRoleConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionAboutConverter;
+import org.cts2.internal.mapper.converter.NamedEntityDescriptionPropertyListConverter;
 import org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter;
 import org.easymock.classextension.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 
-public class ResolvedConceptReferenceToNamedEntityDescription extends
+public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		BaseDozerBeanMapperTest {
 	@Resource
 	private NamedEntityDescriptionAboutConverter namedEntityDescriptionAboutConverter;
@@ -31,6 +32,8 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 	private PresentationPreferredToDesignationRoleConverter presentationConverter;
 	@Resource 
 	private DefinitionPreferredToDefinitionRoleConverter definitionConverter;
+	@Resource
+	private NamedEntityDescriptionPropertyListConverter namedEntityDescriptionPropertyListConverter;
 	
 	private ResolvedConceptReference ref;
 	private NamedEntityDescription mapped;
@@ -82,6 +85,7 @@ public class ResolvedConceptReferenceToNamedEntityDescription extends
 		this.namedEntityDescriptionAboutConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		this.presentationConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		definitionConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
+		namedEntityDescriptionPropertyListConverter.setBaseDozerBeanMapper(baseDozerBeanMapper);
 		
 		mapped = baseDozerBeanMapper.map(ref, NamedEntityDescription.class);
 //		mapped.setAbout(about)

@@ -84,9 +84,13 @@
 			<a>entity.presentation</a>
 			<b>designation</b>
 		</field>
-		<field>
-			<a>entity.property</a>
-			<b>property</b>
+<!--		<field>-->
+<!--			<a>entity.property</a>-->
+<!--			<b>property</b>-->
+<!--		</field>-->
+		<field custom-converter-id="namedEntityDescriptionPropertyListConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>
 		<field>
 			<a>entity.comment</a>
