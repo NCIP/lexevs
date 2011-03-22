@@ -62,6 +62,9 @@
 				<entry key="namedEntityDescriptionPropertyListConverter">
 					<ref bean="namedEntityDescriptionPropertyListConverter"/>
 				</entry>
+				<entry key="namedEntityDescriptionDesignationListConverter">
+					<ref bean="namedEntityDescriptionDesignationListConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -112,6 +115,10 @@
 	</bean>
 	<bean id="namedEntityDescriptionPropertyListConverter"
 		class="org.cts2.internal.mapper.converter.NamedEntityDescriptionPropertyListConverter">
+		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="namedEntityDescriptionDesignationListConverter"
+		class="org.cts2.internal.mapper.converter.NamedEntityDescriptionDesignationListConverter">
 		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	<!--  End Dozer Custom Converters -->

@@ -9,7 +9,9 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedContext;
 import org.LexGrid.naming.SupportedDataType;
+import org.LexGrid.naming.SupportedDegreeOfFidelity;
 import org.LexGrid.naming.SupportedLanguage;
 import org.LexGrid.naming.SupportedNamespace;
 import org.cts2.core.types.DefinitionRole;
@@ -19,6 +21,7 @@ import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.converter.DefinitionPreferredToDefinitionRoleConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionAboutConverter;
+import org.cts2.internal.mapper.converter.NamedEntityDescriptionDesignationListConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionPropertyListConverter;
 import org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter;
 import org.easymock.classextension.EasyMock;
@@ -36,6 +39,8 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 	private DefinitionPreferredToDefinitionRoleConverter definitionConverter;
 	@Resource
 	private NamedEntityDescriptionPropertyListConverter namedEntityDescriptionPropertyListConverter;
+	@Resource
+	private NamedEntityDescriptionDesignationListConverter namedEntityDescriptionDesignationListConverter;
 	
 	private ResolvedConceptReference ref;
 	private NamedEntityDescription mapped;
@@ -78,13 +83,30 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		cs.getMappings().addSupportedLanguage(new SupportedLanguage());
 		cs.getMappings().getSupportedLanguage(0).setLocalId("test lang");
 		cs.getMappings().getSupportedLanguage(0).setUri("test lang uri");
+		cs.getMappings().addSupportedLanguage(new SupportedLanguage());
+		cs.getMappings().getSupportedLanguage(1).setLocalId("en");
+		cs.getMappings().getSupportedLanguage(1).setUri("en uri");
 		cs.getMappings().addSupportedDataType(new SupportedDataType());
 		cs.getMappings().getSupportedDataType(0).setLocalId("string");
 		cs.getMappings().getSupportedDataType(0).setUri("string uri");
+		cs.getMappings().addSupportedDegreeOfFidelity(new SupportedDegreeOfFidelity());
+		cs.getMappings().getSupportedDegreeOfFidelity(0).setLocalId("testFed");
+		cs.getMappings().getSupportedDegreeOfFidelity(0).setUri("testFed uri");
+		cs.getMappings().addSupportedContext(new SupportedContext());
+		cs.getMappings().getSupportedContext(0).setLocalId("test usage context 1");
+		cs.getMappings().getSupportedContext(0).setUri("test usage context 1 uri");
+		cs.getMappings().addSupportedContext(new SupportedContext());
+		cs.getMappings().getSupportedContext(1).setLocalId("test usage context 2");
+		cs.getMappings().getSupportedContext(1).setUri("test usage context 2 uri");
+		cs.getMappings().addSupportedContext(new SupportedContext());
+		cs.getMappings().getSupportedContext(2).setLocalId("test usage context 3");
+		cs.getMappings().getSupportedContext(2).setUri("test usage context 3 uri");
+		
 		cs.setRepresentsVersion("testVersion");
 		cs.setCodingSchemeURI("testUri");
 		
-		EasyMock.expect(css.getCodingSchemeByUriAndVersion("testUri", "testVersion")).andReturn(cs).times(2);
+		
+		EasyMock.expect(css.getCodingSchemeByUriAndVersion("testUri", "testVersion")).andReturn(cs).times(3);
 		
 		EasyMock.replay(css);
 		
@@ -95,6 +117,8 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		definitionConverter.setLexEvsIdentityConverter(lexEvsIdentityConverter);
 		namedEntityDescriptionPropertyListConverter.setBaseDozerBeanMapper(baseDozerBeanMapper);
 		namedEntityDescriptionPropertyListConverter.setCodingSchemeService(css);
+		namedEntityDescriptionDesignationListConverter.setBaseDozerBeanMapper(baseDozerBeanMapper);
+		namedEntityDescriptionDesignationListConverter.setCodingSchemeService(css);
 		
 		mapped = baseDozerBeanMapper.map(ref, NamedEntityDescription.class);
 //		mapped.setAbout(about)
@@ -152,6 +176,12 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		assertEquals("test usage context 2", mapped.getDesignation(0).getUsageContext(1).getContent());
 		assertEquals("test usage context 3", mapped.getDesignation(0).getUsageContext(2).getContent());
 		assertEquals(DesignationRole.ALTERNATIVE, mapped.getDesignation(0).getDesignationRole());
+		assertEquals("en uri", mapped.getDesignation(0).getLanguage().getMeaning());
+		assertEquals("testFed uri", mapped.getDesignation(0).getDegreeOfFidelity().getMeaning());
+		assertEquals("string uri", mapped.getDesignation(0).getFormat().getMeaning());
+		assertEquals("test usage context 1 uri", mapped.getDesignation(0).getUsageContext(0).getMeaning());
+		assertEquals("test usage context 2 uri", mapped.getDesignation(0).getUsageContext(1).getMeaning());
+		assertEquals("test usage context 3 uri", mapped.getDesignation(0).getUsageContext(2).getMeaning());
 	}
 	
 	@Test

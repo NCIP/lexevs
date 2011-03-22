@@ -80,14 +80,10 @@
 			<a>this</a>
 			<b>this</b>
 		</field>
-		<field>
-			<a>entity.presentation</a>
-			<b>designation</b>
+		<field custom-converter-id="namedEntityDescriptionDesignationListConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>
-<!--		<field>-->
-<!--			<a>entity.property</a>-->
-<!--			<b>property</b>-->
-<!--		</field>-->
 		<field custom-converter-id="namedEntityDescriptionPropertyListConverter">
 			<a>this</a>
 			<b>this</b>
@@ -159,18 +155,10 @@
 	<mapping wildcard="false">
 		<class-a>org.LexGrid.concepts.Presentation</class-a>
 		<class-b>org.cts2.entity.Designation</class-b>
-		<field-exclude>
-			<a>degreeOfFidelity</a>
-			<b>degreeOfFidelity</b>
-		</field-exclude>
 		<field>
 			<a>degreeOfFidelity</a>
 			<b>degreeOfFidelity.content</b>
 		</field>
-		<field-exclude>
-			<a>language</a>
-			<b>language</b>
-		</field-exclude>
 		<field>
 			<a>language</a>
 			<b>language.content</b>
