@@ -19,7 +19,9 @@
 package org.cts2.internal.profile.read;
 
 import org.cts2.codesystemversion.CodeSystemVersion;
+import org.cts2.core.EntityReference;
 import org.cts2.entity.EntityDescription;
+import org.cts2.entity.EntityList;
 import org.cts2.internal.model.resource.factory.EntityDescriptionFactory;
 import org.cts2.profile.read.EntityDescriptionReadService;
 import org.cts2.service.core.EntityNameOrURI;
@@ -63,5 +65,34 @@ public class LexEvsEntityDescriptionReadService extends AbstractBaseReadService<
 
 	public EntityDescriptionFactory getEntityDescriptionFactory() {
 		return entityDescriptionFactory;
+	}
+
+	@Override
+	public EntityList readEntityDescriptions(EntityNameOrURI id,
+			QueryControl queryControl, ReadContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityReference availableDescriptions(EntityNameOrURI id,
+			ReadContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityDescription readByCodeSystem(EntityNameOrURI id,
+			NameOrURI codeSystem, NameOrURI tag, QueryControl queryControl,
+			ReadContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean existsInCodeSystem(EntityNameOrURI id, NameOrURI codeSystem,
+			NameOrURI tag, ReadContext context) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
