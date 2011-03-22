@@ -140,7 +140,7 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 				AbsoluteCodingSchemeVersionReference ref = 
 					new AbsoluteCodingSchemeVersionReference();
 				
-				ref.setCodingSchemeURN(new String(aliasHolder.getCodingSchemeName()));
+				ref.setCodingSchemeURN(new String(aliasHolder.getCodingSchemeUri()));
 				ref.setCodingSchemeVersion(new String(aliasHolder.getRepresentsVersion()));
 				
 				matches.add(ref);
