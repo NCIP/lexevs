@@ -88,9 +88,9 @@
 			<a>this</a>
 			<b>this</b>
 		</field>
-		<field>
-			<a>entity.comment</a>
-			<b>note</b>
+		<field custom-converter-id="namedEntityDescriptionNoteListConverter">
+			<a>this</a>
+			<b>this</b>
 		</field>
 		<field custom-converter-id="namedEntityDescriptionDefinitionListConverter">
 			<a>this</a>
