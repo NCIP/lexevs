@@ -21,6 +21,7 @@ import org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.converter.DefinitionPreferredToDefinitionRoleConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionAboutConverter;
+import org.cts2.internal.mapper.converter.NamedEntityDescriptionDefinitionListConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionDesignationListConverter;
 import org.cts2.internal.mapper.converter.NamedEntityDescriptionPropertyListConverter;
 import org.cts2.internal.mapper.converter.PresentationPreferredToDesignationRoleConverter;
@@ -41,6 +42,8 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 	private NamedEntityDescriptionPropertyListConverter namedEntityDescriptionPropertyListConverter;
 	@Resource
 	private NamedEntityDescriptionDesignationListConverter namedEntityDescriptionDesignationListConverter;
+	@Resource
+	private NamedEntityDescriptionDefinitionListConverter namedEntityDescriptionDefinitionListConverter;
 	
 	private ResolvedConceptReference ref;
 	private NamedEntityDescription mapped;
@@ -106,7 +109,7 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		cs.setCodingSchemeURI("testUri");
 		
 		
-		EasyMock.expect(css.getCodingSchemeByUriAndVersion("testUri", "testVersion")).andReturn(cs).times(3);
+		EasyMock.expect(css.getCodingSchemeByUriAndVersion("testUri", "testVersion")).andReturn(cs).times(4);
 		
 		EasyMock.replay(css);
 		
@@ -119,6 +122,8 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 		namedEntityDescriptionPropertyListConverter.setCodingSchemeService(css);
 		namedEntityDescriptionDesignationListConverter.setBaseDozerBeanMapper(baseDozerBeanMapper);
 		namedEntityDescriptionDesignationListConverter.setCodingSchemeService(css);
+		namedEntityDescriptionDefinitionListConverter.setBaseDozerBeanMapper(baseDozerBeanMapper);
+		namedEntityDescriptionDefinitionListConverter.setCodingSchemeService(css);
 		
 		mapped = baseDozerBeanMapper.map(ref, NamedEntityDescription.class);
 //		mapped.setAbout(about)
@@ -220,11 +225,15 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 	@Test
 	public void testGetDefinition(){
 		assertEquals("test propertyid", mapped.getDefinition(0).getExternalIdentifier());
-		assertEquals("test language", mapped.getDefinition(0).getLanguage().getContent());
+		assertEquals("test lang", mapped.getDefinition(0).getLanguage().getContent());
 		assertEquals("content", mapped.getDefinition(0).getValue());
 		assertEquals("string", mapped.getDefinition(0).getFormat().getContent());
 		assertEquals(DefinitionRole.INFORMATIVE, mapped.getDefinition(0).getDefinitionRole());
-		assertEquals("usage context 1", mapped.getDefinition(0).getUsageContext().getContent());
+		assertEquals("test usage context 1", mapped.getDefinition(0).getUsageContext().getContent());
+		assertEquals("test lang uri", mapped.getDefinition(0).getLanguage().getMeaning());
+		assertEquals("string uri", mapped.getDefinition(0).getFormat().getMeaning());
+		assertEquals("test usage context 1 uri", mapped.getDefinition(0).getUsageContext().getMeaning());
+		
 	}
 	
 	private void initProperties() {
@@ -261,13 +270,13 @@ public class ResolvedConceptReferenceToNamedEntityDescriptionTest extends
 	private void initDefinitions() {
 		org.LexGrid.concepts.Definition def1 = new org.LexGrid.concepts.Definition();
 		def1.setPropertyId("test propertyid");
-		def1.setLanguage("test language");
+		def1.setLanguage("test lang");
 		Text t = new Text();
 		t.setDataType("string");
 		t.setContent("content");
 		def1.setValue(t);
-		def1.addUsageContext("usage context 1");
-		def1.addUsageContext("usage context 2");
+		def1.addUsageContext("test usage context 1");
+		def1.addUsageContext("test usage context 2");
 		org.LexGrid.concepts.Definition def2 = new org.LexGrid.concepts.Definition();
 		def2.setPropertyId("test propertyid 2");
 		
