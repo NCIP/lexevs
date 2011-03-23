@@ -71,20 +71,13 @@ public class LexEvsEntityDescriptionReadService extends
 	@Override
 	public EntityList readEntityDescriptions(EntityNameOrURI id,
 			QueryControl queryControl, ReadContext context) {
-		try {
-			return this.entityDescriptionFactory.getEntityDescriptionList(id);
-		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return this.entityDescriptionFactory.getEntityDescriptionList(id);
 	}
 
 	@Override
 	public EntityReference availableDescriptions(EntityNameOrURI id,
 			ReadContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entityDescriptionFactory.availableDescriptions(id);
 	}
 
 	@Override
