@@ -149,6 +149,7 @@
 
 	<bean id="defaultQueryService" class="org.cts2.internal.profile.query.DefaultQueryService">
 		<property name="codeSystemQueryService" ref="lexEvsCodeSystemQueryService" />
+		<property name="associationQueryService" ref="lexEvsAssociationQueryService" />
 	</bean>
 
 	<bean id="lexEvsCodeSystemQueryService" class="org.cts2.internal.profile.query.LexEvsCodeSystemQueryService" parent="abstractBaseService">
