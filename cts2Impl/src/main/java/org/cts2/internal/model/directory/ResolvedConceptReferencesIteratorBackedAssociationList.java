@@ -16,10 +16,6 @@ import org.cts2.internal.util.PagingList;
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
  */
-/**
- * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
- * 
- */
 public class ResolvedConceptReferencesIteratorBackedAssociationList extends
 		AssociationList {
 
