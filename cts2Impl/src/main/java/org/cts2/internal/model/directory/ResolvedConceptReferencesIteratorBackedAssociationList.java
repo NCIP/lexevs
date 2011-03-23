@@ -7,7 +7,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
-import org.cts2.association.AssociationDirectoryEntry;
 import org.cts2.association.AssociationList;
 import org.cts2.association.AssociationListEntry;
 import org.cts2.internal.mapper.BeanMapper;
