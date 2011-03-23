@@ -16,11 +16,21 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.cts2.association.AssociationDirectory;
+import org.cts2.association.AssociationList;
 import org.cts2.core.Directory;
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
 import org.cts2.core.TargetExpression;
+import org.cts2.entity.EntityDirectory;
+import org.cts2.entity.EntityList;
 import org.cts2.internal.mapper.BeanMapper;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedAssociationDirectory;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedAssociationList;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityDirectory;
+import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityList;
+import org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
@@ -32,42 +42,39 @@ import org.cts2.uri.EntityDirectoryURI;
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
  */
-public class DefaultAssociationDirectoryURI extends
-		AbstractResolvingDirectoryURI<AssociationDirectoryURI> implements AssociationDirectoryURI {
+public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeGraph,AssociationDirectoryURI> implements AssociationDirectoryURI {
 
 	private CodedNodeGraph codedNodeGraph;
+	private CodedNodeSet codedNodeSet;
 	private BeanMapper beanMapper;
 	private LexBIGService lbs;
 	
-	public DefaultAssociationDirectoryURI(CodedNodeGraph codedNodeGraph, BeanMapper beanMapper){
-		super();
+	public DefaultAssociationDirectoryURI(CodedNodeGraph codedNodeGraph, AssociationRestrictionHandler restrictionHandler, BeanMapper beanMapper){
+		super(restrictionHandler);
 		this.codedNodeGraph = codedNodeGraph;
 		this.beanMapper = beanMapper;
 		lbs = LexBIGServiceImpl.defaultInstance();
 	}
  
+	@SuppressWarnings("unchecked")
 	@Override
-	protected <D extends Directory<?>> D doGet(
-			QueryControl queryControl, ReadContext readContext,
-			Class<D> resolveClass) {
-		ResolvedConceptReferenceList rcrList = null;
+	protected <O> O transform(
+			CodedNodeGraph lexevsObject, Class<O> clazz) {
 		try {
-			ConceptReference reference = Constructors.createConceptReference(queryControl.getFormat().getName(), queryControl.getFormat().getUri());
-			 rcrList = codedNodeGraph.resolveAsList(reference, true, false, 1, 1, null, null, null, null, queryControl.getMaxToReturn().intValue());
-		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(clazz.equals(AssociationDirectory.class)){
+				return (O) new ResolvedConceptReferencesIteratorBackedAssociationDirectory(lexevsObject, this.beanMapper);
+			}
+			if(clazz.equals(AssociationList.class)){
+				return (O) new ResolvedConceptReferencesIteratorBackedAssociationList(lexevsObject, this.beanMapper);
+			}
+		} catch (LBException e) {
+			//TODO: real cts2 exception here
+			throw new IllegalStateException();
 		}
-	    return beanMapper.map(
-	    		rcrList, 
-				resolveClass);
+		
+		//TODO: real cts2 exception here
+		throw new IllegalStateException();
 	}
-
-
-
 	@Override
 	protected int doCount(ReadContext readContext) {
 		return 0;
@@ -103,40 +110,13 @@ public class DefaultAssociationDirectoryURI extends
 		return null;
 	}
 
-	protected String resolveForCodeSystemVersion() throws Exception{
-		ResolvedConceptReferenceList rcrl = codedNodeGraph.resolveAsList(null, true, false, 1, 1, null, null, null, null, 1);
-		if(rcrl.getResolvedConceptReference().length < 1){
-			throw new Exception("Exception not created for resolving AssociationDirectoryURI node graph");
-		}
-		ResolvedConceptReference ref = rcrl.getResolvedConceptReference(0);
-		return ref.getCodingSchemeVersion();		
-	}
-	
-	protected String resolveForCodeSystemName() throws Exception{
-		ResolvedConceptReferenceList rcrl = codedNodeGraph.resolveAsList(null, true, false, 1, 1, null, null, null, null, 1);
-		if(rcrl.getResolvedConceptReference().length < 1){
-			throw new Exception("Exception not created for resolving AssociationDirectoryURI node graph");
-		}
-		ResolvedConceptReference ref = rcrl.getResolvedConceptReference(0);
-		return ref.getCodingSchemeName();		
-	}
-	
-	/**
-	 * This method resets the class coded node graph data member.  All current restrictions are lost as a result.
-	 * @param directory
-	 * @param codeSystemVersion
-	 * @return
-	 * @throws Exception
-	 */
+
 	public AssociationDirectoryURI doRestrictToCodeSystemVersion(
-			AssociationDirectoryURI directory, NameOrURI codeSystemVersion) throws Exception {
-		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion(resolveForCodeSystemVersion());
-	    codedNodeGraph = lbs.getNodeGraph(resolveForCodeSystemName(), versionOrTag, null);
-		
+			NameOrURI codeSystemVersions) {
+		((AssociationRestrictionHandler) this.getRestrictionHandler())
+				.restrictToCodeSystemVersions(codeSystemVersions);
 		return this;
 	}
-
 	
 	public AssociationDirectoryURI doRestrictToPredicate(
 			AssociationDirectoryURI directory, EntityNameOrURI predicate) {
@@ -230,6 +210,18 @@ public class DefaultAssociationDirectoryURI extends
 	public AssociationDirectoryURI restrict(Filter filter) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected CodedNodeGraph getOriginalState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected AssociationDirectoryURI clone() {
+		// TODO Auto-generated method stub
+		return this;
 	}
 
 }
