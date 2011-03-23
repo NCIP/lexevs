@@ -18,20 +18,14 @@
  */
 package org.cts2.profile.query;
 
-import java.util.List;
-
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
-import org.cts2.core.EntityReference;
 import org.cts2.core.TargetExpression;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
-import org.cts2.service.core.types.ActiveOrAll;
-import org.cts2.service.core.types.RestrictionType;
 import org.cts2.uri.AssociationDirectoryURI;
-import org.cts2.uri.CodeSystemVersionDirectoryURI;
 import org.cts2.uri.EntityDirectoryURI;
 
 /**
