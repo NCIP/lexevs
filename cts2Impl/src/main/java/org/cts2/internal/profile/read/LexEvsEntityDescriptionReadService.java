@@ -18,6 +18,7 @@
  */
 package org.cts2.internal.profile.read;
 
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.core.EntityReference;
 import org.cts2.entity.EntityDescription;
@@ -70,7 +71,12 @@ public class LexEvsEntityDescriptionReadService extends
 	@Override
 	public EntityList readEntityDescriptions(EntityNameOrURI id,
 			QueryControl queryControl, ReadContext context) {
-		
+		try {
+			return this.entityDescriptionFactory.getEntityDescriptionList(id);
+		} catch (LBInvocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
