@@ -3,11 +3,8 @@ package org.cts2.profile.read;
 import java.net.URI;
 
 import org.cts2.core.NameOrURI;
-import org.cts2.core.NameOrURIList;
-import org.cts2.core.VersionTagReference;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
-import org.cts2.valueset.ResolvedValueSetDirectory;
 import org.cts2.valueset.ValueSetDefinition;
 
 /**
