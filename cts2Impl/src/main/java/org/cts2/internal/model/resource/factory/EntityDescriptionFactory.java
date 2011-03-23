@@ -19,13 +19,21 @@
 package org.cts2.internal.model.resource.factory;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.BooleanUtils;
@@ -56,7 +64,6 @@ public class EntityDescriptionFactory {
 	private LexBIGService lexBigService;
 
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
-	private LexEvsServiceLocator lexEvsServiceLocator;
 
 	public EntityDescription getEntityDescription(
 			EntityNameOrURI entityDescriptionNameOrUri,
@@ -66,58 +73,86 @@ public class EntityDescriptionFactory {
 
 		ConceptReference conceptReference = this.lexEvsIdentityConverter
 				.entityNameOrUriToConceptReference(entityDescriptionNameOrUri);
+		try {
+			CodedNodeSet cns = this.lexBigService.getCodingSchemeConcepts(ref
+					.getCodingSchemeURN(), Constructors
+					.createCodingSchemeVersionOrTagFromVersion(ref
+							.getCodingSchemeVersion()));
+			ConceptReferenceList conceptRefList = new ConceptReferenceList();
+			conceptRefList.addConceptReference(conceptReference);
+			CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
+			ResolvedConceptReferencesIterator iterator = restCns.resolve(null,
+					null, null, null, true);
+			if (iterator.hasNext()) {
+				ResolvedConceptReference conRef = iterator.next();
+				if (!BooleanUtils.toBoolean(conRef.getEntity().isIsAnonymous())) {
+					return this.beanMapper.map(conRef,
+							NamedEntityDescription.class);
+				} else {
+					return this.beanMapper.map(conRef,
+							AnonymousEntityDescription.class);
+				}
+			}
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 
-		Entity entity = this.lexEvsServiceLocator
-				.getDatabaseServiceManager()
-				.getEntityService()
-				.getEntity(ref.getCodingSchemeURN(),
-						ref.getCodingSchemeVersion(),
-						conceptReference.getCode(),
-						conceptReference.getCodeNamespace(), null, null);
-
-		return this.beanMapper.map(entity, EntityDescription.class);
 	}
 
-	public EntityList getEntityDescriptionList(EntityNameOrURI entityNameOrUri)
-			throws LBInvocationException {
+	public EntityList getEntityDescriptionList(EntityNameOrURI entityNameOrUri) {
 		EntityList list = new EntityList();
 
 		ConceptReference conceptReference = this.lexEvsIdentityConverter
 				.entityNameOrUriToConceptReference(entityNameOrUri);
 
-		CodingSchemeRenderingList schemeList = this.lexBigService.getSupportedCodingSchemes();
-		for (CodingSchemeRendering csr : schemeList.getCodingSchemeRendering()) {
-			CodingSchemeSummary css = csr.getCodingSchemeSummary();
-			Entity entity = this.lexEvsServiceLocator
-					.getDatabaseServiceManager()
-					.getEntityService()
-					.getEntity(css.getCodingSchemeURI(),
-							css.getRepresentsVersion(),
-							conceptReference.getCode(),
-							conceptReference.getCodeNamespace(), null, null);
-			if (entity != null) {
-				EntityListEntry entry = new EntityListEntry();
-				EntityDescriptionChoice entityDescriptionChoice = new EntityDescriptionChoice();
-				if (!BooleanUtils.toBoolean(entity.isIsAnonymous())) {
-					NamedEntityDescription entityDescription = this.beanMapper.map(
-								entity, 
-								NamedEntityDescription.class);
-					entityDescriptionChoice
-							.setNamedEntity(entityDescription);
-				} else {
-					AnonymousEntityDescription anonymousEntityDescription = this.beanMapper
-							.map(entity, AnonymousEntityDescription.class);
-					entityDescriptionChoice
-							.setAnonymousEntity(anonymousEntityDescription);
+		CodingSchemeRenderingList schemeList;
+		try {
+			schemeList = this.lexBigService.getSupportedCodingSchemes();
+			for (CodingSchemeRendering csr : schemeList
+					.getCodingSchemeRendering()) {
+				CodingSchemeSummary css = csr.getCodingSchemeSummary();
+				CodedNodeSet cns = this.lexBigService.getCodingSchemeConcepts(
+						css.getCodingSchemeURI(), Constructors
+								.createCodingSchemeVersionOrTagFromVersion(css
+										.getRepresentsVersion()));
+				ConceptReferenceList conceptRefList = new ConceptReferenceList();
+				conceptRefList.addConceptReference(conceptReference);
+				CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
+				ResolvedConceptReferencesIterator iterator = restCns.resolve(
+						null, null, null, null, true);
+				if (iterator.hasNext()) {
+					EntityListEntry entry = new EntityListEntry();
+					EntityDescriptionChoice entityDescriptionChoice = new EntityDescriptionChoice();
+					ResolvedConceptReference conRef = iterator.next();
+					if (!BooleanUtils.toBoolean(conRef.getEntity()
+							.isIsAnonymous())) {
+						NamedEntityDescription entityDescription = this.beanMapper
+								.map(conRef, NamedEntityDescription.class);
+						entityDescriptionChoice
+								.setNamedEntity(entityDescription);
+					} else {
+						AnonymousEntityDescription anonymousEntityDescription = this.beanMapper
+								.map(conRef, AnonymousEntityDescription.class);
+						entityDescriptionChoice
+								.setAnonymousEntity(anonymousEntityDescription);
+					}
+					entry.setItem(entityDescriptionChoice);
+					list.addEntry(entry);
 				}
-				entry.setItem(entityDescriptionChoice);
-				list.addEntry(entry);
+
 			}
+		} catch (LBInvocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (LBException e) {
+			e.printStackTrace();
 		}
 		return list;
 	}
 
-	public EntityReference availableDescriptions(EntityNameOrURI entityNameOrURI) throws LBInvocationException {
+	public EntityReference availableDescriptions(EntityNameOrURI entityNameOrURI) {
 		EntityReference entityReference = new EntityReference();
 
 		ConceptReference conceptReference = this.lexEvsIdentityConverter
@@ -127,26 +162,37 @@ public class EntityDescriptionFactory {
 		scopedEntityName.setName(conceptReference.getCode());
 		scopedEntityName.setNamespace(conceptReference.getCodeNamespace());
 		entityReference.setLocalEntityName(scopedEntityName);
-		
+
 		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-		CodingSchemeRenderingList schemeList = lbs.getSupportedCodingSchemes();
-		
-		for(CodingSchemeRendering csr : schemeList.getCodingSchemeRendering()){
-			CodeSystemVersionReference codeSystemVersionReference = new CodeSystemVersionReference();
-			
-			CodingSchemeSummary css = csr.getCodingSchemeSummary();
-			CodingScheme cs = LexEvsServiceLocator
-				.getInstance()
-				.getDatabaseServiceManager()
-				.getCodingSchemeService()
-				.getCodingSchemeByUriAndVersion(css.getCodingSchemeURI(), 
-												css.getRepresentsVersion());
-			codeSystemVersionReference.setContent(this.lexEvsIdentityConverter.codingSchemeSummaryToCodeSystemVersionName(css));
-			codeSystemVersionReference.setMeaning(this.lexEvsIdentityConverter.codingSchemeToCodeSystemVersionDocumentUri(cs));
-			//codeSystemVersionReference.setCodeSystem(codeSystem)			TODO
-			entityReference.addDescribingCodeSystemVersion(codeSystemVersionReference);
+		try {
+			CodingSchemeRenderingList schemeList = lbs
+					.getSupportedCodingSchemes();
+			for (CodingSchemeRendering csr : schemeList
+					.getCodingSchemeRendering()) {
+				CodeSystemVersionReference codeSystemVersionReference = new CodeSystemVersionReference();
+
+				CodingSchemeSummary css = csr.getCodingSchemeSummary();
+				CodingScheme cs = LexEvsServiceLocator
+						.getInstance()
+						.getDatabaseServiceManager()
+						.getCodingSchemeService()
+						.getCodingSchemeByUriAndVersion(
+								css.getCodingSchemeURI(),
+								css.getRepresentsVersion());
+				codeSystemVersionReference
+						.setContent(this.lexEvsIdentityConverter
+								.codingSchemeSummaryToCodeSystemVersionName(css));
+				codeSystemVersionReference
+						.setMeaning(this.lexEvsIdentityConverter
+								.codingSchemeToCodeSystemVersionDocumentUri(cs));
+				// codeSystemVersionReference.setCodeSystem(codeSystem) TODO
+				entityReference
+						.addDescribingCodeSystemVersion(codeSystemVersionReference);
+			}
+		} catch (LBInvocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 		return entityReference;
 	}
 
