@@ -54,17 +54,5 @@ public interface ValueSetDefinitionReadService extends BaseReadService<ValueSetD
 	 * @param context
 	 */
 	public ValueSetDefinition read(URI valueSetDefinitionURI, QueryControl queryControl, ReadContext context);
-
-	/**
-	 * Resolve and return resolved value set directory for specified value set definition.
-	 * 
-	 * @param valueSetDefinitionURI
-	 * @param codeSystemVersionList
-	 * @param tag
-	 * @param queryControl
-	 * @param context
-	 */
-	public ResolvedValueSetDirectory resolve(URI valueSetDefinitionURI, NameOrURIList codeSystemVersionList, 
-			VersionTagReference tag, QueryControl queryControl, ReadContext context);
-
+	
 }

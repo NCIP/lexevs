@@ -19,8 +19,12 @@
 package org.cts2.internal.model.resource.factory;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.cts2.core.NameOrURI;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.valueset.ValueSetDefinition;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -37,10 +41,10 @@ public class ValueSetDefinitionFactory {
 	private LexEVSValueSetDefinitionServices lexEVSValueSetDefinitionService;
 	
 	/**
-	 * Gets the value set definition.
+	 * Gets the value set definition for a URI.
 	 *
-	 * @param nameOrUri the name or uri
-	 * @return the code system version
+	 * @param valueSetDefinitionURI the URI of value set definition
+	 * @return the value set definition
 	 */
 	public ValueSetDefinition getValueSetDefinition(URI valueSetDefinitionURI){
 		
@@ -60,6 +64,65 @@ public class ValueSetDefinitionFactory {
 		return null;
 	}
 
+	/**
+	 * Gets the value set definition for a name.
+	 *
+	 * @param valueSetDefinitionName the name of Value Set Definition
+	 * @return the value set definition
+	 * @throws LBParameterException 
+	 * @throws LBException 
+	 */
+	public ValueSetDefinition getValueSetDefinition(String valueSetDefinitionName) throws LBParameterException {
+		
+		org.LexGrid.valueSets.ValueSetDefinition vsd = null;
+		List<String> vsds = null;
+		try {
+			vsds = this.lexEVSValueSetDefinitionService.listValueSetDefinitions(valueSetDefinitionName);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+		if (vsds.isEmpty())
+			return null;
+		
+		if (vsds.size() > 1)
+			throw new LBParameterException("More than 1 Value Set Definition found for name : " + valueSetDefinitionName);			
+		
+		try {
+			vsd = this.getLexEVSValueSetDefinitionService().getValueSetDefinition(new URI(vsds.get(0)), null);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (vsd != null)
+		{
+			return this.beanMapper.map(vsd, ValueSetDefinition.class);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets the value set definition for a name or URI.
+	 *
+	 * @param valueSetDefinitionNameOrURI the name or URI of Value Set Definition
+	 * @return the value set definition
+	 * @throws LBParameterException 
+	 * @throws LBException 
+	 */
+	public ValueSetDefinition getValueSetDefinition(NameOrURI valueSetDefinitionNameOrURI) throws LBParameterException {
+		
+		if (valueSetDefinitionNameOrURI.getUri() != null)
+			return this.getValueSetDefinition(valueSetDefinitionNameOrURI.getUri());
+		else
+			return this.getValueSetDefinition(valueSetDefinitionNameOrURI.getName());
+	}
+	
 	/**
 	 * Gets the bean mapper.
 	 *
