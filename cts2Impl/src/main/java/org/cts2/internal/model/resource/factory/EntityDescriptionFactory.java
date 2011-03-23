@@ -29,7 +29,6 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.BooleanUtils;
-import org.cts2.core.CodeSystemReference;
 import org.cts2.core.CodeSystemVersionReference;
 import org.cts2.core.EntityReference;
 import org.cts2.core.ScopedEntityName;
@@ -123,9 +122,7 @@ public class EntityDescriptionFactory {
 
 		ConceptReference conceptReference = this.lexEvsIdentityConverter
 				.entityNameOrUriToConceptReference(entityNameOrURI);
-		entityReference.setAbout(this.lexEvsIdentityConverter
-				.nsUriAndCodeToUri(conceptReference.getCodeNamespace(),
-								   conceptReference.getCode()));
+		entityReference.setAbout(entityNameOrURI.getUri());
 		ScopedEntityName scopedEntityName = new ScopedEntityName();
 		scopedEntityName.setName(conceptReference.getCode());
 		scopedEntityName.setNamespace(conceptReference.getCodeNamespace());
