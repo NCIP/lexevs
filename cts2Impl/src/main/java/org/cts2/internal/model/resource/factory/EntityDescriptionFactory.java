@@ -27,25 +27,24 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.concepts.Entity;
+import org.LexGrid.commonTypes.types.EntityTypes;
 import org.apache.commons.lang.BooleanUtils;
 import org.cts2.core.CodeSystemVersionReference;
 import org.cts2.core.EntityReference;
 import org.cts2.core.ScopedEntityName;
 import org.cts2.entity.AnonymousEntityDescription;
+import org.cts2.entity.AnonymousIndividualDescription;
 import org.cts2.entity.EntityDescription;
 import org.cts2.entity.EntityDescriptionChoice;
 import org.cts2.entity.EntityList;
 import org.cts2.entity.EntityListEntry;
 import org.cts2.entity.NamedEntityDescription;
+import org.cts2.entity.NamedIndividualDescription;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.service.core.EntityNameOrURI;
@@ -74,10 +73,10 @@ public class EntityDescriptionFactory {
 		ConceptReference conceptReference = this.lexEvsIdentityConverter
 				.entityNameOrUriToConceptReference(entityDescriptionNameOrUri);
 		try {
-			CodedNodeSet cns = this.lexBigService.getCodingSchemeConcepts(ref
+			CodedNodeSet cns = this.lexBigService.getNodeSet(ref
 					.getCodingSchemeURN(), Constructors
 					.createCodingSchemeVersionOrTagFromVersion(ref
-							.getCodingSchemeVersion()));
+							.getCodingSchemeVersion()), null);
 			ConceptReferenceList conceptRefList = new ConceptReferenceList();
 			conceptRefList.addConceptReference(conceptReference);
 			CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
@@ -85,13 +84,7 @@ public class EntityDescriptionFactory {
 					null, null, null, true);
 			if (iterator.hasNext()) {
 				ResolvedConceptReference conRef = iterator.next();
-				if (!BooleanUtils.toBoolean(conRef.getEntity().isIsAnonymous())) {
-					return this.beanMapper.map(conRef,
-							NamedEntityDescription.class);
-				} else {
-					return this.beanMapper.map(conRef,
-							AnonymousEntityDescription.class);
-				}
+				return this.ResolvedConceptReferenceToEntityDescription(conRef);
 			}
 		} catch (LBException e) {
 			// TODO Auto-generated catch block
@@ -113,10 +106,10 @@ public class EntityDescriptionFactory {
 			for (CodingSchemeRendering csr : schemeList
 					.getCodingSchemeRendering()) {
 				CodingSchemeSummary css = csr.getCodingSchemeSummary();
-				CodedNodeSet cns = this.lexBigService.getCodingSchemeConcepts(
-						css.getCodingSchemeURI(), Constructors
-								.createCodingSchemeVersionOrTagFromVersion(css
-										.getRepresentsVersion()));
+				CodedNodeSet cns = this.lexBigService.getNodeSet(css
+						.getCodingSchemeURI(), Constructors
+						.createCodingSchemeVersionOrTagFromVersion(css
+								.getRepresentsVersion()), null);
 				ConceptReferenceList conceptRefList = new ConceptReferenceList();
 				conceptRefList.addConceptReference(conceptReference);
 				CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
@@ -124,24 +117,11 @@ public class EntityDescriptionFactory {
 						null, null, null, null, true);
 				if (iterator.hasNext()) {
 					EntityListEntry entry = new EntityListEntry();
-					EntityDescriptionChoice entityDescriptionChoice = new EntityDescriptionChoice();
 					ResolvedConceptReference conRef = iterator.next();
-					if (!BooleanUtils.toBoolean(conRef.getEntity()
-							.isIsAnonymous())) {
-						NamedEntityDescription entityDescription = this.beanMapper
-								.map(conRef, NamedEntityDescription.class);
-						entityDescriptionChoice
-								.setNamedEntity(entityDescription);
-					} else {
-						AnonymousEntityDescription anonymousEntityDescription = this.beanMapper
-								.map(conRef, AnonymousEntityDescription.class);
-						entityDescriptionChoice
-								.setAnonymousEntity(anonymousEntityDescription);
-					}
-					entry.setItem(entityDescriptionChoice);
+					entry.setItem(this
+							.ResolvedConceptReferenceToEntityDescriptionChoice(conRef));
 					list.addEntry(entry);
 				}
-
 			}
 		} catch (LBInvocationException e1) {
 			// TODO Auto-generated catch block
@@ -163,9 +143,8 @@ public class EntityDescriptionFactory {
 		scopedEntityName.setNamespace(conceptReference.getCodeNamespace());
 		entityReference.setLocalEntityName(scopedEntityName);
 
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
 		try {
-			CodingSchemeRenderingList schemeList = lbs
+			CodingSchemeRenderingList schemeList = this.lexBigService
 					.getSupportedCodingSchemes();
 			for (CodingSchemeRendering csr : schemeList
 					.getCodingSchemeRendering()) {
@@ -179,17 +158,31 @@ public class EntityDescriptionFactory {
 						.getCodingSchemeByUriAndVersion(
 								css.getCodingSchemeURI(),
 								css.getRepresentsVersion());
-				codeSystemVersionReference
-						.setContent(this.lexEvsIdentityConverter
-								.codingSchemeSummaryToCodeSystemVersionName(css));
-				codeSystemVersionReference
-						.setMeaning(this.lexEvsIdentityConverter
-								.codingSchemeToCodeSystemVersionDocumentUri(cs));
-				// codeSystemVersionReference.setCodeSystem(codeSystem) TODO
-				entityReference
-						.addDescribingCodeSystemVersion(codeSystemVersionReference);
+				CodedNodeSet cns = this.lexBigService.getNodeSet(css
+						.getCodingSchemeURI(), Constructors
+						.createCodingSchemeVersionOrTagFromVersion(css
+								.getRepresentsVersion()), null);
+				ConceptReferenceList conceptRefList = new ConceptReferenceList();
+				conceptRefList.addConceptReference(conceptReference);
+				CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
+				ResolvedConceptReferencesIterator iterator = restCns.resolve(
+						null, null, null, null, true);
+				if (iterator.hasNext()) {
+					codeSystemVersionReference
+							.setContent(this.lexEvsIdentityConverter
+									.codingSchemeSummaryToCodeSystemVersionName(css));
+					codeSystemVersionReference
+							.setMeaning(this.lexEvsIdentityConverter
+									.codingSchemeToCodeSystemVersionDocumentUri(cs));
+					// codeSystemVersionReference.setCodeSystem(codeSystem) TODO
+					entityReference
+							.addDescribingCodeSystemVersion(codeSystemVersionReference);
+				}
 			}
 		} catch (LBInvocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -252,5 +245,54 @@ public class EntityDescriptionFactory {
 	public void setLexEvsIdentityConverter(
 			LexEvsIdentityConverter lexEvsIdentityConverter) {
 		this.lexEvsIdentityConverter = lexEvsIdentityConverter;
+	}
+
+	private EntityDescription ResolvedConceptReferenceToEntityDescription(
+			ResolvedConceptReference conRef) {
+		if (conRef.getEntityType(0).equalsIgnoreCase(
+				EntityTypes.CONCEPT.toString())) {
+			if (!BooleanUtils.toBoolean(conRef.getEntity().isIsAnonymous())) {
+				return this.beanMapper
+						.map(conRef, NamedEntityDescription.class);
+			} else {
+				return this.beanMapper.map(conRef,
+						AnonymousEntityDescription.class);
+			}
+		} else if (conRef.getEntityType(0).equalsIgnoreCase(
+				EntityTypes.INSTANCE.toString())) {
+			if (!BooleanUtils.toBoolean(conRef.getEntity().isIsAnonymous())) {
+				return this.beanMapper.map(conRef,
+						NamedIndividualDescription.class);
+			} else {
+				return this.beanMapper.map(conRef,
+						AnonymousIndividualDescription.class);
+			}
+		} else {
+			// TODO entity type is ASSOCIATION, map to?
+			return null;
+		}
+	}
+
+	private EntityDescriptionChoice ResolvedConceptReferenceToEntityDescriptionChoice(
+			ResolvedConceptReference conRef) {
+		EntityDescriptionChoice entityDescriptionChoice = new EntityDescriptionChoice();
+		EntityDescription ed = this
+				.ResolvedConceptReferenceToEntityDescription(conRef);
+		if (ed instanceof NamedIndividualDescription)
+			entityDescriptionChoice
+					.setNamedIndividual((NamedIndividualDescription) ed);
+		else if (ed instanceof AnonymousIndividualDescription)
+			entityDescriptionChoice
+					.setAnonymousIndividual((AnonymousIndividualDescription) ed);
+		else if (ed instanceof NamedEntityDescription)
+			entityDescriptionChoice.setNamedEntity((NamedEntityDescription) ed);
+		else if (ed instanceof AnonymousEntityDescription)
+			entityDescriptionChoice
+					.setAnonymousEntity((AnonymousEntityDescription) ed);
+		else {
+			// TODO ClassDescription and PredicateDescription
+		}
+
+		return entityDescriptionChoice;
 	}
 }
