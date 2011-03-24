@@ -50,5 +50,14 @@ public class AssociationDirectoryURIFactory extends
 		}
 	}
 
+	public AssociationRestrictionHandler getAssociationRestrictionHandler() {
+		return associationRestrictionHandler;
+	}
+
+	public void setAssociationRestrictionHandler(
+			AssociationRestrictionHandler associationRestrictionHandler) {
+		this.associationRestrictionHandler = associationRestrictionHandler;
+	}
+
 
 }

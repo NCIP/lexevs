@@ -188,7 +188,7 @@
 	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	
 	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory">
-	<property name="eassociationRestrictionHandler" ref="defaultAssociationRestrictionHandler"/>
+	<property name="associationRestrictionHandler" ref="defaultAssociationRestrictionHandler"/>
 	</bean>
 	
 	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory">

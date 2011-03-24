@@ -35,6 +35,8 @@ import org.cts2.service.core.NameOrURI;
  * The Class DefaultEntityDescriptionRestrictionHandler.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
+ *
  */
 public class DefaultAssociationRestrictionHandler 
 	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeGraph> implements AssociationRestrictionHandler {
@@ -103,4 +105,34 @@ public class DefaultAssociationRestrictionHandler
 		return null;
 	}
 	
+
+	/**
+	 * @return
+	 */
+	public LexEvsIdentityConverter getLexEvsIdentityConverter() {
+		return lexEvsIdentityConverter;
+	}
+
+	/**
+	 * @param lexEvsIdentityConverter
+	 */
+	public void setLexEvsIdentityConverter(
+			LexEvsIdentityConverter lexEvsIdentityConverter) {
+		this.lexEvsIdentityConverter = lexEvsIdentityConverter;
+	}
+
+	/**
+	 * @return
+	 */
+	public LexBIGService getLexBigService() {
+		return lexBigService;
+	}
+
+	/**
+	 * @param lexBigService
+	 */
+	public void setLexBigService(LexBIGService lexBigService) {
+		this.lexBigService = lexBigService;
+	}
+
 }
