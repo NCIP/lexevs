@@ -40,6 +40,7 @@ public class DefaultAssociationRestrictionHandler
 	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeGraph> implements AssociationRestrictionHandler {
 
 	/** The lex evs identity converter. */
+	//TODO provide new identity converter or supporting methods for this restriction handler  
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
 	
 	/** The lex big service. */

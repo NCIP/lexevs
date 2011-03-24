@@ -186,7 +186,10 @@
 	
 	<bean id="codeSystemVersionDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemVersionDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
-	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	
+	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory">
+	<property name="eassociationRestrictionHandler" ref="defaultAssociationRestrictionHandler"/>
+	</bean>
 	
 	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory">
 		<property name="entityDescriptionRestrictionHandler" ref="defaultEntityDescriptionRestrictionHandler"/>
@@ -196,6 +199,11 @@
 	
 	<!-- RestrictionHandlers -->
 	<bean id="defaultEntityDescriptionRestrictionHandler" class="org.cts2.internal.model.uri.restrict.DefaultEntityDescriptionRestrictionHandler">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	
+	<bean id="defaultAssociationRestrictionHandler" class="org.cts2.internal.model.uri.restrict.DefaultAssociationRestrictionHandler">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>

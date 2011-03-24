@@ -18,6 +18,12 @@
  */
 package org.cts2.internal.model.uri.factory;
 
+import junit.framework.Assert;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.cts2.internal.model.uri.DefaultAssociationDirectoryURI;
+import org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler;
+import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.uri.AssociationDirectoryURI;
 
 /**
@@ -28,11 +34,20 @@ import org.cts2.uri.AssociationDirectoryURI;
  */
 public class AssociationDirectoryURIFactory extends
 		AbstractCompositeDirectoryURIFactory<AssociationDirectoryURI> {
+	
+	//TODO Check for correct implementation recent changes
+	private AssociationRestrictionHandler associationRestrictionHandler;
 
 	@Override
 	protected AssociationDirectoryURI doBuildDirectoryURI() {
-	
-		return null;
+		Assert.assertNotNull(this.associationRestrictionHandler);
+		
+		try {
+			return new DefaultAssociationDirectoryURI(ProfileUtils.unionAllGraphs(this.getLexBigService()), this.associationRestrictionHandler, this.getBeanMapper());
+		} catch (LBException e) {
+			//TODO: CTS2 exception
+			throw new RuntimeException(e);
+		}
 	}
 
 
