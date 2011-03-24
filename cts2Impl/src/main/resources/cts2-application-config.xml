@@ -71,6 +71,21 @@
 				<entry key="namedEntityDescriptionNoteListConverter">
 					<ref bean="namedEntityDescriptionNoteListConverter"/>
 				</entry>
+				<entry key="anonymousEntityDescriptionAboutConverter">
+					<ref bean="anonymousEntityDescriptionAboutConverter"/>
+				</entry>
+				<entry key="anonymousEntityDescriptionDefinitionListConverter">
+					<ref bean="anonymousEntityDescriptionDefinitionListConverter"/>
+				</entry>
+				<entry key="anonymousEntityDescriptionDesignationListConverter">
+					<ref bean="anonymousEntityDescriptionDesignationListConverter"/>
+				</entry>
+				<entry key="anonymousEntityDescriptionNoteListConverter">
+					<ref bean="anonymousEntityDescriptionNoteListConverter"/>
+				</entry>
+				<entry key="anonymousEntityDescriptionPropertyListConverter">
+					<ref bean="anonymousEntityDescriptionPropertyListConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -96,6 +111,10 @@
 	</bean>
 	<bean id="namedEntityDescriptionAboutConverter"
 		class="org.cts2.internal.mapper.converter.NamedEntityDescriptionAboutConverter">
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<bean id="anonymousEntityDescriptionAboutConverter"
+		class="org.cts2.internal.mapper.converter.AnonymousEntityDescriptionAboutConverter">
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<bean id="presentationUsageContextListToContextReferenceListConverter"
@@ -133,6 +152,22 @@
 	</bean>
 	<bean id="namedEntityDescriptionNoteListConverter"
 		class="org.cts2.internal.mapper.converter.NamedEntityDescriptionNoteListConverter">
+		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="anonymousEntityDescriptionDefinitionListConverter"
+		class="org.cts2.internal.mapper.converter.AnonymousEntityDescriptionDefinitionListConverter">
+		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="anonymousEntityDescriptionDesignationListConverter"
+		class="org.cts2.internal.mapper.converter.AnonymousEntityDescriptionDesignationListConverter">
+		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="anonymousEntityDescriptionNoteListConverter"
+		class="org.cts2.internal.mapper.converter.AnonymousEntityDescriptionNoteListConverter">
+		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="anonymousEntityDescriptionPropertyListConverter"
+		class="org.cts2.internal.mapper.converter.AnonymousEntityDescriptionPropertyListConverter">
 		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	<!--  End Dozer Custom Converters -->
