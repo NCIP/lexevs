@@ -18,7 +18,6 @@
  */
 package org.cts2.internal.profile.read;
 
-import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.core.EntityReference;
 import org.cts2.entity.EntityDescription;
 import org.cts2.entity.EntityList;
@@ -35,7 +34,7 @@ import org.cts2.service.core.ReadContext;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LexEvsEntityDescriptionReadService extends
-		AbstractBaseReadService<CodeSystemVersion> implements
+		AbstractBaseReadService<EntityDescription> implements
 		EntityDescriptionReadService {
 
 	/** The code system version factory. */
