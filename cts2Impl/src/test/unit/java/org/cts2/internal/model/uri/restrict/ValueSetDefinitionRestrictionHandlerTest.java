@@ -9,18 +9,21 @@ import java.util.List;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
-import org.cts2.core.types.SetOperator;
 import org.cts2.core.types.TargetReferenceType;
 import org.cts2.internal.match.BaseCompositeMatchAlgorithm;
 import org.cts2.internal.match.ExactMatcher;
 import org.cts2.internal.match.MatchAlgorithm;
 import org.cts2.test.TestUtils;
+import org.cts2.uri.ValueSetDefinitionDirectoryURI;
+import org.cts2.uri.restriction.RestrictionState;
+import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 
 import com.google.common.collect.Iterables;
 
 public class ValueSetDefinitionRestrictionHandlerTest {
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testUnionRestrict(){
 		ValueSetDefinitionRestrictionHandler handler = new ValueSetDefinitionRestrictionHandler();
@@ -30,7 +33,7 @@ public class ValueSetDefinitionRestrictionHandlerTest {
 		handler.setMatchAlgorithms(Arrays.asList(matchAlgorithm));
 		
 		FilterComponent filterComponent = 
-			TestUtils.buildFilterComponent(1l, SetOperator.UNION, "valueSetDefinitionName", TargetReferenceType.ATTRIBUTE, "exactMatch", "test_name");
+			TestUtils.buildFilterComponent("valueSetDefinitionName", TargetReferenceType.ATTRIBUTE, "exactMatch", "test_name");
 			
 		ValueSetDefinition vsd1 = new ValueSetDefinition();
 		vsd1.setValueSetDefinitionName("some_name");
@@ -42,7 +45,15 @@ public class ValueSetDefinitionRestrictionHandlerTest {
 		
 		Filter filter = TestUtils.buildFilter(filterComponent);
 		
-		IterableRestriction<ValueSetDefinition> restriction = handler.restrict(filter);
+		RestrictionState restrictionState = new RestrictionState();
+		restrictionState.getFilters().add(filter);
+		
+		ValueSetDefinitionDirectoryURI uri = EasyMock.createMock(ValueSetDefinitionDirectoryURI.class);
+		EasyMock.expect(uri.getRestrictionState()).andReturn(restrictionState);
+		
+		EasyMock.replay(uri);
+		
+		IterableRestriction<ValueSetDefinition> restriction = handler.compile(uri);
 		
 		Iterable<ValueSetDefinition> restrictedDefs = restriction.processRestriction(definitions);
 		

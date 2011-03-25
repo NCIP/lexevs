@@ -2,11 +2,6 @@ package org.cts2.internal.model.uri;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
-import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -18,25 +13,20 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
-import org.cts2.core.Directory;
 import org.cts2.core.Filter;
-import org.cts2.core.FilterComponent;
 import org.cts2.core.TargetExpression;
-import org.cts2.entity.EntityDirectory;
-import org.cts2.entity.EntityList;
+import org.cts2.core.types.SetOperator;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedAssociationDirectory;
 import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedAssociationList;
-import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityDirectory;
-import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityList;
-import org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler;
-import org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.EntityDirectoryURI;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
 
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
@@ -49,7 +39,12 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	private BeanMapper beanMapper;
 	private LexBIGService lbs;
 	
-	public DefaultAssociationDirectoryURI(CodedNodeGraph codedNodeGraph, AssociationRestrictionHandler restrictionHandler, BeanMapper beanMapper){
+	private AssociationDirectoryRestrictionState restrictionState;
+	
+	public DefaultAssociationDirectoryURI(
+			CodedNodeGraph codedNodeGraph, 
+			NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph,AssociationDirectoryURI> restrictionHandler, 
+			BeanMapper beanMapper){
 		super(restrictionHandler);
 		this.codedNodeGraph = codedNodeGraph;
 		this.beanMapper = beanMapper;
@@ -113,8 +108,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 
 	public AssociationDirectoryURI doRestrictToCodeSystemVersion(
 			NameOrURI codeSystemVersions) {
-		((AssociationRestrictionHandler) this.getRestrictionHandler())
-				.restrictToCodeSystemVersions(codeSystemVersions);
+		// TODO:
 		return this;
 	}
 	
@@ -222,6 +216,19 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	protected AssociationDirectoryURI clone() {
 		// TODO Auto-generated method stub
 		return this;
+	}
+
+	@Override
+	public AssociationDirectoryRestrictionState getRestrictionState() {
+		return this.restrictionState;
+	}
+
+	@Override
+	protected AssociationDirectoryURI createSetOperatedDirectoryURI(
+			SetOperator setOperator, AssociationDirectoryURI directoryUri1,
+			AssociationDirectoryURI directoryUri2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -18,6 +18,8 @@
  */
 package org.cts2.internal.model.uri.factory;
 
+import junit.framework.Assert;
+
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -32,13 +34,15 @@ import org.cts2.uri.CodeSystemVersionDirectoryURI;
  */
 public class CodeSystemVersionDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<CodeSystemVersionDirectoryURI> {
 	
-	private IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
+	private IterableBasedResolvingRestrictionHandler<CodingSchemeRendering,CodeSystemVersionDirectoryURI> restrictionHandler;
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.uri.factory.AbstractDirectoryURIFactory#doGetDirectoryURI()
 	 */
 	@Override
 	protected CodeSystemVersionDirectoryURI doBuildDirectoryURI() {
+		Assert.assertNotNull(this.restrictionHandler);
+		
 		CodingSchemeRenderingList codingSchemeRenderingList;
 		
 		try {
@@ -50,11 +54,12 @@ public class CodeSystemVersionDirectoryURIFactory extends AbstractCompositeDirec
 		return new DefaultCodeSystemVersionDirectoryURI(this.getLexBigService(), codingSchemeRenderingList, this.restrictionHandler, this.getBeanMapper());
 	}
 
-	public void setRestrictionHandler(IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler) {
-		this.restrictionHandler = restrictionHandler;
+	public IterableBasedResolvingRestrictionHandler<CodingSchemeRendering, CodeSystemVersionDirectoryURI> getRestrictionHandler() {
+		return restrictionHandler;
 	}
 
-	public IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> getRestrictionHandler() {
-		return restrictionHandler;
+	public void setRestrictionHandler(
+			IterableBasedResolvingRestrictionHandler<CodingSchemeRendering, CodeSystemVersionDirectoryURI> restrictionHandler) {
+		this.restrictionHandler = restrictionHandler;
 	}
 }

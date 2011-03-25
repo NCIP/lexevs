@@ -20,16 +20,21 @@ package org.cts2.internal.model.uri;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.core.VersionTagReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.entity.EntityDirectory;
 import org.cts2.entity.EntityList;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityDirectory;
 import org.cts2.internal.model.directory.ResolvedConceptReferencesIteratorBackedEntityList;
-import org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.Restriction;
+import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.EntityDirectoryURI;
+import org.cts2.uri.restriction.SetComposite;
 
 /**
  * The Class DefaultEntityDirectoryURI.
@@ -39,10 +44,14 @@ import org.cts2.uri.EntityDirectoryURI;
 public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeSet,EntityDirectoryURI> implements EntityDirectoryURI {
 	
 	/** The coded node set. */
-	private CodedNodeSet codedNodeSet;
+	//private CodedNodeSet codedNodeSet;
 	
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
+	
+	private LexBIGService lexBigService;
+	
+	private EntityDirectoryRestrictionState entityDirectoryRestrictionState = new EntityDirectoryRestrictionState();
 	
 	/**
 	 * Instantiates a new default code system version directory uri.
@@ -52,11 +61,11 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 	 * @param beanMapper the bean mapper
 	 */
 	public DefaultEntityDirectoryURI(
-			CodedNodeSet codedNodeSet,
-			EntityDescriptionRestrictionHandler restrictionHandler,
+			LexBIGService lexBigService,
+			NonIterableBasedResolvingRestrictionHandler<CodedNodeSet,EntityDirectoryURI> restrictionHandler,
 			BeanMapper beanMapper) {
 		super(restrictionHandler);
-		this.codedNodeSet = codedNodeSet;
+		this.lexBigService = lexBigService;
 		this.beanMapper = beanMapper;
 	}
 	
@@ -66,8 +75,10 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 	@Override
 	protected int doCount(ReadContext readContext) {
 		try {
-			return 
-				this.runRestrictions(getOriginalState()).resolve(null, null, null, null, false).numberRemaining();
+			Restriction<CodedNodeSet> restriction = 
+				this.getRestrictionHandler().compile(this.getThis(), this.getOriginalStateProvider());
+			
+			return this.getRestrictionHandler().apply( restriction, getOriginalState()).resolve(null, null, null, null).numberRemaining();
 		} catch (LBException e) {
 			//TODO: real cts2 exception here
 			throw new IllegalStateException();
@@ -79,7 +90,12 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 	 */
 	@Override
 	protected CodedNodeSet getOriginalState() {
-		return this.codedNodeSet;
+		try {
+			return ProfileUtils.unionAll(this.lexBigService);
+		} catch (LBException e) {
+			//TODO: real cts2 exception here
+			throw new IllegalStateException();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -114,8 +130,7 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 	public EntityDirectoryURI restrictToCodeSystems(
 			NameOrURI codeSystems,
 			VersionTagReference tag) {
-		this.getRestrictionHandler().restrictToCodeSystems(codeSystems, tag);
-		
+		//this.entityDirectoryRestrictionState.add...
 		return clone();
 	}
 
@@ -125,7 +140,7 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 	@Override
 	public EntityDirectoryURI restrictToCodeSystemVersions(
 			NameOrURI codeSystemVersions) {
-		this.getRestrictionHandler().restrictToCodeSystemVersions(codeSystemVersions);
+		this.getThis().getRestrictionState();
 		
 		return clone();
 	}
@@ -138,11 +153,26 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractNonIterableLexEvsBackedResolvingDirectoryURI#getRestrictionHandler()
-	 */
 	@Override
-	protected EntityDescriptionRestrictionHandler getRestrictionHandler() {
-		return (EntityDescriptionRestrictionHandler) super.getRestrictionHandler();
+	public EntityDirectoryRestrictionState getRestrictionState() {
+		return this.entityDirectoryRestrictionState;
+	}
+
+	@Override
+	protected EntityDirectoryURI createSetOperatedDirectoryURI(
+			SetOperator setOperator, 
+			EntityDirectoryURI directoryUri1,
+			EntityDirectoryURI directoryUri2) {
+		DefaultEntityDirectoryURI uri = new DefaultEntityDirectoryURI(
+				this.lexBigService, 
+				this.getRestrictionHandler(), 
+				this.beanMapper);
+		
+		uri.getRestrictionState().setSetComposite(new SetComposite<EntityDirectoryURI>());
+		uri.getRestrictionState().getSetComposite().setSetOperator(setOperator);
+		uri.getRestrictionState().getSetComposite().setDirectoryUri1(directoryUri1);
+		uri.getRestrictionState().getSetComposite().setDirectoryUri2(directoryUri2);
+	
+		return uri;
 	}
 }

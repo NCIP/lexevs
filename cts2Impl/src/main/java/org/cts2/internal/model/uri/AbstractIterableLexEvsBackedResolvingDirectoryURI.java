@@ -18,11 +18,7 @@
  */
 package org.cts2.internal.model.uri;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cts2.core.Directory;
-import org.cts2.core.Filter;
 import org.cts2.internal.model.uri.restrict.IterableBasedResolvingRestrictionHandler;
 import org.cts2.internal.model.uri.restrict.IterableRestriction;
 import org.cts2.service.core.QueryControl;
@@ -30,50 +26,26 @@ import org.cts2.service.core.ReadContext;
 import org.cts2.uri.DirectoryURI;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 
 /**
  * The Class AbstractIterableLexEvsBackedResolvingDirectoryURI.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractIterableLexEvsBackedResolvingDirectoryURI<L,T extends DirectoryURI> extends AbstractResolvingDirectoryURI<T> {
+public abstract class AbstractIterableLexEvsBackedResolvingDirectoryURI<T,L extends DirectoryURI> extends AbstractResolvingDirectoryURI<L> {
 	
 	/** The restriction handler. */
-	private IterableBasedResolvingRestrictionHandler<L> restrictionHandler;
-	
-	/** The restrictions. */
-	private List<IterableRestriction<L>> restrictions = new ArrayList<IterableRestriction<L>>();
+	private IterableBasedResolvingRestrictionHandler<T,L> restrictionHandler;
 	
 	/**
 	 * Instantiates a new abstract iterable lex evs backed resolving directory uri.
 	 *
 	 * @param restrictionHandler the restriction handler
+	 * @param restrictionState 
 	 */
-	protected AbstractIterableLexEvsBackedResolvingDirectoryURI(IterableBasedResolvingRestrictionHandler<L> restrictionHandler){
+	protected AbstractIterableLexEvsBackedResolvingDirectoryURI(IterableBasedResolvingRestrictionHandler<T,L> restrictionHandler){
 		this.restrictionHandler = restrictionHandler;
-	}
-	
-	/**
-	 * Adds the restriction.
-	 *
-	 * @param restriction the restriction
-	 */
-	protected void addRestriction(IterableRestriction<L> restriction){
-		this.restrictions.add(restriction);
-	}
-	
-	/**
-	 * Run restrictions.
-	 *
-	 * @param state the state
-	 * @return the iterable
-	 */
-	protected Iterable<L> runRestrictions(Iterable<L> state){
-		for(IterableRestriction<L> restriction : this.restrictions){
-			state = restriction.processRestriction(state);
-		}
-		
-		return state;
 	}
 	
 	/**
@@ -81,7 +53,7 @@ public abstract class AbstractIterableLexEvsBackedResolvingDirectoryURI<L,T exte
 	 *
 	 * @return the original state
 	 */
-	protected abstract Iterable<L> getOriginalState();
+	protected abstract Iterable<T> getOriginalState();
 	
 	/**
 	 * Transform.
@@ -91,18 +63,13 @@ public abstract class AbstractIterableLexEvsBackedResolvingDirectoryURI<L,T exte
 	 * @param clazz the clazz
 	 * @return the o
 	 */
-	protected abstract <O> O transform(Iterable<L> lexevsObject, Class<O> clazz);
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractDirectoryURI#restrict(org.cts2.core.Filter)
-	 */
-	@Override
-	public T restrict(Filter filter) {
+	protected abstract <O> O transform(Iterable<T> lexevsObject, Class<O> clazz);
 
-		this.restrictions.add(
-				this.restrictionHandler.restrict(filter));
-				
-		return this.clone();
+	@Override
+	protected int doCount(ReadContext readContext) {
+		IterableRestriction<T> restriction = this.restrictionHandler.compile( this.clone() );
+		
+		return Iterators.size(this.restrictionHandler.apply(restriction, this.getOriginalState()).iterator());
 	}
 
 	/* (non-Javadoc)
@@ -114,15 +81,16 @@ public abstract class AbstractIterableLexEvsBackedResolvingDirectoryURI<L,T exte
 			final ReadContext readContext, 
 			final Class<D> resolveClass) {
 		
-		Iterable<L> originalState = Iterables.unmodifiableIterable(this.getOriginalState());
+		Iterable<T> originalState = Iterables.unmodifiableIterable(this.getOriginalState());
 		
-		Iterable<L> restrictedState = this.runRestrictions(originalState);
+		IterableRestriction<T> restriction = this.restrictionHandler.compile( this.clone() );
+		
+		Iterable<T> restrictedState = this.restrictionHandler.apply(restriction, originalState);
 		
 		return this.transform(restrictedState, resolveClass);
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
-	protected abstract T clone();
+
+	protected IterableBasedResolvingRestrictionHandler<T, L> getRestrictionHandler() {
+		return restrictionHandler;
+	}
 }

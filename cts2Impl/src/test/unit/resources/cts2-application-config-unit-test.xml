@@ -12,5 +12,5 @@
 
 	<bean id="lexEvsIdentityConverter" class="org.cts2.test.LexEvsIdentityConverterNoOp"/>
 	
-
+	<bean id="lexEvsServiceLocator" class="org.cts2.test.LexEvsServiceLocatorNoOp"/>
 </beans>

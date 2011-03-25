@@ -30,6 +30,7 @@ import org.cts2.core.VersionTagReference;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
 import org.cts2.service.core.NameOrURI;
+import org.cts2.uri.AssociationDirectoryURI;
 
 /**
  * The Class DefaultEntityDescriptionRestrictionHandler.
@@ -39,7 +40,7 @@ import org.cts2.service.core.NameOrURI;
  *
  */
 public class DefaultAssociationRestrictionHandler 
-	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeGraph> implements AssociationRestrictionHandler {
+	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeGraph,AssociationDirectoryURI> {
 
 	/** The lex evs identity converter. */
 	//TODO provide new identity converter or supporting methods for this restriction handler  
@@ -48,22 +49,14 @@ public class DefaultAssociationRestrictionHandler
 	/** The lex big service. */
 	private LexBIGService lexBigService;
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler#restrictToCodeSystems(org.cts2.service.core.NameOrURI, org.cts2.core.VersionTagReference)
-	 */
-	@Override
-	public Restriction<CodedNodeGraph> restrictToCodeSystems(
+	protected Restriction<CodedNodeGraph> restrictToCodeSystems(
 			NameOrURI codeSystems,
 			VersionTagReference tag) {
 		//TODO: decide strategy for implementing CodeSystem profile.
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler#restrictToCodeSystemVersions(org.cts2.service.core.NameOrURI)
-	 */
-	@Override
-	public Restriction<CodedNodeGraph> restrictToCodeSystemVersions(
+	protected Restriction<CodedNodeGraph> restrictToCodeSystemVersions(
 			final NameOrURI codeSystemVersions) {
 		
 		return new Restriction<CodedNodeGraph>(){
@@ -135,4 +128,34 @@ public class DefaultAssociationRestrictionHandler
 		this.lexBigService = lexBigService;
 	}
 
+	@Override
+	protected List<Restriction<CodedNodeGraph>> processOtherRestictions(
+			AssociationDirectoryURI directoryURI) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected CodedNodeGraph doUnion(AssociationDirectoryURI i1,
+			AssociationDirectoryURI i2,
+			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected CodedNodeGraph doIntersect(AssociationDirectoryURI i1,
+			AssociationDirectoryURI i2,
+			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected CodedNodeGraph doDifference(AssociationDirectoryURI i1,
+			AssociationDirectoryURI i2,
+			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

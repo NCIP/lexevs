@@ -19,17 +19,24 @@
 package org.cts2.internal.model.uri.restrict;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.NameOrURI;
 import org.cts2.core.PredicateReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.core.types.TargetReferenceType;
 import org.cts2.internal.match.MatchAlgorithm;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
+import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.restriction.RestrictionState;
 
 import com.google.common.collect.Iterables;
 
@@ -38,7 +45,8 @@ import com.google.common.collect.Iterables;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends AbstractRestrictionHandler implements IterableBasedResolvingRestrictionHandler<T> {
+public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T,D extends DirectoryURI> extends AbstractRestrictionHandler 
+	implements IterableBasedResolvingRestrictionHandler<T,D> {
 	
 	private static float DEFAULT_SCORE_THRESHOLD = 0.5f;
 	
@@ -78,43 +86,95 @@ public abstract class AbstractIterableLexEvsBackedRestrictionHandler<T> extends 
 	 * @return the list
 	 */
 	public abstract List<ResolvableModelAttributeReference<T>> registerSupportedModelAttributeReferences();
+	
+	public abstract List<IterableRestriction<T>> processOtherRestictions(D directoryUri);
+	
+	public Iterable<T> apply(IterableRestriction<T> restriction, Iterable<T> state){
+		return restriction.processRestriction(state);
+	}
+	
+	public IterableRestriction<T> processSetOperation(final D i1, final D i2, final SetOperator setOperator) {
+		return new IterableRestriction<T>(){
+
+			@Override
+			public Iterable<T> processRestriction(Iterable<T> state) {
+				Set<T> set1 = new HashSet<T>();
+				Set<T> set2 = new HashSet<T>();
+
+				IterableRestriction<T> restrictions1 = compile(i1);
+				IterableRestriction<T> restrictions2 = compile(i2);
+
+				Iterables.addAll(set1, restrictions1.processRestriction(state));
+
+				Iterables.addAll(set2, restrictions2.processRestriction(state));
+
+				switch (setOperator){
+					case UNION : {
+						set1.addAll(set2);
+						return set1;
+					}
+					case INTERSECT : {
+						set1.retainAll(set2);
+						return set1;
+					}
+					case SUBTRACT : {
+						set1.removeAll(set2);
+						return set1;
+					}
+				}
+				
+				throw new IllegalStateException();
+			}
+		};
+	}
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.ListBasedResolvingRestrictionHandler#restrict(java.util.List, org.cts2.core.Filter)
 	 */
-	public IterableRestriction<T> restrict(final Filter filter) {
-		return new IterableRestriction<T>(){
+	@SuppressWarnings("unchecked")
+	public IterableRestriction<T> compile(D directoryURI) {
+		RestrictionState<? extends DirectoryURI> restriction = directoryURI.getRestrictionState();
 
-			@Override
-			public Iterable<T> processRestriction(Iterable<T> originalState) {
+		final List<IterableRestriction<T>> returnList = new ArrayList<IterableRestriction<T>>();
 
-				originalState = Iterables.unmodifiableIterable(originalState);
+		for(final Filter filter : restriction.getFilters()){
 
-				List<FilterComponent> filterComponents = sortFilterComponents(filter);
+			returnList.add(new IterableRestriction<T>(){
 
-				Collection<T> restrictedState = new ArrayList<T>();
+				@Override
+				public Iterable<T> processRestriction(Iterable<T> originalState) {
 
-				for (FilterComponent filterComponent : filterComponents) {
-					switch (filterComponent.getFilterOperator()){
-						case UNION : {
-							restrictedState.addAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
-							break;
-						}
-						case INTERSECT: {
-							restrictedState.retainAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
-							break;
-						}
-						case SUBTRACT: {
-							restrictedState.removeAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
-							break;
-						}
-					}	
-				}
+					originalState = Iterables.unmodifiableIterable(originalState);
 
-				return restrictedState;
-			};
-		};
+					List<FilterComponent> filterComponents = Arrays.asList(filter.getComponent());
+
+					Collection<T> restrictedState = new ArrayList<T>();
+
+					for (FilterComponent filterComponent : filterComponents) {
+						restrictedState.addAll(doRestrict(originalState, filterComponent, DEFAULT_SCORE_THRESHOLD));
+					}
+
+					return restrictedState;
+				};
+			});
+		}
+		
+		List<IterableRestriction<T>> otherRestrictions = this.processOtherRestictions(directoryURI);
+		if(CollectionUtils.isNotEmpty(otherRestrictions)){
+			returnList.addAll(otherRestrictions);
+		}
+		
+		if(restriction.getSetComposite() != null){
+			returnList.add(this.processSetOperation(
+					(D)restriction.getSetComposite().getDirectoryUri1(), 
+					(D)restriction.getSetComposite().getDirectoryUri2(),
+					restriction.getSetComposite().getSetOperator()));
+		}
+
+		return RestrictionUtils.combineIterableRestrictions(returnList);
 	}
+	
+	
 
 	/**
 	 * Do restrict.

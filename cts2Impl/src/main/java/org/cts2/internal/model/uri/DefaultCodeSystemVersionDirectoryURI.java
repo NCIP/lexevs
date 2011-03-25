@@ -18,26 +18,22 @@
  */
 package org.cts2.internal.model.uri;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
-import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.core.EntityReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.uri.restrict.IterableBasedResolvingRestrictionHandler;
-import org.cts2.internal.model.uri.restrict.IterableRestriction;
-import org.cts2.internal.profile.ProfileUtils;
-import org.cts2.service.core.ReadContext;
 import org.cts2.service.core.types.ActiveOrAll;
 import org.cts2.service.core.types.RestrictionType;
 import org.cts2.uri.CodeSystemVersionDirectoryURI;
+import org.cts2.uri.restriction.CodeSystemVersionRestrictionState;
+import org.cts2.uri.restriction.CodeSystemVersionRestrictionState.RestrictToEntitiesRestriction;
+import org.cts2.uri.restriction.SetComposite;
 
 import scala.actors.threadpool.Arrays;
 
@@ -48,7 +44,8 @@ import com.google.common.collect.Iterables;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvsBackedResolvingDirectoryURI<CodingSchemeRendering,CodeSystemVersionDirectoryURI> 
+public class DefaultCodeSystemVersionDirectoryURI extends 
+	AbstractIterableLexEvsBackedResolvingDirectoryURI<CodingSchemeRendering,CodeSystemVersionDirectoryURI> 
 	implements CodeSystemVersionDirectoryURI{
 	
 	/** The coding scheme rendering list. */
@@ -58,6 +55,8 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvs
 	private BeanMapper beanMapper;
 	
 	private LexBIGService lexBigService;
+
+	private CodeSystemVersionRestrictionState restrictionState = new CodeSystemVersionRestrictionState();
 	
 	/**
 	 * Instantiates a new default code system version directory uri.
@@ -69,7 +68,7 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvs
 	public DefaultCodeSystemVersionDirectoryURI(
 			LexBIGService lexBigService,
 			CodingSchemeRenderingList codingSchemeRenderingList,
-			IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler,
+			IterableBasedResolvingRestrictionHandler<CodingSchemeRendering,CodeSystemVersionDirectoryURI> restrictionHandler,
 			BeanMapper beanMapper) {
 		super(restrictionHandler);
 		this.lexBigService = lexBigService;
@@ -78,79 +77,26 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvs
 	}
 
 	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractDirectoryURI#doCount(org.cts2.service.core.ReadContext)
-	 */
-	@Override
-	protected int doCount(ReadContext readContext) {
-		return this.codingSchemeRenderingList.getCodingSchemeRenderingCount();
-	}
-	
-	
-	/* (non-Javadoc)
 	 * @see org.cts2.uri.CodeSystemVersionDirectoryURI#restrictToEntities(java.util.List, org.cts2.service.core.types.RestrictionType, org.cts2.service.core.types.ActiveOrAll)
 	 */
+	@Override
+	public CodeSystemVersionRestrictionState getRestrictionState() {
+		return this.restrictionState;
+	}
+
 	@Override
 	public CodeSystemVersionDirectoryURI restrictToEntities(
 			final List<EntityReference> entities, 
 			final RestrictionType allOrSome,
 			final ActiveOrAll active) {
 		
-		this.addRestriction(new IterableRestriction<CodingSchemeRendering>(){
-
-			@Override
-			public Iterable<CodingSchemeRendering> processRestriction(
-					Iterable<CodingSchemeRendering> state) {
-				
-				List<CodingSchemeRendering> returnList = new ArrayList<CodingSchemeRendering>();
-				
-				for(CodingSchemeRendering rendering : state){
-					String uri = rendering.getCodingSchemeSummary().getCodingSchemeURI();
-					String version = rendering.getCodingSchemeSummary().getRepresentsVersion();
-					
-					try {
-						CodedNodeSet cns = lexBigService.getNodeSet(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version), null);
-						
-						cns = cns.restrictToCodes(ProfileUtils.entityReferenceToConceptReferenceList(entities));
-						
-						switch (active) {
-							case ACTIVE_ONLY : {
-								cns = cns.restrictToStatus(ActiveOption.ACTIVE_ONLY, null);
-								break;
-							}
-							
-							case ACTIVE_AND_INACTIVE : {
-								cns = cns.restrictToStatus(ActiveOption.ALL, null);
-								break;
-							}
-						}
-						
-						int number = cns.resolve(null, null, null, null, false).numberRemaining();
-						
-						switch (allOrSome) {
-							case ALL : {
-								if(number == entities.size()){
-									returnList.add(rendering);
-								}
-								break;
-							}
-							
-							case AT_LEAST_ONE : {
-								if(number > 0){
-									returnList.add(rendering);
-								}
-								break;
-							}
-						}
-					
-					} catch (LBException e) {
-						//TODO: Throw CTS2 Exception here.
-						throw new RuntimeException(e);
-					}
-				}
-
-				return returnList;
-			}
-		});
+		RestrictToEntitiesRestriction restrictToEntities = new RestrictToEntitiesRestriction();
+		
+		restrictToEntities.setActive(active);
+		restrictToEntities.setAllOrSome(allOrSome);
+		restrictToEntities.setEntities(entities);
+		
+		this.getRestrictionState().getRestrictToEntitiesRestrictions().add(restrictToEntities);
 		
 		return clone();
 	}
@@ -217,5 +163,27 @@ public class DefaultCodeSystemVersionDirectoryURI extends AbstractIterableLexEvs
 	protected CodeSystemVersionDirectoryURI clone() {
 		//TODO: implement no-destructive clone
 		return this;
+	}
+
+
+	@Override
+	protected CodeSystemVersionDirectoryURI createSetOperatedDirectoryURI(
+			SetOperator setOperator,
+			CodeSystemVersionDirectoryURI directoryUri1,
+			CodeSystemVersionDirectoryURI directoryUri2) {
+		DefaultCodeSystemVersionDirectoryURI newUri = 
+			new DefaultCodeSystemVersionDirectoryURI(
+					this.lexBigService, 
+					this.codingSchemeRenderingList, 
+					this.getRestrictionHandler(), 
+					this.beanMapper);
+		
+		newUri.getRestrictionState().setSetComposite(new SetComposite<CodeSystemVersionDirectoryURI>());
+		newUri.getRestrictionState().getSetComposite().setDirectoryUri1(directoryUri1);
+		newUri.getRestrictionState().getSetComposite().setDirectoryUri2(directoryUri2);
+		
+		newUri.getRestrictionState().getSetComposite().setSetOperator(setOperator);
+		
+		return newUri;
 	}
 }

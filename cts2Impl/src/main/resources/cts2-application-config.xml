@@ -11,7 +11,10 @@
 	</bean>
 	
 	<bean id="lexBIGServiceImpl" class="org.LexGrid.LexBIG.Impl.LexBIGServiceImpl"
-		factory-method="defaultInstance"/>
+		factory-method="defaultInstance" depends-on="lexEvsServiceLocator"/>
+		
+	<bean id="lexEvsServiceLocator" class="org.lexevs.locator.LexEvsServiceLocator"
+		factory-method="getInstance"/>
 		
 	<bean id="lexEVSValueSetDefinitionServiceImpl" class="org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl"
 		factory-method="defaultInstance"/>
@@ -219,15 +222,17 @@
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
 	</bean>
 	
-	<bean id="codeSystemVersionDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemVersionDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
+	<bean id="codeSystemVersionDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemVersionDirectoryURIFactory" parent="abstractDirectoryURIFactory">
+		<property name="restrictionHandler" ref="defaultCodeSystemVersionRestrictionHandler"/>
+	</bean>
 	<bean id="codeSystemDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.CodeSystemDirectoryURIFactory" parent="abstractDirectoryURIFactory"/>
 	
 	<bean id="associationDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory" parent="abstractDirectoryURIFactory">
-	<property name="associationRestrictionHandler" ref="defaultAssociationRestrictionHandler"/>
+	<property name="restrictionHandler" ref="defaultAssociationRestrictionHandler"/>
 	</bean>
 	
 	<bean id="entityDirectoryURIFactory" class="org.cts2.internal.model.uri.factory.EntityDirectoryURIFactory" parent="abstractDirectoryURIFactory">
-		<property name="entityDescriptionRestrictionHandler" ref="defaultEntityDescriptionRestrictionHandler"/>
+		<property name="restrictionHandler" ref="defaultEntityDescriptionRestrictionHandler"/>
 	</bean>
 	<!-- End Directory URI Factories -->
 	
@@ -237,14 +242,23 @@
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
-	
+
 	<bean id="defaultAssociationRestrictionHandler" class="org.cts2.internal.model.uri.restrict.DefaultAssociationRestrictionHandler">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	
+	<bean id="defaultCodeSystemVersionRestrictionHandler" class="org.cts2.internal.model.uri.restrict.DefaultCodeSystemVersionRestrictionHandler">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
+	</bean>
+	<!-- End RestrictionHandlers -->
+	
+	
+	<!-- Model Factories -->
 	<bean id="codeSystemVersionFactory" class="org.cts2.internal.model.resource.factory.CodeSystemVersionFactory">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="lexEvsServiceLocator" ref="lexEvsServiceLocator" />
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 		<property name="entityDirectoryUriFactory" ref="entityDirectoryURIFactory" />
@@ -255,9 +269,11 @@
 		<property name="lexEVSValueSetDefinitionService" ref="lexEVSValueSetDefinitionServiceImpl" />
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
 	</bean>
-		
+	<!-- End Model Factories -->
+	
 	<bean id="lexEvsIdentityConverter" class="org.cts2.internal.lexevs.identity.DefaultLexEvsIdentityConverter">
 		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="lexEvsServiceLocator" ref="lexEvsServiceLocator" />
 	</bean>
 	
 </beans>

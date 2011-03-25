@@ -61,6 +61,21 @@ public abstract class AbstractBaseQueryService<U extends DirectoryURI> extends A
 		return (U) directoryUri.restrict(filter);
 	}	
 
+	@Override
+	public U union(U directoryUri1, U directoryUri2) {
+		return directoryUri1.union(directoryUri2);
+	}
+
+	@Override
+	public U intersect(U directoryUri1, U directoryUri2) {
+		return directoryUri1.intersect(directoryUri2);
+	}
+
+	@Override
+	public U difference(U directoryUri1, U directoryUri2) {
+		return directoryUri1.difference(directoryUri2);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.cts2.profile.query.BaseQueryService#getSupportedModelAttributeReferences()
 	 */

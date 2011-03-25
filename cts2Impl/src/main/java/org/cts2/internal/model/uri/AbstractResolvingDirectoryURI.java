@@ -48,6 +48,11 @@ public abstract class AbstractResolvingDirectoryURI<T extends DirectoryURI> exte
 			
 		}, queryControl);
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected T getThis(){
+		return (T) this;
+	}
 
 	/**
 	 * Do resolve.

@@ -52,6 +52,12 @@ public interface BaseQueryService<U extends DirectoryURI> {
 	 */
 	public U restrict(U restrictable, Filter filter);
 	
+	public U union(U directoryUri1, U directoryUri2);
+	
+	public U intersect(U directoryUri1, U directoryUri2);
+	
+	public U difference(U directoryUri1, U directoryUri2);
+	
 	/**
 	 * Gets the supported model attribute references.
 	 *

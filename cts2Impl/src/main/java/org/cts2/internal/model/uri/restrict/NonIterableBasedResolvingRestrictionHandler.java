@@ -18,22 +18,17 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
-import org.cts2.core.Filter;
+import org.cts2.uri.DirectoryURI;
 
 /**
  * The Interface ListBasedResolvingRestrictionHandler.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface NonIterableBasedResolvingRestrictionHandler<T> extends OperationRestrictionHandler<T> {
+public interface NonIterableBasedResolvingRestrictionHandler<T,D extends DirectoryURI> extends OperationRestrictionHandler<T> {
 
-	/**
-	 * Restrict.
-	 *
-	 * @param originalState the original state
-	 * @param filter the filter
-	 * @return the list
-	 */
-	public Restriction<T> restrict(Filter filter);
+	public Restriction<T> compile(D directoryURI, OriginalStateProvider<T> originalState);
+	
+	public T apply(Restriction<T> restriction, T state);
 	
 }

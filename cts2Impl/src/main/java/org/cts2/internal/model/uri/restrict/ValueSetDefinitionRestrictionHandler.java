@@ -25,13 +25,14 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.internal.match.AttributeResolver;
 import org.cts2.internal.match.ResolvableModelAttributeReference;
+import org.cts2.uri.ValueSetDefinitionDirectoryURI;
 
 /**
  * The Class ValueSetDefinitionRestrictionHandler.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class ValueSetDefinitionRestrictionHandler extends AbstractIterableLexEvsBackedRestrictionHandler<ValueSetDefinition>{
+public class ValueSetDefinitionRestrictionHandler extends AbstractIterableLexEvsBackedRestrictionHandler<ValueSetDefinition,ValueSetDefinitionDirectoryURI>{
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.AbstractIterableLexEvsBackedRestrictionHandler#registerSupportedModelAttributes()
@@ -61,10 +62,14 @@ public class ValueSetDefinitionRestrictionHandler extends AbstractIterableLexEvs
 		
 		return returnList;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.restrict.AbstractRestrictionHandler#registerSupportedMatchAlgorithmReferences()
-	 */
+
+	@Override
+	public List<IterableRestriction<ValueSetDefinition>> processOtherRestictions(
+			ValueSetDefinitionDirectoryURI directoryUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public List<MatchAlgorithmReference> registerSupportedMatchAlgorithmReferences() {
 		// TODO Auto-generated method stub

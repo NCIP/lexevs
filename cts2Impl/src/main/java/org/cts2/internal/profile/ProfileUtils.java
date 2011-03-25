@@ -31,7 +31,9 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.apache.commons.lang.StringUtils;
 import org.cts2.core.EntityReference;
+import org.cts2.service.core.ReadContext;
 
 /**
  * The Class ProfileUtils.
@@ -39,6 +41,17 @@ import org.cts2.core.EntityReference;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class ProfileUtils {
+	
+	//TODO: Validate with real CTS2 Exceptions
+	public static void validateReadContext(ReadContext readContext){
+		if(readContext != null){
+			if(StringUtils.isNotBlank(readContext.getChangeSetContext())
+					&&
+					readContext.getReferenceTime() != null){
+				throw new RuntimeException("ChangeSetURI and ReferenceTime cannot both be set.");
+			}
+		}
+	}
 
 	/**
 	 * Union all.

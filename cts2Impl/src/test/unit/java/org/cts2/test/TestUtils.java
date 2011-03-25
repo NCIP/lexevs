@@ -5,7 +5,6 @@ import org.cts2.core.FilterComponent;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.NameOrURI;
 import org.cts2.core.PropertyReference;
-import org.cts2.core.types.SetOperator;
 import org.cts2.core.types.TargetReferenceType;
 
 public class TestUtils {
@@ -18,16 +17,12 @@ public class TestUtils {
 	}
 	
 	public static FilterComponent buildFilterComponent(
-			long order, 
-			SetOperator operator, 
 			String propetyRefName, 
 			TargetReferenceType type, 
 			String matchAlgorithm, 
 			String matchValue){
 		
 		FilterComponent testFilterComponent = new FilterComponent();
-		testFilterComponent.setComponentOrder(order);
-		testFilterComponent.setFilterOperator(operator);
 		
 		PropertyReference pref = new PropertyReference();
 		pref.setReferenceType(type);

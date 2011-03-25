@@ -20,10 +20,9 @@ package org.cts2.internal.model.uri.factory;
 
 import junit.framework.Assert;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.cts2.internal.model.uri.DefaultEntityDirectoryURI;
-import org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler;
-import org.cts2.internal.profile.ProfileUtils;
+import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
 import org.cts2.uri.EntityDirectoryURI;
 
 
@@ -34,26 +33,20 @@ import org.cts2.uri.EntityDirectoryURI;
  */
 public class EntityDirectoryURIFactory extends AbstractCompositeDirectoryURIFactory<EntityDirectoryURI> {
 
-	private EntityDescriptionRestrictionHandler entityDescriptionRestrictionHandler;
+	private NonIterableBasedResolvingRestrictionHandler<CodedNodeSet,EntityDirectoryURI> restrictionHandler;
 	
 	@Override
 	protected EntityDirectoryURI doBuildDirectoryURI() {
-		Assert.assertNotNull(this.entityDescriptionRestrictionHandler);
-		
-		try {
-			return new DefaultEntityDirectoryURI(ProfileUtils.unionAll(this.getLexBigService()), this.entityDescriptionRestrictionHandler, this.getBeanMapper());
-		} catch (LBException e) {
-			//TODO: CTS2 exception
-			throw new RuntimeException(e);
-		}
+		Assert.assertNotNull(this.restrictionHandler);
+
+		return new DefaultEntityDirectoryURI(this.getLexBigService(), this.restrictionHandler, this.getBeanMapper());
 	}
 
-	public void setEntityDescriptionRestrictionHandler(
-			EntityDescriptionRestrictionHandler entityDescriptionRestrictionHandler) {
-		this.entityDescriptionRestrictionHandler = entityDescriptionRestrictionHandler;
+	public void setRestrictionHandler(NonIterableBasedResolvingRestrictionHandler<CodedNodeSet,EntityDirectoryURI> restrictionHandler) {
+		this.restrictionHandler = restrictionHandler;
 	}
 
-	public EntityDescriptionRestrictionHandler getEntityDescriptionRestrictionHandler() {
-		return entityDescriptionRestrictionHandler;
+	public NonIterableBasedResolvingRestrictionHandler<CodedNodeSet,EntityDirectoryURI> getRestrictionHandler() {
+		return restrictionHandler;
 	}
 }

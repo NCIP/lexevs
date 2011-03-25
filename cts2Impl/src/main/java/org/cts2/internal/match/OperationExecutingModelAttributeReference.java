@@ -20,7 +20,6 @@ package org.cts2.internal.match;
 
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.ModelAttributeReference;
-import org.cts2.core.types.SetOperator;
 
 /**
  * The Class OperationExecutingModelAttributeReference.
@@ -33,14 +32,14 @@ public class OperationExecutingModelAttributeReference<T> extends ModelAttribute
 	private static final long serialVersionUID = 5500382462242484409L;
 	
 	/** The operation. */
-	private Operation<T> operation;
+	private RestrictionOperation<T> operation;
 	
 	/**
 	 * Instantiates a new operation executing model attribute reference.
 	 *
 	 * @param operation the operation
 	 */
-	public OperationExecutingModelAttributeReference(Operation<T> operation){
+	public OperationExecutingModelAttributeReference(RestrictionOperation<T> operation){
 		super();
 		this.operation = operation;
 	}
@@ -54,21 +53,8 @@ public class OperationExecutingModelAttributeReference<T> extends ModelAttribute
 	 * @param algorithm the algorithm
 	 * @return the model attribute value
 	 */
-	public T executeOperation(T stateObject, SetOperator setOperator, String matchText, MatchAlgorithmReference algorithm){
-		switch (setOperator){
-			case UNION : {
-				return this.operation.union(stateObject, matchText, algorithm);
-			}
-			case INTERSECT: {
-				return this.operation.intersect(stateObject, matchText, algorithm);
-			}
-			case SUBTRACT: {
-				return this.operation.subtract(stateObject, matchText, algorithm);
-			}
-			default : {
-				throw new IllegalStateException();
-			}
-		}
+	public T executeOperation(T stateObject, String matchText, MatchAlgorithmReference algorithm){
+		return this.operation.restrict(stateObject, matchText, algorithm);
 	}
 
 	/**
@@ -77,36 +63,16 @@ public class OperationExecutingModelAttributeReference<T> extends ModelAttribute
 	 * @param <T> the
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	public static interface Operation<T> {
+	public static interface RestrictionOperation<T> {
 		
 		/**
-		 * Execute.
+		 * Restrict.
 		 *
 		 * @param stateObject the state object
 		 * @param matchText the match text
 		 * @param algorithm the algorithm
 		 * @return the t
 		 */
-		public T union(T stateObject, String matchText, MatchAlgorithmReference algorithm);
-		
-		/**
-		 * Intersect.
-		 *
-		 * @param stateObject the state object
-		 * @param matchText the match text
-		 * @param algorithm the algorithm
-		 * @return the t
-		 */
-		public T intersect(T stateObject, String matchText, MatchAlgorithmReference algorithm);
-		
-		/**
-		 * Subtract.
-		 *
-		 * @param stateObject the state object
-		 * @param matchText the match text
-		 * @param algorithm the algorithm
-		 * @return the t
-		 */
-		public T subtract(T stateObject, String matchText, MatchAlgorithmReference algorithm);
+		public T restrict(T stateObject, String matchText, MatchAlgorithmReference algorithm);
 	}
 }

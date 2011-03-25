@@ -21,12 +21,12 @@ package org.cts2.internal.model.uri;
 import java.util.List;
 
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.cts2.core.types.SetOperator;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.uri.restrict.ValueSetDefinitionRestrictionHandler;
-import org.cts2.service.core.ReadContext;
+import org.cts2.uri.DirectoryURI;
 import org.cts2.uri.ValueSetDefinitionDirectoryURI;
-
-import com.google.common.collect.Iterators;
+import org.cts2.uri.restriction.RestrictionState;
 
 /**
  * The Class DefaultCodeSystemVersionDirectoryURI.
@@ -61,6 +61,17 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	}
 
 	@Override
+	protected ValueSetDefinitionDirectoryURI clone() {
+		return this;
+	}
+
+	@Override
+	public RestrictionState<? extends DirectoryURI> getRestrictionState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	protected <O> O transform(Iterable<ValueSetDefinition> lexevsObject,
 			Class<O> clazz) {
 		// TODO Auto-generated method stub
@@ -68,12 +79,11 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	}
 
 	@Override
-	protected ValueSetDefinitionDirectoryURI clone() {
-		return this;
-	}
-
-	@Override
-	protected int doCount(ReadContext readContext) {
-		return Iterators.size(this.runRestrictions(this.valueSetDefinitionList).iterator());
+	protected ValueSetDefinitionDirectoryURI createSetOperatedDirectoryURI(
+			SetOperator setOperator,
+			ValueSetDefinitionDirectoryURI directoryUri1,
+			ValueSetDefinitionDirectoryURI directoryUri2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

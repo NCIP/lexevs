@@ -36,11 +36,12 @@ import org.apache.commons.lang.StringUtils;
 import org.cts2.constant.ExternalCts2Constants;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.VersionTagReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
-import org.cts2.internal.match.OperationExecutingModelAttributeReference.Operation;
-import org.cts2.internal.profile.ProfileUtils;
+import org.cts2.internal.match.OperationExecutingModelAttributeReference.RestrictionOperation;
 import org.cts2.service.core.NameOrURI;
+import org.cts2.uri.EntityDirectoryURI;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -49,7 +50,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class DefaultEntityDescriptionRestrictionHandler 
-	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeSet> implements EntityDescriptionRestrictionHandler, InitializingBean {
+	extends AbstractNonIterableLexEvsBackedRestrictionHandler<CodedNodeSet,EntityDirectoryURI> implements InitializingBean {
 
 	/** The lex evs identity converter. */
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
@@ -86,22 +87,15 @@ public class DefaultEntityDescriptionRestrictionHandler
 		return returnList;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler#restrictToCodeSystems(org.cts2.service.core.NameOrURI, org.cts2.core.VersionTagReference)
-	 */
-	@Override
-	public Restriction<CodedNodeSet> restrictToCodeSystems(
+
+	protected Restriction<CodedNodeSet> restrictToCodeSystems(
 			NameOrURI codeSystems,
 			VersionTagReference tag) {
 		//TODO: decide strategy for implementing CodeSystem profile.
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.restrict.EntityDescriptionRestrictionHandler#restrictToCodeSystemVersions(org.cts2.service.core.NameOrURI)
-	 */
-	@Override
-	public Restriction<CodedNodeSet> restrictToCodeSystemVersions(
+	protected Restriction<CodedNodeSet> restrictToCodeSystemVersions(
 			final NameOrURI codeSystemVersions) {
 		
 		return new Restriction<CodedNodeSet>(){
@@ -125,50 +119,79 @@ public class DefaultEntityDescriptionRestrictionHandler
 		};
 	}
 	
+	@Override
+	protected List<Restriction<CodedNodeSet>> processOtherRestictions(
+			EntityDirectoryURI directoryURI) {
+		return null;
+	}
+
+	@Override
+	protected CodedNodeSet doUnion(EntityDirectoryURI i1, EntityDirectoryURI i2, OriginalStateProvider<CodedNodeSet> originalState){
+		return this.doSetOperation(i1, i2, originalState, SetOperator.UNION);
+	}
+
+	@Override
+	protected CodedNodeSet doIntersect(EntityDirectoryURI i1,
+			EntityDirectoryURI i2, OriginalStateProvider<CodedNodeSet> originalState){
+		return this.doSetOperation(i1, i2, originalState, SetOperator.INTERSECT);
+	}
+
+	@Override
+	protected CodedNodeSet doDifference(EntityDirectoryURI i1,
+			EntityDirectoryURI i2, OriginalStateProvider<CodedNodeSet> originalState){
+		return this.doSetOperation(i1, i2, originalState, SetOperator.SUBTRACT);
+	}
+	
+	protected CodedNodeSet doSetOperation(EntityDirectoryURI i1, EntityDirectoryURI i2, OriginalStateProvider<CodedNodeSet> originalState, SetOperator setOperator){
+		Restriction<CodedNodeSet> restriction1 = this.compile(i1, originalState);
+		Restriction<CodedNodeSet> restriction2 = this.compile(i2, originalState);
+
+		CodedNodeSet cns1 = this.apply(restriction1, originalState.getOriginalState());
+		CodedNodeSet cns2 = this.apply(restriction2, originalState.getOriginalState());
+
+		switch (setOperator){
+			case UNION : {
+				try {
+					return cns1.union(cns2);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+			case INTERSECT : {
+				try {
+					return cns1.intersect(cns2);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+			case SUBTRACT : {
+				try {
+					return cns1.difference(cns2);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+		}
+
+		throw new IllegalStateException();
+	}
+
 	/**
 	 * The Class RestrictToMatchingDesignationsOperation.
 	 *
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	private class RestrictToMatchingDesignationsOperation implements Operation<CodedNodeSet>{
+	private class RestrictToMatchingDesignationsOperation implements RestrictionOperation<CodedNodeSet>{
 		
 		/* (non-Javadoc)
 		 * @see org.cts2.internal.match.OperationExecutingModelAttributeReference.Operation#union(java.lang.Object, java.lang.String, org.cts2.core.MatchAlgorithmReference)
 		 */
 		@Override
-		public CodedNodeSet union(CodedNodeSet stateObject, String matchText, MatchAlgorithmReference algorithm) {
+		public CodedNodeSet restrict(CodedNodeSet stateObject, String matchText, MatchAlgorithmReference algorithm) {
 			try {
-				CodedNodeSet restriction = ProfileUtils.unionAll(lexBigService);
-				restriction = restriction.restrictToMatchingDesignations(matchText, SearchDesignationOption.ALL, getSearchName(algorithm), null);
-				return stateObject.union(restriction);
-			} catch (LBException e) {
-				//TODO: throw real CTS2 exception
-				throw new RuntimeException(e);
-			}
-		}
-
-		/* (non-Javadoc)
-		 * @see org.cts2.internal.match.OperationExecutingModelAttributeReference.Operation#intersect(java.lang.Object, java.lang.String, org.cts2.core.MatchAlgorithmReference)
-		 */
-		@Override
-		public CodedNodeSet intersect(CodedNodeSet stateObject, String matchText, MatchAlgorithmReference algorithm) {
-			try {
+				//CodedNodeSet restriction = ProfileUtils.unionAll(lexBigService);
 				return stateObject.restrictToMatchingDesignations(matchText, SearchDesignationOption.ALL, getSearchName(algorithm), null);
-			} catch (LBException e) {
-				//TODO: throw real CTS2 exception
-				throw new RuntimeException(e);
-			}
-		}
-
-		/* (non-Javadoc)
-		 * @see org.cts2.internal.match.OperationExecutingModelAttributeReference.Operation#subtract(java.lang.Object, java.lang.String, org.cts2.core.MatchAlgorithmReference)
-		 */
-		@Override
-		public CodedNodeSet subtract(CodedNodeSet stateObject, String matchText, MatchAlgorithmReference algorithm) {
-			try {
-				CodedNodeSet restriction = ProfileUtils.unionAll(lexBigService);
-				restriction = restriction.restrictToMatchingDesignations(matchText, SearchDesignationOption.ALL, getSearchName(algorithm), null);
-				return stateObject.difference(restriction);
+				//return stateObject.intersect(restriction);
 			} catch (LBException e) {
 				//TODO: throw real CTS2 exception
 				throw new RuntimeException(e);
@@ -225,7 +248,7 @@ public class DefaultEntityDescriptionRestrictionHandler
 		for(Entry<MatchAlgorithmReference, String> entry : this.matchAlgorithmReferenceToSearchName.entrySet()){
 			if(StringUtils.equals(reference.getContent(), entry.getKey().getContent())
 					||
-					(StringUtils.equals(reference.getHref(), entry.getKey().getHref()))){
+					(StringUtils.equals(reference.getHref(), entry.getKey().getMeaning()))){
 						return entry.getValue();
 					}
 		}

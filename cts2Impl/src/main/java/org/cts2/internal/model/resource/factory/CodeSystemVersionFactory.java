@@ -18,11 +18,14 @@
  */
 package org.cts2.internal.model.resource.factory;
 
+import java.util.Date;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.apache.commons.lang.StringUtils;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.mapper.BeanMapper;
@@ -34,7 +37,7 @@ import org.cts2.uri.EntityDirectoryURI;
 /**
  * A factory for creating CodeSystemVersion objects.
  */
-public class CodeSystemVersionFactory {
+public class CodeSystemVersionFactory extends AbstractResourceFactory {
 	
 	/** The bean mapper. */
 	private BeanMapper beanMapper;
@@ -51,20 +54,37 @@ public class CodeSystemVersionFactory {
 	/** The entity directory uri factory. */
 	private DirectoryURIFactory<EntityDirectoryURI> entityDirectoryUriFactory;
 	
+	public CodeSystemVersion getCurrentCodeSystemVersion(NameOrURI nameOrUri){
+		return this.getCodeSystemVersionByRevisionId(nameOrUri, null);
+	}
+	
+	public CodeSystemVersion getCodeSystemVersionByDate(NameOrURI nameOrUri, Date date){
+		String revisionId;
+		
+		if(date == null){
+			return this.getCurrentCodeSystemVersion(nameOrUri);
+		} else {
+			revisionId = this.getRevisionIdByDate(date);
+			return this.getCodeSystemVersionByRevisionId(nameOrUri, revisionId);
+		}
+	}
+	
 	/**
 	 * Gets the code system version.
 	 *
 	 * @param nameOrUri the name or uri
 	 * @return the code system version
 	 */
-	public CodeSystemVersion getCodeSystemVersion(NameOrURI nameOrUri){
+	public CodeSystemVersion getCodeSystemVersionByRevisionId(NameOrURI nameOrUri, String revisionId){
 		AbsoluteCodingSchemeVersionReference ref = this.lexEvsIdentityConverter.nameOrUriToAbsoluteCodingSchemeVersionReference(nameOrUri);
 		
 		CodingScheme codingScheme;
 		try {
-			codingScheme = this.lexBigService.resolveCodingScheme(
-					ref.getCodingSchemeURN(), 
-					Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()));
+			if(StringUtils.isBlank(revisionId)){
+				codingScheme = getCodingScheme(ref);
+			} else {
+				codingScheme = getCodingScheme(ref, revisionId);
+			}
 		} catch (LBException e) {
 			throw new RuntimeException(e);
 		}
@@ -80,6 +100,25 @@ public class CodeSystemVersionFactory {
 		return codeSystemVersion;
 	}
 
+	private CodingScheme getCodingScheme(
+			AbsoluteCodingSchemeVersionReference ref) throws LBException {
+		CodingScheme codingScheme  = this.lexBigService.resolveCodingScheme(
+				ref.getCodingSchemeURN(), 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()));
+		return codingScheme;
+	}
+	
+	private CodingScheme getCodingScheme(
+			AbsoluteCodingSchemeVersionReference ref, String revisionId) throws LBException {
+		
+		return this.getLexEvsServiceLocator().
+			getDatabaseServiceManager().
+				getCodingSchemeService().
+					resolveCodingSchemeByRevision(
+							ref.getCodingSchemeURN(), 
+							ref.getCodingSchemeVersion(), revisionId);
+	}
+	
 	/**
 	 * Gets the bean mapper.
 	 *

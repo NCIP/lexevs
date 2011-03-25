@@ -18,12 +18,9 @@
  */
 package org.cts2.internal.model.uri;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cts2.core.Directory;
-import org.cts2.core.Filter;
 import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.OriginalStateProvider;
 import org.cts2.internal.model.uri.restrict.Restriction;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
@@ -34,44 +31,18 @@ import org.cts2.uri.DirectoryURI;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T extends DirectoryURI> extends AbstractResolvingDirectoryURI<T> {
+public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<T,L extends DirectoryURI> extends AbstractResolvingDirectoryURI<L> {
 	
 	/** The restriction handler. */
-	private NonIterableBasedResolvingRestrictionHandler<L> restrictionHandler;
+	private NonIterableBasedResolvingRestrictionHandler<T,L> restrictionHandler;
 	
 	/**
 	 * Instantiates a new abstract non iterable lex evs backed resolving directory uri.
 	 *
 	 * @param restrictionHandler the restriction handler
 	 */
-	protected AbstractNonIterableLexEvsBackedResolvingDirectoryURI(NonIterableBasedResolvingRestrictionHandler<L> restrictionHandler){
+	protected AbstractNonIterableLexEvsBackedResolvingDirectoryURI(NonIterableBasedResolvingRestrictionHandler<T,L> restrictionHandler){
 		this.restrictionHandler = restrictionHandler;
-	}
-	
-	/** The restrictions. */
-	private List<Restriction<L>> restrictions = new ArrayList<Restriction<L>>();
-	
-	/**
-	 * Adds the restriction.
-	 *
-	 * @param restriction the restriction
-	 */
-	protected void addRestriction(Restriction<L> restriction){
-		this.restrictions.add(restriction);
-	}
-	
-	/**
-	 * Run restrictions.
-	 *
-	 * @param state the state
-	 * @return the l
-	 */
-	protected L runRestrictions(L state){
-		for(Restriction<L> restriction : this.restrictions){
-			state = restriction.processRestriction(state);
-		}
-		
-		return state;
 	}
 	
 	/**
@@ -79,7 +50,17 @@ public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T e
 	 *
 	 * @return the original state
 	 */
-	protected abstract L getOriginalState();
+	protected abstract T getOriginalState();
+	
+	protected OriginalStateProvider<T> getOriginalStateProvider(){
+		return new OriginalStateProvider<T>(){
+
+			@Override
+			public T getOriginalState() {
+				return AbstractNonIterableLexEvsBackedResolvingDirectoryURI.this.getOriginalState();
+			}	
+		};
+	}
 	
 	/**
 	 * Transform.
@@ -89,19 +70,7 @@ public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T e
 	 * @param clazz the clazz
 	 * @return the o
 	 */
-	protected abstract <O> O transform(L lexevsObject, Class<O> clazz);
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.model.uri.AbstractDirectoryURI#restrict(org.cts2.core.Filter)
-	 */
-	@Override
-	public T restrict(Filter filter) {
-
-		this.restrictions.add(
-				this.restrictionHandler.restrict(filter));
-				
-		return this.clone();
-	}
+	protected abstract <O> O transform(T lexevsObject, Class<O> clazz);
 
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.AbstractResolvingDirectoryURI#doGet(org.cts2.service.core.QueryControl, org.cts2.service.core.ReadContext, java.lang.Class)
@@ -112,9 +81,17 @@ public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T e
 			final ReadContext readContext, 
 			final Class<D> resolveClass) {
 		
-		L originalState = makeOriginalStateUnmodifiable(this.getOriginalState());
+		T originalState = makeOriginalStateUnmodifiable(this.getOriginalState());
 		
-		L restrictedState = this.runRestrictions(originalState);
+		Restriction<T> restriction = this.restrictionHandler.compile(this.getThis(), new OriginalStateProvider<T>(){
+
+			@Override
+			public T getOriginalState() {
+				return AbstractNonIterableLexEvsBackedResolvingDirectoryURI.this.getOriginalState();
+			}
+		});
+		
+		T restrictedState = this.restrictionHandler.apply(restriction, originalState);
 		
 		return this.transform(restrictedState, resolveClass);
 	}
@@ -122,7 +99,7 @@ public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T e
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
-	protected abstract T clone();
+	protected abstract L clone();
 	
 	/**
 	 * Make original state unmodifiable.
@@ -130,7 +107,7 @@ public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T e
 	 * @param originalState the original state
 	 * @return the l
 	 */
-	protected L makeOriginalStateUnmodifiable(L originalState){
+	protected T makeOriginalStateUnmodifiable(T originalState){
 		return originalState;
 	}
 	
@@ -139,7 +116,7 @@ public abstract class AbstractNonIterableLexEvsBackedResolvingDirectoryURI<L,T e
 	 *
 	 * @return the restriction handler
 	 */
-	protected NonIterableBasedResolvingRestrictionHandler<L> getRestrictionHandler(){
+	protected NonIterableBasedResolvingRestrictionHandler<T,L> getRestrictionHandler(){
 		return this.restrictionHandler;
 	}
 }

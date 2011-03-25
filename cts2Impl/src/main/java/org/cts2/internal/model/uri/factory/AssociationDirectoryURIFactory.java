@@ -18,13 +18,13 @@
  */
 package org.cts2.internal.model.uri.factory;
 
-import junit.framework.Assert;
-
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.cts2.internal.model.uri.DefaultAssociationDirectoryURI;
-import org.cts2.internal.model.uri.restrict.AssociationRestrictionHandler;
+import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
 import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.uri.AssociationDirectoryURI;
+import org.springframework.util.Assert;
 
 /**
  * An Association Directory URI Factory
@@ -36,28 +36,26 @@ public class AssociationDirectoryURIFactory extends
 		AbstractCompositeDirectoryURIFactory<AssociationDirectoryURI> {
 	
 	//TODO Check for correct implementation recent changes
-	private AssociationRestrictionHandler associationRestrictionHandler;
+	private NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph,AssociationDirectoryURI> restrictionHandler;
 
 	@Override
 	protected AssociationDirectoryURI doBuildDirectoryURI() {
-		Assert.assertNotNull(this.associationRestrictionHandler);
+		Assert.notNull(this.restrictionHandler);
 		
 		try {
-			return new DefaultAssociationDirectoryURI(ProfileUtils.unionAllGraphs(this.getLexBigService()), this.associationRestrictionHandler, this.getBeanMapper());
+			return new DefaultAssociationDirectoryURI(ProfileUtils.unionAllGraphs(this.getLexBigService()), this.restrictionHandler, this.getBeanMapper());
 		} catch (LBException e) {
 			//TODO: CTS2 exception
 			throw new RuntimeException(e);
 		}
 	}
 
-	public AssociationRestrictionHandler getAssociationRestrictionHandler() {
-		return associationRestrictionHandler;
+	public NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph, AssociationDirectoryURI> getRestrictionHandler() {
+		return restrictionHandler;
 	}
 
-	public void setAssociationRestrictionHandler(
-			AssociationRestrictionHandler associationRestrictionHandler) {
-		this.associationRestrictionHandler = associationRestrictionHandler;
+	public void setRestrictionHandler(
+			NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph, AssociationDirectoryURI> restrictionHandler) {
+		this.restrictionHandler = restrictionHandler;
 	}
-
-
 }

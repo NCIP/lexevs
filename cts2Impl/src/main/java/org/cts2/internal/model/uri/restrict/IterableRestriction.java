@@ -25,7 +25,7 @@ package org.cts2.internal.model.uri.restrict;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface IterableRestriction<T> {
-
+	
 	/**
 	 * Process restriction.
 	 *

@@ -18,13 +18,19 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.cts2.core.Filter;
 import org.cts2.core.FilterComponent;
 import org.cts2.core.NameOrURI;
 import org.cts2.core.PredicateReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
+import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.restriction.RestrictionState;
 
 /**
  * The Class AbstractNonIterableLexEvsBackedRestrictionHandler.
@@ -32,12 +38,11 @@ import org.cts2.internal.match.OperationExecutingModelAttributeReference;
  * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T> extends AbstractRestrictionHandler implements NonIterableBasedResolvingRestrictionHandler<T> {
+public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T,D extends DirectoryURI> 
+	extends AbstractRestrictionHandler implements NonIterableBasedResolvingRestrictionHandler<T,D> {
 
 	/** The operation executing model attribute reference. */
 	private List<OperationExecutingModelAttributeReference<T>> operationExecutingModelAttributeReferences;
-	
-	
 	
 	public AbstractNonIterableLexEvsBackedRestrictionHandler() {
 		super();
@@ -47,31 +52,88 @@ public abstract class AbstractNonIterableLexEvsBackedRestrictionHandler<T> exten
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler#restrict(java.lang.Object, org.cts2.core.Filter)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Restriction<T> restrict(final Filter filter) {
+	public Restriction<T> compile(D directoryURI, OriginalStateProvider<T> originalStateProvider) {
 		
+		RestrictionState<? extends DirectoryURI> restriction = directoryURI.getRestrictionState();
+
+		final List<Restriction<T>> returnList = new ArrayList<Restriction<T>>();
+
+		for(final Filter filter : restriction.getFilters()){
+
+			returnList.add(new Restriction<T>(){
+
+				@Override
+				public T processRestriction(T state) {
+					List<FilterComponent> filterComponents = Arrays.asList(filter.getComponent());
+
+					for (FilterComponent filterComponent : filterComponents) {
+						OperationExecutingModelAttributeReference<T> operation = 
+							getOperationExecutingModelAttributeReference(filterComponent.getFilterComponent().getReferenceTarget());
+
+						state = operation.executeOperation(
+								state, 
+								filterComponent.getMatchValue(),
+								filterComponent.getMatchAlgorithm());
+					}	
+
+					return state;
+				}
+			});
+		}
+		
+		List<Restriction<T>> otherRestrictions = this.processOtherRestictions(directoryURI);
+		if(CollectionUtils.isNotEmpty(otherRestrictions)){
+			returnList.addAll(otherRestrictions);
+		}
+		
+		if(restriction.getSetComposite() != null){
+			returnList.add(this.processSetOperation(
+					(D)restriction.getSetComposite().getDirectoryUri1(), 
+					(D)restriction.getSetComposite().getDirectoryUri2(),
+					restriction.getSetComposite().getSetOperator(),
+					originalStateProvider));
+		}
+		
+		return RestrictionUtils.combineRestrictions(returnList);
+	}
+	
+	public T apply(Restriction<T> restriction, T state){
+		return restriction.processRestriction(state);
+	}
+	
+	protected abstract List<Restriction<T>> processOtherRestictions(D directoryURI);
+
+	public Restriction<T> processSetOperation(final D directoryUri1, final D directoryUri2, final SetOperator setOperator, final OriginalStateProvider<T> originalStateProvider) {
 		return new Restriction<T>(){
 
 			@Override
 			public T processRestriction(T state) {
-				List<FilterComponent> filterComponents = sortFilterComponents(filter);
+		
+				switch (setOperator){
+					case UNION : {
+						return doUnion(directoryUri1, directoryUri2, originalStateProvider);
+					}
+					case INTERSECT : {
+						return doIntersect(directoryUri1, directoryUri2, originalStateProvider);
+					}
+					case SUBTRACT : {
+						return doDifference(directoryUri1, directoryUri2, originalStateProvider);
+					}
+				}
 				
-				for (FilterComponent filterComponent : filterComponents) {
-					OperationExecutingModelAttributeReference<T> operation = 
-						getOperationExecutingModelAttributeReference(filterComponent.getFilterComponent().getReferenceTarget());
-					
-					state = operation.executeOperation(
-							state, 
-							filterComponent.getFilterOperator(), 
-							filterComponent.getMatchValue(),
-							filterComponent.getMatchAlgorithm());
-				}	
-				
-				return state;
+				throw new IllegalStateException();
 			}
 		};
 	}
 	
+	protected abstract T doUnion(final D directoryUri1, final D directoryUri2, OriginalStateProvider<T> originalStateProvider);
+	
+	protected abstract T doIntersect(final D directoryUri1, final D directoryUri2, OriginalStateProvider<T> originalStateProvider);
+	
+	protected abstract T doDifference(final D directoryUri1, final D directoryUri2, OriginalStateProvider<T> originalStateProvider);
+
 	/**
 	 * Register supported model attribute references.
 	 *

@@ -18,31 +18,18 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.cts2.core.VersionTagReference;
-import org.cts2.service.core.NameOrURI;
-
 /**
- * The Interface EntityDescriptionRestrictionHandler.
+ * The Interface OriginalStateProvider.
  *
+ * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface EntityDescriptionRestrictionHandler extends NonIterableBasedResolvingRestrictionHandler<CodedNodeSet> {
+public interface OriginalStateProvider<T> {
 
 	/**
-	 * Restrict to code systems.
+	 * Gets the original state.
 	 *
-	 * @param codeSystems the code systems
-	 * @param tag the tag
-	 * @return the restriction
+	 * @return the original state
 	 */
-	public Restriction<CodedNodeSet> restrictToCodeSystems(NameOrURI codeSystems, VersionTagReference tag);
-	
-	/**
-	 * Restrict to code system versions.
-	 *
-	 * @param codeSystemVersions the code system versions
-	 * @return the restriction
-	 */
-	public Restriction<CodedNodeSet> restrictToCodeSystemVersions(NameOrURI codeSystemVersions);
+	public T getOriginalState();
 }

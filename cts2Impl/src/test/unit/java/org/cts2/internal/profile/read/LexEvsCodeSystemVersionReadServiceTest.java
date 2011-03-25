@@ -46,7 +46,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 		
 		NameOrURI id = new NameOrURI();
 		
-		EasyMock.expect(factory.getCodeSystemVersion(id)).andReturn(new CodeSystemVersion());
+		EasyMock.expect(factory.getCurrentCodeSystemVersion(id)).andReturn(new CodeSystemVersion());
 		
 		
 		EasyMock.replay(factory);
@@ -67,7 +67,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 		CodeSystemVersion csv = new CodeSystemVersion();
 		csv.setAbout("test_about");
 		
-		EasyMock.expect(factory.getCodeSystemVersion(id)).andReturn(csv);
+		EasyMock.expect(factory.getCurrentCodeSystemVersion(id)).andReturn(csv);
 		
 		
 		EasyMock.replay(factory);
@@ -91,7 +91,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 		csv.setCodeSystemVersionName("test:name");
 		csv.setDocumentURI("doc:uri");
 		
-		EasyMock.expect(factory.getCodeSystemVersion(id)).andReturn(csv);
+		EasyMock.expect(factory.getCurrentCodeSystemVersion(id)).andReturn(csv);
 		
 		
 		EasyMock.replay(factory);
@@ -117,7 +117,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 		csv.setCodeSystemVersionName("test:name");
 		csv.setDocumentURI("doc:uri");
 		
-		EasyMock.expect(factory.getCodeSystemVersion(id)).andReturn(csv);
+		EasyMock.expect(factory.getCurrentCodeSystemVersion(id)).andReturn(csv);
 		
 		
 		EasyMock.replay(factory);
@@ -140,7 +140,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 			new CodeSystemVersionFactory(){
 
 				@Override
-				public CodeSystemVersion getCodeSystemVersion(
+				public CodeSystemVersion getCurrentCodeSystemVersion(
 						NameOrURI nameOrUri) {
 					try {
 						Thread.sleep(1000);
@@ -173,7 +173,7 @@ public class LexEvsCodeSystemVersionReadServiceTest extends BaseCts2UnitTest {
 			new CodeSystemVersionFactory(){
 
 				@Override
-				public CodeSystemVersion getCodeSystemVersion(
+				public CodeSystemVersion getCurrentCodeSystemVersion(
 						NameOrURI nameOrUri) {
 					try {
 						Thread.sleep(1000);
