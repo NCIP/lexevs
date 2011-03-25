@@ -57,7 +57,8 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	
 	/** The lex big service. */
 	public LexBIGService lexBigService;
-
+	
+	private LexEvsServiceLocator lexEvsServiceLocator;
 	
 	/* (non-Javadoc)
 	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#nameOrUriToAbsoluteCodingSchemeVersionReference(org.cts2.service.core.NameOrURI)
@@ -147,7 +148,7 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	 */
 	protected AbsoluteCodingSchemeVersionReference getCodeSystemVersionNameMatch(final String codeSystemVersionLocalName){
 		List<AbsoluteCodingSchemeVersionReference> result = 
-			LexEvsServiceLocator.getInstance().
+			lexEvsServiceLocator.
 				getSystemResourceService().
 					getMatchingCodingSchemeResources(new CodingSchemeMatcher(){
 
@@ -175,7 +176,7 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	 */
 	protected AbsoluteCodingSchemeVersionReference getCodeSystemVersionDocumentUriMatch(final String documentUri){
 		List<AbsoluteCodingSchemeVersionReference> result = 
-			LexEvsServiceLocator.getInstance().
+			lexEvsServiceLocator.
 				getSystemResourceService().
 					getMatchingCodingSchemeResources(new CodingSchemeMatcher(){
 
@@ -290,5 +291,13 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 			return DefinitionRole.NORMATIVE;
 		else 
 			return DefinitionRole.INFORMATIVE;
+	}
+
+	public void setLexEvsServiceLocator(LexEvsServiceLocator lexEvsServiceLocator) {
+		this.lexEvsServiceLocator = lexEvsServiceLocator;
+	}
+
+	public LexEvsServiceLocator getLexEvsServiceLocator() {
+		return lexEvsServiceLocator;
 	}
 }
