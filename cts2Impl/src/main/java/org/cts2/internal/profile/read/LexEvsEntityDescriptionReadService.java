@@ -51,10 +51,7 @@ public class LexEvsEntityDescriptionReadService extends
 	@Override
 	public boolean exists(EntityNameOrURI id, NameOrURI codeSystemVersion,
 			QueryControl queryControl, ReadContext readContext) {
-		if (this.entityDescriptionFactory.getEntityDescription(id,
-				codeSystemVersion) != null)
-			return true;
-		return false;
+		return this.read(id, codeSystemVersion, queryControl, readContext) != null;
 	}
 
 	public void setEntityDescriptionFactory(
