@@ -18,6 +18,9 @@
  */
 package org.cts2.internal.profile.read;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 import org.cts2.core.EntityReference;
 import org.cts2.entity.EntityDescription;
 import org.cts2.entity.EntityList;
@@ -27,6 +30,8 @@ import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.utility.ExecutionUtils;
+import org.cts2.valueset.ValueSetDefinition;
 
 /**
  * The Class LexEvsCodeSystemVersionReadService.
@@ -40,18 +45,32 @@ public class LexEvsEntityDescriptionReadService extends
 	/** The code system version factory. */
 	private EntityDescriptionFactory entityDescriptionFactory;
 
+	private EntityDescription doRead(final EntityNameOrURI id,
+			final NameOrURI codeSystemVersion, QueryControl queryControl,
+			ReadContext readContext) {
+
+		return ExecutionUtils.callWithTimeout(
+				new Callable<EntityDescription>() {
+
+					@Override
+					public EntityDescription call() throws Exception {
+						return entityDescriptionFactory.getEntityDescription(
+								id, codeSystemVersion);
+					}
+				}, queryControl, TimeUnit.MILLISECONDS);
+	}
+
 	@Override
 	public EntityDescription read(EntityNameOrURI id,
 			NameOrURI codeSystemVersion, QueryControl queryControl,
 			ReadContext readContext) {
-		return this.entityDescriptionFactory.getEntityDescription(id,
-				codeSystemVersion);
+		return this.doRead(id, codeSystemVersion, queryControl, readContext);
 	}
 
 	@Override
 	public boolean exists(EntityNameOrURI id, NameOrURI codeSystemVersion,
 			QueryControl queryControl, ReadContext readContext) {
-		return this.read(id, codeSystemVersion, queryControl, readContext) != null;
+		return this.doRead(id, codeSystemVersion, queryControl, readContext) != null;
 	}
 
 	public void setEntityDescriptionFactory(
@@ -64,9 +83,15 @@ public class LexEvsEntityDescriptionReadService extends
 	}
 
 	@Override
-	public EntityList readEntityDescriptions(EntityNameOrURI id,
+	public EntityList readEntityDescriptions(final EntityNameOrURI id,
 			QueryControl queryControl, ReadContext context) {
-		return this.entityDescriptionFactory.getEntityDescriptionList(id);
+		
+		return ExecutionUtils.callWithTimeout(new Callable<EntityList>() {
+			@Override
+			public EntityList call() throws Exception {
+				return entityDescriptionFactory.getEntityDescriptionList(id);
+			}
+		}, queryControl, TimeUnit.MILLISECONDS );
 	}
 
 	@Override
