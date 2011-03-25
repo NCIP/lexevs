@@ -13,7 +13,6 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
-import org.cts2.core.Filter;
 import org.cts2.core.TargetExpression;
 import org.cts2.core.types.SetOperator;
 import org.cts2.internal.mapper.BeanMapper;
@@ -27,6 +26,9 @@ import org.cts2.service.core.ReadContext;
 import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.EntityDirectoryURI;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToCodeSystemVersionRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetExpressionRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetLiteralRestriction;
 
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
@@ -108,8 +110,10 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 
 	public AssociationDirectoryURI doRestrictToCodeSystemVersion(
 			NameOrURI codeSystemVersions) {
-		// TODO:
-		return this;
+		RestrictToCodeSystemVersionRestriction restriction = new RestrictToCodeSystemVersionRestriction();
+		restriction.setCodeSystemVersion(codeSystemVersions);
+		
+		return this.clone();
 	}
 	
 	public AssociationDirectoryURI doRestrictToPredicate(
@@ -189,21 +193,19 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	
 	public AssociationDirectoryURI doRestrictToTargetExpression(
 			AssociationDirectoryURI directory, TargetExpression target) {
-		// TODO Auto-generated method stub
-		return null;
+		RestrictToTargetExpressionRestriction restriction = new RestrictToTargetExpressionRestriction();
+		restriction.setTarget(target);
+		
+		return this.clone();
 	}
 
 	
 	public AssociationDirectoryURI doRestrictToTargetLiteral(
 			AssociationDirectoryURI directory, String target) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AssociationDirectoryURI restrict(Filter filter) {
-		// TODO Auto-generated method stub
-		return null;
+		RestrictToTargetLiteralRestriction restriction = new RestrictToTargetLiteralRestriction();
+		restriction.setTarget(target);
+		
+		return this.clone();
 	}
 
 	@Override
