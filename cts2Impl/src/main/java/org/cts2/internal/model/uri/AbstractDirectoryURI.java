@@ -4,10 +4,10 @@ import org.cts2.core.Filter;
 import org.cts2.core.types.SetOperator;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
-import org.cts2.uri.CodeSystemVersionDirectoryURI;
 import org.cts2.uri.DirectoryURI;
+import org.cts2.uri.SetOperable;
 
-public abstract class AbstractDirectoryURI<T extends DirectoryURI> implements DirectoryURI {
+public abstract class AbstractDirectoryURI<T extends DirectoryURI> implements DirectoryURI, SetOperable<T> {
 
 	protected abstract int doCount(ReadContext readContext);
 
@@ -42,39 +42,17 @@ public abstract class AbstractDirectoryURI<T extends DirectoryURI> implements Di
 	}
 	
 	protected abstract T createSetOperatedDirectoryURI(SetOperator setOperator, T directoryUri1, T directoryUri2);
-	
-	public static void main(String[] args){
-		System.out.println(DirectoryURI.class.isAssignableFrom(CodeSystemVersionDirectoryURI.class));
+
+	public T union(T directoryUri) {
+		return this.createSetOperatedDirectoryURI(SetOperator.UNION, this.clone() , directoryUri);
 	}
 
-	private void validateType(DirectoryURI directoryUri){
-		boolean isAssignable = 
-			this.getClass().isAssignableFrom(directoryUri.getClass());
-		
-		if(!isAssignable){
-			throw new IllegalStateException();
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <D extends DirectoryURI> D union(D directoryUri) {
-		this.validateType(directoryUri);
-		return (D) this.createSetOperatedDirectoryURI(SetOperator.UNION, (T)this.clone() , (T)directoryUri);
+	public T intersect(T directoryUri) {
+		return this.createSetOperatedDirectoryURI(SetOperator.INTERSECT, this.clone() , directoryUri);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <D extends DirectoryURI> D intersect(D directoryUri) {
-		this.validateType(directoryUri);
-		return (D) this.createSetOperatedDirectoryURI(SetOperator.INTERSECT, (T)this.clone() , (T)directoryUri);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <D extends DirectoryURI> D difference(D directoryUri) {
-		this.validateType(directoryUri);
-		return (D) this.createSetOperatedDirectoryURI(SetOperator.SUBTRACT, (T)this.clone() , (T)directoryUri);
+	public T difference(T directoryUri) {
+		return this.createSetOperatedDirectoryURI(SetOperator.SUBTRACT, this.clone(), directoryUri);
 	}
 
 	@Override

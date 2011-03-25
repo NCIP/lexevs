@@ -385,24 +385,6 @@ public class AbstractIterableLexEvsBackedRestrictionHandlerTest {
 		}
 
 		@Override
-		public <T extends DirectoryURI> T union(T directoryUri) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <T extends DirectoryURI> T intersect(T directoryUri) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public <T extends DirectoryURI> T difference(T directoryUri) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public String marshall() {
 			// TODO Auto-generated method stub
 			return null;

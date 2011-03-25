@@ -25,5 +25,5 @@ package org.cts2.uri;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface ValueSetDefinitionDirectoryURI 
-	extends DirectoryURI {
+	extends DirectoryURI, SetOperable<ValueSetDefinitionDirectoryURI> {
 }

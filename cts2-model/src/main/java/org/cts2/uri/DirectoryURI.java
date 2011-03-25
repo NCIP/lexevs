@@ -67,33 +67,6 @@ public interface DirectoryURI {
 	public DirectoryURI restrict(Filter filter);
 	
 	/**
-	 * Union.
-	 *
-	 * @param <T> the
-	 * @param directoryUri the directory uri
-	 * @return the t
-	 */
-	public <T extends DirectoryURI> T union(T directoryUri);
-	
-	/**
-	 * Intersect.
-	 *
-	 * @param <T> the
-	 * @param directoryUri the directory uri
-	 * @return the t
-	 */
-	public <T extends DirectoryURI> T intersect(T directoryUri);
-	
-	/**
-	 * Difference.
-	 *
-	 * @param <T> the
-	 * @param directoryUri the directory uri
-	 * @return the t
-	 */
-	public <T extends DirectoryURI> T difference(T directoryUri);
-	
-	/**
 	 * Marshall.
 	 *
 	 * @return the string

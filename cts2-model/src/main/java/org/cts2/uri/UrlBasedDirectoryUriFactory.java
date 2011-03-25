@@ -95,21 +95,6 @@ public class UrlBasedDirectoryUriFactory {
 		}
 
 		@Override
-		public <T extends DirectoryURI> T union(T directoryUri) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public <T extends DirectoryURI> T intersect(T directoryUri) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public <T extends DirectoryURI> T difference(T directoryUri) {
-			throw new UnsupportedOperationException();
-		}
-		
-		@Override
 		public RestrictionState<? extends DirectoryURI> getRestrictionState() {
 			throw new UnsupportedOperationException();
 		}

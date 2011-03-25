@@ -30,7 +30,7 @@ import org.cts2.uri.restriction.CodeSystemVersionRestrictionState;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodeSystemVersionDirectoryURI extends DirectoryURI {
+public interface CodeSystemVersionDirectoryURI extends DirectoryURI, SetOperable<CodeSystemVersionDirectoryURI> {
 
 	public CodeSystemVersionRestrictionState getRestrictionState();
 

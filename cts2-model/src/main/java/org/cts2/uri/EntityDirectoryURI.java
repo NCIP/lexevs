@@ -29,7 +29,7 @@ import org.cts2.uri.restriction.RestrictionState;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface EntityDirectoryURI  
-	extends DirectoryURI{
+	extends DirectoryURI, SetOperable<EntityDirectoryURI> {
 	
 	/**
 	 * Restrict to code systems.

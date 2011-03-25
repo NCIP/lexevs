@@ -18,14 +18,35 @@
  */
 package org.cts2.uri;
 
-
-
 /**
- * The Interface AssociationDirectoryURI.
+ * The Interface SetOperable.
  *
+ * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface AssociationGraphURI 
-	extends DirectoryURI, SetOperable<AssociationGraphURI> {
-}
+public interface SetOperable<T> {
 
+	/**
+	 * Union.
+	 *
+	 * @param set the set
+	 * @return the t
+	 */
+	public T union(T set);
+	
+	/**
+	 * Intersect.
+	 *
+	 * @param set the set
+	 * @return the t
+	 */
+	public T intersect(T set);
+	
+	/**
+	 * Difference.
+	 *
+	 * @param set the set
+	 * @return the t
+	 */
+	public T difference(T set);	
+}

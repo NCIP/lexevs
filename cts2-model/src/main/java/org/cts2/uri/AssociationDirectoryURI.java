@@ -26,7 +26,7 @@ import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface AssociationDirectoryURI 
-	extends DirectoryURI {
-	
+	extends DirectoryURI, SetOperable<AssociationDirectoryURI> {
+
 	public AssociationDirectoryRestrictionState getRestrictionState();
 }
