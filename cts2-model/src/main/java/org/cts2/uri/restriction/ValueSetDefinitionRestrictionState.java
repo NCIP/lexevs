@@ -26,14 +26,13 @@ import org.cts2.core.EntityReference;
 import org.cts2.uri.ValueSetDefinitionDirectoryURI;
 
 /**
- * The Class CodeSystemVersionRestrictionState.
+ * The Class ValueSetDefinitionRestrictionState.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class ValueSetDefinitionRestrictionState extends
 		RestrictionState<ValueSetDefinitionDirectoryURI> {
 
-	/** The restrict to code system versions restrictions. */
 	private Set<RestrictToEntitiesRestriction> restrictToEntitiesRestriction = new HashSet<RestrictToEntitiesRestriction>();
 
 	/**
