@@ -18,8 +18,10 @@
  */
 package org.cts2.internal.model.uri.restrict;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -27,10 +29,14 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.VersionTagReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
+import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.uri.AssociationDirectoryURI;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToPredicateRestriction;
 
 /**
  * The Class DefaultEntityDescriptionRestrictionHandler.
@@ -97,8 +103,93 @@ public class DefaultAssociationRestrictionHandler
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
+	@Override
+	protected List<Restriction<CodedNodeGraph>> processOtherRestictions(
+			AssociationDirectoryURI directoryURI) {
+		List<Restriction<CodedNodeGraph>> returnList = new ArrayList<Restriction<CodedNodeGraph>>();
+		
+		AssociationDirectoryRestrictionState state = directoryURI.getRestrictionState();
+		for(RestrictToPredicateRestriction restriction : state.getRestrictToPredicateRestrictions()){
+			returnList.add(this.restrictToPredicate(restriction.getPredicate()));
+		}
+				
+		return returnList;
+	}
+	
+	protected Restriction<CodedNodeGraph> restrictToPredicate(final EntityNameOrURI predicate) {
+
+		return new Restriction<CodedNodeGraph>(){
+
+			@Override
+			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+				NameAndValueList association = 
+					Constructors.createNameAndValueList(predicate.getEntityName().getName(), null);
+				try {
+					state = state.restrictToAssociations(association, null);
+				} catch (Exception e) {
+					// TODO throw CTS2 Exception
+					throw new RuntimeException(e);
+				} 
+				return state;
+			}
+		};
+	}
+
+	@Override
+	protected CodedNodeGraph doUnion(
+			AssociationDirectoryURI directoryUri1,
+			AssociationDirectoryURI directoryUri2,
+			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
+		return this.doSetOperation(directoryUri1, directoryUri2, originalStateProvider, SetOperator.UNION);
+	}
+
+	@Override
+	protected CodedNodeGraph doIntersect(
+			AssociationDirectoryURI directoryUri1,
+			AssociationDirectoryURI directoryUri2,
+			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
+		return this.doSetOperation(directoryUri1, directoryUri2, originalStateProvider, SetOperator.INTERSECT);
+	}
+
+	@Override
+	protected CodedNodeGraph doDifference(
+			AssociationDirectoryURI directoryUri1,
+			AssociationDirectoryURI directoryUri2,
+			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
+		return this.doSetOperation(directoryUri1, directoryUri2, originalStateProvider, SetOperator.SUBTRACT);
+	}
+	
+	protected CodedNodeGraph doSetOperation(AssociationDirectoryURI directoryUri1, AssociationDirectoryURI directoryUri2, OriginalStateProvider<CodedNodeGraph> originalState, SetOperator setOperator){
+		Restriction<CodedNodeGraph> restriction1 = this.compile(directoryUri1, originalState);
+		Restriction<CodedNodeGraph> restriction2 = this.compile(directoryUri2, originalState);
+
+		CodedNodeGraph cng1 = this.apply(restriction1, originalState.getOriginalState());
+		CodedNodeGraph cng2 = this.apply(restriction2, originalState.getOriginalState());
+
+		switch (setOperator){
+			case UNION : {
+				try {
+					return cng1.union(cng2);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+			case INTERSECT : {
+				try {
+					return cng1.intersect(cng2);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} 
+			}
+			case SUBTRACT : {
+				throw new UnsupportedOperationException("Difference not implemented on CodedNodeGraph");
+			}
+		}
+
+		throw new IllegalStateException();
+	}
+	
 	/**
 	 * @return
 	 */
@@ -126,36 +217,5 @@ public class DefaultAssociationRestrictionHandler
 	 */
 	public void setLexBigService(LexBIGService lexBigService) {
 		this.lexBigService = lexBigService;
-	}
-
-	@Override
-	protected List<Restriction<CodedNodeGraph>> processOtherRestictions(
-			AssociationDirectoryURI directoryURI) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected CodedNodeGraph doUnion(AssociationDirectoryURI i1,
-			AssociationDirectoryURI i2,
-			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected CodedNodeGraph doIntersect(AssociationDirectoryURI i1,
-			AssociationDirectoryURI i2,
-			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected CodedNodeGraph doDifference(AssociationDirectoryURI i1,
-			AssociationDirectoryURI i2,
-			OriginalStateProvider<CodedNodeGraph> originalStateProvider) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
