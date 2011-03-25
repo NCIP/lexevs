@@ -18,12 +18,29 @@
  */
 package org.cts2.uri;
 
+import java.util.List;
+
+import org.cts2.core.EntityReference;
+import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState;
 
 /**
- * The Interface CodeSystemVersionDirectoryURI.
+ * The Interface ValueSetDefinitionDirectoryURI.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface ValueSetDefinitionDirectoryURI 
 	extends DirectoryURI, SetOperable<ValueSetDefinitionDirectoryURI> {
+	
+	/**
+	 * Restrict to entities.
+	 *
+	 * @param entityList the entity list
+	 * @return the value set definition directory uri
+	 */
+	public ValueSetDefinitionDirectoryURI restrictToEntities(List<EntityReference> entityList);
+	
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#getRestrictionState()
+	 */
+	public ValueSetDefinitionRestrictionState getRestrictionState();
 }

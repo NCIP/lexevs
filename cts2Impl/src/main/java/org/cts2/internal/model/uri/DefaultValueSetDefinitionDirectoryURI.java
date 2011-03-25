@@ -21,12 +21,14 @@ package org.cts2.internal.model.uri;
 import java.util.List;
 
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.cts2.core.EntityReference;
 import org.cts2.core.types.SetOperator;
 import org.cts2.internal.mapper.BeanMapper;
-import org.cts2.internal.model.uri.restrict.ValueSetDefinitionRestrictionHandler;
-import org.cts2.uri.DirectoryURI;
+import org.cts2.internal.model.uri.restrict.IterableBasedResolvingRestrictionHandler;
 import org.cts2.uri.ValueSetDefinitionDirectoryURI;
-import org.cts2.uri.restriction.RestrictionState;
+import org.cts2.uri.restriction.SetComposite;
+import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState;
+import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState.RestrictToEntitiesRestriction;
 
 /**
  * The Class DefaultCodeSystemVersionDirectoryURI.
@@ -40,7 +42,8 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	
 	private List<ValueSetDefinition> valueSetDefinitionList;
 	
-	//private IterableBasedResolvingRestrictionHandler<CodingSchemeRendering> restrictionHandler;
+	private ValueSetDefinitionRestrictionState valueSetDefinitionRestrictionState = new ValueSetDefinitionRestrictionState();
+
 	/**
 	 * Instantiates a new default code system version directory uri.
 	 *
@@ -49,9 +52,10 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	 */
 	public DefaultValueSetDefinitionDirectoryURI(
 			List<ValueSetDefinition> valueSetDefinitionList,
-			ValueSetDefinitionRestrictionHandler restrictionHandler,
+			IterableBasedResolvingRestrictionHandler<ValueSetDefinition,ValueSetDefinitionDirectoryURI> restrictionHandler,
 			BeanMapper beanMapper) {
 		super(restrictionHandler);
+		this.valueSetDefinitionList = valueSetDefinitionList;
 		this.beanMapper = beanMapper;
 	}
 
@@ -66,16 +70,25 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	}
 
 	@Override
-	public RestrictionState<? extends DirectoryURI> getRestrictionState() {
-		// TODO Auto-generated method stub
-		return null;
+	public ValueSetDefinitionRestrictionState getRestrictionState() {
+		return this.valueSetDefinitionRestrictionState;
 	}
 
 	@Override
 	protected <O> O transform(Iterable<ValueSetDefinition> lexevsObject,
 			Class<O> clazz) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.beanMapper.map(lexevsObject, clazz);
+	}
+
+	@Override
+	public ValueSetDefinitionDirectoryURI restrictToEntities(
+			List<EntityReference> entityList) {
+		RestrictToEntitiesRestriction restriction = new RestrictToEntitiesRestriction();
+		restriction.setEntityReferences(entityList);
+		
+		this.getRestrictionState().getRestrictToEntitiesRestriction().add(restriction);
+		
+		return this.clone();
 	}
 
 	@Override
@@ -83,7 +96,18 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 			SetOperator setOperator,
 			ValueSetDefinitionDirectoryURI directoryUri1,
 			ValueSetDefinitionDirectoryURI directoryUri2) {
-		// TODO Auto-generated method stub
-		return null;
+		DefaultValueSetDefinitionDirectoryURI newUri = 
+			new DefaultValueSetDefinitionDirectoryURI(
+					this.valueSetDefinitionList,
+					this.getRestrictionHandler(),
+					this.beanMapper);
+		
+		newUri.getRestrictionState().setSetComposite(new SetComposite<ValueSetDefinitionDirectoryURI>());
+		newUri.getRestrictionState().getSetComposite().setDirectoryUri1(directoryUri1);
+		newUri.getRestrictionState().getSetComposite().setDirectoryUri2(directoryUri2);
+		
+		newUri.getRestrictionState().getSetComposite().setSetOperator(setOperator);
+		
+		return newUri;
 	}
 }

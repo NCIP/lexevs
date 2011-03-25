@@ -15,7 +15,7 @@ import org.cts2.internal.match.ExactMatcher;
 import org.cts2.internal.match.MatchAlgorithm;
 import org.cts2.test.TestUtils;
 import org.cts2.uri.ValueSetDefinitionDirectoryURI;
-import org.cts2.uri.restriction.RestrictionState;
+import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState;
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 
@@ -23,7 +23,6 @@ import com.google.common.collect.Iterables;
 
 public class ValueSetDefinitionRestrictionHandlerTest {
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testUnionRestrict(){
 		ValueSetDefinitionRestrictionHandler handler = new ValueSetDefinitionRestrictionHandler();
@@ -45,7 +44,7 @@ public class ValueSetDefinitionRestrictionHandlerTest {
 		
 		Filter filter = TestUtils.buildFilter(filterComponent);
 		
-		RestrictionState restrictionState = new RestrictionState();
+		ValueSetDefinitionRestrictionState restrictionState = new ValueSetDefinitionRestrictionState();
 		restrictionState.getFilters().add(filter);
 		
 		ValueSetDefinitionDirectoryURI uri = EasyMock.createMock(ValueSetDefinitionDirectoryURI.class);
