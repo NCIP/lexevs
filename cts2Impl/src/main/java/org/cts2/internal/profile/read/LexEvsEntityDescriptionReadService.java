@@ -31,7 +31,6 @@ import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.utility.ExecutionUtils;
-import org.cts2.valueset.ValueSetDefinition;
 
 /**
  * The Class LexEvsCodeSystemVersionReadService.
