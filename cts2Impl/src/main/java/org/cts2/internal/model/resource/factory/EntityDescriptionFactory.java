@@ -64,6 +64,7 @@ public class EntityDescriptionFactory {
 	/** The lex big service. */
 	private LexBIGService lexBigService;
 
+	/** The lexevs identify converter*/
 	private LexEvsIdentityConverter lexEvsIdentityConverter;
 
 	public EntityDescription getEntityDescription(
