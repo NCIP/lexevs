@@ -19,7 +19,38 @@
 			<a>definitionEntry</a>
 			<b>entry</b>
 		</field>
-		
+		<field>
+			<a>valueSetDefinitionURI</a>
+			<b>definedValueSet.content</b>
+		</field>
+		<field>
+			<a is-accessible="true">_properties._propertyList</a>
+			<b is-accessible="true">_propertyList</b>
+		</field>
+		<field>
+			<a>status</a>
+			<b>changeableCore.status.content</b>
+		</field>
+		<field>
+			<a>owner</a>
+			<b>changeableCore.owner.content</b>
+		</field>
+		<field>
+			<a>effectiveDate</a>
+			<b>changeableCore.changeDescription.effectiveDate</b>
+		</field>
+		<field custom-converter-id="changeTypeConverter">
+			<a>entryState.changeType</a>
+			<b>changeableCore.changeDescription.changeType</b>
+		</field>
+		<field>
+			<a>entryState.containingRevision</a>
+			<b>changeableCore.changeDescription.containingChangeSet</b>
+		</field>
+		<field>
+			<a>entryState.prevRevision</a>
+			<b>changeableCore.changeDescription.prevChangeSet</b>
+		</field>
     </mapping>
     
     <mapping map-null="false">

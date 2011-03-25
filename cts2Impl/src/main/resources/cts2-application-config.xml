@@ -89,6 +89,9 @@
 				<entry key="anonymousEntityDescriptionPropertyListConverter">
 					<ref bean="anonymousEntityDescriptionPropertyListConverter"/>
 				</entry>
+				<entry key="changeTypeConverter">
+					<ref bean="changeTypeConverter"/>
+				</entry>
 			</map>
 		</property>   
 	</bean>
@@ -172,6 +175,9 @@
 	<bean id="anonymousEntityDescriptionPropertyListConverter"
 		class="org.cts2.internal.mapper.converter.AnonymousEntityDescriptionPropertyListConverter">
 		<property name="baseDozerBeanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="changeTypeConverter"
+		class="org.cts2.internal.mapper.converter.ChangeTypeConverter">
 	</bean>
 	<!--  End Dozer Custom Converters -->
 

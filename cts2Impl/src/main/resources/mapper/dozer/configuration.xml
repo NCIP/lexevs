@@ -21,6 +21,10 @@
 				<class-a>org.LexGrid.valueSets.DefinitionEntry</class-a>
 				<class-b>org.cts2.valueset.ValueSetDefinitionEntry</class-b>
 			</converter>
+			<converter type="org.cts2.internal.mapper.converter.ChangeTypeConverter">
+				<class-a>org.LexGrid.versions.types.ChangeType</class-a>
+				<class-b>org.cts2.core.types.ChangeType</class-b>
+			</converter>
 		</custom-converters>
 
 	</configuration>

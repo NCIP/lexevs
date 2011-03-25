@@ -78,7 +78,7 @@ public class LexEvsValueSetDefinitionReadServiceTest extends BaseCts2UnitTest {
 	 */
 	@Test
 	public void testRead() throws URISyntaxException {
-		ValueSetDefinition vsd = this.lexEvsValueSetDefinitionReadService.read(new URI("CTS2TESTVSD"), null, null);
+		ValueSetDefinition vsd = this.lexEvsValueSetDefinitionReadService.read(new URI/*("SRITEST:AUTO:PropertyRefTest1") */("CTS2TESTVSD"), null, null);
 		
 		System.out.println("vsd.about : " + vsd.getAbout());
 		System.out.println("vsd.formal name : " + vsd.getFormalName());

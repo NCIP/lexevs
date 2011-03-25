@@ -28,12 +28,14 @@ import org.cts2.core.NameOrURI;
 import org.cts2.core.PredicateReference;
 import org.cts2.core.ScopedEntityName;
 import org.cts2.core.ValueSetReference;
+import org.cts2.core.types.SetOperator;
 import org.cts2.core.types.TargetReferenceType;
 import org.cts2.valueset.AssociatedEntitiesReference;
 import org.cts2.valueset.CompleteCodeSystemReference;
 import org.cts2.valueset.CompleteValueSetReference;
 import org.cts2.valueset.PropertyQueryReference;
 import org.cts2.valueset.ValueSetDefinitionEntry;
+import org.cts2.valueset.types.AssociationDirection;
 import org.cts2.valueset.types.LeafOrAll;
 import org.cts2.valueset.types.TransitiveClosure;
 import org.cts2.valueset.types.ValueSetDefinitionEntryType;
@@ -100,10 +102,10 @@ public class DefinitionEntryToValueSetDefinitionEntryConverter extends DozerConv
 			// set directional
 			if (lgER.getTargetToSource() != null)
 			{
-//				if (lgER.isTargetToSource())
-//					aeRef.setDirection(direction)
-//				else
-//					aeRef.setDirection(direction)
+				if (lgER.isTargetToSource())
+					aeRef.setDirection(AssociationDirection.TARGET_TO_SOURCE);
+				else
+					aeRef.setDirection(AssociationDirection.SOURCE_TO_TARGET);
 			}
 
 			
@@ -127,6 +129,7 @@ public class DefinitionEntryToValueSetDefinitionEntryConverter extends DozerConv
 			entityName.setName(lgER.getEntityCode());
 			entityName.setNamespace(lgER.getEntityCodeNamespace());
 			er.setLocalEntityName(entityName);
+			aeRef.setReferencedEntity(er);
 			
 			// set transitivity
 			if (lgER.getTransitiveClosure() != null)
@@ -154,8 +157,6 @@ public class DefinitionEntryToValueSetDefinitionEntryConverter extends DozerConv
 			
 			FilterComponent fc = new FilterComponent();
 			
-//			fc.setComponentOrder(componentOrder) // TODO, what is this for ???
-//			fc.setFilterOperator(filterOperator) // TODO, what is this for ???
 			if (lgPropRef.getPropertyName() != null)
 			{
 				org.cts2.core.PropertyReference propRef = new org.cts2.core.PropertyReference();

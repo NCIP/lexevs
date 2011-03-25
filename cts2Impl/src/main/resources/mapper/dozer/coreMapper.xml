@@ -44,6 +44,36 @@
 		</field>
 	</mapping>
   
+  	<mapping wildcard="false">
+		<class-a>org.LexGrid.commonTypes.VersionableAndDescribable</class-a>
+		<class-b>org.cts2.core.ChangeableCore</class-b>
+    
+    	<field>
+			<a>status</a>
+			<b>status.content</b>
+		</field>
+		<field>
+			<a>owner</a>
+			<b>owner.content</b>
+		</field>
+		<field>
+			<a>effectiveDate</a>
+			<b>changeDescription.effectiveDate</b>
+		</field>
+		<field custom-converter-id="changeTypeConverter">
+			<a>entryState.changeType</a>
+			<b>changeDescription.changeType</b>
+		</field>
+		<field>
+			<a>entryState.containingRevision</a>
+			<b>changeDescription.containingChangeSet</b>
+		</field>
+		<field>
+			<a>entryState.prevRevision</a>
+			<b>changeDescription.prevChangeSet</b>
+		</field>
+	</mapping>
+	
 	<mapping>
 		<class-a>java.lang.String</class-a>
 		<class-b>org.cts2.core.VersionTagReference</class-b>
@@ -51,6 +81,20 @@
 		<field>
 			<a>this</a>
 			<b>content</b>
+		</field>
+	</mapping>
+	
+	<mapping wildcard="false">
+		<class-a>org.LexGrid.commonTypes.Source</class-a>
+		<class-b>org.cts2.core.SourceAndRoleReference</class-b>
+		
+		<field>
+			<a>content</a>
+			<b>content</b>			
+		</field>
+		<field>
+			<a>role</a>
+			<b>role.content</b>	
 		</field>
 	</mapping>
   
