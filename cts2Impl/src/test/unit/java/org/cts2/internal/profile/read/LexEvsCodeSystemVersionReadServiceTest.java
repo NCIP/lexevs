@@ -1,7 +1,6 @@
 package org.cts2.internal.profile.read;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 
 import javax.annotation.Resource;
 
