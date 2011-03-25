@@ -34,7 +34,8 @@ import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToT
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
  */
-public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeGraph,AssociationDirectoryURI> implements AssociationDirectoryURI {
+public class DefaultAssociationDirectoryURI 
+	extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeGraph,AssociationDirectoryURI> implements AssociationDirectoryURI {
 
 	private CodedNodeGraph codedNodeGraph;
 	private CodedNodeSet codedNodeSet;
@@ -77,7 +78,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 		return 0;
 	}
 	
-	public EntityDirectoryURI doGetAllSourceAndTargetEntities(
+	public EntityDirectoryURI getAllSourceAndTargetEntities(
 			EntityDirectoryURI directory, QueryControl queryControl,
 			ReadContext context) {
 		// TODO Auto-generated method stub
@@ -85,30 +86,34 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	}
 
 	
-	public EntityDirectoryURI doGetPredicates(AssociationDirectoryURI directory,
-			QueryControl queryControl, ReadContext context) {
+	public EntityDirectoryURI getPredicates(QueryControl queryControl, ReadContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	
-	public EntityDirectoryURI doGetSourceEntities(
-			AssociationDirectoryURI directory, QueryControl queryControl,
+	public EntityDirectoryURI getSourceEntities(QueryControl queryControl,
 			ReadContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	
-	public EntityDirectoryURI doGetTargetEntities(
+	public EntityDirectoryURI getTargetEntities(
 			AssociationDirectoryURI directory, QueryControl queryControl,
 			ReadContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public EntityDirectoryURI getTargetEntities(QueryControl queryControl,
+			ReadContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	public AssociationDirectoryURI doRestrictToCodeSystemVersion(
+	public AssociationDirectoryURI restrictToCodeSystemVersion(
 			NameOrURI codeSystemVersions) {
 		RestrictToCodeSystemVersionRestriction restriction = new RestrictToCodeSystemVersionRestriction();
 		restriction.setCodeSystemVersion(codeSystemVersions);
@@ -116,8 +121,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 		return this.clone();
 	}
 	
-	public AssociationDirectoryURI doRestrictToPredicate(
-			AssociationDirectoryURI directory, EntityNameOrURI predicate) {
+	public AssociationDirectoryURI restrictToPredicate(EntityNameOrURI predicate) {
 		NameAndValueList association = Constructors.createNameAndValueList(predicate.getEntityName().getName(), null);
 		try {
 			codedNodeGraph.restrictToAssociations(association, null);
@@ -132,8 +136,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	}
 
 	
-	public AssociationDirectoryURI doRestrictToSourceEntity(
-			AssociationDirectoryURI directory, EntityNameOrURI sourceEntity) {
+	public AssociationDirectoryURI restrictToSourceEntity(EntityNameOrURI sourceEntity) {
 		CodedNodeSet set = new CodedNodeSetImpl();
 		ConceptReferenceList codeList = Constructors.createConceptReferenceList(sourceEntity.getEntityName().getName());
 	
@@ -152,8 +155,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	}
 
 	
-	public AssociationDirectoryURI doRestrictToSourceOrTargetEntity(
-			AssociationDirectoryURI directory, EntityNameOrURI entity) {
+	public AssociationDirectoryURI restrictToSourceOrTargetEntity(EntityNameOrURI entity) {
 		CodedNodeSet set = new CodedNodeSetImpl();
 		ConceptReferenceList codeList = Constructors.createConceptReferenceList(entity.getEntityName().getName());
 		try {
@@ -171,8 +173,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	}
 
 	
-	public AssociationDirectoryURI doRestrictToTargetEntity(
-			AssociationDirectoryURI directory, EntityNameOrURI target) {
+	public AssociationDirectoryURI restrictToTargetEntity(EntityNameOrURI target) {
 		CodedNodeSet set = new CodedNodeSetImpl();
 		ConceptReferenceList codeList = Constructors.createConceptReferenceList(target.getEntityName().getName());
 	
@@ -191,8 +192,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	}
 
 	
-	public AssociationDirectoryURI doRestrictToTargetExpression(
-			AssociationDirectoryURI directory, TargetExpression target) {
+	public AssociationDirectoryURI restrictToTargetExpression(TargetExpression target) {
 		RestrictToTargetExpressionRestriction restriction = new RestrictToTargetExpressionRestriction();
 		restriction.setTarget(target);
 		
@@ -200,8 +200,7 @@ public class DefaultAssociationDirectoryURI extends AbstractNonIterableLexEvsBac
 	}
 
 	
-	public AssociationDirectoryURI doRestrictToTargetLiteral(
-			AssociationDirectoryURI directory, String target) {
+	public AssociationDirectoryURI restrictToTargetLiteral(String target) {
 		RestrictToTargetLiteralRestriction restriction = new RestrictToTargetLiteralRestriction();
 		restriction.setTarget(target);
 		

@@ -18,6 +18,11 @@
  */
 package org.cts2.uri;
 
+import org.cts2.core.TargetExpression;
+import org.cts2.service.core.EntityNameOrURI;
+import org.cts2.service.core.NameOrURI;
+import org.cts2.service.core.QueryControl;
+import org.cts2.service.core.ReadContext;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
 
 /**
@@ -27,6 +32,89 @@ import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
  */
 public interface AssociationDirectoryURI 
 	extends DirectoryURI, SetOperable<AssociationDirectoryURI> {
+	
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getAllSourceAndTargetEntities(
+			EntityDirectoryURI directory, QueryControl queryControl,
+			ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getPredicates(QueryControl queryControl, ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getSourceEntities(QueryControl queryControl, ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param queryControl
+	 * @param context
+	 */
+	public EntityDirectoryURI getTargetEntities(QueryControl queryControl, ReadContext context);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param codeSystemVersion
+	 */
+	public AssociationDirectoryURI restrictToCodeSystemVersion(NameOrURI codeSystemVersion);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param predicate
+	 */
+	public AssociationDirectoryURI restrictToPredicate(EntityNameOrURI predicate);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param sourceEntity
+	 */
+	public AssociationDirectoryURI restrictToSourceEntity(EntityNameOrURI sourceEntity);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param entity
+	 */
+	public AssociationDirectoryURI restrictToSourceOrTargetEntity(EntityNameOrURI entity);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param target
+	 */
+	public AssociationDirectoryURI restrictToTargetEntity(EntityNameOrURI target);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param target
+	 */
+	public AssociationDirectoryURI restrictToTargetExpression(TargetExpression target);
+
+	/**
+	 * 
+	 * @param directory
+	 * @param target
+	 */
+	public AssociationDirectoryURI restrictToTargetLiteral(String target);
 
 	public AssociationDirectoryRestrictionState getRestrictionState();
 }
