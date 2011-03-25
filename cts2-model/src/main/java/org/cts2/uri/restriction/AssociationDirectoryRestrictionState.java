@@ -16,25 +16,16 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.uri;
+package org.cts2.uri.restriction;
 
-import java.util.List;
-
-import org.cts2.core.EntityReference;
-import org.cts2.service.core.types.ActiveOrAll;
-import org.cts2.service.core.types.RestrictionType;
-import org.cts2.uri.restriction.CodeSystemVersionRestrictionState;
+import org.cts2.uri.AssociationDirectoryURI;
 
 /**
- * The Interface CodeSystemVersionDirectoryURI.
- * 
+ * The Class AssociationDirectoryRestrictionState.
+ *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface CodeSystemVersionDirectoryURI extends DirectoryURI {
+public class AssociationDirectoryRestrictionState extends
+	RestrictionState<AssociationDirectoryURI> {
 
-	public CodeSystemVersionRestrictionState getRestrictionState();
-
-	public CodeSystemVersionDirectoryURI restrictToEntities(
-			List<EntityReference> entities, RestrictionType allOrSome,
-			ActiveOrAll active);
 }

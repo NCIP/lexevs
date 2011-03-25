@@ -18,6 +18,7 @@
  */
 package org.cts2.uri;
 
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
 
 /**
  * The Interface AssociationDirectoryURI.
@@ -26,4 +27,6 @@ package org.cts2.uri;
  */
 public interface AssociationDirectoryURI 
 	extends DirectoryURI {
+	
+	public AssociationDirectoryRestrictionState getRestrictionState();
 }

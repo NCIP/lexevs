@@ -25,6 +25,7 @@ import org.cts2.core.Directory;
 import org.cts2.core.Filter;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
+import org.cts2.uri.restriction.RestrictionState;
 
 /**
  * The Class UrlBasedDirectoryUriFactory.
@@ -93,6 +94,26 @@ public class UrlBasedDirectoryUriFactory {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
+		public <T extends DirectoryURI> T union(T directoryUri) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public <T extends DirectoryURI> T intersect(T directoryUri) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public <T extends DirectoryURI> T difference(T directoryUri) {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public RestrictionState<? extends DirectoryURI> getRestrictionState() {
+			throw new UnsupportedOperationException();
+		}
+		
 		/* (non-Javadoc)
 		 * @see org.cts2.uri.DirectoryURI#marshall()
 		 */
