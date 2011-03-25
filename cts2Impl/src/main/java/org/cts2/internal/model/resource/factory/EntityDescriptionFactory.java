@@ -22,7 +22,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
-import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -30,6 +29,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.types.EntityTypes;
@@ -53,6 +53,8 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * A factory for creating EntityDescription objects.
+ *  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ *  * @author <a href="mailto:lian.zonghui@mayo.edu">Zonghui Lian</a>
  */
 public class EntityDescriptionFactory {
 
@@ -70,15 +72,14 @@ public class EntityDescriptionFactory {
 		AbsoluteCodingSchemeVersionReference ref = this.lexEvsIdentityConverter
 				.nameOrUriToAbsoluteCodingSchemeVersionReference(codeSystemVersionNameOrUri);
 
-		ConceptReference conceptReference = this.lexEvsIdentityConverter
-				.entityNameOrUriToConceptReference(entityDescriptionNameOrUri);
 		try {
 			CodedNodeSet cns = this.lexBigService.getNodeSet(ref
 					.getCodingSchemeURN(), Constructors
 					.createCodingSchemeVersionOrTagFromVersion(ref
 							.getCodingSchemeVersion()), null);
-			ConceptReferenceList conceptRefList = new ConceptReferenceList();
-			conceptRefList.addConceptReference(conceptReference);
+			ConceptReferenceList conceptRefList = ConvenienceMethods
+					.createConceptReferenceList(entityDescriptionNameOrUri
+							.getEntityName().getName());
 			CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
 			ResolvedConceptReferencesIterator iterator = restCns.resolve(null,
 					null, null, null, true);
@@ -96,10 +97,6 @@ public class EntityDescriptionFactory {
 
 	public EntityList getEntityDescriptionList(EntityNameOrURI entityNameOrUri) {
 		EntityList list = new EntityList();
-
-		ConceptReference conceptReference = this.lexEvsIdentityConverter
-				.entityNameOrUriToConceptReference(entityNameOrUri);
-
 		CodingSchemeRenderingList schemeList;
 		try {
 			schemeList = this.lexBigService.getSupportedCodingSchemes();
@@ -110,8 +107,9 @@ public class EntityDescriptionFactory {
 						.getCodingSchemeURI(), Constructors
 						.createCodingSchemeVersionOrTagFromVersion(css
 								.getRepresentsVersion()), null);
-				ConceptReferenceList conceptRefList = new ConceptReferenceList();
-				conceptRefList.addConceptReference(conceptReference);
+				ConceptReferenceList conceptRefList = ConvenienceMethods
+						.createConceptReferenceList(entityNameOrUri
+								.getEntityName().getName());
 				CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
 				ResolvedConceptReferencesIterator iterator = restCns.resolve(
 						null, null, null, null, true);
@@ -134,13 +132,8 @@ public class EntityDescriptionFactory {
 
 	public EntityReference availableDescriptions(EntityNameOrURI entityNameOrURI) {
 		EntityReference entityReference = new EntityReference();
-
-		ConceptReference conceptReference = this.lexEvsIdentityConverter
-				.entityNameOrUriToConceptReference(entityNameOrURI);
 		entityReference.setAbout(entityNameOrURI.getUri());
-		ScopedEntityName scopedEntityName = new ScopedEntityName();
-		scopedEntityName.setName(conceptReference.getCode());
-		scopedEntityName.setNamespace(conceptReference.getCodeNamespace());
+		ScopedEntityName scopedEntityName = entityNameOrURI.getEntityName();
 		entityReference.setLocalEntityName(scopedEntityName);
 
 		try {
@@ -162,8 +155,9 @@ public class EntityDescriptionFactory {
 						.getCodingSchemeURI(), Constructors
 						.createCodingSchemeVersionOrTagFromVersion(css
 								.getRepresentsVersion()), null);
-				ConceptReferenceList conceptRefList = new ConceptReferenceList();
-				conceptRefList.addConceptReference(conceptReference);
+				ConceptReferenceList conceptRefList = ConvenienceMethods
+						.createConceptReferenceList(entityNameOrURI
+								.getEntityName().getName());
 				CodedNodeSet restCns = cns.restrictToCodes(conceptRefList);
 				ResolvedConceptReferencesIterator iterator = restCns.resolve(
 						null, null, null, null, true);
