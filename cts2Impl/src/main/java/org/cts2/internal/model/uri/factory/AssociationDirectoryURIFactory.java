@@ -42,9 +42,13 @@ public class AssociationDirectoryURIFactory extends
 	protected AssociationDirectoryURI doBuildDirectoryURI() {
 		Assert.notNull(this.restrictionHandler);
 		
-			//return new DefaultAssociationDirectoryURI(ProfileUtils.unionAllGraphs(this.getLexBigService()), this.restrictionHandler, this.getBeanMapper());
-			return new  DefaultAssociationDirectoryURI(this.restrictionHandler, this.getBeanMapper());
-
+		try {
+			return new DefaultAssociationDirectoryURI(ProfileUtils.unionAllGraphs(this.getLexBigService()), this.restrictionHandler, this.getBeanMapper());
+		} catch (LBException e) {
+			
+			//TODO: CTS2 Exception here
+			throw new RuntimeException(e);
+		}
 	}
 
 	public NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph, AssociationDirectoryURI> getRestrictionHandler() {
