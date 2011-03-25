@@ -37,6 +37,7 @@ import org.cts2.service.core.NameOrURI;
 import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToPredicateRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToSourceEntityRestriction;
 
 /**
  * The Class DefaultEntityDescriptionRestrictionHandler.
@@ -113,8 +114,24 @@ public class DefaultAssociationRestrictionHandler
 		for(RestrictToPredicateRestriction restriction : state.getRestrictToPredicateRestrictions()){
 			returnList.add(this.restrictToPredicate(restriction.getPredicate()));
 		}
+		
+		for(RestrictToSourceEntityRestriction restriction : state.getRestrictToSourceEntityRestrictions()){
+			returnList.add(this.restrictToSourceEntityRestrictions(restriction.getSourceEntity()));
+		}
 				
 		return returnList;
+	}
+	
+	protected Restriction<CodedNodeGraph> restrictToSourceEntityRestrictions(final EntityNameOrURI predicate) {
+
+//		return new Restriction<CodedNodeGraph>(){
+//
+//			@Override
+//			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+//				return state.restrictToDirectionalNames(directionalNames, associationQualifiers);
+//			}
+//		};
+		return null;
 	}
 	
 	protected Restriction<CodedNodeGraph> restrictToPredicate(final EntityNameOrURI predicate) {
