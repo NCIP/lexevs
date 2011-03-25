@@ -18,11 +18,14 @@
  */
 package org.cts2.internal.profile.read;
 
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.cts2.codesystemversion.CodeSystemVersion;
 import org.cts2.internal.model.resource.factory.CodeSystemVersionFactory;
+import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.profile.read.CodeSystemVersionReadService;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
@@ -113,17 +116,36 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	protected CodeSystemVersion doRead(
 			final NameOrURI nameOrUri, 
 			QueryControl queryControl, 
-			ReadContext readContext) {
+			final ReadContext readContext) {
+		
+		ProfileUtils.validateReadContext(readContext);
 
 		return ExecutionUtils.callWithTimeout(new Callable<CodeSystemVersion>(){
 
 			@Override
 			public CodeSystemVersion call() throws Exception {
-				return codeSystemVersionFactory.getCodeSystemVersion(nameOrUri);
+			    String revisionId = null;
+			    Date revisionDate  = null;
+				
+			    if(readContext != null){
+			    	revisionId = readContext.getChangeSetContext();
+			    	revisionDate = readContext.getReferenceTime();
+				}
+			    
+			    if(StringUtils.isNotBlank(revisionId)){
+			    	return codeSystemVersionFactory.getCodeSystemVersionByRevisionId(nameOrUri, revisionId);
+			    }
+			    
+			    if(revisionDate != null){
+			    	return codeSystemVersionFactory.getCodeSystemVersionByDate(nameOrUri, revisionDate);
+			    }
+				
+			    return codeSystemVersionFactory.getCurrentCodeSystemVersion(nameOrUri);
 			}
 			
 		}, queryControl, TimeUnit.MILLISECONDS);	
 	}
+	
 
 	/**
 	 * Gets the code system version factory.
