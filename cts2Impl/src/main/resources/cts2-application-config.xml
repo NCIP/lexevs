@@ -214,6 +214,9 @@
 	<bean id="lexEvsValueSetDefinitionReadService" class="org.cts2.internal.profile.read.LexEvsValueSetDefinitionReadService" parent="abstractBaseService">
 		<property name="valueSetDefinitionFactory" ref="valueSetDefinitionFactory" />	
 	</bean>
+		<bean id="lexEvsEntityDescriptionReadService" class="org.cts2.internal.profile.read.LexEvsEntityDescriptionReadService" parent="abstractBaseService">
+		<property name="entityDescriptionFactory" ref="entityDescriptionFactory" />
+	</bean>
 
 	
 	<!-- Directory URI Factories -->
@@ -268,6 +271,11 @@
 	<bean id="valueSetDefinitionFactory" class="org.cts2.internal.model.resource.factory.ValueSetDefinitionFactory">
 		<property name="lexEVSValueSetDefinitionService" ref="lexEVSValueSetDefinitionServiceImpl" />
 		<property name="beanMapper" ref="baseDozerBeanMapper" />
+	</bean>
+	<bean id="entityDescriptionFactory" class="org.cts2.internal.model.resource.factory.EntityDescriptionFactory">
+		<property name="lexBigService" ref="lexBIGServiceImpl" />
+		<property name="beanMapper" ref="baseDozerBeanMapper" />
+		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter"/>
 	</bean>
 	<!-- End Model Factories -->
 	
