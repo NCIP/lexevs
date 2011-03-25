@@ -121,7 +121,25 @@ public class AssociationDirectoryRestrictionState extends
 	public static class RestrictToSourceEntityRestriction {
 		
 		/** The source entity. */
-		EntityNameOrURI sourceEntity;
+		private EntityNameOrURI sourceEntity;
+
+		/**
+		 * Sets the source entity.
+		 *
+		 * @param sourceEntity the new source entity
+		 */
+		public void setSourceEntity(EntityNameOrURI sourceEntity) {
+			this.sourceEntity = sourceEntity;
+		}
+
+		/**
+		 * Gets the source entity.
+		 *
+		 * @return the source entity
+		 */
+		public EntityNameOrURI getSourceEntity() {
+			return sourceEntity;
+		}
 	}
 
 	/**
