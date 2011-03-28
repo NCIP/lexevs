@@ -18,7 +18,7 @@ public interface MapVersionQueryService extends
 			QueryControl queryControl, ReadContext readContext);
 
 	public MapVersionList resolveAsList(MapVersionDirectoryURI directory,
-			QueryControl queryControl, ReadContext readContex);
+			QueryControl queryControl, ReadContext readContext);
 
 	public void restrictToCodeSystems(MapVersionDirectoryURI directory,
 			NameOrURIList codeSystems);
