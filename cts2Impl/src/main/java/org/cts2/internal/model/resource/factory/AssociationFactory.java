@@ -52,7 +52,7 @@ public class AssociationFactory {
 	private DirectoryURIFactory<EntityDirectoryURI> entityDirectoryUriFactory;
 	
 	/**
-	 * Gets the code system version.
+	 * Gets the Association.
 	 *
 	 * @param nameOrUri the name or uri
 	 * @return the code system version

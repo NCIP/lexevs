@@ -1,16 +1,7 @@
 package org.cts2.internal.model.uri;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.association.AssociationDirectory;
 import org.cts2.association.AssociationList;
 import org.cts2.core.TargetExpression;
@@ -27,9 +18,12 @@ import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.EntityDirectoryURI;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToCodeSystemVersionRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToPredicateRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToSourceEntityRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToSourceOrTargetEntityRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetEntityRestriction;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetExpressionRestriction;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetLiteralRestriction;
-
 /**
  * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  *
@@ -37,21 +31,17 @@ import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToT
 public class DefaultAssociationDirectoryURI 
 	extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeGraph,AssociationDirectoryURI> implements AssociationDirectoryURI {
 
-	private CodedNodeGraph codedNodeGraph;
-	private CodedNodeSet codedNodeSet;
+
 	private BeanMapper beanMapper;
-	private LexBIGService lbs;
+
 	
 	private AssociationDirectoryRestrictionState restrictionState;
 	
 	public DefaultAssociationDirectoryURI(
-			CodedNodeGraph codedNodeGraph, 
 			NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph,AssociationDirectoryURI> restrictionHandler, 
 			BeanMapper beanMapper){
 		super(restrictionHandler);
-		this.codedNodeGraph = codedNodeGraph;
 		this.beanMapper = beanMapper;
-		lbs = LexBIGServiceImpl.defaultInstance();
 	}
  
 	@SuppressWarnings("unchecked")
@@ -117,85 +107,48 @@ public class DefaultAssociationDirectoryURI
 			NameOrURI codeSystemVersions) {
 		RestrictToCodeSystemVersionRestriction restriction = new RestrictToCodeSystemVersionRestriction();
 		restriction.setCodeSystemVersion(codeSystemVersions);
-		
+		this.getRestrictionState().getRestrictToCodeSystemVersionRestrictions()
+				.add(restriction);
+
 		return this.clone();
 	}
-	
+
 	public AssociationDirectoryURI restrictToPredicate(EntityNameOrURI predicate) {
-		NameAndValueList association = Constructors.createNameAndValueList(predicate.getEntityName().getName(), null);
-		try {
-			codedNodeGraph.restrictToAssociations(association, null);
-		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return this;
+		RestrictToPredicateRestriction restriction = new RestrictToPredicateRestriction();
+		restriction.setPredicate(predicate);
+		this.getRestrictionState().getRestrictToPredicateRestrictions();
+		return this.clone();
 	}
 
 	
 	public AssociationDirectoryURI restrictToSourceEntity(EntityNameOrURI sourceEntity) {
-		CodedNodeSet set = new CodedNodeSetImpl();
-		ConceptReferenceList codeList = Constructors.createConceptReferenceList(sourceEntity.getEntityName().getName());
-	
-		try {
-			set.restrictToCodes(codeList);
-			codedNodeGraph.restrictToSourceCodes(set);
-		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return this;
+		RestrictToSourceEntityRestriction restriction = new RestrictToSourceEntityRestriction();
+		restriction.setSourceEntity(sourceEntity);
+		this.getRestrictionState().getRestrictToPredicateRestrictions();
+		return this.clone();
 	}
 
 	
 	public AssociationDirectoryURI restrictToSourceOrTargetEntity(EntityNameOrURI entity) {
-		CodedNodeSet set = new CodedNodeSetImpl();
-		ConceptReferenceList codeList = Constructors.createConceptReferenceList(entity.getEntityName().getName());
-		try {
-			set.restrictToCodes(codeList);
-			codedNodeGraph.restrictToCodes(set);
-		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return this;
+		RestrictToSourceOrTargetEntityRestriction restriction = new RestrictToSourceOrTargetEntityRestriction();
+		restriction.setEntity(entity);
+		this.getRestrictionState().getRestrictToSourceEntityRestrictions();
+		return this.clone();
 	}
 
 	
 	public AssociationDirectoryURI restrictToTargetEntity(EntityNameOrURI target) {
-		CodedNodeSet set = new CodedNodeSetImpl();
-		ConceptReferenceList codeList = Constructors.createConceptReferenceList(target.getEntityName().getName());
-	
-		try {
-			set.restrictToCodes(codeList);
-			codedNodeGraph.restrictToTargetCodes(set);
-		} catch (LBInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return this;
+		RestrictToTargetEntityRestriction restriction = new RestrictToTargetEntityRestriction();
+		restriction.setTarget(target);
+		this.getRestrictionState().getRestrictToTargetEntityRestrictions();
+		return this.clone();
 	}
 
 	
 	public AssociationDirectoryURI restrictToTargetExpression(TargetExpression target) {
 		RestrictToTargetExpressionRestriction restriction = new RestrictToTargetExpressionRestriction();
 		restriction.setTarget(target);
-		
+		this.getRestrictionState().getRestrictToTargetExpressionRestrictions();
 		return this.clone();
 	}
 
@@ -203,7 +156,7 @@ public class DefaultAssociationDirectoryURI
 	public AssociationDirectoryURI restrictToTargetLiteral(String target) {
 		RestrictToTargetLiteralRestriction restriction = new RestrictToTargetLiteralRestriction();
 		restriction.setTarget(target);
-		
+		this.getRestrictionState().getRestrictToTargetLiteralRestriction();
 		return this.clone();
 	}
 

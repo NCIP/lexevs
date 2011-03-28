@@ -26,7 +26,7 @@ public class ResolvedConceptReferencesIteratorBackedAssociationDirectory extends
 	public ResolvedConceptReferencesIteratorBackedAssociationDirectory(
 			CodedNodeGraph codedNodeGraph, 
 			BeanMapper beanMapper) throws LBException {
-		this(codedNodeGraph.resolveAsList(null, true, false, -1, -1, null, null, null, null, -1), beanMapper);
+		this(codedNodeGraph.resolveAsList(null, true, false, 1000, -1, null, null, null, null, -1), beanMapper);
 	}
 	
 	public ResolvedConceptReferencesIteratorBackedAssociationDirectory(

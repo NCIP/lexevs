@@ -23,6 +23,10 @@ public class LexEvsAssociationQueryService extends
 	implements AssociationQueryService {
 
 
+	public AssociationDirectoryURI getAssociations(){
+		return this.getDirectoryURIFactory().getDirectoryURI();
+	}
+	
 	@Override
 	public AssociationDirectory resolve(
 			AssociationDirectoryURI associationQueryURI,
