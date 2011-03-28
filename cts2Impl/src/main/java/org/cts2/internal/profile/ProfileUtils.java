@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -76,6 +77,12 @@ public class ProfileUtils {
 		}
 		
 		return cns;
+	}
+	
+	public static Mapping getMapping(LexBIGService lexBigService) {
+		Mapping mapping = null;
+		//TODO 
+		return mapping;
 	}
 	
 	/**
