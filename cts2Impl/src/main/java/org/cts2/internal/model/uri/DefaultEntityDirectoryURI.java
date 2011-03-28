@@ -32,8 +32,11 @@ import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestriction
 import org.cts2.internal.model.uri.restrict.Restriction;
 import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.service.core.NameOrURI;
+import org.cts2.service.core.NameOrURIList;
 import org.cts2.service.core.ReadContext;
 import org.cts2.uri.EntityDirectoryURI;
+import org.cts2.uri.restriction.EntityDirectoryRestrictionState;
+import org.cts2.uri.restriction.EntityDirectoryRestrictionState.RestrictToCodeSystemVersionsRestriction;
 import org.cts2.uri.restriction.SetComposite;
 
 /**
@@ -140,7 +143,13 @@ public class DefaultEntityDirectoryURI extends AbstractNonIterableLexEvsBackedRe
 	@Override
 	public EntityDirectoryURI restrictToCodeSystemVersions(
 			NameOrURI codeSystemVersions) {
-		this.getThis().getRestrictionState();
+		RestrictToCodeSystemVersionsRestriction restriction = new RestrictToCodeSystemVersionsRestriction();
+		NameOrURIList list = new NameOrURIList();
+		list.addEntry(codeSystemVersions);
+		
+		restriction.setCodeSystemVersions(list);
+		
+		this.getThis().getRestrictionState().getRestrictToCodeSystemVersionsRestrictions().add(restriction);
 		
 		return clone();
 	}
