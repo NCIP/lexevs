@@ -21,7 +21,7 @@ package org.cts2.uri.restriction;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cts2.core.NameOrURIList;
+import org.cts2.service.core.NameOrURIList;
 import org.cts2.uri.EntityDirectoryURI;
 
 /**

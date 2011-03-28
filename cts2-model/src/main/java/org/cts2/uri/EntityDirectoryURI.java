@@ -20,7 +20,7 @@ package org.cts2.uri;
 
 import org.cts2.core.VersionTagReference;
 import org.cts2.service.core.NameOrURI;
-import org.cts2.uri.restriction.RestrictionState;
+import org.cts2.uri.restriction.EntityDirectoryRestrictionState;
 
 
 /**
@@ -40,8 +40,6 @@ public interface EntityDirectoryURI
 	 */
 	public EntityDirectoryURI restrictToCodeSystems(NameOrURI codeSystems, VersionTagReference tag);
 	
-	public EntityDirectoryRestrictionState getRestrictionState();
-	
 	/**
 	 * Restrict to code system versions.
 	 *
@@ -49,10 +47,10 @@ public interface EntityDirectoryURI
 	 * @return the entity directory uri
 	 */
 	public EntityDirectoryURI restrictToCodeSystemVersions(NameOrURI codeSystemVersions);
-
-	public static class EntityDirectoryRestrictionState extends
-		RestrictionState<EntityDirectoryURI> {
-
-	}
+	
+	/* (non-Javadoc)
+	 * @see org.cts2.uri.DirectoryURI#getRestrictionState()
+	 */
+	public EntityDirectoryRestrictionState getRestrictionState();
 }
 
