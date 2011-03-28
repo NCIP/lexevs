@@ -20,7 +20,7 @@ public interface MapVersionQueryService extends
 	public MapVersionList resolveAsList(MapVersionDirectoryURI directory,
 			QueryControl queryControl, ReadContext readContext);
 
-	public void restrictToCodeSystems(MapVersionDirectoryURI directory,
+	public MapVersionDirectoryURI restrictToCodeSystems(MapVersionDirectoryURI directory,
 			NameOrURIList codeSystems);
 	
 	
