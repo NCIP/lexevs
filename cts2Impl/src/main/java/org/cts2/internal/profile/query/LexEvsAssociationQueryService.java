@@ -69,72 +69,64 @@ public class LexEvsAssociationQueryService extends
 	@Override
 	public EntityDirectoryURI getPredicates(AssociationDirectoryURI directory,
 			QueryControl queryControl, ReadContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return directory.getPredicates(queryControl, context);
 	}
 
 	@Override
 	public EntityDirectoryURI getSourceEntities(
 			AssociationDirectoryURI directory, QueryControl queryControl,
 			ReadContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.getSourceEntities(queryControl, context);
 	}
 
 	@Override
 	public EntityDirectoryURI getTargetEntities(
 			AssociationDirectoryURI directory, QueryControl queryControl,
 			ReadContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.getTargetEntities(queryControl, context);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToCodeSystemVersion(
 			AssociationDirectoryURI directory, NameOrURI codeSystemVersion) {
-		return null;
+		return directory.restrictToCodeSystemVersion(codeSystemVersion);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToPredicate(
 			AssociationDirectoryURI directory, EntityNameOrURI predicate) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.restrictToPredicate(predicate);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToSourceEntity(
 			AssociationDirectoryURI directory, EntityNameOrURI sourceEntity) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.restrictToSourceEntity(sourceEntity);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToSourceOrTargetEntity(
 			AssociationDirectoryURI directory, EntityNameOrURI entity) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.restrictToSourceOrTargetEntity(entity);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToTargetEntity(
 			AssociationDirectoryURI directory, EntityNameOrURI target) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.restrictToTargetEntity(target);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToTargetExpression(
 			AssociationDirectoryURI directory, TargetExpression target) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.restrictToTargetExpression(target);
 	}
 
 	@Override
 	public AssociationDirectoryURI restrictToTargetLiteral(
 			AssociationDirectoryURI directory, String target) {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.restrictToTargetLiteral(target);
 	}
 
 
