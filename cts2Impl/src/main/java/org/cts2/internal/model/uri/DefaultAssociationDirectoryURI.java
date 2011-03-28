@@ -37,6 +37,7 @@ import org.cts2.service.core.ReadContext;
 import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.EntityDirectoryURI;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
+import org.cts2.uri.restriction.SetComposite;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToCodeSystemVersionRestriction;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToPredicateRestriction;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToSourceEntityRestriction;
@@ -201,7 +202,6 @@ public class DefaultAssociationDirectoryURI
 
 	@Override
 	protected AssociationDirectoryURI clone() {
-		// TODO Auto-generated method stub
 		return this;
 	}
 
@@ -214,8 +214,17 @@ public class DefaultAssociationDirectoryURI
 	protected AssociationDirectoryURI createSetOperatedDirectoryURI(
 			SetOperator setOperator, AssociationDirectoryURI directoryUri1,
 			AssociationDirectoryURI directoryUri2) {
-		// TODO Auto-generated method stub
-		return null;
+		DefaultAssociationDirectoryURI uri = new DefaultAssociationDirectoryURI(
+				this.lexBigService, 
+				this.getRestrictionHandler(), 
+				this.beanMapper);
+		
+		uri.getRestrictionState().setSetComposite(new SetComposite<AssociationDirectoryURI>());
+		uri.getRestrictionState().getSetComposite().setSetOperator(setOperator);
+		uri.getRestrictionState().getSetComposite().setDirectoryUri1(directoryUri1);
+		uri.getRestrictionState().getSetComposite().setDirectoryUri2(directoryUri2);
+	
+		return uri;
 	}
 
 }
