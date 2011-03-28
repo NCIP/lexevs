@@ -1,18 +1,17 @@
 package org.cts2.internal.model.uri;
 
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.cts2.core.types.SetOperator;
 import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
 import org.cts2.service.core.ReadContext;
-import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.DirectoryURI;
 import org.cts2.uri.MapVersionDirectoryURI;
 import org.cts2.uri.restriction.RestrictionState;
 
-public class DefaultMapVersionDirectoryURI extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<CodedNodeGraph,MapVersionDirectoryURI>implements MapVersionDirectoryURI{
+public class DefaultMapVersionDirectoryURI extends AbstractNonIterableLexEvsBackedResolvingDirectoryURI<Mapping,MapVersionDirectoryURI>implements MapVersionDirectoryURI{
 
 	protected DefaultMapVersionDirectoryURI(
-			NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph, MapVersionDirectoryURI> restrictionHandler) {
+			NonIterableBasedResolvingRestrictionHandler<Mapping, MapVersionDirectoryURI> restrictionHandler) {
 		super(restrictionHandler);
 		// TODO Auto-generated constructor stub
 	}
@@ -24,13 +23,13 @@ public class DefaultMapVersionDirectoryURI extends AbstractNonIterableLexEvsBack
 	}
 
 	@Override
-	protected CodedNodeGraph getOriginalState() {
+	protected Mapping getOriginalState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected <O> O transform(CodedNodeGraph lexevsObject, Class<O> clazz) {
+	protected <O> O transform(Mapping lexevsObject, Class<O> clazz) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -54,5 +53,6 @@ public class DefaultMapVersionDirectoryURI extends AbstractNonIterableLexEvsBack
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }
