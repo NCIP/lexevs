@@ -58,9 +58,9 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	 * @see org.cts2.profile.read.CodeSystemVersionReadService#existsExternalId(org.cts2.service.core.NameOrURI, java.lang.String, org.cts2.service.core.ReadContext)
 	 */
 	@Override
-	public boolean existsExternalId(
+	public boolean existsVersionId(
 			NameOrURI codeSystem,
-			String externalIdentifier, 
+			String officialResourceVersionId, 
 			ReadContext context) {
 		throw new UnsupportedOperationException();
 	}
@@ -92,9 +92,9 @@ public class LexEvsCodeSystemVersionReadService extends AbstractBaseReadService<
 	 * @see org.cts2.profile.read.CodeSystemVersionReadService#getCodeSystemVersionByExternalId(org.cts2.service.core.NameOrURI, java.lang.String, org.cts2.service.core.QueryControl)
 	 */
 	@Override
-	public boolean getCodeSystemVersionByExternalId(
+	public boolean getCodeSystemVersionByVersionId(
 			NameOrURI codeSystem,
-			String externalIdentifier, 
+			String officialResourceVersionId, 
 			QueryControl queryControl) {
 		throw new UnsupportedOperationException();
 	}
