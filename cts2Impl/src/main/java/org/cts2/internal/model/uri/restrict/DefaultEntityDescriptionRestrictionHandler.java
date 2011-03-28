@@ -42,6 +42,8 @@ import org.cts2.internal.match.OperationExecutingModelAttributeReference;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference.RestrictionOperation;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.uri.EntityDirectoryURI;
+import org.cts2.uri.restriction.EntityDirectoryRestrictionState;
+import org.cts2.uri.restriction.EntityDirectoryRestrictionState.RestrictToCodeSystemVersionsRestriction;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -122,7 +124,15 @@ public class DefaultEntityDescriptionRestrictionHandler
 	@Override
 	protected List<Restriction<CodedNodeSet>> processOtherRestictions(
 			EntityDirectoryURI directoryURI) {
-		return null;
+		List<Restriction<CodedNodeSet>> returnList = new ArrayList<Restriction<CodedNodeSet>>();
+		
+		EntityDirectoryRestrictionState state = directoryURI.getRestrictionState();
+		
+		for(RestrictToCodeSystemVersionsRestriction restriction : state.getRestrictToCodeSystemVersionsRestrictions()){
+			//TODO:
+		}
+		
+		return returnList;
 	}
 
 	@Override
