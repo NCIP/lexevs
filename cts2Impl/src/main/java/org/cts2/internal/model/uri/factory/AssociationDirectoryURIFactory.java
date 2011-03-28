@@ -20,6 +20,7 @@ package org.cts2.internal.model.uri.factory;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.cts2.internal.model.uri.DefaultAssociationDirectoryURI;
 import org.cts2.internal.model.uri.restrict.NonIterableBasedResolvingRestrictionHandler;
 import org.cts2.internal.profile.ProfileUtils;
@@ -43,7 +44,7 @@ public class AssociationDirectoryURIFactory extends
 		Assert.notNull(this.restrictionHandler);
 		
 
-			return new DefaultAssociationDirectoryURI(this.restrictionHandler, this.getBeanMapper());
+			return new DefaultAssociationDirectoryURI(this.getLexBigService(), this.restrictionHandler, this.getBeanMapper());
 
 	}
 
