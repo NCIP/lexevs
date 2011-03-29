@@ -21,6 +21,7 @@ package org.cts2.internal.model.uri.restrict;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -150,30 +151,11 @@ public class DefaultAssociationRestrictionHandler
 		return returnList;
 	}
 	
-//	/**
-//	 * @param codeSystemVersion
-//	 * @return
-//	 */
-//	protected Restriction<CodedNodeGraph> restrictToCodeSystemVersionRestrictions(final EntityNameOrURI codeSystemVersion) {
-//		return new Restriction<CodedNodeGraph>(){
-//			@Override
-//			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
-//				try {
-//					state.restrictToCodeSystem(codeSystemVersion.getEntityName().getName());
-//				} catch (LBInvocationException e) {
-//					// TODO throw CTS2 Exception
-//					throw new RuntimeException(e);
-//				} catch (LBParameterException e) {
-//					// TODO throw CTS2 Exception
-//					throw new RuntimeException(e);
-//				}return state;
-//			} 
-//		};
-//	}
-	
 	/**
-	 * @param predicate
-	 * @return
+	 * 
+	 * Restrict to the predicate (Association Name) for this association
+	 * @param predicate - a wrapper class containing the name
+	 * @return this restriction to the coded node graph.
 	 */
 	protected Restriction<CodedNodeGraph> restrictToPredicate(final EntityNameOrURI predicate) {
 
@@ -195,8 +177,9 @@ public class DefaultAssociationRestrictionHandler
 	}
 	
 	/**
-	 * @param sourceEntity
-	 * @return
+	 *  Restrict to the source entity unique identifier
+	 * @param sourceEntity - wrapper class for the unique identifier
+	 * @return this restriction to the coded node graph.
 	 */
 	protected Restriction<CodedNodeGraph> restrictToSourceEntityRestrictions(final EntityNameOrURI sourceEntity) {
 
@@ -220,8 +203,9 @@ public class DefaultAssociationRestrictionHandler
 	
 	
 	/**
-	 * @param entity
-	 * @return
+	 * Restrict to the source or target entity unique identifier of the coded node graph
+	 * @param entity - wrapper class for the unique identifier for this class
+	 * @return this restriction to the coded node graph.
 	 */
 	protected Restriction<CodedNodeGraph> restrictToSourceOrTargetEntityRestriction(
 			final EntityNameOrURI entity) {
@@ -244,8 +228,9 @@ public class DefaultAssociationRestrictionHandler
 	
 	
 	/**
-	 * @param target
-	 * @return
+	 * Restrict to the unique identifier of the target entity of this association
+	 * @param target - wrapper class for the target unique identifier
+	 * @return this restriction to the coded node graph.
 	 */
 	protected Restriction<CodedNodeGraph> restrictToTargetEntityRestriction(final EntityNameOrURI target){
 		
@@ -268,8 +253,9 @@ public class DefaultAssociationRestrictionHandler
 	}
 	
 	/**
-	 * @param target
-	 * @return
+	 * Restrict to the target literal of this association
+	 * @param target - the target literal
+	 * @return this restriction to the coded node graph.
 	 */
 	protected Restriction<CodedNodeGraph> restrictToTargetLiteralRestriction(final String target){
 		return new Restriction<CodedNodeGraph>(){
