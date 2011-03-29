@@ -18,6 +18,8 @@
  */
 package org.cts2.internal.match;
 
+import java.io.Serializable;
+
 
 /**
  * The Interface AttributeResolver.
@@ -25,7 +27,7 @@ package org.cts2.internal.match;
  * @param <T> the
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface AttributeResolver<T> {
+public interface AttributeResolver<T> extends Serializable {
 	
 	/**
 	 * Resolve attribute.

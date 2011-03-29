@@ -18,6 +18,8 @@
  */
 package org.cts2.internal.match;
 
+import java.io.Serializable;
+
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.ModelAttributeReference;
 
@@ -63,7 +65,7 @@ public class OperationExecutingModelAttributeReference<T> extends ModelAttribute
 	 * @param <T> the
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-	public static interface RestrictionOperation<T> {
+	public static interface RestrictionOperation<T> extends Serializable {
 		
 		/**
 		 * Restrict.
