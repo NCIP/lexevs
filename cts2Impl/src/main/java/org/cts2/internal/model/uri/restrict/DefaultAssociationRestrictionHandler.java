@@ -21,10 +21,12 @@ package org.cts2.internal.model.uri.restrict;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.cts2.core.MatchAlgorithmReference;
@@ -32,12 +34,17 @@ import org.cts2.core.VersionTagReference;
 import org.cts2.core.types.SetOperator;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
+import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
 import org.cts2.uri.AssociationDirectoryURI;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToCodeSystemVersionRestriction;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToPredicateRestriction;
 import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToSourceEntityRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToSourceOrTargetEntityRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetEntityRestriction;
+import org.cts2.uri.restriction.AssociationDirectoryRestrictionState.RestrictToTargetLiteralRestriction;
 
 /**
  * The Class DefaultEntityDescriptionRestrictionHandler.
@@ -63,6 +70,10 @@ public class DefaultAssociationRestrictionHandler
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @param codeSystemVersions
+	 * @return
+	 */
 	protected Restriction<CodedNodeGraph> restrictToCodeSystemVersions(
 			final NameOrURI codeSystemVersions) {
 		
@@ -105,35 +116,65 @@ public class DefaultAssociationRestrictionHandler
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractNonIterableLexEvsBackedRestrictionHandler#processOtherRestictions(org.cts2.uri.DirectoryURI)
+	 */
 	@Override
 	protected List<Restriction<CodedNodeGraph>> processOtherRestictions(
 			AssociationDirectoryURI directoryURI) {
 		List<Restriction<CodedNodeGraph>> returnList = new ArrayList<Restriction<CodedNodeGraph>>();
 		
 		AssociationDirectoryRestrictionState state = directoryURI.getRestrictionState();
+		
+		for(RestrictToCodeSystemVersionRestriction restriction : state.getRestrictToCodeSystemVersionRestrictions()){
+			returnList.add(this.restrictToCodeSystemVersions(restriction.getCodeSystemVersion()));
+		}
 		for(RestrictToPredicateRestriction restriction : state.getRestrictToPredicateRestrictions()){
 			returnList.add(this.restrictToPredicate(restriction.getPredicate()));
 		}
-		
+		for(RestrictToPredicateRestriction restriction : state.getRestrictToPredicateRestrictions()){
+			returnList.add(this.restrictToPredicate(restriction.getPredicate()));
+		}
 		for(RestrictToSourceEntityRestriction restriction : state.getRestrictToSourceEntityRestrictions()){
 			returnList.add(this.restrictToSourceEntityRestrictions(restriction.getSourceEntity()));
 		}
-				
+		for(RestrictToSourceOrTargetEntityRestriction restriction : state.getRestrictToSourceOrTargetEntityRestrictions()){
+			returnList.add(this.restrictToSourceOrTargetEntityRestriction(restriction.getEntity()));
+		}
+		for(RestrictToTargetEntityRestriction restriction : state.getRestrictToTargetEntityRestrictions()){
+			returnList.add(this.restrictToTargetEntityRestriction(restriction.getTarget()));
+		}
+		for(RestrictToTargetLiteralRestriction restriction : state.getRestrictToTargetLiteralRestriction()){
+			returnList.add(this.restrictToTargetLiteralRestriction(restriction.getTarget()));
+		}				
 		return returnList;
 	}
 	
-	protected Restriction<CodedNodeGraph> restrictToSourceEntityRestrictions(final EntityNameOrURI predicate) {
-
+//	/**
+//	 * @param codeSystemVersion
+//	 * @return
+//	 */
+//	protected Restriction<CodedNodeGraph> restrictToCodeSystemVersionRestrictions(final EntityNameOrURI codeSystemVersion) {
 //		return new Restriction<CodedNodeGraph>(){
-//
 //			@Override
 //			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
-//				return state.restrictToDirectionalNames(directionalNames, associationQualifiers);
-//			}
+//				try {
+//					state.restrictToCodeSystem(codeSystemVersion.getEntityName().getName());
+//				} catch (LBInvocationException e) {
+//					// TODO throw CTS2 Exception
+//					throw new RuntimeException(e);
+//				} catch (LBParameterException e) {
+//					// TODO throw CTS2 Exception
+//					throw new RuntimeException(e);
+//				}return state;
+//			} 
 //		};
-		return null;
-	}
+//	}
 	
+	/**
+	 * @param predicate
+	 * @return
+	 */
 	protected Restriction<CodedNodeGraph> restrictToPredicate(final EntityNameOrURI predicate) {
 
 		return new Restriction<CodedNodeGraph>(){
@@ -152,7 +193,98 @@ public class DefaultAssociationRestrictionHandler
 			}
 		};
 	}
+	
+	/**
+	 * @param sourceEntity
+	 * @return
+	 */
+	protected Restriction<CodedNodeGraph> restrictToSourceEntityRestrictions(final EntityNameOrURI sourceEntity) {
 
+		return new Restriction<CodedNodeGraph>(){
+			@Override
+			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+
+				try {
+					//TODO find a method of restricting codes to the current restricted state of this node graph.
+					CodedNodeSet codes = ProfileUtils.unionAll(lexBigService);
+					ConceptReferenceList codeList = Constructors.createConceptReferenceList(sourceEntity.getEntityName().getName());
+					codes.restrictToCodes(codeList);
+					return state.restrictToSourceCodes(codes);
+				} catch (LBException e) {
+					// TODO Auto-generated catch block
+					throw new RuntimeException();
+				}		
+			}
+		};
+	}
+	
+	
+	/**
+	 * @param entity
+	 * @return
+	 */
+	protected Restriction<CodedNodeGraph> restrictToSourceOrTargetEntityRestriction(
+			final EntityNameOrURI entity) {
+		
+		return new Restriction<CodedNodeGraph>() {
+			@Override
+			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+				try {
+				CodedNodeSet codes = ProfileUtils.unionAll(lexBigService);
+				ConceptReferenceList codeList = Constructors.createConceptReferenceList(entity.getEntityName().getName());
+				codes.restrictToCodes(codeList);
+				return state.restrictToCodes(codes);
+				} catch (LBException e) {
+					// TODO Auto-generated catch block
+					throw new RuntimeException();
+				}
+			}
+		};
+	}
+	
+	
+	/**
+	 * @param target
+	 * @return
+	 */
+	protected Restriction<CodedNodeGraph> restrictToTargetEntityRestriction(final EntityNameOrURI target){
+		
+		return new Restriction<CodedNodeGraph>(){
+			@Override
+			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+
+				try {
+					//TODO find a method of restricting codes to the current restricted state of this node graph.
+					CodedNodeSet codes = ProfileUtils.unionAll(lexBigService);
+					ConceptReferenceList codeList = Constructors.createConceptReferenceList(target.getEntityName().getName());
+					codes.restrictToCodes(codeList);
+					return state.restrictToTargetCodes(codes);
+				} catch (LBException e) {
+					// TODO Auto-generated catch block
+					throw new RuntimeException();
+				}		
+			}
+		};
+	}
+	
+	/**
+	 * @param target
+	 * @return
+	 */
+	protected Restriction<CodedNodeGraph> restrictToTargetLiteralRestriction(final String target){
+		return new Restriction<CodedNodeGraph>(){
+			@Override
+			public CodedNodeGraph processRestriction(CodedNodeGraph state) {
+
+				//TODO: decide strategy for implementing Supporting LexEVS code (Association to Data).
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractNonIterableLexEvsBackedRestrictionHandler#doUnion(org.cts2.uri.DirectoryURI, org.cts2.uri.DirectoryURI, org.cts2.internal.model.uri.restrict.OriginalStateProvider)
+	 */
 	@Override
 	protected CodedNodeGraph doUnion(
 			AssociationDirectoryURI directoryUri1,
@@ -161,6 +293,9 @@ public class DefaultAssociationRestrictionHandler
 		return this.doSetOperation(directoryUri1, directoryUri2, originalStateProvider, SetOperator.UNION);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractNonIterableLexEvsBackedRestrictionHandler#doIntersect(org.cts2.uri.DirectoryURI, org.cts2.uri.DirectoryURI, org.cts2.internal.model.uri.restrict.OriginalStateProvider)
+	 */
 	@Override
 	protected CodedNodeGraph doIntersect(
 			AssociationDirectoryURI directoryUri1,
@@ -169,6 +304,9 @@ public class DefaultAssociationRestrictionHandler
 		return this.doSetOperation(directoryUri1, directoryUri2, originalStateProvider, SetOperator.INTERSECT);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.cts2.internal.model.uri.restrict.AbstractNonIterableLexEvsBackedRestrictionHandler#doDifference(org.cts2.uri.DirectoryURI, org.cts2.uri.DirectoryURI, org.cts2.internal.model.uri.restrict.OriginalStateProvider)
+	 */
 	@Override
 	protected CodedNodeGraph doDifference(
 			AssociationDirectoryURI directoryUri1,
@@ -177,6 +315,13 @@ public class DefaultAssociationRestrictionHandler
 		return this.doSetOperation(directoryUri1, directoryUri2, originalStateProvider, SetOperator.SUBTRACT);
 	}
 	
+	/**
+	 * @param directoryUri1
+	 * @param directoryUri2
+	 * @param originalState
+	 * @param setOperator
+	 * @return
+	 */
 	protected CodedNodeGraph doSetOperation(AssociationDirectoryURI directoryUri1, AssociationDirectoryURI directoryUri2, OriginalStateProvider<CodedNodeGraph> originalState, SetOperator setOperator){
 		Restriction<CodedNodeGraph> restriction1 = this.compile(directoryUri1, originalState);
 		Restriction<CodedNodeGraph> restriction2 = this.compile(directoryUri2, originalState);
