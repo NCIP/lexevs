@@ -18,6 +18,9 @@
 		<property name="queryService" ref="defaultQueryService" />
 	</bean>
 	
+	<bean id="logger" class="org.lexevs.logging.LoggerFactory"
+		factory-method="getLogger" depends-on="lexEvsServiceLocator"/>
+	
 	<bean id="lexBIGServiceImpl" class="org.LexGrid.LexBIG.Impl.LexBIGServiceImpl"
 		factory-method="defaultInstance" depends-on="lexEvsServiceLocator"/>
 		
