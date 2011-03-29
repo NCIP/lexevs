@@ -100,7 +100,7 @@ public class LexEvsEntityDescriptionQueryServiceTestIT extends BaseCts2Integrati
 		ref.setReferenceType(TargetReferenceType.ATTRIBUTE);
 		
 		NameOrURI nameOrUri = new NameOrURI();
-		nameOrUri.setUri(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_URI);
+		nameOrUri.setUri(ExternalCts2Constants.MA_ENTITY_DESCRIPTION_DESIGNATION_URI);
 		ref.setReferenceTarget(nameOrUri);
 		
 		filterComponent.setFilterComponent(ref);
@@ -118,7 +118,7 @@ public class LexEvsEntityDescriptionQueryServiceTestIT extends BaseCts2Integrati
 	@LoadContent(contentPath="classpath:content/Automobiles.xml")
 	public void testUnion(){
 		NameOrURI nameOrUri = new NameOrURI();
-		nameOrUri.setUri(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_URI);
+		nameOrUri.setUri(ExternalCts2Constants.MA_ENTITY_DESCRIPTION_DESIGNATION_URI);
 		
 		EntityDirectoryURI uri1 = 
 			lexEvsEntityDescriptionQueryService.getEntities();
@@ -178,7 +178,7 @@ public class LexEvsEntityDescriptionQueryServiceTestIT extends BaseCts2Integrati
 	@LoadContent(contentPath="classpath:content/Automobiles.xml")
 	public void testIntersect(){
 		NameOrURI nameOrUri = new NameOrURI();
-		nameOrUri.setUri(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_URI);
+		nameOrUri.setUri(ExternalCts2Constants.MA_ENTITY_DESCRIPTION_DESIGNATION_URI);
 
 		EntityDirectoryURI uri1 = 
 			lexEvsEntityDescriptionQueryService.getEntities();

@@ -81,8 +81,8 @@ public class DefaultEntityDescriptionRestrictionHandler
 			new OperationExecutingModelAttributeReference<CodedNodeSet>(
 					new RestrictToMatchingDesignationsOperation());
 
-		restrictToDesignations.setContent(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_NAME);
-		restrictToDesignations.setMeaning(ExternalCts2Constants.ENTITY_DESCRIPTION_DESIGNATION_URI);
+		restrictToDesignations.setContent(ExternalCts2Constants.MA_ENTITY_DESCRIPTION_DESIGNATION_NAME);
+		restrictToDesignations.setMeaning(ExternalCts2Constants.MA_ENTITY_DESCRIPTION_DESIGNATION_URI);
 		
 		returnList.add(restrictToDesignations);
 		

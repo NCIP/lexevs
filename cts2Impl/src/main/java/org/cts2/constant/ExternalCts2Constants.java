@@ -26,12 +26,23 @@ package org.cts2.constant;
 public class ExternalCts2Constants {
 	
 	public static final String CONCAT_STRING = ":";
+	
+	public static final String SLASH = "/";
 
-	/** The Constant CTS2 URI. */
 	public static final String CTS2_URI = "http://cts2.org";
 	
-	public static final String ENTITY_DESCRIPTION_DESIGNATION_NAME = "entityDescriptionDesignation";
+	public static final String MODEL = "model";
 	
-	public static final String ENTITY_DESCRIPTION_DESIGNATION_URI = CTS2_URI + CONCAT_STRING + ENTITY_DESCRIPTION_DESIGNATION_NAME;
+	public static final String ATTRIBUTE = "attribute";
+	
+	public static final String MA_ENTITY_DESCRIPTION_DESIGNATION_NAME = "entityDescriptionDesignation";
+	
+	public static final String MA_URI_NAME = "uri";
+	
+	private static final String MODEL_ATTRIBUTE_ROOT = CTS2_URI + SLASH + MODEL + SLASH + ATTRIBUTE;
+
+	public static final String MA_URI_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_URI_NAME;
+	
+	public static final String MA_ENTITY_DESCRIPTION_DESIGNATION_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_ENTITY_DESCRIPTION_DESIGNATION_NAME;
 	
 }
