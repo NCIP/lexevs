@@ -9,8 +9,6 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorAdapter;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.cts2.association.AssociationDirectoryEntry;
-import org.cts2.entity.EntityDirectoryEntry;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.directory.iterator.DirectoryEntryIterator;
 import org.cts2.internal.util.PagingList;
@@ -26,7 +24,7 @@ import org.cts2.map.MapVersionDirectoryEntry;
 public class ResolvedConceptReferencesIteratorBackedMapVersionDirectory extends
 		MapVersionDirectory {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6312390720438822076L;
 	private List<MapVersionDirectoryEntry> cache;
 
 	public ResolvedConceptReferencesIteratorBackedMapVersionDirectory(
