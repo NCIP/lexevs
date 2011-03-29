@@ -8,7 +8,11 @@ import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.test.LexEvsTestRunner.LoadContent;
 import org.cts2.association.AssociationDirectory;
+import org.cts2.association.AssociationList;
+import org.cts2.core.ScopedEntityName;
 import org.cts2.internal.model.uri.factory.AssociationDirectoryURIFactory;
+import org.cts2.service.core.EntityNameOrURI;
+import org.cts2.service.core.NameOrURI;
 import org.cts2.service.core.QueryControl;
 import org.cts2.service.core.ReadContext;
 import org.cts2.test.BaseCts2IntegrationTest;
@@ -30,10 +34,9 @@ public class LexEvsAssociationQueryServiceTestIT extends
 	}
 	
 	@Test
-	@LoadContent(contentPath="classpath:content/Automobiles.xml")
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
 	public void testResolve() {
 	QueryControl queryControl = new QueryControl();
-	queryControl.setTimeLimit(Long.valueOf("1000"));
 	ReadContext readContext = null;
 	AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
 	AssociationDirectory associationDirectory = lexEvsAssociationQueryService.resolve(associationQueryURI, queryControl , readContext);
@@ -41,63 +44,90 @@ public class LexEvsAssociationQueryServiceTestIT extends
 	}
 
 	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
 	public void testResolveAsList() {
-		fail("Not yet implemented");
+		QueryControl queryControl = new QueryControl();
+		ReadContext readContext = null;
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		AssociationList associationList = lexEvsAssociationQueryService.resolveAsList(associationQueryURI, queryControl , readContext);
+		assertTrue(associationList.getEntryCount()>0);
 	}
 
-	@Test
-	public void testGetAllSourceAndTargetEntities() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	public void testGetAllSourceAndTargetEntities() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testGetPredicates() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testGetSourceEntities() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testGetTargetEntities() {
+//		fail("Not yet implemented");
+//	}
 
 	@Test
-	public void testGetPredicates() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetSourceEntities() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetTargetEntities() {
-		fail("Not yet implemented");
-	}
-
-	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
 	public void testRestrictToCodeSystemVersion() {
-		fail("Not yet implemented");
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		NameOrURI version = new NameOrURI();
+		version.setName("11.11.0.1");
+		version.setUri("urn:oid:11.11.0.1");
+		lexEvsAssociationQueryService.restrictToCodeSystemVersion(associationQueryURI, version);
+		ReadContext readContext = null;
+		QueryControl queryControl = new QueryControl();
+		AssociationList associationList = lexEvsAssociationQueryService.resolveAsList(associationQueryURI, queryControl , readContext);
+		assertTrue(associationList.getNumEntries()>0);
 	}
 
 	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml")
 	public void testRestrictToPredicate() {
-		fail("Not yet implemented");
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		//NameOrURI version = new NameOrURI();
+		EntityNameOrURI predicate = new EntityNameOrURI();
+		//version.setName("Automobiles");
+		ScopedEntityName name = new ScopedEntityName();
+		name.setName("hasSubtype");
+		predicate.setEntityName(name);
+		//lexEvsAssociationQueryService.restrictToCodeSystemVersion(associationQueryURI, version);
+		lexEvsAssociationQueryService.restrictToPredicate(associationQueryURI, predicate);
+		ReadContext readContext = null;
+		QueryControl queryControl = new QueryControl();
+		AssociationList associationList = lexEvsAssociationQueryService.resolveAsList(associationQueryURI, queryControl , readContext);
+		assertTrue(associationList.getNumEntries()>0);
 	}
 
-	@Test
-	public void testRestrictToSourceEntity() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRestrictToSourceOrTargetEntity() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRestrictToTargetEntity() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRestrictToTargetExpression() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRestrictToTargetLiteral() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	public void testRestrictToSourceEntity() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testRestrictToSourceOrTargetEntity() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testRestrictToTargetEntity() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testRestrictToTargetExpression() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testRestrictToTargetLiteral() {
+//		fail("Not yet implemented");
+//	}
 
 }
