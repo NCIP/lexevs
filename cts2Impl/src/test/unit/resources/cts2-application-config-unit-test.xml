@@ -16,4 +16,6 @@
 	
 	<bean id="logger" class="org.cts2.test.NoOpLogger"/>
 	
+	<bean id="testLoggableClass" class="org.cts2.test.TestLoggableClass"/>
+
 </beans>

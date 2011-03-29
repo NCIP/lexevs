@@ -12,7 +12,9 @@
            
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <bean id="loggingAspect" class="org.cts2.internal.logging.LoggingAspect"/>
+    <bean id="loggingAspect" class="org.cts2.internal.logging.LoggingAspect">
+    	<property name="logger" ref="logger" />
+    </bean>
 
 	<bean id="baseService" class="org.cts2.internal.profile.DefaultBaseService">
 		<property name="queryService" ref="defaultQueryService" />
