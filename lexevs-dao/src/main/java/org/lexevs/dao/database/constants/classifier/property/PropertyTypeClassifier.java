@@ -28,7 +28,6 @@ import org.springframework.batch.classify.Classifier;
  */
 public class PropertyTypeClassifier implements Classifier<PropertyType,String>{
 
-	//TODO: Figure out which constants to use here...
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.classify.Classifier#classify(java.lang.Object)
 	 */
