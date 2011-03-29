@@ -21,6 +21,7 @@ package org.cts2.internal.model.uri;
 import java.util.List;
 
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.cts2.core.EntityReference;
 import org.cts2.core.types.SetOperator;
 import org.cts2.internal.mapper.BeanMapper;
@@ -29,6 +30,8 @@ import org.cts2.uri.ValueSetDefinitionDirectoryURI;
 import org.cts2.uri.restriction.SetComposite;
 import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState;
 import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState.RestrictToEntitiesRestriction;
+
+import scala.actors.threadpool.Arrays;
 
 /**
  * The Class DefaultCodeSystemVersionDirectoryURI.
@@ -40,28 +43,29 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 
 	private BeanMapper beanMapper;
 	
-	private List<ValueSetDefinition> valueSetDefinitionList;
+	private ValueSetDefinitions valueSetDefinitions;
 	
 	private ValueSetDefinitionRestrictionState valueSetDefinitionRestrictionState = new ValueSetDefinitionRestrictionState();
 
 	/**
-	 * Instantiates a new default code system version directory uri.
+	 * Instantiates a new default value set definition directory uri.
 	 *
-	 * @param codingSchemeRenderingList the coding scheme rendering list
+	 * @param valueSetDefinitionList the list value set definition
 	 * @param beanMapper the bean mapper
 	 */
 	public DefaultValueSetDefinitionDirectoryURI(
-			List<ValueSetDefinition> valueSetDefinitionList,
+			ValueSetDefinitions valueSetDefinitions,
 			IterableBasedResolvingRestrictionHandler<ValueSetDefinition,ValueSetDefinitionDirectoryURI> restrictionHandler,
 			BeanMapper beanMapper) {
 		super(restrictionHandler);
-		this.valueSetDefinitionList = valueSetDefinitionList;
+		this.valueSetDefinitions = valueSetDefinitions;
 		this.beanMapper = beanMapper;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Iterable<ValueSetDefinition> getOriginalState() {
-		return this.valueSetDefinitionList;
+		return Arrays.asList(this.valueSetDefinitions.getValueSetDefinition());
 	}
 
 	@Override
@@ -77,7 +81,7 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	@Override
 	protected <O> O transform(Iterable<ValueSetDefinition> lexevsObject,
 			Class<O> clazz) {
-		return this.beanMapper.map(lexevsObject, clazz);
+		return this.beanMapper.map(valueSetDefinitions, clazz); //TODO . . change valueSetDefinitions to lexevsObject
 	}
 
 	@Override
@@ -98,7 +102,7 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 			ValueSetDefinitionDirectoryURI directoryUri2) {
 		DefaultValueSetDefinitionDirectoryURI newUri = 
 			new DefaultValueSetDefinitionDirectoryURI(
-					this.valueSetDefinitionList,
+					this.valueSetDefinitions,
 					this.getRestrictionHandler(),
 					this.beanMapper);
 		

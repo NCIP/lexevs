@@ -39,6 +39,9 @@ public class LexEvsValueSetDefinitionReadService extends AbstractBaseReadService
 		if (vsd == null)
 			return null;
 		
+		if (context == null)
+			return true;
+		
 		// check for active or not active
 				
 		// check for changeSetURI

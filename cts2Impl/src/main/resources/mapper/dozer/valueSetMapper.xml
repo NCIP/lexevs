@@ -64,4 +64,39 @@
 		
     </mapping>   
 
+	<mapping map-null="false">
+    	<class-a>org.LexGrid.valueSets.ValueSetDefinitions</class-a>
+    	<class-b>org.cts2.valueset.ValueSetDefinitionDirectory</class-b>
+    	
+    	<field>
+			<a>valueSetDefinition</a>
+			<b>entry</b>
+		</field>
+	</mapping>
+	
+	<mapping map-null="false">
+    	<class-a>org.LexGrid.valueSets.ValueSetDefinition</class-a>
+    	<class-b>org.cts2.valueset.ValueSetDefinitionDirectoryEntry</class-b>
+    	
+    	<field>
+			<a>valueSetDefinitionURI</a>
+			<b>definedValueSet.content</b>
+		</field>
+		<field>
+			<a>valueSetDefinitionURI</a>
+			<b>about</b>
+		</field>
+		<field>
+			<a>valueSetDefinitionURI</a>
+			<b>resourceID</b>
+		</field>
+		<field>
+			<a>valueSetDefinitionName</a>
+			<b>formalName</b>
+		</field>
+		<field>
+			<a>entityDescription.content</a>
+			<b>resourceSynopsis.value</b>
+		</field>
+	</mapping>
 </mappings>        
