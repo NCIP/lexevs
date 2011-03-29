@@ -37,11 +37,11 @@ public class ExternalCts2Constants {
 	
 	public static final String MA_ENTITY_DESCRIPTION_DESIGNATION_NAME = "entityDescriptionDesignation";
 	
-	public static final String MA_URI_NAME = "uri";
+	public static final String MA_ABOUT_NAME = "about";
 	
 	private static final String MODEL_ATTRIBUTE_ROOT = CTS2_URI + SLASH + MODEL + SLASH + ATTRIBUTE;
 
-	public static final String MA_URI_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_URI_NAME;
+	public static final String MA_ABOUT_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_ABOUT_NAME;
 	
 	public static final String MA_ENTITY_DESCRIPTION_DESIGNATION_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_ENTITY_DESCRIPTION_DESIGNATION_NAME;
 	
