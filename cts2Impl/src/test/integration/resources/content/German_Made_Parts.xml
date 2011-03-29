@@ -32,6 +32,8 @@
     <lgNaming:supportedLanguage localId="ge">ge</lgNaming:supportedLanguage>
     <lgNaming:supportedNamespace localId="GermanMadePartsNamespace" uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">German Made Parts Namespace</lgNaming:supportedNamespace>
     <lgNaming:supportedNamespace localId="SomeOtherNamespace" uri="urn:12345">Some Other Namespace</lgNaming:supportedNamespace>
+    <lgNaming:supportedNamespace localId="ns1" uri="ns1" equivalentCodingScheme="GermanMadeParts">ns1</lgNaming:supportedNamespace>
+    <lgNaming:supportedNamespace localId="ns2" uri="ns2" equivalentCodingScheme="GermanMadeParts">ns2</lgNaming:supportedNamespace>
     <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
     <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
   </mappings>
@@ -97,8 +99,8 @@
         <lgRel:source sourceEntityCodeNamespace="GermanMadePartsNamespace" sourceEntityCode="E0001">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="P0001"/>
       </lgRel:source>
-       <lgRel:source sourceEntityCodeNamespace="ns3" sourceEntityCode="codeWithMultipleNs">
-        <lgRel:target targetEntityCodeNamespace="ns4" targetEntityCode="codeWithMultipleNs"/>
+       <lgRel:source sourceEntityCodeNamespace="ns1" sourceEntityCode="codeWithMultipleNs">
+        <lgRel:target targetEntityCodeNamespace="ns2" targetEntityCode="codeWithMultipleNs"/>
       </lgRel:source>
     </lgRel:associationPredicate>
   </relations>
