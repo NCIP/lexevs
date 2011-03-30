@@ -1,5 +1,6 @@
 package org.cts2.internal.model.directory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,13 +10,13 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorAdapter;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.cts2.core.descriptors.DirectoryEntryDescriptor;
 import org.cts2.internal.mapper.BeanMapper;
 import org.cts2.internal.model.directory.iterator.DirectoryEntryIterator;
 import org.cts2.internal.util.PagingList;
-import org.cts2.map.MapVersionDirectoryEntry;
 import org.cts2.map.MapVersionList;
 import org.cts2.map.MapVersionListEntry;
+
+import com.google.common.collect.Iterators;
 
 /**
  * The class ResolvedConceptReferencesIteratorBackedMapVersionListDirectory
@@ -31,25 +32,28 @@ public class ResolvedConceptReferencesIteratorBackedMapVersionListDirectory
 	private List<MapVersionListEntry> cache;
 
 	public ResolvedConceptReferencesIteratorBackedMapVersionListDirectory(
-			Mapping mapping, BeanMapper beanMapper) throws LBException {
-		this(mapping.resolveMapping(), beanMapper);
-	}
-
-	public ResolvedConceptReferencesIteratorBackedMapVersionListDirectory(
-			ResolvedConceptReferencesIterator iterator, BeanMapper beanMapper) {
-		try {
-			this.buildCacheList(iterator, beanMapper);
-		} catch (LBResourceUnavailableException e) {
-			throw new RuntimeException(e);
+			List<Mapping> mappingList, BeanMapper beanMapper)
+			throws LBException {
+		List<ResolvedConceptReferencesIterator> list = new ArrayList<ResolvedConceptReferencesIterator>();
+		for (Mapping mapping : mappingList) {
+			list.add(mapping.resolveMapping());
 		}
+		this.cache = this.buildCacheList(list, beanMapper);
 	}
 
 	private List<MapVersionListEntry> buildCacheList(
-			ResolvedConceptReferencesIterator iterator, BeanMapper beanMapper)
+			List<ResolvedConceptReferencesIterator> list, BeanMapper beanMapper)
 			throws LBResourceUnavailableException {
-		return new PagingList<MapVersionListEntry>(
-				this.buildMapVersionListEntryIterator(iterator, beanMapper),
-				iterator.numberRemaining());
+		Iterator<MapVersionListEntry> allIterator = null;
+		int counter = 0;
+		for (ResolvedConceptReferencesIterator iterator : list) {
+			Iterator<MapVersionListEntry> i = this
+					.buildMapVersionListEntryIterator(iterator, beanMapper);
+			counter = counter + iterator.numberRemaining();
+			Iterators.concat(allIterator, i);
+		}
+
+		return new PagingList<MapVersionListEntry>(allIterator, counter);
 	}
 
 	private Iterator<MapVersionListEntry> buildMapVersionListEntryIterator(

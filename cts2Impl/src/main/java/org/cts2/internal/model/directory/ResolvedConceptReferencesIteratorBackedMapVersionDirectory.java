@@ -1,5 +1,6 @@
 package org.cts2.internal.model.directory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,38 +16,44 @@ import org.cts2.internal.util.PagingList;
 import org.cts2.map.MapVersionDirectory;
 import org.cts2.map.MapVersionDirectoryEntry;
 
+import com.google.common.collect.Iterators;
 
 /**
  * The class ResolvedConceptReferencesIteratorBackedMapVersionDirectory
+ * 
  * @author <a href="mailto:lian.zonghui@mayo.edu">Zonghui Lian</a>
- *
+ * 
  */
 public class ResolvedConceptReferencesIteratorBackedMapVersionDirectory extends
 		MapVersionDirectory {
 
-	private static final long serialVersionUID = 6312390720438822076L;
+	private static final long serialVersionUID = -7474745464435213892L;
 	private List<MapVersionDirectoryEntry> cache;
 
 	public ResolvedConceptReferencesIteratorBackedMapVersionDirectory(
-			Mapping mapping, BeanMapper beanMapper) throws LBException {
-		this(mapping.resolveMapping(), beanMapper);
-	}
-
-	public ResolvedConceptReferencesIteratorBackedMapVersionDirectory(
-			ResolvedConceptReferencesIterator iterator, BeanMapper beanMapper) {
-		try {
-			this.cache = this.buildCacheList(iterator, beanMapper);
-		} catch (LBResourceUnavailableException e) {
-			throw new RuntimeException(e);
+			List<Mapping> mappingList, BeanMapper beanMapper)
+			throws LBException {
+		List<ResolvedConceptReferencesIterator> list = new ArrayList<ResolvedConceptReferencesIterator>();
+		for (Mapping mapping : mappingList) {
+			list.add(mapping.resolveMapping());
 		}
+
+		this.cache = this.buildCacheList(list, beanMapper);
 	}
 
 	private List<MapVersionDirectoryEntry> buildCacheList(
-			ResolvedConceptReferencesIterator iterator, BeanMapper beanMapper)
+			List<ResolvedConceptReferencesIterator> list, BeanMapper beanMapper)
 			throws LBResourceUnavailableException {
-		return new PagingList<MapVersionDirectoryEntry>(
-				this.buildMapVersionDirectoryEntryIterator(iterator, beanMapper),
-				iterator.numberRemaining());
+		Iterator<MapVersionDirectoryEntry> allIterator = null;
+		int counter = 0;
+		for (ResolvedConceptReferencesIterator iterator : list) {
+			Iterator<MapVersionDirectoryEntry> i = this
+					.buildMapVersionDirectoryEntryIterator(iterator, beanMapper);
+			counter = counter + iterator.numberRemaining();
+			allIterator = Iterators.concat(allIterator, i);
+		}
+		return new PagingList<MapVersionDirectoryEntry>(allIterator, counter);
+
 	}
 
 	private Iterator<MapVersionDirectoryEntry> buildMapVersionDirectoryEntryIterator(
