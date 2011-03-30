@@ -18,6 +18,9 @@
  */
 package org.cts2.uri;
 
+import org.cts2.uri.restriction.MapVersionDirectoryRestrictionState;
+
+
 
 /**
  * The Interface CodeSystemVersionDirectoryURI.
@@ -26,4 +29,6 @@ package org.cts2.uri;
  */
 public interface MapVersionDirectoryURI 
 	extends DirectoryURI, SetOperable<MapVersionDirectoryURI> {
+	
+	public MapVersionDirectoryRestrictionState getRestrictionState();
 }
