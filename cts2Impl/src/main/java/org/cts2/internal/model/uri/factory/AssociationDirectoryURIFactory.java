@@ -41,11 +41,8 @@ public class AssociationDirectoryURIFactory extends
 
 	@Override
 	protected AssociationDirectoryURI doBuildDirectoryURI() {
-		Assert.notNull(this.restrictionHandler);
-		
-
+		Assert.notNull(this.restrictionHandler);		
 			return new DefaultAssociationDirectoryURI(this.getLexBigService(), this.restrictionHandler, this.getBeanMapper());
-
 	}
 
 	public NonIterableBasedResolvingRestrictionHandler<CodedNodeGraph, AssociationDirectoryURI> getRestrictionHandler() {
