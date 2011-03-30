@@ -21,7 +21,6 @@ package org.cts2.internal.model.uri.restrict;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -30,11 +29,13 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.cts2.constant.ExternalCts2Constants;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.core.VersionTagReference;
 import org.cts2.core.types.SetOperator;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.OperationExecutingModelAttributeReference;
+import org.cts2.internal.match.OperationExecutingModelAttributeReference.RestrictionOperation;
 import org.cts2.internal.profile.ProfileUtils;
 import org.cts2.service.core.EntityNameOrURI;
 import org.cts2.service.core.NameOrURI;
@@ -104,8 +105,10 @@ public class DefaultAssociationRestrictionHandler
 	 */
 	@Override
 	public List<OperationExecutingModelAttributeReference<CodedNodeGraph>> registerSupportedModelAttributeReferences() {
-		// TODO Auto-generated method stub
-		return null;
+		//Not doing filtered restrictions on the Associations so we return an empty list.
+		List<OperationExecutingModelAttributeReference<CodedNodeGraph>> returnList = 
+			new ArrayList<OperationExecutingModelAttributeReference<CodedNodeGraph>>();	
+		return returnList;
 	}
 
 	/* (non-Javadoc)
