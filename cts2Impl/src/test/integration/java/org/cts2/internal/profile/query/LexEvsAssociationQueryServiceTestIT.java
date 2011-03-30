@@ -75,7 +75,7 @@ public class LexEvsAssociationQueryServiceTestIT extends
 
 	@Test
 	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testRestrictToCodeSystemVersion() {
+	public void testRestrictToCodeSystemVersionForAssociationList() {
 		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
 		NameOrURI version = new NameOrURI();
 		version.setName("Automobiles:1.0");
@@ -89,7 +89,7 @@ public class LexEvsAssociationQueryServiceTestIT extends
 
 	@Test
 	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testRestrictToPredicate() {
+	public void testRestrictToPredicateForAssociationList() {
 		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
 		//NameOrURI version = new NameOrURI();
 		EntityNameOrURI predicate = new EntityNameOrURI();
@@ -107,7 +107,7 @@ public class LexEvsAssociationQueryServiceTestIT extends
 
 	@Test
 	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testRestrictToSourceEntity() {
+	public void testRestrictToSourceEntityForAssociationList() {
 			AssociationDirectoryURI directory = lexEvsAssociationQueryService.getAssociations();
 			EntityNameOrURI sourceEntity = new EntityNameOrURI();
 			ScopedEntityName entityName = new ScopedEntityName();
@@ -122,7 +122,7 @@ public class LexEvsAssociationQueryServiceTestIT extends
 
 	@Test
 	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testRestrictToSourceOrTargetEntity() {
+	public void testRestrictToSourceOrTargetEntityForAssociationList() {
 		AssociationDirectoryURI directory = lexEvsAssociationQueryService.getAssociations();
 		EntityNameOrURI entity = new EntityNameOrURI();
 		ScopedEntityName entityName = new ScopedEntityName();
@@ -137,7 +137,7 @@ public class LexEvsAssociationQueryServiceTestIT extends
 
 	@Test
 	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testRestrictToTargetEntity() {
+	public void testRestrictToTargetEntityForAssociationList() {
 		AssociationDirectoryURI directory = lexEvsAssociationQueryService.getAssociations();
 		EntityNameOrURI targetEntity = new EntityNameOrURI();
 		ScopedEntityName entityName = new ScopedEntityName();
@@ -150,6 +150,82 @@ public class LexEvsAssociationQueryServiceTestIT extends
 		assertTrue(associationList.getEntryCount()>0);
 	}
 
+	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+	public void testRestrictToCodeSystemVersionForAssociationDir() {
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		NameOrURI version = new NameOrURI();
+		version.setName("Automobiles:1.0");
+		//version.setUri("urn:oid:11.11.0.1");
+		lexEvsAssociationQueryService.restrictToCodeSystemVersion(associationQueryURI, version);
+		ReadContext readContext = null;
+		QueryControl queryControl = new QueryControl();
+		AssociationDirectory directory = lexEvsAssociationQueryService.resolve(associationQueryURI, queryControl , readContext);
+		assertTrue(directory.getEntryCount()>0);
+	}
+
+	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+	public void testRestrictToPredicateForAssociationDir() {
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		//NameOrURI version = new NameOrURI();
+		EntityNameOrURI predicate = new EntityNameOrURI();
+		//version.setName("Automobiles");
+		ScopedEntityName name = new ScopedEntityName();
+		name.setName("hasSubtype");
+		predicate.setEntityName(name);
+		//lexEvsAssociationQueryService.restrictToCodeSystemVersion(associationQueryURI, version);
+		lexEvsAssociationQueryService.restrictToPredicate(associationQueryURI, predicate);
+		ReadContext readContext = null;
+		QueryControl queryControl = new QueryControl();
+		AssociationDirectory directory = lexEvsAssociationQueryService.resolve(associationQueryURI, queryControl , readContext);
+		assertTrue(directory.getEntryCount()>0);
+	}
+
+	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+	public void testRestrictToSourceEntityForAssociationDir() {
+			AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+			EntityNameOrURI sourceEntity = new EntityNameOrURI();
+			ScopedEntityName entityName = new ScopedEntityName();
+			entityName.setName("A0001");
+			sourceEntity.setEntityName(entityName);
+			lexEvsAssociationQueryService.restrictToSourceEntity(associationQueryURI, sourceEntity);
+			ReadContext readContext = null;
+			QueryControl queryControl = new QueryControl();
+			AssociationDirectory directory = lexEvsAssociationQueryService.resolve(associationQueryURI, queryControl , readContext);
+			assertTrue(directory.getEntryCount()>0);
+	}
+
+	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+	public void testRestrictToSourceOrTargetEntityForAssociationDir() {
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		EntityNameOrURI entity = new EntityNameOrURI();
+		ScopedEntityName entityName = new ScopedEntityName();
+		entityName.setName("A0001");
+		entity.setEntityName(entityName);
+		lexEvsAssociationQueryService.restrictToSourceOrTargetEntity(associationQueryURI, entity);
+		ReadContext readContext = null;
+		QueryControl queryControl = new QueryControl();
+		AssociationDirectory directory = lexEvsAssociationQueryService.resolve(associationQueryURI, queryControl , readContext);
+		assertTrue(directory.getEntryCount()>0);
+	}
+
+	@Test
+	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+	public void testRestrictToTargetEntityForAssociationDir() {
+		AssociationDirectoryURI associationQueryURI = lexEvsAssociationQueryService.getAssociations();
+		EntityNameOrURI targetEntity = new EntityNameOrURI();
+		ScopedEntityName entityName = new ScopedEntityName();
+		entityName.setName("C0001");
+		targetEntity.setEntityName(entityName);
+		lexEvsAssociationQueryService.restrictToTargetEntity(associationQueryURI, targetEntity);
+		ReadContext readContext = null;
+		QueryControl queryControl = new QueryControl();
+		AssociationDirectory directory  = lexEvsAssociationQueryService.resolve(associationQueryURI, queryControl , readContext);
+		assertTrue(directory.getEntryCount()>0);
+	}
 	@Test
 	public void testRestrictToTargetExpression() {
 		fail("Not yet implemented");
