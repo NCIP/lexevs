@@ -96,6 +96,7 @@ public class DefaultMapVersionDirectoryURI
 		// TODO Auto-generated method stub
 		return null;
 
+		/*
 		DefaultEntityDirectoryURI uri = new DefaultMapVersionDirectoryURI(
 				this.lexBigService, this.getRestrictionHandler(),
 				this.beanMapper);
@@ -109,6 +110,7 @@ public class DefaultMapVersionDirectoryURI
 				.setDirectoryUri2(directoryUri2);
 
 		return uri;
+		*/
 	}
 
 }
