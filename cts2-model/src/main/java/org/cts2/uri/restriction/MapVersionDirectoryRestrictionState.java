@@ -1,6 +1,10 @@
 package org.cts2.uri.restriction;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.cts2.uri.MapVersionDirectoryURI;
+import org.cts2.uri.restriction.EntityDirectoryRestrictionState.RestrictToCodeSystemVersionsRestriction;
 
 /**
  * The Class MapVersionDirectoryRestrictionState
@@ -11,5 +15,6 @@ import org.cts2.uri.MapVersionDirectoryURI;
 public class MapVersionDirectoryRestrictionState extends
 		RestrictionState<MapVersionDirectoryURI> {
 
-	//TODO
+	private Set<RestrictToCodeSystemVersionsRestriction> restrictToCodeSystemVersionsRestrictions = new HashSet<RestrictToCodeSystemVersionsRestriction>();
+	
 }
