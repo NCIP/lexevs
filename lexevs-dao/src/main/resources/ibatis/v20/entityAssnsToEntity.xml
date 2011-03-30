@@ -917,7 +917,7 @@
 			
 			<isNotEmpty property="param4" prepend="AND">
 			(
-				<iterate property="param4" conjunction="AND"> 
+				<iterate property="param4" conjunction="OR"> 
 					eate1.sourceEntityCodeNamespace = #param4[]#
 				</iterate>
 			)
@@ -925,7 +925,7 @@
 			
 			<isNotEmpty property="param5" prepend="AND">
 			(
-				<iterate property="param5" conjunction="AND"> 
+				<iterate property="param5" conjunction="OR"> 
 					eate1.targetEntityCodeNamespace = #param5[]#
 				</iterate>
 			)
@@ -1041,7 +1041,7 @@
 			
 			<isNotEmpty property="param4" prepend="AND">
 			(
-				<iterate property="param4" conjunction="AND"> 
+				<iterate property="param4" conjunction="OR"> 
 					eate1.sourceEntityCodeNamespace = #param4[]#
 				</iterate>
 			)
@@ -1049,7 +1049,7 @@
 			
 			<isNotEmpty property="param5" prepend="AND">
 			(
-				<iterate property="param5" conjunction="AND"> 
+				<iterate property="param5" conjunction="OR"> 
 					eate1.targetEntityCodeNamespace = #param5[]#
 				</iterate>
 			)
