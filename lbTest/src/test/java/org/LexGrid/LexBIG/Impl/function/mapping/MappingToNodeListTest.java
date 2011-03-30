@@ -60,14 +60,15 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     		foundCodes.add(itr.next().getCode());
     	}
         
-    	assertEquals(5,count);
-    	assertEquals(5,foundCodes.size());
+    	assertEquals(6,count);
+    	assertEquals(6,foundCodes.size());
     	
     	assertTrue(foundCodes.contains("Jaguar"));
     	assertTrue(foundCodes.contains("A0001"));
     	assertTrue(foundCodes.contains("C0001"));
     	assertTrue(foundCodes.contains("005"));
     	assertTrue(foundCodes.contains("Ford"));
+    	assertTrue(foundCodes.contains("C0002"));
     } 
     
     public void testGetTargetCodesToNodeList() throws Exception {
@@ -88,10 +89,7 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     		count++;
     		foundCodes.add(itr.next().getCode());
     	}
-        
-    	System.out.println(foundCodes);
-    	
-    	assertEquals(3,count);
+     
     	assertEquals(3,foundCodes.size());
     	
     	assertTrue(foundCodes.contains("E0001"));
