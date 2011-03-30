@@ -50,6 +50,9 @@ public class DirectoryEntryIterator<I,O> implements Iterator<O>{
 	 */
 	public DirectoryEntryIterator(Iterator<I> iterator, Class<O> outputClass, BeanMapper beanMapper) {
 		super();
+		this.iterator = iterator;
+		this.outputClass = outputClass;
+		this.beanMapper = beanMapper;
 	}
 
 	/* (non-Javadoc)
