@@ -39,6 +39,10 @@ public class ExternalCts2Constants {
 	
 	public static final String MA_ABOUT_NAME = "about";
 	
+	public static final String MA_MAPVERSION_NAME_MEANING = "MODEL_ATTRIBUTE_ROOT#mapVersion";
+	
+	public static final String MA_MAPVERSION_NAME_CONTENT = "MapVersion";
+	
 	private static final String MODEL_ATTRIBUTE_ROOT = CTS2_URI + SLASH + MODEL + SLASH + ATTRIBUTE;
 
 	public static final String MA_ABOUT_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_ABOUT_NAME;
@@ -46,3 +50,4 @@ public class ExternalCts2Constants {
 	public static final String MA_ENTITY_DESCRIPTION_DESIGNATION_URI = MODEL_ATTRIBUTE_ROOT + CONCAT_STRING + MA_ENTITY_DESCRIPTION_DESIGNATION_NAME;
 	
 }
+
