@@ -9,6 +9,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.relations.AssociationEntity;
 import org.junit.Test;
 
 public class CTS2AssociationToLexEVSRelationsElements extends
@@ -213,6 +214,15 @@ public class CTS2AssociationToLexEVSRelationsElements extends
 				rcrl, org.cts2.association.AssociationDirectory.class);
 		assertEquals(conceptCode1, cts2Assoc.getEntry(0).getSubject().getLocalEntityName().getName());
 		assertEquals(nameSpace, cts2Assoc.getEntry(0).getSubject().getLocalEntityName().getNamespace());
+	}
+	
+	public void AssociationEntityToAssociation(){
+		AssociationEntity entity = new AssociationEntity();
+		entity.setEntityCode(conceptCode1);
+		org.cts2.association.Association cts2Assoc = baseDozerBeanMapper.map(
+				entity, org.cts2.association.Association.class);
+		assertEquals(conceptCode1, cts2Assoc.getTarget().getEntity()
+				.getLocalEntityName().getName());
 	}
 
 }

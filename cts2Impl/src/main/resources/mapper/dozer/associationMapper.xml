@@ -169,4 +169,13 @@
 			<b>entry</b>
 		</field>
 	</mapping>
+<!-- Association to AssociationEntity	-->
+<mapping>
+	<class-a>org.LexGrid.relations.AssociationEntity</class-a>
+	<class-b>org.cts2.association.Association</class-b>
+	<field>
+		<a>entityCode</a>
+		<b>externalStatementId</b>
+	</field>
+</mapping>
 </mappings>
