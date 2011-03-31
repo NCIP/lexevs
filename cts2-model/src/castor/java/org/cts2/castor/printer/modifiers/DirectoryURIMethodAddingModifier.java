@@ -135,31 +135,6 @@ public class DirectoryURIMethodAddingModifier implements JClassModifier{
 	}
 	
 	/**
-	 * The Class SimpleJType.
-	 *
-	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
-	 */
-	private static class SimpleJType extends JType{
-
-		/**
-		 * Instantiates a new simple j type.
-		 *
-		 * @param name the name
-		 */
-		public SimpleJType(String name) {
-			super(name);
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		public String toString(){
-			return this.getName();
-		}
-		
-	}
-
-	/**
 	 * Adds the generics.
 	 *
 	 * @param name the name

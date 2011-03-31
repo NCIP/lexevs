@@ -126,6 +126,11 @@
 			<param name="xsdFile" value="ValueSetResolution"/>
 		</antcall>
 		
+		<antcall target="genCastorJava">
+			<param name="type" value="schema"/>
+			<param name="xsdFile" value="Updates"/>
+		</antcall>
+		
 		<!-- Services -->
 		<antcall target="genCastorJava">
 			<param name="type" value="serviceSchema"/>
