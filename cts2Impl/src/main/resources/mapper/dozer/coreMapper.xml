@@ -46,7 +46,7 @@
   
   	<mapping wildcard="false">
 		<class-a>org.LexGrid.commonTypes.VersionableAndDescribable</class-a>
-		<class-b>org.cts2.core.ChangeableCore</class-b>
+		<class-b>org.cts2.core.Changeable</class-b>
     
     	<field>
 			<a>status</a>

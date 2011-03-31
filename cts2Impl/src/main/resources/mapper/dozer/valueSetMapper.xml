@@ -29,27 +29,27 @@
 		</field>
 		<field>
 			<a>status</a>
-			<b>changeableCore.status.content</b>
+			<b>status.content</b>
 		</field>
 		<field>
 			<a>owner</a>
-			<b>changeableCore.owner.content</b>
+			<b>owner.content</b>
 		</field>
 		<field>
 			<a>effectiveDate</a>
-			<b>changeableCore.changeDescription.effectiveDate</b>
+			<b>changeDescription.effectiveDate</b>
 		</field>
 		<field custom-converter-id="changeTypeConverter">
 			<a>entryState.changeType</a>
-			<b>changeableCore.changeDescription.changeType</b>
+			<b>changeDescription.changeType</b>
 		</field>
 		<field>
 			<a>entryState.containingRevision</a>
-			<b>changeableCore.changeDescription.containingChangeSet</b>
+			<b>changeDescription.containingChangeSet</b>
 		</field>
 		<field>
 			<a>entryState.prevRevision</a>
-			<b>changeableCore.changeDescription.prevChangeSet</b>
+			<b>.changeDescription.prevChangeSet</b>
 		</field>
     </mapping>
     
