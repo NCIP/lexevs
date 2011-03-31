@@ -39,6 +39,9 @@ public class ChangeTypeConverter extends DozerConverter<ChangeType,org.cts2.core
 	public ChangeType convertFrom(
 			org.cts2.core.types.ChangeType cts2ChangeType,
 			ChangeType lgChangeType) {
+		if(lgChangeType == null){
+			return null;
+		}
 		switch (cts2ChangeType) {
 			case CREATE : {
 				return ChangeType.NEW;
@@ -63,6 +66,9 @@ public class ChangeTypeConverter extends DozerConverter<ChangeType,org.cts2.core
 	 */
 	@Override
 	public org.cts2.core.types.ChangeType convertTo(ChangeType lgChangeType, org.cts2.core.types.ChangeType cts2ChangeType) {
+		if(lgChangeType == null){
+			return null;
+		}
 		switch (lgChangeType) {
 			case NEW : {
 				return org.cts2.core.types.ChangeType.CREATE;
