@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.cts2.constant.ExternalCts2Constants;
 import org.cts2.core.MatchAlgorithmReference;
 import org.cts2.internal.lexevs.identity.LexEvsIdentityConverter;
 import org.cts2.internal.match.AttributeResolver;
@@ -23,6 +24,8 @@ public class DefaultMapVersionVersionRestrictionHandler
 		ResolvableModelAttributeReference<CodingSchemeRendering> mapVersionName = new ResolvableModelAttributeReference<CodingSchemeRendering>(
 				new MapVersionNameAttributeResolver());
 
+		mapVersionName.setContent(ExternalCts2Constants.MA_MAPVERSION_NAME_CONTENT);
+		mapVersionName.setMeaning(ExternalCts2Constants.MA_MAPVERSION_NAME_MEANING);
 		returnList.add(mapVersionName);
 
 		return returnList;
