@@ -16,7 +16,6 @@ import org.cts2.uri.MapVersionDirectoryURI;
 import org.cts2.uri.restriction.MapVersionDirectoryRestrictionState;
 import org.cts2.uri.restriction.SetComposite;
 
-import com.google.common.collect.Iterables;
 
 import scala.actors.threadpool.Arrays;
 
