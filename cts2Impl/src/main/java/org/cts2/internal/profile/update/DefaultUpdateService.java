@@ -16,44 +16,50 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.cts2.profile.update;
+package org.cts2.internal.profile.update;
 
 import java.util.Date;
 
+import org.cts2.internal.profile.AbstractBaseService;
+import org.cts2.profile.update.UpdateService;
 import org.cts2.service.core.ChangeSetEntryList;
 import org.cts2.service.core.SuccessIndicator;
 import org.cts2.service.core.ValidationResponse;
 import org.cts2.updates.ChangeSet;
 
 /**
- * The Interface UpdateService.
+ * The Class DefaultUpdateService.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public interface UpdateService {
+public class DefaultUpdateService extends AbstractBaseService implements UpdateService{
 
-	/**
-	 * Put change set.
-	 *
-	 * @param changeSet the change set
-	 * @return the success indicator
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.update.UpdateService#putChangeSet(org.cts2.updates.ChangeSet)
 	 */
-	public SuccessIndicator putChangeSet(ChangeSet changeSet);
+	@Override
+	public SuccessIndicator putChangeSet(ChangeSet changeSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.update.UpdateService#validateChangeSet(org.cts2.updates.ChangeSet)
+	 */
+	@Override
+	public ValidationResponse validateChangeSet(ChangeSet changeSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.cts2.profile.update.UpdateService#listChanges(java.util.Date, java.util.Date)
+	 */
+	@Override
+	public ChangeSetEntryList listChanges(Date fromDate, Date toDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
-	/**
-	 * Validate change set.
-	 *
-	 * @param changeSet the change set
-	 * @return the validation response
-	 */
-	public ValidationResponse validateChangeSet(ChangeSet changeSet);
-	
-	/**
-	 * List changes.
-	 *
-	 * @param fromDate the from date
-	 * @param toDate the to date
-	 * @return the change set entry list
-	 */
-	public ChangeSetEntryList listChanges(Date fromDate, Date toDate);
 }
