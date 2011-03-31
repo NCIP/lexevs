@@ -13,20 +13,22 @@ public interface LexEvsIdentityConverter {
 
 	/**
 	 * Name or uri to absolute coding scheme version reference.
-	 *
-	 * @param nameOrUri the name or uri
+	 * 
+	 * @param nameOrUri
+	 *            the name or uri
 	 * @return the absolute coding scheme version reference
 	 */
 	public AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(
 			NameOrURI nameOrUri);
-	
+
 	public ConceptReference entityNameOrUriToConceptReference(
 			EntityNameOrURI nameOrUri);
 
 	/**
 	 * Code system version name to coding scheme reference.
-	 *
-	 * @param codeSystemVersionName the code system version name
+	 * 
+	 * @param codeSystemVersionName
+	 *            the code system version name
 	 * @return the absolute coding scheme version reference
 	 */
 	public AbsoluteCodingSchemeVersionReference codeSystemVersionNameToCodingSchemeReference(
@@ -34,37 +36,41 @@ public interface LexEvsIdentityConverter {
 
 	/**
 	 * Coding scheme reference to code system version name.
-	 *
-	 * @param ref the ref
+	 * 
+	 * @param ref
+	 *            the ref
 	 * @return the string
 	 */
 	public String codingSchemeReferenceToCodeSystemVersionName(
 			AbsoluteCodingSchemeVersionReference ref);
-	
-	public String codingSchemeToCodeSystemVersionName(
-			CodingScheme codingScheme);
-	
+
+	public String codingSchemeToCodeSystemVersionName(CodingScheme codingScheme);
+
 	public String codingSchemeSummaryToCodeSystemVersionName(
 			CodingSchemeSummary codingSchemeSummary);
-	
+
+	public String codingSchemeSummaryToMapVersionName(
+			CodingSchemeSummary codingSchemeSummary);
+
 	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(
 			AbsoluteCodingSchemeVersionReference ref);
 
 	/**
 	 * Code system version document uri to coding scheme reference.
-	 *
-	 * @param codeSystemVersionDocumentUri the code system version document uri
+	 * 
+	 * @param codeSystemVersionDocumentUri
+	 *            the code system version document uri
 	 * @return the absolute coding scheme version reference
 	 */
 	public AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
 			String codeSystemVersionDocumentUri);
-	
+
 	public String codingSchemeToCodeSystemVersionDocumentUri(
 			CodingScheme codingScheme);
-	
+
 	public String nsUriAndCodeToUri(String nsUri, String code);
-	
+
 	public DesignationRole preferredtoDestinationRole(boolean b);
-	
+
 	public DefinitionRole preferredtoDefinitionRole(boolean b);
 }

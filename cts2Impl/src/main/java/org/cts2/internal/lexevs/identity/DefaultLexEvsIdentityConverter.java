@@ -38,189 +38,247 @@ import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
 
 /**
  * The Class LexEvsIdentityConverter.
- *
+ * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
-	
+
 	/** The DEFAUL t_ nam e_ conca t_ string. */
 	public static String DEFAULT_NAME_CONCAT_STRING = ":";
-	
+
 	/** The DEFAUL t_ ur i_ conca t_ string. */
 	public static String DEFAULT_URI_CONCAT_STRING = ":";
-	
+
 	/** The name concat string. */
 	private String nameConcatString = DEFAULT_NAME_CONCAT_STRING;
-	
+
 	/** The uri concat string. */
 	private String uriConcatString = DEFAULT_URI_CONCAT_STRING;
-	
+
 	/** The lex big service. */
 	public LexBIGService lexBigService;
-	
+
 	private LexEvsServiceLocator lexEvsServiceLocator;
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#nameOrUriToAbsoluteCodingSchemeVersionReference(org.cts2.service.core.NameOrURI)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#
+	 * nameOrUriToAbsoluteCodingSchemeVersionReference
+	 * (org.cts2.service.core.NameOrURI)
 	 */
 	@Override
-	public AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(NameOrURI nameOrUri){
-		if(StringUtils.isNotBlank(nameOrUri.getName())){
-			return this.codeSystemVersionNameToCodingSchemeReference(nameOrUri.getName());
+	public AbsoluteCodingSchemeVersionReference nameOrUriToAbsoluteCodingSchemeVersionReference(
+			NameOrURI nameOrUri) {
+		if (StringUtils.isNotBlank(nameOrUri.getName())) {
+			return this.codeSystemVersionNameToCodingSchemeReference(nameOrUri
+					.getName());
 		} else {
-			return this.codeSystemVersionDocumentUriToCodingSchemeReference(nameOrUri.getUri());
+			return this
+					.codeSystemVersionDocumentUriToCodingSchemeReference(nameOrUri
+							.getUri());
 		}
 	}
 
 	@Override
-	public ConceptReference entityNameOrUriToConceptReference(EntityNameOrURI nameOrUri) {
+	public ConceptReference entityNameOrUriToConceptReference(
+			EntityNameOrURI nameOrUri) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#codeSystemVersionNameToCodingSchemeReference(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#
+	 * codeSystemVersionNameToCodingSchemeReference(java.lang.String)
 	 */
 	@Override
-	public AbsoluteCodingSchemeVersionReference
-		codeSystemVersionNameToCodingSchemeReference(String codeSystemVersionName){
-		
+	public AbsoluteCodingSchemeVersionReference codeSystemVersionNameToCodingSchemeReference(
+			String codeSystemVersionName) {
+
 		return this.getCodeSystemVersionNameMatch(codeSystemVersionName);
 	}
 
 	@Override
-	public String codingSchemeToCodeSystemVersionName(
-			CodingScheme codingScheme) {
-		return this.constructCodeSystemVersionName(codingScheme.getCodingSchemeName(), 
+	public String codingSchemeToCodeSystemVersionName(CodingScheme codingScheme) {
+		return this.constructCodeSystemVersionName(
+				codingScheme.getCodingSchemeName(),
 				codingScheme.getRepresentsVersion());
 	}
-	
+
 	@Override
 	public String codingSchemeSummaryToCodeSystemVersionName(
 			CodingSchemeSummary codingSchemeSummary) {
-		return this.constructCodeSystemVersionName(codingSchemeSummary.getLocalName(), 
+		return this.constructCodeSystemVersionName(
+				codingSchemeSummary.getLocalName(),
 				codingSchemeSummary.getRepresentsVersion());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#codingSchemeReferenceToCodeSystemVersionName(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#
+	 * codingSchemeReferenceToCodeSystemVersionName
+	 * (org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	@Override
-	public String
-		codingSchemeReferenceToCodeSystemVersionName(AbsoluteCodingSchemeVersionReference ref){
+	public String codingSchemeReferenceToCodeSystemVersionName(
+			AbsoluteCodingSchemeVersionReference ref) {
 		String codingSchemeName;
 		try {
-			codingSchemeName = ServiceUtility.getCodingSchemeName(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+			codingSchemeName = ServiceUtility.getCodingSchemeName(
+					ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
 		} catch (LBParameterException e) {
 			throw new RuntimeException(e);
 		}
-		return this.constructCodeSystemVersionName(codingSchemeName, ref.getCodingSchemeVersion());
+		return this.constructCodeSystemVersionName(codingSchemeName,
+				ref.getCodingSchemeVersion());
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#codeSystemVersionDocumentUriToCodingSchemeReference(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.cts2.internal.lexevs.identity.LexEvsIdentityConverter#
+	 * codeSystemVersionDocumentUriToCodingSchemeReference(java.lang.String)
 	 */
 	@Override
-	public AbsoluteCodingSchemeVersionReference 
-		codeSystemVersionDocumentUriToCodingSchemeReference(String codeSystemVersionDocumentUri){
-		
-		return this.getCodeSystemVersionDocumentUriMatch(codeSystemVersionDocumentUri);
+	public AbsoluteCodingSchemeVersionReference codeSystemVersionDocumentUriToCodingSchemeReference(
+			String codeSystemVersionDocumentUri) {
+
+		return this
+				.getCodeSystemVersionDocumentUriMatch(codeSystemVersionDocumentUri);
 	}
 
 	@Override
 	public String codingSchemeToCodeSystemVersionDocumentUri(
 			CodingScheme codingScheme) {
-		return this.constructCodeSystemVersionDocumentUri(codingScheme.getCodingSchemeURI(), codingScheme.getRepresentsVersion());
+		return this.constructCodeSystemVersionDocumentUri(
+				codingScheme.getCodingSchemeURI(),
+				codingScheme.getRepresentsVersion());
 	}
 
 	@Override
 	public String codingSchemeReferenceToCodeSystemVersionDocumentUri(
 			AbsoluteCodingSchemeVersionReference ref) {
 
-		return this.constructCodeSystemVersionDocumentUri(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+		return this.constructCodeSystemVersionDocumentUri(
+				ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
 	}
 
 	/**
 	 * Gets the code system version name match.
-	 *
-	 * @param codeSystemVersionLocalName the code system version local name
+	 * 
+	 * @param codeSystemVersionLocalName
+	 *            the code system version local name
 	 * @return the code system version name match
 	 */
-	protected AbsoluteCodingSchemeVersionReference getCodeSystemVersionNameMatch(final String codeSystemVersionLocalName){
-		List<AbsoluteCodingSchemeVersionReference> result = 
-			lexEvsServiceLocator.
-				getSystemResourceService().
-					getMatchingCodingSchemeResources(new CodingSchemeMatcher(){
+	protected AbsoluteCodingSchemeVersionReference getCodeSystemVersionNameMatch(
+			final String codeSystemVersionLocalName) {
+		List<AbsoluteCodingSchemeVersionReference> result = lexEvsServiceLocator
+				.getSystemResourceService().getMatchingCodingSchemeResources(
+						new CodingSchemeMatcher() {
 
-			@Override
-			public boolean isMatch(CodingSchemeAliasHolder aliasHolder) {
-				return StringUtils.equals(codeSystemVersionLocalName, 
-						constructCodeSystemVersionName(
-								aliasHolder.getCodingSchemeName(), 
-								aliasHolder.getRepresentsVersion()));
-			}
-		});
-		
-		if(result.size() != 1){
-			throw new RuntimeException("Error -- waiting for real CTS2 exceptions...");
+							@Override
+							public boolean isMatch(
+									CodingSchemeAliasHolder aliasHolder) {
+								return StringUtils
+										.equals(codeSystemVersionLocalName,
+												constructCodeSystemVersionName(
+														aliasHolder
+																.getCodingSchemeName(),
+														aliasHolder
+																.getRepresentsVersion()));
+							}
+						});
+
+		if (result.size() != 1) {
+			throw new RuntimeException(
+					"Error -- waiting for real CTS2 exceptions...");
 		}
-		
+
 		return result.get(0);
 	}
-	
+
 	/**
 	 * Gets the code system version document uri match.
-	 *
-	 * @param documentUri the document uri
+	 * 
+	 * @param documentUri
+	 *            the document uri
 	 * @return the code system version document uri match
 	 */
-	protected AbsoluteCodingSchemeVersionReference getCodeSystemVersionDocumentUriMatch(final String documentUri){
-		List<AbsoluteCodingSchemeVersionReference> result = 
-			lexEvsServiceLocator.
-				getSystemResourceService().
-					getMatchingCodingSchemeResources(new CodingSchemeMatcher(){
+	protected AbsoluteCodingSchemeVersionReference getCodeSystemVersionDocumentUriMatch(
+			final String documentUri) {
+		List<AbsoluteCodingSchemeVersionReference> result = lexEvsServiceLocator
+				.getSystemResourceService().getMatchingCodingSchemeResources(
+						new CodingSchemeMatcher() {
 
-			@Override
-			public boolean isMatch(CodingSchemeAliasHolder aliasHolder) {
-				return StringUtils.equals(documentUri, 
-						constructCodeSystemVersionDocumentUri(
-								aliasHolder.getCodingSchemeName(), 
-								aliasHolder.getRepresentsVersion()));
-			}
-		});
-		
-		if(result.size() != 1){
-			throw new RuntimeException("Error -- waiting for real CTS2 exceptions...");
+							@Override
+							public boolean isMatch(
+									CodingSchemeAliasHolder aliasHolder) {
+								return StringUtils
+										.equals(documentUri,
+												constructCodeSystemVersionDocumentUri(
+														aliasHolder
+																.getCodingSchemeName(),
+														aliasHolder
+																.getRepresentsVersion()));
+							}
+						});
+
+		if (result.size() != 1) {
+			throw new RuntimeException(
+					"Error -- waiting for real CTS2 exceptions...");
 		}
-		
+
 		return result.get(0);
 	}
-	
+
 	/**
 	 * Construct code system version name.
-	 *
-	 * @param codingSchemeName the coding scheme name
-	 * @param version the version
+	 * 
+	 * @param codingSchemeName
+	 *            the coding scheme name
+	 * @param version
+	 *            the version
 	 * @return the string
 	 */
-	protected String constructCodeSystemVersionName(String codingSchemeName, String version){
+	protected String constructCodeSystemVersionName(String codingSchemeName,
+			String version) {
 		return codingSchemeName + nameConcatString + version;
 	}
-	
+
 	/**
-	 * Construct code system version document uri.
-	 *
-	 * @param uri the uri
-	 * @param version the version
+	 * Construct map version name.
+	 * 
+	 * @param codingSchemeName
+	 *            the coding scheme name
+	 * @param version
+	 *            the version
 	 * @return the string
 	 */
-	protected String constructCodeSystemVersionDocumentUri(String uri, String version){
+	protected String constructMapVersionName(String codingSchemeName,
+			String version) {
+		return codingSchemeName + nameConcatString + version;
+	}
+
+	/**
+	 * Construct code system version document uri.
+	 * 
+	 * @param uri
+	 *            the uri
+	 * @param version
+	 *            the version
+	 * @return the string
+	 */
+	protected String constructCodeSystemVersionDocumentUri(String uri,
+			String version) {
 		return uri + uriConcatString + version;
 	}
 
 	/**
 	 * Gets the name concat string.
-	 *
+	 * 
 	 * @return the name concat string
 	 */
 	public String getNameConcatString() {
@@ -229,8 +287,9 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 
 	/**
 	 * Sets the name concat string.
-	 *
-	 * @param nameConcatString the new name concat string
+	 * 
+	 * @param nameConcatString
+	 *            the new name concat string
 	 */
 	public void setNameConcatString(String nameConcatString) {
 		this.nameConcatString = nameConcatString;
@@ -238,7 +297,7 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 
 	/**
 	 * Gets the uri concat string.
-	 *
+	 * 
 	 * @return the uri concat string
 	 */
 	public String getUriConcatString() {
@@ -247,8 +306,9 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 
 	/**
 	 * Sets the uri concat string.
-	 *
-	 * @param uriConcatString the new uri concat string
+	 * 
+	 * @param uriConcatString
+	 *            the new uri concat string
 	 */
 	public void setUriConcatString(String uriConcatString) {
 		this.uriConcatString = uriConcatString;
@@ -256,7 +316,7 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 
 	/**
 	 * Gets the lex big service.
-	 *
+	 * 
 	 * @return the lex big service
 	 */
 	public LexBIGService getLexBigService() {
@@ -265,8 +325,9 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 
 	/**
 	 * Sets the lex big service.
-	 *
-	 * @param lexBigService the new lex big service
+	 * 
+	 * @param lexBigService
+	 *            the new lex big service
 	 */
 	public void setLexBigService(LexBIGService lexBigService) {
 		this.lexBigService = lexBigService;
@@ -289,15 +350,24 @@ public class DefaultLexEvsIdentityConverter implements LexEvsIdentityConverter {
 	public DefinitionRole preferredtoDefinitionRole(boolean b) {
 		if (b == true)
 			return DefinitionRole.NORMATIVE;
-		else 
+		else
 			return DefinitionRole.INFORMATIVE;
 	}
 
-	public void setLexEvsServiceLocator(LexEvsServiceLocator lexEvsServiceLocator) {
+	public void setLexEvsServiceLocator(
+			LexEvsServiceLocator lexEvsServiceLocator) {
 		this.lexEvsServiceLocator = lexEvsServiceLocator;
 	}
 
 	public LexEvsServiceLocator getLexEvsServiceLocator() {
 		return lexEvsServiceLocator;
+	}
+
+	@Override
+	public String codingSchemeSummaryToMapVersionName(
+			CodingSchemeSummary codingSchemeSummary) {
+		return this.constructMapVersionName(
+				codingSchemeSummary.getLocalName(),
+				codingSchemeSummary.getRepresentsVersion());
 	}
 }
