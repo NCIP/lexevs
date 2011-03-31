@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
@@ -32,35 +33,23 @@ public class ResolvedConceptReferencesIteratorBackedMapVersionListDirectory
 	private List<MapVersionListEntry> cache;
 
 	public ResolvedConceptReferencesIteratorBackedMapVersionListDirectory(
-			List<Mapping> mappingList, BeanMapper beanMapper)
+			Iterable<CodingSchemeRendering> csrIterator, BeanMapper beanMapper)
 			throws LBException {
-		List<ResolvedConceptReferencesIterator> list = new ArrayList<ResolvedConceptReferencesIterator>();
-		for (Mapping mapping : mappingList) {
-			list.add(mapping.resolveMapping());
-		}
-		this.cache = this.buildCacheList(list, beanMapper);
+		this.cache = this.buildCacheList(csrIterator, beanMapper);
 	}
 
 	private List<MapVersionListEntry> buildCacheList(
-			List<ResolvedConceptReferencesIterator> list, BeanMapper beanMapper)
+			Iterable<CodingSchemeRendering> csrIterator, BeanMapper beanMapper)
 			throws LBResourceUnavailableException {
-		Iterator<MapVersionListEntry> allIterator = null;
-		int counter = 0;
-		for (ResolvedConceptReferencesIterator iterator : list) {
-			Iterator<MapVersionListEntry> i = this
-					.buildMapVersionListEntryIterator(iterator, beanMapper);
-			counter = counter + iterator.numberRemaining();
-			Iterators.concat(allIterator, i);
-		}
-
-		return new PagingList<MapVersionListEntry>(allIterator, counter);
+		return new PagingList<MapVersionListEntry>(
+				this.buildMapVersionListEntryIterator(csrIterator, beanMapper),
+				Iterators.size(csrIterator.iterator()));
 	}
 
 	private Iterator<MapVersionListEntry> buildMapVersionListEntryIterator(
-			ResolvedConceptReferencesIterator iterator, BeanMapper beanMapper) {
-		return new DirectoryEntryIterator<ResolvedConceptReference, MapVersionListEntry>(
-				new ResolvedConceptReferencesIteratorAdapter(iterator),
-				MapVersionListEntry.class, beanMapper);
+			Iterable<CodingSchemeRendering> csrIterator, BeanMapper beanMapper) {
+		return new DirectoryEntryIterator<CodingSchemeRendering, MapVersionListEntry>(
+				csrIterator.iterator(), MapVersionListEntry.class, beanMapper);
 	}
 
 	@Override

@@ -1,10 +1,12 @@
 package org.cts2.internal.model.directory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
@@ -31,36 +33,26 @@ public class ResolvedConceptReferencesIteratorBackedMapVersionDirectory extends
 	private List<MapVersionDirectoryEntry> cache;
 
 	public ResolvedConceptReferencesIteratorBackedMapVersionDirectory(
-			List<Mapping> mappingList, BeanMapper beanMapper)
+			Iterable<CodingSchemeRendering> csrIterator, BeanMapper beanMapper)
 			throws LBException {
-		List<ResolvedConceptReferencesIterator> list = new ArrayList<ResolvedConceptReferencesIterator>();
-		for (Mapping mapping : mappingList) {
-			list.add(mapping.resolveMapping());
-		}
 
-		this.cache = this.buildCacheList(list, beanMapper);
+		this.cache = this.buildCacheList(csrIterator, beanMapper);
 	}
 
 	private List<MapVersionDirectoryEntry> buildCacheList(
-			List<ResolvedConceptReferencesIterator> list, BeanMapper beanMapper)
+			Iterable<CodingSchemeRendering> csrIterator, BeanMapper beanMapper)
 			throws LBResourceUnavailableException {
-		Iterator<MapVersionDirectoryEntry> allIterator = null;
-		int counter = 0;
-		for (ResolvedConceptReferencesIterator iterator : list) {
-			Iterator<MapVersionDirectoryEntry> i = this
-					.buildMapVersionDirectoryEntryIterator(iterator, beanMapper);
-			counter = counter + iterator.numberRemaining();
-			allIterator = Iterators.concat(allIterator, i);
-		}
-		return new PagingList<MapVersionDirectoryEntry>(allIterator, counter);
 
+		return new PagingList<MapVersionDirectoryEntry>(
+				this.buildMapVersionDirectoryEntryIterator(csrIterator,
+						beanMapper), Iterators.size(csrIterator.iterator()));
 	}
 
 	private Iterator<MapVersionDirectoryEntry> buildMapVersionDirectoryEntryIterator(
-			ResolvedConceptReferencesIterator iterator, BeanMapper beanMapper) {
-		return new DirectoryEntryIterator<ResolvedConceptReference, MapVersionDirectoryEntry>(
-				new ResolvedConceptReferencesIteratorAdapter(iterator),
-				MapVersionDirectoryEntry.class, beanMapper);
+			Iterable<CodingSchemeRendering> csrIterator, BeanMapper beanMapper) {
+		return new DirectoryEntryIterator<CodingSchemeRendering, MapVersionDirectoryEntry>(
+				csrIterator.iterator(), MapVersionDirectoryEntry.class,
+				beanMapper);
 	}
 
 	@Override
