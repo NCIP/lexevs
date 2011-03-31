@@ -8,6 +8,7 @@ import org.cts2.test.BaseCts2IntegrationTest;
 import org.cts2.test.BaseCts2UnitTest;
 import org.cts2.uri.ValueSetDefinitionDirectoryURI;
 import org.cts2.valueset.ValueSetDefinitionDirectory;
+import org.cts2.valueset.ValueSetDefinitionList;
 import org.junit.Test;
 
 public class LexEvsValueSetDefinitionQueryServiceTestIT extends BaseCts2UnitTest {
@@ -34,12 +35,20 @@ public class LexEvsValueSetDefinitionQueryServiceTestIT extends BaseCts2UnitTest
 //		System.out.println(uri.count(null));
 //	}
 	
+//	@Test
+////	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+//	public void testResolve(){
+//		ValueSetDefinitionDirectoryURI uri = lexEvsValueSetDefinitionVersionQuery.getDirectoryURIFactory().getDirectoryURI();
+//		ValueSetDefinitionDirectory vsdDirectory = lexEvsValueSetDefinitionVersionQuery.resolve(uri, null, null);
+//		System.out.println(vsdDirectory.getEntryCount());
+//	}
+	
 	@Test
-//	@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testResolve(){
+////@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+	public void testResolveAsList(){
 		ValueSetDefinitionDirectoryURI uri = lexEvsValueSetDefinitionVersionQuery.getDirectoryURIFactory().getDirectoryURI();
-		ValueSetDefinitionDirectory vsdDirectory = lexEvsValueSetDefinitionVersionQuery.resolve(uri, null, null);
-		System.out.println(vsdDirectory.getEntryCount());
+		ValueSetDefinitionList vsdList = lexEvsValueSetDefinitionVersionQuery.resolveAsList(uri, null, null);
+		System.out.println(vsdList.getEntryCount());
 	}
 	
 //	@Test

@@ -20,6 +20,7 @@ package org.cts2.internal.model.uri;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.cts2.core.EntityReference;
@@ -30,6 +31,8 @@ import org.cts2.uri.ValueSetDefinitionDirectoryURI;
 import org.cts2.uri.restriction.SetComposite;
 import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState;
 import org.cts2.uri.restriction.ValueSetDefinitionRestrictionState.RestrictToEntitiesRestriction;
+
+import com.google.common.collect.Iterables;
 
 import scala.actors.threadpool.Arrays;
 
@@ -81,7 +84,9 @@ public class DefaultValueSetDefinitionDirectoryURI extends AbstractIterableLexEv
 	@Override
 	protected <O> O transform(Iterable<ValueSetDefinition> lexevsObject,
 			Class<O> clazz) {
-		return this.beanMapper.map(valueSetDefinitions, clazz); //TODO . . change valueSetDefinitions to lexevsObject
+		ValueSetDefinitions vsds = new ValueSetDefinitions();
+		vsds.setValueSetDefinition(Iterables.toArray(lexevsObject,ValueSetDefinition.class));
+		return this.beanMapper.map(vsds, clazz);
 	}
 
 	@Override

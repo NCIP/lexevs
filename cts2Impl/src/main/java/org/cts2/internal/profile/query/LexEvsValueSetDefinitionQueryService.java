@@ -39,8 +39,7 @@ public class LexEvsValueSetDefinitionQueryService extends AbstractBaseQueryServi
 			ValueSetDefinitionDirectoryURI valueSetDefinitionDirectoryURI,
 			QueryControl queryControl,
 			ReadContext context) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueSetDefinitionDirectoryURI.get(queryControl, context, ValueSetDefinitionList.class);
 	}
 
 	/* (non-Javadoc)
