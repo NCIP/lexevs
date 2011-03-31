@@ -21,8 +21,12 @@ package org.cts2.castor.printer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.cts2.castor.printer.modifiers.AssociationModifier;
+import org.cts2.castor.printer.modifiers.ChangeableResourceInterfaceAdder;
 import org.cts2.castor.printer.modifiers.DirectorySubclassesModifier;
 import org.cts2.castor.printer.modifiers.DirectoryURIMethodAddingModifier;
+import org.cts2.castor.printer.modifiers.ResourceDescriptionModifier;
+import org.cts2.castor.printer.modifiers.ValueSetResolutionRuleModifier;
 import org.exolab.castor.builder.printing.WriterJClassPrinter;
 import org.exolab.javasource.JClass;
 
@@ -38,6 +42,10 @@ public class JClassModifyingWriterJClassPrinter extends WriterJClassPrinter {
 	{
 		modifierMap.add(new DirectoryURIMethodAddingModifier());
 		modifierMap.add(new DirectorySubclassesModifier());
+		modifierMap.add(new ChangeableResourceInterfaceAdder());
+		modifierMap.add(new ResourceDescriptionModifier());
+		modifierMap.add(new ValueSetResolutionRuleModifier());
+		modifierMap.add(new AssociationModifier());
 	}
 	
 	/* (non-Javadoc)
