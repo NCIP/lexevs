@@ -240,7 +240,14 @@
 		<bean id="lexEvsEntityDescriptionReadService" class="org.cts2.internal.profile.read.LexEvsEntityDescriptionReadService" parent="abstractBaseService">
 		<property name="entityDescriptionFactory" ref="entityDescriptionFactory" />
 	</bean>
-
+	<!-- End Read Services -->
+	
+	
+	<!--  Authoring Services -->
+	<bean id="lexEvsCodeSystemVersionAuthoringService" class="org.cts2.internal.profile.author.LexEvsCodeSystemVersionAuthoringService" parent="abstractBaseService">	
+	</bean>
+	<!-- End Authoring Services -->
+	
 	
 	<!-- Directory URI Factories -->
 	<bean id="abstractDirectoryURIFactory" abstract="true">
