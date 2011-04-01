@@ -292,6 +292,7 @@
 		<property name="lexEvsIdentityConverter" ref="lexEvsIdentityConverter" />
 	</bean>
 	<bean id="valueSetDefinitionRestrictionHandler" class="org.cts2.internal.model.uri.restrict.ValueSetDefinitionRestrictionHandler">
+		<property name="lexEVSValueSetDefinitionService" ref="lexEVSValueSetDefinitionServiceImpl" />
 	</bean>
 	<!-- End RestrictionHandlers -->
 	

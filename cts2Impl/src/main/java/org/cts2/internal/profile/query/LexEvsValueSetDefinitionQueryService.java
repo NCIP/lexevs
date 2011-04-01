@@ -49,7 +49,6 @@ public class LexEvsValueSetDefinitionQueryService extends AbstractBaseQueryServi
 	public ValueSetDefinitionDirectoryURI restrictToEntities(
 			ValueSetDefinitionDirectoryURI valueSetDefinitionDirectoryURI,
 			List<EntityReference> entityList) {
-		// TODO Auto-generated method stub
-		return null;
+		return valueSetDefinitionDirectoryURI.restrictToEntities(entityList);
 	}
 }

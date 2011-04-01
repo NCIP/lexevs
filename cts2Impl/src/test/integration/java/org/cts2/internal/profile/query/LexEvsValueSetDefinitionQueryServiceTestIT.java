@@ -2,8 +2,13 @@ package org.cts2.internal.profile.query;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.cts2.core.EntityReference;
+import org.cts2.core.ScopedEntityName;
 import org.cts2.test.BaseCts2IntegrationTest;
 import org.cts2.test.BaseCts2UnitTest;
 import org.cts2.uri.ValueSetDefinitionDirectoryURI;
@@ -43,10 +48,39 @@ public class LexEvsValueSetDefinitionQueryServiceTestIT extends BaseCts2UnitTest
 //		System.out.println(vsdDirectory.getEntryCount());
 //	}
 	
+//	@Test
+//////@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
+//	public void testResolveAsList(){
+//		ValueSetDefinitionDirectoryURI uri = lexEvsValueSetDefinitionVersionQuery.getDirectoryURIFactory().getDirectoryURI();
+//		ValueSetDefinitionList vsdList = lexEvsValueSetDefinitionVersionQuery.resolveAsList(uri, null, null);
+//		System.out.println(vsdList.getEntryCount());
+//	}
+	
 	@Test
 ////@LoadContent(contentPath="classpath:content/Automobiles.xml,classpath:content/German_Made_Parts.xml")
-	public void testResolveAsList(){
+	public void testRestrictAndResolveAsList(){
 		ValueSetDefinitionDirectoryURI uri = lexEvsValueSetDefinitionVersionQuery.getDirectoryURIFactory().getDirectoryURI();
+		
+		List<EntityReference> entityList = new ArrayList<EntityReference>();
+		
+		EntityReference entity = new EntityReference();
+		ScopedEntityName localEntityName = new ScopedEntityName();
+		localEntityName.setName("Ford");
+		localEntityName.setNamespace("Automobiles");
+		entity.setLocalEntityName(localEntityName);
+		
+		entityList.add(entity);
+		
+		entity = new EntityReference();
+		localEntityName = new ScopedEntityName();
+		localEntityName.setName("GM");
+		localEntityName.setNamespace("Automobiles");
+		entity.setLocalEntityName(localEntityName);
+		
+		entityList.add(entity);
+		
+		lexEvsValueSetDefinitionVersionQuery.restrictToEntities(uri, entityList);
+		
 		ValueSetDefinitionList vsdList = lexEvsValueSetDefinitionVersionQuery.resolveAsList(uri, null, null);
 		System.out.println(vsdList.getEntryCount());
 	}
