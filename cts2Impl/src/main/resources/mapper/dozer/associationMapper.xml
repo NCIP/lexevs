@@ -2,7 +2,7 @@
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://dozer.sourceforge.net
     http://dozer.sourceforge.net/schema/beanmapping.xsd">
-	<!-- CTS2 Association Mapping -->
+	<!-- CTS2 Association Mapping to LexBIG Association -->
 	<mapping>
 		<class-a>org.LexGrid.LexBIG.DataModel.Core.Association</class-a>
 		<class-b>org.cts2.association.Association</class-b>
