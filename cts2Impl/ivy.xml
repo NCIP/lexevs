@@ -8,8 +8,6 @@
 		<artifact name="cts2-impl" type="jar" ext="jar" conf="default"/>
 		<artifact name="cts2-impl" type="source" ext="jar"
 			 m:classifier="sources" conf="sources" />
-		<artifact name="cts2-impl" type="test" ext="jar"
-			 m:classifier="tests" conf="test"/>
 	</publications>
 	
 	<dependencies>

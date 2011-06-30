@@ -17,10 +17,33 @@
 
 <project name="cts2Impl" default="publish" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
 
-  <!-- ====================================================================== -->
-  <!-- Build environment properties                                           -->
-  <!-- ====================================================================== -->
-  <property file="build.properties"/>
-  <import file="${basedir}/../lbPackager/common-build.xml"/>
+	<!-- ====================================================================== -->
+	<!-- Build environment properties                                           -->
+	<!-- ====================================================================== -->
+	<property file="build.properties" />
+	<import file="${basedir}/../lbPackager/common-build.xml" />
+
+	<target name="compile" depends="ivy:setup-compile, clean" unless="no.source" description="Compile the code">
+		<mkdir dir="${build.outputDir}" />
+		<javac destdir="${build.outputDir}" 
+			nowarn="false" debug="true" 
+			optimize="false" 
+			deprecation="true" 
+			target="1.6" 
+			verbose="false" 
+			fork="false" 
+			source="1.6">
+			<src>
+				<pathelement location="${build.srcDir}" />
+			</src>
+			<exclude name="org/cts2/**"/>
+			<classpath refid="compile.classpath" />
+		</javac>
+		<copy todir="${build.outputDir}" failonerror="false">
+			<fileset dir="${build.resourceDir}" />
+		</copy>
+	</target>
+	
+	
 
 </project>
