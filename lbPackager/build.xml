@@ -546,10 +546,12 @@ You may obtain a copy of the License at
 	</target>
 	
 	<target name="cts2-model" description="packages the LexEVS CTS2 Model Implementation">
+		<!-- Skip this for now - perhaps remove it
 		<antcall target="common-project-build">
    			<param name="project" value="cts2-model"/>
 			<param name="module" value="cts2-model"/>
   		</antcall>
+  		-->
 	</target>
 
 	<target name="lbExamples" depends="lbImpl,lbAdmin" description="packages LexBIG example programs">
