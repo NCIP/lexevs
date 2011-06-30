@@ -18,7 +18,6 @@
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"  conf="default"/>
 		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
-		<dependency org="lexevs" name="cts2-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="meta-loader" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="loader-framework-core" rev="${vBuild}" conf="default"/>
