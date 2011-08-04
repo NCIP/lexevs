@@ -37,14 +37,14 @@ public class UmlsRelationResolver extends AbstractRrfRelationResolver {
 	 * @see org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver#getSource(org.lexgrid.loader.rrf.model.Mrrel)
 	 */
 	public String getSource(Mrrel item) {
-		return mrconsoStagingDao.getCodeAndSab(item.getCui1(), item.getAui1()).getCode();
+		return mrconsoStagingDao.getCodeAndSab(item.getCui2(), item.getAui2()).getCode();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver#getTarget(org.lexgrid.loader.rrf.model.Mrrel)
 	 */
 	public String getTarget(Mrrel item) {
-		return mrconsoStagingDao.getCodeAndSab(item.getCui2(), item.getAui2()).getCode();
+		return mrconsoStagingDao.getCodeAndSab(item.getCui1(), item.getAui1()).getCode();
 	}
 	
 	/* (non-Javadoc)
