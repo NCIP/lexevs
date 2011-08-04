@@ -14,7 +14,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/meta-loader"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/cts2Impl"/>
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
