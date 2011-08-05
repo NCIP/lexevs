@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.load.umls;
 
-import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -57,8 +56,8 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 * @throws Exception the exception
 	 */
 	@Test
-	public void testSourceCount() throws Exception {	
-		assertTrue(graphFocus.getTargetOf().getAssociation().length == 1);
+	public void testSourceCount() throws Exception {
+		assertEquals(1, graphFocus.getSourceOf().getAssociation().length);
 	}
 	
 	/**
@@ -68,7 +67,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testSourceAssociationName() throws Exception {	
-		assertTrue(graphFocus.getTargetOf().getAssociation()[0].getAssociationName().equals("CHD"));	
+		assertEquals("CHD", graphFocus.getSourceOf().getAssociation()[0].getAssociationName());	
 	}
 	
 	/**
@@ -78,7 +77,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testSourceAssociatedConceptCount() throws Exception {	
-		assertTrue(graphFocus.getTargetOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount() == 3);	
+		assertEquals(3, graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConceptCount());	
 	}
 	
 	/**
@@ -88,7 +87,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testSourceAssociatedConceptCode() throws Exception {	
-		AssociatedConcept[] concepts = graphFocus.getTargetOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();	
+		AssociatedConcept[] concepts = graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();	
 
 		assertTrue(DataTestUtils.isAssociatedConceptPresent(concepts, "U000010"));
 		assertTrue(DataTestUtils.isAssociatedConceptPresent(concepts, "MFCON"));
@@ -102,7 +101,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testTargetCount() throws Exception {	
-		assertTrue(graphFocus.getSourceOf() == null);
+		assertNull(graphFocus.getTargetOf());
 	}
 	
 	public static junit.framework.Test suite() {  

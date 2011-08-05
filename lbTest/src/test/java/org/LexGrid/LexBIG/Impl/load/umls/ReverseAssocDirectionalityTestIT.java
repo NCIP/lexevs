@@ -18,9 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.load.umls;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -55,12 +52,12 @@ public class ReverseAssocDirectionalityTestIT extends DataLoadTestBase {
 	
 	@Test
 	public void testIsSourceOfLength(){
-		assertTrue(graphFocus.getSourceOf().getAssociation().length == 1);
+		assertEquals(1, graphFocus.getSourceOf().getAssociation().length);
 	}
 	
 	@Test
 	public void testIsSourceOfAssociationName(){
-		assertTrue(graphFocus.getSourceOf().getAssociation()[0].getAssociationName().equals("PAR"));
+		assertEquals("CHD", graphFocus.getSourceOf().getAssociation()[0].getAssociationName());
 	}
 	
 	@Test
@@ -70,14 +67,14 @@ public class ReverseAssocDirectionalityTestIT extends DataLoadTestBase {
 	
 	@Test
 	public void testIsSourceOfAssociatedConceptsLength(){
-		assertTrue(graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept().length == 1);
+		assertEquals(1, graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept().length);
 	}
 	
 	@Test
 	public void testIsSourceOfAssociatedConcept(){
-		assertTrue(graphFocus.getSourceOf()
+		assertEquals("U000035", graphFocus.getSourceOf()
 				.getAssociation()[0]
 				                  .getAssociatedConcepts()
-				                  .getAssociatedConcept()[0].getCode().equals("U000035"));
+				                  .getAssociatedConcept()[0].getCode());
 	}
 }

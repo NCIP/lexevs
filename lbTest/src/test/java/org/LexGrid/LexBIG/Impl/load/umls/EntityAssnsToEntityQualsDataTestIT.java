@@ -50,7 +50,7 @@ public class EntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 		associatedConcept = cng.resolveAsList(Constructors.createConceptReference("ACRMG", 
 				LexBIGServiceTestCase.AIR_URN), true, true, 1, 1, null, null, null, -1)
 				.getResolvedConceptReference(0)
-				.getTargetOf()
+				.getSourceOf()
 				.getAssociation()[0]
 				.getAssociatedConcepts()
 				.getAssociatedConcept();
