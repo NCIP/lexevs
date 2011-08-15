@@ -50,7 +50,9 @@ import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -64,7 +66,7 @@ import org.xml.sax.InputSource;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations{
+public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations, DisposableBean {
 	
 	private interface PlatformActor {
 		
@@ -675,6 +677,15 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 			Table temp = new Table();
 			temp.setName(alias);
 			return temp;
+		}
+	}
+	
+	public void destroy() throws Exception {
+		//Make sure HSQL is properly shutdown on exit
+		if(this.getDatabaseType().equals(DatabaseType.HSQL)){
+			JdbcTemplate template = new JdbcTemplate(this.dataSource);
+			
+			template.execute("SHUTDOWN");
 		}
 	}
 }
