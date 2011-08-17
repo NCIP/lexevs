@@ -18,6 +18,7 @@
  */
 package org.lexgrid.loader.umls.processor.support;
 
+import org.lexevs.logging.LoggerFactory;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrrel;
 import org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver;
@@ -32,6 +33,11 @@ public class UmlsRelationResolver extends AbstractRrfRelationResolver {
 
 	/** The mrconso staging dao. */
 	private MrconsoStagingDao mrconsoStagingDao;
+	
+	public UmlsRelationResolver(){
+		super();
+		LoggerFactory.getLogger().warn("################  LOADING UMLS USING lbPatch.jar  ###################");
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver#getSource(org.lexgrid.loader.rrf.model.Mrrel)
