@@ -155,7 +155,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
     private boolean preMarshalEntity(Object obj) {
         messager.info("start processing entities...");
 
-        String mappingFileName = "mapping.xml";
+        String mappingFileName = "lexevs_export_mapping.xml";
 
         if (((Entity) obj).getEntityCode().equals(LexGridConstants.MR_FLAG)) {
             if (cns != null) {
@@ -200,7 +200,7 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             Mapping mapping = new Mapping();
                             messager.info("attempting to load " + mappingFileName + "...");
                             InputStream inputStream = StreamingLexGridMarshalListener.class
-                                    .getResourceAsStream("/edu/mayo/informatics/lexgrid/convert/exporters/xml/lgxml/listeners/"
+                                    .getResourceAsStream("/"
                                             + mappingFileName);
                             InputSource inputSource = new InputSource(inputStream);
                             mapping.loadMapping(inputSource);
