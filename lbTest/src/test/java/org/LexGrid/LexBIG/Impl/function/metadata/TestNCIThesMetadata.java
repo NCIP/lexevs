@@ -65,9 +65,7 @@ public class TestNCIThesMetadata extends LexBIGServiceTestCase {
         boolean foundMedra = false;
         while (metaItr.hasNext()) {
             MetadataProperty property = metaItr.next();
-            System.out.println("Prop Name: " + property.getName());
-            System.out.println("Prop Value: " + property.getValue());
-            
+           
             if (property.getName().equals("rsab") && property.getValue().equals("LNC")) {
             	foundLoinc = true;
             }
