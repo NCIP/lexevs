@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbInterfaces"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Indexer"/>
