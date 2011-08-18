@@ -57,8 +57,8 @@ public class ExportDataVerifier {
                     	i = 0;
                     	stayInBlock = true;
                     	while(!done && stayInBlock==true) {
-                    		Logger.log("\tline:             " + line);
-                    		Logger.log("\tsearchTargetAr[ " + i + "]:" + searchTargetAr[i]);
+                    		//Logger.log("\tline:             " + line);
+                    		//Logger.log("\tsearchTargetAr[ " + i + "]:" + searchTargetAr[i]);
                     		if(line.contains(searchTargetAr[i]) == false){
                     			stayInBlock = false;
                     		} else {
