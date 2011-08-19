@@ -61,7 +61,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
           
         AssociatedConcept[] assocCons = rcr[0].getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();
         assertEquals(1,assocCons.length);
-        assertTrue(assocCons[0].getCode().equals("T0001"));
+        assertTrue(assocCons[0].getCode().equals("E0001"));
     }
     
     public void testEntityDescriptions() throws Exception {
@@ -91,7 +91,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
           
         AssociatedConcept[] assocCons = rcr[0].getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();
         assertEquals(1,assocCons.length);
-        assertTrue(assocCons[0].getCode().equals("T0001"));
+        assertTrue(assocCons[0].getCode().equals("E0001"));
         
         assertTrue(assocCons[0].getEntityDescription() != null);
     }
@@ -135,7 +135,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
         
         String[][] codes = new String[][] 
                 {{"C0001","Jaguar","A0001","005","Ford"},
-        		{"T0001", "E0001","R0001","P0001","T0001"}};
+        		{"E0001", "E0001","R0001","P0001","E0001"}};
         
         for(int i=0;i<codes.length;i++) {
 	        ResolvedConceptReference ref = DataTestUtils.getConceptReference(rcr, codes[0][i]);
