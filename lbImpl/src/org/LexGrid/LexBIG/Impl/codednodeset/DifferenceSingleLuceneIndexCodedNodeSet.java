@@ -23,10 +23,6 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.logging.LoggerFactory;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -50,15 +46,6 @@ public class DifferenceSingleLuceneIndexCodedNodeSet extends AbstractMultiSingle
     }
 
     @Override
-    protected Query combineQueries(Query query1, Query query2) {
-        BooleanQuery query = new BooleanQuery();
-        query.add(query1, Occur.MUST);
-        query.add(query2, Occur.MUST_NOT);
-        
-        return query;
-    }
-
-    @Override
     protected CodeHolder handleToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2) {
         CodeHolder newCodeHolder = new DefaultCodeHolder();
         newCodeHolder.union(toNodeListCodes1);
@@ -68,9 +55,9 @@ public class DifferenceSingleLuceneIndexCodedNodeSet extends AbstractMultiSingle
     }
     
     @Override
-    protected void handleCrossCodingScheme() throws LBParameterException, LBInvocationException {
-        LoggerFactory.getLogger().info("Difference of Coding Schemes requires pre-resolve.");
+    protected void buildCodeHolder() throws LBInvocationException, LBParameterException {
+        this.codesToInclude_ = new DefaultCodeHolder();
         this.codesToInclude_.union(this.getCns1().getCodeHolder());
         this.codesToInclude_.difference(this.getCns2().getCodeHolder());
-    } 
+    }
 }

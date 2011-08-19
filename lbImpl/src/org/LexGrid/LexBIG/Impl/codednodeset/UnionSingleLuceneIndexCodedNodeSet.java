@@ -18,14 +18,22 @@
  */
 package org.LexGrid.LexBIG.Impl.codednodeset;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
+import org.compass.core.lucene.support.ChainedFilter;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -37,23 +45,22 @@ import org.apache.lucene.search.Query;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLuceneIndexCodedNodeSet {
-    
+
     private static final long serialVersionUID = -5959522938971242708L;
-    
-    public UnionSingleLuceneIndexCodedNodeSet(){
+
+    public UnionSingleLuceneIndexCodedNodeSet() {
         super();
     }
 
-    public UnionSingleLuceneIndexCodedNodeSet(CodedNodeSetImpl cns1, CodedNodeSetImpl cns2) { 
-        super(cns1,cns2);
+    public UnionSingleLuceneIndexCodedNodeSet(CodedNodeSetImpl cns1, CodedNodeSetImpl cns2) {
+        super(cns1, cns2);
     }
 
-    @Override
-    protected Query combineQueries(Query query1, Query query2) {
+    private Query combineQueries(Query query1, Query query2) {
         BooleanQuery query = new BooleanQuery();
         query.add(query1, Occur.SHOULD);
         query.add(query2, Occur.SHOULD);
-        
+
         return query;
     }
 
@@ -62,30 +69,55 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
         CodeHolder newCodeHolder = new DefaultCodeHolder();
         newCodeHolder.union(toNodeListCodes1);
         newCodeHolder.union(toNodeListCodes2);
-        
+
         return newCodeHolder;
     }
-    
+
     @Override
     protected CodeHolder handleOneNullToNodeListCodes(CodeHolder toNodeListCodes1, CodeHolder toNodeListCodes2) {
         CodeHolder codeHolder = new DefaultCodeHolder();
-        if(toNodeListCodes1 != null) {
+        if (toNodeListCodes1 != null) {
             codeHolder.union(toNodeListCodes1);
         }
-        if(toNodeListCodes2 != null) {
+        if (toNodeListCodes2 != null) {
             codeHolder.union(toNodeListCodes2);
         }
-        
+
         return codeHolder;
     }
 
     @Override
-    protected void handleCrossCodingScheme() throws LBParameterException, LBInvocationException {
-        //for Union, we don't need to build up the CodeHolders of the two participants of the
-        //set operation. We can handle it in the Query.
-        // CNS1 U CNS1 = (CNS1 U CNS2) n Resolve( Queries(CNS1) U Queries(CNS2) )
-        //the 'n' above is an 'Intersect'
-        this.buildCodeHolder();
+    public void runPendingOps() throws LBInvocationException, LBParameterException {
+        super.runPendingOps();
+
+        this.getQueries().add(
+                combineQueries(combineQueriesAndFilters(this.getCns1()), combineQueriesAndFilters(this.getCns2())));
     }
- 
+
+    protected void buildCodeHolder() throws LBInvocationException, LBParameterException {
+        codesToInclude_ = codeHolderFactory.buildCodeHolder(
+                new ArrayList<AbsoluteCodingSchemeVersionReference>(this.getCodingSchemeReferences()),
+                combineQueriesAndFilters(this));
+    }
+
+    protected Query combineQueriesAndFilters(CodedNodeSetImpl cns) {
+        List<Filter> filters = cns.getFilters();
+        List<Query> queries = cns.getQueries();
+
+        Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
+
+        BooleanQuery combinedQuery = new BooleanQuery();
+        for (Query query : queries) {
+            combinedQuery.add(query, Occur.MUST);
+        }
+
+        Query query;
+        if (CollectionUtils.isNotEmpty(filters)) {
+            query = new FilteredQuery(combinedQuery, chainedFilter);
+        } else {
+            query = combinedQuery;
+        }
+
+        return query;
+    }
 }
