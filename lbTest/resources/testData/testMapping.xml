@@ -54,7 +54,7 @@
         </lgRel:target>
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="C0001">
-        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="E0001" />
       </lgRel:source>
 	</lgRel:associationPredicate> 
 	 <lgRel:associationPredicate  associationName="mapsTo">
@@ -69,7 +69,7 @@
         </lgRel:target>
       </lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Ford">
-        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="T0001" />
+        <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace" targetEntityCode="E0001" />
       </lgRel:source>
        <lgRel:source sourceEntityCodeNamespace="Automobiles_Different_NS" sourceEntityCode="C0002">
         <lgRel:target targetEntityCodeNamespace="GermanMadePartsNamespace_Different_NS" targetEntityCode="P0001" />
