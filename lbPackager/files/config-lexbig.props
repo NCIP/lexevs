@@ -118,7 +118,8 @@ SINGLE_TABLE_MODE=true
 # !!!IMPORTANT!!! 
 #  * This variable _should_ contain the database name.
 #  * The database specified must exist.
-DB_URL=jdbc:mysql://server.url/lexevs
+DB_URL=jdbc:hsqldb:mem:test
+#DB_URL=jdbc:mysql://server.url/lexevs
 #DB_URL=jdbc:postgresql://server.url/lexevs
 #DB_URL=jdbc:hsqldb:file:C:/temp/lexevs
 #DB_URL=jdbc:oracle:thin:@server.url:1522:lexevs
@@ -179,7 +180,7 @@ DB_DRIVER=com.mysql.jdbc.Driver
 #
 # The specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
-DB_USER=root
+DB_USER=sa
 DB_PASSWORD=
 
 ############# Password encryption
