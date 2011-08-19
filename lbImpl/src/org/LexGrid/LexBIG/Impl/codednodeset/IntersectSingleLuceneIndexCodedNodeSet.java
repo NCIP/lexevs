@@ -18,12 +18,15 @@
  */
 package org.LexGrid.LexBIG.Impl.codednodeset;
 
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -37,7 +40,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
 public class IntersectSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLuceneIndexCodedNodeSet {
     
     private static final long serialVersionUID = -5959522938971242708L;
-    
+
     public IntersectSingleLuceneIndexCodedNodeSet(){
         super();
     }
@@ -63,4 +66,11 @@ public class IntersectSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleL
         
         return newCodeHolder;
     }
+
+    @Override
+    protected void handleCrossCodingScheme() throws LBParameterException, LBInvocationException {
+        LoggerFactory.getLogger().info("Intersection of Coding Schemes requires pre-resolve.");
+        this.codesToInclude_.union(this.getCns1().getCodeHolder());
+        this.codesToInclude_.intersect(this.getCns2().getCodeHolder());
+    } 
 }

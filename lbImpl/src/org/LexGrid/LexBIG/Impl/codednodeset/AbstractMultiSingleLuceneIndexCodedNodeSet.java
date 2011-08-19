@@ -33,18 +33,21 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.compass.core.lucene.support.ChainedFilter;
 
 public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNodeSetImpl {
     
     private static final long serialVersionUID = -5959522938971242708L;
+    
+    boolean crossCodingScheme = false;
     
     private CodedNodeSetImpl cns1;
     private CodedNodeSetImpl cns2;
@@ -54,6 +57,8 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     }
 
     public AbstractMultiSingleLuceneIndexCodedNodeSet(CodedNodeSetImpl cns1, CodedNodeSetImpl cns2) { 
+       this.crossCodingScheme = ! cns1.getCodingSchemeReferences().equals(cns2.getCodingSchemeReferences());
+        
        this.cns1 = cns1;
        this.cns2 = cns2;
        
@@ -201,15 +206,26 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
         if(this.codesToInclude_ != null) {return;}        
 
         if(codesToInclude_ == null ){
-            codesToInclude_ = 
-                codeHolderFactory.buildCodeHolder(new ArrayList<AbsoluteCodingSchemeVersionReference>(
-                        this.getCodingSchemeReferences()), combineQueriesAndFilters(this));
+            if (crossCodingScheme) {
+                codesToInclude_ = new DefaultCodeHolder();
+                this.handleCrossCodingScheme();
+            } else {
+                this.buildCodeHolder();
+            }
         }
     }
+    
+    protected void buildCodeHolder() throws LBInvocationException, LBParameterException {
+        codesToInclude_ = 
+            codeHolderFactory.buildCodeHolder(new ArrayList<AbsoluteCodingSchemeVersionReference>(
+                    this.getCodingSchemeReferences()), combineQueriesAndFilters(this));
+    }
+    
+    protected abstract void handleCrossCodingScheme() throws LBParameterException, LBInvocationException;
 
     protected abstract Query combineQueries(Query query1, Query query2);
 
-    private Query combineQueriesAndFilters(CodedNodeSetImpl cns) {
+    protected Query combineQueriesAndFilters(CodedNodeSetImpl cns) {
         List<Filter> filters = cns.getFilters();
         List<Query> queries = cns.getQueries();
         
@@ -260,4 +276,12 @@ public abstract class AbstractMultiSingleLuceneIndexCodedNodeSet extends CodedNo
     protected CodedNodeSetImpl getCns2() {
         return cns2;
     }
+
+    protected boolean isCrossCodingScheme() {
+        return crossCodingScheme;
+    }
+
+    protected void setCrossCodingScheme(boolean crossCodingScheme) {
+        this.crossCodingScheme = crossCodingScheme;
+    } 
 }

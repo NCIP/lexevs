@@ -18,12 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.codednodeset;
 
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -76,4 +78,14 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
         
         return codeHolder;
     }
+
+    @Override
+    protected void handleCrossCodingScheme() throws LBParameterException, LBInvocationException {
+        //for Union, we don't need to build up the CodeHolders of the two participants of the
+        //set operation. We can handle it in the Query.
+        // CNS1 U CNS1 = (CNS1 U CNS2) n Resolve( Queries(CNS1) U Queries(CNS2) )
+        //the 'n' above is an 'Intersect'
+        this.buildCodeHolder();
+    }
+ 
 }
