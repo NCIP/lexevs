@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7;
@@ -55,7 +55,6 @@ import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -88,9 +87,8 @@ public class HL7MapToLexGrid {
     private LgMessageDirectorIF messages_;
     private String accessConnectionString;
     private String driver;
-    private String codingScheme;
-    private Hashtable conceptsList;
-    private Hashtable internalIdConceptCodeMap;
+    private Hashtable<Integer, HL7ConceptContainer> conceptsList;
+    private Hashtable<Integer, String> internalIdConceptCodeMap;
     private LoaderPreferences loaderPrefs;
 
     public HL7MapToLexGrid(String database, String driver, LgMessageDirectorIF lg_messages) {
@@ -98,8 +96,8 @@ public class HL7MapToLexGrid {
         this.messages_ = new CachingMessageDirectorImpl(lg_messages);
         accessConnectionString = database;
         this.driver = driver;
-        conceptsList = new Hashtable();
-        internalIdConceptCodeMap = new Hashtable();
+        conceptsList = new Hashtable<Integer, HL7ConceptContainer>();
+        internalIdConceptCodeMap = new Hashtable<Integer, String>();
     }
 
     void initRun(CodingScheme csclass) {
@@ -124,67 +122,6 @@ public class HL7MapToLexGrid {
 
         }
     }
-
-    /*
-    void loadCodingScheme(CodingScheme csclass, Connection c) {
-
-        try {
-
-            // TODO Load any persisted HL7 rim metadata as coding scheme data
-            // here
-            // TODO Get the RIM data elements from the Model Table and persist
-            // to the
-            // emf csclass object as is done below
-            // TODO use the statement below later in an iterative loop to get
-            // the
-            // top node and possibly persist the metadata for each scheme as
-            // properties.
-            PreparedStatement getCodingSchemeInfo = c.prepareStatement("SELECT codeSystemid, "
-                    + "codeSystemType, codeSystemName, fullName, description, "
-                    + "releaseId, copyrightNotice FROM VCS_Code_System WHERE codeSystemid = ?");
-            getCodingSchemeInfo.setString(1, codingScheme);
-            ResultSet results = getCodingSchemeInfo.executeQuery();
-            results.next();
-
-            String name = results.getString("codeSystemName");
-
-            csclass.setCodingSchemeName(name);
-            csclass.setCodingSchemeURI(results.getString("codeSystemid"));
-            csclass.setFormalName(results.getString("FullName"));
-            EntityDescription enDesc = new EntityDescription();
-            enDesc.setContent(results.getString("description"));
-            csclass.setEntityDescription(enDesc);
-            csclass.setDefaultLanguage("en");
-
-            String version = results.getString("releaseId");
-            if (version != null && version.length() > 0)
-                csclass.setRepresentsVersion(version);
-            else {
-                csclass.setRepresentsVersion(SQLTableConstants.TBLCOLVAL_MISSING);
-            }
-            Text txt = new Text();
-            txt.setContent((String) results.getString("copyrightNotice"));
-            csclass.setCopyright(txt);
-            csclass.setMappings(new Mappings());
-
-            // Add SupportedCodingScheme and SupportedLanguage Mappings
-            SupportedCodingScheme scs = new SupportedCodingScheme();
-            scs.setLocalId(csclass.getCodingSchemeName());
-            scs.setUri(csclass.getCodingSchemeURI());
-
-            csclass.getMappings().addSupportedCodingScheme(scs);
-
-            SupportedLanguage lang = new SupportedLanguage();
-            lang.setLocalId(HL72EMFConstants.DEFAULT_LANGUAGE_EN);
-            csclass.getMappings().addSupportedLanguage(lang);
-
-            results.close();
-        } catch (Exception e) {
-            messages_.error("Failed while preparing HL7 Coding Scheme Class", e);
-            e.printStackTrace();
-        }
-    }
-    */
 
     void loadCodingScheme(CodingScheme csclass, String connectionString, String driver) {
         Connection c = null;
@@ -229,21 +166,12 @@ public class HL7MapToLexGrid {
             // Add SupportedHierarchy Mappings
             SupportedHierarchy hierarchy = new SupportedHierarchy();
             hierarchy.setLocalId(HL72LGConstants.DEFAULT_ASSOC);
-            ArrayList list = new ArrayList();
+            ArrayList<String> list = new ArrayList<String>();
             list.add(HL72LGConstants.DEFAULT_ASSOC);
             hierarchy.setAssociationNames(list);
             hierarchy.setRootCode(HL72LGConstants.DEFAULT_ROOT_NODE);
             hierarchy.setIsForwardNavigable(true);
             csclass.getMappings().addSupportedHierarchy(hierarchy);
-
-            
-//            SupportedProperty sp = NamingFactory.eINSTANCE.createSupportedProperty();
-//            sp.setLocalId(value);
-//            sp.setValue(value);
-//            
-//            SupportedPropertyType spt = NamingFactory.eINSTANCE.createSupportedPropertyType();
-//            spt.setLocalId();
-//            spt.setValue(value);
             
         } catch (Exception e) {
             messages_.error("Failed while preparing HL7 Coding Scheme Class", e);
@@ -252,7 +180,7 @@ public class HL7MapToLexGrid {
             try {
                 c.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -266,11 +194,9 @@ public class HL7MapToLexGrid {
         AssociationPredicate parent_assoc = null;
         AssociationEntity parent_assocEntity = null;
         AssociationPredicate hasSubtypeAssociation = null;
-        AssociationEntity hasSubtypeAssociationEntity = null;
         ResultSet associations = null;
         ResultSet properties = null;
         ResultSet sources = null;
- //       ResultSet topNodes = null;
         ResultSet results = null;
         
         Entities concepts = csclass.getEntities();
@@ -361,13 +287,11 @@ public class HL7MapToLexGrid {
             // Create a method do handle them as concepts.
                 loadArtificialTopNodes(csclass, concepts,
                         hasSubtypeAssociation, c);
-//            }
-            
 
             // Pre-load some concept data into hash tables but eliminate the code system scheme.
             PreparedStatement getConcept = c.prepareStatement("SELECT internalId, conceptCode2, "
                     + SQLTableConstants.TBLCOL_CONCEPTSTATUS + " FROM VCS_concept_code_xref WHERE codeSystemId2 <> ?");
-            getConcept.setString(1, "2.16.840.1.113883.5.22");
+            getConcept.setString(1, HL72LGConstants.CODE_SYSTEM_OID);
             results = getConcept.executeQuery();
             int i = 0;
             while (results.next()) {
@@ -386,20 +310,15 @@ public class HL7MapToLexGrid {
             e.printStackTrace();
         } finally {
             try {
-                
-//                associations.close();
-//                properties.close();
-//                sources.close();
-//                results.close();
                 c.close();
             } catch (SQLException e) {
-                // TODO drop stack trace.
+                messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
                 e.printStackTrace();
             }
         }
 
         // process the concept data
-        messages_.info("Processing concepts");
+        messages_.info("Processing " + conceptsList.size() + " concepts...");
         for (int j = 0; j < conceptsList.size(); j++) {
             Entity concept =new Entity();
             concept.setEntityType(new String[]{EntityTypes.CONCEPT.toString()});
@@ -408,16 +327,14 @@ public class HL7MapToLexGrid {
             concept.setEntityCode(conceptContainer.getConceptCode());
             loadPresentation(csclass, concept, uniqueInternalId, connectionString, driver);
             loadConceptProperties(csclass, concept, uniqueInternalId, connectionString, driver);
-            loadRelations(csclass, concept, uniqueInternalId, parent_assoc, relations, connectionString, driver,
-                    internalIdConceptCodeMap);
+            loadRelations(csclass, driver, uniqueInternalId, internalIdConceptCodeMap);
             concepts.addEntity(concept);
             num++;
-            int out = num % 1000;
-            if (out == 0)
-            messages_.info("Processed " + num + " concepts: ");
+            if (num % 1000 == 0)
+                messages_.info("Processed " + num + " concepts: ");
         }
         csclass.setApproxNumConcepts(new Long(concepts.getEntity().length));
-        messages_.info("Concepts added=" + num);
+        messages_.info("Added " + num + " concepts.");
 
     }
 
@@ -453,9 +370,7 @@ public class HL7MapToLexGrid {
                 String nodeName = dataResults.getString("codeSystemName");
                 String entityDescription = dataResults.getString("fullName");
                 String oid = dataResults.getString("codeSystemId");
-                String type = dataResults.getString("codeSystemType");
                 String def = dataResults.getString("description");
-                String releaseId = dataResults.getString("releaseId");
                 if (def == null) {
                     def = SQLTableConstants.TBLCOLVAL_MISSING;
                 }
@@ -544,7 +459,7 @@ public class HL7MapToLexGrid {
                 // scheme's artificial top node.
                 // First get a list of all nodes in the scheme.
                 // but again exclude the code system nodes.
-                ArrayList topNodes = new ArrayList();
+                ArrayList<String> topNodes = new ArrayList<String>();
                 PreparedStatement getSystemCodes = c
                         .prepareStatement("SELECT DISTINCT (internalId), conceptCode2 FROM VCS_concept_code_xref WHERE codeSystemId2 =? AND codeSystemId2 <> ?");
                 getSystemCodes.setString(1, oid);
@@ -561,7 +476,7 @@ public class HL7MapToLexGrid {
                     getSystemCodes.close();
 
                 // Drop any from the list that aren't top nodes.
-                ArrayList nodesToRemove = new ArrayList();
+                ArrayList<String> nodesToRemove = new ArrayList<String>();
                 PreparedStatement checkForTopNode = null;
                 for (int i = 0; i < topNodes.size(); i++) {
                     checkForTopNode = c
@@ -757,21 +672,18 @@ public class HL7MapToLexGrid {
       
 
         } catch (Exception e) {
-            e.printStackTrace();
             messages_.error("Failed to load HL7 Concept presentation", e);
-
+            e.printStackTrace();
         }
         finally{
             try {
                 edResults.close();
                 desResults.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
                 e.printStackTrace();
             }
-     
         }
-
     }
 
     void loadPresentation(CodingScheme csclass, Entity concept, String uniqueInternalId, String connectionString,
@@ -780,7 +692,7 @@ public class HL7MapToLexGrid {
         try {
             c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            messages_.debug("An error occurred while connecting to the MS Access connection: " + accessConnectionString + " " + driver);
             e.printStackTrace();
         }
 
@@ -788,7 +700,7 @@ public class HL7MapToLexGrid {
         try {
             c.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -830,7 +742,7 @@ public class HL7MapToLexGrid {
             try {
                 properties.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -843,85 +755,67 @@ public class HL7MapToLexGrid {
         try {
             c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            messages_.debug("An error occurred while connecting to the MS Access connection: " + accessConnectionString + " " + driver);
             e.printStackTrace();
         }
         loadConceptProperties(csclass, concept, c, uniqueInternalId);
         try {
             c.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    void loadRelations(CodingScheme csclass, Entity concept, Connection c, String uniqueInternalId,
-            AssociationPredicate parent_assoc, Relations relations, Hashtable concept2Id) {
+    void loadRelations(CodingScheme csclass, String driver, String uniqueInternalId,
+            Hashtable<Integer, String> concept2Id) {
+        Connection connection = null;
         ResultSet associations = null;
-        Hashtable associationsList = new Hashtable();
         try {
-            PreparedStatement getSourceAssociations = c
+            connection = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
+            PreparedStatement getSourceAssociations = connection
                     .prepareStatement("SELECT relationCode, sourceInternalId, targetInternalId FROM VCS_concept_relationship where sourceInternalId = ?");
             getSourceAssociations.setString(1, uniqueInternalId);
-           associations = getSourceAssociations.executeQuery();
-            int i = 0;
+            associations = getSourceAssociations.executeQuery();
+
             while (associations.next()) {
-                associationsList.put(new Integer(i), new HL7AssocContainer(associations.getString("relationCode"),
-                        associations.getInt("sourceInternalId"), associations.getInt("targetInternalId")));
-                i++;
+                int source = associations.getInt("sourceInternalId");
+                int target = associations.getInt("targetInternalId");
+                String association = associations.getString("relationCode");
+                AssociationPredicate parent_association = (AssociationPredicate) RelationsUtil
+                        .resolveAssociationPredicates(csclass, association).get(0);
+                String sourceEntityCode = concept2Id.get(new Integer(source));
+                String targetEntityCode = concept2Id.get(new Integer(target));
+
+                if (sourceEntityCode != null && targetEntityCode != null) {
+                    AssociationSource ai = new AssociationSource();
+                    ai.setSourceEntityCode(sourceEntityCode);
+                    ai = RelationsUtil.subsume(parent_association, ai);
+
+                    AssociationTarget at = new AssociationTarget();
+                    at.setTargetEntityCode(targetEntityCode);
+                    at = RelationsUtil.subsume(ai, at);
+                } else {
+                    messages_.info("Skipping relation " + source + " " + association + " " + target
+                            + ". Association target is null.");
+                }
             }
-          
-        } catch (Exception e) {
-            messages_.error("Failed while getting HL7 relations from RIM database", e);
+        } catch (SQLException e) {
+            messages_.error("Failed while getting HL7 relations from the RIM database", e);
             e.printStackTrace();
-        }finally{
+        } catch (Exception e) {
+            messages_.debug("Error occurred while connecting to the RIM database. " + accessConnectionString + driver);
+            e.printStackTrace();
+        }
+        finally {
             try {
                 associations.close();
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                connection.close();
+            }
+            catch (SQLException e) {
+                messages_.debug("An error occurred while closing the MS Access connections.");
                 e.printStackTrace();
             }
-        }
-
-        for (int j = 0; j < associationsList.size(); j++) {
-            HL7AssocContainer assoContainer = (HL7AssocContainer) associationsList.get(new Integer(j));
-            int sourceCode = assoContainer.getSourceCode();
-            int targetCode = assoContainer.getTargetCode();
-            AssociationPredicate parent_association = (AssociationPredicate) RelationsUtil.resolveAssociationPredicates(csclass,
-                    assoContainer.getAssociation()).get(0);
-
-            // TODO enclose entire association setup in some kind of try catch.
-            try {
-                AssociationSource ai = new AssociationSource();
-                ai.setSourceEntityCode((String) concept2Id.get(new Integer(sourceCode)));
-                ai = RelationsUtil.subsume(parent_association, ai);
-
-                AssociationTarget at = new AssociationTarget();
-                at.setTargetEntityCode((String) concept2Id.get(new Integer(targetCode)));
-                RelationsUtil.subsume(ai, at);
-            } catch (Exception e) {
-                messages_.error("Failed while processing HL7 association hierarchy", e);
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    void loadRelations(CodingScheme csclass, Entity concept, String uniqueInternalId, AssociationPredicate association,
-            Relations relations, String connectionString, String driver, Hashtable concept2Id) {
-        Connection c = null;
-        try {
-            c = DBUtility.connectToDatabase(accessConnectionString, driver, null, null);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        loadRelations(csclass, concept, c, uniqueInternalId, association, relations, concept2Id);
-        try {
-            c.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
@@ -931,10 +825,7 @@ public class HL7MapToLexGrid {
         Connection c = null;
 
         // create the filename of the metadata file to be created
-        String fileName = PreferenceLoaderConstants.META_HL7_METADATA_FILE_NAME;
-
-        // String filename = getDBLocation() + "_metadata.xml";
-        String filename = loaderPrefs.getXMLMetadataFilePath() + "/" + fileName;
+        String filename = loaderPrefs.getXMLMetadataFilePath() + "/" + PreferenceLoaderConstants.META_HL7_METADATA_FILE_NAME;
 
         FileOutputStream fos;
         try {
@@ -957,7 +848,6 @@ public class HL7MapToLexGrid {
 
             String defaultLanguage = "en";
             String isNative = "0";
-            String dataMissing = SQLTableConstants.TBLCOLVAL_MISSING;
             String codeSystemId;
             String codeSystemType;
             String codeSystemName;
@@ -983,7 +873,7 @@ public class HL7MapToLexGrid {
 
                 ResultSet codingSchemeConceptCount = getCodingSchemeConceptCount.executeQuery();
 
-                Hashtable conceptCountList = new Hashtable();
+                Hashtable<String, Integer> conceptCountList = new Hashtable<String, Integer>();
 
                 while (codingSchemeConceptCount.next()) {
 
@@ -1022,8 +912,7 @@ public class HL7MapToLexGrid {
                     if (description == null) {
                         description = SQLTableConstants.TBLCOLVAL_MISSING;
                     }
-                    // The description contains HTML tags. We try to remove
-                    // them.
+                    // The description contains HTML tags. We try to remove them.
                     else{
                     int begin = description.lastIndexOf("<p>");
                     int end = description.lastIndexOf("</p>");
@@ -1032,11 +921,6 @@ public class HL7MapToLexGrid {
                         description = description.substring(begin + 3, end);
                     }
                     }
-                    // description =
-                    // description.replaceAll("</?[A-Z]+\\b[^>]*>", ""); // CRS
-                    // description =
-                    // description.replaceAll("</?[a-z]+\\b[^>]*>", ""); // CRS
-                    // description = description.replaceAll("&#xd;", "");
 
                     releaseId = codingSchemeMetaData.getString("releaseId");
                     if (releaseId == null) {
@@ -1055,25 +939,15 @@ public class HL7MapToLexGrid {
 
                     // Begin codingScheme element
                     atts.clear();
-                    atts.addAttribute("", "", SQLTableConstants.TBLCOL_CODINGSCHEMENAME, "CDATA", codeSystemName); // May
-                                                                                                               // want
-                                                                                                               // to
-                                                                                                               // change
-                                                                                                               // to
-                                                                                                               // _fullName
+                    atts.addAttribute("", "", SQLTableConstants.TBLCOL_CODINGSCHEMENAME, "CDATA", codeSystemName);
+                    // May want to change to _fullName
                     atts.addAttribute("", "", SQLTableConstants.TBLCOL_FORMALNAME, "CDATA", fullName);
-                    // atts.addAttribute("","",SQLTableConstants.TBLCOL_REGISTEREDNAME,"CDATA",
-                    // codeSystemId);
                     atts.addAttribute("", "", SQLTableConstants.TBLCOL_CODINGSCHEMEURI, "CDATA", codeSystemId);
                     atts.addAttribute("", "", SQLTableConstants.TBLCOL_DEFAULTLANGUAGE, "CDATA", defaultLanguage);
                     atts.addAttribute("", "", SQLTableConstants.TBLCOL_REPRESENTSVERSION, "CDATA", releaseId);
                     atts.addAttribute("", "", SQLTableConstants.TBLCOL_ISNATIVE, "CDATA", isNative);
                     atts.addAttribute("", "", SQLTableConstants.TBLCOL_APPROXNUMCONCEPTS, "CDATA",
                             approximateNumberofConcepts.toString());
-                    // atts.addAttribute("","",SQLTableConstants.TBLCOL_FIRSTRELEASE,"CDATA",dataMissing);
-                    // atts.addAttribute("","",SQLTableConstants.TBLCOL_MODIFIEDINRELEASE,"CDATA",dataMissing);
-                    // atts.addAttribute("","",SQLTableConstants.TBLCOL_DEPRECATED,"CDATA",
-                    // dataMissing);
                     hd.startElement("", "", SQLTableConstants.TBLCOL_CODINGSCHEME, atts);
 
                     // localname
@@ -1121,34 +995,22 @@ public class HL7MapToLexGrid {
                 try {
                     c.close();
                 } catch (SQLException e) {
-                    // TODO drop stack trace.
+                    messages_.debug("An error occurred while closing the MS Access connection: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
 
-            // this is the file not found exception
-        } catch (FileNotFoundException e1) {
-            // TODO drop stack trace.
-            e1.printStackTrace();
-        } catch (IOException e) {
-            // TODO drop stack trace.
-            e.printStackTrace();
-        } catch (SAXException e) {
-            // TODO drop stack trace.
-            e.printStackTrace();
+        } catch (FileNotFoundException fnfe) {
+            messages_.debug("Loader Preferences file was not found, file: " + filename);
+            fnfe.printStackTrace();
+        } catch (IOException ioe) {
+            messages_.debug("IOException, file: " + filename);
+            ioe.printStackTrace();
+        } catch (SAXException saxe) {
+            messages_.debug("SAXException, file: " + filename);
+            saxe.printStackTrace();
         }
 
-    }
-
-    private String getDBLocation() {
-
-        int dbqLocation = accessConnectionString.lastIndexOf("DBQ");
-        String dbFullFilename = accessConnectionString.substring(dbqLocation + 4);
-        int sep = dbFullFilename.lastIndexOf(".");
-        // strip off the filename extension
-        String dbfullPath = dbFullFilename.substring(0, sep);
-
-        return dbfullPath;
     }
 
     public void setLoaderPrefs(LoaderPreferences loaderPrefs) {
@@ -1167,3 +1029,4 @@ public class HL7MapToLexGrid {
     }
 
 }
+
