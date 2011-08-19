@@ -38,7 +38,7 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	
     	ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
     	
-    	assertEquals(11,list.getResolvedConceptReferenceCount());
+    	assertEquals(9,list.getResolvedConceptReferenceCount());
     	
     	DataTestUtils.isConceptReferencePresent(list, "E0001");
     	DataTestUtils.isConceptReferencePresent(list, "Jaguar");
@@ -46,7 +46,6 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	DataTestUtils.isConceptReferencePresent(list, "R0001");
     	DataTestUtils.isConceptReferencePresent(list, "C0001");
     	DataTestUtils.isConceptReferencePresent(list, "C0002");
-    	DataTestUtils.isConceptReferencePresent(list, "T0001");
     	DataTestUtils.isConceptReferencePresent(list, "005");
     	DataTestUtils.isConceptReferencePresent(list, "P0001");
     	DataTestUtils.isConceptReferencePresent(list, "Ford");
@@ -73,14 +72,13 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	
     	ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, -1);
     	
-    	assertEquals(8,list.getResolvedConceptReference().length);
+    	assertEquals(6,list.getResolvedConceptReference().length);
     	
     	/*
     	"C0001"
     	"C0002"
     	"005"
     	"Ford"
-    	"T0001"
     	"Jaguar"
     	"R0001"
     	*/
@@ -88,7 +86,6 @@ public class ResolveMappingCodedNodeSetTest extends BaseCodedNodeSetTest {
     	DataTestUtils.isConceptReferencePresent(list, "R0001");
     	DataTestUtils.isConceptReferencePresent(list, "C0001");
     	DataTestUtils.isConceptReferencePresent(list, "C0002");
-    	DataTestUtils.isConceptReferencePresent(list, "T0001");
     	DataTestUtils.isConceptReferencePresent(list, "005");
     	DataTestUtils.isConceptReferencePresent(list, "Ford");	
     }

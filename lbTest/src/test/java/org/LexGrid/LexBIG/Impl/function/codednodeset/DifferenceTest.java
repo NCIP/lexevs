@@ -18,11 +18,16 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodeset;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.Ignore;
 
 /**
@@ -33,7 +38,8 @@ import org.junit.Ignore;
 public class DifferenceTest extends BaseCodedNodeSetTest {
     
     /** The cns2. */
-    private CodedNodeSet cns2;
+    private CodedNodeSet cns2; 
+    private CodedNodeSet testMapping;
     
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Impl.function.codednodeset.BaseCodedNodeSetTest#getTestID()
@@ -51,6 +57,7 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
         super.setUp();
         try {
             cns2 = lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.AUTO_SCHEME, null);
+            testMapping = lbs.getCodingSchemeConcepts(MAPPING_SCHEME_URI, null);
         } catch (LBException e) {
           fail(e.getMessage());
         }
@@ -138,5 +145,40 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
 
         assertTrue("Actual Length: " + rcr.length, rcr.length == 1);
         assertTrue(contains(rcr, "Chevy", "Automobiles"));
+    }
+    
+    /*
+    Code: 73, Description: Oldsmobile Hash: 1605346438
+    Code: A, Description: First Code in cycle Hash: 73042558
+    Code: T0001, Description: Truck Hash: 1413109869
+    Code: SpecialCharactersConcept, Description: Concept containing special characters Hash: 1115916110
+    Code: Chevy, Description: Chevrolet Hash: 1802121333
+    Code: NoRelationsConcept, Description: A concept for testing Graph Building on Concepts with no relations Hash: 143886443
+    Code: C0011(5564), Description: Car With Trailer Hash: 263093125
+    Code: GM, Description: General Motors Hash: 137322702
+    Code: DifferentNamespaceConcept, Description: Concept for testing same code but different Namespace - 1 Hash: 1585215636
+    Code: DifferentNamespaceConcept, Description: Concept for testing same code but different Namespace - 2 Hash: 1037069570
+    Code: B, Description: Second Code in cycle Hash: 1050983938
+    Code: C, Description: Third Code in cycle Hash: 834049391
+------------ Leftovers
+    Code: R0001, Description: Rims Hash: 618395549
+    Code: P0001, Description: Piston Hash: 1700624210
+    Code: E0001, Description: Engine Hash: 1531239547
+    */ 
+    public void testDifferenceCrossCodingSchemes() throws LBException {
+
+    	CodedNodeSet difference = cns.difference(testMapping);
+    	
+    	ResolvedConceptReferencesIterator itr = difference.resolve(null, null, null);
+    	
+    	Set<String> codes = new HashSet<String>();
+    	while(itr.hasNext()){
+    		codes.add(itr.next().getCode());
+    	}
+    	
+    	assertEquals(codes, new HashSet<String>(
+    			Arrays.asList("73","A","T0001","SpecialCharactersConcept",
+    			"Chevy","NoRelationsConcept","C0011(5564)","GM","DifferentNamespaceConcept","B","C"
+    			)));
     }
 }

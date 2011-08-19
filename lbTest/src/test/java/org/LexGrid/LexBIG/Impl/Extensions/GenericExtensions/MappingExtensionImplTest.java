@@ -142,10 +142,10 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		List<Tuple<String>> expectedTuples = new ArrayList(Arrays.asList(
 				new Tuple<String>("Jaguar", "E0001"),
 				new Tuple<String>("A0001", "R0001"),
-				new Tuple<String>("C0001", "T0001"),
+				new Tuple<String>("C0001", "E0001"),
 				new Tuple<String>("C0002", "P0001"),
 				new Tuple<String>("005", "P0001"),
-				new Tuple<String>("Ford", "T0001")));
+				new Tuple<String>("Ford", "E0001")));
 				
 		
 		ResolvedConceptReferencesIterator itr = mappingExtension.resolveMapping(
@@ -360,11 +360,15 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.hasNext());
 		ConceptReference ref = itr.next();
 		
-		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar"));
+		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar") || ref.getCode().equals("C0001"));
 		assertTrue(itr.hasNext());
 		
 		ref = itr.next();
-		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar"));
+		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar") || ref.getCode().equals("C0001"));
+		
+		ref = itr.next();
+		assertTrue(ref.getCode().equals("Ford") || ref.getCode().equals("Jaguar") || ref.getCode().equals("C0001"));
+	
 		assertFalse(itr.hasNext());	
 	}
 	
@@ -434,11 +438,14 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference ref = itr.next();
-		assertEquals("Jaguar",ref.getCode());
+		Set<String> codes = new HashSet<String>();
+		for(int i=0;i<3;i++){
+			codes.add(itr.next().getCode());
+		}
 		
 		assertFalse(itr.hasNext());
+		
+		assertEquals(codes, new HashSet<String>(Arrays.asList("C0001", "Ford", "Jaguar")));
 	}
 	
 	public void testResolveMappingWithRestrictionTargetCount() throws LBException {

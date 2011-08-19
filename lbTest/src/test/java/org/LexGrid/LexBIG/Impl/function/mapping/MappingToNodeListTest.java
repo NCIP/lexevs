@@ -27,7 +27,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.util.PrintUtility;
 
 /**
  * The Class MappingTest.
@@ -90,10 +89,9 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     		foundCodes.add(itr.next().getCode());
     	}
      
-    	assertEquals(3,foundCodes.size());
+    	assertEquals(2,foundCodes.size());
     	
     	assertTrue(foundCodes.contains("E0001"));
-    	assertTrue(foundCodes.contains("T0001"));
     	assertTrue(foundCodes.contains("P0001"));
     } 
 }
