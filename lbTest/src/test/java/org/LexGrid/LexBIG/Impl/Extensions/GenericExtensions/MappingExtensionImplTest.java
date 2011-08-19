@@ -672,16 +672,18 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToRelationship("truck", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList("mapsTo"));
+		mapping = mapping.restrictToRelationship("piston", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList("mapsTo"));
 		
 		MappingSortOption so = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.DESC);
 
 		List<MappingSortOption> sortOptionList = Arrays.asList(so);
 		
+		//C0002, 005
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping(sortOptionList);
 		
 		assertTrue(itr.hasNext());
-		assertEquals("Ford",itr.next().getCode());
+		assertEquals("C0002",itr.next().getCode());
+		assertEquals("005",itr.next().getCode());
 		
 		assertFalse(itr.hasNext());
 	}
@@ -695,12 +697,13 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToRelationship("truck", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList("mapsTo"));
+		mapping = mapping.restrictToRelationship("piston", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList("mapsTo"));
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
-		assertEquals("Ford",itr.next().getCode());
+		assertEquals("C0002",itr.next().getCode());
+		assertEquals("005",itr.next().getCode());
 		
 		assertFalse(itr.hasNext());
 	}
@@ -715,14 +718,14 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToRelationship("truck", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList(new String[]{"mapsTo", "hasPart"}));
+		mapping = mapping.restrictToRelationship("engine", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList(new String[]{"mapsTo", "hasPart"}));
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
 		
-		String[] expectedCodes = new String[]{"C0001", "Ford"};
-		String[] codes = new String[]{itr.next().getCode(), itr.next().getCode()};
+		String[] expectedCodes = new String[]{"C0001", "Jaguar", "Ford"};
+		String[] codes = new String[]{itr.next().getCode(), itr.next().getCode(), itr.next().getCode()};
 		
 		Arrays.sort(expectedCodes);
 		Arrays.sort(codes);
@@ -740,7 +743,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
 				"AutoToGMPMappings");
 		
-		mapping = mapping.restrictToRelationship("truck", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList("INVALID!!!"));
+		mapping = mapping.restrictToRelationship("engine", SearchDesignationOption.ALL, "LuceneQuery", null, Constructors.createLocalNameList("INVALID!!!"));
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
