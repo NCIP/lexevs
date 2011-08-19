@@ -11,14 +11,14 @@
     	<property name="username" value="sa"/>
     	<property name="password" value=""/>
     </bean>
-    
+<!--     
     <bean id="defaultLuceneDirectoryCreator" 
 		class="org.lexevs.dao.test.InMemoryLuceneDirectoryCreator"/>
 		
 	<bean name="abstractDirectoryFactory" class="org.lexevs.dao.test.InMemoryDirectoryFactory"/>
 	
 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.test.InMemoryIndexMetaDataFactory"/>
-	
+ -->	
 	 <bean id="systemVariables" class="org.lexevs.system.constants.SystemVariables">
     	<constructor-arg ref="loggerFactory"/>
     	<constructor-arg>
