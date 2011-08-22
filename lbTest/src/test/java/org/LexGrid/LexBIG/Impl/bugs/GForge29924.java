@@ -19,6 +19,8 @@
 package org.LexGrid.LexBIG.Impl.bugs;
 
 
+import java.util.HashSet;
+
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -47,8 +49,12 @@ public void testSupportedAssociationLocalid() throws Throwable {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
     	CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(CAMERA_SCHEME_MANIFEST_VERSION);
     	CodingScheme cs = lbs.resolveCodingScheme(CAMERA_SCHEME_MANIFEST_URN, csvt);
+    	HashSet<String> hash= new HashSet<String>();
+    	
     	for (SupportedAssociation sa :cs.getMappings().getSupportedAssociation()) {
-    		assertEquals(sa.getLocalId().contains(" "), false);
-    	}
+    		hash.add(sa.getUri());
+    	   
+    	}    	    
+ 		assertEquals(cs.getMappings().getSupportedAssociation().length, hash.size());
     }
 }
