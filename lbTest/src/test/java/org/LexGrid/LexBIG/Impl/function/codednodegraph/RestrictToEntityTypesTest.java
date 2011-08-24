@@ -48,7 +48,7 @@ public class RestrictToEntityTypesTest extends BaseCodedNodeGraphTest {
         assertEquals(1, 
                 rcr.length);
         
-        assertEquals(2,rcr[0].getSourceOf().getAssociation().length);
+        assertEquals(1,rcr[0].getSourceOf().getAssociation().length);
     }
     
     public void testRestrictToAssociationTypeWithWrong() throws Exception {
