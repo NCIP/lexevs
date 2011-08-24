@@ -114,6 +114,10 @@ public class SystemVariables {
     private static boolean isDebugOverridden_ = false;
     
     private String historyDBSchema_ = null;
+    private String mysql_collation= null;
+
+
+	private static String DEFAULT_MYSQL_COLLATION= "utf8_bin";
 
     /**
      * @return the eraseLogsAfter
@@ -265,6 +269,8 @@ public class SystemVariables {
             autoLoadDBDriver_ = getProperty(props, "DB_DRIVER");
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
+            
+            mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
 
             String pwdEncrypted = getNullableProperty(props, "DB_PASSWORD_ENCRYPTED");
             if( pwdEncrypted != null && pwdEncrypted.equalsIgnoreCase("true"))
@@ -689,4 +695,12 @@ public class SystemVariables {
 	public boolean getIsSingleIndex() {
 		return this.isSingleIndex;
 	}
+	
+    public String getMysql_collation() {
+		return mysql_collation;
+	}
+
+	public void setMysql_collation(String mysqlCollation) {
+		mysql_collation = mysqlCollation;
+	}	
 }

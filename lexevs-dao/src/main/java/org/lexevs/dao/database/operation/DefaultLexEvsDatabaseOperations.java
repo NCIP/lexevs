@@ -73,17 +73,22 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		String getSqlFromPlatform(Platform platform, Database database);
 	}
 	
-	private static CreationParameters MYSQL_CREATION_PARAMETERS = new CreationParameters();
-	{
-		MYSQL_CREATION_PARAMETERS.addParameter(null, "ENGINE", "INNODB");
-		MYSQL_CREATION_PARAMETERS.addParameter(null, "CHARACTER SET", "utf8");
-		MYSQL_CREATION_PARAMETERS.addParameter(null, "COLLATE", "utf8_general_ci");
-	}
+//	private static CreationParameters MYSQL_CREATION_PARAMETERS = new CreationParameters();
+//	{
+//		MYSQL_CREATION_PARAMETERS.addParameter(null, "ENGINE", "INNODB");
+//		MYSQL_CREATION_PARAMETERS.addParameter(null, "CHARACTER SET", "utf8");
+//		MYSQL_CREATION_PARAMETERS.addParameter(null, "COLLATE", systemVariables.getMysql_collation() "utf8_general_ci");
+//	}
 	
 	private class CreateSchemaPlatformActor implements PlatformActor {
 
 		public String getSqlFromPlatform(Platform platform,
 			Database database) {
+				CreationParameters MYSQL_CREATION_PARAMETERS = new CreationParameters();
+				MYSQL_CREATION_PARAMETERS.addParameter(null, "ENGINE", "INNODB");
+				MYSQL_CREATION_PARAMETERS.addParameter(null, "CHARACTER SET", "utf8");
+				MYSQL_CREATION_PARAMETERS.addParameter(null, "COLLATE", systemVariables.getMysql_collation());
+			
 				return platform.getCreateTablesSql(database, MYSQL_CREATION_PARAMETERS, false, true);
 		}	
 	}
