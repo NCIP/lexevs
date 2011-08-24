@@ -125,6 +125,10 @@ DB_URL=jdbc:hsqldb:mem:test
 #DB_URL=jdbc:oracle:thin:@server.url:1522:lexevs
 #DB_URL=jdbc:db2://server.url:50000/lexevs
 
+#The MYSQL_COLLATION holds the value of the collation used when creating the mysql
+# database and tables. If no collation value is specified, the default value would
+# be utf8_bin. The value to use when case needs to be ignored is utf8_general_ci
+MYSQL_COLLATION=utf8_bin
 
 # The prefix to use on created tables.
 #
