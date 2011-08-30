@@ -112,7 +112,7 @@
 							<flow>
 								<step id="umlsLoadDefinitionProperties" parent="listenerStep">
 									<tasklet>
-										<chunk reader="mrdefReader" processor="umlsDefinitionPropertyProcessor"
+										<chunk reader="umlsMrdefSkippingReader" processor="umlsDefinitionPropertyProcessor"
 											writer="entityPropertyWriter" commit-interval="1000">
 											<streams>
 												<stream ref="mrdefReader" />
