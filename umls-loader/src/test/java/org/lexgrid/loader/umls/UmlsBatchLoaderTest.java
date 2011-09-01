@@ -25,6 +25,7 @@ import java.io.File;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 
@@ -57,9 +58,19 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 		JobExecution job = loader.getJobExecution();
 		assertTrue(job.getExitStatus().equals(ExitStatus.COMPLETED));	
 		removeAIRScheme();
-	}	
-
-
+	}
+	
+	@Test
+	public void testUmlsMultipleSABsLoad() throws Exception {
+		UmlsBatchLoader loader = new UmlsBatchLoaderImpl();
+		loader.getOptions().getStringOption(UmlsBatchLoaderImpl.SAB_OPTION).setOptionValue("RCD");
+		loader.getOptions().getBooleanOption(UmlsBatchLoaderImpl.ASYNC_OPTION).setOptionValue(false);
+		loader.load(new File(RRF_DIRECTORY).toURI());
+		JobExecution job = loader.getJobExecution();
+		assertTrue(job.getExitStatus().equals(ExitStatus.COMPLETED));
+		removeRCDScheme();
+	}
+	
 	/**
 	 * Test single db failed umls load.
 	 * 
@@ -102,5 +113,10 @@ public class UmlsBatchLoaderTest extends BaseTestRrf {
 		assertTrue(restartJob.getExitStatus().equals(ExitStatus.COMPLETED));
 
 		removeAIRScheme();
+	}
+	
+	public void removeRCDScheme() throws Exception {	
+		LexEvsServiceLocator.getInstance().getSystemResourceService().
+			removeCodingSchemeResourceFromSystem("urn:oid:2.16.840.1.113883.6.6", "1999");
 	}	
 }
