@@ -219,6 +219,8 @@ public class HL7MapToLexGrid {
                 String association_name = association_results.getString("relationCode");
                 SupportedAssociation sa = new SupportedAssociation();
                 sa.setLocalId(association_name);
+                sa.setEntityCode(association_name);
+                sa.setEntityCodeNamespace(csclass.getCodingSchemeName());                
                 csclass.getMappings().addSupportedAssociation(sa);
 
                 AssociationPredicate parent_assoc = new AssociationPredicate();
