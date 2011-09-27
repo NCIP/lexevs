@@ -18,10 +18,16 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.net.URI;
+
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
+import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 
 import edu.mayo.informatics.lexgrid.convert.formats.inputFormats.HL7SQL;
 
@@ -66,4 +72,28 @@ public class HL72LGMain {
         this.loaderPrefs = loaderPrefs;
     }
 
+    
+    public static void main(String args[]) {
+        try {
+
+            // URI.create("http://www.co-ode.org/ontologies/amino-acid/2006/05/18/amino-acid.owl");
+             String physicalURI ="c:/temp/rim0234d.mdb";
+             //URI physicalURI = URI.create("file:///C:/lexevs_v6/lbTest/resources/testData/cell.obo");
+             HL72LGMain moem = new HL72LGMain();
+             CachingMessageDirectorIF message= new CachingMessageDirectorImpl(new CommandLineMessageDirector());
+            CodingScheme codingScheme = moem.map(physicalURI, false, message);
+
+            URI output_filename = URI.create("file:///c:/temp/hl7.xml");
+            File file = new File(output_filename);
+            // file.createNewFile();
+            FileWriter out = new FileWriter(file);            
+            codingScheme.marshal(out);
+//            XmlContentWriter xmlContentWriter = new XmlContentWriter();
+//            xmlContentWriter.marshalToXml(codingScheme, output_filename);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }        
+    
 }

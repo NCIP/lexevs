@@ -659,8 +659,7 @@ private LgMessageDirectorIF messages_ = LoggerFactory.getLogger();
         if (manifestUriMaps != null) {
             for(URIMap manifestUriMap : manifestUriMaps) {
                 
-                URIMap originalUriMap = findUriMapByLocalId(
-                        originalUriMaps, manifestUriMap.getLocalId());
+                URIMap originalUriMap = findUriMapByTypeAndLocalId(originalUriMaps, manifestUriMap);
                 
                 if(originalUriMap == null) {
                     DaoUtility.insertIntoMappings(codingScheme.getMappings(), manifestUriMap);
@@ -671,6 +670,20 @@ private LgMessageDirectorIF messages_ = LoggerFactory.getLogger();
                 }
             }
         }
+    }
+    
+    private URIMap findUriMapByTypeAndLocalId(List<URIMap> uriMaps, URIMap neededMap) {
+        if(uriMaps == null || uriMaps.size() == 0) {
+            return null;
+        }
+        
+        for(URIMap uriMap : uriMaps) {
+            if(uriMap.getLocalId().equals(neededMap.getLocalId()) && uriMap.getClass().getName().equals(neededMap.getClass().getName())) {
+                return uriMap;
+            }
+        }
+        
+        return null;
     }
     
     private URIMap findUriMapByLocalId(List<URIMap> uriMaps, String localId) {
