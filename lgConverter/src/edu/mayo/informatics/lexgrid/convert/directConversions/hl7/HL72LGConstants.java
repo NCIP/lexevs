@@ -34,6 +34,7 @@ public class HL72LGConstants {
     // value so we'll use 'en' on Russ Hamm's advice. Cannot be
     // null in LexGrid for EMF
     public static final String DEFAULT_LANGUAGE_EN = "en";
+    public static final String ASSOCIATION_IS_A = "is_a";
     public static final String ASSOCIATION_HAS_SUBTYPE = "hasSubtype";
     public static final String DEFAULT_URN = "http://www.hl7.org/Library/data-model/RIM";
     public static final String DEFAULT_ROOT_NODE = "@";

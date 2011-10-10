@@ -171,6 +171,15 @@ public class HL7MapToLexGrid {
             hierarchy.setRootCode(HL72LGConstants.DEFAULT_ROOT_NODE);
             hierarchy.setIsForwardNavigable(true);
             csclass.getMappings().addSupportedHierarchy(hierarchy);
+            
+            hierarchy = new SupportedHierarchy();
+            hierarchy.setLocalId(HL72LGConstants.ASSOCIATION_IS_A);
+            list = new ArrayList<String>();
+            list.add(HL72LGConstants.ASSOCIATION_HAS_SUBTYPE);
+            hierarchy.setAssociationNames(list);
+            hierarchy.setRootCode(HL72LGConstants.DEFAULT_ROOT_NODE);
+            hierarchy.setIsForwardNavigable(true);
+            csclass.getMappings().addSupportedHierarchy(hierarchy);
             results.close();
 
         } catch (Exception e) {
@@ -442,8 +451,8 @@ public class HL7MapToLexGrid {
                     definition.setLanguage(HL72LGConstants.DEFAULT_LANGUAGE_EN);
                     topNode.addDefinition(definition);
                 }
-
-                topNode.addEntityType("Coding Scheme");
+                
+                topNode.addEntityType( EntityTypes.CONCEPT.toString());
                 concepts.addEntity(topNode);
 
                 // This coding scheme is attached to an artificial root.
