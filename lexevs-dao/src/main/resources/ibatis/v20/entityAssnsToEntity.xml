@@ -123,8 +123,19 @@
 				eate.targetEntityCodeNamespace as entityCodeNamespace
 			</isEqual>
 			
+		entityType.entityType
+			
 		FROM
 			$prefix$entityAssnsToEntity eate
+		LEFT JOIN
+			$prefix$entity entity
+		ON
+			entityCode = entity.entityCode	
+		LEFT JOIN
+			$actualTableSetPrefix$entityType entityType
+		ON
+			entity.entityGuid =
+			entityType.entityGuid	
 		
 		WHERE
 			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
@@ -820,7 +831,9 @@
 				resultMap="Entity.conceptReferenceResult">
 		SELECT DISTINCT
 			eate1.sourceEntityCode AS entityCode,
-			eate1.sourceEntityCodeNamespace AS entityCodeNamespace
+			eate1.sourceEntityCodeNamespace AS entityCodeNamespace,
+			
+			entityType.entityType
 			
 		<isNotEmpty property="param6" prepend=",">
 			<iterate property="param6" conjunction=",">
@@ -895,6 +908,16 @@
 			ON
 				eate1.entityAssnsGuid = eaq1.referenceGuid
 		</isNotEmpty>
+		
+		LEFT JOIN
+			$prefix$entity entity
+		ON
+			entityCode = entity.entityCode	
+		LEFT JOIN
+			$actualTableSetPrefix$entityType entityType
+		ON
+			entity.entityGuid =
+			entityType.entityGuid	
 
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
@@ -946,7 +969,10 @@
 				resultMap="Entity.conceptReferenceResult">
 		SELECT DISTINCT
 			eate1.targetEntityCode AS entityCode,
-			eate1.targetEntityCodeNamespace AS entityCodeNamespace
+			eate1.targetEntityCodeNamespace AS entityCodeNamespace,
+			
+			entityType.entityType
+			
 		<isNotEmpty property="param6" prepend=",">
 			<iterate property="param6" conjunction=",">
 				$param6[].columnSortType.tailColumn$
@@ -1020,6 +1046,17 @@
 			ON
 				eate1.entityAssnsGuid = eaq1.referenceGuid
 		</isNotEmpty>
+		
+		LEFT JOIN
+			$prefix$entity entity
+		ON
+			entityCode = entity.entityCode	
+		LEFT JOIN
+			$actualTableSetPrefix$entityType entityType
+		ON
+			entity.entityGuid =
+			entityType.entityGuid	
+			
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
 			
@@ -1146,7 +1183,7 @@
 	
 	<select id="getConceptReferences"
 				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
-				resultMap="Entity.conceptReferenceResult">
+				resultMap="Entity.noEntityTypeConceptReferenceResult">
 		SELECT 
 			<isEqual property="tripleNode" compareValue="SUBJECT">
 				eate.targetEntityCode AS entityCode,

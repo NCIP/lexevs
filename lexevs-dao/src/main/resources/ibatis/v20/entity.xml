@@ -16,9 +16,12 @@
 		<result property="java.lang.String" column="uid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference" groupBy="code,codeNamespace">
+	<resultMap id="noEntityTypeConceptReferenceResult" class="resolvedCodedNodeReference" groupBy="code,codeNamespace">
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
+	</resultMap>
+	
+	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference" extends="noEntityTypeConceptReferenceResult">
 		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
 	</resultMap>
 	
