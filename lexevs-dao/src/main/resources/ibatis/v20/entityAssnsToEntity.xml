@@ -132,7 +132,7 @@
 		ON
 			entityCode = entity.entityCode	
 		LEFT JOIN
-			$actualTableSetPrefix$entityType entityType
+			$prefix$entityType entityType
 		ON
 			entity.entityGuid =
 			entityType.entityGuid	
@@ -914,7 +914,7 @@
 		ON
 			entityCode = entity.entityCode	
 		LEFT JOIN
-			$actualTableSetPrefix$entityType entityType
+			$prefix$entityType entityType
 		ON
 			entity.entityGuid =
 			entityType.entityGuid	
@@ -1052,7 +1052,7 @@
 		ON
 			entityCode = entity.entityCode	
 		LEFT JOIN
-			$actualTableSetPrefix$entityType entityType
+			$prefix$entityType entityType
 		ON
 			entity.entityGuid =
 			entityType.entityGuid	
