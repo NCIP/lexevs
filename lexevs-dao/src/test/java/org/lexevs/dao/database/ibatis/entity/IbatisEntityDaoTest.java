@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
@@ -839,6 +840,58 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		
 		assertTrue(Arrays.asList(entity.getEntityType()).contains("instance"));
 		assertTrue(Arrays.asList(entity.getEntityType()).contains("concept"));	
+	}
+	
+	@Test
+	@Transactional
+	public void testGetResolvedCodedNodeReferenceByCodeAndNamespaceCheckForTypes() throws Exception {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('1', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 'ecode', 'ens')");
+
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+			
+		ResolvedConceptReference entity = ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("1", "ecode", "ens");
+		
+		assertNotNull(entity);
+		
+		assertEquals(1, entity.getEntityTypeCount());
+		
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("concept"));	
+	}
+	
+	@Test
+	@Transactional
+	public void testGetResolvedCodedNodeReferenceByCodeAndNamespaceCheckForTypesMultiple() throws Exception {
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
+			"values ('1', 'csname', 'csuri', 'csversion')");
+	
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace) " +
+			"values ('1', '1', 'ecode', 'ens')");
+
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+			"values ('1', 'concept')");
+		
+		template.execute("Insert into entitytype (entityGuid, entityType) " +
+				"values ('1', 'instance')");
+			
+		ResolvedConceptReference entity = ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("1", "ecode", "ens");
+		
+		assertNotNull(entity);
+		
+		assertEquals(2, entity.getEntityTypeCount());
+		
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("concept"));	
+		assertTrue(Arrays.asList(entity.getEntityType()).contains("instance"));
 	}
 	
 	@Test

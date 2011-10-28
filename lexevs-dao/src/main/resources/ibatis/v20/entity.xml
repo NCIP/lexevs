@@ -16,9 +16,10 @@
 		<result property="java.lang.String" column="uid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference">
+	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference" groupBy="code,codeNamespace">
 		<result property="code" column="entityCode" />
 		<result property="codeNamespace" column="entityCodeNamespace" />
+		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
 	</resultMap>
 	
 	<resultMap id="resolvedCodedNodeReferenceResult" 
@@ -97,12 +98,18 @@
 			entity.description,
 			codingScheme.codingSchemeURI,
 			codingScheme.representsVersion,
-			codingScheme.codingSchemeName
+			codingScheme.codingSchemeName,
+			entityType.entityType
 		FROM
 			$prefix$entity entity
 		LEFT JOIN
 			$prefix$codingScheme codingScheme
 		ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
+		LEFT JOIN
+			$actualTableSetPrefix$entityType entityType
+		ON
+			entity.entityGuid =
+			entityType.entityGuid	
 		WHERE
 			entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
