@@ -828,12 +828,10 @@
 	<select id="getRootEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 				remapResults="true"
-				resultMap="Entity.conceptReferenceResult">
+				resultMap="Entity.noEntityTypeConceptReferenceResult">
 		SELECT DISTINCT
 			eate1.sourceEntityCode AS entityCode,
-			eate1.sourceEntityCodeNamespace AS entityCodeNamespace,
-			
-			entityType.entityType
+			eate1.sourceEntityCodeNamespace AS entityCodeNamespace
 			
 		<isNotEmpty property="param6" prepend=",">
 			<iterate property="param6" conjunction=",">
@@ -909,16 +907,6 @@
 				eate1.entityAssnsGuid = eaq1.referenceGuid
 		</isNotEmpty>
 		
-		LEFT JOIN
-			$prefix$entity entity
-		ON
-			entityCode = entity.entityCode	
-		LEFT JOIN
-			$prefix$entityType entityType
-		ON
-			entity.entityGuid =
-			entityType.entityGuid	
-
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
 			
@@ -966,13 +954,10 @@
 	<select id="getTailEntityAssnsToEntityUids"
 				parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 				remapResults="true"
-				resultMap="Entity.conceptReferenceResult">
+				resultMap="Entity.noEntityTypeConceptReferenceResult">
 		SELECT DISTINCT
 			eate1.targetEntityCode AS entityCode,
-			eate1.targetEntityCodeNamespace AS entityCodeNamespace,
-			
-			entityType.entityType
-			
+			eate1.targetEntityCodeNamespace AS entityCodeNamespace
 		<isNotEmpty property="param6" prepend=",">
 			<iterate property="param6" conjunction=",">
 				$param6[].columnSortType.tailColumn$
@@ -1046,17 +1031,6 @@
 			ON
 				eate1.entityAssnsGuid = eaq1.referenceGuid
 		</isNotEmpty>
-		
-		LEFT JOIN
-			$prefix$entity entity
-		ON
-			entityCode = entity.entityCode	
-		LEFT JOIN
-			$prefix$entityType entityType
-		ON
-			entity.entityGuid =
-			entityType.entityGuid	
-			
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
 			
