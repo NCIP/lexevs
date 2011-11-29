@@ -82,6 +82,9 @@ MAX_CONNECTIONS_PER_DB=8
 # Size of the Dynamic Cache (this is used to cache frequently accessed information)
 CACHE_SIZE=500
 
+# Size of the Value Set Cache
+MAX_IN_VS_CACHE=1000
+
 # Length of idle time before invalidating Iterators (in minutes)
 ITERATOR_IDLE_TIME=5
 
@@ -119,7 +122,7 @@ SINGLE_TABLE_MODE=true
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://localhost/v6test
+DB_URL=jdbc:mysql://localhost/lexevs
 #DB_URL=jdbc:mysql://bmidev4:3307/sb
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
 #DB_URL=jdbc:hsqldb:file:C:/temp/LexGrid
@@ -155,7 +158,7 @@ DB_PREFIX=lb
 #	"SEQUENTIAL_INTEGER" 
 #		- Primary Keys will be sequentially incremented
 #		- as Ingeter values.
-DB_PRIMARY_KEY_STRATEGY=GUID
+DB_PRIMARY_KEY_STRATEGY=SEQUENTIAL_INTEGER
 
 # Optional parameters to append to the end of the database
 # connection string.  Access to some database environments
@@ -180,7 +183,7 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
 DB_USER=root
-DB_PASSWORD=
+DB_PASSWORD=lexgrid
 
 ############# Password encryption
 

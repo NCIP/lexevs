@@ -45,7 +45,7 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 
 	private static String COMPILED_VS_FILE_EXTENSION = ".cvd";
 	
-	private static int MAX_IN_CACHE = 500;
+	public static int MAX_IN_CACHE;
 
 	/**
 	 * Instantiates a new caching value set definition compiler decorator.
@@ -65,7 +65,9 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 			} else {
 				LoggerFactory.getLogger().info("Initial Compiled Value Set Definition Store Creation Failed... caching will not be used.");
 			}
-		}
+		}	
+		MAX_IN_CACHE = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getMax_value_set_cache();
+		System.out.println("MAX VS CACHE: " + MAX_IN_CACHE);
 	}
 	
 	

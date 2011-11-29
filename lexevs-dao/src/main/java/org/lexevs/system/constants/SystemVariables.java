@@ -46,8 +46,9 @@ public class SystemVariables {
     private static String OVERRIDE_SINGLE_DB_PROP = "OVERRIDE_SINGLE_DB";
     private Hashtable<String, SQLConnectionInfo> sqlServers_;
     private HashSet<String> indexLocations_;
+    private int max_value_set_cache;
 
-    private String logLocation_;
+	private String logLocation_;
 
     private boolean isNormEnabled_;
     private String normConfigFile_;
@@ -245,7 +246,7 @@ public class SystemVariables {
             autoLoadRegistryPath_ = processRelativePath(getProperty(props, "REGISTRY_FILE"));
             autoLoadIndexLocation_ = processRelativePath(getProperty(props, "INDEX_LOCATION"));
             autoLoadDBURL_ = getProperty(props, "DB_URL");
-            
+            max_value_set_cache = getStringPropertyAsInt(props, "MAX_IN_VS_CACHE");
             String tempSingleDb = getNullableProperty(props, "SINGLE_DB_MODE");
             
             autoLoadSingleDBMode = getNullableBoolean(tempSingleDb, true);
@@ -570,6 +571,10 @@ public class SystemVariables {
     public boolean getAutoLoadSingleDBMode() {
         return autoLoadSingleDBMode;
     }
+    
+    public int getMax_value_set_cache() {
+        return max_value_set_cache;
+    }
 
     public String[] getJarFileLocations() {
         if (jarFileLocations_ == null || jarFileLocations_.length == 0) {
@@ -638,6 +643,10 @@ public class SystemVariables {
     
     private String getNullableProperty(Properties props, String key) throws LBParameterException {
         return props.getProperty(key); 
+    }
+    
+	private int getStringPropertyAsInt(final Properties props, final String key) throws NumberFormatException, LBParameterException{
+    	return Integer.valueOf(getProperty(props, key));
     }
     
     private String getNullableProperty(Properties props, String key, String defaultValue) throws LBParameterException {

@@ -68,6 +68,7 @@ import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import org.lexgrid.valuesets.helper.compiler.FileSystemCachingValueSetDefinitionCompilerDecorator;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
@@ -506,6 +507,11 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		
 		uris = getValueSetDefinitionService().listValueSetDefinitions(null);
 		assertTrue(uris.size() > 0);
+	}
+	
+	@Test
+	public void testCompilerDecoratorCacheSize(){
+		assertEquals(FileSystemCachingValueSetDefinitionCompilerDecorator.MAX_IN_CACHE, 1000);
 	}
 	
 	@Test

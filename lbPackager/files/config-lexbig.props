@@ -82,6 +82,9 @@ MAX_CONNECTIONS_PER_DB=25
 # Size of the Dynamic Cache (this is used to cache frequently accessed information)
 CACHE_SIZE=500
 
+# Size of the Value Set Cache
+MAX_IN_VS_CACHE=1000
+
 # Length of idle time before invalidating Iterators (in minutes)
 ITERATOR_IDLE_TIME=5
 
