@@ -1,6 +1,10 @@
 @echo off
 REM Activates a coding scheme based on unique URN and version.
-REM
+REM 
+REM User sees menu of coding schemes to activate and inputs number
+REM interface requests activation confirmation as Y or N
+REM 
+REM Otherwise user may also run a direct command line command as follows
 REM Options:
 REM   -u,--urn <urn> URN uniquely identifying the code system.
 REM   -v,--version <id> Version identifier.

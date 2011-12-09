@@ -37,6 +37,10 @@ import org.lexevs.system.ResourceManager;
 /**
  * Activates a coding scheme based on unique URN and version.
  * 
+ * User sees menu of coding schemes to activate and inputs number
+ * interface requests activation confirmation as Y or N
+ * 
+ * Otherwise user may also run a direct command line command as follows
  * <pre>
  * Example: java org.LexGrid.LexBIG.admin.ActivateScheme
  *  -u,--urn &amp;lturn&amp;gt; URN uniquely identifying the code system.

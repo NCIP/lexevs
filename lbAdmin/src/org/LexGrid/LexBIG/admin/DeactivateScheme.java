@@ -39,12 +39,14 @@ import org.lexevs.system.ResourceManager;
 /**
  * Deactivates a coding scheme based on unique URN and version.
  * 
+ * User sees menu of coding schemes to deactivate and inputs number
+ * interface requests activation confirmation as Y or N
+ * 
+ * Otherwise command line request can be made as follows
  * <pre>
  * Example: java org.LexGrid.LexBIG.admin.DeactivateScheme
  *   -u,--urn &lt;name&gt; URN uniquely identifying the code system.
  *   -v,--version &lt;id&gt; Version identifier.
- *   -d,--date &lt;yyyy-MM-dd,HH:mm:ss&gt; Date and time for deactivation
- *        to take effect; immediate if not specified.
  *   -f,--force Force deactivation (no confirmation).
  * 
  * Note: If the URN and version values are unspecified, a
@@ -54,7 +56,6 @@ import org.lexevs.system.ResourceManager;
  * Example: java -Xmx512m -cp lgRuntime.jar
  *  org.LexGrid.LexBIG.admin.DeactivateScheme
  *    -u &quot;urn:oid:2.16.840.1.113883.3.26.1.1&quot; -v &quot;05.09e&quot;
- *    -d &quot;2007-01-31,14:39:00&quot;
  * </pre>
  * 
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
@@ -96,7 +97,7 @@ public class DeactivateScheme {
                         .displayCommandOptions(
                                 "DeactivateScheme",
                                 options,
-                                "DeactivateScheme -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\" -d \"2007-01-31,14:39:00\"",
+                                "DeactivateScheme -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\" ",
                                 e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
                 return;
