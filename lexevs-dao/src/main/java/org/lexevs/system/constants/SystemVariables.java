@@ -246,7 +246,13 @@ public class SystemVariables {
             autoLoadRegistryPath_ = processRelativePath(getProperty(props, "REGISTRY_FILE"));
             autoLoadIndexLocation_ = processRelativePath(getProperty(props, "INDEX_LOCATION"));
             autoLoadDBURL_ = getProperty(props, "DB_URL");
-            max_value_set_cache = getStringPropertyAsInt(props, "MAX_IN_VS_CACHE");
+          
+            if(getProperty(props, "MAX_IN_VS_CACHE") == null){
+            	max_value_set_cache = 500;
+            }
+            else{
+            	max_value_set_cache = getStringPropertyAsInt(props, "MAX_IN_VS_CACHE");
+            }
             String tempSingleDb = getNullableProperty(props, "SINGLE_DB_MODE");
             
             autoLoadSingleDBMode = getNullableBoolean(tempSingleDb, true);
