@@ -1,5 +1,7 @@
 @echo off
-REM Encrypts the given password.
+REM Encrypts the given password.  This can be used in lbconfig.props
+REM for the database password and will be automatically decrypted on
+REM start-up
 REM
 REM Argument:
 REM   -p,--password password for encryption.

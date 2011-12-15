@@ -1,11 +1,12 @@
-# Deactivates a coding scheme based on unique URN and version.
+# List registered extensions to the LexBIG runtime.
 # 
 # Options:
-#   -u,--urn <urn> URN uniquely identifying the code system.
-#   -v,--version <id> Version identifier.
-#   -d,--date <MM/DD/yyyy,HH:MM:SS> Date and time for activation to take effect; immediate if not specified.
-#   -f,--force Force activation (no confirmation).
+#   -a,--all List all extensions (default, override by specifying other options).
+#   -i,--index List index extensions.
+#   -m,--match List match algorithm extensions.
+#   -s,--sort List sort algorithm extensions.
+#   -g,--generic List generic extensions.
 # 
-# Example: DeactivateScheme -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e" -d "01/31/2099,12:00:00"
+#  Example: ListExtensions -a
 #
 java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.ListExtensions $@

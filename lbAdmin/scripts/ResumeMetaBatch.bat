@@ -4,7 +4,6 @@ REM error. The loader will keep all loaded content and restart at the point of f
 REM
 REM Options:
 REM   -in,--input <uri> URI or path of the directory containing the NLM files
-REM   -s,--source vocabulary to resume.
 REM   -uri,--uri of vocabulary to resume.
 REM   -version,--version of vocabulary to resume.
 REM

@@ -1,9 +1,9 @@
 # Load manifest data onto the codingscheme based on unique URN and version.
 # Options:
 # Example: java org.LexGrid.LexBIG.admin.LoadManifest
-#  -u,--urn &lturn&gt; URN uniquely identifying the code system.
-#  -v,--version &ltversionId&gt; Version identifier.
-#  -mf,--manifest &ltmanifest&gt; location of manifest xml file.
+#  -u,--urn "urn"; URN uniquely identifying the code system.
+#  -v,--version "versionId"; Version identifier.
+#  -mf,--manifest "manifest"; location of manifest xml file.
 # 
 # Note: If the URN and version values are unspecified, a
 # list of available coding schemes will be presented for

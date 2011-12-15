@@ -2,9 +2,9 @@
 REM Load manifest data onto the codingscheme based on unique URN and version.
 REM Options:
 REM Example: java org.LexGrid.LexBIG.admin.LoadManifest
-REM  -u,--urn &lturn&gt; URN uniquely identifying the code system.
-REM  -v,--version &ltversionId&gt; Version identifier.
-REM  -mf,--manifest &ltmanifest&gt; location of manifest xml file.
+REM  -u,--urn "urn"; URN uniquely identifying the code system.
+REM  -v,--version "versionId"; Version identifier.
+REM  -mf,--manifest "manifest"; location of manifest xml file.
 REM 
 REM Note: If the URN and version values are unspecified, a
 REM list of available coding schemes will be presented for

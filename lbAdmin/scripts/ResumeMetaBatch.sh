@@ -3,7 +3,6 @@
 #
 # Options:
 #   -in,--input <uri> URI or path of the directory containing the NLM files
-#   -s,--source vocabulary to resume.
 #   -uri,--uri of vocabulary to resume.
 #   -version,--version of vocabulary to resume.
 #

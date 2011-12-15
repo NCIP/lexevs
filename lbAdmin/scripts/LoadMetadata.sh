@@ -11,7 +11,7 @@
 #         0 = Verify document is valid
 #   -o, --overwrite If specified, existing metadata for the code system
 #         will be erased. Otherwise, new metadata will be appended to
-#         existing metadata (if present).  
+#         existing metadata (if present).   Requires user confirmation.
 #   -f,--force Force overwrite (no confirmation).
 # 
 # Note: If the URN and version values are unspecified, a
