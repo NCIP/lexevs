@@ -5,10 +5,6 @@
 #   -in,--input <uri> URI or path specifying location of the source file
 #   -mf,--manifest <uri> URI or path specifying location of the manifest file
 #   -lp,--loaderPrefs<uri> URI or path specifying location of the loader preference file
-#   -ms,--memorySetting <int> If specified, indicates the profile
-#         used to tune memory/performance tradeoffs. Options are:
-#         1 = Faster/more memory (holds OWL in memory)
-#         2 = Slower/less memory (cache OWL to database)
 #   -v, --validate <int> Perform validation of the candidate
 #         resource without loading data.  If specified, the '-a' and '-t'
 #         options are ignored.  Supported levels of validation include:
