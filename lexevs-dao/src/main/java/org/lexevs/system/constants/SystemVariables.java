@@ -247,7 +247,7 @@ public class SystemVariables {
             autoLoadIndexLocation_ = processRelativePath(getProperty(props, "INDEX_LOCATION"));
             autoLoadDBURL_ = getProperty(props, "DB_URL");
           
-            if(getProperty(props, "MAX_IN_VS_CACHE") == null){
+            if(getNullableProperty(props, "MAX_IN_VS_CACHE") == null){
             	max_value_set_cache = 500;
             }
             else{
