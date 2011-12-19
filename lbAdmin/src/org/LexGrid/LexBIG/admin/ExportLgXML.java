@@ -44,28 +44,22 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.CnsCngPair;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.util.FilterParser;
 
 /**
- * Exports content from the repository to a file in the LexGrid cononical XML
- * format.
+ * ExportLgXML
+ *   Exports content from the repository to a file in the LexGrid canonical XML format.
  * 
  * <pre>
- * Example: java org.LexGrid.LexBIG.admin.ExportLgXML
- *   -out,--output &lt;uri&gt; URI or path of the directory to contain the
- *        resulting XML file.  The file name will be automatically derived
- *        from the coding scheme name.   
- *   -u,--urn &lt;name&gt; URN or local name of the coding scheme to export.
- *   -v,--version &lt;id&gt; The assigned tag/label or absolute version
- *        identifier of the coding scheme.
- *   -f,--force If specified, allows the destination file to be
- *        overwritten if present.
- * 
- * Note: If the URN and version values are unspecified, a
- * list of available coding schemes will be presented for
- * user selection.
- * 
- * Example: java -Xmx512m -cp lgRuntime.jar
- *   org.LexGrid.LexBIG.admin.ExportLgXML -out &quot;file:///path/to/dir&quot;
- *      -u &quot;FBbt&quot; -v &quot;PRODUCTION&quot; -f
+ *  usage: ExportLgXML [-xc] [-an null] [-xall] -v null -u name -out uri [-xa] [-f] 
+ *  -an,--associationsName Export associations with this name. Only valid with export type 'xa' 
+ *  -f,--force If specified, allows the destination file to be overwritten if present. 
+ *  -out,--output <uri> URI or path of the directory to contain the resulting XML file. The file name will be automatically derived from the coding scheme name. 
+ *  -u,--urn <name> URN or local name of the coding scheme to export. 
+ *  -v,--version The assigned tag/label or absolute version identifier of the coding scheme. 
+ *  -xa,--exportAssociationsType of export: export only associations. 
+ *  -xall,--exportAll Type of export: export all content. Default behavior. 
+ *  -xc,--exportConcepts Type of export: export only concepts. 
  * </pre>
+ * 
+ * Example: ExportLgXML -out "file:///path/to/dir" -u "NCI Thesaurus" -v "05.06e" -f 
  * 
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  */
