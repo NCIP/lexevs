@@ -3,7 +3,7 @@ CREATE TABLE `@PREFIX@mrconsoStaging` (
   `CUI` varchar(8) collate utf8_bin default NULL,
   `LAT` varchar(3) collate utf8_bin default NULL,
   `TS` varchar(1) collate utf8_bin default NULL,
-  `LUI` varchar(8) collate utf8_bin default NULL,
+  `LUI` varchar(9) collate utf8_bin default NULL,
   `STT` varchar(3) collate utf8_bin default NULL,
   `SUI` varchar(10) collate utf8_bin default NULL,
   `ISPREF` varchar(1) collate utf8_bin default NULL,
