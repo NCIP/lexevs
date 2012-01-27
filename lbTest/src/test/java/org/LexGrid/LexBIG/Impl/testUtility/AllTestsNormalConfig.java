@@ -160,6 +160,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.DefinitionQualifiersDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityAssnsToEntityDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityAssnsToEntityQualsDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.EntityDataTestIT;
+import org.LexGrid.LexBIG.Impl.load.meta.GenericPropertySourceQualifierTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MetaVersionTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MetadataLoadTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrhierAssocQualifierTestIT;
@@ -219,6 +220,7 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(PresentationPropertyDataTestIT.class);
         metaLoaderSuite.addTestSuite(PresentationQualifiersDataTestIT.class);
         metaLoaderSuite.addTestSuite(MetaVersionTestIT.class);
+        metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
 
         mainSuite.addTest(metaLoaderSuite);
         
