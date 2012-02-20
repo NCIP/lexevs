@@ -2108,12 +2108,11 @@ public class ProtegeOwl2LG {
         Mappings mappings = new Mappings();
         lgScheme_.setMappings(mappings);
 
-        NamespaceManager nm = owlModel_.getNamespaceManager();
+        NamespaceManager nm = owlModel_.getNamespaceManager();       
         for (Iterator i = nm.getPrefixes().iterator(); i.hasNext();) {
             String prefix = i.next().toString();
             if (StringUtils.isNotEmpty(prefix)) {
-                lgSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
-                        false);
+                //lgSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null, false);
                 lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
                         false);
             }
