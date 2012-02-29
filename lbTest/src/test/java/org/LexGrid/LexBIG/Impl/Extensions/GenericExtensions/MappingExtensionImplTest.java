@@ -54,6 +54,26 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		return testID;
 	}
 	
+	public void testIsMappingCodingScheme() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		boolean isMappingCS = mappingExtension.isMappingCodingScheme(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION));
+		assertTrue(isMappingCS);
+	}
+	
+	public void testNotMappingCodingScheme() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		boolean isMappingCS = mappingExtension.isMappingCodingScheme(
+				AUTO_SCHEME, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(AUTO_VERSION));
+		assertFalse(isMappingCS);
+	}
+	
 	public void testResolveMappingWithCodeDifferentNamespaceInSource() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
