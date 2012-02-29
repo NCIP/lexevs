@@ -174,11 +174,11 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                                 relationsUid, 
                                 false);
 
-                        if(relation.getIsMapping() == null || relation.getIsMapping() == false) {
-                            return false;
+                        if(relation.getIsMapping() != null && relation.getIsMapping() == true) {
+                            return true;
                         }
                     }
-                    return true;
+                    return false;
                 }});
         
         return isMappingCodingScheme;
