@@ -169,6 +169,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
@@ -399,6 +400,8 @@ public class AllTestsNormalConfig {
         bugTests.addTestSuite(GForge29924.class);
         bugTests.addTestSuite(GForge29940.class);
         bugTests.addTestSuite(GForge27457.class);
+        
+        bugTests.addTestSuite(DuplicatePropertyIdListenerTest.class);
         
         mainSuite.addTest(bugTests);
         
