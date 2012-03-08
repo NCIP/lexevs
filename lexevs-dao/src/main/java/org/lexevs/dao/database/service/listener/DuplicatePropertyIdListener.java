@@ -46,8 +46,9 @@ public class DuplicatePropertyIdListener extends AbstractPreEntityInsertValidati
 		Property[] props = entity.getProperty();
 		List<Property> validList = new ArrayList<Property>();
 		List<String> propIdList = new ArrayList<String>();
-
+		
 		for (Property prop : props) {
+			if(prop.getPropertyId() == null || prop.getPropertyId().length()==0) {return true; }
 			if (!propIdList.contains(prop.getPropertyId().toLowerCase())) {
 				validList.add(prop);
 				propIdList.add(prop.getPropertyId().toLowerCase());
