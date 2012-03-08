@@ -639,7 +639,7 @@ pause
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/OSX-lbGUI.command">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar;OSX/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbGUI.sh">
 java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
