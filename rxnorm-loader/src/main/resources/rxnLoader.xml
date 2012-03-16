@@ -25,6 +25,7 @@
 
 	<job id="rxnJob" restartable="true">
 		<listeners>
+		    <listener ref="cachingSupportedAttribuiteTemplate" />
 			<listener ref="jobSetupListener" />
 			<listener ref="cleanupListener" />
 		</listeners>
