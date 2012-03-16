@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/abstract-rrf-loader"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/args4j/args4j-2.0.12.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
