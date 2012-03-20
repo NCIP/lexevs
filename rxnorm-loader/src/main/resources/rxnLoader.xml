@@ -864,11 +864,11 @@
 		</beans:property>
 	</beans:bean>
 	
-<!-- 	<beans:bean id="abstractLexEvsUtilityTasklet" parent="loggingBean" abstract="true"
+ 	<beans:bean id="abstractLexEvsUtilityTasklet" parent="loggingBean" abstract="true"
 		class="org.lexgrid.loader.lexbigadmin.AbstractLexEvsUtilityTasklet">
 		<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
 		<beans:property name="connectionManager" ref="defaultLexEvsDatabaseOperations" />
-	</beans:bean> -->
+	</beans:bean>
 	
 	<beans:bean id="transitivityBuildingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.TransitivityBuildingTasklet">
