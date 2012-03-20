@@ -19,12 +19,11 @@
 package org.lexgrid.loader.rxn.reader.support;
 
 //import org.LexGrid.persistence.dao.LexEvsDao;
-import org.LexGrid.concepts.Entity;
-//import org.LexGrid.concepts.EntityId;
+import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
-
 import org.lexgrid.loader.processor.support.EntityCodeResolver;
-import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**
  * The Class AbstractSabSkippingPolicy.
@@ -33,11 +32,11 @@ import org.lexgrid.loader.rrf.model.Mrsat;
  */
 public abstract class AbstractSabAndCodeSkippingPolicy<I> extends AbstractSabSkippingPolicy<I> {
 	
-//	private LexEvsDao lexEvsDao;
+
 	/** The coding scheme name setter. */
 	private CodingSchemeIdSetter codingSchemeNameSetter;
 	private EntityCodeResolver<I> entityCodeResolver;
-
+	private DatabaseServiceManager databaseServiceManager;
 
 
 
@@ -57,32 +56,56 @@ public abstract class AbstractSabAndCodeSkippingPolicy<I> extends AbstractSabSki
 	
 	
 	private boolean doesEntityNotExist(I item)  {
-		Entity entityId = new Entity();
-		//entityId.setCodingSchemeName(codingSchemeNameSetter.getCodingSchemeName());
-		entityId.setEntityCode(entityCodeResolver.getEntityCode(item));
-		//entityId.setEntityCodeNamespace(codingSchemeNameSetter.getCodingSchemeName());
-		Entity returnValue= null;
+
+		String code = entityCodeResolver.getEntityCode(item);
+		String codingSchemeUri = 
+				codingSchemeNameSetter.getCodingSchemeUri();
+			
+			String version = 
+				codingSchemeNameSetter.getCodingSchemeVersion();
+		
+		String codingSchemeId = getCodingSchemeId(codingSchemeUri, version);
+		
+		String entityId = null;
+		
+
 		try {
-		 // returnValue = lexEvsDao.findById(Entity.class, entityId);
+
+			entityId = getEntityIdForCode(codingSchemeId, code, codingSchemeNameSetter.getCodingSchemeName());
 		} catch (Exception ex) {
 			ex.printStackTrace();			
 		}
-		if (returnValue == null) {
+		if (entityId == null) {
 			return true;
 		} else {
 			return false;
 		}
 	}	
 	
-
 	
-//	public void setLexEvsDao(LexEvsDao lexEvsDao) {
-//		this.lexEvsDao = lexEvsDao;
-//	}
-//
-//	public LexEvsDao getLexEvsDao() {
-//		return lexEvsDao;
-//	}
+	
+	protected String getEntityIdForCode(final String codingSchemeId, final String entityCode, final String entityCodeNamespace) {
+		return this.databaseServiceManager.getDaoCallbackService().
+			executeInDaoLayer(new DaoCallback<String>() {
+
+			public String execute(DaoManager daoManager) {
+				return 
+					daoManager.getCurrentEntityDao().getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
+			}
+			
+		});
+	}
+
+	protected String getCodingSchemeId(final String codingSchemeUri, final String version) {
+		return this.databaseServiceManager.getDaoCallbackService().
+			executeInDaoLayer(new DaoCallback<String>() {
+
+			public String execute(DaoManager daoManager) {
+				return 
+					daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+			}
+		});
+	}
 	
 	/**
 	 * Gets the coding scheme name setter.
@@ -111,4 +134,16 @@ public abstract class AbstractSabAndCodeSkippingPolicy<I> extends AbstractSabSki
 	public void setEntityCodeResolver(EntityCodeResolver<I> entityCodeResolver) {
 		this.entityCodeResolver = entityCodeResolver;
 	}	
+	
+	public DatabaseServiceManager getDatabaseServiceManager() {
+		return databaseServiceManager;
+	}
+
+
+	public void setDatabaseServiceManager(
+			DatabaseServiceManager databaseServiceManager) {
+		this.databaseServiceManager = databaseServiceManager;
+	}
+
+
 }

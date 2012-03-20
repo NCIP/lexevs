@@ -671,17 +671,19 @@
 		<beans:property name="propertyResolver">
 			<beans:ref bean="rxnDefinitionPropertyResolver"/>
 		</beans:property>
-		<beans:property name="entityKeyResolver">
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+<!-- 		<beans:property name="entityKeyResolver">
 			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
-		</beans:property>
+		</beans:property> -->
 	</beans:bean>
 
 	<beans:bean id="rxnMrsatPropertyProcessor" parent="rxnDefaultPropertyProcessor"
 		class="org.lexgrid.loader.rxn.processor.MrsatPropertyProcessor">
 		<beans:property name="propertyResolver" ref="rxnMrsatPropertyResolver" />
-	    <beans:property name="entityKeyResolver">
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+<!-- 	    <beans:property name="entityKeyResolver">
 			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
-		</beans:property>
+		</beans:property> -->
 	</beans:bean>
 
 	<beans:bean id="rxnMrstyCombiningProcessor"
@@ -706,11 +708,14 @@
 				<beans:property name="individualIdSetter">
 					<beans:bean
 						class="org.lexgrid.loader.rxn.data.property.MrstyIndividualIdSetter" />
+				</beans:property >
+				<beans:property name="entityNamespaceResolver">
+				<beans:ref  bean="rxnEntityNamespaceResolver"/>
 				</beans:property>
 			</beans:bean>
 		</beans:property>
 		<beans:property name="entityKeyResolver">
-			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+			<beans:ref bean="databaseServiceEntityKeyResolver"/>
 		</beans:property>
 	</beans:bean>
 
@@ -727,10 +732,13 @@
 					<beans:bean
 						class="org.lexgrid.loader.rxn.data.property.MrstyIndividualIdSetter" />
 				</beans:property>
+					<beans:property name="entityNamespaceResolver">
+				<beans:ref  bean="rxnEntityNamespaceResolver"/>
+				</beans:property>
 			</beans:bean>
 		</beans:property>
 		<beans:property name="entityKeyResolver">
-			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+			<beans:ref bean="databaseServiceEntityKeyResolver"/>
 		</beans:property>
 	</beans:bean>
 
@@ -769,6 +777,7 @@
 			<beans:bean
 				class="org.lexgrid.loader.rxn.processor.support.RxnMrsatEntityCodeResolver" />
 		</beans:property>
+		<beans:property name="entityNamespaceResolver" ref="rxnEntityNamespaceResolver"/>
 		<beans:property name="mrsatUtility">
 			<beans:ref bean="mrsatUtility" />
 		</beans:property>
@@ -854,7 +863,13 @@
 			<beans:ref local="rxnCodingSchemeNameSetter" />
 		</beans:property>
 	</beans:bean>
-
+	
+<!-- 	<beans:bean id="abstractLexEvsUtilityTasklet" parent="loggingBean" abstract="true"
+		class="org.lexgrid.loader.lexbigadmin.AbstractLexEvsUtilityTasklet">
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
+		<beans:property name="connectionManager" ref="defaultLexEvsDatabaseOperations" />
+	</beans:bean> -->
+	
 	<beans:bean id="transitivityBuildingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.TransitivityBuildingTasklet">
 		<beans:property name="codingSchemeIdSetter">
@@ -935,9 +950,9 @@
 	</beans:bean>
 
 	<beans:bean id="mrsatUsageFactoryBean"
-		class="org.lexgrid.loader.rxn.factory.RxnMrsatUsageFactory" />
+	class="org.lexgrid.loader.rxn.factory.RxnMrsatUsageFactory" />
 
-<!-- 	<beans:bean id="propertyComparator"
+<!--      <beans:bean id="propertyComparator"
 		class="org.lexgrid.loader.rrf.data.property.MrconsoPropertyComparator">
 		<beans:property name="mrrankUtility">
 			<beans:ref bean="mrrankUtility" />
@@ -1308,9 +1323,9 @@
 					<beans:bean
 						class="org.lexgrid.loader.rxn.processor.support.RxnMrsatEntityCodeResolver" />
 				</beans:property>
-<!-- 				<beans:property name="lexEvsDao">
-					<beans:ref bean="lexEvsDao" />
-				</beans:property> -->
+				<beans:property name="databaseServiceManager">
+					<beans:ref bean="databaseServiceManager"/>
+				</beans:property>
 
 			</beans:bean>
 		</beans:property>
@@ -1331,10 +1346,9 @@
 					<beans:bean
 						class="org.lexgrid.loader.rxn.processor.support.RxnMrstyEntityCodeResolver" />
 				</beans:property>
-<!-- 				<beans:property name="lexEvsDao">
-					<beans:ref bean="lexEvsDao" />
-				</beans:property> -->
-
+				<beans:property name="databaseServiceManager">
+					<beans:ref bean="databaseServiceManager"/>
+				</beans:property>
 			</beans:bean>
 		</beans:property>
 		<beans:property name="delegate">
