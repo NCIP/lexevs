@@ -160,7 +160,7 @@ DB_PREFIX=lb
 #	"SEQUENTIAL_INTEGER" 
 #		- Primary Keys will be sequentially incremented
 #		- as Ingeter values.
-DB_PRIMARY_KEY_STRATEGY=GUID
+DB_PRIMARY_KEY_STRATEGY=SEQUENTIAL_INTEGER
 
 # Optional parameters to append to the end of the database
 # connection string.  Access to some database environments
