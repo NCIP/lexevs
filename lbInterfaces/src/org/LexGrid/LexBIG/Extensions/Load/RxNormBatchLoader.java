@@ -18,7 +18,7 @@ public interface RxNormBatchLoader extends SpringBatchLoader {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void loadRXNORM(URI rrfDir) throws Exception;
+	public void loadRxn(URI rrfDir, String sab) throws Exception;
 
 	/**
 	 * Resume meta.
@@ -31,7 +31,7 @@ public interface RxNormBatchLoader extends SpringBatchLoader {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void resumeRXNORM(URI rrfDir, String uri, String version) throws Exception;
+	public void resumeRxn(URI rrfDir, String sab, String uri, String version) throws Exception;
 
 	public void removeLoad(String uri, String version) throws LBParameterException;	
 }
