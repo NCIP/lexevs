@@ -223,9 +223,9 @@
 	<beans:bean id="associationProcessor"
 		class="org.lexgrid.loader.rxn.processor.RxndocAssociationProcessor"
 		abstract="true">
-<!-- 		<beans:property name="supportedAttributeTemplate">
+		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property> -->
+		</beans:property>
 	</beans:bean>
 
 <!-- 	<beans:bean id="postProcessingDao" parent="hibernateRrfPostProcessingDao">
