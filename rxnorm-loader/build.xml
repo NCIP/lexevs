@@ -15,7 +15,7 @@
 <!--                                                                        -->
 <!-- ====================================================================== -->
 
-<project name="umls-loader" default="package" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+<project name="rxnorm-loader" default="package" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
 
 	
   <!-- ====================================================================== -->
@@ -23,10 +23,10 @@
   <!-- ====================================================================== -->
 
   <property file="build.properties"/>
-  <property file="${build.testOutputDir}/test.properties"/>
-  <import file="../lbPackager/common-build.xml"/>
-	
-	 <target name="test" 
+
+ <!-- <import file="../lbPackager/common-build.xml"/> -->
+	 <import file="${basedir}/../lbPackager/common-build.xml"/>
+<!--	 <target name="test" 
 	          depends="compile-tests"
 	          description="Run the test cases">
 	    <mkdir dir="${test.reports}"/>
@@ -54,6 +54,6 @@
 	        </fileset>
 	      </batchtest>
 	    </junit>
-	  </target>
+	  </target> -->
 
 </project>
