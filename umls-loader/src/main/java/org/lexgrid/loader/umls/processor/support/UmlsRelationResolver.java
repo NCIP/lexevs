@@ -36,7 +36,6 @@ public class UmlsRelationResolver extends AbstractRrfRelationResolver {
 	
 	public UmlsRelationResolver(){
 		super();
-		LoggerFactory.getLogger().warn("################  LOADING UMLS USING lbPatch.jar  ###################");
 	}
 
 	/* (non-Javadoc)
