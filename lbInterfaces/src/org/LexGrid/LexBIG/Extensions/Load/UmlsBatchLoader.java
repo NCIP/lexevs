@@ -29,7 +29,7 @@ public interface UmlsBatchLoader extends SpringBatchLoader {
 	
 	public static String NAME = "UmlsBatchLoader";
 	public static String VERSION = "1.1";
-	public static String DESCRIPTION = "Umls Spring Batch Loader";
+	public static String DESCRIPTION = "This loader loads UMLS contents in RRF format into the LexGrid database.";
 	
 	/**
 	 * Load umls.
