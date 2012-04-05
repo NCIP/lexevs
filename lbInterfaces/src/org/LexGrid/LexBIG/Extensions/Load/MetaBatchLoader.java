@@ -31,7 +31,7 @@ public interface MetaBatchLoader extends SpringBatchLoader {
 	
 	public String NAME = "MetaBatchLoader";
 	public String VERSION = "1.1";
-	public String DESCRIPTION = "NCI MetaThesaurus Spring Batch Loader";
+	public String DESCRIPTION = "This loader loads NCI MetaThesaurus in RRF format into the LexGrid database.";
 	
 	/**
 	 * Load meta.
