@@ -9,56 +9,48 @@
 	<caches defaultCacheDir="${user.home}/.ivy2/lexevs" useOrigin="true"/>
 	<resolvers>
 
-		<url name="bmidev-internal-snapshots" m2compatible="true">
+		<url name="bmidev-internal-snapshots" m2compatible="true" checksums="">
 			<ivy
 				pattern="${bmidev.internal.snapshots.repo}/[organisation]/[module]/[revision]/ivy.xml" />
 			<artifact
 				pattern="${bmidev.internal.snapshots.repo}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
 		</url>
 	
-		<chain name="nci-chain">
-		 	<filesystem name="user-local-repo" local="true" m2compatible="true">
+		<chain name="nci-chain" >
+			<filesystem name="user-local-repo" local="true" m2compatible="true" checksums="">
 				<artifact pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 				<ivy pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/ivy.xml" />
 	  		</filesystem> 
 
-	  		<filesystem name="shared-libraries" m2compatible="true">
+	  		<filesystem name="shared-libraries" m2compatible="true" checksums="">
      			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
     		</filesystem>
     		
-    		<filesystem name="shared-libraries-eclipse" m2compatible="true">
+    		<filesystem name="shared-libraries-eclipse" m2compatible="true" checksums="">
      			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/eclipse/[organisation]/[revision]/[artifact].[ext]" />
     		</filesystem>
     		
-    		 <filesystem name="shared-libraries-eclipse-type2" m2compatible="true">
+    		 <filesystem name="shared-libraries-eclipse-type2" m2compatible="true" checksums="">
      			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/eclipse/[organisation]/[artifact]-[revision].[ext]" />
     		</filesystem>
     		
-    		<filesystem name="shared-libraries-eclipse-type3" m2compatible="true">
+    		<filesystem name="shared-libraries-eclipse-type3" m2compatible="true" checksums="">
      			 <artifact pattern="${ivy.project.dir}/../lgSharedLibraries/eclipse/[organisation]/[artifact]_[revision].[ext]" />
     		</filesystem>
-	  		
-			<url name="ncicb-ivy-repo" m2compatible="false">
+
+			<!-- <url name="ncicb-ivy-repo" m2compatible="false" checksums="">
 				<ivy pattern="${nci.ivy.repo}/[organisation]/[module]/[revision]/ivy.xml" />
 				<artifact pattern="${nci.ivy.repo}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]" />
 			</url>
-			
-			 <url name="cbiit-maven-mirror" m2compatible="true">
-        		<artifact pattern="https://ncisvn.nci.nih.gov/svn/maven-mirror/trunk/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
-     		</url>
-			
-	 		<url name="java-net" m2compatible="true">
-      			  <artifact pattern="http://download.java.net/maven/2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
-      		</url>
-      		
-      		<url name="maven-central" m2compatible="true">
+		    	
+      		<url name="maven-central" m2compatible="true" checksums="">
       			  <artifact pattern="http://repo1.maven.org/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
       		</url>
       		
-      		<url name="ibiblio" m2compatible="true">
+      		<url name="ibiblio" m2compatible="true" checksums="">
       			  <artifact pattern="http://www.ibiblio.org/pub/mirrors/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
-      		</url>
-      		
+      		</url> 
+ -->   		
       		<!-- Removed for now
       		<url name="akka-repos" m2compatible="true">
             	<artifact pattern="http://scalablesolutions.se/akka/repository/se/scalablesolutions/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
@@ -69,9 +61,13 @@
 			</url>
 			-->
 			
-			<url name="eaio-repos" m2compatible="true">
+<!--  			<url name="eaio-repos" m2compatible="true" checksums="">
             	<artifact pattern="http://eaio.com/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
-			</url>
+			</url> -->
+			
+			<url name="CBIIT Nexus Server" m2compatible="true" checksums="">
+        		<artifact pattern="https://ncimvn.nci.nih.gov/nexus/content/groups/public/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+     		</url>
 			
 		</chain>
 	</resolvers>
