@@ -96,6 +96,14 @@ public class MrsatPropertyResolver extends AbstractBasicPropertyResolver<Mrsat>{
 	public String getRepresentationalForm(Mrsat item) {
 		return null;
 	}
+	
+	public String getId(Mrsat item) {
+		String temp = super.getId(item);
+	    if(temp.length() > 50){
+	    	temp = temp.substring(0,49);
+	    }
+	    return temp;
+	}
 
 	/**
 	 * Gets the mrsat utility.

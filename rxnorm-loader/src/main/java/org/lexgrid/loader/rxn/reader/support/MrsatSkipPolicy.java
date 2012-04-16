@@ -19,6 +19,7 @@
 package org.lexgrid.loader.rxn.reader.support;
 
 import org.lexgrid.loader.rrf.model.Mrsat;
+import org.lexgrid.loader.rxn.constants.RxnConstants;
 import org.lexgrid.loader.rxn.data.property.RxnMrsatUtility;
 
 /**
@@ -26,20 +27,33 @@ import org.lexgrid.loader.rxn.data.property.RxnMrsatUtility;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrsatSkipPolicy extends AbstractSabAndCodeSkippingPolicy<Mrsat> {
+public class MrsatSkipPolicy extends MrsatAbstractSabAndCodeSkippingPolicy<Mrsat> {
 
 	/** The mrsat utility. */
 	private RxnMrsatUtility mrsatUtility;
+
 
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rxn.reader.support.AbstractSabSkippingPolicy#toSkip(java.lang.Object)
 	 */
 	public boolean toSkip(Mrsat item) {
+		if(item.getAtn().equals(RxnConstants.MRSAT_ATN)){
+			return skipUMLSCui(item);
+		}
+
 		if(super.toSkip(item)){
 			return true;
 		}
 		return mrsatUtility.toSkip(item);
+	}
+	
+	
+    /* Skip extra UMLSCUI declarations in RXNSAT*/
+	private boolean skipUMLSCui(Mrsat item) {
+		if(super.getSab()==item.getSab() && item.getCode()==super.getEntityCodeResolver().getEntityCode(item))
+		{return false;}
+		return true;
 	}
 
 	/* (non-Javadoc)

@@ -104,7 +104,7 @@
 													<listener ref="stepCompletionListener" />
 												</listeners>
 												<chunk reader="rxnMrsatSkippingReader" processor="rxnMrsatPropertyProcessor"
-													writer="entityPropertyWriter" skip-limit="500"
+													writer="rxnMrsatEntityPropertyWriter" skip-limit="500"
 													commit-interval="1000">
 													<streams>
 														<stream ref="rxnsatReader" />
@@ -1356,6 +1356,7 @@
 		</beans:property>
 	</beans:bean>
 
+<beans:bean name="rxnMrsatEntityPropertyWriter" class="org.lexgrid.loader.rxn.writer.RxnMrsatEntityPropertyWriter" parent="abstractLexEvsDaoWriter"/>
 
 	<beans:bean id="rxnSkippingMrhierReader"
 		class="org.lexgrid.loader.reader.SkippingItemReader">

@@ -39,8 +39,11 @@ public class RxnConstants {
 	public static String TARGET_AUI_QUALIFIER = "target-aui";
 	public static String SELF_REFERENCING_QUALIFIER = "self-referencing";
 	public static String SELF_REFERENCING_QUALIFIER_TRUE_VALUE = Boolean.toString(true);
+	public static String MRSAT_ATN = "UMLSCUI";
 	
 	public static String RUI = "RUI";
 	public static String SRUI = "SRUI";
+	public static String RXNSAB = "RXNORM";
+	public static String NDFRTSAB = "NDFRT";
 	
 }

@@ -19,7 +19,7 @@
 package org.lexgrid.loader.rxn.data.property;
 
 import org.apache.commons.lang.StringUtils;
-import org.lexgrid.loader.data.property.IndividualIdSetter;
+import org.lexgrid.loader.data.property.RandomGuidIndividualIdSetter;
 import org.lexgrid.loader.rrf.model.Mrsat;
 
 /**
@@ -27,7 +27,7 @@ import org.lexgrid.loader.rrf.model.Mrsat;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MrsatIndividualIdSetter implements IndividualIdSetter<Mrsat> {
+public class MrsatIndividualIdSetter extends RandomGuidIndividualIdSetter<Mrsat> {
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.data.property.IndividualIdSetter#addId(java.lang.Object)
@@ -36,7 +36,7 @@ public class MrsatIndividualIdSetter implements IndividualIdSetter<Mrsat> {
 		if (StringUtils.isNotBlank(item.getAtui())) {
 		   return item.getAtui();
 		} else {
-			return item.getCui()+ "_"+ item.getMetaui()+"_"+ item.getAtv();
+			return super.addId(item);
 		}
 	}
 

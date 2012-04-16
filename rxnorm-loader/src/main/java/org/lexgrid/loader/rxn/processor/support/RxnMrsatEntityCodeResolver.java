@@ -32,6 +32,6 @@ public class RxnMrsatEntityCodeResolver implements EntityCodeResolver<Mrsat>{
 	 * @see org.lexgrid.loader.processor.support.EntityCodeResolver#getEntityCode(java.lang.Object)
 	 */
 	public String getEntityCode(Mrsat item){
-		return item.getCode();
+		return item.getCui();
 	}
 }
