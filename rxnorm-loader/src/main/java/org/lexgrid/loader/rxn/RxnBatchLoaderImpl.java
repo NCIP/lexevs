@@ -99,10 +99,10 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	protected URNVersionPair[] doLoad() {
 		try {
 			Properties connectionProps = connectionPropertiesFactory.getPropertiesForNewLoad();	
-			connectionProps.put("sab", this.getOptions().getStringOption(SAB_OPTION).getOptionValue());
+			connectionProps.put("sab", "RXNORM");
 			connectionProps.put("rrfDir", this.getResourceUri().toString());
 			connectionProps.put("retry", "false");
-			launchJob(connectionProps, RXN_LOADER_CONFIG, "umlsJob");
+			launchJob(connectionProps, RXN_LOADER_CONFIG, "rxnJob");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

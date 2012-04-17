@@ -49,10 +49,11 @@ public class RxnBatchLoaderLauncher{
  	@Option(name="-in")   
 	 private String rrfDir;
 	 
-	 /** The sab. */
- 	@Option(name="-s")   
-	 private String sab;
-	 
+//	 /** The sab. */
+// 	@Option(name="-s")   
+//	 private String sab;
+	 private String sab = "RXNORM";
+			 
 	 /** The uri. */
  	@Option(name="-uri")   
 	 private String uri;
