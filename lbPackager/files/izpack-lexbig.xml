@@ -133,7 +133,6 @@ You may obtain a copy of the License at
 			<executable targetfile="$INSTALL_PATH/admin/ResumeMetaBatch.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/ResumeUmlsBatch.sh" stage="never" keep="true"></executable>
             <executable targetfile="$INSTALL_PATH/admin/TagScheme.sh" stage="never" keep="true"></executable>
-			<executable targetfile="$INSTALL_PATH/admin/TransferScheme.sh" stage="never" keep="true"></executable>
         </pack>
         <pack name="Documentation" preselected="yes" required="no">
             <description>Installs administration and programmer guides, including JavaDoc.</description>
