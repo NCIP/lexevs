@@ -566,6 +566,10 @@ You may obtain a copy of the License at
    			<param name="project" value="lbExamples"/>
 			<param name="module" value="lexbig-examples"/>
   		</antcall>
+		<!-- Add example scripts -->
+		<copy todir="${pkg-examples}">
+			<fileset dir="${lexevs.api.dir}/lbExamples/scripts" includes="**/*"/>
+		</copy>
 		<!-- Add test data -->
 		<copy todir="${pkg-examples}/resources">
 			<fileset dir="${lexevs.api.dir}/lbExamples/resources" includes="**/*"/>
