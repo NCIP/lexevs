@@ -1,5 +1,5 @@
 
-Cumulative Release notes for LexEVS 6.0.3  and it's predecessors, 6.0.2, 6.0.1 and 6.0
+Cumulative Release notes for LexEVS 6.0.4  and it's predecessors, 6.0.3, 6.0.2, 6.0.1 and 6.0
 Craig Stancl
 Pradip Kanjamala
 Scott Bauer
@@ -46,6 +46,19 @@ true when given no relations.
    https://tracker.nci.nih.gov/browse/LEXEVS-487
 
 
+== Version 6.0.4 ==
+
+
+1) This release contains an RXNORM loader which is a community contributed (PGRN PHONT) project. As such, it is unsupported.
+2) Contains updated launcher's for Value Set GUI for 64bit Windows and Linux.
+3) Set DB_PRIMARY_KEY_STRATEGY=SEQUENTIAL_INTEGER as default for generating primary keys in the database.
+https://tracker.nci.nih.gov/browse/LEXEVS-494
+4) Corrected an issue with the RRF loader that failed when loading ICD-10.
+5) Modified the UmlsRootNodeResolver to only mark codes that have V-SAB value as being root nodes.
+6) Updated build for OSX to allow GUI to work with newer versions.  (Not backward compatible with powerpc Macs.)
+7) Updated loader descriptions to better match function.
+https://tracker.nci.nih.gov/browse/LEXEVS-454
+8) Updated build dependencies to point to NCI Nexus server.
 
 
 LexEVS 6.0.0 Release Notes
