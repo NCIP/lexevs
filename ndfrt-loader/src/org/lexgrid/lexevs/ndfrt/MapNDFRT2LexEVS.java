@@ -21,6 +21,7 @@ import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
@@ -278,6 +279,11 @@ public class MapNDFRT2LexEVS {
 				 System.out.println("Property id: " + p.getPropertyId());
 				 System.out.println("Property name: " + p.getPropertyName());
 				 System.out.println("Property value: " + p.getValue().getContent());
+				 PropertyQualifier[] pq = p.getPropertyQualifier();
+				 for(PropertyQualifier pqr : pq){
+					System.out.println("Qualifier name: " + pqr.getPropertyQualifierName());
+					System.out.println("Qualifier value " + pqr.getValue().getContent());
+				 }
 				
 			 }
 			 break;
@@ -357,13 +363,62 @@ public class MapNDFRT2LexEVS {
 							.getElementText()));
 					//break;
 			}
-
+			if(xmlStreamReader.getLocalName() == NdfrtConstants.QUALIFIERS){
+				property.setPropertyQualifier(processPropertyQualifierList(xmlStreamReader));
+			}
 			}
 			if(event == XMLStreamReader.END_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.PROPERTY)){
 				break;
 			}
 		}
 		return property;
+	}
+
+	private List<PropertyQualifier> processPropertyQualifierList(
+			XMLStreamReader xmlStreamReader) throws XMLStreamException {
+		List<PropertyQualifier> list = new ArrayList<PropertyQualifier>();
+		while (xmlStreamReader.hasNext()) {
+			int event = xmlStreamReader.next();
+			if (event == XMLStreamConstants.START_ELEMENT) {
+				if (xmlStreamReader.getLocalName() == NdfrtConstants.QUALIFIER) {
+					list.add(processPropertyQualifier(xmlStreamReader, this.qualifiers));
+				}
+
+			}
+			if (event == XMLStreamConstants.END_ELEMENT) {
+				if (xmlStreamReader.getLocalName() == NdfrtConstants.QUALIFIERS) {
+					return list;
+				}
+			}
+		}		return null;
+	}
+
+	private PropertyQualifier processPropertyQualifier(
+			XMLStreamReader xmlStreamReader, List<QualifierDef> qualifiers2) throws XMLStreamException {
+		PropertyQualifier pqualifier = new PropertyQualifier();
+		while (xmlStreamReader.hasNext()) {
+			int event = xmlStreamReader.next();
+			if (event == XMLStreamConstants.START_ELEMENT) {
+				if (xmlStreamReader.getLocalName() == NdfrtConstants.NAME) {
+					String name = xmlStreamReader.getElementText();
+					for (QualifierDef q : qualifiers) {
+						if (q.code.equals(name)) {
+							pqualifier.setPropertyQualifierName(name);
+							break;
+						}
+					}
+				}
+				if (xmlStreamReader.getLocalName() == NdfrtConstants.VALUE) {
+
+				 pqualifier.setValue(setLexEVSText(xmlStreamReader
+							.getElementText()));
+			}
+			}
+			if(event == XMLStreamReader.END_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.QUALIFIER)){
+				break;
+			}
+		}
+		return pqualifier;
 	}
 
 	private Text setLexEVSText(String elementText) {
