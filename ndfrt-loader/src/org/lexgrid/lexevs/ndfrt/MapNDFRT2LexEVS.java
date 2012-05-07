@@ -355,11 +355,12 @@ public class MapNDFRT2LexEVS {
 
 					property.setValue(setLexEVSText(xmlStreamReader
 							.getElementText()));
-					break;
+					//break;
 			}
-//				if(event == XMLStreamReader.END_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.PROPERTY)){
-//					break;
-//				}
+
+			}
+			if(event == XMLStreamReader.END_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.PROPERTY)){
+				break;
 			}
 		}
 		return property;
