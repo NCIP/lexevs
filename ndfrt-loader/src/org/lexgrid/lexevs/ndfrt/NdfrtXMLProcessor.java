@@ -130,16 +130,17 @@ public class NdfrtXMLProcessor {
 
 		xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(
 				in);
-
+        int counter = 0;
 		for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
 				.next()) {
 			
-
+			
 			KindDef kind = new KindDef();
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.KIND_DEF)) {
-			
+				counter++;
+
 			while(xmlStreamReader.hasNext()){
 				
 			    event = xmlStreamReader.next();
@@ -147,34 +148,32 @@ public class NdfrtXMLProcessor {
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAME)) {
 				kind.name = xmlStreamReader.getElementText();
-				System.out.println("Kind Property name text: "
-						+ kind.name);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CODE)) {
 				kind.code = xmlStreamReader.getElementText();
-				System.out.println("Kind Property id text: "
-						+ kind.code);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ID)) {
 
 						kind.id = xmlStreamReader.getElementText();
-						System.out.println("Kind PropertyQualifier text: " + kind.id);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAMESPACE)) {
 				kind.namespace = xmlStreamReader.getElementText();
-				System.out.println("Kind Property source: " + NdfrtConstants.NAMESPACE);
+
 			}
-			list.add(kind);
+
 			if (event == XMLStreamConstants.END_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.KIND_DEF)) {
-
+				list.add(kind);
 				break;
 			}
 			}
@@ -218,46 +217,43 @@ public class NdfrtXMLProcessor {
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAME)) {
 				role.name = xmlStreamReader.getElementText();
-				System.out.println("Role name text: "
-						+ role.name);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CODE)) {
 				role.code = xmlStreamReader.getElementText();
-				System.out.println("Role code text: "
-						+ role.code);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ID)) {
 				role.id = xmlStreamReader.getElementText();
-				System.out.println("Role id text: "
-						+ role.id);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAMESPACE)) {
 				role.namespace = xmlStreamReader.getElementText();
-				System.out.println("Role source: " + role.namespace);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.DOMAIN)) {
 				role.domain = xmlStreamReader.getElementText();
-				System.out.println("domain: " + role.domain);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.RANGE)) {
 				role.range = xmlStreamReader.getElementText();
-				System.out.println("range source: " + role.range);
+
 			}
-			list.add(role);
+
 			if (event == XMLStreamConstants.END_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ROLE_DEF)) {
-
+				list.add(role);
 				break;
 			}
             }
@@ -304,49 +300,43 @@ public class NdfrtXMLProcessor {
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAME)) {
 				property.name = xmlStreamReader.getElementText();
-				System.out.println("Property name text: "
-						+ property.name);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CODE)) {
 				property.code = xmlStreamReader.getElementText();
-				System.out.println("Property code text: "
-						+ property.code);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ID)) {
 				property.id = xmlStreamReader.getElementText();
-				System.out.println("Property id text: "
-						+ property.id);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAMESPACE)) {
 				property.namespace = xmlStreamReader.getElementText();
-				System.out.println("Property source: " + property.namespace);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.RANGE)) {
 				property.range = xmlStreamReader.getElementText();
-				System.out.println("range source: " + property.range);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.PICKLIST)){
 				String name = xmlStreamReader.getLocalName();
 				List<String> list = getPickList(xmlStreamReader);
-				for(String s : list){
-					System.out.println("PicklistItem: " + s);
-				}
 
 				property.pickList = list;
 			}
-			propList.add(property);
+			
 			if (event == XMLStreamConstants.END_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.PROPERTY_DEF)) {
-
+				propList.add(property);
 				break;
 			}
 			}
@@ -390,35 +380,32 @@ public class NdfrtXMLProcessor {
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAME)) {
 				association.name = xmlStreamReader.getElementText();
-				System.out.println("Association name text: "
-						+ association.name);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CODE)) {
 				association.code = xmlStreamReader.getElementText();
-				System.out.println("Association code text: "
-						+ association.code);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ID)) {
 				association.id = xmlStreamReader.getElementText();
-				System.out.println("Association id text: "
-						+ association.id);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAMESPACE)) {
 				association.namespace = xmlStreamReader.getElementText();
-				System.out.println("Association source: " + association.namespace);
+
 			}
-			associations.add(association);
+			
 			if (event == XMLStreamConstants.END_ELEMENT
 					
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ASSOCIATION_DEF)) {
-
+				associations.add(association);
 				break;
 			}
 			}
@@ -463,41 +450,44 @@ public class NdfrtXMLProcessor {
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAME)) {
 				qualifier.name = xmlStreamReader.getElementText();
-				System.out.println("Qualifier name text: "
-						+ qualifier.name);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CODE)) {
 				qualifier.code = xmlStreamReader.getElementText();
-				System.out.println("Qualifier code text: "
-						+ qualifier.code);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ID)) {
 				qualifier.id = xmlStreamReader.getElementText();
-				System.out.println("Qualifier id text: "
-						+ qualifier.id);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAMESPACE)) {
 				qualifier.namespace = xmlStreamReader.getElementText();
-				System.out.println("Qualifier source: " + qualifier.namespace);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.PICKLIST)){
 					
 				qualifier.pickList = getPickList(xmlStreamReader);
 		    }
-			list.add(qualifier);
 			
+			
+			if (event == XMLStreamConstants.END_ELEMENT
+					&& xmlStreamReader.getLocalName().equals(
+							NdfrtConstants.QUALIFIER_DEF)) {
+				list.add(qualifier);
+				break;
+			}
+			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CONCEPT_DEF)) {
 
 				break;
-			}
 			}
 			}
 		}
@@ -542,11 +532,61 @@ public class NdfrtXMLProcessor {
 			processor.getCodingScheme(new File(args[0]).toURI(), null, true,
 					null);
 			try {
-				processor.getKindDefList(new File(args[0]).toURI(), null, true);
-				processor.getRoleDefList(new File(args[0]).toURI(), null, true);
-				processor.getPropertyDefList(new File(args[0]).toURI(), null, true);
-				processor.getAssociationDefList(new File(args[0]).toURI(), null, true);
-				processor.getQualifierDefList(new File(args[0]).toURI(), null, true);
+				List<KindDef> kindList = processor.getKindDefList(new File(args[0]).toURI(), null, true);
+				for(KindDef kd: kindList){
+				   System.out.println("Kind property code: " + kd.code);
+				   System.out.println("Kind property id: "+ kd.id);
+				   System.out.println("Kind property name: "+ kd.name);
+				   System.out.println("Kind property namespace: "+ kd.namespace);
+
+				   
+				}
+				List<RoleDef> roleList = processor.getRoleDefList(new File(args[0]).toURI(), null, true);
+				for(RoleDef rd: roleList){
+					   System.out.println("Role code: " + rd.code);
+					   System.out.println("Role id: "+ rd.id);
+					   System.out.println("Role name: "+ rd.name);
+					   System.out.println("Role namespace: "+ rd.namespace);
+					   System.out.println("Role range: " + rd.range);		
+					   System.out.println("Role domain: " + rd.domain);
+				}
+
+				List<PropertyDef> propList = processor.getPropertyDefList(new File(args[0]).toURI(), null, true);
+				for(PropertyDef pd: propList){
+					   System.out.println("Prop code: " + pd.code);
+					   System.out.println("Prop id: "+ pd.id);
+					   System.out.println("Prop name: "+ pd.name);
+					   System.out.println("Prop namespace: "+ pd.namespace);
+					   System.out.println("Prop range: " + pd.range);	
+					   List<String> pickList = pd.pickList;
+					   if(pickList != null){
+					   for(String s: pickList){
+						   System.out.println("\tname: "+ s);
+					   }
+					   }
+				}
+				List<AssociationDef> assocList = processor.getAssociationDefList(new File(args[0]).toURI(), null, true);
+				for(AssociationDef pd: assocList){
+					   System.out.println("Assoc code: " + pd.code);
+					   System.out.println("Assoc id: "+ pd.id);
+					   System.out.println("Assoc name: "+ pd.name);
+					   System.out.println("Assoc namespace: "+ pd.namespace);
+
+				}
+				List<QualifierDef> qualList = processor.getQualifierDefList(new File(args[0]).toURI(), null, true);
+				for(QualifierDef pd: qualList){
+					   System.out.println("Qual code: " + pd.code);
+					   System.out.println("Qual id: "+ pd.id);
+					   System.out.println("Qual name: "+ pd.name);
+					   System.out.println("Qual namespace: "+ pd.namespace);
+
+					   List<String> pickList = pd.pickList;
+					   if(pickList != null){
+					   for(String s: pickList){
+						   System.out.println("\tname: "+ s);
+					   }
+					   }
+				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -239,22 +239,20 @@ public class MapNDFRT2LexEVS {
 							NdfrtConstants.CODE)) {
 				entity.setEntityCode(xmlStreamReader.getElementText());
 				// TODO Set this as a property as well?
-//				System.out.println("entityCode: " + entity.getEntityCode());
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(NdfrtConstants.ID)) {
 
-				// entity.setProperty(new Property[]{property});
+
 				properties.add(processProperty(xmlStreamReader, "P2", null));
-//				 System.out.println("id property for entity: "
-//				 + properties.get(0).getPropertyName());
+;
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.NAMESPACE)) {
 				properties.add(processProperty(xmlStreamReader, "P3", null));
-				// = xmlStreamReader.getElementText();
-				// System.out.println("Role source: " + role.namespace);
+
 			}
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
@@ -268,6 +266,15 @@ public class MapNDFRT2LexEVS {
 
 				properties.addAll(processPropertyList(xmlStreamReader));
 
+			}
+			if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.ASSOCIATIONS)){
+				while(xmlStreamReader.hasNext()){
+				   //Cycle Through the associations TODO map associations
+					event = xmlStreamReader.next();
+					if(event == XMLStreamConstants.END_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.ASSOCIATIONS)){
+						break;
+					}
+				}
 			}
 			 if (event == XMLStreamConstants.END_ELEMENT
 			 && xmlStreamReader.getLocalName().equals(
@@ -318,7 +325,7 @@ public class MapNDFRT2LexEVS {
 
 	private List<Property> processPropertyList(XMLStreamReader xmlStreamReader)
 			throws XMLStreamException {
-		int counter = 3;
+		int counter = 5;
 		List<Property> properties = new ArrayList<Property>();
 		while (xmlStreamReader.hasNext()) {
 			int event = xmlStreamReader.next();
@@ -348,9 +355,9 @@ public class MapNDFRT2LexEVS {
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.NAME) {
 					String name = xmlStreamReader.getElementText();
-					for (PropertyDef p : properties) {
+					for (PropertyDef p : properties) {id++;
 						if (p.code.equals(name)) {
-							property.setPropertyId(String.valueOf(id++));
+							property.setPropertyId("P" + String.valueOf(id));
 							property.setPropertyName(p.name);
 							property.setPropertyType("property");
 							break;
@@ -403,7 +410,7 @@ public class MapNDFRT2LexEVS {
 					String name = xmlStreamReader.getElementText();
 					for (QualifierDef q : qualifiers) {
 						if (q.code.equals(name)) {
-							pqualifier.setPropertyQualifierName(name);
+							pqualifier.setPropertyQualifierName(q.name);
 							break;
 						}
 					}
@@ -431,25 +438,25 @@ public class MapNDFRT2LexEVS {
 			String id, List<? extends BaseDef> list) throws XMLStreamException {
 		Property property = new Property();
 		property.setPropertyId(id);
-		String name;
-		if (list != null) {
-			name = getPropertyNameFromList(list);
-		}
+//		String name = xmlStreamReader.getLocalName();
+//		if (list != null) {
+//			name = getPropertyNameFromList(list);
+//		}
 		property.setPropertyName(xmlStreamReader.getLocalName());
 		property.setPropertyType("property");
 		Text text = new Text();
-		name = xmlStreamReader.getElementText();
+		String name = xmlStreamReader.getElementText();
 		text.setContent(name);
 		property.setValue(text);
 		return property;
 	}
 
-	private String getPropertyNameFromList(List<? extends BaseDef> list) {
-		for (BaseDef p : list) {
-			// if(p.name.equals.)
-		}
-		return null;
-	}
+//	private String getPropertyNameFromList(List<? extends BaseDef> list) {
+//		for (BaseDef p : list) {
+//			// if(p.name.equals.)
+//		}
+//		return null;
+//	}
 
 	private Presentation[] processPresentation(XMLStreamReader xmlStreamReader)
 			throws XMLStreamException {
