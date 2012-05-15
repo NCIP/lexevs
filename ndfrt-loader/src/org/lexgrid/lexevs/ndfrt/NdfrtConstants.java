@@ -46,5 +46,7 @@ public static final String VALUE = "value";
 public static final String SOME = "some";
 public static final String PRIMITIVE = "primitive";
 
+public static final String DEFINED_BY = "defined_by";
+
 
 }
