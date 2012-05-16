@@ -103,6 +103,7 @@ public class NdfrtXMLProcessor {
 		}
 		
 		cs.setLocalName(localNameList );
+		cs.setCodingSchemeURI(NdfrtConstants.SCHEME_URI);
 		return cs;
 
 	}

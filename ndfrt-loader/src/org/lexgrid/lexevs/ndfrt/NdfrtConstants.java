@@ -47,6 +47,9 @@ public static final String SOME = "some";
 public static final String PRIMITIVE = "primitive";
 
 public static final String DEFINED_BY = "defined_by";
+public static final String RELATIONS = "ndfrt_relations";
+public static final String SCHEME_URI = "urn:oid:va.ndf-rt";
+
 
 
 }
