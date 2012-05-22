@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +20,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceManagerImpl;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -517,7 +521,8 @@ public class MapNDFRT2LexEVS {
 			XMLStreamException, FactoryConfigurationError {
 		BufferedReader in = null;
 		XMLStreamReader xmlStreamReader;
-
+		int counter = 0;
+       
 		in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 
 		xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(
@@ -525,14 +530,19 @@ public class MapNDFRT2LexEVS {
 
 		for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
 				.next()) {
-			List<AssociationSource> sourceList = new ArrayList<AssociationSource>();
+			//List<AssociationSource> sourceList = new ArrayList<AssociationSource>();
+			 Map<String, AssociationSource> allSources = new HashMap<String, AssociationSource>();
 			String sourceEntityCode = null;
 			String sourceNamespace = null;
+			String name = null;
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.CONCEPT_DEF)) {
 				while (xmlStreamReader.hasNext()) {
 					event = xmlStreamReader.next();
+//					if(event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName() == NdfrtConstants.NAME){
+//						name = xmlStreamReader.getElementText();
+//					}
 					if (event == XMLStreamConstants.START_ELEMENT
 							&& xmlStreamReader.getLocalName().equals(
 									NdfrtConstants.CODE)) {
@@ -550,11 +560,25 @@ public class MapNDFRT2LexEVS {
 					if (event == XMLStreamConstants.START_ELEMENT
 							&& xmlStreamReader.getLocalName().equals(
 									NdfrtConstants.DEFINING_CONCEPTS)) {
-						List<AssociationSource> definingSources = processDefiningSourceList(
+						List<AssociationTarget> definingTargets = processDefiningTargetList(
 								xmlStreamReader, sourceEntityCode,
 								sourceNamespace);
-						if (definingSources != null) {
-							sourceList.addAll(definingSources);
+						if (definingTargets.size() > 0) {
+							AssociationSource  source = new AssociationSource();
+							source.setSourceEntityCode(sourceEntityCode);
+							source.setSourceEntityCodeNamespace(sourceNamespace);
+							source.setTarget(definingTargets);
+							//sourceList.add(source);
+							
+							System.out.println("Defining Source: ");
+							System.out.println("Source entityCode: "
+									+ source.getSourceEntityCode());
+							System.out
+									.println("Source namepspace: "
+											+ source
+													.getSourceEntityCodeNamespace());
+							System.out.println("Association name:  defined_by");
+							allSources.put(NdfrtConstants.DEFINED_BY, source);
 						}
 
 					}
@@ -562,11 +586,11 @@ public class MapNDFRT2LexEVS {
 							&& xmlStreamReader.getLocalName().equals(
 									NdfrtConstants.DEFINING_ROLES)) {
 
-						List<AssociationSource> definingSources = processRoleSourceList(
+						Map<String, AssociationSource> definingSources = processRoleSourceList(
 								xmlStreamReader, sourceEntityCode,
 								sourceNamespace);
-						if (definingSources != null) {
-							sourceList.addAll(definingSources);
+						if (definingSources.size() > 0) {
+							allSources.putAll(definingSources);
 						}
 
 					}
@@ -574,11 +598,11 @@ public class MapNDFRT2LexEVS {
 							&& xmlStreamReader.getLocalName().equals(
 									NdfrtConstants.ASSOCIATIONS)) {
 
-						List<AssociationSource> definingSources = processAssociationSourceList(
+						Map<String, AssociationSource> definingSources = processAssociationSourceList(
 								xmlStreamReader, sourceEntityCode,
 								sourceNamespace);
 						if (definingSources != null) {
-							sourceList.addAll(definingSources);
+							allSources.putAll(definingSources);
 						}
 
 					}
@@ -586,10 +610,21 @@ public class MapNDFRT2LexEVS {
 					if (event == XMLStreamConstants.END_ELEMENT
 							&& xmlStreamReader.getLocalName().equals(
 									NdfrtConstants.CONCEPT_DEF)) {
-//						for(AssociationSource source : sourceList){
-//						assocService.insertAssociationSource(scheme.getCodingSchemeURI(), 
-//								scheme.getRepresentsVersion(), scheme.getRelations()[0].getContainerName(), null, source);
-//						}
+						Iterator<Map.Entry<String, AssociationSource>> it = allSources.entrySet().iterator();
+						while(it.hasNext()){
+							   	Map.Entry<String, AssociationSource> pairs = (Map.Entry<String, AssociationSource>)it.next();
+							   	if(pairs.getValue().getSourceEntityCode().equals("C18388")){
+							   		System.out.println("Break point for: " + name);
+							   	}
+							   	System.out.println("Associations loading:");
+							     if(counter%1000 == 0){
+								     	System.out.println("******Associations Loaded: "+ counter + " *******");
+								     }
+								     counter++;
+							   	assocService.insertAssociationSource(scheme.getCodingSchemeURI(), 
+								scheme.getRepresentsVersion(), scheme.getRelations()[0].getContainerName(), pairs.getKey(), pairs.getValue());	
+							   }
+
 						break;
 					}
 				}
@@ -601,20 +636,23 @@ public class MapNDFRT2LexEVS {
 		in.close();
 	}
 	
-	private List<AssociationSource> processAssociationSourceList(
+	private Map<String, AssociationSource> processAssociationSourceList(
 			XMLStreamReader xmlStreamReader, String code, String namespace) throws XMLStreamException {
-		List<AssociationSource> list = new ArrayList<AssociationSource>();
+//		List<AssociationSource> list = new ArrayList<AssociationSource>();
 		Map<String, AssociationSource> currentSources = new HashMap<String,AssociationSource>();
+
 		while (xmlStreamReader.hasNext()) {
 			int event = xmlStreamReader.next();
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.ASSOCIATION) {
-					list.add(processAssociationSource(xmlStreamReader, code, namespace, currentSources));
+		//			list.add(
+							processAssociationSource(xmlStreamReader, code, namespace, currentSources);
+			//				);
 				}
 			}
 			if (event == XMLStreamConstants.END_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.ASSOCIATIONS) {
-					return list;
+					return currentSources;
 				}
 			}
 			
@@ -622,33 +660,37 @@ public class MapNDFRT2LexEVS {
 		return null;
 	}
 
-	private List<AssociationSource> processRoleSourceList(
+	private Map<String, AssociationSource> processRoleSourceList(
 			XMLStreamReader xmlStreamReader, String code, String namespace) throws XMLStreamException {
-		List<AssociationSource> list = new ArrayList<AssociationSource>();
+//		List<AssociationSource> list = new ArrayList<AssociationSource>();
+		Map<String, AssociationSource> currentSources = new HashMap<String,AssociationSource>();
 		while (xmlStreamReader.hasNext()) {
 			int event = xmlStreamReader.next();
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.ROLE) {
-					list.add(processRoleSource(xmlStreamReader, code, namespace));
+				//	list.add(
+							processRoleSource(xmlStreamReader, code, namespace, currentSources);
+				//			);
 				}
 
 			}
 			if (event == XMLStreamConstants.END_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.DEFINING_ROLES) {
-					return list;
+					return currentSources;
 				}
 			}
 		}		return null;
 	}
 
-	private List<AssociationSource> processDefiningSourceList(
+	private List<AssociationTarget> processDefiningTargetList(
 			XMLStreamReader xmlStreamReader, String code, String namespace) throws XMLStreamException {
-		List<AssociationSource> list = new ArrayList<AssociationSource>();
+		List<AssociationTarget> list = new ArrayList<AssociationTarget>();
+
 		while (xmlStreamReader.hasNext()) {
 			int event = xmlStreamReader.next();
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.CONCEPT) {
-					list.add(processDefiningSource(xmlStreamReader, code, namespace));
+					list.add(processDefiningTarget(xmlStreamReader, namespace));
 				}
 
 			}
@@ -660,41 +702,55 @@ public class MapNDFRT2LexEVS {
 		}		return null;
 	}
 
-	private AssociationSource processAssociationSource(
+	private void processAssociationSource(
 			XMLStreamReader xmlStreamReader, String code, String namespace,
 			Map<String, AssociationSource> currentSources)
 			throws XMLStreamException {
 		AssociationSource definingSource = new AssociationSource();
 		AssociationTarget target = new AssociationTarget();
+		String associationName = null;
+		boolean sourceDefined = false;
 		while (xmlStreamReader.hasNext()) {
 			int event = xmlStreamReader.next();
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.NAME) {
 					String name = xmlStreamReader.getElementText();
 					for (AssociationDef a : associations) {
+						//Find the association defined in the association cache
 						if (a.code.equals(name)) {
-
+							associationName = a.name;
 							if (currentSources.size() > 0) {
+								//Is the source already defined for this?
 								for (String s : currentSources.keySet()) {
 									if (a.name.equals(s)) {
 										definingSource = currentSources.get(s);
-									} else {
-										definingSource
-												.setSourceEntityCode(code);
-										definingSource
-												.setSourceEntityCodeNamespace(namespace);
-
-										System.out
-												.println("Source entityCode: "
-														+ definingSource
-																.getSourceEntityCode());
+										System.out.println("Association Source: ");
+										System.out.println("Source entityCode: "
+												+ definingSource.getSourceEntityCode());
 										System.out
 												.println("Source namepspace: "
 														+ definingSource
 																.getSourceEntityCodeNamespace());
 										System.out.println("Association Name: "
-												+ a.name);
-									}
+												+ a.name );
+										sourceDefined = true;
+										break;
+									} 
+										if(!sourceDefined){
+										definingSource
+												.setSourceEntityCode(code);
+										definingSource
+												.setSourceEntityCodeNamespace(namespace);
+										System.out.println("Association Source: ");
+										System.out.println("Source entityCode: "
+												+ definingSource.getSourceEntityCode());
+										System.out
+												.println("Source namepspace: "
+														+ definingSource
+																.getSourceEntityCodeNamespace());
+										System.out.println("Association Name: "
+												+ a.name );
+										}
 								}
 							} else {
 								definingSource.setSourceEntityCode(code);
@@ -733,10 +789,11 @@ public class MapNDFRT2LexEVS {
 			if (event == XMLStreamReader.END_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.ASSOCIATION)) {
+				currentSources.put(associationName, definingSource);
 				break;
 			}
 		}
-		return definingSource;
+		//return definingSource;
 	}
 
 	private List<AssociationQualification> processAssociationQualifierList(
@@ -746,9 +803,32 @@ public class MapNDFRT2LexEVS {
 			int event = xmlStreamReader.next();
 			if (event == XMLStreamConstants.START_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.QUALIFIER) {
-					list.add(processAssociationQualifier(xmlStreamReader));
+					AssociationQualification aq = processAssociationQualifier(xmlStreamReader);
+					boolean isInList = false;
+					if(aq.getQualifierText().getContent().equals("3.5") && aq.getAssociationQualifier().equals("Strength")){
+						System.out.println("breakpoint here");
+					}
+					if(list.size() > 0){
+					for(AssociationQualification assoq : list){
+						if(assoq.getQualifierText().getContent().trim().equals(aq.getQualifierText().getContent().trim())){
+							isInList = true;
+							break;
+						}
+					}
+					if(!isInList)
+					{
+						list.add(aq);
+						System.out.println("AssocationQualifier Name: " + aq.getAssociationQualifier());
+						System.out.println("AssociationQualifier: " + aq.getQualifierText().getContent());
+					}
+					}
+					else{
+						list.add(aq);
+						System.out.println("AssocationQualifier Name: " + aq.getAssociationQualifier());
+						System.out.println("AssociationQualifier: " + aq.getQualifierText().getContent());
+					}
+					
 				}
-
 			}
 			if (event == XMLStreamConstants.END_ELEMENT) {
 				if (xmlStreamReader.getLocalName() == NdfrtConstants.QUALIFIERS) {
@@ -786,32 +866,57 @@ public class MapNDFRT2LexEVS {
 	return pqualifier;
 	}
 
-	private AssociationSource processRoleSource(XMLStreamReader xmlStreamReader, String code, String namespace) 
+	private void processRoleSource(XMLStreamReader xmlStreamReader, String code, String namespace, Map<String, AssociationSource> currentSources) 
 		throws XMLStreamException {
 			AssociationSource definingSource = new AssociationSource();
 			AssociationTarget target = new AssociationTarget();
+			String associationName = null;
+			boolean sourceDefined = false;
 			while (xmlStreamReader.hasNext()) {
 				int event = xmlStreamReader.next();
 				if (event == XMLStreamConstants.START_ELEMENT) {
 					if (xmlStreamReader.getLocalName() == NdfrtConstants.NAME) {
 						String name = xmlStreamReader.getElementText();
 						for (RoleDef a : roles) {
-							if (a.code.equals(name)) {
-
-						
 							
-									definingSource.setSourceEntityCode(code);
-									definingSource
-											.setSourceEntityCodeNamespace(namespace);
-									System.out.println("Role Source: ");
-									System.out.println("Source entityCode: "
-											+ definingSource.getSourceEntityCode());
-									System.out
-											.println("Source namepspace: "
-													+ definingSource
-															.getSourceEntityCodeNamespace());
-									System.out.println("Role Name: "
-											+ a.name );
+							//look for the Role definition in the role cache
+							if (a.code.equals(name)) {
+								associationName = a.name;
+								//Is the source already defined for this?
+								if(currentSources.size() > 0){
+								for (String s : currentSources.keySet()) {
+									if (a.name.equals(s)) {
+										definingSource = currentSources.get(s);
+										System.out.println("Role Source: ");
+										System.out.println("Source entityCode: "
+												+ definingSource.getSourceEntityCode());
+										System.out
+												.println("Source namepspace: "
+														+ definingSource
+																.getSourceEntityCodeNamespace());
+										System.out.println("Role Name: "
+												+ a.name );
+										sourceDefined = true;
+										break;
+									} 
+
+								}
+								}
+								if(!sourceDefined){
+								definingSource.setSourceEntityCode(code);
+								definingSource
+										.setSourceEntityCodeNamespace(namespace);
+								System.out.println("Role Source: ");
+								System.out.println("Source entityCode: "
+										+ definingSource.getSourceEntityCode());
+								System.out
+										.println("Source namepspace: "
+												+ definingSource
+														.getSourceEntityCodeNamespace());
+								System.out.println("Role Name: "
+										+ a.name );
+								break;
+								}
 									break;
 								}
 							}
@@ -832,47 +937,22 @@ public class MapNDFRT2LexEVS {
 				if (event == XMLStreamReader.END_ELEMENT
 						&& xmlStreamReader.getLocalName().equals(
 								NdfrtConstants.ROLE)) {
+					currentSources.put(associationName, definingSource);
 					break;
 				}
 			}
-			return definingSource;
+		//	return definingSource;
 	}
 
-	private AssociationSource processDefiningSource(
-			XMLStreamReader xmlStreamReader, String code, String namespace)
+	private AssociationTarget processDefiningTarget(
+			XMLStreamReader xmlStreamReader, String namespace)
 			throws IndexOutOfBoundsException, XMLStreamException {
-		AssociationSource definingSource = new AssociationSource();
 		AssociationTarget target = new AssociationTarget();
 	
-
-
-					definingSource.setSourceEntityCode(code);
-					definingSource.setSourceEntityCodeNamespace(namespace);
-					
-					System.out.println("Defining Concept Source: ");
-					System.out.println("Source entityCode: "
-							+ definingSource.getSourceEntityCode());
-					System.out.println("Source namepspace: "
-							+ definingSource.getSourceEntityCodeNamespace());
-					System.out.println("Role Name: "
-							+ NdfrtConstants.DEFINED_BY);
-
-
-
 					target.setTargetEntityCode(xmlStreamReader.getElementText());
 					target.setTargetEntityCodeNamespace(namespace);
-					definingSource.addTarget(target);
-					
-					for (AssociationTarget t : definingSource.getTarget()) {
-						System.out.println("Defining Concept Target:");
-						System.out.println("Target Entity Code: "
-								+ t.getTargetEntityCode());
-						System.out.println("Target namespace: " + t.getTargetEntityCodeNamespace() + "\n");
 
-	
-		}
-
-		return definingSource;
+		return target;
 	}
 
 	public static void main(String[] args){
@@ -880,31 +960,17 @@ public class MapNDFRT2LexEVS {
 		try {
 			MapNDFRT2LexEVS map = new MapNDFRT2LexEVS(new File(args[0]).toURI(), null, true);
 
-			//map.processAssociations(new File(args[0]).toURI(), null, true);
+
 			map.buildCodingScheme(new File(args[0]).toURI(), null, false, null);
 			map.processEnitities(new File(args[0]).toURI(), null, true);
 			map.processAssociations(new File(args[0]).toURI(), null, true);
-		}catch (FactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CodingSchemeAlreadyLoadedException e) {
+
+
+			
+		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-			catch (LBRevisionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 }
