@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ * 		http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.lexgrid.lexevs.ndfrt;
 
 import java.io.BufferedReader;
@@ -25,8 +43,20 @@ import org.lexgrid.lexevs.ndfrt.data.PropertyDef;
 import org.lexgrid.lexevs.ndfrt.data.QualifierDef;
 import org.lexgrid.lexevs.ndfrt.data.RoleDef;
 
+/**
+ * @author <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer </A>
+ *
+ */
 public class NdfrtXMLProcessor {
 
+	/**
+	 * @param uri
+	 * @param messages
+	 * @param validateXML
+	 * @param manifest
+	 * @return
+	 * @throws CodingSchemeAlreadyLoadedException
+	 */
 	public org.LexGrid.codingSchemes.CodingScheme getCodingScheme(URI uri,
 			LgMessageDirectorIF messages, boolean validateXML,
 			CodingSchemeManifest manifest)
@@ -119,6 +149,16 @@ public class NdfrtXMLProcessor {
 		return "VERSION_MISSING";}
 	}
 
+	/**
+	 * @param uri
+	 * @param message
+	 * @param validate
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 * @throws FactoryConfigurationError
+	 */
 	public List<KindDef> getKindDefList(URI uri, LgMessageDirectorIF message,
 			boolean validate) throws MalformedURLException, IOException,
 			XMLStreamException, FactoryConfigurationError {
@@ -131,7 +171,6 @@ public class NdfrtXMLProcessor {
 
 		xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(
 				in);
-        int counter = 0;
 		for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
 				.next()) {
 			
@@ -140,7 +179,6 @@ public class NdfrtXMLProcessor {
 			if (event == XMLStreamConstants.START_ELEMENT
 					&& xmlStreamReader.getLocalName().equals(
 							NdfrtConstants.KIND_DEF)) {
-				counter++;
 
 			while(xmlStreamReader.hasNext()){
 				
@@ -192,6 +230,16 @@ public class NdfrtXMLProcessor {
 		return list;
 	}
 
+	/**
+	 * @param uri
+	 * @param message
+	 * @param validate
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 * @throws FactoryConfigurationError
+	 */
 	public List<RoleDef> getRoleDefList(URI uri, LgMessageDirectorIF message,
 			boolean validate) throws MalformedURLException, IOException,
 			XMLStreamException, FactoryConfigurationError {
@@ -274,6 +322,16 @@ public class NdfrtXMLProcessor {
 	
 
 	
+	/**
+	 * @param uri
+	 * @param message
+	 * @param validate
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 * @throws FactoryConfigurationError
+	 */
 	public List<PropertyDef> getPropertyDefList(URI uri, LgMessageDirectorIF message,
 			boolean validate) throws MalformedURLException, IOException,
 			XMLStreamException, FactoryConfigurationError {
@@ -328,7 +386,6 @@ public class NdfrtXMLProcessor {
 
 			}
 			if (event == XMLStreamConstants.START_ELEMENT && xmlStreamReader.getLocalName().equals(NdfrtConstants.PICKLIST)){
-				String name = xmlStreamReader.getLocalName();
 				List<String> list = getPickList(xmlStreamReader);
 
 				property.pickList = list;
@@ -355,6 +412,16 @@ public class NdfrtXMLProcessor {
 		return propList;
 	}
 	
+	/**
+	 * @param uri
+	 * @param message
+	 * @param validate
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 * @throws FactoryConfigurationError
+	 */
 	public List<AssociationDef> getAssociationDefList(URI uri, LgMessageDirectorIF message,
 			boolean validate) throws MalformedURLException, IOException,
 			XMLStreamException, FactoryConfigurationError {
@@ -425,6 +492,16 @@ public class NdfrtXMLProcessor {
 	}
 	
 	
+	/**
+	 * @param uri
+	 * @param message
+	 * @param validate
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 * @throws FactoryConfigurationError
+	 */
 	public List<QualifierDef> getQualifierDefList(URI uri, LgMessageDirectorIF message,
 			boolean validate) throws MalformedURLException, IOException,
 			XMLStreamException, FactoryConfigurationError {
@@ -499,16 +576,17 @@ public class NdfrtXMLProcessor {
 		return list;
 		}
 		
+	/**
+	 * @param xmlStreamReader
+	 * @return
+	 * @throws XMLStreamException
+	 */
 	private List<String> getPickList(XMLStreamReader xmlStreamReader) throws XMLStreamException {
 		ArrayList<String> picklist = new ArrayList<String>();
-		String localName = xmlStreamReader.getLocalName();
-		int eventType = xmlStreamReader.getEventType();
-		
 		while(xmlStreamReader.hasNext()){
 			int event = xmlStreamReader.next();
 
 			if(event == XMLStreamConstants.START_ELEMENT){
-				localName = xmlStreamReader.getLocalName();
 				if(xmlStreamReader.getLocalName() == NdfrtConstants.PICKLIST_ITEM){
 					picklist.add(xmlStreamReader.getElementText());
 					
