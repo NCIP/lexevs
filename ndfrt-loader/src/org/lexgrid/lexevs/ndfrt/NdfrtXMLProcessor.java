@@ -604,86 +604,86 @@ public class NdfrtXMLProcessor {
 		
 	}
 
-	public static void main(String[] args) {
-		NdfrtXMLProcessor processor = new NdfrtXMLProcessor();
-		try {
-
-			processor.getCodingScheme(new File(args[0]).toURI(), null, true,
-					null);
-			try {
-				List<KindDef> kindList = processor.getKindDefList(new File(args[0]).toURI(), null, true);
-				for(KindDef kd: kindList){
-				   System.out.println("Kind property code: " + kd.code);
-				   System.out.println("Kind property id: "+ kd.id);
-				   System.out.println("Kind property name: "+ kd.name);
-				   System.out.println("Kind property namespace: "+ kd.namespace);
-
-				   
-				}
-				List<RoleDef> roleList = processor.getRoleDefList(new File(args[0]).toURI(), null, true);
-				for(RoleDef rd: roleList){
-					   System.out.println("Role code: " + rd.code);
-					   System.out.println("Role id: "+ rd.id);
-					   System.out.println("Role name: "+ rd.name);
-					   System.out.println("Role namespace: "+ rd.namespace);
-					   System.out.println("Role range: " + rd.range);		
-					   System.out.println("Role domain: " + rd.domain);
-				}
-
-				List<PropertyDef> propList = processor.getPropertyDefList(new File(args[0]).toURI(), null, true);
-				for(PropertyDef pd: propList){
-					   System.out.println("Prop code: " + pd.code);
-					   System.out.println("Prop id: "+ pd.id);
-					   System.out.println("Prop name: "+ pd.name);
-					   System.out.println("Prop namespace: "+ pd.namespace);
-					   System.out.println("Prop range: " + pd.range);	
-					   List<String> pickList = pd.pickList;
-					   if(pickList != null){
-					   for(String s: pickList){
-						   System.out.println("\tname: "+ s);
-					   }
-					   }
-				}
-				List<AssociationDef> assocList = processor.getAssociationDefList(new File(args[0]).toURI(), null, true);
-				for(AssociationDef pd: assocList){
-					   System.out.println("Assoc code: " + pd.code);
-					   System.out.println("Assoc id: "+ pd.id);
-					   System.out.println("Assoc name: "+ pd.name);
-					   System.out.println("Assoc namespace: "+ pd.namespace);
-
-				}
-				List<QualifierDef> qualList = processor.getQualifierDefList(new File(args[0]).toURI(), null, true);
-				for(QualifierDef pd: qualList){
-					   System.out.println("Qual code: " + pd.code);
-					   System.out.println("Qual id: "+ pd.id);
-					   System.out.println("Qual name: "+ pd.name);
-					   System.out.println("Qual namespace: "+ pd.namespace);
-
-					   List<String> pickList = pd.pickList;
-					   if(pickList != null){
-					   for(String s: pickList){
-						   System.out.println("\tname: "+ s);
-					   }
-					   }
-				}
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FactoryConfigurationError e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} catch (CodingSchemeAlreadyLoadedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		NdfrtXMLProcessor processor = new NdfrtXMLProcessor();
+//		try {
+//
+//			processor.getCodingScheme(new File(args[0]).toURI(), null, true,
+//					null);
+//			try {
+//				List<KindDef> kindList = processor.getKindDefList(new File(args[0]).toURI(), null, true);
+//				for(KindDef kd: kindList){
+//				   System.out.println("Kind property code: " + kd.code);
+//				   System.out.println("Kind property id: "+ kd.id);
+//				   System.out.println("Kind property name: "+ kd.name);
+//				   System.out.println("Kind property namespace: "+ kd.namespace);
+//
+//				   
+//				}
+//				List<RoleDef> roleList = processor.getRoleDefList(new File(args[0]).toURI(), null, true);
+//				for(RoleDef rd: roleList){
+//					   System.out.println("Role code: " + rd.code);
+//					   System.out.println("Role id: "+ rd.id);
+//					   System.out.println("Role name: "+ rd.name);
+//					   System.out.println("Role namespace: "+ rd.namespace);
+//					   System.out.println("Role range: " + rd.range);		
+//					   System.out.println("Role domain: " + rd.domain);
+//				}
+//
+//				List<PropertyDef> propList = processor.getPropertyDefList(new File(args[0]).toURI(), null, true);
+//				for(PropertyDef pd: propList){
+//					   System.out.println("Prop code: " + pd.code);
+//					   System.out.println("Prop id: "+ pd.id);
+//					   System.out.println("Prop name: "+ pd.name);
+//					   System.out.println("Prop namespace: "+ pd.namespace);
+//					   System.out.println("Prop range: " + pd.range);	
+//					   List<String> pickList = pd.pickList;
+//					   if(pickList != null){
+//					   for(String s: pickList){
+//						   System.out.println("\tname: "+ s);
+//					   }
+//					   }
+//				}
+//				List<AssociationDef> assocList = processor.getAssociationDefList(new File(args[0]).toURI(), null, true);
+//				for(AssociationDef pd: assocList){
+//					   System.out.println("Assoc code: " + pd.code);
+//					   System.out.println("Assoc id: "+ pd.id);
+//					   System.out.println("Assoc name: "+ pd.name);
+//					   System.out.println("Assoc namespace: "+ pd.namespace);
+//
+//				}
+//				List<QualifierDef> qualList = processor.getQualifierDefList(new File(args[0]).toURI(), null, true);
+//				for(QualifierDef pd: qualList){
+//					   System.out.println("Qual code: " + pd.code);
+//					   System.out.println("Qual id: "+ pd.id);
+//					   System.out.println("Qual name: "+ pd.name);
+//					   System.out.println("Qual namespace: "+ pd.namespace);
+//
+//					   List<String> pickList = pd.pickList;
+//					   if(pickList != null){
+//					   for(String s: pickList){
+//						   System.out.println("\tname: "+ s);
+//					   }
+//					   }
+//				}
+//			} catch (MalformedURLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (XMLStreamException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (FactoryConfigurationError e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//		} catch (CodingSchemeAlreadyLoadedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 }

@@ -218,7 +218,7 @@ public class MapNDFRT2LexEVS {
 		for (KindDef k : kinds) {
 			SupportedProperty prop = new SupportedProperty();
 			prop.setContent(k.name);
-			prop.setLocalId(k.id);
+			prop.setLocalId(k.name);
 			prop.setUri(scheme.getCodingSchemeURI());
 			list.add(prop);
 		}
@@ -226,7 +226,7 @@ public class MapNDFRT2LexEVS {
 		for (PropertyDef p : properties) {
 			SupportedProperty prop = new SupportedProperty();
 			prop.setContent(p.name);
-			prop.setLocalId(p.id);
+			prop.setLocalId(p.name);
 			prop.setUri(scheme.getCodingSchemeURI());
 			list.add(prop);
 		}
@@ -317,7 +317,7 @@ public class MapNDFRT2LexEVS {
 		in = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 		xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(
 				in);
-
+		System.out.println("Starting Entities Load....");
 		for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
 				.next()) {
 			Entity entity = new Entity();
