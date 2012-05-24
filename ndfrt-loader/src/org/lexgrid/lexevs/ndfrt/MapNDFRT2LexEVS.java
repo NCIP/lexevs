@@ -158,10 +158,7 @@ public class MapNDFRT2LexEVS {
 	public void buildCodingScheme(URI uri, LgMessageDirectorIF messages,
 			boolean validateXML, CodingSchemeManifest manifest)
 			throws CodingSchemeAlreadyLoadedException, LBRevisionException {
-		// process coding scheme.
-		scheme = processor
-				.getCodingScheme(uri, messages, validateXML, manifest);
-
+		//Scheme metadata already done in init.  
 		scheme.setEntityDescription(processEnityDescription());
 		processMappingsAndPredicates(scheme);
 		// Store coding scheme
@@ -441,6 +438,7 @@ public class MapNDFRT2LexEVS {
 		xmlStreamReader.close();
 
 		in.close();
+		System.out.println("Entities load complete");
 	}
 
 	/**
@@ -456,14 +454,14 @@ public class MapNDFRT2LexEVS {
 		String value = xmlStreamReader.getElementText();
 		if (kinds != null) {
 			for (KindDef k : kinds) {
-				if (k.code.equals(value))
+				if (k.code.equals(value)){
 					property.setPropertyId(id);
 				property.setPropertyName(name);
 				property.setPropertyType("property");
 				Text text = new Text();
 				text.setContent(k.name);
 				property.setValue(text);
-				return property;
+				return property;}
 			}
 		}
 		return null;
@@ -671,7 +669,7 @@ public class MapNDFRT2LexEVS {
 
 		xmlStreamReader = XMLInputFactory.newInstance().createXMLStreamReader(
 				in);
-
+		System.out.println("Starting Associations load ...");
 		for (int event = xmlStreamReader.next(); event != XMLStreamConstants.END_DOCUMENT; event = xmlStreamReader
 				.next()) {
 
@@ -778,8 +776,8 @@ public class MapNDFRT2LexEVS {
 
 		}
 		xmlStreamReader.close();
-
 		in.close();
+		System.out.println("Association load complete");
 	}
 
 	/**
@@ -1172,18 +1170,38 @@ public class MapNDFRT2LexEVS {
 
 	public static void main(String[] args) {
 
-		try {
-			MapNDFRT2LexEVS map = new MapNDFRT2LexEVS(
-					new File(args[0]).toURI(), null, true);
+	
+			MapNDFRT2LexEVS map;
+			try {
+				map = new MapNDFRT2LexEVS(
+						new File(args[0]).toURI(), null, true);
+				map.buildCodingScheme(new File(args[0]).toURI(), null, false, null);
+				map.processEnitities(new File(args[0]).toURI(), null, true);
+				map.processAssociations(new File(args[0]).toURI(), null, true);
+			} catch (CodingSchemeAlreadyLoadedException e) {
+				System.out.println("This coding scheme is currently loaded.");
+				e.printStackTrace();
+			} catch (LBRevisionException e) {
+				System.out.println("The revision of this coding scheme cannot be completed");
+				e.printStackTrace();
+			} catch (MalformedURLException e) {
+				System.out.println("There was a problem with the path to the file");
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("There was a problem with the source file");
+				e.printStackTrace();
+			} catch (XMLStreamException e) {
+				System.out.println("There was a problem with the content of the source file");
+				e.printStackTrace();
+			} catch (FactoryConfigurationError e) {
+				System.out.println("There was a problem with the content of the source file");
+				e.printStackTrace();
+			}
 
-			map.buildCodingScheme(new File(args[0]).toURI(), null, false, null);
-			map.processEnitities(new File(args[0]).toURI(), null, true);
-			map.processAssociations(new File(args[0]).toURI(), null, true);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+
+
 	}
 
 }
