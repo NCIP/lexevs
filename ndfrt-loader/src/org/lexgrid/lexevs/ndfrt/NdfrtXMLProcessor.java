@@ -138,7 +138,7 @@ public class NdfrtXMLProcessor {
 
 	}
 
-	private String processPathForVersion(URI uri) {
+	public String processPathForVersion(URI uri) {
 		try{
 		String path = uri.getPath();
 		int index = path.indexOf("Public_2");
