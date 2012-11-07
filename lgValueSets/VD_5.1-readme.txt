@@ -8,7 +8,7 @@
  	iii) For software and hardware dependencies for the system hosting the LexEVS runtime, refer to https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexEVS_5.0_Documentation.
 
 ----------------------------------------------------------------------------------
-2. Instructions to build lgValueDomain extension from lgValueDomain java project in gForge SVN(https://gforge.nci.nih.gov/svnroot/lexevs).
+2. Instructions to build lgValueDomain extension from lgValueDomain java project in gForge SVN(https://ncisvn.nci.nih.gov/svn/lexevs).
 ----------------------------------------------------------------------------------
 
 	i) Make sure runtime/lbRuntime.jar matches with the lbRuntime.jar of the lexEVS instance on ValueDomain is being run. 
