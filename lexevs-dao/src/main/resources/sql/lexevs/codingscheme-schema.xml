@@ -380,6 +380,9 @@
       <index name="@PREFIX@idx_pm_pid">
         <index-column name="propertyGuid"/>
       </index>
+      <index name="@PREFIX@idx_att_val">
+        <index-column name="attributeValue"/>
+      </index>
     </table>
     <table name="@PREFIX@relation">
       <column name="relationGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
