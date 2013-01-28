@@ -71,6 +71,8 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#";
     protected final static String PIZZA_SCHEME_VERSION = "version 1.2";
     protected final static String PIZZA_SCHEME_NAME = "pizza.owl";
+    public final static String NPO_SCHEME_URI = "http://purl.bioontology.org/ontology/npo";
+    public final static String NPO_SCHEME_VERSION = "2012-01-25 (yyyy-mm-dd)";
  
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
     /**
