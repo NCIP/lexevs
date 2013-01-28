@@ -189,6 +189,16 @@ public class CleanUpTest extends TestCase {
 
     }
     
+    public void testRemoveOwlLoaderNpoTest() throws LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "http://purl.bioontology.org/ontology/npo", "2012-01-25 (yyyy-mm-dd)");
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+
+    }
     public void testRemoveMeta() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 

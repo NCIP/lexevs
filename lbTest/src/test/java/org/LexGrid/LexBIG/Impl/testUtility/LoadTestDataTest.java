@@ -300,6 +300,23 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
     
+    public void testLoadGenericOwlWithNPOsansQuals() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+        loader.load(new File("resources/testData/npotest.owl").toURI(), null,  1, false, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(1000);
+        }
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+
+    }
+    
     public void testLoadCompPropsOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
