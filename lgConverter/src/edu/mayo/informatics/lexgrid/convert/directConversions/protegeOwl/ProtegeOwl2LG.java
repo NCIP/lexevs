@@ -1559,25 +1559,27 @@ public class ProtegeOwl2LG {
             lgProp = CreateUtils.createDefinition(lgID, lgLabel, rdfText, null, lgSupportedMappings_, prop.getURI(), lang);
         else {
             lgProp = CreateUtils.createProperty(lgID, lgLabel, null, lgSupportedMappings_, prop.getURI(), lang);
-            if (prop.getLabels().isEmpty() == false) {
-                for(Iterator in = prop.getLabels().iterator(); in.hasNext();) {
-                    Object obj = in.next();
-                    String label = null;
-                    
-                    if( obj instanceof DefaultRDFSLiteral) {
-                        label = ((DefaultRDFSLiteral) obj).getBrowserText();
-                    } else {
-                        label = (String) obj;
-                    }
-                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("label", label, lgSupportedMappings_));
-                }
-            }
-            if (prop.getComments().isEmpty() == false) {
-                for (Iterator in = prop.getComments().iterator(); in.hasNext();){
-                    String comment = (String)in.next();
-                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("comment", comment, lgSupportedMappings_));
-                }
-            }
+            //Leaving this commented out code in place due to a some uncertainty as to the correctness of of pulling 
+            //these in as property qualifiers
+//            if (prop.getLabels().isEmpty() == false) {
+//                for(Iterator in = prop.getLabels().iterator(); in.hasNext();) {
+//                    Object obj = in.next();
+//                    String label = null;
+//                    
+//                    if( obj instanceof DefaultRDFSLiteral) {
+//                        label = ((DefaultRDFSLiteral) obj).getBrowserText();
+//                    } else {
+//                        label = (String) obj;
+//                    }
+//                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("label", label, lgSupportedMappings_));
+//                }
+//            }
+//            if (prop.getComments().isEmpty() == false) {
+//                for (Iterator in = prop.getComments().iterator(); in.hasNext();){
+//                    String comment = (String)in.next();
+//                    lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier("comment", comment, lgSupportedMappings_));
+//                }
+//            }
         }
 
         // Handle imbedded XML if present ...
