@@ -102,7 +102,7 @@ public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeR
 				String sourcePropertyId = sourcePropertyIdResolver.getPropertyId(item);
 				String targetPropertyId = targetPropertyIdResolver.getPropertyId(item);
 
-				if(StringUtils.isBlank(sourcePropertyId) || StringUtils.isBlank(targetPropertyId)) {
+				if(StringUtils.isBlank(sourcePropertyId) == false && StringUtils.isBlank(targetPropertyId) == false) {
 
 					this.insertPropertyLink(
 							sourceCode, 
@@ -176,7 +176,12 @@ public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeR
 				String entityId = 
 					daoManager.getEntityDao(uri, version).getEntityUId(codingSchemeId, code, namespace);
 				
-				daoManager.getPropertyDao(uri, version).insertPropertyLink(codingSchemeId, entityId, propertyLink);
+				if (StringUtils.isBlank(entityId)) {
+					System.out.println("daoManager.getEntityDao(uri, version).getEntityUId cannot find " + code + " " + codingSchemeId + " " + namespace );
+				}
+				else {
+					daoManager.getPropertyDao(uri, version).insertPropertyLink(codingSchemeId, entityId, propertyLink);
+				}
 				
 				return null;
 			}
