@@ -249,19 +249,35 @@
     </condition>
   </target>
 	
-   <target name="publish" depends="package" unless="publish.skip">
-   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
-   		<mapping conf="master" scope="compile"/>
-   		<mapping conf="default" scope="compile"/>
-   		<mapping conf="compile" scope="compile"/>
-   		<mapping conf="test" scope="test"/>
-   		<mapping conf="runtime" scope="runtime"/>
-   		<mapping conf="provided" scope="provided"/>
-   		<mapping conf="system" scope="system"/>
-   	</ivy:makepom>
-	<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
-	   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
-	</ivy:publish>
+	<target name="publish" depends="package, deploy" unless="publish.skip">
+	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="master" scope="compile"/>
+	   		<mapping conf="default" scope="compile"/>
+	   		<mapping conf="compile" scope="compile"/>
+	   		<mapping conf="test" scope="test"/>
+	   		<mapping conf="runtime" scope="runtime"/>
+	   		<mapping conf="provided" scope="provided"/>
+	   		<mapping conf="system" scope="system"/>
+	   	</ivy:makepom>
+		<ivy:publish resolver="user-local-repo" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+		</ivy:publish>
+	</target>
+	
+	<target name="deploy" depends="package" if="informatics.password" unless="publish.skip">
+	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="master" scope="compile"/>
+	   		<mapping conf="default" scope="compile"/>
+	   		<mapping conf="compile" scope="compile"/>
+	   		<mapping conf="test" scope="test"/>
+	   		<mapping conf="runtime" scope="runtime"/>
+	   		<mapping conf="provided" scope="provided"/>
+	   		<mapping conf="system" scope="system"/>
+	   	</ivy:makepom>
+
+		<ivy:publish resolver="informatics" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+		</ivy:publish>
 	</target>
 
 	<target name="all" depends="publish"/>
