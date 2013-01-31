@@ -36,6 +36,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import org.apache.log4j.Logger;
 
@@ -47,6 +48,7 @@ import org.apache.log4j.Logger;
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  */
+@Deprecated
 public class WrappedConnection implements Connection {
     protected Connection connection_;
     private String userName_;
@@ -96,6 +98,26 @@ public class WrappedConnection implements Connection {
             password_ = "";
         }
         connect();
+    }
+
+    public void setSchema(String schema) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getSchema() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void abort(Executor executor) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getNetworkTimeout() throws SQLException {
+        throw new UnsupportedOperationException();
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {

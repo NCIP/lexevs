@@ -51,6 +51,7 @@ import org.apache.log4j.Logger;
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  */
+@Deprecated
 public class WrappedPreparedStatement implements PreparedStatement {
     private PreparedStatement statement_;
     private WrappedConnection wrappedConnection_;
@@ -63,7 +64,7 @@ public class WrappedPreparedStatement implements PreparedStatement {
 
     public final static org.apache.log4j.Logger logger = Logger
             .getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
-
+    
     public WrappedPreparedStatement(WrappedConnection connection, String sql) throws SQLException {
         sql_ = sql;
         setVariables_ = new Hashtable();
@@ -79,6 +80,14 @@ public class WrappedPreparedStatement implements PreparedStatement {
         setVariables_ = new Hashtable();
         wrappedConnection_ = connection;
         statement_ = wrappedConnection_.connection_.prepareStatement(sql_, resultSetType, resultSetConcurrency);
+    }
+
+    public void closeOnCompletion() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isCloseOnCompletion() throws SQLException {
+        throw new UnsupportedOperationException();
     }
 
     public void setString(int parameterIndex, String x) throws SQLException {
