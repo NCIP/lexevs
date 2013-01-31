@@ -1100,30 +1100,5 @@ pause
 	<target name="resolve" depends="init,init-ivy" description="--> retrieve dependencies with ivy">
 		<ivy:retrieve pattern="${ivy.repos.dir}/[type]/[artifact].[revision](-[classifier]).[ext]"/>
     </target>
-	
-	<target name="publish" depends="resolve">	
-		<ivy:makepom ivyfile="ivy.xml" pomfile="antbuild/runtime-components/lexbig.pom">
-			 <mapping conf="*" scope="compile"/>
-		</ivy:makepom>
-        <ivy:publish resolver="nci-chain"
-        			 forcedeliver="true"
-                     pubrevision="${vMajor}.${vMinor}-SNAPSHOT"
-                     overwrite="true">
-        	<artifacts pattern="antbuild/runtime-components/[artifact].[ext]" />
-		</ivy:publish>
-    </target>
-
-    <target name="publish-bmi-snapshots" depends="resolve"> 
-                <ivy:makepom ivyfile="ivy.xml" pomfile="antbuild/runtime-components/lexbig.pom">
-                         <mapping conf="*" scope="compile"/>
-                </ivy:makepom>
-        <ivy:publish resolver="bmidev-internal-snapshots"
-                                 forcedeliver="true"
-                     pubrevision="${vMajor}.${vMinor}-SNAPSHOT"
-                     overwrite="true">
-                <artifacts pattern="antbuild/runtime-components/[artifact].[ext]" />
-                </ivy:publish>
-    </target>
-
 
 </project>
