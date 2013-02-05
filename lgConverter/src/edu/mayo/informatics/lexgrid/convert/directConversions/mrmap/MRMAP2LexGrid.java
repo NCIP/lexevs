@@ -204,6 +204,7 @@ public class MRMAP2LexGrid {
 
         for(Object o: os){
            rel = relationsMap.get(o);
+           if(rel.isIsMapping() != null && rel.isIsMapping()){
             rel.addAssociationPredicate(processMrMapBean(mapPath, rel.getSourceCodingScheme(), rel.getTargetCodingScheme(), (String)o));
             CodingScheme scheme = createMrMapScheme(rel,
                     nameForMappingScheme,
@@ -216,6 +217,7 @@ public class MRMAP2LexGrid {
                     targetVersion,
                     targetURI);
             schemes.add(scheme);
+           }
         }
 
         } catch (SecurityException e) {
@@ -332,7 +334,7 @@ public class MRMAP2LexGrid {
                 while((mrMapRow = mapReader.readRRFLine()) != null){
                     MrMap map = processMrMapRow(mrMapRow);
                     if(currentRelation.equals(map.getMapsetcui())){
-                        if(map.getFromid()!= null && !map.getToexpr().equals("")){
+                        if(map.getFromid()!= null && map.getToexpr() != null&& !map.getToexpr().equals("")){
                         processAndMergeIntoSource(map, predicate, sourceSchemeNamespace, targetSchemeNamespace);
                         }
                         else{
