@@ -8,10 +8,12 @@
 		<artifact name="lexbig-impl" type="jar" ext="jar" conf="default"/>
 		<artifact name="lexbig-impl" type="source" ext="jar"
 			 m:classifier="sources" conf="sources" />
+		<artifact name="lexbig-impl" type="test-jar" ext="jar"
+			m:classifier="tests"/>
 	</publications>
 	<dependencies>
 		<dependency org="lexevs" name="lexgrid-converter" rev="${vBuild}" conf="default"/>
-	 	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default" />
+	 	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default,test" />
 		<dependency org="lexevs" name="lexevs-rdf" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
