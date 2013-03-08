@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/args4j/args4j-2.0.12.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=rxnorm-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

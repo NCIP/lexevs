@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=umls-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
