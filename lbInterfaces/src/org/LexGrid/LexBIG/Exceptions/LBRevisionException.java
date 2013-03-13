@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Exceptions;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
 
 
 public class LBRevisionException extends LBException {
