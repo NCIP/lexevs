@@ -46,7 +46,7 @@ import org.lexevs.system.service.LexEvsResourceManagingService;
  * 
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  */
-public class Util {
+public class UtilDeprecate {
     static final private String _lineReturn = System.getProperty("line.separator");
     static private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
     static final private LgLoggerIF _logger = service.getLogger();
@@ -124,7 +124,7 @@ public class Util {
             status = exporter.getStatus();
             String s = status.getMessage();
             if (s != null && !s.equals(msg)) {
-                Util.displayTaggedMessage(s);
+                UtilDeprecate.displayTaggedMessage(s);
                 msg = s;
             }
         } while (status.getEndTime() == null);
@@ -148,17 +148,17 @@ public class Util {
             status = loader.getStatus();
             Integer num = status.getNumConceptsLoaded();
             if (num != cnum) {
-                Util.displayTaggedMessage("# concepts processed: " + num);
+                UtilDeprecate.displayTaggedMessage("# concepts processed: " + num);
                 cnum = num;
             }
             num = status.getNumRelationsLoaded();
             if (num != rnum) {
-                Util.displayTaggedMessage("# relations processed: " + num);
+                UtilDeprecate.displayTaggedMessage("# relations processed: " + num);
                 rnum = num;
             }
             String s = status.getMessage();
             if (s != null && !s.equals(msg)) {
-                Util.displayTaggedMessage(s);
+                UtilDeprecate.displayTaggedMessage(s);
                 msg = s;
             }
         } while (status.getEndTime() == null);
