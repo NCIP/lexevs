@@ -27,9 +27,11 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
+import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
@@ -61,7 +63,11 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
 	
+	private Analyzer standardAnalyzer = new StandardAnalyzer();
+	
 	private EntityIndexer entityIndexer;
+	
+	private EntityIndexer searchIndexer;
 	
 	private LgLoggerIF logger;
 	
@@ -84,6 +90,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		if(!onlyRegister) {
 
 			EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+			SearchDao searchIndexService = indexDaoManager.getSearchDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 
 			int totalIndexedEntities = 0;
 
@@ -94,16 +101,20 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 					entities.size() > 0; 
 					entities = entityService.getEntities(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), position += batchSize, batchSize)) {
 
-				List<Document> totalDocs = new ArrayList<Document>();
+				List<Document> fullEntityDocs = new ArrayList<Document>();
+				List<Document> searchDocs = new ArrayList<Document>();
 
 				for(Entity entity : entities) {
-					List<Document> docs = 
+					fullEntityDocs.addAll(
 						entityIndexer.indexEntity(
 								reference.getCodingSchemeURN(), 
-								reference.getCodingSchemeVersion(), entity);
+								reference.getCodingSchemeVersion(), entity));
 
-					totalDocs.addAll(docs);
-
+					searchDocs.addAll(
+							searchIndexer.indexEntity(
+									reference.getCodingSchemeURN(), 
+									reference.getCodingSchemeVersion(), entity));
+					
 					totalIndexedEntities++;
 
 					if(callback != null) {
@@ -115,11 +126,16 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 					}
 				}
 
-				this.getLogger().info("Flusing " + totalDocs.size() + " Documents to the Index.");
+				this.getLogger().info("Flusing " + fullEntityDocs.size() + searchDocs.size() + " Documents to the Index.");
 				entityIndexService.addDocuments(
 						reference.getCodingSchemeURN(), 
 						reference.getCodingSchemeVersion(), 
-						totalDocs, analyzer);
+						fullEntityDocs, analyzer);
+				
+				searchIndexService.addDocuments(
+						reference.getCodingSchemeURN(), 
+						reference.getCodingSchemeVersion(), 
+						searchDocs, standardAnalyzer);
 			}
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
@@ -268,6 +284,14 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;
+	}
+
+	public EntityIndexer getSearchIndexer() {
+		return searchIndexer;
+	}
+
+	public void setSearchIndexer(EntityIndexer searchIndexer) {
+		this.searchIndexer = searchIndexer;
 	}
 
 	public void setMetaData(MetaData metaData) {

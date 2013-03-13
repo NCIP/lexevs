@@ -23,6 +23,10 @@
 			<artifact pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 			<ivy pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/ivy.xml" />
   		</filesystem> 
+  		
+  		<filesystem name="local-m2-repo" m2compatible="true">
+	      <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+	    </filesystem>
    		
 		<chain name="informatics">
 			<url name="informatics-snapshots" m2compatible="true" changingPattern=".*-SNAPSHOT">

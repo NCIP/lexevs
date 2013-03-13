@@ -225,6 +225,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 			query(codingSchemeUri, codingSchemeVersion, combinedQueries, individualQueries);
 	}
 	
+	@Override
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query){
 		return indexDaoManager.getEntityDao(codingSchemeUri, version).
 			query(codingSchemeUri, version, query);
@@ -238,8 +239,6 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		return indexDaoManager.getEntityDao(codingSchemeUri, version).
 			getBoundaryDocsHitAsAWholeFilter(codingSchemeUri, version, query);
 	}
-	
-	
 	
 	@Override
 	public Filter getCodingSchemeFilter(String uri, String version) {

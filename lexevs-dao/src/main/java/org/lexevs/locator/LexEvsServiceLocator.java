@@ -29,6 +29,7 @@ import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -38,9 +39,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class LexEvsServiceLocator implements ApplicationContextAware {
 	
-	/** The service locator. */
-	private static LexEvsServiceLocator serviceLocator;
+	private static Object MUTEX = new Object();
 	
+	/** The service locator. */
+	private static volatile LexEvsServiceLocator serviceLocator;
+	
+	private static ApplicationContextCallback applicationContextCallback;
+
 	/** The BEA n_ name. */
 	private static String BEAN_NAME = "lexEvsServiceLocator";
 	
@@ -69,16 +74,33 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 	
 	private CacheWrappingFactory cacheWrappingFactory;
 	
+	public static interface ApplicationContextCallback {
+		public AbstractRefreshableApplicationContext buildApplicationContext(String xml);
+	}
+	
 	/**
 	 * Gets the single instance of LexEvsServiceLocator.
 	 * 
 	 * @return single instance of LexEvsServiceLocator
 	 */
-	public static synchronized LexEvsServiceLocator getInstance(){
+	public static LexEvsServiceLocator getInstance(){
 		if(serviceLocator == null){
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONTEXT_FILE);
-			ctx.registerShutdownHook();
-			serviceLocator = (LexEvsServiceLocator) ctx.getBean(BEAN_NAME);
+			synchronized(MUTEX){
+				if(serviceLocator == null){
+					AbstractRefreshableApplicationContext ctx;
+					if(applicationContextCallback != null){
+						ctx = applicationContextCallback.buildApplicationContext("classpath:" + CONTEXT_FILE);
+						
+						ctx.refresh();
+					} else {
+						ctx = new ClassPathXmlApplicationContext(CONTEXT_FILE);
+					}
+					
+					ctx.registerShutdownHook();
+		
+					serviceLocator = (LexEvsServiceLocator) ctx.getBean(BEAN_NAME);
+				}
+			}
 		}
 		
 		return serviceLocator;
@@ -219,5 +241,16 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 
 	public LexEvsIndexOperations getLexEvsIndexOperations() {
 		return lexEvsIndexOperations;
+	}
+	
+	public static void setApplicationContextCallback(
+			ApplicationContextCallback applicationContextCallback) {
+		if(serviceLocator == null){
+			synchronized(MUTEX){
+				if(serviceLocator == null){
+					LexEvsServiceLocator.applicationContextCallback = applicationContextCallback;
+				}
+			}
+		}
 	}
 }

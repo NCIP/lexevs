@@ -64,8 +64,6 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 			String codingSchemeUri, 
 			String version, 
 			Query query);
-	
-	public Document getDocumentById(int id);
 
 	public Filter getCodingSchemeFilter(String uri, String version);
 }

@@ -21,8 +21,6 @@ package org.lexevs.dao.database.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
@@ -43,6 +41,7 @@ import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.registry.service.Registry;
+import org.springframework.util.Assert;
 
 /**
  * The Class DaoManager.
@@ -273,13 +272,13 @@ public class DaoManager {
 	 * @return the t
 	 */
 	protected <T extends LexGridSchemaVersionAwareDao> T doGetDao(String codingSchemeUri, String version, List<T> daos){
-		Assert.assertNotNull("No DAOs have been registered for the requested type.", daos);	
+		Assert.notNull(daos, "No DAOs have been registered for the requested type.");	
 		return getCorrectDaoForSchemaVersion(daos, 
 				getLexGridSchemaVersion(codingSchemeUri, version));
 	}
 	
 	protected <T extends LexGridSchemaVersionAwareDao> T doGetDao(String codingSchemeUri, List<T> daos){
-		Assert.assertNotNull("No DAOs have been registered for the requested type.", daos);	
+		Assert.notNull(daos, "No DAOs have been registered for the requested type.");	
 		return getCorrectDaoForSchemaVersion(daos, 
 				getLexGridSchemaVersion(codingSchemeUri));
 	}
@@ -335,11 +334,11 @@ public class DaoManager {
 			}
 		}
 		
-		Assert.assertTrue("No matching DAO for Database Version: " +
-				schemaVersion, foundDaos.size() > 0);	
+		Assert.isTrue(foundDaos.size() > 0, "No matching DAO for Database Version: " +
+				schemaVersion);	
 		
-		Assert.assertTrue("More than one matching DAO for: " +
-				foundDaos.get(0).getClass().getName(), foundDaos.size() < 2);
+		Assert.isTrue(foundDaos.size() < 2, "More than one matching DAO for: " +
+				foundDaos.get(0).getClass().getName());
 		
 		return foundDaos.get(0);
 	}
