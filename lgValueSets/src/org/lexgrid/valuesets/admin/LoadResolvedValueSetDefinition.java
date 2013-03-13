@@ -106,6 +106,7 @@ public class LoadResolvedValueSetDefinition {
             if (!valuesetUris.contains(urn)) {
             	Util.displayMessage("No valueSet definition found for the given  URN");
                 Util.displayMessage("");
+                return;
             }
            
         }

@@ -13,5 +13,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.LexGrid.LexBIG.gui.LB_VSD_GUI"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lbGUI"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.library.path=../lgSharedLibraries/eclipse/swt/windows -Xmx1000M"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-d32 -Djava.library.path=../lgSharedLibraries/eclipse/swt/OSX/swt.jar -Xmx1000M"/>
 </launchConfiguration>
