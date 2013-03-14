@@ -27,7 +27,8 @@ public enum OntologyFormat {
     RADLEX,
     NICHISTORY,
     UMLSHISTORY,
-    MRMAP;
+    MRMAP,
+    RESOLVEDVALUESET;
     
     public static String getMetaName() {
     	return "ontologyFormat";

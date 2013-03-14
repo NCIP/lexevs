@@ -519,6 +519,7 @@
 			$prefix$codingScheme cs
 		WHERE
 			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+          AND cs.defaultLanguage IS NOT NULL
      </select>
 
 

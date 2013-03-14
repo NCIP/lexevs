@@ -5,6 +5,7 @@ import java.net.URI;
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
@@ -91,6 +92,9 @@ public class ResolvedValueSetDefinitionLoaderImpl extends BaseLoader implements
 		}
 		
 	
-
+	    @Override
+	    public OntologyFormat getOntologyFormat() {
+	        return OntologyFormat.RESOLVEDVALUESET;
+	    }
 
 }

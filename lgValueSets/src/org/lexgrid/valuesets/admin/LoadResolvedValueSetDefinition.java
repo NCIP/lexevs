@@ -18,12 +18,14 @@
  */
 package org.lexgrid.valuesets.admin;
 
-import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
-import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.admin.Util;
 import org.LexGrid.annotations.LgAdminFunction;
@@ -32,7 +34,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
@@ -106,71 +108,43 @@ public class LoadResolvedValueSetDefinition {
             if (!valuesetUris.contains(urn)) {
             	Util.displayMessage("No valueSet definition found for the given  URN");
                 Util.displayMessage("");
+                return;
             }
            
         }
-
-        // Found it? If not, prompt...
-        if (css == null) {
-            if (urn != null || csList != null) {
-                Util.displayMessage("No matching coding scheme was found for the given URN or version.");
-                Util.displayMessage("");
-            }
-            css = Util.promptForCodeSystem();
-            if (css == null)
-                return;
-        }
-
-        AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(css);
-
-        rebuildTransitivityTable(ref, force);
+        AbsoluteCodingSchemeVersionReferenceList acsvl= getCodingSchemeVersions(csList);
+       
+        load(urn, acsvl, null, csVersionTag);
     }
 
-    /**
-     * Rebuild a single named index extension for the specified scheme.
-     * 
-     * @param lbsm
-     * @param ref
-     * @param indexName
-     * @paam force
-     * @throws LBException
-     */
-    protected void rebuildTransitivityTable(AbsoluteCodingSchemeVersionReference ref,
-            boolean force) throws LBException {
-        
-        String codingScheme = "URI: " + ref.getCodingSchemeURN() + " VERSION: " + 
-            ref.getCodingSchemeVersion();
-
-        // Confirm the action (if not bypassed by force option) ...
-        boolean confirmed = force;
-        if (!confirmed) {
-            Util.displayMessage("REBUILD TRANSITIVITY TABLE FOR " + codingScheme + "? ('Y' to confirm, any other key to cancel)");
-            try {
-                char choice = Util.getConsoleCharacter();
-                confirmed = choice == 'Y' || choice == 'y';
-            } catch (IOException e) {
-            }
-        }
-
-        // Action confirmed?
-        if (confirmed) {
-            try {
-               
-                Util.displayTaggedMessage("Recreation Transitivity Table '" + 
-                        codingScheme + "' in progress...");
-                LexEvsServiceLocator.
-                    getInstance().
-                        getLexEvsDatabaseOperations().
-                            reComputeTransitiveTable(
-                                    ref.getCodingSchemeURN(), 
-                                    ref.getCodingSchemeVersion());
-            } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Recreation Transitivity Table '" + codingScheme + "' is not supported.");
-            }
-        } else {
-            Util.displayTaggedMessage("Recreation Transitivity Table '" + codingScheme + "' cancelled by user.");
-        }
+    
+    AbsoluteCodingSchemeVersionReferenceList getCodingSchemeVersions(String csv_list) {
+    	AbsoluteCodingSchemeVersionReferenceList acsvl= new AbsoluteCodingSchemeVersionReferenceList();
+    	if (csv_list != null) {
+    		List<String> codingSchemeList= Arrays.asList(csv_list.split(","));
+    		for (String codingSchemeWithVersion: codingSchemeList) {
+    			AbsoluteCodingSchemeVersionReference ref;
+    			String[] pair= codingSchemeWithVersion.split("::");
+    			if (pair.length == 2 ) {
+    				ref= Constructors.createAbsoluteCodingSchemeVersionReference(pair[0], pair[1]);
+    			} else {
+    				ref= Constructors.createAbsoluteCodingSchemeVersionReference(codingSchemeWithVersion, null);
+    			}
+    			acsvl.addAbsoluteCodingSchemeVersionReference(ref);
+    		}
+    		
+    		
+    	}
+    	return acsvl;
     }
+
+    protected void load(String valueSetDefinitionURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String valueSetDefinitionRevisionId,
+            String  csVersionTag) throws Exception {
+    	//ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoader.NAME);
+    	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
+    	loader.load(new URI(valueSetDefinitionURI), valueSetDefinitionRevisionId, csVersionList, csVersionTag);
+    	
+     }
 
     /**
      * Return supported command options.
@@ -183,7 +157,7 @@ public class LoadResolvedValueSetDefinition {
 
         o = new Option("u", "urn", true, "URN uniquely identifying the code system.");
         o.setArgName("urn");
-        o.setRequired(false);
+        o.setRequired(true);
         options.addOption(o);
 
         o = new Option("l", "list", true, "List of coding schemes to use.");
