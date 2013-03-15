@@ -5,13 +5,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -23,7 +25,7 @@ import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
-import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
@@ -33,7 +35,7 @@ public class TransformValueSetDefinitionToCodingScheme {
 	AbsoluteCodingSchemeVersionReferenceList csVersionList;
 	String csVersionTag;
 
-	private LexEVSValueSetDefinitionServices vds_;
+	private LexEVSValueSetDefinitionServicesImpl vds_;
 
 	TransformValueSetDefinitionToCodingScheme(URI valueSetDefinitionURI,
 			String valueSetDefinitionRevisionId,
@@ -51,16 +53,73 @@ public class TransformValueSetDefinitionToCodingScheme {
 				.exportValueSetResolution(valueSetDefinitionURI,
 						valueSetDefinitionRevisionId, csVersionList,
 						csVersionTag, false);
-		CodingScheme codingScheme ;
-		//read it with BufferedReader
-    	BufferedReader br = new BufferedReader(new InputStreamReader(stream));
- 
-		//CodingScheme.unmarshalCodingScheme(stream);	
-		codingScheme= CodingScheme.unmarshalCodingScheme(br);		
+		CodingScheme codingScheme;
+		// read it with BufferedReader
+		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+
+		// CodingScheme.unmarshalCodingScheme(stream);
+		codingScheme = CodingScheme.unmarshalCodingScheme(br);
+		setCodingSchemeVersion(codingScheme);
 		return codingScheme;
 
 	}
 
+	void setCodingSchemeVersion(CodingScheme codingScheme) throws LBException {
+		int uuid = generateHashCode();
+		codingScheme.setRepresentsVersion("" + uuid);
+	}
+
+	int generateHashCode() throws LBException {
+		ResolvedValueSetCodedNodeSet rvscs = getValueSetDefinitionService()
+				.getCodedNodeSetForValueSetDefinition(valueSetDefinitionURI,
+						valueSetDefinitionRevisionId, csVersionList,
+						csVersionTag);
+		AbsoluteCodingSchemeVersionReferenceList acsrl = rvscs
+				.getCodingSchemeVersionRefList();
+		sort(acsrl);
+		int uuid = valueSetDefinitionURI.toString().hashCode();
+
+		for (AbsoluteCodingSchemeVersionReference ref : acsrl
+				.getAbsoluteCodingSchemeVersionReference()) {
+			if (ref.getCodingSchemeURN() != null) {
+				uuid += ref.getCodingSchemeURN().hashCode();
+			} else {
+				uuid += "NULL".hashCode();
+			}
+			if (ref.getCodingSchemeVersion() != null) {
+				uuid += ref.getCodingSchemeVersion().hashCode();
+			} else {
+				uuid += "NULL".hashCode();
+			}
+		}
+		return uuid;
+	}
+
+	
+	void sort(AbsoluteCodingSchemeVersionReferenceList acsrl) {
+		Comparator<AbsoluteCodingSchemeVersionReference> cmp = new Comparator<AbsoluteCodingSchemeVersionReference>() {
+			@Override
+			public int compare(AbsoluteCodingSchemeVersionReference lhs,
+					AbsoluteCodingSchemeVersionReference rhs) {
+				if (lhs.getCodingSchemeURN() != null
+						&& !lhs.getCodingSchemeURN().equals(
+								rhs.getCodingSchemeURN())) {
+					return lhs.getCodingSchemeURN().compareTo(
+							rhs.getCodingSchemeURN());
+				} else if (lhs.getCodingSchemeVersion() != null
+						&& !lhs.getCodingSchemeVersion().equals(
+								rhs.getCodingSchemeVersion())) {
+					return lhs.getCodingSchemeVersion().compareTo(
+							rhs.getCodingSchemeVersion());
+				}
+
+				return 0;
+			}
+		};
+		Arrays.sort(acsrl.getAbsoluteCodingSchemeVersionReference(), cmp);
+	}
+	
+	
 	CodingScheme transformOld() throws Exception {
 
 		ValueSetDefinitionService vsdServ = LexEvsServiceLocator.getInstance()
@@ -129,9 +188,9 @@ public class TransformValueSetDefinitionToCodingScheme {
 
 	}
 
-	private LexEVSValueSetDefinitionServices getValueSetDefinitionService() {
+	private LexEVSValueSetDefinitionServicesImpl getValueSetDefinitionService() {
 		if (vds_ == null) {
-			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
+			vds_ = new LexEVSValueSetDefinitionServicesImpl();
 		}
 		return vds_;
 	}
@@ -173,7 +232,8 @@ public class TransformValueSetDefinitionToCodingScheme {
 	public static void main(String args[]) {
 		try {
 
-			TransformValueSetDefinitionToCodingScheme tvd2cs = new TransformValueSetDefinitionToCodingScheme(new URI("SRITEST:AUTO:EveryThing"), null, null, null);
+			TransformValueSetDefinitionToCodingScheme tvd2cs = new TransformValueSetDefinitionToCodingScheme(
+					new URI("SRITEST:AUTO:EveryThing"), null, null, null);
 			CachingMessageDirectorIF message = new CachingMessageDirectorImpl(
 					new CommandLineMessageDirector());
 			CodingScheme codingScheme = tvd2cs.transform();
