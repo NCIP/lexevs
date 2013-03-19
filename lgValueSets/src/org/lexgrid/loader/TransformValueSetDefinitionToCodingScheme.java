@@ -68,6 +68,7 @@ public class TransformValueSetDefinitionToCodingScheme {
 		int uuid = generateHashCode();
 		codingScheme.setRepresentsVersion("" + uuid);
 	}
+	
 
 	int generateHashCode() throws LBException {
 		ResolvedValueSetCodedNodeSet rvscs = getValueSetDefinitionService()
@@ -119,74 +120,6 @@ public class TransformValueSetDefinitionToCodingScheme {
 		Arrays.sort(acsrl.getAbsoluteCodingSchemeVersionReference(), cmp);
 	}
 	
-	
-	CodingScheme transformOld() throws Exception {
-
-		ValueSetDefinitionService vsdServ = LexEvsServiceLocator.getInstance()
-				.getDatabaseServiceManager().getValueSetDefinitionService();
-
-		ResolvedValueSetDefinition resDef = getValueSetDefinitionService()
-				.resolveValueSetDefinition(valueSetDefinitionURI,
-						valueSetDefinitionRevisionId, csVersionList,
-						csVersionTag, null);
-
-		ValueSetDefinition vsd = vsdServ.getValueSetDefinitionByRevision(this
-				.getValueSetDefinitionURI().toString(), this
-				.getValueSetDefinitionRevisionId());
-
-		String codingSchemeUri = vsd.getValueSetDefinitionURI();
-		String codingSchemeVersion = vsd.getEntryState() == null ? "UNASSIGNED"
-				: vsd.getEntryState().getContainingRevision();
-
-		String codingSchemeName = StringUtils.isEmpty(vsd
-				.getValueSetDefinitionName()) ? codingSchemeUri : vsd
-				.getValueSetDefinitionName();
-
-		CodingScheme cs = new CodingScheme();
-
-		cs.setCodingSchemeName(codingSchemeName);
-		cs.setCodingSchemeURI(codingSchemeUri);
-		cs.setRepresentsVersion(codingSchemeVersion);
-		if (vsd.getEffectiveDate() != null)
-			cs.setEffectiveDate(vsd.getEffectiveDate());
-		if (vsd.getExpirationDate() != null)
-			cs.setExpirationDate(vsd.getExpirationDate());
-		cs.setEntryState(vsd.getEntryState());
-		cs.setFormalName(codingSchemeName);
-		cs.setIsActive(vsd.getIsActive());
-		cs.setMappings(vsd.getMappings());
-		cs.setOwner(vsd.getOwner());
-		cs.setProperties(vsd.getProperties());
-		cs.setSource(vsd.getSource());
-		cs.setStatus(vsd.getStatus());
-
-		Entities entities = new Entities();
-		cs.setEntities(entities);
-
-		Iterator<? extends AbsoluteCodingSchemeVersionReference> csList = resDef
-				.getCodingSchemeVersionRefList()
-				.iterateAbsoluteCodingSchemeVersionReference();
-		System.out.println("Value domain: " + valueSetDefinitionURI.toString()
-				+ " used: ");
-		while (csList.hasNext()) {
-			AbsoluteCodingSchemeVersionReference csr = csList.next();
-			System.out.println(csr.getCodingSchemeURN() + " : "
-					+ csr.getCodingSchemeVersion());
-		}
-
-		ResolvedConceptReferencesIterator crIter = resDef
-				.getResolvedConceptReferenceIterator();
-
-		while (crIter.hasNext()) {
-			ResolvedConceptReference rcr = crIter.next();
-			Entity entity = rcr.getEntity();
-			entities.addEntity(entity);
-
-		}
-
-		return cs;
-
-	}
 
 	private LexEVSValueSetDefinitionServicesImpl getValueSetDefinitionService() {
 		if (vds_ == null) {
