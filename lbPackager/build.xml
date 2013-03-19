@@ -735,7 +735,7 @@ pause
 	
 	<target name="common-project-build">
 		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/${project}" antfile="${lexevs.api.dir}/${project}/build.xml" target="all"/>
+		<ant dir="${lexevs.api.dir}/${project}" antfile="${lexevs.api.dir}/${project}/build.xml" target="publish"/>
 		<copy todir="${temp.pkg}">
 			<fileset dir="${lexevs.api.dir}/${project}/target/">
 			    <include name="${module}-*.jar"/>

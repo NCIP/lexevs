@@ -243,6 +243,9 @@ public class]]></replacevalue>
 		<ivy:publish resolver="user-local-repo" forcedeliver="true" overwrite="true">
 		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
+		<ivy:publish resolver="local-m2-repo" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
+		</ivy:publish>
 	</target>
 	
 	<target name="deploy" depends="jar" if="informatics.password" unless="publish.skip">

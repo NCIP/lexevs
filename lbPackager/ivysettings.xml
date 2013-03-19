@@ -72,6 +72,10 @@
       		<url name="ibiblio" m2compatible="true">
       			  <artifact pattern="http://www.ibiblio.org/pub/mirrors/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
       		</url>
+      		
+      		<url name="jboss" m2compatible="true">
+      			  <artifact pattern="http://repository.jboss.com/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
+      		</url>
 
 			<url name="CBIIT Nexus Server" m2compatible="true">
         		<artifact pattern="https://ncimvn.nci.nih.gov/nexus/content/groups/public/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
