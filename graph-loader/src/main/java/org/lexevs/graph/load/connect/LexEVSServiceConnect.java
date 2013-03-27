@@ -21,15 +21,7 @@ public class LexEVSServiceConnect {
 	public DatabaseServiceManager getLexEvsDataBaseService(){
 		return locator.getDatabaseServiceManager();
 	}
-	
-	public void doSomething(){
-		DatabaseServiceManager manager = getLexEvsDataBaseService();
-		LexEvsDatabaseOperations ops = locator.getLexEvsDatabaseOperations();
-		AssociationService asssvc = manager.getAssociationService();
-		CodedNodeGraphService cngsvc = manager.getCodedNodeGraphService();
-		AssociationTargetService tarsvc = manager.getAssociationTargetService();
 
-	}
 	/**
 	 * @param args
 	 */
