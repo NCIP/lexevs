@@ -714,7 +714,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         return lbs_;
     }
 
-	private VSDServiceHelper getServiceHelper(){
+	public VSDServiceHelper getServiceHelper(){
 		if (sh_ == null)
 		{
 			try {

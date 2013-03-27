@@ -32,6 +32,7 @@ import org.LexGrid.valueSets.PropertyReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
 import org.lexgrid.valuesets.helper.VSDServiceHelper;
+import org.lexgrid.valuesets.helper.ValueSetResolutionMD5Generator;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
@@ -69,33 +70,13 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 	public CodedNodeSet compileValueSetDefinition(
 			final ValueSetDefinition vdd, HashMap<String, String> refVersions, 
 			String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs) {
-
-		HashCountingFieldCallback callback = 
-			new HashCountingFieldCallback(vdd);
-		ReflectionUtils.doWithFields(vdd.getClass(), callback);
-		
-		int uuid = callback.getComputedHashCode();
-		
-		if(refVersions != null){
-			uuid += refVersions.hashCode();
-		} else {
-			uuid += NULL_STRING_HASH_CODE;
-		}
-		
-		if(versionTag != null){
-			uuid += versionTag.hashCode();
-		} else {
-			uuid += NULL_STRING_HASH_CODE;
-		}
-		
-		if (referencedVSDs != null){
-			uuid += referencedVSDs.hashCode();
-		} else {
-			uuid += NULL_STRING_HASH_CODE;
-		}
-		
 		try {
-			CodedNodeSet cns = this.retrieveCodedNodeSet(uuid);
+		ValueSetResolutionMD5Generator vsrg= new ValueSetResolutionMD5Generator( vdd,
+				 refVersions,  versionTag, referencedVSDs);
+		String md5= vsrg.generateMD5();
+		
+		
+			CodedNodeSet cns = this.retrieveCodedNodeSet(md5);
 			
 			if(cns != null) {
 				
@@ -105,7 +86,7 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 			} else {
 				cns = this.delegate.compileValueSetDefinition(vdd, refVersions, versionTag, referencedVSDs);
 				
-				this.persistCodedNodeSet(uuid, cns);
+				this.persistCodedNodeSet(md5, cns);
 				
 				return cns;
 			}
@@ -234,7 +215,7 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 	 * 
 	 * @throws Exception the exception
 	 */
-	protected abstract void persistCodedNodeSet(int uuid, CodedNodeSet cns);
+	protected abstract void persistCodedNodeSet(String uuid, CodedNodeSet cns);
 	
 
 	/**
@@ -246,6 +227,6 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 	 * 
 	 * @throws Exception the exception
 	 */
-	protected abstract CodedNodeSet retrieveCodedNodeSet(int uuid) ;
+	protected abstract CodedNodeSet retrieveCodedNodeSet(String uuid) ;
     
 }

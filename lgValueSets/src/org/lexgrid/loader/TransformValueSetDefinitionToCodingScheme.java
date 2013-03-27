@@ -8,25 +8,16 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Iterator;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.concepts.Entities;
-import org.LexGrid.concepts.Entity;
-import org.LexGrid.valueSets.ValueSetDefinition;
-import org.apache.commons.lang.StringUtils;
-import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
-import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import org.lexgrid.valuesets.helper.ValueSetResolutionMD5Generator;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 public class TransformValueSetDefinitionToCodingScheme {
@@ -57,19 +48,27 @@ public class TransformValueSetDefinitionToCodingScheme {
 		// read it with BufferedReader
 		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
-		// CodingScheme.unmarshalCodingScheme(stream);
+		
 		codingScheme = CodingScheme.unmarshalCodingScheme(br);
 		setCodingSchemeVersion(codingScheme);
 		return codingScheme;
 
 	}
 
-	void setCodingSchemeVersion(CodingScheme codingScheme) throws LBException {
-		int uuid = generateHashCode();
-		codingScheme.setRepresentsVersion("" + uuid);
+	void setCodingSchemeVersion(CodingScheme codingScheme) throws Exception {
+		String md5 = computeMD5();
+		codingScheme.setRepresentsVersion(md5);
 	}
 	
 
+	String computeMD5() throws Exception {
+		ValueSetResolutionMD5Generator vsrg= new ValueSetResolutionMD5Generator( valueSetDefinitionURI,
+				 valueSetDefinitionRevisionId,
+				 csVersionList,
+				 csVersionTag);
+		return vsrg.generateMD5();
+		
+	}
 	int generateHashCode() throws LBException {
 		ResolvedValueSetCodedNodeSet rvscs = getValueSetDefinitionService()
 				.getCodedNodeSetForValueSetDefinition(valueSetDefinitionURI,

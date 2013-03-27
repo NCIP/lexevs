@@ -73,14 +73,14 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 	/**
 	 * Persist coded node set.
 	 * 
-	 * @param uuid the uuid
+	 * @param md5 the md5
 	 * @param cns the cns
 	 * 
 	 * @throws Exception the exception
 	 */
-	protected void persistCodedNodeSet(int uuid, CodedNodeSet cns) {
+	protected void persistCodedNodeSet(String md5, CodedNodeSet cns) {
 		try {
-			File cachedCnsFile = new File(this.getDiskStorePath() + File.separator + this.getFileName(uuid));
+			File cachedCnsFile = new File(this.getDiskStorePath() + File.separator + this.getFileName(md5));
 			
 			if(cachedCnsFile.exists()){
 				LoggerFactory.getLogger().info("Compiled Value Set Definition already cached.");
@@ -90,7 +90,7 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 			
 			this.deleteOldestFile();
 			
-			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(this.getDiskStorePath()	+ File.separator + this.getFileName(uuid))); 
+			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(this.getDiskStorePath()	+ File.separator + this.getFileName(md5))); 
 			out.writeObject(cns); 
 			out.close();
 		} catch (Exception e) {
@@ -99,28 +99,26 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 		}
 	}
 	
-	private String getFileName(int uuid){
-		String uuidString = String.valueOf(uuid);
+	private String getFileName(String md5){
 		
-		uuidString = uuidString.replaceAll("-", "n");
 		
-		return uuidString + COMPILED_VS_FILE_EXTENSION;
+		return md5 + COMPILED_VS_FILE_EXTENSION;
 	}
 
 	/**
 	 * Retrieve coded node set.
 	 * 
-	 * @param uuid the uuid
+	 * @param md5 the md5
 	 * 
 	 * @return the coded node set
 	 * 
 	 * @throws Exception the exception
 	 */
-	protected CodedNodeSet retrieveCodedNodeSet(int uuid) {
+	protected CodedNodeSet retrieveCodedNodeSet(String md5) {
 
 		try {
 			
-			File cachedCnsFile = new File(this.getDiskStorePath() + File.separator + this.getFileName(uuid));
+			File cachedCnsFile = new File(this.getDiskStorePath() + File.separator + this.getFileName(md5));
 			if(! cachedCnsFile.exists()){
 				LoggerFactory.getLogger().info("Compiled Value Set Definition cache miss.");
 				
