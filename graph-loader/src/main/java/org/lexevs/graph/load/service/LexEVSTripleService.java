@@ -61,11 +61,11 @@ public class LexEVSTripleService {
 						List<String> relationsIds = associationDao
 								.getRelationsUIdsForCodingSchemeUId(codingSchemeId);
 
-						List<String> associationPredicateIds = null;
+						List<String> associationPredicateIds = new ArrayList<String>();
 						for (String relationsId : relationsIds) {
-							associationPredicateIds = associationDao
+							associationPredicateIds.addAll(associationDao
 									.getAssociationPredicateUIdsForRelationsUId(
-											codingSchemeId, relationsId);
+											codingSchemeId, relationsId));
 						}
 						return associationPredicateIds;
 					}
@@ -177,8 +177,8 @@ public class LexEVSTripleService {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String uri = "urn:oid:11.11.0.1";
-		String version = "1.0";
+		String uri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
+		String version = "12.01f";
 		LexEVSTripleService service = new LexEVSTripleService();
 		List<String> predicateIds = service.getAssociationPredicateIds(uri,
 				version);
@@ -190,12 +190,15 @@ public class LexEVSTripleService {
 
 			for (Triple t : triples) {
 
-				System.out.println("\n New Triple");
-				System.out.println(t.getSourceEntityCode());
-				System.out.println(t.getSourceEntityNamespace());
-				System.out.println(t.getTargetEntityCode());
-				System.out.println(t.getTargetEntityNamespace());
+//				System.out.println("\n New Triple");
+//				System.out.println(t.getSourceEntityCode());
+//				System.out.println(t.getSourceEntityNamespace());
+//				System.out.println(t.getTargetEntityCode());
+//				System.out.println(t.getTargetEntityNamespace());
 				count++;
+				if(count % 10000 == 0){
+				System.out.println("Triples loaded: " + count);
+				}
 			}
 
 			System.out.println("predicate name: "
