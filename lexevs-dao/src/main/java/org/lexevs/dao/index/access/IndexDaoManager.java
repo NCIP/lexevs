@@ -72,8 +72,10 @@ public class IndexDaoManager {
 		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
 	}
 	
-	public SearchDao getSearchDao(String codingSchemeUri, String version){
-		return this.doGetDao(codingSchemeUri, version, this.getSearchDaos());
+	public SearchDao getSearchDao(){
+		Assert.state(this.searchDaos.size() == 1, "Currently Search Daos are not Versionable.");
+		
+		return this.searchDaos.get(0);
 	}
 	
 	public CommonEntityDao getCommonEntityDao(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {

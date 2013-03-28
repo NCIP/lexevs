@@ -77,7 +77,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 							entity.getEntityCode(), 
 							entity.getEntityCodeNamespace()));
 		
-		indexDaoManager.getSearchDao(codingSchemeUri, codingSchemeVersion).
+		indexDaoManager.getSearchDao().
 			deleteDocuments(codingSchemeUri, codingSchemeVersion, new TermQuery(term));
 	}
 	
@@ -90,7 +90,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		List<Document> docs = 
 			entityIndexer.indexEntity(codingSchemeUri, codingSchemeVersion, entity);
 		
-		indexDaoManager.getSearchDao(codingSchemeUri, codingSchemeVersion).
+		indexDaoManager.getSearchDao().
 			addDocuments(codingSchemeUri, codingSchemeVersion, docs, entityIndexer.getAnalyzer());
 	}
 
@@ -151,8 +151,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	@Override
 	public List<ScoreDoc> query(
 			Set<AbsoluteCodingSchemeVersionReference> codeSystems, Query query) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.indexDaoManager.getSearchDao().query(query);
 	}
 	
 	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {

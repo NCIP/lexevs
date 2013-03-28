@@ -18,12 +18,14 @@
  */
 package org.lexevs.dao.index.lucene.v2013.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -72,17 +74,28 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	@Override
 	public List<ScoreDoc> query(Query query) {
 		try {
-			LuceneIndexTemplate template = this.getCommonLuceneIndexTemplate();
+			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 	
-			return template.search(query, null);
+			final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
+					
+			HitCollector collector = new HitCollector(){
+
+				@Override
+				public void collect(int doc, float score) {
+					ScoreDoc scoreDoc = new ScoreDoc(doc, score);
+					docs.add(scoreDoc);
+				}
+				
+			};
+			
+			template.search(query, null, collector);
+
+			return docs;
+			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	protected LuceneIndexTemplate getCommonLuceneIndexTemplate() {
-		return this.luceneIndexTemplate;
-	}	
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.entity.EntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)

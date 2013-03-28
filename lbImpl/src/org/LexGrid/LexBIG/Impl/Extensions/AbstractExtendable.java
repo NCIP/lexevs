@@ -22,7 +22,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Extendable;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 
 /**
  * The Class AbstractExtendable.
@@ -63,6 +63,14 @@ public abstract class AbstractExtendable implements Extendable {
         return extensionDescription;
     }
 
+    protected abstract void doRegister(
+            ExtensionRegistry registry, 
+            ExtensionDescription description) throws LBParameterException;
+    
+    public void register() throws LBParameterException, LBException {
+        this.doRegister(ExtensionRegistryImpl.instance(), this.getExtensionDescription());
+    }
+    
     /**
      * Builds the extension description.
      * 

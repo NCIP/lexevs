@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.BaseOption;
@@ -230,6 +231,11 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
         } else {
             new DoConversion().run();
         }
+    }
+    
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerLoadExtension(description);
     }
     
     protected CachingMessageDirectorIF createCachingMessageDirectorIF() {

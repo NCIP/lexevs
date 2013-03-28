@@ -21,6 +21,8 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
@@ -136,6 +138,11 @@ public class FilterTest extends BaseCodedNodeGraphTest {
 			return ed;
 
 		}
+		
+	    @Override
+	    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+	        registry.registerFilterExtension(description);
+	    }
 
 		@Override
 		public boolean match(ResolvedConceptReference ref) {
@@ -156,6 +163,11 @@ public class FilterTest extends BaseCodedNodeGraphTest {
 			return ed;
 
 		}
+		
+	    @Override
+	    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+	        registry.registerFilterExtension(description);
+	    }
 
 		@Override
 		public boolean match(ResolvedConceptReference ref) {

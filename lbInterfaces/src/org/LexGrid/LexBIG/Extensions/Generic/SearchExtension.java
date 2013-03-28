@@ -1,9 +1,7 @@
 package org.LexGrid.LexBIG.Extensions.Generic;
 
-import java.io.Serializable;
 import java.util.Set;
 
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 
 public interface SearchExtension extends GenericExtension {

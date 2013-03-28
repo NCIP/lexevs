@@ -90,7 +90,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		if(!onlyRegister) {
 
 			EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			SearchDao searchIndexService = indexDaoManager.getSearchDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+			SearchDao searchIndexService = indexDaoManager.getSearchDao();
 
 			int totalIndexedEntities = 0;
 
