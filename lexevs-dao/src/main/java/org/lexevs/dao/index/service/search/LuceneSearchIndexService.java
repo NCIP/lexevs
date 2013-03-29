@@ -50,7 +50,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	/** The index dao manager. */
 	private IndexDaoManager indexDaoManager;
 
-	
 	/** The index creator. */
 	private EntityIndexer entityIndexer;
 	
@@ -124,7 +123,19 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#dropIndex(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public void dropIndex(AbsoluteCodingSchemeVersionReference reference) {
+		String codingSchemeUri = reference.getCodingSchemeURN();
+		String codingSchemeVersion = reference.getCodingSchemeVersion();
 		
+		Term term = new Term(
+			LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+			LuceneLoaderCode.createCodingSchemeUriVersionKey(
+					codingSchemeUri, codingSchemeVersion));
+		
+		indexDaoManager.getSearchDao().
+			deleteDocuments(
+				codingSchemeUri, 
+				codingSchemeVersion, 
+				new TermQuery(term));
 	}
 
 	@Override
@@ -139,7 +150,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	@Override
 	public void optimize() {
-		// TODO Auto-generated method stub
+		indexDaoManager.getSearchDao().optimizeIndex();
 	}
 
 	@Override

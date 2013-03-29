@@ -11,11 +11,14 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.system.service.SystemResourceService;
 
 public class SearchEntityIndexer implements EntityIndexer {
 	
 	/** The current index version. */
 	private String currentIndexVersion = "2013";
+	
+	private SystemResourceService systemResourceService;
 
 	@Override
 	public List<Document> indexEntity(
@@ -23,6 +26,32 @@ public class SearchEntityIndexer implements EntityIndexer {
 			String codingSchemeVersion, 
 			Entity entity) {
 		Document document = new Document();
+		
+		String codeSystemKey = 
+			LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion);
+		
+		String entityKey = 
+			LuceneLoaderCode.
+			createCodingSchemeUriVersionCodeNamespaceKey(
+					codingSchemeUri, 
+					codingSchemeVersion, 
+					entity.getEntityCode(), 
+					entity.getEntityCodeNamespace());
+			
+		document.add(
+			this.toField(
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, 
+					codeSystemKey,
+					Field.Store.NO,
+					Field.Index.NOT_ANALYZED));
+		
+		document.add(
+				this.toField(
+						LuceneLoaderCode.CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+						entityKey,
+						Field.Store.NO,
+						Field.Index.NOT_ANALYZED));
+
 		document.add(
 				this.toField("description", 
 						entity.getEntityDescription().getContent(),
@@ -54,6 +83,14 @@ public class SearchEntityIndexer implements EntityIndexer {
 	@Override
 	public LexEvsIndexFormatVersion getIndexerFormatVersion() {
 		return LexEvsIndexFormatVersion.parseStringToVersion(this.currentIndexVersion);
+	}
+
+	public SystemResourceService getSystemResourceService() {
+		return systemResourceService;
+	}
+
+	public void setSystemResourceService(SystemResourceService systemResourceService) {
+		this.systemResourceService = systemResourceService;
 	}
 
 }

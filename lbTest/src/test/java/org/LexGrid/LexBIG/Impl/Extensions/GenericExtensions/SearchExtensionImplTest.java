@@ -40,6 +40,36 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertNotNull(searchExtension);
 	}
 	
+	public void testSimpleSearch() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar");
+		assertTrue(itr.hasNext());
+		assertEquals("Jaguar", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchCaseInsensitive() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("jaguar");
+		assertTrue(itr.hasNext());
+		assertEquals("Jaguar", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchCaseInsensitiveAndWildcard() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("jagu*");
+		assertTrue(itr.hasNext());
+		assertEquals("Jaguar", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
 	public void testSimpleSearchNone() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
