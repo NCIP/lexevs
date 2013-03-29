@@ -3,6 +3,7 @@ package org.lexevs.dao.index.indexer;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
@@ -52,17 +53,64 @@ public class SearchEntityIndexer implements EntityIndexer {
 						Field.Store.NO,
 						Field.Index.NOT_ANALYZED));
 
-		document.add(
-				this.toField("description", 
-						entity.getEntityDescription().getContent(),
-						Field.Store.YES, 
-						Field.Index.ANALYZED));
+		if(entity.getEntityDescription() != null){
+			document.add(
+					this.toField("description", 
+							entity.getEntityDescription().getContent(),
+							Field.Store.YES, 
+							Field.Index.ANALYZED));
+		}
 		
 		document.add(
 				this.toField("code", 
 						entity.getEntityCode(),
 						Field.Store.YES, 
 						Field.Index.NOT_ANALYZED));
+		
+		document.add(
+				this.toField("namespace", 
+						entity.getEntityCode(),
+						Field.Store.YES, 
+						Field.Index.NOT_ANALYZED));
+		
+		document.add(
+				this.toField("codingSchemeUri", 
+						codingSchemeUri,
+						Field.Store.YES, 
+						Field.Index.NO));
+		
+		document.add(
+				this.toField("codingSchemeVersion", 
+						codingSchemeVersion,
+						Field.Store.YES, 
+						Field.Index.NO));
+		
+		String codingSchemeName;
+		try {
+			codingSchemeName = 
+				this.systemResourceService.
+					getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
+		} catch (LBParameterException e) {
+			throw new RuntimeException(e);
+		}
+		
+		document.add(
+				this.toField("codingSchemeName", 
+						codingSchemeName,
+						Field.Store.YES, 
+						Field.Index.NO));
+		
+		String[] entityTypes = entity.getEntityType();
+		if(entityTypes != null){
+			for(String entityType : entityTypes){
+				document.add(
+						this.toField("type", 
+								entityType,
+								Field.Store.YES, 
+								Field.Index.NOT_ANALYZED));
+			}
+		}
+
 		
 		return Arrays.asList(document);
 	}
