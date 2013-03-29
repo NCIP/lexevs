@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIterator;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptReferencesIterator<ScoreDoc>{
 
@@ -16,7 +18,18 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
 
     @Override
     protected ResolvedConceptReference doTransform(ScoreDoc item) {
-        return new ResolvedConceptReference();
+        Document doc = 
+            LexEvsServiceLocator.getInstance().
+                getIndexServiceManager().
+                getSearchIndexService().
+                getById(item.doc);
+        
+        String code = doc.get("code");
+        
+        ResolvedConceptReference ref = new ResolvedConceptReference();
+        ref.setCode(code);
+        
+        return ref;
     }
 
 }

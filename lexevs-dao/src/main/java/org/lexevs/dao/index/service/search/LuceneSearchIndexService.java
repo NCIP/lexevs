@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
@@ -32,9 +33,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
-import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-import org.lexevs.registry.service.Registry;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -50,9 +49,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	
 	/** The index dao manager. */
 	private IndexDaoManager indexDaoManager;
-	
-	/** The index creator. */
-	private IndexCreator indexCreator;
+
 	
 	/** The index creator. */
 	private EntityIndexer entityIndexer;
@@ -61,8 +58,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	
 	private MetaData metaData;
 
-	private Registry registry;
-	
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
@@ -145,7 +140,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	@Override
 	public void optimize() {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public Analyzer getAnalyzer() {
+		return this.entityIndexer.getAnalyzer();
 	}
 
 	@Override
@@ -173,22 +172,8 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		return lcs.getKey();
 	}
 
-	/**
-	 * Gets the index creator.
-	 * 
-	 * @return the index creator
-	 */
-	public IndexCreator getIndexCreator() {
-		return indexCreator;
-	}
-
-	/**
-	 * Sets the index creator.
-	 * 
-	 * @param indexCreator the new index creator
-	 */
-	public void setIndexCreator(IndexCreator indexCreator) {
-		this.indexCreator = indexCreator;
+	public Document getById(int id){
+		return this.indexDaoManager.getSearchDao().getById(id);
 	}
 
 	public SystemResourceService getSystemResourceService() {
@@ -213,14 +198,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	public EntityIndexer getEntityIndexer() {
 		return entityIndexer;
-	}
-
-	public Registry getRegistry() {
-		return registry;
-	}
-
-	public void setRegistry(Registry registry) {
-		this.registry = registry;
 	}
 
 }

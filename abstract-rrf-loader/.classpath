@@ -9,6 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
-	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=abstract-rrf-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=abstract-rrf-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

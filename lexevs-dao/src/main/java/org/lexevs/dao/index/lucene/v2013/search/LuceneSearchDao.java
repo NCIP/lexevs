@@ -72,6 +72,11 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	}
 
 	@Override
+	public Document getById(int id) {
+		return this.getLuceneIndexTemplate().getDocumentById(id);
+	}
+
+	@Override
 	public List<ScoreDoc> query(Query query) {
 		try {
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate();

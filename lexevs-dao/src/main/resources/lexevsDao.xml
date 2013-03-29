@@ -1,8 +1,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:util="http://www.springframework.org/schema/util"
    xmlns:aop="http://www.springframework.org/schema/aop"
    xmlns:tx="http://www.springframework.org/schema/tx"
    xsi:schemaLocation="
+   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
@@ -754,9 +756,7 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="entityIndexer" ref="commonIndexLoaderCodeIndexer"/>
-		<property name="searchIndexer">
-			<bean class="org.lexevs.dao.index.service.search.SearchEntityIndexer"/>
-		</property>
+		<property name="searchIndexer" ref = "searchEntityIndexer"/>
 		<property name="indexDaoManager" ref="indexDaoManager"/>
 		<property name="metaData" ref="luceneIndexMetadataFactory"/>
 		<property name="logger" ref="loggerFactory"/>
@@ -781,6 +781,7 @@
 	
 	<bean id="luceneSearchIndexService" class="org.lexevs.dao.index.service.search.LuceneSearchIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
+		<property name="entityIndexer" ref="searchEntityIndexer"/> 
 	</bean>
 	
 	<bean id="luceneMetadataIndexService" 
@@ -859,8 +860,7 @@
 		<property name="indexDirectory" ref="commonIndexLocation" />
 		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
 		<property name="indexName">
-		<value>commonIndex</value>
-<!-- 			<util:constant static-field="org.lexevs.dao.index.factory.IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME"/> -->
+			<util:constant static-field="org.lexevs.dao.index.factory.IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME"/>
 		</property>
 	</bean>
 	
@@ -868,8 +868,7 @@
 		class="org.lexevs.dao.index.factory.IndexLocationFactory">
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="indexName">
-		<value>commonIndex</value>
-<!-- 			<util:constant static-field="org.lexevs.dao.index.factory.IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME"/> -->
+			<util:constant static-field="org.lexevs.dao.index.factory.IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME"/>
 		</property>
 	</bean>
 	
@@ -898,6 +897,8 @@
 	
 	<bean id="defaultLuceneDirectoryCreator" 
 		class="org.lexevs.dao.index.lucenesupport.DefaultLuceneDirectoryCreator"/>
+		
+	<bean id="searchEntityIndexer" class="org.lexevs.dao.index.indexer.SearchEntityIndexer"/>
 
 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
 	depends-on="commonIndexDirectory">

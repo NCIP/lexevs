@@ -23,6 +23,8 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 
@@ -49,5 +51,9 @@ public interface SearchIndexService {
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference);
 	
 	public List<ScoreDoc> query(Set<AbsoluteCodingSchemeVersionReference> codeSystems, Query query);
+	
+	public Document getById(int id);
+	
+	public Analyzer getAnalyzer();
 
 }

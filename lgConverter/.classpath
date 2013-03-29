@@ -9,6 +9,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgResourceReader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
-	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=lgConverter&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=lgConverter&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -27,7 +27,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -62,8 +61,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	private MetaData metaData;
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
-	
-	private Analyzer standardAnalyzer = new StandardAnalyzer();
 	
 	private EntityIndexer entityIndexer;
 	
@@ -135,7 +132,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 				searchIndexService.addDocuments(
 						reference.getCodingSchemeURN(), 
 						reference.getCodingSchemeVersion(), 
-						searchDocs, standardAnalyzer);
+						searchDocs, 
+						this.searchIndexer.getAnalyzer());
 			}
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");

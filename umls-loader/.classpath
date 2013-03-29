@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xerces-xml-apis-2.8.0.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xercesImpl-2.8.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/abstract-rrf-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/args4j/args4j-2.0.12.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=umls-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

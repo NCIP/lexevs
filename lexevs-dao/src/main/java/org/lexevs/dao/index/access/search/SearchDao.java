@@ -45,4 +45,6 @@ public interface SearchDao extends LexEvsIndexFormatVersionAwareDao {
 	public List<ScoreDoc> query(Query query);
 	
 	public Filter getCodingSchemeFilter(String uri, String version);
+
+	public Document getById(int id);
 }

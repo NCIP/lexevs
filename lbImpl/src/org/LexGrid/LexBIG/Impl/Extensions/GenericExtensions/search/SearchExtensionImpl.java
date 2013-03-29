@@ -11,8 +11,12 @@ import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class SearchExtensionImpl extends AbstractExtendable implements SearchExtension {
@@ -21,15 +25,32 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
 
     @Override
     public ResolvedConceptReferencesIterator search(String text) {
-        return this.search(text, null);
+        SearchIndexService service = LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+            getSearchIndexService();
+        
+        QueryParser parser = new QueryParser("description", service.getAnalyzer());
+
+        Query query;
+        try {
+            query = parser.parse(text);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().
+                getIndexServiceManager().
+                getSearchIndexService().
+                query(null, query);
+
+        return new SearchScoreDocIterator(scoreDocs);
     }
 
     @Override
     public ResolvedConceptReferencesIterator search(String text, Set<CodeSystemReference> codeSystems) {
-       List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().
-            getIndexServiceManager().
-            getSearchIndexService().query(null , new MatchAllDocsQuery());
-        
+        List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().getIndexServiceManager().getSearchIndexService()
+                .query(null, new MatchAllDocsQuery());
+
         return new SearchScoreDocIterator(scoreDocs);
     }
 
@@ -48,7 +69,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         ed.setExtensionClass(this.getClass().getName());
         ed.setName("SearchExtension");
         ed.setVersion("1.0");
-        
+
         return ed;
     }
 

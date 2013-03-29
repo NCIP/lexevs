@@ -40,12 +40,32 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertNotNull(searchExtension);
 	}
 	
-	public void testSimpleSearch() throws LBException {
+	public void testSimpleSearchNone() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("car");
+		ResolvedConceptReferencesIterator itr = searchExtension.search("____NONE____");
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchExactCode() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001");
 		assertTrue(itr.hasNext());
+		assertEquals("C0001", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchFuzzyAndNegation() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("cor~ -Trailer");
+		assertTrue(itr.hasNext());
+		assertEquals("C0001", itr.next().getCode());
+		assertFalse(itr.hasNext());
 	}
 
 }

@@ -5,25 +5,9 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/javax/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-oxm-1.5.7.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-io-1.4.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/c3p0/c3p0-0.9.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/xstream/xstream-1.3.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/jettison/jettison-1.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/javax/stax-1.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-test-2.5.6.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-2.5.6.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xerces-xml-apis-2.8.0.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/xerces/xercesImpl-2.8.0.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.3.1-core.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/castor/castor-1.3.1.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=loader-framework-core&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
