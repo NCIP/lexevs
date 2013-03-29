@@ -899,7 +899,9 @@
 	<bean id="defaultLuceneDirectoryCreator" 
 		class="org.lexevs.dao.index.lucenesupport.DefaultLuceneDirectoryCreator"/>
 		
-	<bean id="searchEntityIndexer" class="org.lexevs.dao.index.indexer.SearchEntityIndexer"/>
+	<bean id="searchEntityIndexer" class="org.lexevs.dao.index.indexer.SearchEntityIndexer">
+		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+	</bean>
 
 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
 	depends-on="commonIndexDirectory">
