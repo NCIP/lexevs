@@ -50,6 +50,7 @@ import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingExtensionImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.supplement.SupplementExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
@@ -548,8 +549,8 @@ public class LexBIGServiceImpl implements LexBIGService {
         new RadLexProtegeFramesLoaderImpl().register();
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
-        NCIHistoryLoaderImpl.register();
-        UMLSHistoryLoaderImpl.register();
+        new NCIHistoryLoaderImpl().register();
+        new UMLSHistoryLoaderImpl().register();
         new MrmapRRFLoader().register();
         new SemNetLoaderImpl().register();
         
@@ -660,5 +661,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new OntologyFormatAddingPostProcessor().register();
         new SupplementExtensionImpl().register();
         new HierarchyCheckingPostProcessor().register();
+        new SearchExtensionImpl().register();
     }
 }
