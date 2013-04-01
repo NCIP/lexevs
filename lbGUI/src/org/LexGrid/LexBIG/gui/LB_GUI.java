@@ -61,7 +61,6 @@ import org.LexGrid.LexBIG.gui.logging.LogViewer;
 import org.LexGrid.LexBIG.gui.restrictions.GraphRestrictionGUI;
 import org.LexGrid.LexBIG.gui.restrictions.RestrictionGUI;
 import org.LexGrid.LexBIG.gui.sortOptions.SortOptions;
-import org.LexGrid.util.config.PropertiesUtility;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -102,6 +101,7 @@ import org.eclipse.swt.widgets.Text;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
+import org.lexevs.system.utility.PropertiesUtility;
 
 /**
  * This is the GUI application for the LexBIG project.

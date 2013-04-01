@@ -18,41 +18,26 @@
  */
 package org.lexevs.dao.index.lucene;
 
-import java.io.IOException;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.CachingWrapperFilter;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.TermsFilter;
-import org.apache.lucene.util.DocIdBitSet;
 import org.compass.core.lucene.support.ChainedFilter;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.index.access.AbstractBaseIndexDao;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-import org.lexevs.dao.index.indexregistry.IndexRegistry;
-import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.springframework.util.Assert;
 
-public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseIndexDao {
-	
-	private IndexRegistry indexRegistry;
-	
+public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractFilteringLuceneIndexTemplateDao {
+
 	protected Filter getBoundaryDocFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
 		if(CollectionUtils.isEmpty(codingSchemes)) {
 			return null;
 		}
 		
 		String key = getFilterMapKey(codingSchemes);
-		if(!indexRegistry.getBoundaryDocFilterMap().containsKey(key)) {
+		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
 			Filter[] filters = new Filter[codingSchemes.size()];
 			for(int i=0;i<codingSchemes.size();i++) {
 				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
@@ -63,21 +48,21 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 			}
 			
 			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
-			indexRegistry.getBoundaryDocFilterMap().put(key, chainedFilter);
+			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, chainedFilter);
 		}
-		return indexRegistry.getBoundaryDocFilterMap().get(key);
+		return this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
 	}
 	
 	protected Filter getBoundaryDocFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
 		
 		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
-		if(!indexRegistry.getBoundaryDocFilterMap().containsKey(key)) {
+		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
 			Filter filter1 = createBoundaryDocFilter();
 			
-			indexRegistry.getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter1));
+			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter1));
 		}
 		
-		Filter returnFilter = indexRegistry.getBoundaryDocFilterMap().get(key);
+		Filter returnFilter = this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
 		
 		Assert.notNull(returnFilter);
 
@@ -91,93 +76,4 @@ public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractBaseInd
 		return filter;
 	}
 	
-	private class CachingChainedFilter extends ChainedFilter {
-
-		private static final long serialVersionUID = 5154482258370999758L;
-		
-		private Map<Integer,DocIdBitSet> bitSetCache = new HashMap<Integer,DocIdBitSet>();
-		
-		public CachingChainedFilter(Filter[] chain, int logic) {
-			super(chain, logic);
-		}
-
-		@Override
-		public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-			int key = reader.hashCode();
-			if(! bitSetCache.containsKey(key)){
-				bitSetCache.clear();
-
-				DocIdSet superIdSet = super.getDocIdSet(reader);
-
-				BitSet bitSet = new BitSet();
-				
-				DocIdSetIterator itr = superIdSet.iterator();
-				bitSet = docIdSetIteratorToBitSet(itr);
-				
-				bitSetCache.put(key, new DocIdBitSet(bitSet));
-			}
-			
-			return bitSetCache.get(key);
-		}
-	}
-	
-	private BitSet docIdSetIteratorToBitSet(DocIdSetIterator itr) throws IOException {
-		BitSet bitSet = new BitSet();
-
-		while(itr.next()){
-			bitSet.set(itr.doc());
-		}
-		
-		return bitSet;
-	}
-	
-	protected Filter getCodingSchemeFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-		String key = getFilterMapKey(codingSchemes);
-		if(!indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
-			Filter[] filters = new Filter[codingSchemes.size()];
-			for(int i=0;i<codingSchemes.size();i++) {
-				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
-				
-				filters[i] = this.getCodingSchemeFilterForCodingScheme(
-						ref.getCodingSchemeURN(), 
-						ref.getCodingSchemeVersion());
-			}
-			
-			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
-			indexRegistry.getCodingSchemeFilterMap().put(key, chainedFilter);
-		}
-		return indexRegistry.getCodingSchemeFilterMap().get(key);
-	}
-	
-	protected Filter getCodingSchemeFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
-		String key = getFilterMapKey(codingSchemeUri, codingSchemeVersion);
-		if(!this.indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
-			Term term = new Term(
-					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-							codingSchemeUri, codingSchemeVersion));
-			TermsFilter filter = new TermsFilter();
-			filter.addTerm(term);
-			indexRegistry.getCodingSchemeFilterMap().put(key, new CachingWrapperFilter(filter));
-		}
-		return indexRegistry.getCodingSchemeFilterMap().get(key);
-	}
-	
-	private String getFilterMapKey(List<AbsoluteCodingSchemeVersionReference> refs) {
-		return DaoUtility.createKey(refs);
-	}
-	
-	private String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
-		return DaoUtility.createKey(codingSchemeUri, codingSchemeVersion);
-	}
-
-	protected abstract LuceneIndexTemplate getLuceneIndexTemplate(String codingSchemeUri, String version);
-
-	public void setIndexRegistry(IndexRegistry indexRegistry) {
-		this.indexRegistry = indexRegistry;
-	}
-
-	public IndexRegistry getIndexRegistry() {
-		return indexRegistry;
-	}
 }

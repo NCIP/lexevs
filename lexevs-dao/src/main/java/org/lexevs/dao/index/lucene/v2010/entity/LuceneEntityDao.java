@@ -61,7 +61,8 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	
 	/** The supported index version2010. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
-	
+	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion.parseStringToVersion("2013");
+
 	private LuceneIndexTemplate luceneIndexTemplate;
 
 	@Override
@@ -331,11 +332,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			int id, FieldSelector fieldSelector) {
 		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fieldSelector);
 	}
-	
-	@Override
-	public Document getDocumentById(int id) {
-		return this.getCommonLuceneIndexTemplate().getDocumentById(id);
-	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.entity.EntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
@@ -383,7 +379,10 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	 */
 	@Override
 	public List<LexEvsIndexFormatVersion> doGetSupportedLexEvsIndexFormatVersions() {
-		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2010);
+		return DaoUtility.createList(
+				LexEvsIndexFormatVersion.class, 
+				supportedIndexVersion2010,
+				supportedIndexVersion2013);
 	}
 	
 	@Override

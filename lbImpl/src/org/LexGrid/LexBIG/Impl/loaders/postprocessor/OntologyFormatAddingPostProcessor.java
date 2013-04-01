@@ -20,13 +20,12 @@ package org.LexGrid.LexBIG.Impl.loaders.postprocessor;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -50,16 +49,10 @@ public class OntologyFormatAddingPostProcessor extends AbstractExtendable implem
     
     /** The EXTENSION Name*/
     public static String EXTENSION_NAME = "OntologyFormatAddingPostProcessor";
-
-    /**
-     * Register.
-     * 
-     * @throws LBParameterException the LB parameter exception
-     * @throws LBException the LB exception
-     */
-    public void register() throws LBParameterException, LBException {
-        ExtensionRegistryImpl.instance().registerGenericExtension(
-                super.getExtensionDescription());
+    
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerGenericExtension(description);
     }
  
     /* (non-Javadoc)

@@ -29,12 +29,12 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -290,15 +290,11 @@ private static final long serialVersionUID = 1L;
         throw new UnsupportedOperationException();
     }
 
-    public static void register() {
-        try {
-            ExtensionRegistryImpl.instance().registerLoadExtension(
-                    new UMLSHistoryLoaderImpl().getExtensionDescription());
-        } catch (LBParameterException e) {
-           throw new RuntimeException(e);
-        }   
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerLoadExtension(description);
     }
-
+    
     @Override
     public OntologyFormat getOntologyFormat() {
         return OntologyFormat.UMLSHISTORY;

@@ -18,7 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
 
 /**

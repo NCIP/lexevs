@@ -21,12 +21,11 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.supplement;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SupplementExtension;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 
 /**
@@ -56,9 +55,9 @@ public class SupplementExtensionImpl extends AbstractExtendable implements Suppl
        return ServiceUtility.getParentOfSupplement(codingScheme, tagOrVersion);
     }
 
-    public void register() throws LBParameterException, LBException {
-        ExtensionRegistryImpl.instance().registerGenericExtension(
-                super.getExtensionDescription());
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerGenericExtension(description);
     }
     
     /* (non-Javadoc)

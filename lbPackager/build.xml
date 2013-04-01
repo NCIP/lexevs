@@ -27,8 +27,7 @@ You may obtain a copy of the License at
 	<!-- *************************************** -->
 	<property name="prodID" value="LexEVS"/> <!-- Product ID -->
 	<property name="prodTitle" value = "LexGrid Enterprise Vocabulary Services for caBIG(LexEVS)"/><!-- Product Title -->
-	<!--<property name="prodTitle" value = "LexGrid Vocabulary Services for NCBO(LexBIO)"/>--><!-- Product Title -->
-
+	
 	<target name="init-ivy">
 	
 		<!-- Ivy Properties -->
@@ -734,8 +733,12 @@ pause
     </target>
 	
 	<target name="common-project-build">
+		<!-- 'publish' will be the default task. If it has been set to 'deploy'
+		elsewhere it will remain so, as properties are immutable in Ant. -->
+		<property name="subproject.build.target" value="publish" />
+		
 		<antcall target="temp-clean"/>
-		<ant dir="${lexevs.api.dir}/${project}" antfile="${lexevs.api.dir}/${project}/build.xml" target="all"/>
+		<ant dir="${lexevs.api.dir}/${project}" antfile="${lexevs.api.dir}/${project}/build.xml" target="${subproject.build.target}"/>
 		<copy todir="${temp.pkg}">
 			<fileset dir="${lexevs.api.dir}/${project}/target/">
 			    <include name="${module}-*.jar"/>
@@ -1085,6 +1088,19 @@ pause
 
 	<target name="build-lexbig" depends="
 		build-lexbig-jar, javadoc, javadocydoc, pack"/>
+	
+	<target name="deploy" description="build and deploy externally">
+		<fail message="Property &quot;informatics.password&quot; needs to be set to deploy.&#xa;
+			Example: ant -Dinformatics.password=xxxx">
+		    <condition>
+	            <not>
+	                <isset property="informatics.password"/>
+	            </not>
+		   </condition>
+		</fail>
+		<property name="subproject.build.target" value="deploy" />
+		<antcall target="build-lexbig"/>
+	</target>
 	
 	<target name="build-lexbig-junit" depends="
 		build-lexbig-jar,config-junit-resources,run-junit"/>

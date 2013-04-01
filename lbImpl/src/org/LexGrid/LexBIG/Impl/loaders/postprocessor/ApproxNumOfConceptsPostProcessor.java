@@ -22,14 +22,13 @@ import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.versions.ChangedEntry;
 import org.LexGrid.versions.EntryState;
@@ -52,15 +51,9 @@ public class ApproxNumOfConceptsPostProcessor extends AbstractExtendable impleme
     /** The EXTENSIO n_ name. */
     public static String EXTENSION_NAME = "ApproxNumOfConceptsPostProcessor";
 
-    /**
-     * Register.
-     * 
-     * @throws LBParameterException the LB parameter exception
-     * @throws LBException the LB exception
-     */
-    public void register() throws LBParameterException, LBException {
-        ExtensionRegistryImpl.instance().registerGenericExtension(
-                super.getExtensionDescription());
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerGenericExtension(description);
     }
  
     /* (non-Javadoc)

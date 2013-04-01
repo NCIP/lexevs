@@ -26,12 +26,12 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.util.config.PropertiesUtility;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
 import org.lexevs.logging.Logger;
 import org.lexevs.system.utility.CryptoUtility;
+import org.lexevs.system.utility.PropertiesUtility;
 
 /**
  * This class reads and provides access to values specified in the configuration
