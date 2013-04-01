@@ -25,6 +25,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
@@ -44,125 +47,145 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * The Class LexEvsTestRunner.
- *
+ * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
 
-	/**
-	 * Instantiates a new lex evs test runner.
-	 *
-	 * @param clazz the clazz
-	 * @throws InitializationError the initialization error
-	 */
-	public LexEvsTestRunner(Class<?> clazz) throws InitializationError {
-		super(clazz);
-	}
-	
-	
+    /**
+     * Instantiates a new lex evs test runner.
+     * 
+     * @param clazz
+     *            the clazz
+     * @throws InitializationError
+     *             the initialization error
+     */
+    public LexEvsTestRunner(Class<?> clazz) throws InitializationError {
+        super(clazz);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.junit.runners.BlockJUnit4ClassRunner#runChild(org.junit.runners.model.FrameworkMethod, org.junit.runner.notification.RunNotifier)
-	 */
-	@Override
-	protected void runChild(FrameworkMethod method, RunNotifier notifier){
-	    LoadContent content = method.getAnnotation(LoadContent.class);
-	    
-	    LexEvsDatabaseOperations 
-	        dbOps = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
-	     try {
-	    	dbOps.createAllTables();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.junit.runners.BlockJUnit4ClassRunner#runChild(org.junit.runners.model
+     * .FrameworkMethod, org.junit.runner.notification.RunNotifier)
+     */
+    @Override
+    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
+
+
+        LexEvsDatabaseOperations dbOps = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
+        try {
+            dbOps.createAllTables();
         } catch (Exception e) {
             //
         }
 
-	    if(content != null){
-	        try {
-	            load(content);
-	        } catch (Exception e) {
-	            throw new RuntimeException(e);
-	        }
-	    }
-	    
-	    super.runChild(method, notifier);
-	    
-	    LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropAllTables();
-	    
-	    try {
+        List<LoadContent> contents = new ArrayList<LoadContent>();
+        contents.add(method.getAnnotation(LoadContent.class));
+        
+        LoadContents loadContents = method.getAnnotation(LoadContents.class);
+        if(loadContents != null){
+            contents.addAll(Arrays.asList(loadContents.value()));
+        }
+      
+        for(LoadContent content : contents){
+            if (content != null) {
+                try {
+                    load(content);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        super.runChild(method, notifier);
+
+        LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropAllTables();
+
+        try {
             LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
         } catch (Exception e) {
             //
         }
-	}
-	
-	/**
-	 * The Interface LoadContent.
-	 *
-	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
-	 */
-	@Target({ElementType.METHOD})
-	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface LoadContent {
-		
-		/**
-		 * The Loader Extension Name.
-		 * 
-		 * Defaultes to the LexEVS XML Loader.
-		 *
-		 * @return the string
-		 */
-		String loader() default "LexGrid_Loader";
-		
-		/**
-		 * Content path.
-		 * Use
-		 *    classpath:classpath/to/content for classpath resources
-		 *    file:filepath/to/content for file-based resources
-		 *
-		 * @return the string
-		 */
-		String contentPath();
-	}
-	
+    }
+
+    @Target({ ElementType.METHOD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface LoadContents {
+        LoadContent[] value();
+    }
+
+    /**
+     * The Interface LoadContent.
+     * 
+     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+     */
+    @Target({ ElementType.METHOD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface LoadContent {
+
+        /**
+         * The Loader Extension Name.
+         * 
+         * Defaultes to the LexEVS XML Loader.
+         * 
+         * @return the string
+         */
+        String loader() default "LexGrid_Loader";
+
+        /**
+         * Content path. Use classpath:classpath/to/content for classpath
+         * resources file:filepath/to/content for file-based resources
+         * 
+         * @return the string
+         */
+        String contentPath();
+    }
+
     /**
      * Load.
-     *
-     * @param content the content
-     * @throws Exception the exception
+     * 
+     * @param content
+     *            the content
+     * @throws Exception
+     *             the exception
      */
     protected void load(LoadContent content) throws Exception {
         String[] paths = StringUtils.split(content.contentPath(), ',');
-        
-        for(String path : paths){
+
+        for (String path : paths) {
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-            
+
             Resource resource = this.getResource(path);
-    
-            Loader loader =  lbsm.getLoader(content.loader());
-            
+
+            Loader loader = lbsm.getLoader(content.loader());
+
             loader.getOptions().getBooleanOption(BaseLoader.ASYNC_OPTION).setOptionValue(false);
-            
+
             loader.load(resource.getURI());
-    
+
             assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
             assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-    
+
             lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-    
+
             lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
         }
     }
-    
+
     /**
      * Inits the url handler.
-     *
-     * @param path the path
+     * 
+     * @param path
+     *            the path
      * @return the resource
      */
-    public Resource getResource(String path){
-        DefaultResourceLoader resourceLoader = new DefaultResourceLoader(
-                LexEvsServiceLocator.getInstance().getSystemResourceService().getClassLoader());
-        
+    public Resource getResource(String path) {
+        DefaultResourceLoader resourceLoader = new DefaultResourceLoader(LexEvsServiceLocator.getInstance()
+                .getSystemResourceService().getClassLoader());
+
         return resourceLoader.getResource(path);
     }
 }
