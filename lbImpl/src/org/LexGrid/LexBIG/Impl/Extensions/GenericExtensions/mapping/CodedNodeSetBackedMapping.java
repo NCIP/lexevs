@@ -9,7 +9,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -25,9 +24,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.util.PrintUtility;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
@@ -80,12 +77,8 @@ public class CodedNodeSetBackedMapping implements Mapping {
      * 
      * @throws LBException the LB exception
      */
-    public CodedNodeSetBackedMapping(
-            String codingScheme,
-            CodingSchemeVersionOrTag codingSchemeVersionOrTag, 
+    public CodedNodeSetBackedMapping(AbsoluteCodingSchemeVersionReference ref, 
             String relationsContainerName) throws LBException{
-        AbsoluteCodingSchemeVersionReference ref = 
-            ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, codingSchemeVersionOrTag, true);
         this.mappingUri = ref.getCodingSchemeURN();
         this.mappingVersion = ref.getCodingSchemeVersion();
         this.relationsContainerName = relationsContainerName;

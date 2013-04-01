@@ -249,7 +249,7 @@
     </condition>
   </target>
 	
-	<target name="publish" depends="package, deploy" unless="publish.skip">
+	<target name="publish" depends="package" unless="publish.skip">
 	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
 	   		<mapping conf="master" scope="compile"/>
 	   		<mapping conf="default" scope="compile"/>
@@ -267,7 +267,7 @@
 		</ivy:publish>
 	</target>
 	
-	<target name="deploy" depends="package" if="informatics.password" unless="publish.skip">
+	<target name="deploy" depends="package" unless="publish.skip">
 	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
 	   		<mapping conf="master" scope="compile"/>
 	   		<mapping conf="default" scope="compile"/>

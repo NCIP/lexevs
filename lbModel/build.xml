@@ -248,7 +248,7 @@ public class]]></replacevalue>
 		</ivy:publish>
 	</target>
 	
-	<target name="deploy" depends="jar" if="informatics.password" unless="publish.skip">
+	<target name="deploy" depends="publish" unless="publish.skip">
 	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${build.dir}/${ivy.module}-${ivy.revision}.pom">
 	   		<mapping conf="master" scope="compile"/>
 	   		<mapping conf="default" scope="compile"/>

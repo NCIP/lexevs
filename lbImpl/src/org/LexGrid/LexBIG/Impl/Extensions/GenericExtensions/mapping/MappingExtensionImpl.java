@@ -40,6 +40,7 @@ import org.LexGrid.LexBIG.Impl.helpers.IteratorBackedResolvedConceptReferencesIt
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
@@ -101,6 +102,10 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
         String uri = ref.getCodingSchemeURN();
         String version = ref.getCodingSchemeVersion();
         
+        if(relationsContainerName == null){
+            relationsContainerName = this.getDefaultMappingRelationsContainer(ref);
+        }
+        
         Iterator<ResolvedConceptReference> iterator = 
             new MappingTripleIterator(
                     uri,
@@ -120,6 +125,36 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
             new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
     }
     
+    private String getDefaultMappingRelationsContainer(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
+        CodingScheme cs = LexEvsServiceLocator.getInstance().
+            getDatabaseServiceManager().
+                getCodingSchemeService().
+                getCodingSchemeByUriAndVersion(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion());
+        
+        String mappingRelationsName = null;
+        
+        if(cs.getRelationsCount() > 0){
+            for(Relations relations : cs.getRelations()){
+                if(relations.isIsMapping()){
+                    if(mappingRelationsName == null){
+                        mappingRelationsName = relations.getContainerName();
+                    } else {
+                        throw new LBParameterException("Cannot determine a default RelationsContainer name -" +
+                        		" more than one were found. Please specifiy a 'relationsContainer parameter.");
+                    }
+                }
+            }
+        }
+        
+        if(mappingRelationsName == null){
+            throw new LBParameterException("Cannot determine a default RelationsContainer name -" +
+                    " no mapping RelationsContainers were found.");
+        }
+        return mappingRelationsName;
+    }
+
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Generic.MappingExtension#getMapping(java.lang.String, org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag, java.lang.String)
      */
@@ -127,10 +162,15 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
             String codingScheme,
             CodingSchemeVersionOrTag codingSchemeVersionOrTag, 
             String relationsContainerName) throws LBException{
-        return new CodedNodeSetBackedMapping(
-                codingScheme, 
-                codingSchemeVersionOrTag,
-                relationsContainerName);
+        
+        AbsoluteCodingSchemeVersionReference ref = 
+                ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, codingSchemeVersionOrTag, true);
+        
+        if(relationsContainerName == null){
+            relationsContainerName = this.getDefaultMappingRelationsContainer(ref);
+        }
+        
+        return new CodedNodeSetBackedMapping(ref, relationsContainerName);
     }
 
     /* (non-Javadoc)
