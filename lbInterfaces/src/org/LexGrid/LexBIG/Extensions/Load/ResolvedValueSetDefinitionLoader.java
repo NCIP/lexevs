@@ -27,7 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
  * 
  * @author <a href="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</a>
  */
-public interface ResolvedValueSetDefinitionLoader  {
+public interface ResolvedValueSetDefinitionLoader  extends Loader {
 	
 	public static String NAME = "ResolvedValueSetDefinitionLoader";
 	public static String VERSION = "1.0";

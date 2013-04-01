@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Extensions.Load.RxNormBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
@@ -96,10 +97,10 @@ import org.LexGrid.LexBIG.Impl.loaders.postprocessor.OntologyFormatAddingPostPro
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.SupportedAttributePostProcessor;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -631,6 +632,20 @@ public class LexBIGServiceImpl implements LexBIGService {
 
         } catch (Exception e) {
             getLogger().warn(rxn.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
+        }
+        
+        //Rxn Batch Loader Extension
+        ExtensionDescription rvsl = new ExtensionDescription();
+        rvsl.setExtensionBaseClass(ResolvedValueSetDefinitionLoader.class.getName());
+        rvsl.setExtensionClass("org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl");
+        rvsl.setDescription(ResolvedValueSetDefinitionLoader.DESCRIPTION);
+        rvsl.setName(ResolvedValueSetDefinitionLoader.NAME);
+        rvsl.setVersion(ResolvedValueSetDefinitionLoader.VERSION);
+        try {
+            ExtensionRegistryImpl.instance().registerLoadExtension(rvsl);
+
+        } catch (Exception e) {
+            getLogger().warn(rvsl.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
         // export extensions
         LexGridExport.register();

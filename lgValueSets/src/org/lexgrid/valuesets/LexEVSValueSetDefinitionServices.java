@@ -42,8 +42,9 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
 public interface LexEVSValueSetDefinitionServices extends Serializable {
-	
-	
+	public static String RESOLVED_AGAINST_CODING_SCHEME_VERSION= "resolvedAgainstCodingSchemeVersion";
+	public static String VERSION= "version";
+	public static String GENERIC= "generic";
 	/**
 	 * Loads supplied valueSetDefinition object
 	 * @param vsdef value set definition to load

@@ -884,7 +884,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			CodedNodeSet cns = rvscns.getCodedNodeSet();
 			if (cns != null)
 			{
-				return getServiceHelper().exportValueSetResolutionDataToWriter(valueSetDefinition, cns, getLogger());
+				return getServiceHelper().exportValueSetResolutionDataToWriter(valueSetDefinition, rvscns, getLogger());
 			}
 		}
 		
@@ -907,7 +907,7 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 			CodedNodeSet cns = rvscns.getCodedNodeSet();
 			if (cns != null)
 			{
-				return getServiceHelper().exportValueSetResolutionDataToWriter(valueSetDefinition, cns, getLogger());
+				return getServiceHelper().exportValueSetResolutionDataToWriter(valueSetDefinition, rvscns, getLogger());
 			}
 		}
 		
