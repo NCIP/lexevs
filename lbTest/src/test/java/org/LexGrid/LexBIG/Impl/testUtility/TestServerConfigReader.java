@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.LexGrid.util.config.PropertiesUtility;
+import org.lexevs.system.utility.PropertiesUtility;
 
 /**
  * This class reads and provides access to values specified in the configuration

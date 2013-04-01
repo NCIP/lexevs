@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
@@ -58,23 +59,12 @@ public abstract class AbstractSort extends AbstractExtendable implements Sort {
         super();
         doRegisterComparators();
     }
-
-    /**
-     * Register.
-     * 
-     * @throws LBParameterException the LB parameter exception
-     * @throws LBException the LB exception
-     */
-    public void register() throws LBParameterException, LBException {
-        
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerSortExtension(sortDescription);
-    }
     
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerSortExtension(sortDescription);
+    }
+   
     /**
      * Builds the sort description.
      * 
@@ -82,7 +72,7 @@ public abstract class AbstractSort extends AbstractExtendable implements Sort {
      */
     protected abstract SortDescription buildSortDescription();
     
-    protected ExtensionDescription buildExtensionDescription(){
+    protected SortDescription buildExtensionDescription(){
        SortDescription sortDescription = this.buildSortDescription();
        this.sortDescription = sortDescription;
        return sortDescription;

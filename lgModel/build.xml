@@ -315,9 +315,9 @@ public class]]></replacevalue>
 	<target name="genModelAndAnnotate" depends="genCastorFromXSD, genCastorFromXSD,annotate.class, add.methods, manifest:gen:src" description="generate Castor model and annotate" >			
 	</target>	
 	
-	<target name="all" depends="init, clean, genCastorFromXSD, genCastorFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar, publish" description="all - init, clean, genCastorXML, compile, jar, docs, publish"/>	
+	<target name="all" depends="init, clean, genCastorFromXSD, genCastorFromXSD, annotate.class, add.methods, manifest:gen:src, compile, jar" description="all - init, clean, genCastorXML, compile, jar, docs, publish"/>	
 	
-	<target name="publish" depends="jar" unless="publish.skip">
+	<target name="publish" depends="all" unless="publish.skip">
 	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}-${ivy.revision}.pom">
 	   		<mapping conf="master" scope="compile"/>
 	   		<mapping conf="default" scope="compile"/>
@@ -328,6 +328,25 @@ public class]]></replacevalue>
 	   		<mapping conf="system" scope="system"/>
 	   	</ivy:makepom>
 		<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
+		</ivy:publish>
+		<ivy:publish resolver="local-m2-repo" forcedeliver="true" overwrite="true">
+		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
+		</ivy:publish>
+	</target>
+	
+	<target name="deploy" depends="publish" unless="publish.skip">
+	   	<ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ivy.module}-${ivy.revision}.pom">
+	   		<mapping conf="master" scope="compile"/>
+	   		<mapping conf="default" scope="compile"/>
+	   		<mapping conf="compile" scope="compile"/>
+	   		<mapping conf="test" scope="test"/>
+	   		<mapping conf="runtime" scope="runtime"/>
+	   		<mapping conf="provided" scope="provided"/>
+	   		<mapping conf="system" scope="system"/>
+	   	</ivy:makepom>
+
+		<ivy:publish resolver="informatics" forcedeliver="true" overwrite="true">
 		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>

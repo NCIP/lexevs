@@ -49,7 +49,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	private SystemVariables systemVariables;
 		
 	/** The current index version. */
-	private String currentIndexVersion = "2010";
+	private String currentIndexVersion = "2013";
 	
 	private LuceneEntityDao luceneEntityDao;
 

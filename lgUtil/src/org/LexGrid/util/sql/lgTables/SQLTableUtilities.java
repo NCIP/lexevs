@@ -1446,7 +1446,7 @@ public class SQLTableUtilities {
      * 
      * This does drop all tables - including the optional ones.
      * 
-     * @param codingScheme
+     * @param data.codingScheme
      *            target Coding Scheme
      * @throws SQLException
      */

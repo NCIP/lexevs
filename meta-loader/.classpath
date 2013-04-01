@@ -9,16 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/abstract-rrf-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/log4j/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/apache/commons/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/easymock/easymock-2.5.1.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/args4j/args4j-2.0.12.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-oxm-1.5.7.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-xml-1.5.7.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/junit/junit-4.4.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-test-2.5.6.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-core-2.1.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/spring/spring-batch-infrastructure-2.1.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=meta-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="target/classes"/>

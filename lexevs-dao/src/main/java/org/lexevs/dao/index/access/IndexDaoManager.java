@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
+import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.v2010.entity.SingleTemplateDisposableLuceneCommonEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
@@ -47,6 +48,9 @@ public class IndexDaoManager {
 	private List<EntityDao> entityDaos;
 	
 	/** The entity daos. */
+	private List<SearchDao> searchDaos;
+	
+	/** The entity daos. */
 	private List<MetadataDao> metadataDaos;
 		
 	/** The system resource service. */
@@ -66,6 +70,12 @@ public class IndexDaoManager {
 	 */
 	public EntityDao getEntityDao(String codingSchemeUri, String version){
 		return this.doGetDao(codingSchemeUri, version, this.getEntityDaos());
+	}
+	
+	public SearchDao getSearchDao(){
+		Assert.state(this.searchDaos.size() == 1, "Currently Search Daos are not Versionable.");
+		
+		return this.searchDaos.get(0);
 	}
 	
 	public CommonEntityDao getCommonEntityDao(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
@@ -210,5 +220,13 @@ public class IndexDaoManager {
 
 	public void setIndexRegistry(IndexRegistry indexRegistry) {
 		this.indexRegistry = indexRegistry;
+	}
+
+	public List<SearchDao> getSearchDaos() {
+		return searchDaos;
+	}
+
+	public void setSearchDaos(List<SearchDao> searchDaos) {
+		this.searchDaos = searchDaos;
 	}
 }

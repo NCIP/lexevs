@@ -1,0 +1,6 @@
+<project name="LexEVS" default="build-lexbig" basedir="lbPackager">
+    <description>
+        LexEVS main build file.
+    </description>
+    <import file="${basedir}/build.xml"/>
+</project>

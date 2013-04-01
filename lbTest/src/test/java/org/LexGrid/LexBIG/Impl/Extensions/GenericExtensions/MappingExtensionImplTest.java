@@ -279,6 +279,19 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.hasNext());
 	}
 
+	public void testResolveMappingNoContainerName() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				null);
+		
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertTrue(itr.hasNext());
+	}
 
 	public void testBothResolveMappingStrategies() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();

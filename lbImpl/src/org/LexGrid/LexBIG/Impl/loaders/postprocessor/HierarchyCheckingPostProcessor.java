@@ -22,13 +22,13 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -57,15 +57,9 @@ public class HierarchyCheckingPostProcessor extends AbstractExtendable implement
     /** The EXTENSION Name. */
     public static String EXTENSION_NAME = "HierarchyCheckingPostProcessor";
 
-    /**
-     * Register.
-     * 
-     * @throws LBParameterException the LB parameter exception
-     * @throws LBException the LB exception
-     */
-    public void register() throws LBParameterException, LBException {
-        ExtensionRegistryImpl.instance().registerGenericExtension(
-                super.getExtensionDescription());
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerGenericExtension(description);
     }
 
     /* (non-Javadoc)

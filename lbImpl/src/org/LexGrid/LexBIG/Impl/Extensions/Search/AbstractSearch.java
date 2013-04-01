@@ -20,11 +20,11 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 
 import java.util.Set;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
-import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
 import org.apache.lucene.queryParser.QueryParser;
 import org.springframework.util.StringUtils;
@@ -52,22 +52,10 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
         IndexQueryParserFactory queryParserFactory = IndexQueryParserFactory.getInstance();
         this.extraWhitespaceCharaters = queryParserFactory.getExtraWhitespaceCharaters();
     }
-    
-    /**
-     * Register.
-     * 
-     * @throws LBParameterException the LB parameter exception
-     * @throws LBException the LB exception
-     */
-    public void register() throws LBParameterException, LBException {
-        
-        // I'm registering them this way to avoid the lexBig service manager
-        // API.
-        // If you are writing an add-on extension, you should register them
-        // through the
-        // proper interface.
-        ExtensionRegistryImpl.instance().registerSearchExtension(
-                super.getExtensionDescription());
+
+    @Override
+    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+        registry.registerSearchExtension(description);
     }
     
     /*
