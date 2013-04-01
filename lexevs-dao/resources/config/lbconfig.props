@@ -113,7 +113,7 @@ MOVE_REGISTRY_TO_DATABASE=false
 # NOTE: Multi Database mode has be DEPRECATED. New content may not
 # be loaded in Multi Database Mode. Existing content loaded in
 # Multi Database Mode may still be accessed.
-SINGLE_TABLE_MODE=true
+SINGLE_TABLE_MODE=false
 
 # This variable _should_ contain the database name.
 #
@@ -144,7 +144,7 @@ DB_URL=jdbc:mysql://localhost/lexevs
 # Recommended characters are alphanumeric (a-z, 0-9) and
 # underscore '_'.
 # NOTE: This variable should typically not be changed after content has been loaded.
-DB_PREFIX=lb
+DB_PREFIX=
 
 # DB_PRIMARY_KEY_STRATEGY indicates which strategy will be used
 # for the primary key of the database tables.
