@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/levevs-graph-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=graph-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

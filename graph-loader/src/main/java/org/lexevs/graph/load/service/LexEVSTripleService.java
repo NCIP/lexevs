@@ -40,7 +40,7 @@ public class LexEVSTripleService {
 		this.service = service;
 	}
 
-	protected List<String> getAssociationPredicateIds(
+	public List<String> getAssociationPredicateIds(
 			final String codingSchemeUri, final String version) {
 
 		return databaseServiceManager.getDaoCallbackService()
@@ -154,7 +154,7 @@ public class LexEVSTripleService {
 		}
 	}
 
-	protected String getPredicateName(String codingSchemeUri, String version,
+	public String getPredicateName(String codingSchemeUri, String version,
 			String predicateId) {
 
 		List<String> list = getAssociationNameforPredicateId(codingSchemeUri,
