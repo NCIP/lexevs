@@ -327,7 +327,7 @@ public class]]></replacevalue>
 	   		<mapping conf="provided" scope="provided"/>
 	   		<mapping conf="system" scope="system"/>
 	   	</ivy:makepom>
-		<ivy:publish resolver="nci-chain" forcedeliver="true" overwrite="true">
+		<ivy:publish resolver="user-local-repo" forcedeliver="true" overwrite="true">
 		   <artifacts pattern="${dist}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 		<ivy:publish resolver="local-m2-repo" forcedeliver="true" overwrite="true">
