@@ -21,5 +21,6 @@
     	<dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>
     	<dependency org="commons-io" name="commons-io" rev="2.4" conf="default"/>	
     	<dependency org="junit" name="junit" rev="4.8.2" conf="default"/>
+    	<dependency org="org.easymock" name="easymock" rev="3.1" conf="default"/>
     </dependencies>
 </ivy-module>

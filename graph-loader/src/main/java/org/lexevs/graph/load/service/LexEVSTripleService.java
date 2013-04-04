@@ -178,7 +178,7 @@ public class LexEVSTripleService {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String uri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
-		String version = "12.01f";
+		String version = "05.09.bvt";
 		LexEVSTripleService service = new LexEVSTripleService();
 		List<String> predicateIds = service.getAssociationPredicateIds(uri,
 				version);

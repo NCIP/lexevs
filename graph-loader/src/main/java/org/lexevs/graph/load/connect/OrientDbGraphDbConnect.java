@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.lexevs.dao.database.access.association.model.Triple;
 
+import com.orientechnologies.orient.core.db.ODatabase.STATUS;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabasePool;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
@@ -21,21 +22,56 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	
 	private OGraphDatabase orientDB = null;
+	
 	ODocument source;
 	ODocument target;
 	ODocument edge;
 	
-	
 	public OrientDbGraphDbConnect(String user, String password, String dbPath){
-			orientDB = new OGraphDatabase("local:" + dbPath);
-			if(orientDB.exists() && orientDB.isClosed()){
-				orientDB.open(user, password);}
-			else{
-				//automatically opens the database
-				createDatabase(dbPath);
-//				initVerticesAndEdge();
-				}
+		orientDB = new OGraphDatabase("local:" + dbPath);
+		if(orientDB.exists() && orientDB.isClosed()){
+			orientDB.open(user, password);}
+		else{
+			//automatically opens the database
+			createDatabase(dbPath);
+			}
 	}
+	
+	public boolean verifyDatabase(){
+		return orientDB.exists();
+	}
+
+	public ODocument getSource() {
+		return source;
+	}
+
+
+	public void setSource(ODocument source) {
+		this.source = source;
+	}
+
+
+	public ODocument getTarget() {
+		return target;
+	}
+
+
+	public void setTarget(ODocument target) {
+		this.target = target;
+	}
+
+
+	public ODocument getEdge() {
+		return edge;
+	}
+
+
+	public void setEdge(ODocument edge) {
+		this.edge = edge;
+	}
+
+	
+
 	
 	
 	private void createDatabase(String dbPath) {
@@ -154,50 +190,9 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		return tableId;
 	}
 	
-	@Override
-//	public Object storeVertex(String table, String entityCode, String entityNamespace) {
-//		vDoc.reset();
-//		vDoc.setClassName(table);
-//		vDoc.getIdentity().reset();
-//		vDoc.field("table", table);
-//		vDoc.field("sourceEntityCode", entityCode);
-//		vDoc.field("sourceEntityNamespace", entityNamespace);
-//		vDoc.save();
-//		Object vID = vDoc.getIdentity().toString();
-//		return vID;
-//	}
-	
-//	public void storeEdge(String tableId, String id_in, String id_out) {
-//
-//		ODocument doc_in, doc_out;
-//		doc_in = ((ArrayList<ODocument>) orientDB
-//				.query(new OSQLSynchQuery<ODocument>("Select from " + id_in)))
-//				.get(0);
-//		doc_out = ((ArrayList<ODocument>) orientDB
-//				.query(new OSQLSynchQuery<ODocument>("Select from " + id_out)))
-//				.get(0);
-// 
-//		eDoc.reset();
-//		eDoc.setClassName(tableId);
-//		eDoc.getIdentity().reset();
-//
-//		eDoc.field("in", doc_in);
-//		eDoc.field("out", doc_out);
-//		//more fields....
-//
-//		eDoc.save();
-//		String sql = "update " + doc_in.getIdentity() + " add out = "
-//				+ eDoc.getIdentity();
-//		orientDB.command(new OCommandSQL(sql)).execute();
-//		sql = "update " + doc_out.getIdentity() + " add in = "
-//				+ eDoc.getIdentity();
-//		orientDB.command(new OCommandSQL(sql)).execute();
-//
-//	}
-	
+	@Override	
 	public void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName){
-//		ODocument source = orientDB.createVertex();
-//		ODocument target = orientDB.createVertex();
+
 		source.reset();
 		source.setClassName(vertexTableName);
 		source.getIdentity().reset();
@@ -215,7 +210,6 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		target.field("targetSchemeVersion", triple.getTargetSchemeVersion());
 		target.field("associationPredicateId", triple.getAssociationPredicateId());
 		source.save();
-//		ODocument edge = orientDB.createEdge(source, target);
 		edge.reset();
 		edge.setClassName(edgeTableName);
 		edge.getIdentity().reset();
@@ -274,33 +268,33 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 //		String targetUri = "1.11.111.11111.1";
 //		String targetVersion = "1.0";
 //		String associationName = "subClassOf";
-		try{
+//		try{
 		db = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
-
-		//db.createDatabase("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
-//		//OGraphDatabase database = db.getGraphDbFromPool("/Users/m029206/software/orientdb-1.3.0/databases/testGraph", "admin", "admin");
-		System.out.println("database exists?: " + db);
-		List<String> vertexFieldList = db.getFieldNamesForVertex();
-		List<String> edgeFieldList = db.getFieldNamesForEdge();
-		OClass vertexTable = db.createVertexTable("vertexTable", vertexFieldList);
-		OClass edgeTable = db.createEdgeTable("edgeTable", edgeFieldList);
-		db.initVerticesAndEdge();
-		List<TriplePlus> triples = db.generateTriplesPlus(10000);
-		for(TriplePlus t: triples){
-			db.storeTriple(t, vertexTable.getName(), edgeTable.getName());
-		}
-		System.out.println("is closed? " + db.close());
-		db.delete("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
-		System.out.println("database exists after delete?: " + db.orientDB.exists());
-		}
-			finally{
-			if(db != null){
-				db.close();
-				db.delete("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
-			}
-			}
+//
+//		//db.createDatabase("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
+////		//OGraphDatabase database = db.getGraphDbFromPool("/Users/m029206/software/orientdb-1.3.0/databases/testGraph", "admin", "admin");
+//		System.out.println("database exists?: " + db);
+//		List<String> vertexFieldList = db.getFieldNamesForVertex();
+//		List<String> edgeFieldList = db.getFieldNamesForEdge();
+//		OClass vertexTable = db.createVertexTable("vertexTable", vertexFieldList);
+//		OClass edgeTable = db.createEdgeTable("edgeTable", edgeFieldList);
+//		db.initVerticesAndEdge();
+//		List<TriplePlus> triples = db.generateTriplesPlus(10000);
+//		for(TriplePlus t: triples){
+//			db.storeTriple(t, vertexTable.getName(), edgeTable.getName());
+//		}
+//		System.out.println("is closed? " + db.close());
+//		db.delete("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
+//		System.out.println("database exists after delete?: " + db.orientDB.exists());
+//		}
+//			finally{
+//			if(db != null){
+//				db.close();
+//				db.delete("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
+//			}
+//			}
 	
-		
+    db.verifyDatabase();
 	}
 
 

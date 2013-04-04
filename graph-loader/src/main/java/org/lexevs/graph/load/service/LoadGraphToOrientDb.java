@@ -10,12 +10,12 @@ import org.lexevs.graph.load.service.LexEVSTripleService.TripleIterator;
 public class LoadGraphToOrientDb {
 	OrientDbGraphDbConnect database ;
 	LexEVSTripleService service ;
-	String databasePath = "/Users/m029206/software/orientdb-1.3.0/databases/testGraph";
+	String databasePath = "/Users/m029206/software/orientdb-1.3.0/databases/thesGraph";
 	String vertexTableName = "Nodes"; 
 	String edgeTableName = "Edges";
 	
 	public void createDatabase(){
-		database = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
+		database = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/thesGraph");
 		database.createEdgeTable(edgeTableName, database.getFieldNamesForEdge());
 		database.createVertexTable(vertexTableName, database.getFieldNamesForVertex());
 		database.initVerticesAndEdge();
@@ -66,7 +66,7 @@ public class LoadGraphToOrientDb {
 		}
 		finally{
 		load.database.close();
-//		load.database.delete(load.databasePath);
+		load.database.delete(load.databasePath);
 		}
 
 	}
