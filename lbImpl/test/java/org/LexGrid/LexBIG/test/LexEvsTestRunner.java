@@ -25,9 +25,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
@@ -102,9 +107,14 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
 
         super.runChild(method, notifier);
 
-        LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropAllTables();
-
         try {
+            DataSource ds = 
+                    LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDataSource();
+            
+            this.clearDatabase(ds);
+            
+            dbOps.createAllTables();
+            
             LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
         } catch (Exception e) {
             //
@@ -187,5 +197,30 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
                 .getSystemResourceService().getClassLoader());
 
         return resourceLoader.getResource(path);
+    }
+    
+    public void clearDatabase(DataSource ds) throws Exception {
+        Connection connection = null;
+        try {
+            connection = ds.getConnection();
+            try {
+                Statement stmt = connection.createStatement();
+                try {
+                    stmt.execute("DROP SCHEMA PUBLIC CASCADE");
+                    connection.commit();
+                } finally {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                connection.rollback();
+                throw new Exception(e);
+            }
+        } catch (SQLException e) {
+            throw new Exception(e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 }
