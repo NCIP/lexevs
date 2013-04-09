@@ -19,7 +19,8 @@
 package org.LexGrid.LexBIG.test;
 
 import org.junit.runner.RunWith;
-import org.lexevs.dao.test.BaseInMemoryLexEvsTest;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 /**
  * The Class BaseContentLoadingInMemoryTest.
@@ -27,4 +28,7 @@ import org.lexevs.dao.test.BaseInMemoryLexEvsTest;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @RunWith(LexEvsTestRunner.class)
-public class BaseContentLoadingInMemoryTest extends BaseInMemoryLexEvsTest {}
+@TestExecutionListeners( {DependencyInjectionTestExecutionListener.class, ContentLoadingTestListener.class }) 
+public class BaseContentLoadingInMemoryTest {
+
+}

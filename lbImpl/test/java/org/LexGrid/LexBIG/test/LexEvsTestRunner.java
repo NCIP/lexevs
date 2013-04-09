@@ -18,36 +18,14 @@
  */
 package org.LexGrid.LexBIG.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Method;
 
-import javax.sql.DataSource;
-
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.LexGrid.LexBIG.Extensions.Load.Loader;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.loaders.BaseLoader;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.LexBIG.Utility.LBConstants;
-import org.apache.commons.lang.StringUtils;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
-import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
+import org.lexevs.dao.test.BaseInMemoryLexEvsTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -67,61 +45,34 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
      */
     public LexEvsTestRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+        this.checkForAllowedAnnotations(clazz);
+        try {
+            BaseInMemoryLexEvsTest.initInMemory();
+        } catch (Exception e) {
+            throw new InitializationError(e);
+        }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.junit.runners.BlockJUnit4ClassRunner#runChild(org.junit.runners.model
-     * .FrameworkMethod, org.junit.runner.notification.RunNotifier)
-     */
-    @Override
-    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
-
-
-        LexEvsDatabaseOperations dbOps = LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations();
-        try {
-            dbOps.createAllTables();
-        } catch (Exception e) {
-            //
-        }
-
-        List<LoadContent> contents = new ArrayList<LoadContent>();
-        contents.add(method.getAnnotation(LoadContent.class));
+    private void checkForAllowedAnnotations(Class<?> clazz) throws InitializationError {
+        boolean classHasAnnotation =
+                clazz.isAnnotationPresent(LoadContent.class) ||
+                clazz.isAnnotationPresent(LoadContents.class);
         
-        LoadContents loadContents = method.getAnnotation(LoadContents.class);
-        if(loadContents != null){
-            contents.addAll(Arrays.asList(loadContents.value()));
-        }
-      
-        for(LoadContent content : contents){
-            if (content != null) {
-                try {
-                    load(content);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        if(! classHasAnnotation){
+            return;
         }
 
-        super.runChild(method, notifier);
-
-        try {
-            DataSource ds = 
-                    LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDataSource();
-            
-            this.clearDatabase(ds);
-            
-            dbOps.createAllTables();
-            
-            LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
-        } catch (Exception e) {
-            //
+        for(Method method : clazz.getMethods()){
+           if(method.isAnnotationPresent(LoadContent.class) ||
+                   method.isAnnotationPresent(LoadContents.class)){
+               throw new InitializationError("Cannot have a @LoadContent(s) Annotation on both the Class" +
+                    " level and on a method level. It is allowed to be either on the Class or individual" +
+                    " methods, but never both.");
+           }
         }
     }
-
-    @Target({ ElementType.METHOD })
+    
+    @Target({ ElementType.METHOD, ElementType.TYPE })
     @Retention(RetentionPolicy.RUNTIME)
     public static @interface LoadContents {
         LoadContent[] value();
@@ -132,7 +83,7 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    @Target({ ElementType.METHOD })
+    @Target({ ElementType.METHOD, ElementType.TYPE })
     @Retention(RetentionPolicy.RUNTIME)
     public static @interface LoadContent {
 
@@ -152,75 +103,5 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
          * @return the string
          */
         String contentPath();
-    }
-
-    /**
-     * Load.
-     * 
-     * @param content
-     *            the content
-     * @throws Exception
-     *             the exception
-     */
-    protected void load(LoadContent content) throws Exception {
-        String[] paths = StringUtils.split(content.contentPath(), ',');
-
-        for (String path : paths) {
-            LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-
-            Resource resource = this.getResource(path);
-
-            Loader loader = lbsm.getLoader(content.loader());
-
-            loader.getOptions().getBooleanOption(BaseLoader.ASYNC_OPTION).setOptionValue(false);
-
-            loader.load(resource.getURI());
-
-            assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-            assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-            lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-            lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-        }
-    }
-
-    /**
-     * Inits the url handler.
-     * 
-     * @param path
-     *            the path
-     * @return the resource
-     */
-    public Resource getResource(String path) {
-        DefaultResourceLoader resourceLoader = new DefaultResourceLoader(LexEvsServiceLocator.getInstance()
-                .getSystemResourceService().getClassLoader());
-
-        return resourceLoader.getResource(path);
-    }
-    
-    public void clearDatabase(DataSource ds) throws Exception {
-        Connection connection = null;
-        try {
-            connection = ds.getConnection();
-            try {
-                Statement stmt = connection.createStatement();
-                try {
-                    stmt.execute("DROP SCHEMA PUBLIC CASCADE");
-                    connection.commit();
-                } finally {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new Exception(e);
-            }
-        } catch (SQLException e) {
-            throw new Exception(e);
-        } finally {
-            if (connection != null) {
-                connection.close();
-            }
-        }
     }
 }
