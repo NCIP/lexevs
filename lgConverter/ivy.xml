@@ -21,7 +21,7 @@
 	    <dependency org="commons-cli" name="commons-cli" rev="1.2" conf="default"/>
 	    <dependency org="xml-apis" name="xml-apis" rev="2.0.2" conf="default"/>
 	    <dependency org="claml" name="claml-model" rev="1.0.0" conf="default"/>
- 		<dependency org="lexevs" name="lexgrid-resourcereader" rev="${vBuild}" />
+ 		<dependency org="lexevs" name="lexgrid-resourcereader" rev="${vBuild}" conf="default"/>
 	 	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default,test" />
 		<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
