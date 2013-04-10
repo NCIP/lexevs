@@ -564,4 +564,25 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				"tgt-code", "tgt-ns", null);
 		assertEquals("path", path);
 	}
+	
+	@Test
+	public void testGetAnonymousDesignationForPredicateId(){
+		
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) "
+						+ "values ('1', 'csname', 'csuri', 'csversion')");
+		template.execute("insert into "
+				+ "relation (relationGuid, codingSchemeGuid, containerName) "
+				+ "values ('1', '1', 'c-name')");
+		template.execute("insert into "
+				+ "associationpredicate (associationPredicateGuid,"
+				+ "relationGuid, associationName) values "
+				+ "('1', '1', 'someRelation')");
+		template.execute("Insert into entity (entityGuid, codingSchemeGuid, entityCode, entityCodeNamespace, isAnonymous, entryStateGuid) " +
+				"values ('eguid', '1', 'ecode', 'ens','0','esguid2')");
+		template.execute("Insert into csSupportedAttrib(csSuppAttribGuid, codingSchemeGuid, supportedAttributeTag, id, assnEntityCode)" +
+				"values ('1', '1', 'Association', 'someRelation', 'ecode')");
+		String anon = ibatisAssociationDao.getAnonDesignationForPredicate("1", "1");
+		assertEquals(anon, "0");
+	}
 }

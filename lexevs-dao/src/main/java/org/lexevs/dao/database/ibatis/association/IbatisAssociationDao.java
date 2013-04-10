@@ -151,6 +151,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_RELATION_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE + "getRelationLatestRevisionIdByUId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_UIDS_FOR_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidsForName";
+	private static String GET_ANON_DESIGNATION_FOR_PREDICATE_UID = ASSOCIATION_NAMESPACE + "getAnonDesignationForPredicateId";
 	
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
@@ -212,6 +213,15 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameterTuple(prefix, codingSchemeId, associationPredicateId), 
 				start, 
 				pageSize);
+	}
+	
+
+	public String getAnonDesignationForPredicate(String codingSchemeId, String associationPredicateId){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ANON_DESIGNATION_FOR_PREDICATE_UID, 
+				new PrefixedParameterTuple(prefix, associationPredicateId, "Association"));
+		
 	}
 
 	/* (non-Javadoc)

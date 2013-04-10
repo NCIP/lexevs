@@ -278,6 +278,46 @@
 		</isNotNull>
 	</select>
 	
+	<select id="getAllTriplesOfCodingSchemeForOrientDBLoad" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
+		SELECT
+			eae.sourceEntityCode,
+			eae.sourceEntityCodeNamespace,
+			eae.targetEntityCode,
+			eae.targetEntityCodeNamespace,
+			eae.associationPredicateGuid,
+			eae.entityAssnsGuid,
+			eae.associationInstanceId,
+			aq.qualifierName,
+			aq.qualifierValue,
+			ap.assciationName
+		FROM 
+			$prefix$entityAssnsToEntity eae
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON 
+			eae.associationPredicateGuid =
+			ap.associationPredicateGuid
+		INNER JOIN
+			$prefix$relation rel
+		ON
+			ap.relationGuid =
+			rel.relationGuid
+		LEFT JOIN 
+			$prefix$entityassnquals aq 
+		ON 
+			aq.referenceGuid =
+			eae.entityAssnsGuid
+		WHERE
+			rel.codingSchemeGuid = 
+			#param1,handler=variablePrimaryKeyTypeHandler#
+		<isNotNull property="param2">
+		AND
+			eae.associationPredicateGuid =
+			#param2,handler=variablePrimaryKeyTypeHandler#	
+		</isNotNull>
+	</select>
+	
      <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
 		INSERT INTO $prefix$entityAssnsToEntity (
 			entityAssnsGuid,
@@ -1782,4 +1822,26 @@
 		)	
 	</select>
 	
+	<select id="getAnonDesignationForPredicateId" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+		SELECT
+			en.isAnonymous
+		FROM 
+			$prefix$entity en
+		INNER JOIN
+			$prefix$csSupportedAttrib sa
+		ON 
+			en.entityCode = sa.assnEntityCode
+		INNER JOIN
+			$prefix$associationPredicate ap
+		ON
+			ap.associationName = sa.id
+		WHERE
+			<isNotNull property="param1">
+			ap.associationPredicateGuid =
+			#param1,handler=variablePrimaryKeyTypeHandler#
+			</isNotNull>
+		AND
+			sa.supportedAttributeTag = #param2#
+	</select>
 </sqlMap>
