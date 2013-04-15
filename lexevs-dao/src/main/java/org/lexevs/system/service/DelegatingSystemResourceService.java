@@ -412,4 +412,10 @@ public class DelegatingSystemResourceService extends SystemEventSupport implemen
 	public void addSystemEventListeners(SystemEventListener listener) {
 		primarySystemResourceService.addSystemEventListeners(listener);
 	}
+
+	@Override
+	public void shutdown() {
+		delegateSystemResourceService.shutdown();
+		primarySystemResourceService.shutdown();
+	}
 }

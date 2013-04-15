@@ -1775,4 +1775,9 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 			CodingSchemeMatcher codingSchemeMatcher) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void shutdown() {
+		//no-op
+	}
 }

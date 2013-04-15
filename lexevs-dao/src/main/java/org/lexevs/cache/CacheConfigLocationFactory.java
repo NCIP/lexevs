@@ -28,7 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-public class CacheConfigLocationFactory implements FactoryBean {
+public class CacheConfigLocationFactory implements FactoryBean<Resource> {
 
 	private SystemVariables systemVariables;
 
@@ -36,7 +36,7 @@ public class CacheConfigLocationFactory implements FactoryBean {
 	private String defaultClasspathCacheConfigFilePath = "ehcache/lexevsCacheConfig.xml";
 	
 	@Override
-	public Object getObject() throws Exception {
+	public Resource getObject() throws Exception {
 		
 		if(systemVariables == null) {
 			systemVariables = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
@@ -57,7 +57,7 @@ public class CacheConfigLocationFactory implements FactoryBean {
 	}
 
 	@Override
-	public Class<?> getObjectType() {
+	public Class<Resource> getObjectType() {
 		return Resource.class;
 	}
 

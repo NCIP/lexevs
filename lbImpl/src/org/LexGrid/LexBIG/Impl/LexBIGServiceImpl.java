@@ -157,9 +157,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         if (lexbigService_ == null)
             try {
                 lexbigService_ = new LexBIGServiceImpl();
-                lexbigService_.registerExtensions();
-                
-                //new LuceneWarmUpThread().start();
             } catch (LBException e) {
                 LoggerFactory.getLogger().error("Error initializing service", e);
             }
@@ -186,8 +183,12 @@ public class LexBIGServiceImpl implements LexBIGService {
      * @throws Exception
      * 
      */
-    public LexBIGServiceImpl() throws LBInvocationException {
+    private LexBIGServiceImpl() throws LBException {
         LexEvsServiceLocator r = LexEvsServiceLocator.getInstance();
+
+        registerExtensions();
+        
+        //new LuceneWarmUpThread().start();
         if (r == null) {
             System.err.println("Initialization Failure.  Beginning debug print:");
             System.out.println("Initialization Failure.  Beginning debug print:");

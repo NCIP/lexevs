@@ -44,6 +44,8 @@ public interface SystemResourceService {
 	public void initialize();
 	
 	public void refresh();
+	
+	public void shutdown();
 
 	/**
 	 * Creates the new tables for load.

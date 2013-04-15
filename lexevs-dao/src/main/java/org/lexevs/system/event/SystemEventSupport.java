@@ -21,8 +21,6 @@ package org.lexevs.system.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.codingSchemes.CodingScheme;
-import org.lexevs.dao.database.service.event.codingscheme.PreCodingSchemeInsertEvent;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 
 /**

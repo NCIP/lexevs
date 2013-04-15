@@ -48,13 +48,19 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.event.SystemEventListener;
 import org.lexevs.system.event.SystemEventSupport;
 import org.lexevs.system.utility.MyClassLoader;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * The Class LexEvsResourceManagingService.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsResourceManagingService extends SystemEventSupport implements SystemResourceService {
+public class LexEvsResourceManagingService 
+	extends SystemEventSupport 
+	implements SystemResourceService, ApplicationContextAware {
 
 	private LgLoggerIF logger;
 
@@ -84,6 +90,8 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 	private LexEvsDatabaseSchemaSetup lexEvsDatabaseSchemaSetup;
 	
 	private PersistenceScheme persistenceScheme;
+	
+	private ApplicationContext applicationContext;
 
 	/** The alias holder. */
 	private List<CodingSchemeAliasHolder> aliasHolder = new ArrayList<CodingSchemeAliasHolder>();
@@ -811,5 +819,20 @@ public class LexEvsResourceManagingService extends SystemEventSupport implements
 
 	public MetadataIndexService getMetadataIndexService() {
 		return metadataIndexService;
+	}
+
+	@Override
+	public void shutdown() {
+		try {
+			((ConfigurableApplicationContext) this.applicationContext).close();
+		} catch (Exception e) {
+			this.getLogger().warn("Error Shutting Down", e);
+		}
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }

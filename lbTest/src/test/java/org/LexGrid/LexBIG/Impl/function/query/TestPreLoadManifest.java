@@ -19,7 +19,6 @@
 package org.LexGrid.LexBIG.Impl.function.query;
 
 import java.io.File;
-import java.util.Date;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -28,9 +27,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -213,27 +210,4 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         }
     }
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-
-        LexBIGServiceManager lbsm;
-
-        status_ = new LoadStatus();
-        status_.setLoadSource(null); // doesn't apply
-        status_.setStartTime(new Date(System.currentTimeMillis()));
-
-        try {
-            lbsm = new LexBIGServiceImpl().getServiceManager(null);
-
-            LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGridLoader");
-
-            loader.setCodingSchemeManifestURI(new File("resources/testData/pizza-Manifest.xml").toURI());
-            loader.load(new File("resources/testData/pizza.xml").toURI(), true, true);
-
-        } catch (LBException e) {
-            e.printStackTrace();
-        }
-    }
 }

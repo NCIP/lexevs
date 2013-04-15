@@ -54,6 +54,8 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 	public void destroy() throws Exception {
 		LoggerFactory.getLogger().debug(
 				getCacheStatisticsStringRepresentation());
+		
+		this.cacheManager.shutdown();
 	}
 	
 	protected String getCacheStatisticsStringRepresentation() {
