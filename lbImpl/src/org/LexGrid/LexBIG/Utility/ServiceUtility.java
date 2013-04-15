@@ -55,6 +55,7 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.service.SystemResourceService;
 
 /**
@@ -160,8 +161,17 @@ public class ServiceUtility {
         try {
             version = getVersion(codingScheme, tagOrVersion);
             
-            uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(
-                    codingScheme, version);
+            SystemResourceService srs = 
+                   LexEvsServiceLocator.getInstance().getSystemResourceService();
+            
+            uri = srs.getUriForUserCodingSchemeName(codingScheme, version);
+            
+            int validateNumber = LexEvsServiceLocator.getInstance().getRegistry().
+                getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.CODING_SCHEME, uri, version).size();
+            
+            if(validateNumber != 1){
+                throw new LBParameterException("No Coding Scheme Found for Name: " + codingScheme + " Version " + version + ".");
+            }
         } catch (LBParameterException e) {
             if (strict) {
                 throw e;
