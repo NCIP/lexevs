@@ -40,6 +40,7 @@ import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Triple;
+import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -70,6 +71,8 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  */
 @Cacheable(cacheName = "IbatisAssociationDaoCache")
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
+
+
 
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
@@ -113,6 +116,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_ASSOCIATION_PREDICATE_IDS_FOR_RELATIONS_ID_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateKeysForRelationsId";
 	
 	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
+	
+	private static final String GET_ALL_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingSchemeForGraphDbLoad";
 	
 	private static String DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteEntityAssocQualsByCodingSchemeUId";
 	
@@ -216,6 +221,21 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	}
 	
 
+	@SuppressWarnings("unchecked")
+	public List<GraphDbTriple> getAllGraphDbTriplesOfCodingScheme(
+			String codingSchemeId,
+			String associationPredicateId,
+			int start, int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_ALL_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameterTuple(prefix, codingSchemeId, associationPredicateId), 
+				start, 
+				pageSize);
+	}
+	
+	@Override
 	public String getAnonDesignationForPredicate(String codingSchemeId, String associationPredicateId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return (String) this.getSqlMapClientTemplate().queryForObject(

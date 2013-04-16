@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.lexevs.dao.database.access.association.model.Triple;
+import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 
 import com.orientechnologies.orient.core.db.ODatabase.STATUS;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
@@ -189,9 +190,38 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		schema.save();	
 		return tableId;
 	}
+//	
+//	@Override	
+//	public void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName){
+//		edge.reset();
+//		source.reset();
+//		source.setClassName(vertexTableName);
+//		source.getIdentity().reset();
+//		source.field("sourceEntityCode", triple.getSourceEntityCode());
+//		source.field("sourceEntityCodeNamespace", triple.getSourceEntityNamespace());
+//		source.field("sourceSchemeUri", triple.getSourceSchemeUri());
+//		source.field("sourceSchemeVersion", triple.getSourceSchemeVersion());
+//		source.save();
+//		target.reset();
+//		target.setClassName(vertexTableName);
+//		target.getIdentity().reset();
+//		target.field("targetEntityCode", triple.getTargetEntityCode());
+//		target.field("targetEntityCodeNamespace", triple.getTargetEntityNamespace());
+//		target.field("targetSchemeUri", triple.getTargetSchemeUri());
+//		target.field("targetSchemeVersion", triple.getTargetSchemeVersion());
+//		target.field("associationPredicateId", triple.getAssociationPredicateId());
+//		source.save();
+//		edge.setClassName(edgeTableName);
+//		edge.getIdentity().reset();
+//		edge.field("associationPredicateId", triple.getAssociationPredicateId());
+//		edge.field("associationName", triple.getAssociationName());
+//		edge.field("in", source);
+//		edge.field("out", target);
+//		edge.save();
+//	}
 	
 	@Override	
-	public void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName){
+	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName, String edgeTableName){
 
 		source.reset();
 		source.setClassName(vertexTableName);
@@ -200,6 +230,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		source.field("sourceEntityCodeNamespace", triple.getSourceEntityNamespace());
 		source.field("sourceSchemeUri", triple.getSourceSchemeUri());
 		source.field("sourceSchemeVersion", triple.getSourceSchemeVersion());
+//		source.field("out", edge);
 		source.save();
 		target.reset();
 		target.setClassName(vertexTableName);
@@ -209,15 +240,26 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		target.field("targetSchemeUri", triple.getTargetSchemeUri());
 		target.field("targetSchemeVersion", triple.getTargetSchemeVersion());
 		target.field("associationPredicateId", triple.getAssociationPredicateId());
+//		target.field("in", edge);
 		source.save();
 		edge.reset();
 		edge.setClassName(edgeTableName);
 		edge.getIdentity().reset();
 		edge.field("associationPredicateId", triple.getAssociationPredicateId());
 		edge.field("associationName", triple.getAssociationName());
+		edge.field("entityAssnEntityGuid", triple.getEntityAssnsGuid());
+		edge.field("anonymousStatus",triple.getAnonymousStatus());
+		edge.field("associationInstanceId", triple.getAssociationInstanceId());
 		edge.field("in", source);
 		edge.field("out", target);
 		edge.save();
+		String sql = "update " + source.getIdentity() + " add out = "
+				+ edge.getIdentity();
+		orientDB.command(new OCommandSQL(sql)).execute();
+		sql = "update " + target.getIdentity() + " add in = "
+				+ edge.getIdentity();
+		orientDB.command(new OCommandSQL(sql)).execute();
+
 	}
 	
 	public List<TriplePlus> generateTriplesPlus(int count){
@@ -255,7 +297,8 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	}
 	
 	public List<String> getFieldNamesForEdge(){
-		return  Arrays.asList( "namespace", "uri","version", "predicateId", "predicateName");
+		return  Arrays.asList( "predicateId", "predicateName", "associationId",
+				"anonymousStatus", "entityAssnEntityGuid");
 	}
 	/**
 	 * @param args

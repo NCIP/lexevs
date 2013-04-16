@@ -3,6 +3,7 @@ package org.lexevs.graph.load.connect;
 import java.util.List;
 
 import org.lexevs.dao.database.access.association.model.Triple;
+import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -22,6 +23,8 @@ public interface GraphDataBaseConnect {
 	public OClass createVertexTable(String table, List<String> fieldnames);
 	public OClass createEdgeTable(String table, List<String> fieldnames);
 	public Object storeVertex(String table, String entityCode, String entityNamespace);
-	void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName);	
+	//void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName);
+	void storeGraphTriple(GraphDbTriple triple, String vertexTableName,
+			String edgeTableName);	
 	
 }
