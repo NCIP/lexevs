@@ -264,4 +264,9 @@ public class LexBIGServiceManagerImpl implements LexBIGServiceManager {
                 parentCodingScheme, 
                 supplementCodingScheme);
     }
+
+    @Override
+    public void shutdown() {
+        LexEvsServiceLocator.getInstance().getSystemResourceService().shutdown();
+    }
 }

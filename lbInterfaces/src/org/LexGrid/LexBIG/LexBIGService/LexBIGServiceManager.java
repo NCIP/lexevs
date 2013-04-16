@@ -215,4 +215,11 @@ public interface LexBIGServiceManager extends Serializable {
 			AbsoluteCodingSchemeVersionReference parentCodingScheme,
 			AbsoluteCodingSchemeVersionReference supplementCodingScheme
 		) throws LBException;
+	
+	/**
+	 * Shuts down LexBIG Services and all associated resources. 
+	 * All database connections, caches, and other internal resources 
+	 * will be released.
+	 */
+	void shutdown();
 }
