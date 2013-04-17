@@ -46,6 +46,8 @@
 		<result property="associationInstanceId" column="associationInstanceId" /> 
 		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
 		<result property="associationName"	column="associationName" />
+		<result property="sourceDescription" column="sd" />
+		<result property="targetDescription" column="td"/>
 	</resultMap>
 	
 	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="guid">
@@ -303,7 +305,9 @@
 			eae.associationInstanceId, 
  			aq.qualifierName,
 			aq.qualifierValue,
- 			ap.associationName
+ 			ap.associationName,
+ 			source.description as sd,
+ 			target.description as td
  		FROM
 			$prefix$entityAssnsToEntity eae
 		INNER JOIN
@@ -316,6 +320,14 @@
 		ON
 			ap.relationGuid =
 			rel.relationGuid
+		LEFT JOIN
+			$prefix$entity source
+		ON
+			source.entityCode = eae.sourceEntityCode 
+		LEFT JOIN
+			$prefix$entity target
+		ON 
+			target.entityCode = eae.targetEntityCode
  		LEFT JOIN 
 			$prefix$entityassnquals aq 
 		ON 

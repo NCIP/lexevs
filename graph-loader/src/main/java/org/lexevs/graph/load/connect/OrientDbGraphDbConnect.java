@@ -190,39 +190,10 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		schema.save();	
 		return tableId;
 	}
-//	
-//	@Override	
-//	public void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName){
-//		edge.reset();
-//		source.reset();
-//		source.setClassName(vertexTableName);
-//		source.getIdentity().reset();
-//		source.field("sourceEntityCode", triple.getSourceEntityCode());
-//		source.field("sourceEntityCodeNamespace", triple.getSourceEntityNamespace());
-//		source.field("sourceSchemeUri", triple.getSourceSchemeUri());
-//		source.field("sourceSchemeVersion", triple.getSourceSchemeVersion());
-//		source.save();
-//		target.reset();
-//		target.setClassName(vertexTableName);
-//		target.getIdentity().reset();
-//		target.field("targetEntityCode", triple.getTargetEntityCode());
-//		target.field("targetEntityCodeNamespace", triple.getTargetEntityNamespace());
-//		target.field("targetSchemeUri", triple.getTargetSchemeUri());
-//		target.field("targetSchemeVersion", triple.getTargetSchemeVersion());
-//		target.field("associationPredicateId", triple.getAssociationPredicateId());
-//		source.save();
-//		edge.setClassName(edgeTableName);
-//		edge.getIdentity().reset();
-//		edge.field("associationPredicateId", triple.getAssociationPredicateId());
-//		edge.field("associationName", triple.getAssociationName());
-//		edge.field("in", source);
-//		edge.field("out", target);
-//		edge.save();
-//	}
 	
 	@Override	
 	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName, String edgeTableName){
-
+		final String DESCRIPTION_MISSING = "Description missing";
 		source.reset();
 		source.setClassName(vertexTableName);
 		source.getIdentity().reset();
@@ -230,7 +201,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		source.field("sourceEntityCodeNamespace", triple.getSourceEntityNamespace());
 		source.field("sourceSchemeUri", triple.getSourceSchemeUri());
 		source.field("sourceSchemeVersion", triple.getSourceSchemeVersion());
-//		source.field("out", edge);
+		source.field("sourceDescription", triple.getSourceDescription() == null? triple.getSourceDescription():DESCRIPTION_MISSING);
 		source.save();
 		target.reset();
 		target.setClassName(vertexTableName);
@@ -240,7 +211,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		target.field("targetSchemeUri", triple.getTargetSchemeUri());
 		target.field("targetSchemeVersion", triple.getTargetSchemeVersion());
 		target.field("associationPredicateId", triple.getAssociationPredicateId());
-//		target.field("in", edge);
+		target.field("targetDescription", triple.getTargetDescription() == null? triple.getTargetDescription():DESCRIPTION_MISSING);
 		source.save();
 		edge.reset();
 		edge.setClassName(edgeTableName);

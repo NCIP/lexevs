@@ -240,7 +240,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	
 	@Test
 	@Transactional
-	public void getAllGraphtTriplesOfCodingSchemeLimit1() throws SQLException {
+	public void getAllGraphtTriplesPlusEntityOfCodingSchemeLimit1() throws SQLException {
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template
@@ -254,7 +254,13 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		template.execute("insert into "
 				+ "associationpredicate values " + "('1', '1' , 'AssnsName')");
 
-
+		template.execute("insert into "
+				+ "entity (entityGuid, codingSchemeGuid, entityCode, " +
+				"entityCodeNamespace, isDefined, isAnonymous, description, isActive) " + 
+				"values ('1', '1' , 's499', 's-ns', null, null,'sourceDescription', '1')");
+		template.execute("insert into "
+				+ "entity (entityGuid,codingSchemeGuid,entityCode,entityCodeNamespace,isDefined, isAnonymous, description, isActive) " + 
+				"values ('2', '1' , 't499','t-ns',null, null,null, '1')");
 		template
 		.execute("insert into entityassnstoentity"
 				+ " values ('1499','1','s499', 's-ns','t499', 't-ns', 'ai-id', null, null, null, null, null, null, null, null)");
@@ -279,8 +285,8 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("1499", triple.getEntityAssnsGuid());
 		assertEquals("AssnsName", triple.getAssciationName());
 		assertEquals("ai-id", triple.getAssociationInstanceId());
-//		assertEquals("qname", triple.getQualifierName());
-//		assertEquals("qvalue", triple.getQualifierValue());
+		assertEquals("sourceDescription", triple.getSourceDescription());
+		assertNull(triple.getTargetDescription());
 	}
 	
 	@Test

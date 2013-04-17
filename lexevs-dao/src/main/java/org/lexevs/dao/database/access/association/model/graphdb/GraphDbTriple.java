@@ -83,6 +83,20 @@ public class GraphDbTriple extends Triple {
 		this.anonymousStatus = b;
 	}
 
+	public String getSourceDescription() {
+		return sourceDescription;
+	}
+	public void setSourceDescription(String sourceDescription) {
+		this.sourceDescription = sourceDescription;
+	}
+
+	public String getTargetDescription() {
+		return targetDescription;
+	}
+	public void setTargetDescription(String targetDescription) {
+		this.targetDescription = targetDescription;
+	}
+
 	private List<?> associationQualification;
 	private String entityAssnsGuid;
 	private String associationInstanceId;
@@ -93,6 +107,8 @@ public class GraphDbTriple extends Triple {
 	private String sourceSchemeVersion;
 	private String targetSchemeUri;
 	private String targetSchemeVersion;
+	private String sourceDescription;
+	private String targetDescription;
 	private boolean anonymousStatus;
 
 
