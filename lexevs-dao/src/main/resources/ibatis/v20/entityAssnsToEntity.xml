@@ -46,8 +46,8 @@
 		<result property="associationInstanceId" column="associationInstanceId" /> 
 		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
 		<result property="associationName"	column="associationName" />
-		<result property="sourceDescription" column="sd" />
-		<result property="targetDescription" column="td"/>
+		<result property="sourceDescription" column="sd" nullValue="Description Missing"/>
+		<result property="targetDescription" column="td" nullValue="Description Missing"/>
 	</resultMap>
 	
 	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="guid">

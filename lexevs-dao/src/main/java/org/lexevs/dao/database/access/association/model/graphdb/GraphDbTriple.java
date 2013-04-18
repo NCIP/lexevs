@@ -32,12 +32,6 @@ public class GraphDbTriple extends Triple {
 	public void setQualifierValue(String qualifierValue) {
 		this.qualifierValue = qualifierValue;
 	}
-	public String getAssciationName() {
-		return associationName;
-	}
-	public void setAssciationName(String assciationName) {
-		this.associationName = assciationName;
-	}
 	
 	public String getAssociationName() {
 		return associationName;

@@ -12,9 +12,8 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 public interface GraphDataBaseConnect {
 	
 	//private void createDatabase(String dbName);
-	public ODocument createVertex(OGraphDatabase database);
-	public ODocument createEdge(OGraphDatabase database, ODocument inVertex, ODocument outVertex, String name);
-	public void createTriple();
+//	public ODocument createVertex(OGraphDatabase database);
+//	public ODocument createEdge(OGraphDatabase database, ODocument inVertex, ODocument outVertex, String name);
 	public OGraphDatabase openForWrite(String dbName);
 	public OGraphDatabase openForRead(String dbName);
 	public OGraphDatabase getGraphDbFromPool(String dbPath, String username, String password);
@@ -26,5 +25,5 @@ public interface GraphDataBaseConnect {
 	//void storeTriple(TriplePlus triple, String vertexTableName, String edgeTableName);
 	void storeGraphTriple(GraphDbTriple triple, String vertexTableName,
 			String edgeTableName);	
-	
+	public ODocument getVertexForCode(String code, String vertexTableName);
 }

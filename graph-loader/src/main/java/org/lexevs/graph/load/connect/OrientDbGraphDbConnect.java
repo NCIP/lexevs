@@ -12,6 +12,7 @@ import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import com.orientechnologies.orient.core.db.ODatabase.STATUS;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabasePool;
+import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -144,24 +145,19 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	}
 
 
-	@Override
-	public ODocument createVertex(OGraphDatabase database) {
-		return database.createVertex();
-		
-	}
-	
+//	@Override
+//	public ODocument createVertex(OGraphDatabase database) {
+//		return database.createVertex();
+//		
+//	}
+//	
+//
+//	@Override
+//	public ODocument createEdge(OGraphDatabase database, ODocument outVertex, ODocument inVertex,String name) {
+//		return database.createEdge(outVertex, inVertex, name);
+//		
+//	}
 
-	@Override
-	public ODocument createEdge(OGraphDatabase database, ODocument outVertex, ODocument inVertex,String name) {
-		return database.createEdge(outVertex, inVertex, name);
-		
-	}
-
-	@Override
-	public void createTriple() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	public OClass createVertexTable(String table, List<String> fieldnames) {
@@ -173,7 +169,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		return createTable("edge", table, fieldnames);
 	}
 	
-	private OClass createTable(String type, String table,
+	protected OClass createTable(String type, String table,
 			List<String> fieldnames){
 		OClass tableId = null;
 		OSchema schema = orientDB.getMetadata().getSchema();
@@ -193,82 +189,117 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	
 	@Override	
 	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName, String edgeTableName){
-		final String DESCRIPTION_MISSING = "Description missing";
+		sourceSet(triple, vertexTableName);
+		targetSet(triple, vertexTableName);
+		edgeSet(triple, edgeTableName);
+		addVertexOut(source, edge);
+		addVertexIn(target, edge);
+//		String sql = "update " + source.getIdentity() + " add out = "
+//				+ edge.getIdentity();
+//		orientDB.command(new OCommandSQL(sql)).execute();
+//		sql = "update " + target.getIdentity() + " add in = "
+//				+ edge.getIdentity();
+//		orientDB.command(new OCommandSQL(sql)).execute();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ODocument getVertexForCode(String code, String vertexTableName){
+		String sql = "select from " + vertexTableName + " where code = " + "\"" + code + "\"";
+		List<ODocument> docs= (List<ODocument>)orientDB
+				.query(new OSQLSynchQuery<ODocument>(sql));
+		if(docs.size() > 0)
+			return docs.get(0);
+			else{
+				return null;
+			}
+	}
+	
+	public void addVertexOut(ODocument od, ODocument eDoc){
+		String sql = "update " + od.getIdentity() + " add out = "
+				+ eDoc.getIdentity();
+		orientDB.command(new OCommandSQL(sql)).execute();
+	}
+	
+	public void addVertexIn(ODocument od, ODocument eDoc){
+		String sql = "update " + od.getIdentity() + " add in = "
+				+ eDoc.getIdentity();
+		orientDB.command(new OCommandSQL(sql)).execute();
+	}
+	
+	
+	
+//	
+//	private String isTargetVertex(String code, String vertexTableName){
+//		String sql = "select @rid from " + vertexTableName + " where sourceEntityCode = " + code;
+//		return orientDB.command(new OCommandSQL(sql)).execute();	
+//	}
+	
+	private void sourceSet(GraphDbTriple triple, String vertexTableName){
+		String code = triple.getSourceEntityCode();
+		ODocument tempsource = getVertexForCode(code, vertexTableName);
+		if(tempsource == null){
 		source.reset();
 		source.setClassName(vertexTableName);
 		source.getIdentity().reset();
-		source.field("sourceEntityCode", triple.getSourceEntityCode());
-		source.field("sourceEntityCodeNamespace", triple.getSourceEntityNamespace());
-		source.field("sourceSchemeUri", triple.getSourceSchemeUri());
-		source.field("sourceSchemeVersion", triple.getSourceSchemeVersion());
-		source.field("sourceDescription", triple.getSourceDescription() == null? triple.getSourceDescription():DESCRIPTION_MISSING);
+		source.field("code", triple.getSourceEntityCode());
+		source.field("namespace", triple.getSourceEntityNamespace());
+		source.field("uri", triple.getSourceSchemeUri());
+		source.field("version", triple.getSourceSchemeVersion());
+		source.field("description", triple.getSourceDescription());
 		source.save();
+		}
+		else{
+			source = tempsource;
+		}
+	}
+	
+	public boolean recordVertexIfNotRecorded(Triple triple, String vertexTableName){
+		
+		if(getVertexForCode(triple.getSourceEntityCode() != null?
+				triple.getSourceEntityCode():
+					triple.getTargetEntityCode(), vertexTableName) == null){
+		return false;
+	}
+		else{return true;}
+	}
+	
+	private void targetSet(GraphDbTriple triple, String vertexTableName){
 		target.reset();
 		target.setClassName(vertexTableName);
 		target.getIdentity().reset();
-		target.field("targetEntityCode", triple.getTargetEntityCode());
-		target.field("targetEntityCodeNamespace", triple.getTargetEntityNamespace());
-		target.field("targetSchemeUri", triple.getTargetSchemeUri());
-		target.field("targetSchemeVersion", triple.getTargetSchemeVersion());
-		target.field("associationPredicateId", triple.getAssociationPredicateId());
-		target.field("targetDescription", triple.getTargetDescription() == null? triple.getTargetDescription():DESCRIPTION_MISSING);
-		source.save();
+		target.field("code", triple.getTargetEntityCode());
+		target.field("namespace", triple.getTargetEntityNamespace());
+		target.field("uri", triple.getTargetSchemeUri());
+		target.field("version", triple.getTargetSchemeVersion());
+		target.field("predicateId", triple.getAssociationPredicateId());
+		target.field("description", triple.getTargetDescription());
+		target.save();
+	}
+	private void edgeSet(GraphDbTriple triple, String edgeTableName){
 		edge.reset();
 		edge.setClassName(edgeTableName);
 		edge.getIdentity().reset();
-		edge.field("associationPredicateId", triple.getAssociationPredicateId());
-		edge.field("associationName", triple.getAssociationName());
+		edge.field("predicateId", triple.getAssociationPredicateId());
+		edge.field("predicateName", triple.getAssociationName());
 		edge.field("entityAssnEntityGuid", triple.getEntityAssnsGuid());
 		edge.field("anonymousStatus",triple.getAnonymousStatus());
 		edge.field("associationInstanceId", triple.getAssociationInstanceId());
 		edge.field("in", source);
 		edge.field("out", target);
 		edge.save();
-		String sql = "update " + source.getIdentity() + " add out = "
-				+ edge.getIdentity();
-		orientDB.command(new OCommandSQL(sql)).execute();
-		sql = "update " + target.getIdentity() + " add in = "
-				+ edge.getIdentity();
-		orientDB.command(new OCommandSQL(sql)).execute();
-
 	}
 	
-	public List<TriplePlus> generateTriplesPlus(int count){
-		String sourceEntityCode = "sourceCode_";
-		String sourceEntityCodeNamespace = "sourceNs_";
-		String sourceSchemeUri = "1.11.111.11111.1";
-		String sourceSchemeVersion = "1.0";
-		String targetEntityCode = "targetCode_";
-		String targetEntityCodeNamespace = "targetNs_";
-		String targetSchemeUri = "1.11.111.11111.1";
-		String targetSchemeVersion = "1.0";
-		String associationPredicateId = "predicateId_";
-		String associaitonName = "associationName_";
 		
-		List<TriplePlus> list = new ArrayList<TriplePlus>();
-		for(int i=0;i<count;i++){
-			TriplePlus t = new TriplePlus();
-			t.setAssociationPredicateId(associationPredicateId + i);
-			t.setSourceEntityCode(sourceEntityCode + i);
-			t.setSourceEntityNamespace(sourceEntityCodeNamespace + i);
-			t.setSourceSchemeUri(sourceSchemeUri);
-			t.setSourceSchemeVersion(sourceSchemeVersion);
-			t.setTargetEntityCode(targetEntityCode+ i);
-			t.setTargetEntityNamespace(targetEntityCodeNamespace + i);
-			t.setTargetSchemeUri(targetSchemeUri);
-			t.setTargetSchemeVersion(targetSchemeVersion);
-			t.setAssociaitonName(associaitonName);
-			list.add(t);
-		}
-		return list;
-	}
+
 	
 	public List<String> getFieldNamesForVertex(){
-		return  Arrays.asList("code", "namespace", "uri","version", "predicateId", "predicateName");
+		return  Arrays.asList("code", "namespace", "uri",
+				"version", "predicateId", "description",
+				"predicateName");
 	}
 	
 	public List<String> getFieldNamesForEdge(){
-		return  Arrays.asList( "predicateId", "predicateName", "associationId",
+		return  Arrays.asList( "predicateId", "predicateName", "associationInstanceId",
 				"anonymousStatus", "entityAssnEntityGuid");
 	}
 	/**
@@ -283,7 +314,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 //		String targetVersion = "1.0";
 //		String associationName = "subClassOf";
 //		try{
-		db = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
+		db = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/thesGraph");
 //
 //		//db.createDatabase("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
 ////		//OGraphDatabase database = db.getGraphDbFromPool("/Users/m029206/software/orientdb-1.3.0/databases/testGraph", "admin", "admin");
@@ -298,6 +329,8 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 //			db.storeTriple(t, vertexTable.getName(), edgeTable.getName());
 //		}
 //		System.out.println("is closed? " + db.close());
+		db.close();
+		db.delete("/Users/m029206/software/orientdb-1.3.0/databases/thesGraph");
 //		db.delete("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
 //		System.out.println("database exists after delete?: " + db.orientDB.exists());
 //		}

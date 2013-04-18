@@ -283,10 +283,10 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("t-ns", triple.getTargetEntityNamespace());
 		assertEquals("1", triple.getAssociationPredicateId());
 		assertEquals("1499", triple.getEntityAssnsGuid());
-		assertEquals("AssnsName", triple.getAssciationName());
+		assertEquals("AssnsName", triple.getAssociationName());
 		assertEquals("ai-id", triple.getAssociationInstanceId());
 		assertEquals("sourceDescription", triple.getSourceDescription());
-		assertNull(triple.getTargetDescription());
+		assertEquals("Description Missing",triple.getTargetDescription());
 	}
 	
 	@Test
@@ -341,62 +341,7 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("t-ns", triple.getTargetEntityNamespace());
 		assertEquals("1", triple.getAssociationPredicateId());
 	}
-//	@Test
-//	@Transactional
-//	public void getAllGraphtTriplesOfCodingSchemeTestStart() throws SQLException {
-//		int limit = 1000;
-//		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-//		template
-//				.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) "
-//						+ "values ('1', 'csname', 'csuri', 'csversion')");
-//
-//		template.execute("insert into "
-//				+ "relation (relationGuid, codingSchemeGuid, containerName) "
-//				+ "values ('1', '1', 'c-name')");
-//
-//		template.execute("insert into "
-//				+ "associationpredicate values " + "('1', '1' , 'AssnsName')");
-//
-//			for (int i = 0; i < limit; i++) {
-//				template
-//						.execute("insert into entityassnstoentity"
-//								+ " values ('1"
-//								+ String.valueOf(i)
-//								+ "',"
-//								+ " '1',"
-//								+ " 's"
-//								+ String.valueOf(i)
-//								+ "', "
-//								+ " 's-ns',"
-//								+ " 't"
-//								+ String.valueOf(i)
-//								+ "', "
-//								+ " 't-ns',"
-//								+ " 'ai-id', null, null, null, null, null, null, null, null)");
-//			}
-//		
-////        template.execute("Insert into entityassnquals(entityAssnQualsGuid, " +
-////        		"referenceGuid, " +
-////        		"qualifierName, " +
-////        		"qualifierValue, " +
-////        		"entryStateGuid)" +
-////        		"values('1', '1499', 'qname', 'qvalue', '1')");
-//		List<GraphDbTriple> triples = ibatisAssociationDao
-//				.getAllGraphDbTriplesOfCodingScheme("1", "1", 500, 1);
-//		assertEquals(1, triples.size());
-//
-//		GraphDbTriple triple = triples.get(0);
-//		assertEquals("s499", triple.getSourceEntityCode());
-//		assertEquals("t499", triple.getTargetEntityCode());
-//		assertEquals("s-ns", triple.getSourceEntityNamespace());
-//		assertEquals("t-ns", triple.getTargetEntityNamespace());
-//		assertEquals("1", triple.getAssociationPredicateId());
-//		assertEquals("1499", triple.getEntityAssnsGuid());
-//		//assertEquals("AssnsName", triple.getAssciationName());
-//		assertEquals("ai-id", triple.getAssociationInstanceId());
-//		//assertEquals("qname", triple.getQualifierName());
-//		//assertEquals("qvalue", triple.getQualifierValue());
-//	}
+
 	/**
 	 * Test insert relations.
 	 * 

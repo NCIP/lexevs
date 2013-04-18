@@ -8,6 +8,8 @@ import org.lexevs.graph.load.connect.OrientDbGraphDbConnect;
 import org.lexevs.graph.load.connect.TriplePlus;
 import org.lexevs.graph.load.service.LexEVSTripleService.GraphTripleIterator;
 
+import com.orientechnologies.orient.core.record.impl.ODocument;
+
 public class LoadGraphToOrientDb {
 	OrientDbGraphDbConnect database ;
 	LexEVSTripleService service ;
@@ -26,7 +28,7 @@ public class LoadGraphToOrientDb {
 	}
 	
 	public void createDatabase(){
-		database = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/thesGraph");
+		database = new OrientDbGraphDbConnect("admin", "admin", databasePath);
 		database.createEdgeTable(edgeTableName, database.getFieldNamesForEdge());
 		database.createVertexTable(vertexTableName, database.getFieldNamesForVertex());
 		database.initVerticesAndEdge();
@@ -69,13 +71,16 @@ public class LoadGraphToOrientDb {
 	
 	public static void main(String[] args) {
 
-		//String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
-		String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
-		//String version = "version 1.2";
-		String version = "12.01f";
+		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
+		//String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
+		String version = "version 1.2";
+		//String version = "12.01f";
 		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-1.3.0/databases/thesGraph");
 		try{
-		load.runGraphLoad(codingSchemeUri, version);}
+		load.runGraphLoad(codingSchemeUri, version);
+		ODocument RID = load.database.getVertexForCode("VegetarianTopping", "Nodes");
+		System.out.println("RID: " + RID.field("rid"));
+		}
 		catch(Exception e){
 			throw new RuntimeException(e);
 		}
