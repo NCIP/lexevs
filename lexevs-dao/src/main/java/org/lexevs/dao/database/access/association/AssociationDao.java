@@ -28,6 +28,7 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Triple;
+import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 
 /**
  * The Interface AssociationDao.
@@ -178,6 +179,9 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public List<Triple> getAllTriplesOfCodingScheme(String codingSchemeUId,
 			String associationPredicateUId, int start, int pageSize);
 
+	public List<GraphDbTriple> getAllGraphDbTriplesOfCodingScheme(String codingSchemeUId,
+			String associationPredicateUId, int start, int pageSize);
+	
 	public String getRelationsContainerNameForAssociationInstanceId(String codingSchemeUId,
 			String associationInstanceId);
 	
@@ -233,5 +237,9 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 
 	public Relations getHistoryRelationByRevisionId(String codingSchemeUid,
 			String entryUid, String revisionId);
+
+	String getAnonDesignationForPredicate(String codingSchemeId,
+			String associationPredicateId);
+
 
 }

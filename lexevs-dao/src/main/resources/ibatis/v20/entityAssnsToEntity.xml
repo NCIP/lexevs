@@ -5,6 +5,7 @@
 
 	<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
+	<typeAlias alias="graphdbTriple" type="org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple"/>
 	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
@@ -33,6 +34,20 @@
 		<result property="targetEntityCode" column="targetEntityCode" />
 		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
 		<result property="associationPredicateId" column="associationPredicateGuid" />
+	</resultMap>
+	
+	<resultMap id="graphdbTripleResult" class="graphdbTriple" groupBy="tripleGuid">
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
+		<result property="targetEntityCode" column="targetEntityCode" />
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationPredicateId" column="associationPredicateGuid" />
+ 		<result property="entityAssnsGuid" column="entityAssnsGuid" />
+		<result property="associationInstanceId" column="associationInstanceId" /> 
+		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
+		<result property="associationName"	column="associationName" />
+		<result property="sourceDescription" column="sd" />
+		<result property="targetDescription" column="td"/>
 	</resultMap>
 	
 	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="guid">
@@ -278,20 +293,22 @@
 		</isNotNull>
 	</select>
 	
-	<select id="getAllTriplesOfCodingSchemeForOrientDBLoad" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
+	<select id="getAllTriplesOfCodingSchemeForGraphDbLoad" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.graphdbTripleResult">
 		SELECT
 			eae.sourceEntityCode,
 			eae.sourceEntityCodeNamespace,
 			eae.targetEntityCode,
 			eae.targetEntityCodeNamespace,
 			eae.associationPredicateGuid,
-			eae.entityAssnsGuid,
-			eae.associationInstanceId,
-			aq.qualifierName,
+ 			eae.entityAssnsGuid,
+			eae.associationInstanceId, 
+ 			aq.qualifierName,
 			aq.qualifierValue,
-			ap.assciationName
-		FROM 
+ 			ap.associationName,
+ 			source.description as sd,
+ 			target.description as td
+ 		FROM
 			$prefix$entityAssnsToEntity eae
 		INNER JOIN
 			$prefix$associationPredicate ap
@@ -303,7 +320,15 @@
 		ON
 			ap.relationGuid =
 			rel.relationGuid
-		LEFT JOIN 
+		LEFT JOIN
+			$prefix$entity source
+		ON
+			source.entityCode = eae.sourceEntityCode 
+		LEFT JOIN
+			$prefix$entity target
+		ON 
+			target.entityCode = eae.targetEntityCode
+ 		LEFT JOIN 
 			$prefix$entityassnquals aq 
 		ON 
 			aq.referenceGuid =

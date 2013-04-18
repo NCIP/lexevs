@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.graph.load.service.LexEVSTripleService;
-import org.lexevs.graph.load.service.LexEVSTripleService.TripleIterator;
+import org.lexevs.graph.load.service.LexEVSTripleService.GraphTripleIterator;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class LexEVSTripleServiceImpleTestIT {
@@ -20,7 +20,7 @@ public class LexEVSTripleServiceImpleTestIT {
 	List<String> predicateIds;
 	@Before
 	public void setUp() throws Exception {
-		service = new LexEVSTripleService();
+		service = new LexEVSTripleService(GLTestConstants.THES_SCHEME_URI, GLTestConstants.THES_SCHEME_VERSION);
 		predicateIds = service.getAssociationPredicateIds(GLTestConstants.THES_SCHEME_URI, GLTestConstants.THES_SCHEME_VERSION);
 	}
 
@@ -67,7 +67,7 @@ public class LexEVSTripleServiceImpleTestIT {
 					predid = s;
 		}
 		}
-		TripleIterator iterator = service.getTripleIteratorforPredicate(
+		GraphTripleIterator iterator = service.getGraphTripleIteratorforPredicate(
 				GLTestConstants.THES_SCHEME_URI, 
 				GLTestConstants.THES_SCHEME_VERSION, 
 				predid);
