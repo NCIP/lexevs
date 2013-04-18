@@ -8,6 +8,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -210,7 +211,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
     }
 
     @Override
-    public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException {      
+    public ResolvedConceptReferencesIterator resolveMapping(final List<MappingSortOption> sortOptionList) throws LBException {      
         processRelationshipRestrictions();
         
         Iterator<ResolvedConceptReference> iterator;
@@ -260,9 +261,49 @@ public class CodedNodeSetBackedMapping implements Mapping {
         }
         
         return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
+            new IteratorBackedResolvedConceptReferencesIterator(iterator, count){
+           
+                private static final long serialVersionUID = -6420905230384238295L;
+
+            @Override
+            public ResolvedConceptReferenceList get(int start, int end) throws LBResourceUnavailableException,
+                    LBInvocationException, LBParameterException {
+                Iterator<ResolvedConceptReference> iterator;
+                
+                if(areAllCodedNodeSetsNull()){
+                    iterator = new MappingTripleIterator(
+                             mappingUri,
+                             mappingVersion,
+                             relationsContainerName,
+                             sortOptionList);
+                } else {
+                    iterator = 
+                        new RestrictingMappingTripleIterator(
+                                mappingUri,
+                                mappingVersion,
+                                relationsContainerName, 
+                                sourceCodesCodedNodeSet,
+                                targetCodesCodedNodeSet,
+                                sourceOrTargetCodesCodedNodeSet,
+                                relationshipRestrictions,
+                                sortOptionList);
+                }
+                ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
+                
+                int pos = 0;
+                while(iterator.hasNext() && pos < end){
+                    ResolvedConceptReference ref = iterator.next();
+                    if(pos >= start){
+                        returnList.addResolvedConceptReference(ref);
+                    }
+                    pos++;
+                }
+                
+                return returnList;
+            }
+        };
     }
-    
+
     @Override
     public Mapping restrictToMatchingDesignations(
             final String matchText, 
