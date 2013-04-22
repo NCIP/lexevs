@@ -129,6 +129,10 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 			{closed = true;}
 		return closed;
 	}
+	
+	public void commit(){
+		orientDB.commit();
+	}
 
 	@Override
 	public void delete(String dbPath) {
@@ -144,19 +148,6 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		}
 	}
 
-
-//	@Override
-//	public ODocument createVertex(OGraphDatabase database) {
-//		return database.createVertex();
-//		
-//	}
-//	
-//
-//	@Override
-//	public ODocument createEdge(OGraphDatabase database, ODocument outVertex, ODocument inVertex,String name) {
-//		return database.createEdge(outVertex, inVertex, name);
-//		
-//	}
 
 	
 	@Override
@@ -175,16 +166,31 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		OSchema schema = orientDB.getMetadata().getSchema();
 		if(type.equals("edge")){
 			tableId = orientDB.createEdgeType(table);
+			createTableProperties(schema, table, fieldnames);
 		}
 		else{
 			tableId = orientDB.createVertexType(table);
+			createTablePropertiesAndIndexes(schema, table, fieldnames);
 		}
+		return tableId;
+	}
+	
+	public void createTablePropertiesAndIndexes(OSchema schema, String table, List<String> fieldnames){
+		OClass oClass = schema.getClass(table);
+		for (int j = 0; j < fieldnames.size(); j++) {
+			oClass.createProperty(fieldnames.get(j), OType.STRING);
+		}
+		oClass.createIndex("conceptCode",OClass.INDEX_TYPE.UNIQUE, "code");
+		schema.save();	
+		
+	}
+	
+	public void createTableProperties(OSchema schema, String table, List<String> fieldnames){
 		OClass oClass = schema.getClass(table);
 		for (int j = 0; j < fieldnames.size(); j++) {
 			oClass.createProperty(fieldnames.get(j), OType.STRING);
 		}
 		schema.save();	
-		return tableId;
 	}
 	
 	@Override	
@@ -194,12 +200,6 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		edgeSet(triple, edgeTableName);
 		addVertexOut(source, edge);
 		addVertexIn(target, edge);
-//		String sql = "update " + source.getIdentity() + " add out = "
-//				+ edge.getIdentity();
-//		orientDB.command(new OCommandSQL(sql)).execute();
-//		sql = "update " + target.getIdentity() + " add in = "
-//				+ edge.getIdentity();
-//		orientDB.command(new OCommandSQL(sql)).execute();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -227,12 +227,6 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	}
 	
 	
-	
-//	
-//	private String isTargetVertex(String code, String vertexTableName){
-//		String sql = "select @rid from " + vertexTableName + " where sourceEntityCode = " + code;
-//		return orientDB.command(new OCommandSQL(sql)).execute();	
-//	}
 	
 	private void sourceSet(GraphDbTriple triple, String vertexTableName){
 		String code = triple.getSourceEntityCode();
@@ -264,6 +258,9 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	}
 	
 	private void targetSet(GraphDbTriple triple, String vertexTableName){
+		String code = triple.getTargetEntityCode();
+		ODocument temptarget = getVertexForCode(code, vertexTableName);
+		if(temptarget == null){
 		target.reset();
 		target.setClassName(vertexTableName);
 		target.getIdentity().reset();
@@ -273,7 +270,10 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		target.field("version", triple.getTargetSchemeVersion());
 		target.field("predicateId", triple.getAssociationPredicateId());
 		target.field("description", triple.getTargetDescription());
-		target.save();
+		target.save();}
+		else{
+			target = temptarget;
+		}
 	}
 	private void edgeSet(GraphDbTriple triple, String edgeTableName){
 		edge.reset();

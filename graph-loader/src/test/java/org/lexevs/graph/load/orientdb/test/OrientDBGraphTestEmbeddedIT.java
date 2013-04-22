@@ -1,8 +1,6 @@
 package org.lexevs.graph.load.orientdb.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,6 +9,7 @@ import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
@@ -18,14 +17,16 @@ import org.lexevs.graph.load.connect.OrientDbGraphDbConnect;
 
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.server.OServer;
+import com.orientechnologies.orient.server.OServerMain;
 
-public class OrientDBGraphTestIT {
-
+public class OrientDBGraphTestEmbeddedIT {
+	static OServer server;
 	public static OrientDbGraphDbConnect  graphdb;
 	public static Properties p;
 	public boolean setUpIsDone = false;
-	public static final String EDGE_TABLE = "edgeTable";
-	public static final String VERTEX_TABLE = "vertexTable";
+	public static final String EDGE_TABLE = "Edges";
+	public static final String VERTEX_TABLE = "Nodes";
 	
 	
 	@Before
@@ -42,6 +43,10 @@ public class OrientDBGraphTestIT {
 						p.getProperty("password"), 
 						p.getProperty("path"));
 				try{
+
+					graphdb.createEdgeTable(EDGE_TABLE, graphdb.getFieldNamesForEdge());
+					graphdb.createVertexTable(VERTEX_TABLE, graphdb.getFieldNamesForVertex());
+					graphdb.initVerticesAndEdge();
 				graphdb.initVerticesAndEdge();
 				}
 				catch(Exception e){
@@ -50,62 +55,49 @@ public class OrientDBGraphTestIT {
 		    setUpIsDone = true;
 		
 	}
-
-
 	
-	@Test
-	public void testOrientDbGraphDbConnect() {
-		assertTrue(graphdb.verifyDatabase());
-	}
-
-	@Test
-	public void testGetSource() {
-	assertNotNull(graphdb.getSource());
-	}
-
-	@Test
-	public void testGetTarget() {
-		assertNotNull(graphdb.getTarget());
-	}
-
-	@Test
-	public void testGetEdge() {
-		assertNotNull(graphdb.getEdge());
-	}
-
-
-	@Test
-	public void testOpenForWrite() {
-		assertNotNull(graphdb.openForWrite(p.getProperty("path")));
-	}
-
-	@Test
-	public void testOpenForRead() {
-		assertNotNull(graphdb.openForRead(p.getProperty("path")));
-	}
-
-	@Test
-	public void testGetGraphDbFromPool() {
-		assertNotNull(graphdb.getGraphDbFromPool(p.getProperty("path"), "admin", "admin"));
-	}
-	
-	@Test
-	public void testCreateVertexTable() {
-		List<String> fieldnames = graphdb.getFieldNamesForVertex();
-		OClass o = graphdb.createVertexTable(VERTEX_TABLE , fieldnames);
-		assertNotNull(o);
-		OGraphDatabase db = graphdb.getGraphDbFromPool(p.getProperty("path"), "admin", "admin");
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		server = OServerMain.create();
+		server.startup(
+		   "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+		   + "<orient-server>"
+		   + "<network>"
+		   + "<protocols>"
+		   + "<protocol name=\"binary\" implementation=\"com.orientechnologies.orient.server.network.protocol.binary.ONetworkProtocolBinary\"/>"
+		   + "<protocol name=\"http\" implementation=\"com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpDb\"/>"
+		   + "</protocols>"
+		   + "<listeners>"
+		   + "<listener ip-address=\"0.0.0.0\" port-range=\"2424-2430\" protocol=\"binary\"/>"
+		   + "<listener ip-address=\"0.0.0.0\" port-range=\"2480-2490\" protocol=\"http\"/>"
+		   + "</listeners>"
+		   + "</network>"
+		   + "<users>"
+		   + "<user name=\"root\" password=\"ThisIsA_TEST\" resources=\"*\"/>"
+		   + "</users>"
+		   + "<properties>"
+		   + "<entry name=\"orientdb.www.path\" value=\"/Users/m029206/software/orientdb-1.3.0/www/\"/>"
+		   + "<entry name=\"orientdb.config.file\" value=\"orientdb-server-config.xml\"/>"
+		   + "<entry name=\"server.cache.staticResources\" value=\"false\"/>"
+		   + "<entry name=\"log.console.level\" value=\"info\"/>" + "<entry name=\"log.file.level\" value=\"fine\"/>"
+		   + "</properties>" + "</orient-server>");
+		 server.activate();	
 
 	}
 
-	@Test
-	public void testCreateEdgeTable() {
-		List<String> fieldnames = graphdb.getFieldNamesForEdge();
-		assertNotNull(graphdb.createVertexTable(EDGE_TABLE , fieldnames));
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		assertTrue(graphdb.close());
+		try{
+		graphdb.delete(p.getProperty("path"));
+		}
+		catch(Exception e){
+			fail();
+		}
+		server.shutdown();
 	}
-	
 
-	@Ignore("Not compatible with In - mem version?")
+	@Test
 	public void testStoreTriple() {
 		List<GraphDbTriple> triple = generateTriples(1);
 		
@@ -153,17 +145,7 @@ public class OrientDBGraphTestIT {
 	
 	return list;
 }
-
 	
-	@AfterClass
-	public static void tearDownAfterClass(){
-		assertTrue(graphdb.close());
-		try{
-		graphdb.delete(p.getProperty("path"));
-		}
-		catch(Exception e){
-			fail();
-		}
-	}
+	
 
 }
