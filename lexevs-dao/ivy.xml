@@ -30,8 +30,8 @@
 		<dependency org="org.easymock" name="easymockclassextension" rev="2.4" conf="default"/> 
 		<dependency org="asm" name="asm" rev="3.1" conf="default"/>
 		<dependency org="cglib" name="cglib" rev="2.2" conf="default" />
-		<dependency org="org.aspectj" name="aspectjrt" rev="1.6.8" conf="default"/>
-		<dependency org="org.aspectj" name="aspectjweaver" rev="1.6.8" conf="default"/>
+		<dependency org="org.aspectj" name="aspectjrt" rev="1.7.2" conf="default"/>
+		<dependency org="org.aspectj" name="aspectjweaver" rev="1.7.2" conf="default"/>
 		<dependency org="aopalliance" name="aopalliance" rev="1.0" conf="default->*"/>
 		<dependency org="org.springframework" name="spring-aspects" rev="3.1.0.RELEASE" conf="default"/>
 		<dependency org="org.springframework" name="spring-aop" rev="3.1.0.RELEASE" conf="default"/>
