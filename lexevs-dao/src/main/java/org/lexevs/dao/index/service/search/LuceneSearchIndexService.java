@@ -184,11 +184,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		if(CollectionUtils.isNotEmpty(codeSystemsToInclude)){
 			List<Filter> filters = new ArrayList<Filter>();
 			
-			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToExclude){
+			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToInclude){
 				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
 			}
 			chainedFilter = new ChainedFilter(
-				filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
+				filters.toArray(new Filter[filters.size()]), ChainedFilter.OR);
 		}
 		
 		if(CollectionUtils.isNotEmpty(codeSystemsToExclude)){
@@ -203,7 +203,8 @@ public class LuceneSearchIndexService implements SearchIndexService {
 						this.getCodingSchemeMatchQuery(ref), 
 						BooleanClause.Occur.MUST_NOT);
 			}
-
+			
+			query = booleanQuery;
 		}
 		
 		if(chainedFilter != null){
