@@ -50,7 +50,10 @@ public interface SearchIndexService {
 	
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference);
 	
-	public List<ScoreDoc> query(Set<AbsoluteCodingSchemeVersionReference> codeSystems, Query query);
+	public List<ScoreDoc> query(
+		Set<AbsoluteCodingSchemeVersionReference> codeSystemToInclude, 
+		Set<AbsoluteCodingSchemeVersionReference> codeSystemToExclude,
+		Query query);
 	
 	public Document getById(int id);
 	
