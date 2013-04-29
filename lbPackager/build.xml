@@ -51,6 +51,11 @@ You may obtain a copy of the License at
 		<property name="ivy.initialized" location="true" />
 	</target>
 	
+	<target name="ivy-clean-cache" depends="init-ivy" 
+		description="removes the local Ivy cache. WARNING! After removal, this may take significant time to rebuild. Only use this if you are having problems with a corrupt or stale cache.">
+		<ivy:cleancache/>
+	</target>
+	
 	<target name="init">
 
 		<!-- *************************************** -->
@@ -896,7 +901,7 @@ pause
 	
 	<!-- Normal javadoc -->
 	<!-- This task is used if the ydoc license is not detected. -->
-	<target name="javadoc" depends="lexbig.jar" description="Generate the javadocs" unless="ydoc.present">
+	<target name="javadoc" depends="lexbig.jar" description="generate the javadocs" unless="ydoc.present">
 		<javadoc destdir="${pkg-doc}/javadoc" useexternalfile="true"
 			windowtitle="LexGrid Vocabulary Services for caBIG (LexBIG)"
 			footer="Copyright: (c) 2004-2006 Mayo Foundation for Medical Education and Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER."
