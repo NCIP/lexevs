@@ -418,4 +418,8 @@ public class MyClassLoader extends URLClassLoader {
             return super.loadClass(name);
         }
     }
+    
+    public void shutdown(){
+    	myClassLoader_ = null;
+    }
 }

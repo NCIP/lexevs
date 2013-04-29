@@ -463,7 +463,7 @@
     	<constructor-arg ref="loggerFactory"/>
     </bean>
 	
-	<bean id="pool" class="org.apache.commons.pool.impl.GenericObjectPool">
+	<bean id="pool" class="org.apache.commons.pool.impl.GenericObjectPool" destroy-method="close">
 		<property name="maxActive" ref="dbConnections"/>
 		<property name="testOnBorrow" value="true"/>
 		<property name="whenExhaustedAction" value="2"/>
