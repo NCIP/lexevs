@@ -21,10 +21,10 @@ package org.lexevs.dao.database.service.event.registry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventListener;
@@ -42,7 +42,7 @@ public class BaseListenerRegistry implements ListenerRegistry {
 
 	/** The database service event listeners. */
 	private Map<String,DatabaseServiceEventListener> databaseServiceEventListeners = 
-		new WeakHashMap<String,DatabaseServiceEventListener>();
+		new HashMap<String,DatabaseServiceEventListener>();
 
 	/** The enable listeners. */
 	private boolean enableListeners = true;
