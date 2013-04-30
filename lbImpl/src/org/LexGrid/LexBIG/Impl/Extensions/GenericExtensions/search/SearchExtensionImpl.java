@@ -8,7 +8,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
-import org.LexGrid.LexBIG.Extensions.Generic.CodeSystemReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
@@ -33,15 +33,15 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     }
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, Set<CodeSystemReference> codeSystems) throws LBParameterException {
+    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems) throws LBParameterException {
         return this.search(text, codeSystems, null);
     }
 
     @Override
     public ResolvedConceptReferencesIterator search(
             String text, 
-            Set<CodeSystemReference> codeSystemsToInclude,
-            Set<CodeSystemReference> codeSystemsToExclude) throws LBParameterException {
+            Set<CodingSchemeReference> codeSystemsToInclude,
+            Set<CodingSchemeReference> codeSystemsToExclude) throws LBParameterException {
         SearchIndexService service = LexEvsServiceLocator.getInstance().
                 getIndexServiceManager().
                 getSearchIndexService();
@@ -69,14 +69,14 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     }
     
     private Set<AbsoluteCodingSchemeVersionReference> 
-        resolveCodeSystemReferences(Set<CodeSystemReference> references) throws LBParameterException{
+        resolveCodeSystemReferences(Set<CodingSchemeReference> references) throws LBParameterException{
         if(CollectionUtils.isEmpty(references)){
             return null;
         }
         
         Set<AbsoluteCodingSchemeVersionReference> returnSet = new HashSet<AbsoluteCodingSchemeVersionReference>();
         
-        for(CodeSystemReference ref : references){
+        for(CodingSchemeReference ref : references){
             returnSet.add(
                     ServiceUtility.getAbsoluteCodingSchemeVersionReference(
                             ref.getCodingScheme(),
