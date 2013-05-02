@@ -1,7 +1,9 @@
 package org.lexevs.graph.load.connect;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -12,12 +14,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.io.FileUtils;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
-import org.lexevs.graph.load.connect.OrientDbGraphDbRemoteConnect.TripleCache;
 
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
+import com.orientechnologies.orient.core.db.ODatabase.STATUS;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabase;
+import com.orientechnologies.orient.core.db.graph.OGraphDatabase.LOCK_MODE;
 import com.orientechnologies.orient.core.db.graph.OGraphDatabasePool;
 import com.orientechnologies.orient.core.exception.OConcurrentModificationException;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.intent.OIntentMassiveInsert;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -26,7 +31,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
-public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
+public class OrientDbGraphDbRemoteConnect implements GraphDataBaseConnect {
 	
 	public class TripleCache {
 		ORID subject;
@@ -37,22 +42,28 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 
 
 	private OGraphDatabase orientDB = null;
-	
 	ODocument source;
 	ODocument target;
 	ODocument edge;
 	Hashtable<Integer, TripleCache> triples= new Hashtable<Integer, TripleCache>();
 	AtomicInteger integer;
 	
-	public OrientDbGraphDbConnect(String user, String password, String dbPath){
-		orientDB = new OGraphDatabase("local:" + dbPath);
-	    integer = new AtomicInteger();
-		if(orientDB.exists() && orientDB.isClosed()){
-			orientDB.open(user, password);}
-		else{
-			//automatically opens the database
-			createDatabase(dbPath);
-			}
+	
+	public OrientDbGraphDbRemoteConnect(String user, String password, String dbPath){
+		OGlobalConfiguration.CACHE_LEVEL1_ENABLED.setValue(false);
+		orientDB = new OGraphDatabase("remote:" + dbPath);
+		orientDB.setLockMode( LOCK_MODE.NO_LOCKING );
+		integer = new AtomicInteger();
+//		if(orientDB.exists() && orientDB.isClosed()){
+//			orientDB.open(user, password);}
+//		else{
+//			//automatically opens the database
+//			createDatabase(dbPath);
+//			}
+	}
+	
+	public OrientDbGraphDbRemoteConnect(String dbPath){
+		orientDB = new OGraphDatabase("remote:" + dbPath);
 	}
 	
 	public boolean verifyDatabase(){
@@ -93,7 +104,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	
 	
 	private void createDatabase(String dbPath) {
-		orientDB = new OGraphDatabase("local:" + dbPath);
+		orientDB = new OGraphDatabase("remote:" + dbPath);
 		orientDB.create();
 		orientDB.declareIntent(new OIntentMassiveInsert());
 	}
@@ -103,7 +114,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	public void initVerticesAndEdge(){
 		source = orientDB.createVertex();
 		target = orientDB.createVertex();
-		edge = orientDB.createEdge(source, target);
+		edge   = orientDB.createEdge(source, target);
 	}
 
 
@@ -114,7 +125,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 			System.out.println("Database does not exist");
 			return null;
 		}
-		orientDB = new OGraphDatabase("local:" + dbPath);
+		orientDB = new OGraphDatabase("remote:" + dbPath);
 		return orientDB.open("admin",  "admin");
 	}
 	
@@ -130,7 +141,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	
 	@Override
 	public OGraphDatabase getGraphDbFromPool(String dbPath, String user, String password) {
-		return OGraphDatabasePool.global().acquire("local:" + dbPath, user, password);
+		return OGraphDatabasePool.global().acquire("remote:" + dbPath, user, password);
 	}
 
 	@Override
@@ -185,6 +196,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		OSchema schema = orientDB.getMetadata().getSchema();
 		if(type.equals("edge")){
 			tableId = orientDB.createEdgeType(table);
+//			createTableProperties(schema, table, fieldnames);
 		}
 		else{
 			tableId = orientDB.createVertexType(table);
@@ -214,20 +226,54 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	}
 	
 	@Override	
-	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName, String edgeTableName){
+	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName){
 		sourceSet(triple, vertexTableName);
 		targetSet(triple, vertexTableName);
-		edgeSet(triple, edgeTableName);
+		edgeSet(triple);
+//		addVertexOut(source, edge);
+//		addVertexIn(target, edge);
+		updateCache();
 	}
 	
-	
+	private void updateCache() {
+	TripleCache cache = new TripleCache();
+	cache.subject = source.getIdentity();
+	cache.predicate = edge.getIdentity();
+	cache.object = target.getIdentity();
+	triples.put(integer.incrementAndGet(), cache);
+	}
+
+	public void commitRelationShips() {
+		orientDB.begin();
+		Iterator<Entry<Integer, TripleCache>> iter = triples.entrySet().iterator();
+		while(iter.hasNext()){
+			Map.Entry<Integer, TripleCache> entry =	iter.next(); 
+//			String insertSubject = "update " + entry.getValue().subject + " add out = "
+//					+ entry.getValue().predicate;
+//			orientDB.command(new OCommandSQL(insertSubject)).execute();
+//			String insertObject = "update " + entry.getValue().object + " add in = "
+//					+ entry.getValue().predicate;
+//			orientDB.command(new OCommandSQL(insertObject)).execute();
+			orientDB.createEdge(entry.getValue().subject, entry.getValue().predicate);
+			
+		}
+		try{
+		orientDB.commit();
+		}
+		catch(OConcurrentModificationException e){
+			orientDB.rollback();
+		}
+		
+	}
+
 	@SuppressWarnings("unchecked")
 	public ODocument getVertexForCode(String code, String vertexTableName){
 		String sql = "select from " + vertexTableName + " where code = " + "\"" + code + "\"";
 		List<ODocument> docs= (List<ODocument>)orientDB
 				.query(new OSQLSynchQuery<ODocument>(sql));
-		if(docs.size() > 0)
+		if(docs.size() > 0){
 			return docs.get(0);
+		}
 			else{
 				return null;
 			}
@@ -294,14 +340,26 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 			target = temptarget;
 		}
 	}
-	
-	private void edgeSet(GraphDbTriple triple, String edgeTableName){
+	private void edgeSet(GraphDbTriple triple){
+//		edge.reset();
+//		edge.setClassName(edgeTableName);
+//		edge.getIdentity().reset();
+//		edge.field("predicateId", triple.getAssociationPredicateId());
+//		edge.field("predicateName", triple.getAssociationName());
+//		edge.field("entityAssnEntityGuid", triple.getEntityAssnsGuid());
+//		edge.field("anonymousStatus",triple.getAnonymousStatus());
+//		edge.field("associationInstanceId", triple.getAssociationInstanceId());
+//		edge.field("in", source);
+//		edge.field("out", target);
+//		edge.save();
 		edge.reset();
-		edge.setClassName(edgeTableName);
 		edge.getIdentity().reset();
-		edge = orientDB.createEdge(source, target, edgeTableName);
+		edge = orientDB.createEdge(source, target, triple.getAssociationName());
 		edge.save();
 	}
+	
+		
+
 	
 	public List<String> getFieldNamesForVertex(){
 		return  Arrays.asList("code", "namespace", "uri",
@@ -313,24 +371,6 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		return  Arrays.asList( "predicateId", "predicateName", "associationInstanceId",
 				"anonymousStatus", "entityAssnEntityGuid");
 	}
-	
-	
-	@Override
-	public Object storeVertex(String table, String entityCode,
-			String entityNamespace) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName) {
-		sourceSet(triple, vertexTableName);
-		targetSet(triple, vertexTableName);
-		edgeSet(triple, null);
-//		updateCache();
-		
-	}
-	
 	/**
 	 * @param args
 	 */
@@ -343,8 +383,11 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 //		String targetVersion = "1.0";
 //		String associationName = "subClassOf";
 //		try{
+//		db = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/thesGraph");
+//		db = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.3.0/databases/perfTest");
 		db = new OrientDbGraphDbConnect("admin", "admin", "/Users/m029206/software/orientdb-1.4.0-SNAPSHOT/databases/perfTest");
-//
+//		db = new OrientDbGraphDbConnect("/Users/m029206/software/orientdb-1.3.0/databases/perfTest");
+//		db.openForWrite("/Users/m029206/software/orientdb-1.3.0/databases/perfTest");
 //		//db.createDatabase("/Users/m029206/software/orientdb-1.3.0/databases/testGraph");
 ////		//OGraphDatabase database = db.getGraphDbFromPool("/Users/m029206/software/orientdb-1.3.0/databases/testGraph", "admin", "admin");
 //		System.out.println("database exists?: " + db);
@@ -352,7 +395,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 //		List<String> edgeFieldList = db.getFieldNamesForEdge();
 //		OClass vertexTable = db.createVertexTable("vertexTable", vertexFieldList);
 //		OClass edgeTable = db.createEdgeTable("edgeTable", edgeFieldList);
-//		db.initVerticesAndEdge();
+		db.initVerticesAndEdge();
 //		List<TriplePlus> triples = db.generateTriplesPlus(10000);
 //		for(TriplePlus t: triples){
 //			db.storeTriple(t, vertexTable.getName(), edgeTable.getName());
@@ -374,7 +417,19 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 	}
 
 
+	@Override
+	public Object storeVertex(String table, String entityCode,
+			String entityNamespace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public void storeGraphTriple(GraphDbTriple triple, String vertexTableName,
+			String edgeTableName) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 

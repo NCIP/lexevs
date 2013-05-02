@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
+import org.lexevs.graph.load.connect.OrientBluePrintGraphDbConnect;
 import org.lexevs.graph.load.connect.OrientDbGraphDbConnect;
-import org.lexevs.graph.load.service.LexEVSTripleService.GraphIterator;
 
-public class LoadGraphToOrientDb {
+public class LoadGraphToRemoteOrientDb {
 	OrientDbGraphDbConnect database ;
 	LexEVSTripleService service ;
 	String databasePath;
@@ -20,14 +20,18 @@ public class LoadGraphToOrientDb {
 		return databasePath;
 	}
 	
-	public LoadGraphToOrientDb(String codingSchemeUri, String version, String dbPath){
+	public LoadGraphToRemoteOrientDb(String codingSchemeUri, String version, String dbPath){
 		service = new LexEVSTripleService(codingSchemeUri, version);
 		this.databasePath = dbPath;
 	}
 	
-	public void createDatabase(){
+	public void createDatabase(String codingSchemeUri, String version){
 		database = new OrientDbGraphDbConnect("admin", "admin", databasePath);
-		database.createEdgeTable(edgeTableName, database.getFieldNamesForEdge());
+		associationIds = service.getAssociationPredicateIds(codingSchemeUri, version);
+		for(String id: associationIds){
+			String name = service.getAssociationNameforPredicateId(codingSchemeUri, version, id).get(0);
+			database.createEdgeTable(name, null);
+		}
 		database.createVertexTable(vertexTableName, database.getFieldNamesForVertex());
 		database.initVerticesAndEdge();
 	}
@@ -51,29 +55,58 @@ public class LoadGraphToOrientDb {
 		  }
 	  
 	public void runGraphLoad(String codingSchemeUri, String version){
-		createDatabase();
+		createDatabase(codingSchemeUri, version);
 		
 		int countOut = 0;
-		associationIds = service.getAssociationPredicateIds(codingSchemeUri, version);
-		for(String id : associationIds){
-			String assnName = service.getPredicateName(codingSchemeUri, version, id);
-			database.createEdgeTable(assnName, null);
-		}
-		GraphIterator tripleIterator = 	service.getGraphIterator(codingSchemeUri, version);
-		long start = System.currentTimeMillis();
-		while(tripleIterator.hasNext()){
-        GraphDbTriple triple =	processGraphTriple(tripleIterator.next(), codingSchemeUri, version);
-        database.storeGraphTriple(triple, vertexTableName, triple.getAssociationName());
-		countOut++;
 
-		if(countOut % 10000 == 0 ){
-		long current = System.currentTimeMillis();
-		System.out.println("Count: " + countOut);
-		System.out.println("Time elapsed: " + durationAsString(current - start) );
+		for(String associationPredicateId : associationIds){
+		
+//		GraphTripleIterator tripleIterator = service.getGraphTripleIteratorforPredicate(codingSchemeUri, version, associationPredicateId);
+//		long start = System.currentTimeMillis();
+//		while(tripleIterator.hasNext()){
+//        GraphDbTriple triple =	processGraphTriple(tripleIterator.next(), codingSchemeUri, version);
+//		database.storeGraphTriple(triple, vertexTableName);
+//		countOut++;
+//
+//		if(countOut % 10000 == 0 ){
+//		long current = System.currentTimeMillis();
+//		System.out.println("Count: " + countOut);
+////		database.commitRelationShips();
+//		System.out.println("Time elapsed: " + durationAsString(current - start) );
+//		}
+//		}
 		}
-		}
-		System.out.println("Final count: " + countOut);
+//		System.out.println("Final count: " + countOut);
 	}
+	
+	public OrientBluePrintGraphDbConnect runBluePrintGraphLoad(String codingSchemeUri, String version){
+		OrientBluePrintGraphDbConnect bpdatabase = new OrientBluePrintGraphDbConnect("admin", "admin", databasePath);
+		associationIds = service.getAssociationPredicateIds(codingSchemeUri, version);
+		
+		int countOut = 0;
+
+		for(String associationPredicateId : associationIds){
+		
+//		GraphTripleIterator tripleIterator = service.getGraphTripleIteratorforPredicate(codingSchemeUri, version, associationPredicateId);
+//		long start = System.currentTimeMillis();
+//		while(tripleIterator.hasNext()){
+//        GraphDbTriple triple =	processGraphTriple(tripleIterator.next(), codingSchemeUri, version);
+//		bpdatabase.storeGraphTriple(triple, vertexTableName);
+//		countOut++;
+//
+//		if(countOut % 10000 == 0 ){
+//		long current = System.currentTimeMillis();
+//		System.out.println("Count: " + countOut);
+//		System.out.println("Time elapsed: " + durationAsString(current - start) );
+//		}
+//		}
+		}
+//		System.out.println("Final count: " + countOut);
+		
+		return bpdatabase;
+	}
+	
+	
 	
 	private GraphDbTriple processGraphTriple(GraphDbTriple tp, String uri, String version) {
 		tp.setSourceSchemeUri(uri);
@@ -98,9 +131,20 @@ public class LoadGraphToOrientDb {
 		
 //		String version = "version 1.2";
 		String version = "12.01f";
-		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-1.4.0-SNAPSHOT/databases/perfTest");
+//		try {
+//			new OServerAdmin("remote:testGraph").connect("root", "lexgrid").createDatabase("graph", "local");
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "localhost/testGraph");
 		try{
+		long start = System.currentTimeMillis();
+
+//		load.runGraphLoad(codingSchemeUri, version);
 		load.runGraphLoad(codingSchemeUri, version);
+		long finish = System.currentTimeMillis();
+		System.out.println ("total load time: " + (finish - start ));
 		//ODocument RID = load.database.getVertexForCode("VegetarianTopping", "Nodes");
 		//System.out.println("RID: " + RID.field("rid"));
 		}

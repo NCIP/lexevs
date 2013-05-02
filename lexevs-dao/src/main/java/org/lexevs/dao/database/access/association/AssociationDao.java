@@ -241,5 +241,13 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	String getAnonDesignationForPredicate(String codingSchemeId,
 			String associationPredicateId);
 
+	public List<String> getAllEntityAssocToEntityGuidsOfCodingScheme(
+			String codingSchemeId, String associationPredicateId, int start,
+			int pageSize);
+
+	public List<GraphDbTriple> getAllGraphDbTriplesOfCodingScheme(
+			String codingSchemeId,
+			List<String> guids);
+
 
 }

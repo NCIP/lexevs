@@ -44,7 +44,7 @@
 		<result property="associationPredicateId" column="associationPredicateGuid" />
  		<result property="entityAssnsGuid" column="entityAssnsGuid" />
 		<result property="associationInstanceId" column="associationInstanceId" /> 
-		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
+<!-- 		<result property="associationQualification" resultMap="Association.associationQualificationResult"/> -->
 		<result property="associationName"	column="associationName" />
 		<result property="sourceDescription" column="sd" nullValue="Description Missing"/>
 		<result property="targetDescription" column="td" nullValue="Description Missing"/>
@@ -303,8 +303,8 @@
 			eae.associationPredicateGuid,
  			eae.entityAssnsGuid,
 			eae.associationInstanceId, 
- 			aq.qualifierName,
-			aq.qualifierValue,
+<!--  			aq.qualifierName,
+			aq.qualifierValue, -->
  			ap.associationName,
  			source.description as sd,
  			target.description as td
@@ -328,11 +328,11 @@
 			$prefix$entity target
 		ON 
 			target.entityCode = eae.targetEntityCode
- 		LEFT JOIN 
+<!--  		LEFT JOIN 
 			$prefix$entityassnquals aq 
 		ON 
 			aq.referenceGuid =
-			eae.entityAssnsGuid
+			eae.entityAssnsGuid -->
 		WHERE
 			rel.codingSchemeGuid = 
 			#param1,handler=variablePrimaryKeyTypeHandler#
@@ -1868,5 +1868,57 @@
 			</isNotNull>
 		AND
 			sa.supportedAttributeTag = #param2#
+	</select>
+	
+	<select id="getAllEntityAssocEntityGuids" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="java.lang.String">
+		SELECT 
+			eae.entityAssnsGuid as guid
+		FROM
+			$prefix$entityAssnsToEntity as eae
+	</select>
+	
+	<select id="getGraphDbTriples" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection" 
+		resultMap="Association.graphdbTripleResult">
+		SELECT
+				eae.sourceEntityCode,
+				eae.sourceEntityCodeNamespace,
+				eae.targetEntityCode,
+				eae.targetEntityCodeNamespace,
+				eae.associationPredicateGuid,
+	 			eae.entityAssnsGuid,
+				eae.associationInstanceId, 
+	 			ap.associationName,
+	 			source.description as sd,
+	 			target.description as td
+	 		FROM
+				$prefix$entityAssnsToEntity eae
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON 
+				eae.associationPredicateGuid =
+				ap.associationPredicateGuid
+			INNER JOIN
+				$prefix$relation rel
+			ON
+				ap.relationGuid =
+				rel.relationGuid
+			LEFT JOIN
+				$prefix$entity source
+			ON
+				source.entityCode = eae.sourceEntityCode 
+			LEFT JOIN
+				$prefix$entity target
+			ON 
+				target.entityCode = eae.targetEntityCode
+	
+			WHERE
+				rel.codingSchemeGuid = 
+				#param1,handler=variablePrimaryKeyTypeHandler#
+			AND
+				eae.entityAssnsGuid 
+			IN
+				( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
 	</select>
 </sqlMap>

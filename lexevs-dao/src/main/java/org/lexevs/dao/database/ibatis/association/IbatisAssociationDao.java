@@ -52,6 +52,7 @@ import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssoci
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
@@ -118,6 +119,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingScheme";
 	
 	private static final String GET_ALL_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllTriplesOfCodingSchemeForGraphDbLoad";
+
+	private static final String GET_ALL_ENTITY_ASSOC_ENTITY_GUID_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllEntityAssocEntityGuids";
+
+	private static final String GET_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getGraphDbTriples";
 	
 	private static String DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteEntityAssocQualsByCodingSchemeUId";
 	
@@ -156,6 +161,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static String GET_RELATION_LATEST_REVISION_ID_BY_UID = ASSOCIATION_NAMESPACE + "getRelationLatestRevisionIdByUId";
 	
 	private static String GET_ASSOCIATION_PREDICATE_UIDS_FOR_NAME_SQL = ASSOCIATION_NAMESPACE + "getAssociationPredicateUidsForName";
+	
 	private static String GET_ANON_DESIGNATION_FOR_PREDICATE_UID = ASSOCIATION_NAMESPACE + "getAnonDesignationForPredicateId";
 	
 	/** The ibatis versions dao. */
@@ -1002,6 +1008,32 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameter(prefix, relationUId));	
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAllEntityAssocToEntityGuidsOfCodingScheme(
+			String codingSchemeId, String associationPredicateId, int start,
+			int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_ALL_ENTITY_ASSOC_ENTITY_GUID_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameter(prefix, codingSchemeId), 
+				start, 
+				pageSize);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<GraphDbTriple> getAllGraphDbTriplesOfCodingScheme(
+			String codingSchemeId,List<String> guids) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameterCollection(prefix, codingSchemeId, guids));
+	}
+	
 	/**
 	 * @return the propertyDao
 	 */
@@ -1054,5 +1086,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		else
 			return false;
 	}
+
+
+
+
 
 }

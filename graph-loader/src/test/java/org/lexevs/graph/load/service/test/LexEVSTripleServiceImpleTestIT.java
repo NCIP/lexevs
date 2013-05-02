@@ -1,9 +1,8 @@
 package org.lexevs.graph.load.service.test;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
@@ -12,7 +11,7 @@ import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.graph.load.service.LexEVSTripleService;
-import org.lexevs.graph.load.service.LexEVSTripleService.GraphTripleIterator;
+import org.lexevs.graph.load.service.LexEVSTripleService.GraphIterator;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class LexEVSTripleServiceImpleTestIT {
@@ -60,17 +59,16 @@ public class LexEVSTripleServiceImpleTestIT {
 	public void testGetTripleIteratorforPredicate(){
 		String predid = null;
 
-		for(String s: predicateIds){
-			String name = service.getPredicateName(GLTestConstants.THES_SCHEME_URI, 
-					GLTestConstants.THES_SCHEME_VERSION,s );
-				if(name.equals("subClassOf")){
-					predid = s;
-		}
-		}
-		GraphTripleIterator iterator = service.getGraphTripleIteratorforPredicate(
+//		for(String s: predicateIds){
+//			String name = service.getPredicateName(GLTestConstants.THES_SCHEME_URI, 
+//					GLTestConstants.THES_SCHEME_VERSION,s );
+//				if(name.equals("subClassOf")){
+//					predid = s;
+//		}
+//		}
+		GraphIterator iterator = service.getGraphIterator(
 				GLTestConstants.THES_SCHEME_URI, 
-				GLTestConstants.THES_SCHEME_VERSION, 
-				predid);
+				GLTestConstants.THES_SCHEME_VERSION);
 		assertNotNull(iterator);
 		assertTrue(iterator.hasNext());
 		Triple triple = iterator.next();
