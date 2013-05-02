@@ -18,8 +18,12 @@
  */
 package org.lexevs.system.service;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -823,6 +827,10 @@ public class LexEvsResourceManagingService
 
 	@Override
 	public void shutdown() {
+		this.deregisterDrivers();
+		
+		this.myClassLoader.shutdown();
+		
 		try {
 			((ConfigurableApplicationContext) this.applicationContext).close();
 		} catch (Exception e) {
@@ -834,5 +842,25 @@ public class LexEvsResourceManagingService
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+	
+	private void deregisterDrivers() {
+        // Work around MySQL bug http://bugs.mysql.com/bug.php?id=65909
+        try {
+            Class.forName("com.mysql.jdbc.AbandonedConnectionCleanupThread", false,
+            		this.myClassLoader).getMethod("shutdown").invoke(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			try {
+				DriverManager.deregisterDriver(driver);
+			} catch (SQLException e) {
+				//
+			}
+		}
 	}
 }

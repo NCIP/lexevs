@@ -18,7 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -47,6 +51,110 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar");
 		assertTrue(itr.hasNext());
 		assertEquals("Jaguar", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	@SuppressWarnings("serial")
+	public void testSimpleSearchLimitedToCodingScheme() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		final CodingSchemeReference ref = new CodingSchemeReference();
+		ref.setCodingScheme(AUTO_SCHEME);
+		
+		Set<CodingSchemeReference> includes = 
+			new HashSet<CodingSchemeReference>() {{ add(ref); }};
+			
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", includes);
+		assertTrue(itr.hasNext());
+		assertEquals("Jaguar", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	@SuppressWarnings("serial")
+	public void testSimpleSearchLimitedToDifferentCodingScheme() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		final CodingSchemeReference ref = new CodingSchemeReference();
+		ref.setCodingScheme(PARTS_SCHEME);
+		
+		Set<CodingSchemeReference> includes = 
+			new HashSet<CodingSchemeReference>() {{ add(ref); }};
+			
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", includes);
+		assertFalse(itr.hasNext());
+	}
+	
+	@SuppressWarnings("serial")
+	public void testSimpleSearchExcludeCodingScheme() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		final CodingSchemeReference ref = new CodingSchemeReference();
+		ref.setCodingScheme(PARTS_SCHEME);
+		
+		Set<CodingSchemeReference> excludes = 
+			new HashSet<CodingSchemeReference>() {{ add(ref); }};
+			
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", null, excludes);
+		assertTrue(itr.hasNext());
+	}
+	
+	@SuppressWarnings("serial")
+	public void testSimpleSearchExcludeCodingSchemeNoneReturned() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		final CodingSchemeReference ref = new CodingSchemeReference();
+		ref.setCodingScheme(AUTO_SCHEME);
+		
+		Set<CodingSchemeReference> excludes = 
+			new HashSet<CodingSchemeReference>() {{ add(ref); }};
+			
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", null, excludes);
+		assertFalse(itr.hasNext());
+	}
+	
+	@SuppressWarnings("serial")
+	public void testSimpleSearchLimitedWithIncludeAndExclude() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		final CodingSchemeReference auto = new CodingSchemeReference();
+		auto.setCodingScheme(AUTO_SCHEME);
+		
+		final CodingSchemeReference parts = new CodingSchemeReference();
+		parts.setCodingScheme(PARTS_SCHEME);
+		
+		Set<CodingSchemeReference> includes = 
+			new HashSet<CodingSchemeReference>() {{ add(auto); add(parts); }};
+			
+		Set<CodingSchemeReference> excludes = 
+					new HashSet<CodingSchemeReference>() {{ add(auto); }};
+			
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Tires", includes, excludes);
+		assertTrue(itr.hasNext());
+	}
+	
+	@SuppressWarnings("serial")
+	public void testSimpleSearchLimitedWithIncludeAndExcludeAllExcluded() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		final CodingSchemeReference auto = new CodingSchemeReference();
+		auto.setCodingScheme(AUTO_SCHEME);
+		
+		final CodingSchemeReference parts = new CodingSchemeReference();
+		parts.setCodingScheme(PARTS_SCHEME);
+		
+		Set<CodingSchemeReference> includes = 
+			new HashSet<CodingSchemeReference>() {{ add(auto); add(parts); }};
+			
+		Set<CodingSchemeReference> excludes = 
+					new HashSet<CodingSchemeReference>() {{ add(parts); }};
+			
+		ResolvedConceptReferencesIterator itr = searchExtension.search("tire", includes, excludes);
 		assertFalse(itr.hasNext());
 	}
 	

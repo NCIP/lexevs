@@ -1363,7 +1363,7 @@ public class ResourceManager implements SystemResourceService {
     public class FutureDeactivatorThread implements Runnable {
         
         /** The continue running. */
-        boolean continueRunning = true;
+    	volatile boolean continueRunning = true;
 
         /* (non-Javadoc)
          * @see java.lang.Runnable#run()
@@ -1428,29 +1428,8 @@ public class ResourceManager implements SystemResourceService {
             }
         }
     }
-/*
-    @Override
-    protected void finalize() throws Throwable {
-        // close all of the SQL connections
-        Enumeration<SQLInterfaceBase> e = sqlServerBaseInterfaces_.elements();
-        while (e.hasMoreElements()) {
-            try {
-                e.nextElement().close();
-            } catch (RuntimeException e1) {
-            }
-        }
-        // close all of the index interfaces
-        Enumeration<IndexInterface> ii = indexInterfaces_.elements();
-        while (ii.hasMoreElements()) {
-            try {
-                ii.nextElement().close();
-            } catch (RuntimeException e1) {
-            }
-        }
-    }
-    */
 
-    /**
+/**
  * Construct jdbc url for deprecated multi db mode.
  * 
  * @param url the url
@@ -1778,6 +1757,12 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 
 	@Override
 	public void shutdown() {
-		//no-op
+		if(resourceManager_ != null){
+			resourceManager_.shutdown();
+		}
+		resourceManager_ = null;
+		
+		this.fdt_.continueRunning = false;
+		this.deactivatorThread_.interrupt();
 	}
 }

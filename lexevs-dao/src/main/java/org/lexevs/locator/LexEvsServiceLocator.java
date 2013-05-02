@@ -27,6 +27,7 @@ import org.lexevs.registry.service.Registry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
@@ -37,7 +38,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class LexEvsServiceLocator implements ApplicationContextAware {
+public class LexEvsServiceLocator implements ApplicationContextAware, DisposableBean {
 	
 	private static Object MUTEX = new Object();
 	
@@ -252,5 +253,11 @@ public class LexEvsServiceLocator implements ApplicationContextAware {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		serviceLocator = null;
+		applicationContextCallback = null;
 	}
 }

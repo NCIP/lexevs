@@ -18,19 +18,32 @@
  */
 package org.lexevs.dao.index.service.search;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.CachingWrapperFilter;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermsFilter;
+import org.compass.core.lucene.support.ChainedFilter;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
@@ -56,6 +69,8 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	private SystemResourceService systemResourceService;
 	
 	private MetaData metaData;
+	
+	private Map<String,Filter> cachedFilters = new HashMap<String,Filter>();
 
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
@@ -160,7 +175,42 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	@Override
 	public List<ScoreDoc> query(
-			Set<AbsoluteCodingSchemeVersionReference> codeSystems, Query query) {
+			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
+			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToExclude, 
+			Query query) {
+		
+		Filter chainedFilter = null;
+		
+		if(CollectionUtils.isNotEmpty(codeSystemsToInclude)){
+			List<Filter> filters = new ArrayList<Filter>();
+			
+			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToInclude){
+				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
+			}
+			chainedFilter = new ChainedFilter(
+				filters.toArray(new Filter[filters.size()]), ChainedFilter.OR);
+		}
+		
+		if(CollectionUtils.isNotEmpty(codeSystemsToExclude)){
+			MatchAllDocsQuery everyDocClause = new MatchAllDocsQuery();
+			BooleanQuery booleanQuery = new BooleanQuery();
+			
+			booleanQuery.add(everyDocClause, BooleanClause.Occur.MUST);
+			booleanQuery.add(query, BooleanClause.Occur.MUST);
+			
+			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToExclude){
+				booleanQuery.add(
+						this.getCodingSchemeMatchQuery(ref), 
+						BooleanClause.Occur.MUST_NOT);
+			}
+			
+			query = booleanQuery;
+		}
+		
+		if(chainedFilter != null){
+			query = new FilteredQuery(query, chainedFilter);
+		}
+		
 		return this.indexDaoManager.getSearchDao().query(query);
 	}
 	
@@ -175,6 +225,37 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		} catch (LBParameterException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	protected Query getCodingSchemeMatchQuery(AbsoluteCodingSchemeVersionReference codingScheme) {
+		String codingSchemeUri = codingScheme.getCodingSchemeURN();
+		String codingSchemeVersion = codingScheme.getCodingSchemeVersion();
+
+		return new TermQuery(new Term(
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+							codingSchemeUri, codingSchemeVersion)));
+	}
+	
+	protected Filter getCodingSchemeFilterForCodingScheme(AbsoluteCodingSchemeVersionReference codingScheme) {
+		String codingSchemeUri = codingScheme.getCodingSchemeURN();
+		String codingSchemeVersion = codingScheme.getCodingSchemeVersion();
+		
+		String key = this.getFilterMapKey(codingSchemeUri, codingSchemeVersion);
+		if(!this.cachedFilters.containsKey(key)) {
+			Term term = new Term(
+					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+							codingSchemeUri, codingSchemeVersion));
+			TermsFilter filter = new TermsFilter();
+			filter.addTerm(term);
+			this.cachedFilters.put(key, new CachingWrapperFilter(filter));
+		}
+		return this.cachedFilters.get(key);
+	}
+	
+	protected String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
+		return DaoUtility.createKey(codingSchemeUri, codingSchemeVersion);
 	}
 	
 	protected String getCodingSchemeKey(String codingSchemeName, String version) {

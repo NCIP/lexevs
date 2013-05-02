@@ -20,7 +20,7 @@ package org.lexevs.dao.database.ibatis.parameter;
 
 import java.util.HashMap;
 
-import org.junit.Assert;
+import org.springframework.util.Assert;
 
 public class SequentialMappedParameterBean extends HashMap<String,Object>{
 
@@ -31,7 +31,7 @@ public class SequentialMappedParameterBean extends HashMap<String,Object>{
 	private static final long serialVersionUID = 4510691698169582467L;
 
 	public SequentialMappedParameterBean(Object... parameters) {
-		Assert.assertNotNull(parameters);
+		Assert.noNullElements(parameters);
 
 		int currentIndex = 1;
 		

@@ -40,7 +40,7 @@
     <!-- ** IVY TARGETS AND DEPENDENCY PATHS                              ** -->
     <!-- ******************************************************************* -->
 	
-	<property name="ivy.jar" location="${lbPackager.dir}/ivy/lib/ivy-2.1.0-rc1.jar" />
+	<property name="ivy.jar" location="${lbPackager.dir}/ivy/lib/ivy-2.3.0.jar" />
 
     <property name="ivy.settings.file" location="${lbPackager.dir}/ivysettings.xml" />
     <property name="ivy.def.file" location="ivy.xml" />
@@ -259,10 +259,10 @@
 	   		<mapping conf="provided" scope="provided"/>
 	   		<mapping conf="system" scope="system"/>
 	   	</ivy:makepom>
-		<ivy:publish resolver="user-local-repo" forcedeliver="true" overwrite="true">
+		<ivy:publish resolver="user-local-repo" forcedeliver="true" overwrite="true" update="true">
 		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
-		<ivy:publish resolver="local-m2-repo" forcedeliver="true" overwrite="true">
+		<ivy:publish resolver="local-m2-repo" forcedeliver="true" overwrite="true" update="true">
 		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>
