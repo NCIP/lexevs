@@ -28,6 +28,6 @@
 		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="indexer" rev="${vBuild}" conf="default"/>
-		
+		<dependency org="net.sf.opencsv" name="opencsv" rev="2.3" conf="default"/>
    	 </dependencies>
 </ivy-module>
