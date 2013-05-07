@@ -131,7 +131,8 @@ public class LexEVSTripleService {
 				});
 		
 	}
-	public static class GraphTripleIterator extends AbstractPageableIterator<GraphDbTriple>{
+	
+	public static class GraphIterator extends AbstractPageableIterator<GraphDbTriple>{
 
 		private static final long serialVersionUID = -8462823912578300117L;
 
@@ -142,21 +143,17 @@ public class LexEVSTripleService {
 		private String version;
 		private String associationPredicateId;
 
-		public GraphTripleIterator(DatabaseServiceManager databaseServiceManager,
-				String codingSchemeUri, String version,
-				String associationPredicateId) {
-			this(databaseServiceManager, codingSchemeUri, version,
-					associationPredicateId, DEFAULT_PAGE_SIZE);
+		public GraphIterator(DatabaseServiceManager databaseServiceManager,
+				String codingSchemeUri, String version) {
+			this(databaseServiceManager, codingSchemeUri, version, DEFAULT_PAGE_SIZE);
 		}
 
-		public GraphTripleIterator(DatabaseServiceManager databaseServiceManager,
-				String codingSchemeUri, String version,
-				String associationPredicateId, int pageSize) {
+		public GraphIterator(DatabaseServiceManager databaseServiceManager,
+				String codingSchemeUri, String version, int pageSize) {
 
 			super(pageSize);
 			this.codingSchemeUri = codingSchemeUri;
 			this.version = version;
-			this.associationPredicateId = associationPredicateId;
 			this.databaseServiceManager = databaseServiceManager;
 		}
 		
@@ -185,17 +182,37 @@ public class LexEVSTripleService {
 		}
 		
 		@Override
-		protected List<? extends GraphDbTriple> doPage(int currentPosition,
+		protected List<GraphDbTriple> doPage(int currentPosition,
 				int pageSize) {
-			return getTriples(codingSchemeUri, version, associationPredicateId,
+			return getTriples(codingSchemeUri, version,
 					currentPosition, pageSize);
 		}
 
 		
 		private List<GraphDbTriple> getTriples(
 				final String codingSchemeUri,
-				final String version, final String associationPredicateId,
+				final String version,
 				final int start, final int pageSize) {
+			final List<String> guids = databaseServiceManager.getDaoCallbackService()
+					.executeInDaoLayer(new DaoCallback<List<String>>() {
+
+						@Override
+						public List<String> execute(DaoManager daoManager) {
+							String codingSchemeId = daoManager
+									.getCurrentCodingSchemeDao()
+									.getCodingSchemeUIdByUriAndVersion(
+											codingSchemeUri, version);
+
+							return daoManager.getCurrentAssociationDao()
+									.getAllEntityAssocToEntityGuidsOfCodingScheme(
+											codingSchemeId,
+											associationPredicateId, start,
+											pageSize);
+						}
+					});
+			if(guids.size() <= 0){
+				return new ArrayList<GraphDbTriple>();
+			}
 			return databaseServiceManager.getDaoCallbackService()
 					.executeInDaoLayer(new DaoCallback<List<GraphDbTriple>>() {
 
@@ -208,72 +225,14 @@ public class LexEVSTripleService {
 
 							return daoManager.getCurrentAssociationDao()
 									.getAllGraphDbTriplesOfCodingScheme(
-											codingSchemeId,
-											associationPredicateId, start,
-											pageSize);
+											codingSchemeId,guids);
 						}
 					});
+			
+			
 		}
 		
 	}
-	
-//	public static class TripleIterator extends AbstractPageableIterator<Triple> {
-//
-//		private static final long serialVersionUID = -4390395000937078077L;
-//
-//		private static final int DEFAULT_PAGE_SIZE = 1000;
-//
-//		private DatabaseServiceManager databaseServiceManager;
-//		private String codingSchemeUri;
-//		private String version;
-//		private String associationPredicateId;
-//
-//		public TripleIterator(DatabaseServiceManager databaseServiceManager,
-//				String codingSchemeUri, String version,
-//				String associationPredicateId) {
-//			this(databaseServiceManager, codingSchemeUri, version,
-//					associationPredicateId, DEFAULT_PAGE_SIZE);
-//		}
-//
-//		public TripleIterator(DatabaseServiceManager databaseServiceManager,
-//				String codingSchemeUri, String version,
-//				String associationPredicateId, int pageSize) {
-//
-//			super(pageSize);
-//			this.codingSchemeUri = codingSchemeUri;
-//			this.version = version;
-//			this.associationPredicateId = associationPredicateId;
-//			this.databaseServiceManager = databaseServiceManager;
-//		}
-//
-//		@Override
-//		protected List<Triple> doPage(int currentPosition, int pageSize) {
-//			return getTriples(codingSchemeUri, version, associationPredicateId,
-//					currentPosition, pageSize);
-//		}
-//
-//		protected List<Triple> getTriples(final String codingSchemeUri,
-//				final String version, final String associationPredicateId,
-//				final int start, final int pageSize) {
-//			return databaseServiceManager.getDaoCallbackService()
-//					.executeInDaoLayer(new DaoCallback<List<Triple>>() {
-//
-//						@Override
-//						public List<Triple> execute(DaoManager daoManager) {
-//							String codingSchemeId = daoManager
-//									.getCurrentCodingSchemeDao()
-//									.getCodingSchemeUIdByUriAndVersion(
-//											codingSchemeUri, version);
-//
-//							return daoManager.getCurrentAssociationDao()
-//									.getAllTriplesOfCodingScheme(
-//											codingSchemeId,
-//											associationPredicateId, start,
-//											pageSize);
-//						}
-//					});
-//		}
-//	}
 
 	public String getPredicateName(String codingSchemeUri, String version,
 			String predicateId) {
@@ -289,17 +248,11 @@ public class LexEVSTripleService {
 		}
 		return result;
 	}
-
-//	public TripleIterator getTripleIteratorforPredicate(String codingSchemeUri,
-//			String version, String associationPredicateId) {
-//		return new TripleIterator(databaseServiceManager, codingSchemeUri,
-//				version, associationPredicateId);
-//	}
-
-	public GraphTripleIterator getGraphTripleIteratorforPredicate(String codingSchemeUri,
-			String version, String associationPredicateId) {
-		return new GraphTripleIterator(databaseServiceManager, codingSchemeUri,
-				version, associationPredicateId);
+	
+	public GraphIterator getGraphIterator(String codingSchemeUri,
+	String version) {
+		return new GraphIterator(databaseServiceManager, codingSchemeUri,
+		version);
 	}
 	
 	private Map<String, String> initPredicateAnonStatusMap(String uri, String version){
@@ -316,38 +269,57 @@ public class LexEVSTripleService {
 		String uri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
 		String version = "12.01f";
 		LexEVSTripleService service = new LexEVSTripleService(uri, version);
+		long start = System.currentTimeMillis();
 		List<String> predicateIds = service.getAssociationPredicateIds(uri,
 				version);
-		int count = 1;
-		for (String s : predicateIds) {
-			System.out.println("predicate id: " + s);
-//			TripleIterator triples = new TripleIterator(
-//					service.getDatabaseServiceManager(), uri, version, s);
-			GraphTripleIterator triples = new GraphTripleIterator(
-					service.getDatabaseServiceManager(), uri, version, s);
-			for (GraphDbTriple t : triples) {
+		long predidtime = System.currentTimeMillis();
+		System.out.println("time getting predicates: " + ((predidtime - start)/1000));
+		long startiterator = System.currentTimeMillis();
+		int count = 0;
+//		for (String s : predicateIds) {
+//			System.out.println("predicate id: " + s);
 
-//				System.out.println("\n New Triple");
-//				System.out.println(t.getSourceEntityCode());
-//				System.out.println(t.getSourceEntityNamespace());
-//				System.out.println(t.getTargetEntityCode());
-//				System.out.println(t.getTargetEntityNamespace());
-//				System.out.println(t.getAssciationName());
-//				System.out.println(t.getAssociationInstanceId());
+//			GraphTripleIterator triples = new GraphTripleIterator(
+//					service.getDatabaseServiceManager(), uri, version, "35");
+//			for (GraphDbTriple t : triples) {
 //
-//				System.out.println(t.getAssociationQualification());
-				System.out.println(t.getEntityAssnsGuid());
+////				System.out.println("\n New Triple");
+////				System.out.println(t.getSourceEntityCode());
+////				System.out.println(t.getSourceEntityNamespace());
+////				System.out.println(t.getTargetEntityCode());
+////				System.out.println(t.getTargetEntityNamespace());
+////				System.out.println(t.getAssciationName());
+////				System.out.println(t.getAssociationInstanceId());
+////
+////				System.out.println(t.getAssociationQualification());
+////				System.out.println(t.getEntityAssnsGuid());
+//				count++;
+//				if(count % 10000 == 0){
+//				System.out.println("Triples loaded: " + count);
+//				long end = System.currentTimeMillis();
+//				System.out.println("Load time: " + ((end-start)/1000));
+//				}
+//			}
+//		}
+		GraphIterator triples = new GraphIterator(service.databaseServiceManager, uri, version);
+			while(triples.hasNext()){
+				GraphDbTriple t = triples.next();
 				count++;
 				if(count % 10000 == 0){
 				System.out.println("Triples loaded: " + count);
-				}
+				long end = System.currentTimeMillis();
+				System.out.println("Load time: " + ((end-start)/1000));}
 			}
-
-			System.out.println("predicate name: "
-					+ service.getPredicateName(uri, version, s));
+//			System.out.println("predicate name: "
+//					+ service.getPredicateName(uri, version, s));
 			System.out.println("triple count " + count);
-
-		}
+			long forPred = System.currentTimeMillis();
+			System.out.println("Time for this predicate: " + ((forPred - startiterator)/1000));
+//	}
+		long end = System.currentTimeMillis();
+		System.out.println("Total Iterator loop: " + ((end - startiterator)/1000));
 	}
+			
+
 
 }

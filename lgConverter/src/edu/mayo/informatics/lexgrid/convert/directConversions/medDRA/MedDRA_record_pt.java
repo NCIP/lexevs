@@ -1,0 +1,159 @@
+/*
+* Copyright: (c) 2004-2013 Mayo Foundation for Medical Education and
+* Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+* triple-shield Mayo logo are trademarks and service marks of MFMER.
+*
+* Except as contained in the copyright notice above, or as used to identify
+* MFMER as the author of this software, the trade names, trademarks, service
+* marks, or product names of the copyright holder shall not be used in
+* advertising, promotion or otherwise in connection with this software without
+* prior written authorization of the copyright holder.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+
+import java.io.Serializable;
+
+
+/**
+ *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
+ *
+*/
+public class MedDRA_record_pt implements Serializable, DatabaseRecord{
+
+	private static final long serialVersionUID = 1L;
+
+	private String pt_code;
+	private String pt_name;
+	private String null_field;
+	private String pt_soc_code;
+	private String pt_whoart_code;
+	private String pt_harts_code;
+	private String pt_costart_sym;
+	private String pt_icd9_code;
+	private String pt_icd9cm_code;
+	private String pt_icd10_code;
+	private String pt_jart_code;
+	
+	
+	public String getPt_code() {
+		return pt_code;
+	}
+
+
+	public void setPt_code(String pt_code) {
+		this.pt_code = pt_code;
+	}
+
+
+	public String getPt_name() {
+		return pt_name;
+	}
+
+
+	public void setPt_name(String pt_name) {
+		this.pt_name = pt_name;
+	}
+
+
+	public String getNull_field() {
+		return null_field;
+	}
+
+
+	public void setNull_field(String null_field) {
+		this.null_field = null_field;
+	}
+
+
+	public String getPt_soc_code() {
+		return pt_soc_code;
+	}
+
+
+	public void setPt_soc_code(String pt_soc_code) {
+		this.pt_soc_code = pt_soc_code;
+	}
+
+
+	public String getPt_whoart_code() {
+		return pt_whoart_code;
+	}
+
+
+	public void setPt_whoart_code(String pt_whoart_code) {
+		this.pt_whoart_code = pt_whoart_code;
+	}
+
+
+	public String getPt_harts_code() {
+		return pt_harts_code;
+	}
+
+
+	public void setPt_harts_code(String pt_harts_code) {
+		this.pt_harts_code = pt_harts_code;
+	}
+
+
+	public String getPt_costart_sym() {
+		return pt_costart_sym;
+	}
+
+
+	public void setPt_costart_sym(String pt_costart_sym) {
+		this.pt_costart_sym = pt_costart_sym;
+	}
+
+
+	public String getPt_icd9_code() {
+		return pt_icd9_code;
+	}
+
+
+	public void setPt_icd9_code(String pt_icd9_code) {
+		this.pt_icd9_code = pt_icd9_code;
+	}
+
+
+	public String getPt_icd9cm_code() {
+		return pt_icd9cm_code;
+	}
+
+
+	public void setPt_icd9cm_code(String pt_icd9cm_code) {
+		this.pt_icd9cm_code = pt_icd9cm_code;
+	}
+
+
+	public String getPt_icd10_code() {
+		return pt_icd10_code;
+	}
+
+
+	public void setPt_icd10_code(String pt_icd10_code) {
+		this.pt_icd10_code = pt_icd10_code;
+	}
+
+
+	public String getPt_jart_code() {
+		return pt_jart_code;
+	}
+
+
+	public void setPt_jart_code(String pt_jart_code) {
+		this.pt_jart_code = pt_jart_code;
+	}
+}
