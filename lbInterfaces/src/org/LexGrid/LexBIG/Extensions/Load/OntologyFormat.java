@@ -28,7 +28,8 @@ public enum OntologyFormat {
     NICHISTORY,
     UMLSHISTORY,
     MRMAP,
-    RESOLVEDVALUESET;
+    RESOLVEDVALUESET,
+    MEDDRA;
     
     public static String getMetaName() {
     	return "ontologyFormat";

@@ -183,7 +183,7 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
 DB_USER=root
-DB_PASSWORD=
+DB_PASSWORD=root
 
 ############# Password encryption
 
