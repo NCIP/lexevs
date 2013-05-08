@@ -32,6 +32,7 @@ public class PreferenceLoaderConstants {
     public static final String SEMNET_XSD = "PreferencesLoaderXSDS/SemNetLoadPreferences.xsd";
     public static final String UMLS_XSD = "PreferencesLoaderXSDS/UMLSLoadPreferences.xsd";
     public static final String XML_XSD = "PreferencesLoaderXSDS/XMLLoadPreferences.xsd";
+    public static final String MedDRA_XSD = "PreferencesLoaderXSDS/MedDRALoadPreferences.xsd";
 
     public static final String META_METADATA_FILE_NAME = "NCIMetaThes_metadata.xml";
     public static final String META_HL7_METADATA_FILE_NAME = "HL7_RIM_metadata.xml"; // CRS

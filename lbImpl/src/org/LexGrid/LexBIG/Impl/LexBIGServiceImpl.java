@@ -83,6 +83,7 @@ import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
 import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
@@ -554,6 +555,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new UMLSHistoryLoaderImpl().register();
         new MrmapRRFLoader().register();
         new SemNetLoaderImpl().register();
+        new MedDRALoaderImpl().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
