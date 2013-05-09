@@ -69,7 +69,7 @@ public class SearchEntityIndexer implements EntityIndexer {
 		
 		document.add(
 				this.toField("namespace", 
-						entity.getEntityCode(),
+						entity.getEntityCodeNamespace(),
 						Field.Store.YES, 
 						Field.Index.NOT_ANALYZED));
 		
