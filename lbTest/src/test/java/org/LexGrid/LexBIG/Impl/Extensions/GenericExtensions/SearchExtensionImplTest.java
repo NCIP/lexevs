@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
@@ -51,6 +52,25 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar");
 		assertTrue(itr.hasNext());
 		assertEquals("Jaguar", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchCorrectFields() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar");
+		assertTrue(itr.hasNext());
+		
+		ResolvedConceptReference ref = itr.next();
+		assertEquals("Jaguar", ref.getCode());
+		assertEquals("Automobiles", ref.getCodeNamespace());
+		assertEquals("Automobiles", ref.getCodingSchemeName());
+		assertEquals("urn:oid:11.11.0.1", ref.getCodingSchemeURI());
+		assertEquals(1, ref.getEntityType().length);
+		assertEquals("concept", ref.getEntityType()[0]);
+		assertEquals("Jaguar", ref.getEntityDescription().getContent());
+		
 		assertFalse(itr.hasNext());
 	}
 	
