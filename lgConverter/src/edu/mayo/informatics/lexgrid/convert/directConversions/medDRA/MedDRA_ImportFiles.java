@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.MedDRA2LGConstants.MedDRA_METADATA;
+
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
 import au.com.bytecode.opencsv.bean.CsvToBean;
@@ -42,19 +44,17 @@ import au.com.bytecode.opencsv.bean.CsvToBean;
 public class MedDRA_ImportFiles {
 	
 	private static String medDRADataDirectory = "C:/Users/m113216/Downloads/MedDRA_16_0_English/MedAscii/";
-
+	private static MedDRA_METADATA [] meddraMetaData = MedDRA_METADATA.values();
 	public static void main(String [] args){
 	//	testAndPrintCSVFiles();
 		Database meddraDatabase = createDatabase();
 		print(meddraDatabase);
 	}
 
-	@SuppressWarnings("unchecked")
     private static void print(Database database) {
-		for(int i=0; i < MedDRA2LGConstants.medDRAClasses.length; i++){
-			database.print(MedDRA2LGConstants.medDRAClasses[i]);
+		for(int i=0; i < meddraMetaData.length; i++){
+			database.print(meddraMetaData[i].classname());
 		}
-		
 	}
 
 	public static void testAndPrintCSVFiles(){
@@ -63,8 +63,8 @@ public class MedDRA_ImportFiles {
 		String input;
 		
 		try {
-			for(int i=0; i < MedDRA2LGConstants.medDRADataFiles.length; i++){
-				input = medDRADataDirectory + MedDRA2LGConstants.medDRADataFiles[i];
+			for(int i=0; i < meddraMetaData.length; i++){
+				input = medDRADataDirectory + meddraMetaData[i].filename();
 				reader = new CSVReader(new FileReader(input), '$');
 				
 				while ((nextLine = reader.readNext()) != null) {
@@ -80,24 +80,23 @@ public class MedDRA_ImportFiles {
 
 	}
 	
-	@SuppressWarnings("unchecked")
     public static Database createDatabase(){
 		Database meddraDatabase = new Database();
 		String input;
 		
-		for(int i=0; i < MedDRA2LGConstants.medDRADataFiles.length; i++){
-			input = medDRADataDirectory + MedDRA2LGConstants.medDRADataFiles[i];
+		for(int i=0; i < meddraMetaData.length; i++){
+			input = medDRADataDirectory + meddraMetaData[i].filename();
 			try {
 				CSVReader reader = new CSVReader(new FileReader(input), '$');
 				ColumnPositionMappingStrategy<DatabaseRecord> strat = new ColumnPositionMappingStrategy<DatabaseRecord>();
-				strat.setType(MedDRA2LGConstants.medDRAClasses[i]);
-				String[] columns = getFields(MedDRA2LGConstants.medDRAClasses[i]); 
+				strat.setType(meddraMetaData[i].classname());
+				String[] columns = getFields(meddraMetaData[i].classname()); 
 			
 				strat.setColumnMapping(columns);
 	
 				CsvToBean<DatabaseRecord> csv = new CsvToBean<DatabaseRecord>();
 				List<DatabaseRecord> list = csv.parse(strat, reader);
-				meddraDatabase.add(MedDRA2LGConstants.medDRAClasses[i].getName(), list);
+				meddraDatabase.add(meddraMetaData[i].classname().getName(), list);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
