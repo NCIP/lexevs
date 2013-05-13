@@ -21,7 +21,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
+
+import java.util.List;
+
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
 
 
 /**
@@ -29,5 +35,11 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
  *
 */
 public interface DatabaseRecord {
-//	public void print();
+    public boolean isMap();
+    public boolean isEntity();
+    public String getCode();
+    public List<Presentation> getPresentations();
+    public List<Definition> getDefinitions();
+    public List<Comment> getComments();
+    
 }

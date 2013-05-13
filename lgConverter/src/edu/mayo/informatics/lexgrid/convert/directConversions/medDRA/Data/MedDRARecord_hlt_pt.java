@@ -22,83 +22,74 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_meddra_history implements Serializable, DatabaseRecord{
+public class MedDRARecord_hlt_pt implements Serializable, DatabaseRecord{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String term_code;
-	private String term_name;
-	private String term_addition_version;
-	private String term_type;
-	private String llt_currency;
-	private String action;
+	private String htl_code;
+	private String pt_code;
 	
-	public String getTerm_code() {
-		return term_code;
+	public String getHtl_code() {
+		return htl_code;
 	}
 
-
-	public void setTerm_code(String term_code) {
-		this.term_code = term_code;
+	public void setHtl_code(String htl_code) {
+		this.htl_code = htl_code;
 	}
 
-
-	public String getTerm_name() {
-		return term_name;
+	public String getPt_code() {
+		return pt_code;
 	}
 
-
-	public void setTerm_name(String term_name) {
-		this.term_name = term_name;
+	public void setPt_code(String pt_code) {
+		this.pt_code = pt_code;
 	}
 
+    @Override
+    public boolean isMap() {
+        return true;
+    }
 
-	public String getTerm_addition_version() {
-		return term_addition_version;
-	}
+    @Override
+    public boolean isEntity() {
+        return false;
+    }
 
+    @Override
+    public String getCode() {
+        return null;
+    }
 
-	public void setTerm_addition_version(String term_addition_version) {
-		this.term_addition_version = term_addition_version;
-	}
+    @Override
+    public List<Presentation> getPresentations() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
+    @Override
+    public List<Definition> getDefinitions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public String getTerm_type() {
-		return term_type;
-	}
-
-
-	public void setTerm_type(String term_type) {
-		this.term_type = term_type;
-	}
-
-
-	public String getLlt_currency() {
-		return llt_currency;
-	}
-
-
-	public void setLlt_currency(String llt_currency) {
-		this.llt_currency = llt_currency;
-	}
-
-
-	public String getAction() {
-		return action;
-	}
-
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
+    @Override
+    public List<Comment> getComments() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

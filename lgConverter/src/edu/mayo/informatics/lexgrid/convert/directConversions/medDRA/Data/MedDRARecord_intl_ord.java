@@ -22,15 +22,21 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_intl_ord implements Serializable, DatabaseRecord{
+public class MedDRARecord_intl_ord implements Serializable, DatabaseRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -52,5 +58,41 @@ public class MedDRA_record_intl_ord implements Serializable, DatabaseRecord{
 	public void setSoc_code(String soc_code) {
 		this.soc_code = soc_code;
 	}
+
+    @Override
+    public boolean isMap() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isEntity() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Presentation> getPresentations() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Definition> getDefinitions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
