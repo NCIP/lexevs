@@ -204,9 +204,13 @@ public class ContentLoadingTestListener extends AbstractTestExecutionListener {
             assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
             assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
-            lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+            try{
+                lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
-            lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+                lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+            } catch(Exception e){
+                //error activating -- it could be a ValueSetDefinition.
+            }
         }
     }
 

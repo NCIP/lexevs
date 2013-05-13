@@ -379,12 +379,21 @@ public class DaoUtility {
 		}
 		return string;
 	}
+	
+	public static <T extends URIMap> T getURIMap(CodingScheme cs, Class<T> uriMapClass, String localId) {
+		if(cs == null || cs.getMappings() == null){
+			return null;
+		}
+		
+		return getURIMap(cs.getMappings(), uriMapClass, localId);
+	}
+		
 	/*
 	 * Return the URIMap(a supported item in mapping section) according the a given localId
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends URIMap> T getURIMap(CodingScheme cs, Class<T> uriMapClass, String localId) {
-		if(cs == null || cs.getMappings() == null){
+	public static <T extends URIMap> T getURIMap(Mappings mappings, Class<T> uriMapClass, String localId) {
+		if(mappings == null){
 			return null;
 		}
 		
@@ -393,7 +402,7 @@ public class DaoUtility {
 
 		List<T> uriMapList =
 			(List<T>) ReflectionUtils.invokeMethod(
-						ReflectionUtils.findMethod(Mappings.class, getPrefix+uriMapClass.getSimpleName()+getSuffix), cs.getMappings());
+						ReflectionUtils.findMethod(Mappings.class, getPrefix+uriMapClass.getSimpleName()+getSuffix), mappings);
 		
 		List<T> returnList = new ArrayList<T>();
 		
@@ -553,35 +562,4 @@ public class DaoUtility {
 		return equality.equals(one, two);
 	}
 
-	//Ignore this -- just some helpers for generating Ibatis Mapping code. Will go away...
-	/**
-	 * The main method.
-	 * 
-	 * @param args the arguments
-	 */
-	public static void main(String[] args) {
-		for(Method method : Mappings.class.getMethods()) {
-			if(method.getName().startsWith("addSupported")) {
-				if(method.getParameterTypes().length == 1) {
-					/*
-					System.out.println("<subMap value=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("Supported", "") + "\" resultMap=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s") + "Result\" />");
-					*/
-					/*
-					System.out.println("<resultMap id=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s") + "Result\" class=\"" + 
-							method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s") + "\" extends=\"uriMapResult\">"
-							+ "\n" + "</resultMap>"		
-					);
-					*/
-					/*
-					System.out.println("<typeAlias alias=\"" + method.getParameterTypes()[0].getSimpleName().replaceFirst("S", "s")
-					+ 	"\" type=\"" +	method.getParameterTypes()[0].getName() +"\"/>"
-					);
-					*/
-					
-					System.out.println("if(clazz == " + method.getParameterTypes()[0].getSimpleName() + ".class){ \n " +
-									   "   return SQLTableConstants.TBLCOLVAL_SUPPTAG_" + method.getParameterTypes()[0].getSimpleName().replaceFirst("Supported", "").toUpperCase() + "; \n}");
-				}
-			}
-		}
-	}
 }
