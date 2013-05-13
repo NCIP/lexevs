@@ -50,15 +50,15 @@ public class Database {
 		return tables.get(tablename);
 	}
 	
-	public void print(Class<DatabaseRecord> table){
-		String tablename = table.getName();
+	public void print(Class<?> class1){
+		String tablename = class1.getName();
 		List<DatabaseRecord> records = tables.get(tablename);
 		if(records == null){
 			return;
 		}
 		
 		System.out.println("Printing table: " + tablename);
-		print(table.getDeclaredFields());
+		print(class1.getDeclaredFields());
 		
 		for(DatabaseRecord record : records){
 			print(record);

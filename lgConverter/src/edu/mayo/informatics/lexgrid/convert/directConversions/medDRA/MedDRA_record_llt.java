@@ -38,6 +38,8 @@ public class MedDRA_record_llt implements Serializable, DatabaseRecord{
 	private String llt_code;
 	private String llt_name;
 	private String pt_code;
+	
+	// Following fields not currently used by MedDRA
 	private String llt_whoart_code;
 	private String llt_harts_code;
 	private String llt_costart_sym;
@@ -47,7 +49,20 @@ public class MedDRA_record_llt implements Serializable, DatabaseRecord{
 	private String llt_currency;
 	private String llt_jart_code;
 	
-	
+    public String getFullName() {
+        return pt_code + ":" + llt_code + ":" + llt_name;
+    }
+
+
+    public String getDescription() {
+        return pt_code + ":" + llt_code + ":" + llt_name;
+    }
+
+
+    public String getInternalID() {
+        return llt_code;
+    }
+
 	public String getLlt_code() {
 		return llt_code;
 	}
