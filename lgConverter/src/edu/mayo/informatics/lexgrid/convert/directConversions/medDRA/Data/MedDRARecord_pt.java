@@ -55,11 +55,9 @@ public class MedDRARecord_pt implements Serializable, DatabaseEntityRecord{
 	private String pt_icd10_code;
 	private String pt_jart_code;
 	
-	
-	public String getPt_code() {
+    public String getPt_code() {
 		return pt_code;
 	}
-
 
 	public void setPt_code(String pt_code) {
 		this.pt_code = pt_code;
