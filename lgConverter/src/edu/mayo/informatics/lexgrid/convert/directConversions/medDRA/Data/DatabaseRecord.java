@@ -23,11 +23,6 @@
 */
 package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
-import java.util.List;
-
-import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Definition;
-import org.LexGrid.concepts.Presentation;
 
 
 /**
@@ -35,11 +30,5 @@ import org.LexGrid.concepts.Presentation;
  *
 */
 public interface DatabaseRecord {
-    public boolean isMap();
-    public boolean isEntity();
-    public String getCode();
-    public List<Presentation> getPresentations();
-    public List<Definition> getDefinitions();
-    public List<Comment> getComments();
     
 }

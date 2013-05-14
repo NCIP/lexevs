@@ -38,18 +38,18 @@ public class Database {
 		tables = new HashMap<String, List<DatabaseRecord>>();
 	}
 	
-	public int getTableCount(){
-		return tables.size();
+	public void add(String tablename, List<DatabaseRecord> record){
+	    tables.put(tablename, record);
 	}
-	
-	public void add(String tablename, List<DatabaseRecord> records) {
-		tables.put(tablename, records);
-	}
-	
-	public List<DatabaseRecord> get(String tablename){
-		return tables.get(tablename);
-	}
-	
+		
+    public List<DatabaseRecord> get(String tablename){
+        return tables.get(tablename);
+    }
+    
+    private void print(Field[] declaredFields) {
+        System.out.println("Field values...");
+    }
+
 	public void print(Class<?> class1){
 		String tablename = class1.getName();
 		List<DatabaseRecord> records = tables.get(tablename);
@@ -65,10 +65,6 @@ public class Database {
 		}
 	}
 	
-	private void print(Field[] declaredFields) {
-		System.out.println("Field values...");
-	}
-
 	public void print(DatabaseRecord record){
 		for(Field field : record.getClass().getDeclaredFields()){
 			try {

@@ -39,7 +39,7 @@ import org.LexGrid.concepts.Presentation;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_hlgt implements Serializable, DatabaseRecord{
+public class MedDRARecord_hlgt implements Serializable, DatabaseEntityRecord{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -113,16 +113,6 @@ public class MedDRARecord_hlgt implements Serializable, DatabaseRecord{
 	}
 	
     @Override
-    public boolean isMap() {
-        return false;
-    }
-    
-    @Override
-    public boolean isEntity() {
-        return true;
-    }
-    
-    @Override
     public String getCode() {
         return this.hlgt_code;
     }
@@ -153,6 +143,11 @@ public class MedDRARecord_hlgt implements Serializable, DatabaseRecord{
     @Override
     public List<Comment> getComments() {
         return null;
+    }
+    
+    @Override
+    public String getDescription() {
+        return hlgt_name;
     }
 
 }

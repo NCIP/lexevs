@@ -25,11 +25,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
-import java.util.List;
-
-import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Definition;
-import org.LexGrid.concepts.Presentation;
 
 
 
@@ -47,7 +42,10 @@ public class MedDRARecord_smq_list implements Serializable, DatabaseRecord{
 	private String smq_description;
 	private String smq_source;
 	private String smq_note;
+    private String status;
+    private String smq_algorithm;
 	private String MedDRA_version;
+	
 	public String getSmq_code() {
 		return smq_code;
 	}
@@ -119,43 +117,4 @@ public class MedDRARecord_smq_list implements Serializable, DatabaseRecord{
 	public void setSmq_algorithm(String smq_algorithm) {
 		this.smq_algorithm = smq_algorithm;
 	}
-
-	private String status;
-	private String smq_algorithm;
-    @Override
-    public boolean isMap() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isEntity() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Presentation> getPresentations() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Definition> getDefinitions() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Comment> getComments() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

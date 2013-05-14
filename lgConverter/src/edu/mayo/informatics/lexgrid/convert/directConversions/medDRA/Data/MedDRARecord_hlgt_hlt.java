@@ -25,11 +25,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
-import java.util.List;
-
-import org.LexGrid.concepts.Comment;
-import org.LexGrid.concepts.Definition;
-import org.LexGrid.concepts.Presentation;
 
 
 
@@ -37,7 +32,7 @@ import org.LexGrid.concepts.Presentation;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_hlgt_hlt implements Serializable, DatabaseRecord{
+public class MedDRARecord_hlgt_hlt implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -70,39 +65,14 @@ public class MedDRARecord_hlgt_hlt implements Serializable, DatabaseRecord{
 	}
 
 
+
     @Override
-    public boolean isMap() {
-        // TODO Auto-generated method stub
-        return false;
+    public String getSource() {
+        return hlgt_code;
     }
 
     @Override
-    public boolean isEntity() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Presentation> getPresentations() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Definition> getDefinitions() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Comment> getComments() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getTarget() {
+        return hlt_code;
     }
 }
