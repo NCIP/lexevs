@@ -65,10 +65,10 @@ public class AssociationManager {
     protected AssociationWrapper addAssociation(Relations relContainer, AssociationWrapper aw) {
         String container = relContainer.getContainerName();
 
-        if (ProtegeOwl2LGConstants.DC_ASSOCIATIONS.equals(container)) {
+        if (OwlApi2LGConstants.DC_ASSOCIATIONS.equals(container)) {
             aw.setAssociationPrediate( RelationsUtil.subsume(lgRelationsContainer_Assoc, aw.getAssociationPredicate()));
             owlRelName2lgAssoc_.put(aw.getAssociationEntity().getEntityCode(), aw);
-        } else if (ProtegeOwl2LGConstants.DC_ROLES.equals(container)) {
+        } else if (OwlApi2LGConstants.DC_ROLES.equals(container)) {
             aw.setAssociationPrediate( RelationsUtil.subsume(lgRelationsContainer_Roles, aw.getAssociationPredicate()) );
             owlRelName2lgRoles_.put(aw.getAssociationEntity().getEntityCode(), aw);
         }
@@ -171,7 +171,7 @@ public class AssociationManager {
     protected AssociationWrapper initAllDifferentAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_ALLDIFFERENT;
+        String code = OwlApi2LGConstants.ASSOC_ALLDIFFERENT;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:AllDifferent
@@ -182,7 +182,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_ALLDIFFERENT_URI, 
+                OwlApi2LGConstants.ASSOC_ALLDIFFERENT_URI, 
                 code,
                 code,
                 OWLNames.OWL_PREFIX,
@@ -198,7 +198,7 @@ public class AssociationManager {
     protected AssociationWrapper initComplementOfAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_COMPLEMENTOF;
+        String code = OwlApi2LGConstants.ASSOC_COMPLEMENTOF;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:complementOf
@@ -209,7 +209,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_COMPLEMENTOF_URI, 
+                OwlApi2LGConstants.ASSOC_COMPLEMENTOF_URI, 
                 code,
                 code,
                 OWLNames.OWL_PREFIX,
@@ -224,7 +224,7 @@ public class AssociationManager {
      */
     protected AssociationWrapper initDatatypeAssociation() {
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_DATATYPE;
+        String code = OwlApi2LGConstants.ASSOC_DATATYPE;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
@@ -232,7 +232,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_DATATYPE_URI, 
+                OwlApi2LGConstants.ASSOC_DATATYPE_URI, 
                 code,
                 code,
                 RDFSNames.RDFS_PREFIX,
@@ -248,7 +248,7 @@ public class AssociationManager {
      */
     protected AssociationWrapper initDatatypeValueAssociation() {
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_DATATYPEVALUE;
+        String code = OwlApi2LGConstants.ASSOC_DATATYPEVALUE;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
@@ -256,7 +256,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_DATATYPEVALUE_URI, 
+                OwlApi2LGConstants.ASSOC_DATATYPEVALUE_URI, 
                 code,
                 code,
                 RDFSNames.RDFS_PREFIX,
@@ -272,7 +272,7 @@ public class AssociationManager {
     protected AssociationWrapper initDifferentFromAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_DIFFERENTFROM;
+        String code = OwlApi2LGConstants.ASSOC_DIFFERENTFROM;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:differentFrom
@@ -283,7 +283,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_DIFFERENTFROM_URI, 
+                OwlApi2LGConstants.ASSOC_DIFFERENTFROM_URI, 
                 code,
                 code,
                 OWLNames.OWL_PREFIX,
@@ -299,7 +299,7 @@ public class AssociationManager {
     protected AssociationWrapper initDisjointWithAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_DISJOINTWITH;
+        String code = OwlApi2LGConstants.ASSOC_DISJOINTWITH;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:disjointWith
@@ -310,7 +310,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_DISJOINTWITH_URI, 
+                OwlApi2LGConstants.ASSOC_DISJOINTWITH_URI, 
                 code,
                 code,
                 OWLNames.OWL_PREFIX,
@@ -325,17 +325,17 @@ public class AssociationManager {
      */
     protected AssociationWrapper initDomainAssociation() {
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_DOMAIN;
+        String code = OwlApi2LGConstants.ASSOC_DOMAIN;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:domain
-        aw.setForwardName(ProtegeOwl2LGConstants.ASSOC_DOMAIN_FWD);
+        aw.setForwardName(OwlApi2LGConstants.ASSOC_DOMAIN_FWD);
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_DOMAIN_URI, 
+                OwlApi2LGConstants.ASSOC_DOMAIN_URI, 
                 code, 
                 code,
                 RDFSNames.RDFS_PREFIX,
@@ -351,7 +351,7 @@ public class AssociationManager {
     protected AssociationWrapper initEquivalentClassAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_EQUIVALENTCLASS;
+        String code = OwlApi2LGConstants.ASSOC_EQUIVALENTCLASS;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX); // owl:equivalentClass
@@ -362,7 +362,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_EQUIVALENTCLASS_URI,
+                OwlApi2LGConstants.ASSOC_EQUIVALENTCLASS_URI,
                 code, 
                 code,
                 OWLNames.OWL_PREFIX,
@@ -378,7 +378,7 @@ public class AssociationManager {
     protected AssociationWrapper initEquivalentPropertyAssociation() {
         // Build the association definition ...
         AssociationWrapper aw =new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_EQUIVALENTPROPERTY;
+        String code = OwlApi2LGConstants.ASSOC_EQUIVALENTPROPERTY;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:equivalentProperty
@@ -389,7 +389,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_EQUIVALENTPROPERTY_URI,
+                OwlApi2LGConstants.ASSOC_EQUIVALENTPROPERTY_URI,
                 code, 
                 code,
                 OWLNames.OWL_PREFIX,
@@ -405,7 +405,7 @@ public class AssociationManager {
     protected AssociationWrapper initRdfTypeAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_TYPE;
+        String code = OwlApi2LGConstants.ASSOC_TYPE;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFNames.RDF_PREFIX); // rdf:type
@@ -413,7 +413,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_TYPE_URI, 
+                OwlApi2LGConstants.ASSOC_TYPE_URI, 
                 code,
                 code,
                 RDFNames.RDF_PREFIX,
@@ -429,7 +429,7 @@ public class AssociationManager {
     protected AssociationWrapper initInverseOfAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_INVERSEOF;
+        String code = OwlApi2LGConstants.ASSOC_INVERSEOF;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:inverseOf
@@ -438,7 +438,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_INVERSEOF_URI, 
+                OwlApi2LGConstants.ASSOC_INVERSEOF_URI, 
                 code,
                 code,
                 OWLNames.OWL_PREFIX,
@@ -474,17 +474,17 @@ public class AssociationManager {
      */
     protected AssociationWrapper initRangeAssociation() {
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_RANGE;
+        String code = OwlApi2LGConstants.ASSOC_RANGE;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);
-        aw.setForwardName(ProtegeOwl2LGConstants.ASSOC_RANGE_FWD);
+        aw.setForwardName(OwlApi2LGConstants.ASSOC_RANGE_FWD);
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_RANGE_URI, 
+                OwlApi2LGConstants.ASSOC_RANGE_URI, 
                 code, 
                 code,
                 RDFSNames.RDFS_PREFIX,
@@ -500,7 +500,7 @@ public class AssociationManager {
     protected AssociationWrapper initSameAsAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_SAMEAS;
+        String code = OwlApi2LGConstants.ASSOC_SAMEAS;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:sameAs
@@ -511,7 +511,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_SAMEAS_URI, 
+                OwlApi2LGConstants.ASSOC_SAMEAS_URI, 
                 code, 
                 code,
                 OWLNames.OWL_PREFIX,
@@ -527,7 +527,7 @@ public class AssociationManager {
     protected AssociationWrapper initSubClassOfAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_SUBCLASSOF;
+        String code = OwlApi2LGConstants.ASSOC_SUBCLASSOF;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX); // rdfs:subClassOf
@@ -537,7 +537,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Roles, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_SUBCLASSOF_URI, 
+                OwlApi2LGConstants.ASSOC_SUBCLASSOF_URI, 
                 code,
                 code,
                 RDFSNames.RDFS_PREFIX,
@@ -553,7 +553,7 @@ public class AssociationManager {
     protected AssociationWrapper initSubPropertyOfAssociation() {
         // Build the association definition ...
         AssociationWrapper aw = new AssociationWrapper();
-        String code = ProtegeOwl2LGConstants.ASSOC_SUBPROPERTYOF;
+        String code = OwlApi2LGConstants.ASSOC_SUBPROPERTYOF;
         aw.setAssociationName(code);
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(RDFSNames.RDFS_PREFIX);// rdfs:subPropertyOf
@@ -562,7 +562,7 @@ public class AssociationManager {
         aw = addAssociation(lgRelationsContainer_Roles, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
-                ProtegeOwl2LGConstants.ASSOC_SUBPROPERTYOF_URI, 
+                OwlApi2LGConstants.ASSOC_SUBPROPERTYOF_URI, 
                 code,
                 code,
                 RDFSNames.RDFS_PREFIX,

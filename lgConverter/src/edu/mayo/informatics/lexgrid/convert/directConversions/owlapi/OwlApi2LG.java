@@ -153,7 +153,7 @@ public class OwlApi2LG {
 
     MachesterOWLSyntaxLexGridRenderer renderer;
     // Memory profile option ...
-    private int memoryProfile_ = ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB;
+    private int memoryProfile_ = OwlApi2LGConstants.MEMOPT_LEXGRID_DIRECT_DB;
 
     // Generated EMF objects ...
     private CodingScheme lgScheme_ = null;
@@ -244,7 +244,7 @@ public class OwlApi2LG {
             try {
                 // If we are streaming the LexGrid model to database, write
                 // the coding scheme metadata as defined so far.
-                if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+                if (memoryProfile_ != OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
                     databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null, null);
                 }
             } catch (Exception e) {
@@ -268,7 +268,7 @@ public class OwlApi2LG {
 
             lgSupportedMappings_.applyToCodingScheme(lgScheme_);
 
-            if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+            if (memoryProfile_ != OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
                 final String uri = lgScheme_.getCodingSchemeURI();
                 final String version = lgScheme_.getRepresentsVersion();
 
@@ -980,7 +980,7 @@ public class OwlApi2LG {
         // be centrally linked to the top node for subclass traversal?
         if (isRootNode(rdfsNamedClass)) {
             //always give the root node the default namespace
-            AssociationTarget target = CreateUtils.createAssociationTarget(ProtegeOwl2LGConstants.ROOT_CODE,
+            AssociationTarget target = CreateUtils.createAssociationTarget(OwlApi2LGConstants.ROOT_CODE,
                     getNameSpace(null));
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
         }
@@ -1215,13 +1215,13 @@ public class OwlApi2LG {
         // is set to indicate where the value was found. Also support
         // explicit requests for "rdfs:label" as the preferred property.
         boolean generatePreferred = prefManager.getPrioritized_presentation_names().size() == 0
-                || ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
+                || OwlApi2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
                         .getPrioritized_presentation_names().get(0)) || presentationCount == 0;
         if (generatePreferred) {
             String entityDesc = lgEntity.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
-                    rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null, null));
+                    rdfName.equals(entityDesc) ? OwlApi2LGConstants.PROPNAME_RDF_ID
+                            : OwlApi2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null, null));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1444,13 +1444,13 @@ public class OwlApi2LG {
         // is set to indicate where the value was found. Also support
         // explicit requests for "rdfs:label" as the preferred property.
         boolean generatePreferred = prefManager.getPrioritized_presentation_names().size() == 0
-                || ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
+                || OwlApi2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
                         .getPrioritized_presentation_names().get(0)) || presentationCount == 0;
         if (generatePreferred) {
             String entityDesc = lgInstance.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
-                    rdfName.equals(entityDesc) ? ProtegeOwl2LGConstants.PROPNAME_RDF_ID
-                            : ProtegeOwl2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null, null));
+                    rdfName.equals(entityDesc) ? OwlApi2LGConstants.PROPNAME_RDF_ID
+                            : OwlApi2LGConstants.PROPNAME_RDFS_LABEL, entityDesc, true, lgSupportedMappings_, null, null));
         }
 
         // Track assignment of preferred presentation and definition.
@@ -1608,12 +1608,12 @@ public class OwlApi2LG {
 
                     // Register the source as supported if not already
                     // defined.
-                    lgSupportedMappings_.registerSupportedLanguage(text, ProtegeOwl2LGConstants.LANG_URI + ':' + text,
+                    lgSupportedMappings_.registerSupportedLanguage(text, OwlApi2LGConstants.LANG_URI + ':' + text,
                             text, false);
                 }
                 // specific to the new complex props implementation
                 else if (prefManager.isComplexProps_isDbxRefSource()
-                        && text.matches(ProtegeOwl2LGConstants.MATCH_XMLSOURCE_VALUES)) {
+                        && text.matches(OwlApi2LGConstants.MATCH_XMLSOURCE_VALUES)) {
                     String val = text;
                     String ref = null;
                     String[] sourceWithRef = text.split("(:)");
@@ -1636,7 +1636,7 @@ public class OwlApi2LG {
                 }
                 // specific to the new complex props implementation
                 else if (prefManager.isComplexProps_isDbxRefRepForm() && lgProp instanceof Presentation
-                        && text.matches(ProtegeOwl2LGConstants.MATCH_XMLREPFORM_VALUES)) {
+                        && text.matches(OwlApi2LGConstants.MATCH_XMLREPFORM_VALUES)) {
                     ((Presentation) lgProp).setRepresentationalForm(text);
 
                     // Register the source as supported if not already
@@ -1991,18 +1991,18 @@ public class OwlApi2LG {
 
         // Register mappings that will not be explicitly built
         // while processing the OWL source...
-        lgSupportedMappings_.registerSupportedDataType(ProtegeOwl2LGConstants.DATATYPE_BOOLEAN,
-                ProtegeOwl2LGConstants.DATATYPE_BOOLEAN_URI, ProtegeOwl2LGConstants.DATATYPE_BOOLEAN, false);
-        lgSupportedMappings_.registerSupportedDataType(ProtegeOwl2LGConstants.DATATYPE_STRING,
-                ProtegeOwl2LGConstants.DATATYPE_STRING_URI, ProtegeOwl2LGConstants.DATATYPE_STRING, false);
-        lgSupportedMappings_.registerSupportedPropertyQualifierType(ProtegeOwl2LGConstants.DATATYPE_STRING,
-                ProtegeOwl2LGConstants.DATATYPE_STRING_URI, ProtegeOwl2LGConstants.DATATYPE_STRING, false);
-        lgSupportedMappings_.registerSupportedPropertyType(ProtegeOwl2LGConstants.DATATYPE_STRING,
-                ProtegeOwl2LGConstants.DATATYPE_STRING_URI, ProtegeOwl2LGConstants.DATATYPE_STRING, false);
-        lgSupportedMappings_.registerSupportedHierarchy(ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA,
-                ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA_URI, ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA,
-                ProtegeOwl2LGConstants.ROOT_CODE, Arrays
-                        .asList(ProtegeOwl2LGConstants.SUPP_HIERARCHY_ISA_ASSOCIATION_LIST), false, false);
+        lgSupportedMappings_.registerSupportedDataType(OwlApi2LGConstants.DATATYPE_BOOLEAN,
+                OwlApi2LGConstants.DATATYPE_BOOLEAN_URI, OwlApi2LGConstants.DATATYPE_BOOLEAN, false);
+        lgSupportedMappings_.registerSupportedDataType(OwlApi2LGConstants.DATATYPE_STRING,
+                OwlApi2LGConstants.DATATYPE_STRING_URI, OwlApi2LGConstants.DATATYPE_STRING, false);
+        lgSupportedMappings_.registerSupportedPropertyQualifierType(OwlApi2LGConstants.DATATYPE_STRING,
+                OwlApi2LGConstants.DATATYPE_STRING_URI, OwlApi2LGConstants.DATATYPE_STRING, false);
+        lgSupportedMappings_.registerSupportedPropertyType(OwlApi2LGConstants.DATATYPE_STRING,
+                OwlApi2LGConstants.DATATYPE_STRING_URI, OwlApi2LGConstants.DATATYPE_STRING, false);
+        lgSupportedMappings_.registerSupportedHierarchy(OwlApi2LGConstants.SUPP_HIERARCHY_ISA,
+                OwlApi2LGConstants.SUPP_HIERARCHY_ISA_URI, OwlApi2LGConstants.SUPP_HIERARCHY_ISA,
+                OwlApi2LGConstants.ROOT_CODE, Arrays
+                        .asList(OwlApi2LGConstants.SUPP_HIERARCHY_ISA_ASSOCIATION_LIST), false, false);
     }
 
     /**
@@ -2019,18 +2019,18 @@ public class OwlApi2LG {
 
         // Create top-level containers for relations.
         lgRelationsContainer_Assoc = new Relations();
-        lgRelationsContainer_Assoc.setContainerName(ProtegeOwl2LGConstants.DC_ASSOCIATIONS);
+        lgRelationsContainer_Assoc.setContainerName(OwlApi2LGConstants.DC_ASSOCIATIONS);
         lgScheme_.addRelations(lgRelationsContainer_Assoc);
 
         // Add this Container to the Supported Mappings
-        lgSupportedMappings_.registerSupportedContainerName(ProtegeOwl2LGConstants.DC_ASSOCIATIONS, null, null, false);
+        lgSupportedMappings_.registerSupportedContainerName(OwlApi2LGConstants.DC_ASSOCIATIONS, null, null, false);
 
         // Create top-level "Roles" containers for relations.
         lgRelationsContainer_Roles = new Relations();
-        lgRelationsContainer_Roles.setContainerName(ProtegeOwl2LGConstants.DC_ROLES);
+        lgRelationsContainer_Roles.setContainerName(OwlApi2LGConstants.DC_ROLES);
         lgScheme_.addRelations(lgRelationsContainer_Roles);
         // Add this Container to the Supported Mappings
-        lgSupportedMappings_.registerSupportedContainerName(ProtegeOwl2LGConstants.DC_ROLES, null, null, false);
+        lgSupportedMappings_.registerSupportedContainerName(OwlApi2LGConstants.DC_ROLES, null, null, false);
 
         Mappings mappings = new Mappings();
         lgScheme_.setMappings(mappings);
@@ -2171,10 +2171,10 @@ public class OwlApi2LG {
         // Set the default language
         String defaultLanguage = owlModel_.getDefaultLanguage();
         if (StringUtils.isBlank(defaultLanguage)) {
-            defaultLanguage = ProtegeOwl2LGConstants.LANG_ENGLISH;
+            defaultLanguage = OwlApi2LGConstants.LANG_ENGLISH;
         }
         lgScheme_.setDefaultLanguage(defaultLanguage);
-        lgSupportedMappings_.registerSupportedLanguage(defaultLanguage, ProtegeOwl2LGConstants.LANG_URI + ':'
+        lgSupportedMappings_.registerSupportedLanguage(defaultLanguage, OwlApi2LGConstants.LANG_URI + ':'
                 + defaultLanguage, defaultLanguage, false);
     }
 
@@ -2452,14 +2452,14 @@ public class OwlApi2LG {
     protected Entity initSubtypeRoot() {
         Entity topThing = new Entity();
         topThing.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
-        topThing.setEntityCode(ProtegeOwl2LGConstants.ROOT_CODE);
+        topThing.setEntityCode(OwlApi2LGConstants.ROOT_CODE);
         topThing.setEntityCodeNamespace(this.getNameSpace(null));
         EntityDescription ed = new EntityDescription();
-        ed.setContent(ProtegeOwl2LGConstants.ROOT_DESCRIPTION);
+        ed.setContent(OwlApi2LGConstants.ROOT_DESCRIPTION);
         topThing.setEntityDescription(ed);
         topThing.setIsAnonymous(Boolean.TRUE);
-        Presentation p = CreateUtils.createPresentation(generatePropertyID(1), ProtegeOwl2LGConstants.ROOT_NAME,
-                ProtegeOwl2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_, null, null);
+        Presentation p = CreateUtils.createPresentation(generatePropertyID(1), OwlApi2LGConstants.ROOT_NAME,
+                OwlApi2LGConstants.ROOT_DESCRIPTION, Boolean.TRUE, lgSupportedMappings_, null, null);
         topThing.addPresentation(p);
         addEntity(topThing);
         return topThing;
@@ -2753,7 +2753,7 @@ public class OwlApi2LG {
             messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
         }
-        if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+        if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.getEntities().addEntity(lgEntity);
         } else {
             try {
@@ -2773,7 +2773,7 @@ public class OwlApi2LG {
             messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
         }
-        if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+        if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.getEntities().addAssociationEntity(lgEntity);
         } else {
             try {
@@ -2843,7 +2843,7 @@ public class OwlApi2LG {
             AssociationTarget target) {
         //clear the AssociationSource of left-over targets.
         source.setTarget(new AssociationTarget[0]);
-        if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+        if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             source = addAssocSrc2Assoc(aw, source);
             if (target != null) {
                 RelationsUtil.subsume(source, target);
@@ -2854,7 +2854,7 @@ public class OwlApi2LG {
     }
 
     protected void relateAssociationSourceData(AssociationWrapper aw, AssociationSource source, AssociationData data) {
-        if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+        if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             source = addAssocSrc2Assoc(aw, source);
             if (data != null) {
                 source.addTargetData(data);
@@ -2907,7 +2907,7 @@ public class OwlApi2LG {
     }
 
      protected void updateApproximateConceptNumber() {
-        if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
+        if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.setApproxNumConcepts(new Long(lgScheme_.getEntities().getEntity().length));
         } else {
             CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()

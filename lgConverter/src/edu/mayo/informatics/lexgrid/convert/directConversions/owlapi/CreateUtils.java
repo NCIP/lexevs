@@ -150,7 +150,7 @@ public class CreateUtils {
     public static Text createText(String value) {
         Text lgText = new Text();
         lgText.setContent(value);
-        lgText.setDataType(ProtegeOwl2LGConstants.DATATYPE_STRING);
+        lgText.setDataType(OwlApi2LGConstants.DATATYPE_STRING);
         return lgText;
     }
 }
