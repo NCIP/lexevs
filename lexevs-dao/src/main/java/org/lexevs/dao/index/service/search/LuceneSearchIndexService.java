@@ -46,6 +46,8 @@ import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
+import org.lexevs.dao.index.indexer.IndexCreator;
+import org.lexevs.dao.index.indexer.IndexCreator.IndexOption;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
@@ -65,6 +67,8 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	/** The index creator. */
 	private EntityIndexer entityIndexer;
+	
+	private IndexCreator indexCreator;
 	
 	private SystemResourceService systemResourceService;
 	
@@ -254,6 +258,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		return this.cachedFilters.get(key);
 	}
 	
+	@Override
+	public void createIndex(AbsoluteCodingSchemeVersionReference ref) {
+		indexCreator.index(ref, IndexOption.SEARCH);
+	}
+	
 	protected String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
 		return DaoUtility.createKey(codingSchemeUri, codingSchemeVersion);
 	}
@@ -290,6 +299,14 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	public EntityIndexer getEntityIndexer() {
 		return entityIndexer;
+	}
+
+	public IndexCreator getIndexCreator() {
+		return indexCreator;
+	}
+
+	public void setIndexCreator(IndexCreator indexCreator) {
+		this.indexCreator = indexCreator;
 	}
 
 }

@@ -200,20 +200,14 @@ public abstract class LuceneLoaderCode {
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
-        StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
         generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, store(), true, false);
-        fields.append(CODING_SCHEME_NAME_FIELD + " ");
+
         generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
-        fields.append(CODING_SCHEME_ID_FIELD + " ");
         generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
-        fields.append(CODING_SCHEME_VERSION_FIELD + " ");
         generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
-        fields.append(idFieldName + "Tokenized ");
         generator_.addTextField(idFieldName, entityCode, true, true, false);
-        fields.append(idFieldName + " ");
         generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
-        fields.append(idFieldName + "LC ");
         
         if(entityTypes != null) {
         	for(String entityType : entityTypes) {
@@ -221,15 +215,11 @@ public abstract class LuceneLoaderCode {
         	}
         }
         
-        fields.append("entityType ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityCode, entityNamespace), false, true, false);
-        fields.append(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD + " ");
        
         if(StringUtils.isNotBlank(entityUid)) {
         	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
-            fields.append(ENTITY_UID_FIELD + " ");
         }
         
         //If the EntityDescription is an empty String, replace it with a single space.
@@ -238,10 +228,8 @@ public abstract class LuceneLoaderCode {
             entityDescription = " ";
         }
         generator_.addTextField("entityDescription", entityDescription, true, true, false);
-        fields.append("entityDescription ");
       
         generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, true, true, false);
-        fields.append("namespace ");
 
         String tempPropertyType;
         if (propertyType == null || propertyType.length() == 0) {
@@ -260,44 +248,34 @@ public abstract class LuceneLoaderCode {
             tempPropertyType = propertyType;
         }
         generator_.addTextField("propertyType", tempPropertyType, store(), true, false);
-        fields.append("propertyType ");
 
         generator_.addTextField(propertyFieldName, propertyName, store(), true, false);
-        fields.append(propertyFieldName + " ");
 
         if (StringUtils.isNotBlank(propertyValue)) {
             generator_.addTextField(PROPERTY_VALUE_FIELD, propertyValue, store(), true, true);
-            fields.append(PROPERTY_VALUE_FIELD + " ");
             
             generator_.addTextField(REVERSE_PROPERTY_VALUE_FIELD, 
                     reverseTermsInPropertyValue(propertyValue), false, true, true);
-            fields.append(REVERSE_PROPERTY_VALUE_FIELD + " ");
             
             generator_.addTextField(LITERAL_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
-            fields.append(LITERAL_PROPERTY_VALUE_FIELD + " ");
             
             generator_.addTextField(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, 
                     reverseTermsInPropertyValue(propertyValue), false, true, true);
-            fields.append(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD + " ");
 
             // This copy of the content is required for making "startsWith" or
             // "exactMatch" types of queries
             generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.toLowerCase(), false, true, false);
-            fields.append(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD + " ");
 
             if (normEnabled_) {
                 generator_.addTextField(NORM_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
-                fields.append(NORM_PROPERTY_VALUE_FIELD + " ");
             }
 
             if (doubleMetaphoneEnabled_) {
                 generator_.addTextField(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
-                fields.append(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD + " ");
             }
 
             if (stemmingEnabled_) {
                 generator_.addTextField(STEMMING_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
-                fields.append(STEMMING_PROPERTY_VALUE_FIELD + " ");
             }
         }
 
@@ -307,8 +285,6 @@ public abstract class LuceneLoaderCode {
             } else {
                 generator_.addTextField("isActive", "F", store(), true, false);
             }
-
-            fields.append("isActive ");
         }
         
         if (isAnonymous != null) {
@@ -317,8 +293,6 @@ public abstract class LuceneLoaderCode {
             } else {
                 generator_.addTextField("isAnonymous", "F", store(), true, false);
             }
-
-            fields.append("isAnonymous ");
         }
         
         if (isPreferred != null) {
@@ -327,11 +301,9 @@ public abstract class LuceneLoaderCode {
             } else {
                 generator_.addTextField("isPreferred", "F", store(), true, false);
             }
-            fields.append("isPreferred ");
         }
         if (format != null && format.length() > 0) {
             generator_.addTextField(formatFieldName, format, store(), true, false);
-            fields.append(formatFieldName + " ");
         }
 
         // in ldap and sql, languages are optional (missing means default. But
@@ -340,27 +312,22 @@ public abstract class LuceneLoaderCode {
         // doesn't have one)
         if (language != null && language.length() > 0) {
             generator_.addTextField("language", language, store(), true, false);
-            fields.append("language ");
         } 
 
         if (conceptStatus != null && conceptStatus.length() > 0) {
             generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, store(), true, false);
-            fields.append("conceptStatus ");
         }
 
         if (propertyId != null && propertyId.length() > 0) {
             generator_.addTextField("propertyId", propertyId, store(), true, false);
-            fields.append("propertyId ");
         }
 
         if (degreeOfFidelity != null && degreeOfFidelity.length() > 0) {
             generator_.addTextField("degreeOfFidelity", degreeOfFidelity, store(), true, false);
-            fields.append("degreeOfFidelity ");
         }
 
         if (representationalForm != null && representationalForm.length() > 0) {
             generator_.addTextField("representationalForm", representationalForm, store(), true, false);
-            fields.append("representationalForm ");
         }
 
         if (matchIfNoContext != null) {
@@ -369,8 +336,6 @@ public abstract class LuceneLoaderCode {
             } else {
                 generator_.addTextField("matchIfNoContext", "F", store(), true, false);
             }
-
-            fields.append("matchIfNoContext ");
         }
 
         if (sources != null && sources.length > 0) {
@@ -382,7 +347,6 @@ public abstract class LuceneLoaderCode {
                 }
             }
             generator_.addTextField("sources", temp.toString(), false, true, true);
-            fields.append("sources ");
         }
 
         if (usageContexts != null && usageContexts.length > 0) {
@@ -394,7 +358,6 @@ public abstract class LuceneLoaderCode {
                 }
             }
             generator_.addTextField("usageContexts", temp.toString(), false, true, true);
-            fields.append("usageContexts ");
         }
 
         if (qualifiers != null && qualifiers.length > 0) {
@@ -407,10 +370,7 @@ public abstract class LuceneLoaderCode {
                 }
             }
             generator_.addTextField("qualifiers", temp.toString(), false, true, true);
-            fields.append("qualifiers ");
         }
-
-        generator_.addTextField("fields", fields.toString(), store(), true, true);
 
         return generator_.getDocument();
     }
@@ -436,20 +396,12 @@ public abstract class LuceneLoaderCode {
     		String codingSchemeVersion, 
     		String entityId,
     		String entityCodeNamespace) throws Exception {
-        StringBuffer fields = new StringBuffer();
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
         generator_.addTextField("codingSchemeName", codingSchemeName, store(), true, false);
-        fields.append("codingSchemeName ");
         generator_.addTextField("codingSchemeId", codingSchemeId, true, true, false);
-        fields.append("codingSchemeId ");
         generator_.addTextField("codeBoundry", "T", false, true, false);
-        fields.append("codeBoundry ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        fields.append(CODING_SCHEME_URI_VERSION_KEY_FIELD + " ");
         generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityCodeNamespace), false, true, false);
-        fields.append(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD + " ");
-
-        generator_.addTextField("fields", fields.toString(), store(), true, true);
 
         return generator_.getDocument();
     }
@@ -519,12 +471,7 @@ public abstract class LuceneLoaderCode {
         
         return analyzer;
     }
-    
- /*
-    protected void createIndex(String indexName) {
-        indexerService_.createIndex(indexName, analyzer_);
-    }
-  */  
+
     /**
      * Reverse terms in property value.
      * 

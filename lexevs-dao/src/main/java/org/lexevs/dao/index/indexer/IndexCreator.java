@@ -28,16 +28,19 @@ import org.LexGrid.concepts.Entity;
  */
 public interface IndexCreator {
 
-	/**
-	 * Index.
-	 * 
-	 * @param reference the reference
-	 */
+	public enum IndexOption {ENTITY,SEARCH,BOTH}
+	
 	public String index(AbsoluteCodingSchemeVersionReference reference);
+
+	public String index(AbsoluteCodingSchemeVersionReference reference, IndexOption option);
 	
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback);
 	
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, IndexOption option);
+
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister);
+	
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option);
 	
 	public interface EntityIndexerProgressCallback {
 		public void onEntityIndex(Entity entity);

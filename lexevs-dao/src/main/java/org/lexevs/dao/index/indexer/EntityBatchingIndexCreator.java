@@ -68,18 +68,37 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private LgLoggerIF logger;
 	
+	@Override
 	public String index(AbsoluteCodingSchemeVersionReference reference) {
-		return this.index(reference, null, false);
+		return this.index(reference, null, IndexOption.BOTH);
 	}
-	
+
+	@Override
+	public String index(AbsoluteCodingSchemeVersionReference reference, 
+			EntityIndexerProgressCallback callback, boolean onlyRegister) {
+		return this.index(reference, callback, onlyRegister, IndexOption.BOTH);
+	}
+
+	@Override
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback) {	
-		return this.index(reference, callback, false);
+		return this.index(reference, callback, IndexOption.BOTH);
+	}
+
+	@Override
+	public String index(AbsoluteCodingSchemeVersionReference reference, IndexOption option) {
+		return this.index(reference, null, option);
+	}
+
+	@Override
+	public String index(AbsoluteCodingSchemeVersionReference reference,
+			EntityIndexerProgressCallback callback, IndexOption option) {
+		return this.index(reference, callback, false, option);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
-	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister) {	
+	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option) {	
 		String indexName = this.getIndexName(reference);
 		
 		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
@@ -102,15 +121,19 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 				List<Document> searchDocs = new ArrayList<Document>();
 
 				for(Entity entity : entities) {
-					fullEntityDocs.addAll(
-						entityIndexer.indexEntity(
+					if(option.equals(IndexOption.BOTH) || option.equals(IndexOption.ENTITY)){
+						fullEntityDocs.addAll(
+							entityIndexer.indexEntity(
 								reference.getCodingSchemeURN(), 
 								reference.getCodingSchemeVersion(), entity));
-
-					searchDocs.addAll(
+					}
+					
+					if(option.equals(IndexOption.BOTH) || option.equals(IndexOption.SEARCH)){
+						searchDocs.addAll(
 							searchIndexer.indexEntity(
 									reference.getCodingSchemeURN(), 
 									reference.getCodingSchemeVersion(), entity));
+					}
 					
 					totalIndexedEntities++;
 

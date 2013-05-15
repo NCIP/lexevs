@@ -59,4 +59,6 @@ public interface SearchIndexService {
 	
 	public Analyzer getAnalyzer();
 
+	public void createIndex(AbsoluteCodingSchemeVersionReference ref);
+
 }

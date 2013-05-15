@@ -38,6 +38,8 @@ public interface IndexRegistry {
 	
 	public LuceneIndexTemplate getCommonLuceneIndexTemplate(List<AbsoluteCodingSchemeVersionReference> codingSchemes);
 	
+	public LuceneIndexTemplate getSearchLuceneIndexTemplate();
+	
 	public void destroyIndex(String indexName);
 	
 	public String getCommonIndexName();

@@ -38,6 +38,7 @@ import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
@@ -63,22 +64,19 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	}
 	
 	@Override
-	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes, boolean reindexMissing) {
-		
-		final Map<String,AbsoluteCodingSchemeVersionReference> expectedMap = 
-			new HashMap<String,AbsoluteCodingSchemeVersionReference>();
-		
-		for(AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
-			String key = LuceneLoaderCode.createCodingSchemeUriVersionKey(
-					ref.getCodingSchemeURN(), 
-					ref.getCodingSchemeVersion());
-			expectedMap.put(key, ref);
-		}
+	public void cleanUp(
+			final List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes, boolean reindexMissing) {
+		getLogger().warn("Starting Cleanup of Entity Lucene Index.");
+	
 		indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Void>() {
 
 			@Override
 			public Void doInIndexReader(IndexReader indexReader)
 					throws Exception {
+				
+				final Map<String, AbsoluteCodingSchemeVersionReference> expectedMap = 
+					getExpectedMap(expectedCodingSchemes);
+				
 				Set<String> indexSet = new HashSet<String>();
 				
 				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
@@ -89,7 +87,6 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 						termEnum.term() != null && 
 						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
 					String key = termEnum.term().text();
-					System.out.println("Found: " + key);
 					indexSet.add(key);
 					
 					hasNext = termEnum.next();
@@ -173,6 +170,133 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 					getLogger().warn("Optimizing Complete.");
 				} else {
 					getLogger().warn("Index is optimized.");
+				}
+				
+				return null;
+			}
+			
+		});
+		
+		this.cleanupSearchIndex(expectedCodingSchemes);
+	}
+
+	private Map<String, AbsoluteCodingSchemeVersionReference> getExpectedMap(
+			List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes) {
+		final Map<String,AbsoluteCodingSchemeVersionReference> expectedMap = 
+			new HashMap<String,AbsoluteCodingSchemeVersionReference>();
+		
+		for(AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
+			String key = LuceneLoaderCode.createCodingSchemeUriVersionKey(
+					ref.getCodingSchemeURN(), 
+					ref.getCodingSchemeVersion());
+			expectedMap.put(key, ref);
+		}
+		return expectedMap;
+	}
+	
+	protected void cleanupSearchIndex(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes){
+		getLogger().warn("Starting Cleanup of Search Lucene Index.");
+
+			final Map<String, AbsoluteCodingSchemeVersionReference> expectedMap = 
+				this.getExpectedMap(expectedCodingSchemes);
+			
+			final LuceneIndexTemplate searchTemplate = indexRegistry.getSearchLuceneIndexTemplate();
+			
+			searchTemplate.executeInIndexReader(new IndexReaderCallback<Void>() {
+
+			@Override
+			public Void doInIndexReader(IndexReader indexReader)
+					throws Exception {
+				Set<String> indexSet = new HashSet<String>();
+				
+				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
+				TermEnum termEnum = indexReader.terms(term);
+				
+				boolean hasNext = true;
+				while(hasNext && 
+						termEnum.term() != null && 
+						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
+					String key = termEnum.term().text();
+					indexSet.add(key);
+					
+					hasNext = termEnum.next();
+				}
+				
+				Set<String> foundIndexSet = new HashSet<String>(indexSet);
+				foundIndexSet.removeAll(expectedMap.keySet());
+	
+				if(foundIndexSet.size() == 0) {
+					getLogger().warn("No extra Lucene artifacts found.");
+				} else {
+					getLogger().warn(foundIndexSet.size() + " extra Lucene artifacts found.");
+				}
+				
+				for(String additional : foundIndexSet) {
+				
+					BooleanQuery query = new BooleanQuery();
+					query.add(new TermQuery(
+										new Term(
+												LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, additional)), Occur.MUST);
+					
+					List<ScoreDoc> scoreDocs = searchTemplate.search(query, null);
+					
+					if(scoreDocs.size() == 0) {
+						getLogger().warn("No Documents to remove for for: " + additional);
+						continue;
+					}
+					
+					ScoreDoc scoreDoc = scoreDocs.get(0);
+					
+					Document document = indexReader.document(scoreDoc.doc);
+					
+					String uri = document.getField(LuceneLoaderCode.CODING_SCHEME_ID_FIELD).stringValue();
+					String version = document.getField(LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD).stringValue();
+					
+					getLogger().warn("Found an extra Lucene Search Index for URI: " + uri + " Version: " + version + 
+						". Attempting to remove...");
+					
+					AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+					ref.setCodingSchemeURN(uri);
+					ref.setCodingSchemeVersion(version);
+					
+					Term dropTerm = new Term(
+							LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+							LuceneLoaderCode.createCodingSchemeUriVersionKey(uri, version));
+					
+					searchTemplate.removeDocuments(dropTerm);
+					
+					getLogger().warn("Extra Lucene Search Index for URI: " + uri + " Version: " + version + 
+						" Successfully removed.");
+				}
+				
+				expectedMap.keySet().removeAll(indexSet);
+				
+				if(expectedMap.size() == 0) {
+					getLogger().warn("No missing Lucene artifacts found.");
+				} else {
+					getLogger().warn(expectedMap.size() + " missing Lucene artifacts found.");
+				}
+				
+				for(String key : expectedMap.keySet()) {
+					AbsoluteCodingSchemeVersionReference ref = 
+						expectedMap.get(key);
+					getLogger().warn("Re-creating missing Lucene Search Index for URI: " +
+							ref.getCodingSchemeURN() +
+							" Version: " + ref.getCodingSchemeVersion());
+					
+					LexEvsServiceLocator.getInstance().
+						getIndexServiceManager().
+							getSearchIndexService().
+								createIndex(ref);
+				}
+				
+				if(! indexReader.isOptimized()) {
+					getLogger().warn("Search Index is not optimized, optimizing now...");
+					
+					searchTemplate.optimize();
+					getLogger().warn("Optimizing Complete.");
+				} else {
+					getLogger().warn("Search Index is optimized.");
 				}
 				
 				return null;

@@ -55,6 +55,8 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
 	
+	private LuceneIndexTemplate searchLuceneIndexTemplate;
+
 	private SystemVariables systemVariables;
 	
 	private SystemResourceService systemResourceService;
@@ -295,6 +297,14 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 		return luceneDirectoryCreator;
 	}
 
+	public LuceneIndexTemplate getSearchLuceneIndexTemplate() {
+		return searchLuceneIndexTemplate;
+	}
+
+	public void setSearchLuceneIndexTemplate(LuceneIndexTemplate searchLuceneIndexTemplate) {
+		this.searchLuceneIndexTemplate = searchLuceneIndexTemplate;
+	}
+
 	protected static class CodingSchemeUriVersionPair {
 		private String uri;
 		private String version;
@@ -336,4 +346,5 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 			return true;
 		}	
 	}
+
 }

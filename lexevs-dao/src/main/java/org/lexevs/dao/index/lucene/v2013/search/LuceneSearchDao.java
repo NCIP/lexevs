@@ -117,7 +117,7 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 
 	@Override
 	public void optimizeIndex() {
-		// TODO Auto-generated method stub	
+		this.luceneIndexTemplate.optimize();
 	}
 	
 	/* (non-Javadoc)
