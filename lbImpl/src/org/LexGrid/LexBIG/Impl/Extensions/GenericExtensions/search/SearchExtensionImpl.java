@@ -14,9 +14,11 @@ import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.service.search.SearchIndexService;
@@ -58,13 +60,17 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return new SearchScoreDocIterator(scoreDocs);
     }
     
-    protected Query parseQuery(String text, Analyzer analyzer){
-        QueryParser parser = new QueryParser("description", analyzer);
-        
-        try {
-            return parser.parse(text);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+    protected Query parseQuery(String text, Analyzer analyzer) {
+        if (StringUtils.isBlank(text)) {
+            return new MatchAllDocsQuery();
+        } else {
+            QueryParser parser = new QueryParser("description", analyzer);
+
+            try {
+                return parser.parse(text);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     

@@ -33,7 +33,7 @@ import edu.stanford.smi.protegex.owl.model.RDFSNames;
  * 
  * @author Pradip Kanjamala (kanjamala.pradip@mayo.edu)
  */
-public class ProtegeOwl2LGConstants {
+public class OwlApi2LGConstants {
     // Processing flags and options
     public static final boolean CREATE_CONCEPT_FOR_OBJECT_PROP = false;
     public static final String DATATYPE_PROP_SWITCH = "both";

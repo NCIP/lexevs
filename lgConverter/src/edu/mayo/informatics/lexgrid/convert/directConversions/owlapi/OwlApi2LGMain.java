@@ -151,7 +151,7 @@ public class OwlApi2LGMain {
             // URI physicalURI =
             // URI.create("http://www.co-ode.org/ontologies/amino-acid/2006/05/18/amino-acid.owl");
             // URI physicalURI = URI.create("file:///c:/Gene-Ontology.owl");
-            OwlApi2LGMain moem = new OwlApi2LGMain(physicalURI, null, null, false, ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY,
+            OwlApi2LGMain moem = new OwlApi2LGMain(physicalURI, null, null, false, OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY,
                     new CommandLineMessageDirector());
 
             CodingScheme cst = moem.map();

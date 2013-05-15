@@ -99,56 +99,56 @@ public class BasicXMLParser extends DefaultHandler {
     public void endElement(String namespaceURI, String localName, String qName) {
         String value = accumulator.toString().trim();
         
-        if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_TERM_NAME)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_TERM_NAME, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_TERM_GROUP)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_TERM_GROUP, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_TERM_SOURCE)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_TERM_SOURCE, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_DEFINITION)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_DEFINITION, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_SOURCE)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_SOURCE, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_REV_NAME)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_REV_NAME, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_REV_DATE)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_DEF_REV_DATE, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_ID)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_ID, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_TERM)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_TERM, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_EVI)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_EVI, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_SOURCE)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_SOURCE, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_SOURCE_DATE)) {
-            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_SOURCE_DATE, value);
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_COMPLEXDEFINITION)) {
+        if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_TERM_NAME)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_TERM_NAME, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_TERM_GROUP)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_TERM_GROUP, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_TERM_SOURCE)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_TERM_SOURCE, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_DEF_DEFINITION)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_DEF_DEFINITION, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_DEF_SOURCE)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_DEF_SOURCE, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_DEF_REV_NAME)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_DEF_REV_NAME, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_DEF_REV_DATE)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_DEF_REV_DATE, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_GO_ID)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_GO_ID, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_GO_TERM)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_GO_TERM, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_GO_EVI)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_GO_EVI, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_GO_SOURCE)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_GO_SOURCE, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_GO_SOURCE_DATE)) {
+            tagAndValue.put(OwlApi2LGConstants.COMP_PROP_TAG_GO_SOURCE_DATE, value);
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_COMPLEXDEFINITION)) {
             // Top Level Tag -- do nothing
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_COMPLEXANNOTATION)) {
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_COMPLEXANNOTATION)) {
             // Top Level Tag -- do nothing
-        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
-                + ProtegeOwl2LGConstants.COMP_PROP_TAG_COMPLEXTERM)) {
+        } else if (qName.equals(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + OwlApi2LGConstants.COMP_PROP_TAG_COMPLEXTERM)) {
             // Top Level Tag -- do nothing
         } else {
             // tag is undefined as property type -- load as potential generic
             // property qualifier
             // Stripping namespace from any string that is a qName
-            qName = qName.replace(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":", "");
+            qName = qName.replace(OwlApi2LGConstants.COMP_PROP_NAMESPACE + ":", "");
             tagAndValue.put(qName, value);
         }
         if(language != null){
