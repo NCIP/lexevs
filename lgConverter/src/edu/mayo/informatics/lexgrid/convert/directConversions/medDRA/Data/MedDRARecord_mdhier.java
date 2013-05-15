@@ -22,16 +22,17 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_mdhier implements Serializable, DatabaseRecord{
+public class MedDRARecord_mdhier implements Serializable, DatabaseRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -143,5 +144,4 @@ public class MedDRA_record_mdhier implements Serializable, DatabaseRecord{
 	public void setPrimary_soc_fg(String primary_soc_fg) {
 		this.primary_soc_fg = primary_soc_fg;
 	}
-
 }

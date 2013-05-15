@@ -29,5 +29,11 @@
 		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="indexer" rev="${vBuild}" conf="default"/>
 		<dependency org="net.sf.opencsv" name="opencsv" rev="2.3" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-impl" rev="3.4.3" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-api" rev="3.4.3" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-apibinding" rev="3.4.3" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-distribution" rev="3.4.3" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-parsers" rev="3.4.3" conf="default"/>
+		
    	 </dependencies>
 </ivy-module>

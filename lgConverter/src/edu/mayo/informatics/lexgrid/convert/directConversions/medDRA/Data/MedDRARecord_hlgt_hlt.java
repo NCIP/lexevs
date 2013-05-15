@@ -22,35 +22,57 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
+
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_intl_ord implements Serializable, DatabaseRecord{
+public class MedDRARecord_hlgt_hlt implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String intl_ord_code;
-	private String soc_code;
+	private String hlgt_code;
+	private String hlt_code;
 	
-	public String getIntl_ord_code() {
-		return intl_ord_code;
+
+	public String getHlgt_code() {
+		return hlgt_code;
 	}
 
-	public void setIntl_ord_code(String intl_ord_code) {
-		this.intl_ord_code = intl_ord_code;
+	public void setHlgt_code(String hlgt_code) {
+		this.hlgt_code = hlgt_code;
 	}
 
-	public String getSoc_code() {
-		return soc_code;
+
+	public String getHlt_code() {
+		return hlt_code;
 	}
 
-	public void setSoc_code(String soc_code) {
-		this.soc_code = soc_code;
+
+	public void setHlt_code(String hlt_code) {
+		this.hlt_code = hlt_code;
 	}
 
+	
+	public @interface CSVField {
+		
+		String content();
+	}
+
+
+
+    @Override
+    public String getSource() {
+        return hlgt_code;
+    }
+
+    @Override
+    public String getTarget() {
+        return hlt_code;
+    }
 }

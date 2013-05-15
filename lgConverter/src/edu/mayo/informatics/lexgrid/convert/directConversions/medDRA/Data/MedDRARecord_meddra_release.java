@@ -22,16 +22,17 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_meddra_release implements Serializable, DatabaseRecord{
+public class MedDRARecord_meddra_release implements Serializable, DatabaseRecord{
 
 	private static final long serialVersionUID = 1L;
 	

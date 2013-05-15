@@ -22,16 +22,17 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_smq_content implements Serializable, DatabaseRecord{
+public class MedDRARecord_smq_content implements Serializable, DatabaseRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -41,7 +42,11 @@ public class MedDRA_record_smq_content implements Serializable, DatabaseRecord{
 	private String term_scope;
 	private String term_category;
 	private String term_weight;
-	public String getSmq_code() {
+    private String term_status;
+    private String term_addition_version;
+    private String term_last_modified_version;
+
+    public String getSmq_code() {
 		return smq_code;
 	}
 
@@ -112,9 +117,4 @@ public class MedDRA_record_smq_content implements Serializable, DatabaseRecord{
 	public void setTerm_last_modified_version(String term_last_modified_version) {
 		this.term_last_modified_version = term_last_modified_version;
 	}
-
-	private String term_status;
-	private String term_addition_version;
-	private String term_last_modified_version;
-
 }

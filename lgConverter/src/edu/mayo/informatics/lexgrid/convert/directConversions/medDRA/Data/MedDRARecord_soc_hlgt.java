@@ -22,83 +22,52 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_meddra_history implements Serializable, DatabaseRecord{
+public class MedDRARecord_soc_hlgt implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
+
+	private String soc_code;
+	private String hlgt_code;
 	
-	private String term_code;
-	private String term_name;
-	private String term_addition_version;
-	private String term_type;
-	private String llt_currency;
-	private String action;
 	
-	public String getTerm_code() {
-		return term_code;
+	public String getSoc_code() {
+		return soc_code;
 	}
 
 
-	public void setTerm_code(String term_code) {
-		this.term_code = term_code;
+	public void setSoc_code(String soc_code) {
+		this.soc_code = soc_code;
 	}
 
 
-	public String getTerm_name() {
-		return term_name;
+	public String getHlgt_code() {
+		return hlgt_code;
 	}
 
 
-	public void setTerm_name(String term_name) {
-		this.term_name = term_name;
+	public void setHlgt_code(String hlgt_code) {
+		this.hlgt_code = hlgt_code;
 	}
 
 
-	public String getTerm_addition_version() {
-		return term_addition_version;
-	}
+    @Override
+    public String getSource() {
+        return soc_code;
+    }
 
 
-	public void setTerm_addition_version(String term_addition_version) {
-		this.term_addition_version = term_addition_version;
-	}
-
-
-	public String getTerm_type() {
-		return term_type;
-	}
-
-
-	public void setTerm_type(String term_type) {
-		this.term_type = term_type;
-	}
-
-
-	public String getLlt_currency() {
-		return llt_currency;
-	}
-
-
-	public void setLlt_currency(String llt_currency) {
-		this.llt_currency = llt_currency;
-	}
-
-
-	public String getAction() {
-		return action;
-	}
-
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
+    @Override
+    public String getTarget() {
+        return hlgt_code;
+    }
 }

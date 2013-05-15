@@ -22,16 +22,24 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_pt implements Serializable, DatabaseRecord{
+public class MedDRARecord_pt implements Serializable, DatabaseEntityRecord{
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,11 +55,9 @@ public class MedDRA_record_pt implements Serializable, DatabaseRecord{
 	private String pt_icd10_code;
 	private String pt_jart_code;
 	
-	
-	public String getPt_code() {
+    public String getPt_code() {
 		return pt_code;
 	}
-
 
 	public void setPt_code(String pt_code) {
 		this.pt_code = pt_code;
@@ -156,4 +162,47 @@ public class MedDRA_record_pt implements Serializable, DatabaseRecord{
 	public void setPt_jart_code(String pt_jart_code) {
 		this.pt_jart_code = pt_jart_code;
 	}
+    @Override
+    public String getCode() {
+        return this.pt_code;
+    }
+
+
+    @Override
+    public List<Presentation> getPresentations() {
+        List<Presentation> presentations = new ArrayList<Presentation>();
+        Text txt;
+
+        Presentation name = new Presentation();
+        name.setIsPreferred(true);
+        name.setIsActive(true);
+        name.setPropertyName("Name");
+        txt = new Text();
+        txt.setContent((String) this.pt_name);
+        name.setValue(txt);
+
+        presentations.add(name);
+        
+        return presentations;
+    }
+
+
+    @Override
+    public List<Definition> getDefinitions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public List<Comment> getComments() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public String getDescription() {
+        return pt_name;
+    }
 }

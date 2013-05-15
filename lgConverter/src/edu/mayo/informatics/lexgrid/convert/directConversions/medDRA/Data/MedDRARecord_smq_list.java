@@ -22,16 +22,17 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_smq_list implements Serializable, DatabaseRecord{
+public class MedDRARecord_smq_list implements Serializable, DatabaseRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -41,7 +42,10 @@ public class MedDRA_record_smq_list implements Serializable, DatabaseRecord{
 	private String smq_description;
 	private String smq_source;
 	private String smq_note;
+    private String status;
+    private String smq_algorithm;
 	private String MedDRA_version;
+	
 	public String getSmq_code() {
 		return smq_code;
 	}
@@ -113,8 +117,4 @@ public class MedDRA_record_smq_list implements Serializable, DatabaseRecord{
 	public void setSmq_algorithm(String smq_algorithm) {
 		this.smq_algorithm = smq_algorithm;
 	}
-
-	private String status;
-	private String smq_algorithm;
-
 }

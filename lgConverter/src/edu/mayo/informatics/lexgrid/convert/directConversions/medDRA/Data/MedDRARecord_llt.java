@@ -22,16 +22,24 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_llt implements Serializable, DatabaseRecord{
+public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -171,4 +179,43 @@ public class MedDRA_record_llt implements Serializable, DatabaseRecord{
 	public void setLlt_jart_code(String llt_jart_code) {
 		this.llt_jart_code = llt_jart_code;
 	}
+
+
+    @Override
+    public String getCode() {
+        return this.llt_code;
+    }
+
+
+    @Override
+    public List<Presentation> getPresentations() {
+        List<Presentation> presentations = new ArrayList<Presentation>();
+        Text txt;
+
+        Presentation name = new Presentation();
+        name.setIsPreferred(true);
+        name.setIsActive(true);
+        name.setPropertyName("Name");
+        txt = new Text();
+        txt.setContent((String) this.llt_name);
+        name.setValue(txt);
+
+        presentations.add(name);
+        
+        return presentations;
+    }
+
+
+    @Override
+    public List<Definition> getDefinitions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    public List<Comment> getComments() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

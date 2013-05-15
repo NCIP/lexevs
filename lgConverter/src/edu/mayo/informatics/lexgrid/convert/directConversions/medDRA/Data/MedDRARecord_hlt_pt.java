@@ -22,39 +22,47 @@
 * limitations under the License.
 */
 
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRA_record_soc_hlgt implements Serializable, DatabaseRecord{
+public class MedDRARecord_hlt_pt implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
-
-	private String soc_code;
-	private String hlgt_code;
 	
+	private String htl_code;
+	private String pt_code;
 	
-	public String getSoc_code() {
-		return soc_code;
+	public String getHtl_code() {
+		return htl_code;
 	}
 
-
-	public void setSoc_code(String soc_code) {
-		this.soc_code = soc_code;
+	public void setHtl_code(String htl_code) {
+		this.htl_code = htl_code;
 	}
 
-
-	public String getHlgt_code() {
-		return hlgt_code;
+	public String getPt_code() {
+		return pt_code;
 	}
 
-
-	public void setHlgt_code(String hlgt_code) {
-		this.hlgt_code = hlgt_code;
+	public void setPt_code(String pt_code) {
+		this.pt_code = pt_code;
 	}
+
+    @Override
+    public String getSource() {
+        return htl_code;
+    }
+
+    @Override
+    public String getTarget() {
+        return pt_code;
+    }
+
 }

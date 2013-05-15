@@ -21,13 +21,38 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA;
+
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
+
+import java.io.Serializable;
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public interface DatabaseRecord {
-//	public void print();
+public class MedDRARecord_intl_ord implements Serializable, DatabaseRecord{
+
+	private static final long serialVersionUID = 1L;
+	
+	private String intl_ord_code;
+	private String soc_code;
+	
+	public String getIntl_ord_code() {
+		return intl_ord_code;
+	}
+
+	public void setIntl_ord_code(String intl_ord_code) {
+		this.intl_ord_code = intl_ord_code;
+	}
+
+	public String getSoc_code() {
+		return soc_code;
+	}
+
+	public void setSoc_code(String soc_code) {
+		this.soc_code = soc_code;
+	}
+
+
 }
