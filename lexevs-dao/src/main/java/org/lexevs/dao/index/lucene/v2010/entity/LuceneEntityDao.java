@@ -61,7 +61,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	
 	/** The supported index version2010. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
-	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion.parseStringToVersion("2013");
 
 	private LuceneIndexTemplate luceneIndexTemplate;
 
@@ -381,8 +380,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	public List<LexEvsIndexFormatVersion> doGetSupportedLexEvsIndexFormatVersions() {
 		return DaoUtility.createList(
 				LexEvsIndexFormatVersion.class, 
-				supportedIndexVersion2010,
-				supportedIndexVersion2013);
+				supportedIndexVersion2010);
 	}
 	
 	@Override

@@ -262,6 +262,11 @@ SMTP_SERVER=yourserver.edu
 # NOTE: Only applicable if EMAIL_ERRORS is set to 'true'.
 EMAIL_TO=yourAddress@.edu
 
+#graph-db config
+GRAPH_DB_USER=admin
+GRAPH_DB_PWD=admin
+GRAPH_DB_PATH=local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData
+
 ##############################################################################
 # All of the following variables are for non-API compliant and unsupported
 # features, and should be commented out unless you know what they do.

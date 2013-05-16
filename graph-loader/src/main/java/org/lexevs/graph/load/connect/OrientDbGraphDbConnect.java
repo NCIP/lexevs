@@ -327,8 +327,7 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		sourceSet(triple, vertexTableName);
 		targetSet(triple, vertexTableName);
 		edgeSet(triple, null);
-//		updateCache();
-		
+
 	}
 	
 	/**
