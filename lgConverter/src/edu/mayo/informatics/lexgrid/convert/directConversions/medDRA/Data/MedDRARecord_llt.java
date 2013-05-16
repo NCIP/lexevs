@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
@@ -39,7 +39,7 @@ import org.LexGrid.concepts.Presentation;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord{
+public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -57,16 +57,6 @@ public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord{
 	private String llt_currency;
 	private String llt_jart_code;
 	
-    public String getFullName() {
-        return pt_code + ":" + llt_code + ":" + llt_name;
-    }
-
-
-    public String getDescription() {
-        return pt_code + ":" + llt_code + ":" + llt_name;
-    }
-
-
     public String getInternalID() {
         return llt_code;
     }
@@ -186,36 +176,47 @@ public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord{
         return this.llt_code;
     }
 
+    @Override
+    public String getName() {
+        return this.llt_name;
+    }
 
     @Override
     public List<Presentation> getPresentations() {
         List<Presentation> presentations = new ArrayList<Presentation>();
-        Text txt;
 
-        Presentation name = new Presentation();
-        name.setIsPreferred(true);
-        name.setIsActive(true);
-        name.setPropertyName("Name");
-        txt = new Text();
-        txt.setContent((String) this.llt_name);
-        name.setValue(txt);
-
-        presentations.add(name);
-        
+        presentations.add(MedDRARecord_Utils.createPresentation("T-1", this.llt_name, "LT", true));
         return presentations;
     }
-
-
+    
     @Override
     public List<Definition> getDefinitions() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Definition> definitions = new ArrayList<Definition>();
+        
+        return definitions;
     }
-
 
     @Override
     public List<Comment> getComments() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Comment> comments = new ArrayList<Comment>();
+        
+        return comments;
+    }
+
+    @Override
+    public List<Property> getProperties() {
+        List<Property> properties = new ArrayList<Property>();
+                
+        return properties;
+    }
+
+    @Override
+    public String getSource() {
+        return this.pt_code;
+    }
+
+    @Override
+    public String getTarget() {
+        return this.llt_code;
     }
 }

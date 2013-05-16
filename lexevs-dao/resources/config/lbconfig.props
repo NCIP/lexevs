@@ -123,7 +123,8 @@ SINGLE_TABLE_MODE=false
 
 # Examples for DB_URL'
 DB_URL=jdbc:mysql://localhost/lexevs
-#DB_URL=jdbc:mysql://bmidev4:3307/sb
+#DB_URL=jdbc:mysql://bmidev4:3306/medra2
+#DB_URL=jdbc:mysql://bmidev4:3307/lexevs
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
 #DB_URL=jdbc:hsqldb:file:C:/temp/LexGrid
 #DB_URL=jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=C:/temp/LexBIG.mdb
@@ -184,6 +185,8 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # to create and remove tables, indexes, and foreign keys in the database environment.
 DB_USER=root
 DB_PASSWORD=root
+#DB_USER=lexgrid
+#DB_PASSWORD=lexgrid
 
 ############# Password encryption
 

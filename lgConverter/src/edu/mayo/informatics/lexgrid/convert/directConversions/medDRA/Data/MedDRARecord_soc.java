@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
@@ -53,7 +53,9 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
 	private String soc_icd9cm_code;
 	private String soc_icd10_code;
 	private String soc_jart_code;
-	
+
+    private String intlOrder = null;
+
 	public String getSoc_code() {
 		return soc_code;
 	}
@@ -133,6 +135,10 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
 	public void setSoc_jart_code(String soc_jart_code) {
 		this.soc_jart_code = soc_jart_code;
 	}
+	
+	public void setIntlOrder(String order){
+	    this.intlOrder = order;
+	}
 
     @Override
     public String getCode() {
@@ -140,45 +146,40 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
     }
 
     @Override
+    public String getName() {
+        return soc_abbrev;
+    }
+    
+    @Override
     public List<Presentation> getPresentations() {
         List<Presentation> presentations = new ArrayList<Presentation>();
-        Text txt;
-        
-        Presentation abbreviation = new Presentation();
-        abbreviation.setIsPreferred(true);
-        abbreviation.setIsActive(true);
-        abbreviation.setPropertyName("Abbreviation");
-        txt = new Text();
-        txt.setContent((String) this.soc_abbrev);
-        abbreviation.setValue(txt);
-        
-        Presentation name = new Presentation();
-        name.setIsPreferred(false);
-        name.setIsActive(true);
-        name.setPropertyName("Name");
-        txt = new Text();
-        txt.setContent((String) this.soc_name);
-        name.setValue(txt);
-        
-        presentations.add(abbreviation);
-        presentations.add(name);
-        
+
+        presentations.add(MedDRARecord_Utils.createPresentation("T-1", this.soc_name, "OS", true));
+                
         return presentations;
     }
 
     @Override
     public List<Definition> getDefinitions() {
-        return null;
+        List<Definition> definitions = new ArrayList<Definition>();
+        
+        return definitions;
     }
 
     @Override
     public List<Comment> getComments() {
-        return null;
+        List<Comment> comments = new ArrayList<Comment>();
+        
+        return comments;
     }
 
     @Override
-    public String getDescription() {
-        return soc_abbrev;
-    }
+    public List<Property> getProperties() {
+        List<Property> properties = new ArrayList<Property>();
+        
+        properties.add(MedDRARecord_Utils.createProperty("P-1", this.intlOrder));
+        properties.add(MedDRARecord_Utils.createProperty("P-2", this.soc_abbrev));
 
+        return properties;
+    }
 }
