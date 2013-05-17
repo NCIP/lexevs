@@ -8,7 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/levevs-graph-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=graph-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="lib/orient-commons-1.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-client-1.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-core-1.4.0-SNAPSHOT.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry kind="lib" path="lib/orientdb-tools-1.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/blueprints-core-2.4.0-20130424.134914-11.jar"/>
 	<classpathentry kind="lib" path="lib/blueprints-orient-graph-2.4.0-20130418.193108-8.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=graph-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

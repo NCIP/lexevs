@@ -59,12 +59,12 @@ public class OrientBluePrintGraphDbConnect implements GraphDataBaseConnect {
 
 	@Override
 	public OClass createVertexTable(String table, List<String> fieldnames) {
-		return orientDB.createVertexType(table);
+		return orientDB.getRawGraph().createVertexType(table);
 	}
 
 	@Override
 	public OClass createEdgeTable(String table, List<String> fieldnames) {
-		return orientDB.createEdgeType(table);
+		return orientDB.getRawGraph().createEdgeType(table);
 	}
 
 	@Override

@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.constants.SystemVariables;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.tinkerpop.blueprints.impls.orient.OrientEdge;
+import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
-public class LexEVSGraphDaoImpl implements LexEVSGraphDao, GenericExtension {
+public class LexEVSGraphDaoImpl extends AbstractExtendable implements LexEVSGraphDao, GenericExtension {
 
 	private static final long serialVersionUID = 5199389242454319608L;
 	private String name = "LexEVSGraphDao";
@@ -22,6 +26,7 @@ public class LexEVSGraphDaoImpl implements LexEVSGraphDao, GenericExtension {
 	OrientDbGraphDao graph;
 	
 	public LexEVSGraphDaoImpl(){
+		super();
 		graph = getNewGraphInstance();
 	}
 	private OrientDbGraphDao getNewGraphInstance() {
@@ -59,7 +64,13 @@ public class LexEVSGraphDaoImpl implements LexEVSGraphDao, GenericExtension {
 	@Override
 	public List<ConceptReference> getTransitiveClosureForNode(
 			ConceptReference nodes, String associationName) {
-		throw new UnsupportedOperationException();
+		List<ConceptReference> refs = null;
+		refs = new ArrayList<ConceptReference>();
+		List<ODocument> docs = graph.getDocumentResultForSql(graph.getAllNodesForFocusCodeAndAssoc("C3262", "subClassOf"));
+		for(ODocument o: docs){
+		refs.add(graph.getConceptReferenceForVertex(o));
+		}
+		return refs;
 	}
 
 	@Override
@@ -68,9 +79,9 @@ public class LexEVSGraphDaoImpl implements LexEVSGraphDao, GenericExtension {
 		List<ConceptReference> refs = null;
 		try{
 		refs = new ArrayList<ConceptReference>();
-		List<OrientEdge> docs = graph.getResultForSql(graph.getAllEdgesInForCode(node.getCode(), associationName));
-		for(OrientEdge e: docs){
-			ConceptReference ref = graph.getConceptReferenceForJSON((ODocument) e.getOutVertex());
+		List<OrientVertex> docs = graph.getVertexResultForSql(graph.getAllEdgesInForCode(node.getCode(), associationName));
+		for(OrientVertex e: docs){
+			ConceptReference ref = graph.getConceptReferenceForVertex(e.getRecord());
 			refs.add(ref);
 		}
 		}
@@ -95,6 +106,23 @@ public class LexEVSGraphDaoImpl implements LexEVSGraphDao, GenericExtension {
 		}
 		System.out.println("Number of concept references: " + counter);
 		
+	}
+	@Override
+	protected void doRegister(ExtensionRegistry registry,
+			ExtensionDescription ed) throws LBParameterException {
+		  registry.registerGenericExtension(ed);
+	}
+	
+	@Override
+	protected ExtensionDescription buildExtensionDescription() {
+        ExtensionDescription ed = new ExtensionDescription();
+        ed.setDescription(description);
+        ed.setExtensionBaseClass(GenericExtension.class.getName());
+        ed.setExtensionClass(LexEVSGraphDaoImpl.class.getName());
+        ed.setName(name);
+        ed.setVersion(version);
+        
+        return ed;
 	}
 
 }
