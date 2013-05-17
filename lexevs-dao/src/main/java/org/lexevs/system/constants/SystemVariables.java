@@ -80,6 +80,11 @@ public class SystemVariables {
     private String autoLoadDBPassword_;
     private String relativePathStart_;
     
+
+	private String graphdbUser;
+    private String graphdbpwd;
+    private String graphdbUrl;
+
     private boolean singleTableMode = true;
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
     private static boolean SINGLE_TABLE_MODE_DEFAULT = false;
@@ -276,6 +281,11 @@ public class SystemVariables {
             autoLoadDBDriver_ = getProperty(props, "DB_DRIVER");
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
+            
+        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
+        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
+            graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
+
             
             mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
 
@@ -717,5 +727,31 @@ public class SystemVariables {
 
 	public void setMysql_collation(String mysqlCollation) {
 		mysql_collation = mysqlCollation;
-	}	
+	}
+	
+	
+    public String getGraphdbUser() {
+		return graphdbUser;
+	}
+
+	public void setGraphdbUser(String graphdbUser) {
+		this.graphdbUser = graphdbUser;
+	}
+
+	public String getGraphdbpwd() {
+		return graphdbpwd;
+	}
+
+	public void setGraphdbpwd(String graphdbpwd) {
+		this.graphdbpwd = graphdbpwd;
+	}
+
+	public String getGraphdbUrl() {
+		return graphdbUrl;
+	}
+
+	public void setGraphdbUrl(String graphdbUrl) {
+		this.graphdbUrl = graphdbUrl;
+	}
+
 }

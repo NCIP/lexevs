@@ -25,6 +25,13 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
 
 
 
@@ -32,7 +39,7 @@ import java.io.Serializable;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_smq_list implements Serializable, DatabaseRecord{
+public class MedDRARecord_smq_list implements Serializable, DatabaseEntityRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -117,4 +124,56 @@ public class MedDRARecord_smq_list implements Serializable, DatabaseRecord{
 	public void setSmq_algorithm(String smq_algorithm) {
 		this.smq_algorithm = smq_algorithm;
 	}
+
+    @Override
+    public String getCode() {
+        return this.smq_code;
+    }
+
+    @Override
+    public String getName() {
+        return this.smq_name;
+    }
+
+    @Override
+    public List<Presentation> getPresentations() {
+        List<Presentation> presentations = new ArrayList<Presentation>();
+        
+        presentations.add(MedDRARecord_Utils.createPresentation("T-1", this.smq_name, "SMQ", true));
+        
+        
+        return presentations;
+    }
+    
+    @Override
+    public List<Definition> getDefinitions() {
+        List<Definition> definitions = new ArrayList<Definition>();
+        
+        return definitions;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        List<Comment> comments = new ArrayList<Comment>();
+        
+        
+        comments.add(MedDRARecord_Utils.createComment("Name", this.smq_name));
+        comments.add(MedDRARecord_Utils.createComment("Code", this.smq_code));
+        comments.add(MedDRARecord_Utils.createComment("Level", this.smq_level));
+        comments.add(MedDRARecord_Utils.createComment("Description", this.smq_description));
+        comments.add(MedDRARecord_Utils.createComment("Source", this.smq_source));
+        comments.add(MedDRARecord_Utils.createComment("Note", this.smq_note));
+        comments.add(MedDRARecord_Utils.createComment("MedDRA Dictionary Version", this.MedDRA_version));
+        comments.add(MedDRARecord_Utils.createComment("Status", this.status));
+        comments.add(MedDRARecord_Utils.createComment("Algorithm", this.smq_algorithm));
+        
+        return comments;
+    }
+
+    @Override
+    public List<Property> getProperties() {
+        List<Property> properties = new ArrayList<Property>();
+        
+        return properties;
+    }
 }

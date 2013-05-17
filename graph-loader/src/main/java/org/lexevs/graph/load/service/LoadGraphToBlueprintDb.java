@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
-import org.lexevs.graph.load.connect.OrientDbGraphDbConnect;
+import org.lexevs.graph.load.connect.OrientBluePrintGraphDbConnect;
 import org.lexevs.graph.load.service.LexEVSTripleService.GraphIterator;
 
-public class LoadGraphToOrientDb {
-	OrientDbGraphDbConnect database ;
+public class LoadGraphToBlueprintDb {
+	OrientBluePrintGraphDbConnect  database ;
 	LexEVSTripleService service ;
 	String databasePath;
 	List<String> associationIds;
@@ -20,16 +20,15 @@ public class LoadGraphToOrientDb {
 		return databasePath;
 	}
 	
-	public LoadGraphToOrientDb(String codingSchemeUri, String version, String dbPath){
+	public LoadGraphToBlueprintDb(String codingSchemeUri, String version, String dbPath){
 		service = new LexEVSTripleService(codingSchemeUri, version);
 		this.databasePath = dbPath;
 	}
 	
 	public void createDatabase(){
-		database = new OrientDbGraphDbConnect("admin", "admin", databasePath);
-		database.createEdgeTable(edgeTableName, database.getFieldNamesForEdge());
+		database = new OrientBluePrintGraphDbConnect ("admin", "admin", databasePath);
+		database.createEdgeTable(edgeTableName, null);
 		database.createVertexTable(vertexTableName, database.getFieldNamesForVertex());
-		database.initVerticesAndEdge();
 	}
 	
 	  public static String durationAsString(long duration) {
@@ -62,11 +61,22 @@ public class LoadGraphToOrientDb {
 		GraphIterator tripleIterator = 	service.getGraphIterator(codingSchemeUri, version);
 		long start = System.currentTimeMillis();
 		while(tripleIterator.hasNext()){
+		long nextTime = System.currentTimeMillis();
         GraphDbTriple triple =	processGraphTriple(tripleIterator.next(), codingSchemeUri, version);
+        long nextEnd = System.currentTimeMillis();
+        long next = nextEnd - nextTime;
+//        if(next > 100)
+//		System.out.println("Getting next: " + (next));
+//		long storeTime = System.currentTimeMillis();
         database.storeGraphTriple(triple, vertexTableName, triple.getAssociationName());
+        long storeEnd = System.currentTimeMillis();
+//        long store = storeEnd - storeTime;
+//        if(store > 100)
+//        System.out.println("storing next: " + (store));
 		countOut++;
 
 		if(countOut % 10000 == 0 ){
+	
 		long current = System.currentTimeMillis();
 		System.out.println("Count: " + countOut);
 		System.out.println("Time elapsed: " + durationAsString(current - start) );
@@ -92,28 +102,19 @@ public class LoadGraphToOrientDb {
 	}
 	
 	public static void main(String[] args) {
-
-//		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
 		String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
-		
-//		String version = "version 1.2";
 		String version = "12.01f";
-//		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-1.4.0-SNAPSHOT/databases/perfTest");
-		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/perfTest");
-//		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-1.3.0/databases/perfTest");
+		LoadGraphToBlueprintDb load = new LoadGraphToBlueprintDb(codingSchemeUri, version, "local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData");
 		try{
 		load.runGraphLoad(codingSchemeUri, version);
-		//ODocument RID = load.database.getVertexForCode("VegetarianTopping", "Nodes");
-		//System.out.println("RID: " + RID.field("rid"));
 		}
 		catch(Exception e){
 			throw new RuntimeException(e);
 		}
 		finally{
 		load.database.close();
-//		load.database.delete(load.databasePath);
-		}
-
+		load.database.delete("/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData");
+	}
 	}
 
 }

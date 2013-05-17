@@ -32,7 +32,7 @@ import java.io.Serializable;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_smq_content implements Serializable, DatabaseRecord{
+public class MedDRARecord_smq_content implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -117,4 +117,14 @@ public class MedDRARecord_smq_content implements Serializable, DatabaseRecord{
 	public void setTerm_last_modified_version(String term_last_modified_version) {
 		this.term_last_modified_version = term_last_modified_version;
 	}
+
+    @Override
+    public String getSource() {
+        return this.smq_code;
+    }
+
+    @Override
+    public String getTarget() {
+        return this.term_code;
+    }
 }

@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
@@ -167,42 +167,41 @@ public class MedDRARecord_pt implements Serializable, DatabaseEntityRecord{
         return this.pt_code;
     }
 
+    @Override
+    public String getName() {
+        return pt_name;
+    }
 
+
+    // ------------
     @Override
     public List<Presentation> getPresentations() {
         List<Presentation> presentations = new ArrayList<Presentation>();
-        Text txt;
 
-        Presentation name = new Presentation();
-        name.setIsPreferred(true);
-        name.setIsActive(true);
-        name.setPropertyName("Name");
-        txt = new Text();
-        txt.setContent((String) this.pt_name);
-        name.setValue(txt);
-
-        presentations.add(name);
-        
+        presentations.add(MedDRARecord_Utils.createPresentation("T-1", this.pt_name, "PT", true));
         return presentations;
     }
-
-
+    
     @Override
     public List<Definition> getDefinitions() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Definition> definitions = new ArrayList<Definition>();
+        
+        return definitions;
     }
-
 
     @Override
     public List<Comment> getComments() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Comment> comments = new ArrayList<Comment>();
+        
+        return comments;
     }
 
-
     @Override
-    public String getDescription() {
-        return pt_name;
+    public List<Property> getProperties() {
+        List<Property> properties = new ArrayList<Property>();
+
+        properties.add(MedDRARecord_Utils.createProperty("PSOC", this.pt_soc_code));
+        
+        return properties;
     }
 }
