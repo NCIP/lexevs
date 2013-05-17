@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.commonTypes.Text;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
@@ -132,36 +132,37 @@ public class MedDRARecord_hlt implements Serializable, DatabaseEntityRecord{
     }
 
     @Override
+    public String getName() {
+        return hlt_name;
+    }
+
+    @Override
     public List<Presentation> getPresentations() {
         List<Presentation> presentations = new ArrayList<Presentation>();
-        Text txt;
 
-        Presentation name = new Presentation();
-        name.setIsPreferred(true);
-        name.setIsActive(true);
-        name.setPropertyName("Name");
-        txt = new Text();
-        txt.setContent((String) this.hlt_name);
-        name.setValue(txt);
-
-        presentations.add(name);
+        presentations.add(MedDRARecord_Utils.createPresentation("T-1", this.hlt_name, "HT", true));
         
         return presentations;
     }
 
     @Override
     public List<Definition> getDefinitions() {
-        return null;
+        List<Definition> definitions = new ArrayList<Definition>();
+        
+        return definitions;
     }
 
     @Override
     public List<Comment> getComments() {
-        return null;
+        List<Comment> comments = new ArrayList<Comment>();
+        
+        return comments;
     }
 
     @Override
-    public String getDescription() {
-        return hlt_name;
+    public List<Property> getProperties() {
+        List<Property> properties = new ArrayList<Property>();
+        
+        return properties;
     }
-
 }
