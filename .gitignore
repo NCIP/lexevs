@@ -3,3 +3,4 @@ lib/
 bin/
 bin
 classes/
+.DS_Store
