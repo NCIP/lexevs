@@ -33,13 +33,15 @@ import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.MedDRA2LGConstants;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
+public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -181,5 +183,15 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
         properties.add(MedDRARecord_Utils.createProperty("P-2", this.soc_abbrev));
 
         return properties;
+    }
+
+    @Override
+    public String getSource() {
+       return MedDRA2LGConstants.DEFAULT_ROOT_NODE;
+    }
+
+    @Override
+    public String getTarget() {
+        return this.soc_code;
     }
 }
