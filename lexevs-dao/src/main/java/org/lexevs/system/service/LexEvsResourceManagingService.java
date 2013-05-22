@@ -420,7 +420,10 @@ public class LexEvsResourceManagingService
 		if(foundEntries.size() == 1){
 			RegistryEntry entry = foundEntries.get(0);
 			if(tag != null) {
-				if(entry.getTag().equals(tag)){
+				String entryTag = entry.getTag();
+				
+				if(tag.equals(entryTag) ||
+						(entryTag == null && tag.equals(KnownTags.PRODUCTION.toString()))){
 					return entry.getResourceVersion();
 				}
 			} else {
