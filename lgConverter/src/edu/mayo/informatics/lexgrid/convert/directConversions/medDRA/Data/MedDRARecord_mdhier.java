@@ -48,7 +48,10 @@ public class MedDRARecord_mdhier implements Serializable, DatabaseRecord{
 	private String null_field;
 	private String pt_soc_code;
 	private String primary_soc_fg;
-	
+
+    private int[] validFieldIndices = null;
+    private int[] invalidFieldIndices = {1,2,3,4,5,6,7,8,9,10,11,12};
+    
 	public String getPt_code() {
 		return pt_code;
 	}
@@ -144,4 +147,14 @@ public class MedDRARecord_mdhier implements Serializable, DatabaseRecord{
 	public void setPrimary_soc_fg(String primary_soc_fg) {
 		this.primary_soc_fg = primary_soc_fg;
 	}
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

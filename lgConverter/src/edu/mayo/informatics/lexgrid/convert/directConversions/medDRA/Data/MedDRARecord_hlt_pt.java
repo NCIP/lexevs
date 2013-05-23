@@ -36,15 +36,18 @@ public class MedDRARecord_hlt_pt implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String htl_code;
+	private String hlt_code;
 	private String pt_code;
+
+    private int[] validFieldIndices = {1,2};
+    private int[] invalidFieldIndices = null;
 	
-	public String getHtl_code() {
-		return htl_code;
+	public String getHlt_code() {
+		return hlt_code;
 	}
 
-	public void setHtl_code(String htl_code) {
-		this.htl_code = htl_code;
+	public void setHlt_code(String hlt_code) {
+		this.hlt_code = hlt_code;
 	}
 
 	public String getPt_code() {
@@ -57,12 +60,21 @@ public class MedDRARecord_hlt_pt implements Serializable, DatabaseMapRecord{
 
     @Override
     public String getSource() {
-        return htl_code;
+        return hlt_code;
     }
 
     @Override
     public String getTarget() {
         return pt_code;
     }
-
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }
