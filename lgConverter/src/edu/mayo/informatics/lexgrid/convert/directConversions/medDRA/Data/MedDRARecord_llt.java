@@ -56,7 +56,10 @@ public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord, Dat
 	private String llt_icd10_code;
 	private String llt_currency;
 	private String llt_jart_code;
-	
+
+    private int[] validFieldIndices = {1,2,3};
+    private int[] invalidFieldIndices = {4,5,6,7,8,9,10,11};
+    
     public String getInternalID() {
         return llt_code;
     }
@@ -219,4 +222,14 @@ public class MedDRARecord_llt implements Serializable, DatabaseEntityRecord, Dat
     public String getTarget() {
         return this.llt_code;
     }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

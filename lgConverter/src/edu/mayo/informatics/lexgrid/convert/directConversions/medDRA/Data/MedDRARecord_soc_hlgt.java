@@ -38,8 +38,10 @@ public class MedDRARecord_soc_hlgt implements Serializable, DatabaseMapRecord{
 
 	private String soc_code;
 	private String hlgt_code;
-	
-	
+
+    private int[] validFieldIndices = {1,2};
+    private int[] invalidFieldIndices = null;
+    
 	public String getSoc_code() {
 		return soc_code;
 	}
@@ -70,4 +72,14 @@ public class MedDRARecord_soc_hlgt implements Serializable, DatabaseMapRecord{
     public String getTarget() {
         return hlgt_code;
     }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

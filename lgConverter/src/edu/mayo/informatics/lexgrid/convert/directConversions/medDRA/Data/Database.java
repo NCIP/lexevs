@@ -72,7 +72,7 @@ public class Database {
 				String name = field.getName();
 				Object value;
 				value = field.get(record);
-				System.out.print("\t" + value);
+				System.out.print(name + "\t" + value);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

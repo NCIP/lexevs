@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.MedDRA_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
@@ -367,7 +368,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
     	File accessPath = new File("resources/testData/medDRA");
 
-        MedDRALoaderImpl loader = (MedDRALoaderImpl) lbsm.getLoader("MedDRALoader");
+        MedDRA_Loader loader = (MedDRALoaderImpl) lbsm.getLoader("MedDRALoader");
         loader.load(accessPath.toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {

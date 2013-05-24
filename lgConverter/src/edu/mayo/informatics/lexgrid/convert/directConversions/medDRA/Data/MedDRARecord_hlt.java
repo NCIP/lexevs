@@ -52,7 +52,10 @@ public class MedDRARecord_hlt implements Serializable, DatabaseEntityRecord{
 	private String hlt_icd9cm_code;
 	private String hlt_icd10_code;
 	private String hlt_jart_code;
-	
+
+    private int[] validFieldIndices = {1,2};
+    private int[] invalidFieldIndices = null;
+    
 	public String getHlt_code() {
 		return hlt_code;
 	}
@@ -165,4 +168,14 @@ public class MedDRARecord_hlt implements Serializable, DatabaseEntityRecord{
         
         return properties;
     }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

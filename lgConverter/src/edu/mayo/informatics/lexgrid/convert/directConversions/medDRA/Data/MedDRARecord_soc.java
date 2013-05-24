@@ -33,13 +33,15 @@ import org.LexGrid.concepts.Comment;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.MedDRA2LGConstants;
+
 
 
 /**
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
+public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -56,6 +58,9 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
 
     private String intlOrder = null;
 
+    private int[] validFieldIndices = {1,2,3};
+    private int[] invalidFieldIndices = {4,5,6,7,8,9,10};
+    
 	public String getSoc_code() {
 		return soc_code;
 	}
@@ -147,7 +152,7 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
 
     @Override
     public String getName() {
-        return soc_abbrev;
+        return soc_name;
     }
     
     @Override
@@ -182,4 +187,24 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord{
 
         return properties;
     }
+
+    @Override
+    public String getSource() {
+       return MedDRA2LGConstants.TOP_NODE_SOC;
+    }
+
+    @Override
+    public String getTarget() {
+        return this.soc_code;
+    }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

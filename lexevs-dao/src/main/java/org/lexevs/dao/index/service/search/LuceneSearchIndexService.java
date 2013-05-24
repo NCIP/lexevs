@@ -33,11 +33,11 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.FilteredQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -181,41 +181,45 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	public List<ScoreDoc> query(
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToExclude, 
-			Query query) {
+			final Query query) {
 		
-		Filter chainedFilter = null;
+		BooleanFilter booleanFilter = new BooleanFilter();
 		
-		if(CollectionUtils.isNotEmpty(codeSystemsToInclude)){
+		boolean hasIncludes = CollectionUtils.isNotEmpty(codeSystemsToInclude);
+		boolean hasExcludes = CollectionUtils.isNotEmpty(codeSystemsToExclude);
+
+		if(hasIncludes){
 			List<Filter> filters = new ArrayList<Filter>();
 			
 			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToInclude){
 				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
 			}
-			chainedFilter = new ChainedFilter(
-				filters.toArray(new Filter[filters.size()]), ChainedFilter.OR);
+			booleanFilter.add(
+				new FilterClause(new ChainedFilter(
+					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
+					BooleanClause.Occur.MUST));
 		}
 		
-		if(CollectionUtils.isNotEmpty(codeSystemsToExclude)){
-			MatchAllDocsQuery everyDocClause = new MatchAllDocsQuery();
-			BooleanQuery booleanQuery = new BooleanQuery();
-			
-			booleanQuery.add(everyDocClause, BooleanClause.Occur.MUST);
-			booleanQuery.add(query, BooleanClause.Occur.MUST);
+		if(hasExcludes){
+			List<Filter> filters = new ArrayList<Filter>();
 			
 			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToExclude){
-				booleanQuery.add(
-						this.getCodingSchemeMatchQuery(ref), 
-						BooleanClause.Occur.MUST_NOT);
+				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
 			}
-			
-			query = booleanQuery;
+			booleanFilter.add(
+				new FilterClause(new ChainedFilter(
+					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
+					BooleanClause.Occur.MUST_NOT));
 		}
 		
-		if(chainedFilter != null){
-			query = new FilteredQuery(query, chainedFilter);
+		Query queryToUse;
+		if(hasIncludes || hasExcludes){
+			queryToUse = new FilteredQuery(query, booleanFilter);
+		} else {
+			queryToUse = query;
 		}
 		
-		return this.indexDaoManager.getSearchDao().query(query);
+		return this.indexDaoManager.getSearchDao().query(queryToUse);
 	}
 	
 	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {

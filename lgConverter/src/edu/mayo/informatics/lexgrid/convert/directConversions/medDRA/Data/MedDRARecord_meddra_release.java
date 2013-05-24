@@ -42,6 +42,9 @@ public class MedDRARecord_meddra_release implements Serializable, DatabaseRecord
 	private String null_field2;
 	private String null_field3;
 
+    private int[] validFieldIndices = {1,2};
+    private int[] invalidFieldIndices = {3,4,5};
+    
 	public String getVersion() {
 		return version;
 	}
@@ -81,4 +84,14 @@ public class MedDRARecord_meddra_release implements Serializable, DatabaseRecord
 	public void setNull_field3(String null_field3) {
 		this.null_field3 = null_field3;
 	}
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

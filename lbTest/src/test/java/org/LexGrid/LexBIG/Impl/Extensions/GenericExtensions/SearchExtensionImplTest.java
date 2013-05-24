@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
@@ -61,6 +62,24 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	
 		ResolvedConceptReferencesIterator itr = searchExtension.search(null);
 		assertTrue(itr.hasNext());
+	}
+	
+	public void testSearchInactive() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(AUTO_URN);
+		ref.setCodingSchemeVersion(AUTO_VERSION);
+		
+		try {
+			lbs.getServiceManager(null).deactivateCodingSchemeVersion(ref, null);
+			
+			ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001");
+			assertFalse(itr.hasNext());
+		} finally {
+			lbs.getServiceManager(null).activateCodingSchemeVersion(ref);
+		}
 	}
 
 	public void testSimpleSearchCorrectFields() throws LBException {
