@@ -54,6 +54,9 @@ public class MedDRARecord_pt implements Serializable, DatabaseEntityRecord{
 	private String pt_icd9cm_code;
 	private String pt_icd10_code;
 	private String pt_jart_code;
+
+    private int[] validFieldIndices = {1, 2};
+    private int[] invalidFieldIndices = {3,4,5,6,7,8,9,10,11};
 	
     public String getPt_code() {
 		return pt_code;
@@ -204,4 +207,14 @@ public class MedDRARecord_pt implements Serializable, DatabaseEntityRecord{
         
         return properties;
     }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

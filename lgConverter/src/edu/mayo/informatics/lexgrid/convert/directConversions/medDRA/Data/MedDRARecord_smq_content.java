@@ -46,6 +46,9 @@ public class MedDRARecord_smq_content implements Serializable, DatabaseMapRecord
     private String term_addition_version;
     private String term_last_modified_version;
 
+    private int [] validFieldIndices = {1,2,3,4,5,6,7,8,9};
+    private int [] invalidFieldIndices = null;
+    
     public String getSmq_code() {
 		return smq_code;
 	}
@@ -127,4 +130,14 @@ public class MedDRARecord_smq_content implements Serializable, DatabaseMapRecord
     public String getTarget() {
         return this.term_code;
     }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

@@ -42,7 +42,10 @@ public class MedDRARecord_meddra_history implements Serializable, DatabaseRecord
 	private String term_type;
 	private String llt_currency;
 	private String action;
-	
+
+    private int[] validFieldIndices = null;
+    private int[] invalidFieldIndices = {1,2,3,4,5,6};
+    
 	public String getTerm_code() {
 		return term_code;
 	}
@@ -101,4 +104,14 @@ public class MedDRARecord_meddra_history implements Serializable, DatabaseRecord
 	public void setAction(String action) {
 		this.action = action;
 	}
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }

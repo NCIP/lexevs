@@ -58,6 +58,9 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord, Dat
 
     private String intlOrder = null;
 
+    private int[] validFieldIndices = {1,2,3};
+    private int[] invalidFieldIndices = {4,5,6,7,8,9,10};
+    
 	public String getSoc_code() {
 		return soc_code;
 	}
@@ -149,7 +152,7 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord, Dat
 
     @Override
     public String getName() {
-        return soc_abbrev;
+        return soc_name;
     }
     
     @Override
@@ -187,11 +190,21 @@ public class MedDRARecord_soc implements Serializable, DatabaseEntityRecord, Dat
 
     @Override
     public String getSource() {
-       return MedDRA2LGConstants.DEFAULT_ROOT_NODE;
+       return MedDRA2LGConstants.TOP_NODE_SOC;
     }
 
     @Override
     public String getTarget() {
         return this.soc_code;
     }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }
