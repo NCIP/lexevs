@@ -82,11 +82,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.AssociationDao;
+import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
 import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
@@ -94,6 +97,7 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallbac
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.paging.AbstractPageableIterator;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -2212,6 +2216,54 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return namespaces;
     }
     
+    public List<ResolvedConceptReference> getAncestorsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException{
+        
+        AbsoluteCodingSchemeVersionReference ref = 
+                ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, versionOrTag, true);
+            final String uri = ref.getCodingSchemeURN();
+            final String version = ref.getCodingSchemeVersion();
+            return getTransitiveClosure(code, association, uri, version, true);      
+        }
+
+    public List<ResolvedConceptReference> getDescendentsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException{
+        AbsoluteCodingSchemeVersionReference ref = 
+                ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, versionOrTag, true);
+            final String uri = ref.getCodingSchemeURN();
+            final String version = ref.getCodingSchemeVersion();
+            return getTransitiveClosure(code, association, uri, version, false);
+        }
+    
+    private List<ResolvedConceptReference> getTransitiveClosure(final String code, final String associationName, final String uri,
+            final String version, boolean ancestors) {
+        DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, code, associationName, ancestors);
+        List<ResolvedConceptReference> refs = new ArrayList<ResolvedConceptReference>();
+        while(iterator.hasNext()){
+            GraphDbTriple triple = iterator.next();
+            ResolvedConceptReference ref = new ResolvedConceptReference();
+            if(ancestors == false){
+            ref.setCode(triple.getSourceEntityCode());
+            ref.setCodeNamespace(triple.getSourceEntityNamespace());
+            ref.setCodingSchemeURI(triple.getSourceSchemeUri());
+            ref.setCodingSchemeVersion(triple.getSourceSchemeVersion());
+            ref.setEntityDescription(Constructors.createEntityDescription(triple.getSourceDescription()));
+            }
+            else{
+                ref.setCode(triple.getTargetEntityCode());
+                ref.setCodeNamespace(triple.getTargetEntityNamespace());
+                ref.setCodingSchemeURI(triple.getTargetSchemeUri());
+                ref.setCodingSchemeVersion(triple.getTargetSchemeVersion());
+                ref.setEntityDescription(Constructors.createEntityDescription(triple.getTargetDescription()));
+            }
+            refs.add(ref);
+        }
+        return refs;
+    }
+
+
+    
     private boolean useBackwardCompatibleMethods(String codingScheme, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
         String VERSION_17 = "1.7";
         String VERSION_18 = "1.8";
@@ -2231,4 +2283,89 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         conRef.setCodingSchemeVersion(version);
         return conRef;
     }
+    
+    public class ClosureIterator extends AbstractPageableIterator<GraphDbTriple>{
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 167913667057561717L;
+
+        private static final int DEFAULT_PAGE_SIZE = 1000;
+        
+        private DatabaseServiceManager databaseServiceManager;
+        private String codingSchemeUri;
+        private String version;
+        private String associationName;
+        private String code;
+        private boolean ancestors;
+
+        public ClosureIterator(DatabaseServiceManager databaseServiceManager,
+                String codingSchemeUri, String version, String associationName, String code, boolean ancestors) {
+            this(databaseServiceManager, codingSchemeUri, version, code, DEFAULT_PAGE_SIZE, associationName, ancestors);
+        }
+
+        public ClosureIterator(DatabaseServiceManager databaseServiceManager,
+                String codingSchemeUri, String version, String code,  int pageSize, String associationName, boolean ancestors) {
+
+            super(pageSize);
+            this.codingSchemeUri = codingSchemeUri;
+            this.version = version;
+            this.databaseServiceManager = databaseServiceManager;
+            this.associationName = associationName;
+            this.code = code;
+            this.ancestors = ancestors;
+        }
+        
+        private List<GraphDbTriple> getDescendentTriples(final int start){
+        return databaseServiceManager.getDaoCallbackService()
+                .executeInDaoLayer(new DaoCallback<List<GraphDbTriple>>() {
+
+                    @Override
+                    public List<GraphDbTriple> execute(DaoManager daoManager) {
+                        String codingSchemeId = daoManager
+                                .getCurrentCodingSchemeDao()
+                                .getCodingSchemeUIdByUriAndVersion(
+                                        codingSchemeUri, version);
+
+                        return daoManager.getCurrentAssociationDao()
+                                .getAllDescendantTriplesTrOfCodingScheme(
+                                        codingSchemeId, associationName, code, start, DEFAULT_PAGE_SIZE);
+                    }
+                });
+        }
+        
+
+        
+        private List<GraphDbTriple> getAncestorTriples(final int start){
+        return databaseServiceManager.getDaoCallbackService()
+                .executeInDaoLayer(new DaoCallback<List<GraphDbTriple>>() {
+
+                    @Override
+                    public List<GraphDbTriple> execute(DaoManager daoManager) {
+                        String codingSchemeId = daoManager
+                                .getCurrentCodingSchemeDao()
+                                .getCodingSchemeUIdByUriAndVersion(
+                                        codingSchemeUri, version);
+
+                        return daoManager.getCurrentAssociationDao()
+                                .getAllAncestorTriplesTrOfCodingScheme(
+                                        codingSchemeId, associationName, code, start, DEFAULT_PAGE_SIZE);
+                    }
+                });
+        }
+        
+        @Override
+        protected List<? extends GraphDbTriple> doPage(int currentPosition, int pageSize) {
+            // TODO Auto-generated method stub
+            if(ancestors == false){
+                return getDescendentTriples(currentPosition);}
+            else
+            {  return getAncestorTriples(currentPosition);}
+            
+        }
+
+
+    }
+    
+    
 }

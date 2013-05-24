@@ -76,7 +76,7 @@ public class LoadGraphToBlueprintDb {
 		countOut++;
 
 		if(countOut % 10000 == 0 ){
-	
+//		database.commit();
 		long current = System.currentTimeMillis();
 		System.out.println("Count: " + countOut);
 		System.out.println("Time elapsed: " + durationAsString(current - start) );
@@ -102,9 +102,11 @@ public class LoadGraphToBlueprintDb {
 	}
 	
 	public static void main(String[] args) {
-		String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
-		String version = "12.01f";
-		LoadGraphToBlueprintDb load = new LoadGraphToBlueprintDb(codingSchemeUri, version, "local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData");
+//		String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl";
+//		String version = "12.01f";
+		String codingSchemeUri = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl";
+		String version = "version 1.2";
+		LoadGraphToBlueprintDb load = new LoadGraphToBlueprintDb(codingSchemeUri, version, "local:/Users/m029206/git/releases/orientdb-graphed-1.4.0-SNAPSHOT/databases/testClgraph");
 		try{
 		load.runGraphLoad(codingSchemeUri, version);
 		}
@@ -113,7 +115,7 @@ public class LoadGraphToBlueprintDb {
 		}
 		finally{
 		load.database.close();
-		load.database.delete("/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData");
+		load.database.delete("/Users/m029206/git/releases/orientdb-graphed-1.4.0-SNAPSHOT/databases/testClgraph");
 	}
 	}
 

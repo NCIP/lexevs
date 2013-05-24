@@ -249,5 +249,13 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 			String codingSchemeId,
 			List<String> guids);
 
+	List<GraphDbTriple> getAllAncestorTriplesTrOfCodingScheme(
+			String codingSchemeId, String associationName, String code,
+			int start, int pagesize);
+
+	List<GraphDbTriple> getAllDescendantTriplesTrOfCodingScheme(
+			String codingSchemeId, String associationName, String code,
+			int start, int pagesize);
+
 
 }

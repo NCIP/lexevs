@@ -13,7 +13,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
 public class OrientDbGraphDao {
 	
-	private static final String GET_ALL_EDGES_IN = "select flatten(in(";
+	private static final String GET_ALL_EDGES_IN = "select expand(in(";
 	private static final String GET_VERTEX_FOR_CODE = "select from Nodes where code = ";
 	private static final String GET_VERTEX_FOR_DESCRIPTION = "select from Nodes where description = ";
 	private static final String TRAVERSE_ASSOC = "traverse in(\"";
@@ -76,7 +76,8 @@ public class OrientDbGraphDao {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		OrientDbGraphDao db = new OrientDbGraphDao("admin", "admin", "local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData");
+//		OrientDbGraphDao db = new OrientDbGraphDao("admin", "admin", "local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData");
+		OrientDbGraphDao db = new OrientDbGraphDao("admin", "admin", "local:/Users/m029206/git/releases/orientdb-graphed-1.4.0-SNAPSHOT/databases/testClgraph");
 		try{
 			List<OrientVertex> docs = db.getVertexResultForSql(db.getAllEdgesInForCode("C14225", "Gene_Found_In_Organism"));
 			System.out.println("Number of edges: " + docs.size());

@@ -44,7 +44,18 @@
 		<result property="associationPredicateId" column="associationPredicateGuid" />
  		<result property="entityAssnsGuid" column="entityAssnsGuid" />
 		<result property="associationInstanceId" column="associationInstanceId" /> 
-<!-- 		<result property="associationQualification" resultMap="Association.associationQualificationResult"/> -->
+		<result property="associationName"	column="associationName" />
+		<result property="sourceDescription" column="sd" nullValue="Description Missing"/>
+		<result property="targetDescription" column="td" nullValue="Description Missing"/>
+	</resultMap>
+	
+	<resultMap id="graphdbTripleTrResult" class="graphdbTriple" groupBy="tripleGuid">
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
+		<result property="targetEntityCode" column="targetEntityCode" />
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationPredicateId" column="associationPredicateGuid" />
+ 		<result property="entityAssnsGuid" column="entityAssnsTrGuid" />
 		<result property="associationName"	column="associationName" />
 		<result property="sourceDescription" column="sd" nullValue="Description Missing"/>
 		<result property="targetDescription" column="td" nullValue="Description Missing"/>
@@ -1920,5 +1931,93 @@
 				eae.entityAssnsGuid 
 			IN
 				( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
+	</select>
+	
+<select id="getGraphDbTriplesAncestorsTr" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
+		resultMap="Association.graphdbTripleTrResult">
+	
+			SELECT
+				eae.sourceEntityCode,
+				eae.sourceEntityCodeNamespace,
+				eae.targetEntityCode,
+				eae.targetEntityCodeNamespace,
+				eae.associationPredicateGuid,
+	 			eae.entityAssnsTrGuid,
+	 			ap.associationName,
+	 			source.description as sd,
+	 			target.description as td
+	 		FROM
+				$prefix$entityAssnsToEntityTr eae
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON 
+				eae.associationPredicateGuid =
+				ap.associationPredicateGuid
+			INNER JOIN
+				$prefix$relation rel
+			ON
+				ap.relationGuid =
+				rel.relationGuid
+			LEFT JOIN
+				$prefix$entity source
+			ON
+				source.entityCode = eae.sourceEntityCode 
+			LEFT JOIN
+				$prefix$entity target
+			ON 
+				target.entityCode = eae.targetEntityCode
+	
+			WHERE
+				rel.codingSchemeGuid = 
+				#param1,handler=variablePrimaryKeyTypeHandler#
+			AND
+				ap.associationName = #param2#
+			AND 
+				eae.sourceEntityCode = #param3#
+</select>
+	
+<select id="getGraphDbTriplesDecendentsTr" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
+		resultMap="Association.graphdbTripleTrResult">
+	
+			SELECT
+				eae.sourceEntityCode,
+				eae.sourceEntityCodeNamespace,
+				eae.targetEntityCode,
+				eae.targetEntityCodeNamespace,
+				eae.associationPredicateGuid,
+	 			eae.entityAssnsTrGuid,
+	 			ap.associationName,
+	 			source.description as sd,
+	 			target.description as td
+	 		FROM
+				$prefix$entityAssnsToEntityTr eae
+			INNER JOIN
+				$prefix$associationPredicate ap
+			ON 
+				eae.associationPredicateGuid =
+				ap.associationPredicateGuid
+			INNER JOIN
+				$prefix$relation rel
+			ON
+				ap.relationGuid =
+				rel.relationGuid
+			LEFT JOIN
+				$prefix$entity source
+			ON
+				source.entityCode = eae.sourceEntityCode 
+			LEFT JOIN
+				$prefix$entity target
+			ON 
+				target.entityCode = eae.targetEntityCode
+	
+			WHERE
+				rel.codingSchemeGuid = 
+				#param1,handler=variablePrimaryKeyTypeHandler#
+			AND
+				ap.associationName = #param2#
+			AND 
+				eae.targetEntityCode = #param3#
 	</select>
 </sqlMap>

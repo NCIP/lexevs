@@ -99,8 +99,8 @@ public class LoadGraphToOrientDb {
 //		String version = "version 1.2";
 		String version = "12.01f";
 //		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-1.4.0-SNAPSHOT/databases/perfTest");
-		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/perfTest");
-//		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-1.3.0/databases/perfTest");
+//		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/perfTest");
+		LoadGraphToOrientDb load = new LoadGraphToOrientDb(codingSchemeUri, version, "/Users/m029206/software/orientdb-graphed-1.3.0/databases/testCLgraph");
 		try{
 		load.runGraphLoad(codingSchemeUri, version);
 		//ODocument RID = load.database.getVertexForCode("VegetarianTopping", "Nodes");

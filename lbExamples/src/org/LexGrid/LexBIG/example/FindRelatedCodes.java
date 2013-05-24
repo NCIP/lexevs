@@ -98,12 +98,12 @@ public class FindRelatedCodes {
         NameAndValueList nvList = new NameAndValueList();
         nv.setName(relation);
         nvList.addNameAndValue(nv);
-
+        long start = System.currentTimeMillis();
         ResolvedConceptReferenceList matches = lbSvc.getNodeGraph(scheme, csvt, null).restrictToAssociations(nvList,
                 null).resolveAsList(ConvenienceMethods.createConceptReference(code, scheme), false, true, 1, 1,
-                new LocalNameList(), null, null, 1024);
+                new LocalNameList(), null, null, 3100);
 
-        // Analyze the result ...
+        // Analyze the result ...1
         if (matches.getResolvedConceptReferenceCount() > 0) {
             ResolvedConceptReference ref = (ResolvedConceptReference) matches.enumerateResolvedConceptReference()
                     .nextElement();
@@ -112,16 +112,22 @@ public class FindRelatedCodes {
             AssociationList targetof = ref.getTargetOf();
             if(targetof != null){
             Association[] associations = targetof.getAssociation();
+            int counter = 0;
             for (int i = 0; i < associations.length; i++) {
                 Association assoc = associations[i];
                 AssociatedConcept[] acl = assoc.getAssociatedConcepts().getAssociatedConcept();
+                
                 for (int j = 0; j < acl.length; j++) {
-                    AssociatedConcept ac = acl[j];
-                    EntityDescription ed = ac.getEntityDescription();
-                    Util.displayMessage("\t\t" + ac.getConceptCode() + "/"
-                            + (ed == null ? "**No Description**" : ed.getContent()));
+                    counter++;
+//                    AssociatedConcept ac = acl[j];
+//                    EntityDescription ed = ac.getEntityDescription();
+//                    Util.displayMessage("\t\t" + ac.getConceptCode() + "/"
+//                            + (ed == null ? "**No Description**" : ed.getContent()));
                 }
             }
+            Util.displayMessage("count " + counter);
+            long end = System.currentTimeMillis();
+            Util.displayMessage("time expended: " +  (end - start));
             }
         }
 

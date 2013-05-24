@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="src/test/resource"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
-	<classpathentry kind="lib" path="lib/orient-commons-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orient-commons-1.4.0-SNAPSHOT.jar" sourcepath="/Users/m029206/git/orientdb/commons/target/orient-commons-1.4.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-client-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-core-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-core-1.4.0-SNAPSHOT.jar" sourcepath="/Users/m029206/git/orientdb/core/target/orientdb-core-1.4.0-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-enterprise-1.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-server-1.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-tools-1.4.0-SNAPSHOT.jar"/>
