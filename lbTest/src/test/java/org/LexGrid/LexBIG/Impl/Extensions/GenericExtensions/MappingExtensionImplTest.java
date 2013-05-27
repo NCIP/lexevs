@@ -39,12 +39,14 @@ import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping.SearchContext;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionName;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.junit.Test;
 
 public class MappingExtensionImplTest extends LexBIGServiceTestCase {
     final static String testID = "MappingExtensionImplTest";
@@ -368,6 +370,31 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.hasNext());
 		assertTrue(itr.next().getCode().equals("Jaguar"));
 		assertFalse(itr.hasNext());	
+	}
+	
+	@Test
+	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
+		
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
+		
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
+		
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		int count = 0;
+		int numberRemaining = itr.numberRemaining();
+		
+		while(itr.hasNext()){
+			itr.next();
+			count++;
+		}
+		
+		assertEquals(count, numberRemaining);
 	}
 	
 	public void testResolveMappingWithRestrictionCount() throws LBException {
