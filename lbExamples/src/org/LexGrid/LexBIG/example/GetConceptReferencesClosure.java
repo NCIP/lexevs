@@ -50,10 +50,9 @@ public class GetConceptReferencesClosure {
     public void printAncestors(
             LexBIGServiceConvenienceMethodsImpl methods, String scheme, 
             CodingSchemeVersionOrTag csvt, String code, String rel) throws LBParameterException{
+        long start = System.currentTimeMillis();
         List<ResolvedConceptReference> references =  methods.getAncestorsInTransitiveClosure(scheme, csvt, code, rel);
         int counter = 0;
-        long start = System.currentTimeMillis();
-        
         for(ResolvedConceptReference ref: references){
             counter++;
             System.out.println("\t\t" + ref.getEntityDescription().getContent());
