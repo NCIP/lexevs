@@ -4,12 +4,12 @@
 #
 ####################################################################################################
 
-1_SINGLE_DB_MODE=
-1_DB_URL=jdbc:mysql://localhost/lexevs_test
-1_DB_DRIVER=com.mysql.jdbc.Driver
-1_DB_USER=root
+1_SINGLE_DB_MODE=true
+1_DB_URL=jdbc:mysql://bmidev4:3307/sb
+1_DB_DRIVER=org.gjt.mm.mysql.Driver
+1_DB_USER=lexgrid
 1_DB_PASSWORD=lexgrid
-1_DB_PREFIX=
+1_DB_PREFIX=onedb_junit_
 1_DB_PARAM=
 
 #2_SINGLE_DB_MODE=true

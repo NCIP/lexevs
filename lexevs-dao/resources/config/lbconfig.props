@@ -122,8 +122,9 @@ SINGLE_TABLE_MODE=false
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://localhost/lexevs_test
-#DB_URL=jdbc:mysql://bmidev4:3307/sb
+DB_URL=jdbc:mysql://localhost/lexevs
+#DB_URL=jdbc:mysql://bmidev4:3306/medra2
+#DB_URL=jdbc:mysql://bmidev4:3307/lexevs
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
 #DB_URL=jdbc:hsqldb:file:C:/temp/LexGrid
 #DB_URL=jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=C:/temp/LexBIG.mdb
