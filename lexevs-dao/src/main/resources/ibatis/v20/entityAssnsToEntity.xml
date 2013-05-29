@@ -1972,9 +1972,10 @@
 				rel.codingSchemeGuid = 
 				#param1,handler=variablePrimaryKeyTypeHandler#
 			AND
-				ap.associationName = #param2#
+				eae.sourceEntityCode = #param2#
+
 			AND 
-				eae.sourceEntityCode = #param3#
+				ap.associationName = #param3#
 </select>
 	
 <select id="getGraphDbTriplesDecendentsTr" remapResults="true" 
@@ -2016,8 +2017,8 @@
 				rel.codingSchemeGuid = 
 				#param1,handler=variablePrimaryKeyTypeHandler#
 			AND
-				ap.associationName = #param2#
+			  	eae.targetEntityCode = #param2#
 			AND 
-				eae.targetEntityCode = #param3#
+				ap.associationName = #param3#
 	</select>
 </sqlMap>

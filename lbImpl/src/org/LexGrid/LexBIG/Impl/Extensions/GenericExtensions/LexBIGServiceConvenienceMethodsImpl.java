@@ -2218,7 +2218,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     
     public List<ResolvedConceptReference> getAncestorsInTransitiveClosure( String codingScheme,
             CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException{
-        
         AbsoluteCodingSchemeVersionReference ref = 
                 ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, versionOrTag, true);
             final String uri = ref.getCodingSchemeURN();
@@ -2284,7 +2283,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return conRef;
     }
     
-    public class ClosureIterator extends AbstractPageableIterator<GraphDbTriple>{
+   private class ClosureIterator extends AbstractPageableIterator<GraphDbTriple>{
         /**
          * 
          */
