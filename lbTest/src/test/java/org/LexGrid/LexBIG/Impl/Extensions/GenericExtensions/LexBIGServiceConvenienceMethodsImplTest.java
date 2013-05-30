@@ -256,7 +256,6 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(refs.get(2).getEntityDescription().getContent().equals("Domestic Auto Makers"));    	
     }
     
-    @SuppressWarnings({"unchecked" })
 	public void testGetAllIncomingConcepts() throws LBInvocationException, LBParameterException, LBException{
     	AssociatedConceptList refs = lbscm.getallIncomingConceptsForAssociation(AUTO_SCHEME, null, "B", "hasSubtype", 10);
     	assertTrue(refs.getAssociatedConceptCount() > 0);
