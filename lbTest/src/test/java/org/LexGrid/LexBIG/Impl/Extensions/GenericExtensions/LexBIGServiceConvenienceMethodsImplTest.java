@@ -251,9 +251,9 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     public void testGetDecendentsInTransitiveClosure( ) throws LBParameterException{
     	List<ResolvedConceptReference> refs = lbscm.getDescendentsInTransitiveClosure(AUTO_SCHEME, null, "B", "hasSubtype");
     	assertTrue(refs.size() > 0);
-    	assertTrue(refs.get(2).getCode().equals("005"));
-    	assertTrue(refs.get(2).getCodeNamespace().equals("Automobiles"));
-    	assertTrue(refs.get(2).getEntityDescription().getContent().equals("Domestic Auto Makers"));    	
+    	assertTrue(refs.get(0).getCode().equals("A"));
+    	assertTrue(refs.get(0).getCodeNamespace().equals("Automobiles"));
+    	assertTrue(refs.get(0).getEntityDescription().getContent().equals("First Code in cycle"));    	
     }
     
 	public void testGetAllIncomingConcepts() throws LBInvocationException, LBParameterException, LBException{
