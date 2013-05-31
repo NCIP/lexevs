@@ -145,7 +145,7 @@ DB_URL=jdbc:mysql://localhost/lexevs
 # Recommended characters are alphanumeric (a-z, 0-9) and
 # underscore '_'.
 # NOTE: This variable should typically not be changed after content has been loaded.
-DB_PREFIX=
+DB_PREFIX=lb
 
 # DB_PRIMARY_KEY_STRATEGY indicates which strategy will be used
 # for the primary key of the database tables.
@@ -184,9 +184,7 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
 DB_USER=root
-DB_PASSWORD=root
-#DB_USER=lexgrid
-#DB_PASSWORD=lexgrid
+DB_PASSWORD=lexgrid
 
 ############# Password encryption
 

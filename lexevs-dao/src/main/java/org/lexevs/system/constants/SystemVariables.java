@@ -282,9 +282,9 @@ public class SystemVariables {
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
             
-        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
-        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
-            graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
+//        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
+//        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
+//            graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
 
             
             mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
