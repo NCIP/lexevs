@@ -3,9 +3,9 @@ Welcome to the LexEVS Project!
 
 The LexEVS Vocabulary Service.
 
-LexEVS is an Open Source project the provides the functionalities of a robust
+LexEVS is a Java based Open Source project the provides the functionalities of a robust
 terminology service API based on common terminolgy standards.
-It is written in Java.
+
 The goal of LexEVS is to provide a common terminology service for diverse terminological
 and ontological resources.
 
