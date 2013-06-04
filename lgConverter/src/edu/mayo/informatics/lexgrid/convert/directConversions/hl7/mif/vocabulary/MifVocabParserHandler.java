@@ -218,6 +218,10 @@ public class MifVocabParserHandler extends DefaultHandler {
             //System.out.println("Start Element :" + qName);
             // set ConceptRelationship info
             conceptRelationship.setTargetConceptCode(attributes.getValue("code"));
+            
+            if (attributes.getValue("codeSystem") != null) {
+                conceptRelationship.setTargetCodeSystemId(attributes.getValue("codeSystem"));
+            }
         }
 
         // ConceptProperty data
@@ -239,22 +243,15 @@ public class MifVocabParserHandler extends DefaultHandler {
             conceptProperty.setValue(attributes.getValue("value"));
         }
 
-        // Concept printName data
+        // Concept printName data - do not handle when preferredForLanguage is false
         if (qName.equalsIgnoreCase("printName")) {
             //System.out.println("Start Element :" + qName);
-            conceptPrintName = new MifPrintName();
-            
-            // set concept printName attribute info
-            conceptPrintName.setLanguage(attributes.getValue("language"));
-            
             if ((attributes.getValue("preferredForLanguage") != null) && (attributes.getValue("preferredForLanguage").equalsIgnoreCase("true"))) {
+                conceptPrintName = new MifPrintName();
                 conceptPrintName.setPreferredForLanguage(true);
-            }
-            if ((attributes.getValue("preferredForLanguage") != null) && (attributes.getValue("preferredForLanguage").equalsIgnoreCase("false"))) {
-                conceptPrintName.setPreferredForLanguage(false);
-            }
-            
-            conceptPrintName.setText(attributes.getValue("text"));
+                conceptPrintName.setLanguage(attributes.getValue("language"));
+                conceptPrintName.setText(attributes.getValue("text"));
+            }                      
         }
 
         // ConceptCode data
