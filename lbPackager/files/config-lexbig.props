@@ -197,6 +197,11 @@ DB_PASSWORD=
 
 #DB_PASSWORD_ENCRYPTED=
 
+############# Graph Database Configuration
+GRAPH_DB_USER=
+GRAPH_DB_PWD=
+GRAPH_DB_PATH=
+
 ############# Lucene Configuration
 # The number of boolean 'clauses' Lucene will attempt to create for wildcard
 # or Regular Expression queries. For very general queries on large ontologies,

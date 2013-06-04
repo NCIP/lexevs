@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="src/test/resource"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbInterfaces"/>
+	<classpathentry kind="lib" path="lib/orient-commons-1.4.0-SNAPSHOT.jar" sourcepath="/Users/m029206/git/orientdb/commons/target/orient-commons-1.4.0-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-client-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-core-1.4.0-SNAPSHOT.jar" sourcepath="/Users/m029206/git/orientdb/core/target/orientdb-core-1.4.0-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-enterprise-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-server-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-tools-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/blueprints-core-2.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/blueprints-orient-graph-2.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-distributed-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-graphdb-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-nativeos-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-object-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/pipes-2.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/gremlin-groovy-2.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/gremlin-java-2.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-1.8.9.jar"/>
+	<classpathentry kind="lib" path="lib/jansi-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
+	<classpathentry kind="lib" path="lib/jna-3.5.0.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=levevs-graph-dao&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

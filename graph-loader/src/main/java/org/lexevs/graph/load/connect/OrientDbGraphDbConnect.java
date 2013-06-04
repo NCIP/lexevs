@@ -218,6 +218,8 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		sourceSet(triple, vertexTableName);
 		targetSet(triple, vertexTableName);
 		edgeSet(triple, edgeTableName);
+		addVertexOut(source, edge);
+		addVertexIn(target, edge);
 	}
 	
 	
@@ -289,7 +291,8 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		target.field("version", triple.getTargetSchemeVersion());
 		target.field("predicateId", triple.getAssociationPredicateId());
 		target.field("description", triple.getTargetDescription());
-		target.save();}
+		target.save();
+		}
 		else{
 			target = temptarget;
 		}
@@ -299,7 +302,10 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		edge.reset();
 		edge.setClassName(edgeTableName);
 		edge.getIdentity().reset();
-		edge = orientDB.createEdge(source, target, edgeTableName);
+		edge.field("in", source);
+		edge.field("out", target);
+		
+//		edge = orientDB.createEdge(source, target, edgeTableName);
 		edge.save();
 	}
 	
@@ -327,8 +333,8 @@ public class OrientDbGraphDbConnect implements GraphDataBaseConnect {
 		sourceSet(triple, vertexTableName);
 		targetSet(triple, vertexTableName);
 		edgeSet(triple, null);
-//		updateCache();
-		
+		addVertexOut(source, edge);
+		addVertexIn(target, edge);
 	}
 	
 	/**

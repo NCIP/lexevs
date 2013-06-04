@@ -29,6 +29,7 @@ public enum OntologyFormat {
     UMLSHISTORY,
     MRMAP,
     RESOLVEDVALUESET,
+    MIFVOCABULARY,
     MEDDRA;
     
     public static String getMetaName() {

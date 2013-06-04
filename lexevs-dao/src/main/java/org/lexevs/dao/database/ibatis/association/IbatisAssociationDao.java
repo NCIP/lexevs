@@ -123,6 +123,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static final String GET_ALL_ENTITY_ASSOC_ENTITY_GUID_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getAllEntityAssocEntityGuids";
 
 	private static final String GET_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getGraphDbTriples";
+
+	private static final String GET_ANCESTOR_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getGraphDbTriplesAncestorsTr";
+
+	private static final String GET_DESCENDANT_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getGraphDbTriplesDecendentsTr";
 	
 	private static String DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteEntityAssocQualsByCodingSchemeUId";
 	
@@ -1034,6 +1038,27 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				new PrefixedParameterCollection(prefix, codingSchemeId, guids));
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<GraphDbTriple> getAllAncestorTriplesTrOfCodingScheme(
+			String codingSchemeId, String code, String associationName, int start, int pagesize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_ANCESTOR_TRIPLES_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameterTriple(prefix, codingSchemeId, code, associationName), start, pagesize);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<GraphDbTriple> getAllDescendantTriplesTrOfCodingScheme(
+			String codingSchemeId, String code, String associationName, int start, int pagesize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_DESCENDANT_TRIPLES_OF_CODINGSCHEME_SQL, 
+				new PrefixedParameterTriple(prefix, codingSchemeId, code, associationName), start, pagesize);
+	}
 	/**
 	 * @return the propertyDao
 	 */
@@ -1086,6 +1111,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		else
 			return false;
 	}
+
+
 
 
 

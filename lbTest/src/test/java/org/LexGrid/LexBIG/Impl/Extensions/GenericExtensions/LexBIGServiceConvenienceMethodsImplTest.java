@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -239,6 +240,30 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(namespaces.contains("ns4"));
     }
     
+    public void testGetAncestorsInTransitiveClosure( ) throws LBParameterException{
+    	List<ResolvedConceptReference> refs = lbscm.getAncestorsInTransitiveClosure(AUTO_SCHEME, null, "005", "hasSubtype");
+    	assertTrue(refs.size() > 0);
+    	assertTrue(refs.get(0).getCode().equals("Ford"));
+    	assertTrue(refs.get(0).getCodeNamespace().equals("Automobiles"));
+    	assertTrue(refs.get(0).getEntityDescription().getContent().equals("Ford Motor Company"));    	
+    }
+    
+    public void testGetDecendentsInTransitiveClosure( ) throws LBParameterException{
+    	List<ResolvedConceptReference> refs = lbscm.getDescendentsInTransitiveClosure(AUTO_SCHEME, null, "B", "hasSubtype");
+    	assertTrue(refs.size() > 0);
+    	assertTrue(refs.get(0).getCode().equals("A"));
+    	assertTrue(refs.get(0).getCodeNamespace().equals("Automobiles"));
+    	assertTrue(refs.get(0).getEntityDescription().getContent().equals("First Code in cycle"));    	
+    }
+    
+	public void testGetAllIncomingConcepts() throws LBInvocationException, LBParameterException, LBException{
+    	AssociatedConceptList refs = lbscm.getallIncomingConceptsForAssociation(AUTO_SCHEME, null, "B", "hasSubtype", 10);
+    	assertTrue(refs.getAssociatedConceptCount() > 0);
+    	assertTrue(refs.getAssociatedConcept(0).getCode().equals("A"));
+    	assertTrue(refs.getAssociatedConcept(0).getCodeNamespace().equals("Automobiles"));
+    	assertTrue(refs.getAssociatedConcept(0).getEntityDescription().getContent().equals("First Code in cycle"));
+    	
+    }
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {
         TestRunnable[] runnables = {
                 new TestCachePut(cache, 1000, 1),

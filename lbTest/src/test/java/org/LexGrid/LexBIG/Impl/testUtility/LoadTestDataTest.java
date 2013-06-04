@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.MedDRA_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
@@ -38,6 +39,7 @@ import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -354,6 +356,24 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
             Thread.sleep(500);
         }
 
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+
+    public void testLoadMedDRA() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+    	File accessPath = new File("resources/testData/medDRA");
+
+        MedDRA_Loader loader = (MedDRALoaderImpl) lbsm.getLoader("MedDRALoader");
+        loader.load(accessPath.toURI(), true, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(1000);
+        }
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 

@@ -101,7 +101,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option) {	
 		String indexName = this.getIndexName(reference);
 		
-		addIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		if(!onlyRegister) {
 
@@ -181,7 +182,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 * @param indexName the index name
 	 * @param indexVersion the index version
 	 */
-	protected void addIndexMetadata(
+	protected void addEntityIndexMetadata(
 			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
 		try {	  
 			String codingSchemeName = 
@@ -201,12 +202,27 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		}
 	}
 	
+	protected void addSearchIndexMetadata(
+			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
+		try {	  
+			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
+
+			metaData.rereadFile(true);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
 		if(systemVariables.getIsSingleIndex()){
 			return IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
 		} else {
 			return UUID.randomUUID().toString();
 		}
+	}
+	
+	protected String getSearchIndexName() {
+		return "SearchIndex";
 	}
 
 	/**

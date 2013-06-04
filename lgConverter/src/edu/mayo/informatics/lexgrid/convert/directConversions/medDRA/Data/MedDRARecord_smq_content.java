@@ -32,7 +32,7 @@ import java.io.Serializable;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_smq_content implements Serializable, DatabaseRecord{
+public class MedDRARecord_smq_content implements Serializable, DatabaseMapRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -46,6 +46,9 @@ public class MedDRARecord_smq_content implements Serializable, DatabaseRecord{
     private String term_addition_version;
     private String term_last_modified_version;
 
+    private int [] validFieldIndices = {1,2,3,4,5,6,7,8,9};
+    private int [] invalidFieldIndices = null;
+    
     public String getSmq_code() {
 		return smq_code;
 	}
@@ -117,4 +120,24 @@ public class MedDRARecord_smq_content implements Serializable, DatabaseRecord{
 	public void setTerm_last_modified_version(String term_last_modified_version) {
 		this.term_last_modified_version = term_last_modified_version;
 	}
+
+    @Override
+    public String getSource() {
+        return this.smq_code;
+    }
+
+    @Override
+    public String getTarget() {
+        return this.term_code;
+    }
+    
+    @Override
+    public boolean fieldsValid() throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        return MedDRARecord_Utils.fieldsValid(this, this.validFieldIndices);
+    }
+    
+    @Override
+    public String toString(){
+        return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }    
 }
