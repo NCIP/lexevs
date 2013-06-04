@@ -42,7 +42,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * Load the resolved ValueSet Definition 
  * 
  * <pre>
- * Example: java org.LexGrid.LexBIG.admin.LoadResolvedValueSetDefinition
+ * Example: java org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition
  *   -u, URN uniquely identifying the ValueSet Definition
  *   -l, &lt;id&gt; List of coding scheme versions to use for the resolution
  *       in format "csuri1::version1, csuri2::version2"
@@ -53,7 +53,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * user selection.
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.LexGrid.LexBIG.admin.LoadResolvedValueSetDefinition
+ *  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition
  *    -u &quot;Automobiles:valuesetDefinitionURI&quot; -l &quot;Automobiles::version1, GM::version2&quot; -csVersionTag &quot;production&quot
  * </pre>
  * 
