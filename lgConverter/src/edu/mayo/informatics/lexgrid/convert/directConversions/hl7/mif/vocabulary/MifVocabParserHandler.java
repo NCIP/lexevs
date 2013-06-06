@@ -42,6 +42,8 @@ public class MifVocabParserHandler extends DefaultHandler {
     
     protected boolean csvSupportedLanguageFlag;
     protected boolean conceptRelationshipFlag;
+    protected boolean conceptTextFlag;
+    protected boolean codeSystemTextFlag;
     
     // Debug/statisical data variables - used to get misc info about contents of the load
     // source file.  
@@ -122,9 +124,19 @@ public class MifVocabParserHandler extends DefaultHandler {
             // set CodeSystem attributes
             codeSystem.setName(attributes.getValue("name"));
             codeSystem.setTitle(attributes.getValue("title"));
-            codeSystem.setCodeSystemId(attributes.getValue("codeSystemId"));           
+            codeSystem.setCodeSystemId(attributes.getValue("codeSystemId")); 
+            state = CODESYSTEM;
         }
-                        
+
+        // Text data
+        if (qName.equalsIgnoreCase("text")) {
+            if (state == CODESYSTEM) {
+                codeSystemTextFlag = true;
+            } else if (state == CONCEPT) {
+                conceptTextFlag = true;
+            }
+        }
+
         // CodeSystemVersion data
         if (qName.equalsIgnoreCase("releasedVersion")) {
             //System.out.println("Start Element :" + qName);
@@ -182,6 +194,7 @@ public class MifVocabParserHandler extends DefaultHandler {
             conceptProperties = new ArrayList<MifConceptProperty>();
             conceptCodes = new ArrayList<MifConceptCode>();
             conceptPrintName = new MifPrintName();
+            state = CONCEPT;
             
             // set great grandparent VocabularyModel info
             concept.setVmCombinedId(getVocabularyModel().getCombinedId());
@@ -301,6 +314,7 @@ public class MifVocabParserHandler extends DefaultHandler {
        
         if (qName.equalsIgnoreCase("concept")) {
             //System.out.println("End Element :" + qName); 
+            state = START;
             if (conceptProperties.size() == 0) {
 //                System.out.println("WARNING:  A Concept for CodeSystemVersion having CodeSystem name " + codeSystem.getName() 
 //                        + " and the CodeSystemVersion releaseDate " 
@@ -373,6 +387,7 @@ public class MifVocabParserHandler extends DefaultHandler {
             }
             */
             codeSystems.add(codeSystem);
+            state = START;
         }
         
         if (qName.equalsIgnoreCase("packageLocation")) {
@@ -394,6 +409,16 @@ public class MifVocabParserHandler extends DefaultHandler {
             csvSupportedLanguages.add(new String(ch, start, length));
             csvSupportedLanguageFlag = false;
         }
+        if (codeSystemTextFlag) {
+            //System.out.println("Codesystem description text: " + new String(ch, start, length));
+            codeSystem.setDescription(new String(ch, start, length));
+            codeSystemTextFlag = false;
+        }
+        if (conceptTextFlag) {
+            //System.out.println("CSV SupportedLanguage: " + new String(ch, start, length));
+            concept.setDefinition(new String(ch, start, length));
+            conceptTextFlag = false;
+        }
     }
 
     public static void main(String[] args) {
@@ -402,7 +427,11 @@ public class MifVocabParserHandler extends DefaultHandler {
         p.setContentHandler(mifVocabSaxHandler);
         
         try {
-            p.parse("C:\\temp_downloads_HL7\\DEFN=UV=VO=1189-20121121.coremif");
+//            p.parse("C:\\temp_downloads_HL7\\DEFN=UV=VO=1189-20121121.coremif");  
+            
+            // Below is example file where codeSystem and concept annotations text has been transformed
+            // to strip out the numerous html tags
+            p.parse("C:\\temp_downloads_HL7\\Rimvocab_output.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }

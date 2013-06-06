@@ -341,7 +341,27 @@ public class MifVocabularyMapToLexGrid {
                             concept.addProperty(cp);
                         }                        
                         // *** End block - Set the concept's properties ***
-                        
+
+                        // Set definition
+                        String def = null;
+                        if (mifConcept.getDefinition() != null) {
+                            def = mifConcept.getDefinition();
+                        } else {
+                            def = mifConceptCode.getCode();
+                        }                        
+                        if (StringUtils.isNotBlank(def)) {
+                            Definition definition = new Definition();
+                            Text defText = new Text();
+                            defText.setContent(def);
+                            definition.setValue(defText);
+                            definition.setPropertyName(MifVocabulary2LGConstants.PROPERTY_DEFINITION);
+                            definition.setPropertyId("D1");
+                            definition.setIsActive(Boolean.TRUE);
+                            definition.setIsPreferred(Boolean.TRUE);
+                            definition.setLanguage(MifVocabulary2LGConstants.DEFAULT_LANGUAGE_EN);
+                            concept.addDefinition(definition);
+                        }
+
                         codeAndInternalIdToEntityHash.put(conceptCode, concept);
                         concepts.addEntity(concept);                        
                     }                   
@@ -392,11 +412,12 @@ public class MifVocabularyMapToLexGrid {
                 String nodeName = mifCodeSystem.getName();
                 String entityDescription = mifCodeSystem.getTitle();
                 String oid = mifCodeSystem.getCodeSystemId();
-                // TODO Once pre-processing that use XSLT to transform the source XML file such the html tags are stripped from the
-                //   codeSytem's annotation <text> sub element has been incorporated and with SAX parser handler changes, use the codeSystem's
-                //   description text for def variable below.  NOTE: some codeSystems do not have description text so code will need to 
-                //   account for this scenario (maybe set the def variable to "" empty string value like below).
-                String def = "";  // Annotation containing description is not being parsed from XML source file
+                String def = "";
+                if (mifCodeSystem.getDescription() != null) {
+                    def = mifCodeSystem.getDescription();
+                } else {
+                    def = mifCodeSystem.getTitle();
+                }
                
                 topNode.setEntityCode(nodeName + ":" + oid);                   
                 topNode.setEntityCodeNamespace(csclass.getCodingSchemeName());

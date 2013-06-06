@@ -16,6 +16,8 @@ public class MifCodeSystem implements Serializable{
     private String title;
     private String codeSystemId;
     
+    private String description;  // sub element path is <annotations>/<documentation>/<description>/<text>
+    
     // Collection of CodeSystemVersion objects
     private List<MifCodeSystemVersion> codeSystemVersions;
 
@@ -62,6 +64,14 @@ public class MifCodeSystem implements Serializable{
 
     public void setCodeSystemId(String codeSystemId) {
         this.codeSystemId = codeSystemId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<MifCodeSystemVersion> getCodeSystemVersions() {
