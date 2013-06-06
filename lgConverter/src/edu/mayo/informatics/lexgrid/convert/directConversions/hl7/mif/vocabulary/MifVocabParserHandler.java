@@ -14,6 +14,8 @@ public class MifVocabParserHandler extends DefaultHandler {
 
     private MifVocabularyModel vocabularyModel;  
     
+    public final static String DEFAULT_CODINGSCHEME_URI = "urn:hl7-org:v3/mif2";
+    
     protected List<MifCodeSystem> codeSystems;
     protected List<MifCodeSystemVersion> codeSystemVersions;
     protected List<String> csvSupportedLanguages;
@@ -99,11 +101,11 @@ public class MifVocabParserHandler extends DefaultHandler {
             supportedConceptRelationshipsMap = new HashMap<String, MifSupportedConceptRelationship>();
             supportedConceptPropertiesMap = new HashMap<String, MifSupportedConceptProperty>();
             
-            getVocabularyModel().setXmlns(attributes.getValue("xmlns"));
+            getVocabularyModel().setXmlns(DEFAULT_CODINGSCHEME_URI);
             getVocabularyModel().setName(attributes.getValue("name"));
             getVocabularyModel().setTitle(attributes.getValue("title"));
             getVocabularyModel().setSchemaVersion(attributes.getValue("schemaVersion"));
-            getVocabularyModel().setDefaultLanguage("en"); 
+
         }
         if (qName.equalsIgnoreCase("packageLocation")) {
             //System.out.println("Start Element :" + qName);
@@ -300,10 +302,10 @@ public class MifVocabParserHandler extends DefaultHandler {
         if (qName.equalsIgnoreCase("concept")) {
             //System.out.println("End Element :" + qName); 
             if (conceptProperties.size() == 0) {
-                System.out.println("WARNING:  A Concept for CodeSystemVersion having CodeSystem name " + codeSystem.getName() 
-                        + " and the CodeSystemVersion releaseDate " 
-                        + codeSystemVersion.getReleaseDate() + " has " + conceptProperties.size() 
-                        + " conceptProperty entries.");
+//                System.out.println("WARNING:  A Concept for CodeSystemVersion having CodeSystem name " + codeSystem.getName() 
+//                        + " and the CodeSystemVersion releaseDate " 
+//                        + codeSystemVersion.getReleaseDate() + " has " + conceptProperties.size() 
+//                        + " conceptProperty entries.");
             } else{
                 boolean notFoundFlag = true;
                 int count = 0;
@@ -327,6 +329,11 @@ public class MifVocabParserHandler extends DefaultHandler {
             }
             if (conceptCodes.size() > 1) {
                 countOfMultipleCodeConcepts += 1;
+                //System.out.print(countOfMultipleCodeConcepts + " A Concept in CodeSystem named " + codeSystem.getName() + " has multiple codes: ");
+                //for (int i=0; i<conceptCodes.size(); i++) {
+                //    System.out.print("code=" + conceptCodes.get(i).getCode() + " status=" + conceptCodes.get(i).getStatus() + "  ");
+                //}
+                //System.out.println();
             }
             concept.setConceptCodes(conceptCodes);
             concept.setConceptRelationships(conceptRelationships);
@@ -417,7 +424,29 @@ public class MifVocabParserHandler extends DefaultHandler {
             MifCodeSystemVersion mifCVS = (MifCodeSystemVersion)mifCodeSystem.getCodeSystemVersions().get(0);
             conceptCount += mifCVS.getConcepts().size();
         }
-        
+
+        for (int i=0; i<codeSystemList.size(); i++) {
+            MifCodeSystem mifCodeSystem = (MifCodeSystem)codeSystemList.get(i);
+            if (mifCodeSystem.getCodeSystemId().equals("2.16.840.1.113883.5.6")) {
+                System.out.println("Getting list of concept codes for codesystem 2.16.840.1.113883.5.6 ");
+                List<MifConcept> mifConcepts = mifCodeSystem.getCodeSystemVersions().get(0).getConcepts();
+                for (MifConcept mifConcept : mifConcepts) {
+                    System.out.println("Concept Code:  ");
+                    List<MifConceptCode> conceptCodes = mifConcept.getConceptCodes();
+                    for (MifConceptCode conceptCode : conceptCodes) {
+                        System.out.println("code=" + conceptCode.getCode() + ",status=" + conceptCode.getStatus() + "  ");
+                    }
+                    System.out.println("  Concept Properties:  ");
+                    List<MifConceptProperty> properties = mifConcept.getConceptProperties();
+                    for (MifConceptProperty property : properties) {
+                        System.out.println("name=" + property.getName() + ",value=" + property.getValue() + "  ");
+                    }
+                }
+            }
+            MifCodeSystemVersion mifCVS = (MifCodeSystemVersion)mifCodeSystem.getCodeSystemVersions().get(0);
+            conceptCount += mifCVS.getConcepts().size();
+        }
+
         System.out.println("Number of CodeSystemVersions(<releasedVersion> entries): " + mifVocabSaxHandler.countOfCodeSystemVersions);
         System.out.println("Number of CodeSystemVersions that do not have any Concepts: " + mifVocabSaxHandler.countOfCodeSystemVersionsWithNoConcepts);        
         System.out.println("Total number of Concepts: " + conceptCount);

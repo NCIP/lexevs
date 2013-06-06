@@ -39,7 +39,6 @@ import org.apache.commons.lang.StringUtils;
 public class MifVocabularyMapToLexGrid {
 
     private LgMessageDirectorIF messages_;
-//    private Hashtable<Integer, Entity> internalIdToEntityHash;
     private Hashtable<String, Entity> codeAndInternalIdToEntityHash;
 //    private LoaderPreferences loaderPrefs;
     
@@ -63,7 +62,7 @@ public class MifVocabularyMapToLexGrid {
 
             loadCodingScheme(csclass);
             loadAssociationEntityAndSupportedMaps(csclass);
-            // loadConcepts method includes the Concept's presentation and properties
+            // loadConcepts method below includes the Concept's presentation and properties
             loadConcepts(csclass);
             loadConceptRelations(csclass, codeAndInternalIdToEntityHash);
 
@@ -72,7 +71,6 @@ public class MifVocabularyMapToLexGrid {
             e.printStackTrace();
         } 
     }
-
    
     
     private void loadCodingScheme(CodingScheme csclass) {
@@ -207,7 +205,6 @@ public class MifVocabularyMapToLexGrid {
                                     
             }
 
-
             // Pre-load all the supported properties (supported concept properties)
             Set<String> scPropKeySet = mifVocabularyModel.getSupportedConceptPropertiesMap().keySet();
             for (String scPropName : scPropKeySet) {
@@ -253,25 +250,12 @@ public class MifVocabularyMapToLexGrid {
             // Create a method to handle them as concepts.
             loadArtificialTopNodes(csclass, concepts);
 
-            // Pre-load some concept data into hash tables but eliminate the
-            // code system scheme.
-//            PreparedStatement getConcept_ps = c.prepareStatement("SELECT internalId, conceptCode2, "
-//                    + SQLTableConstants.TBLCOL_CONCEPTSTATUS
-//                    + " FROM VCS_concept_code_xref WHERE codeSystemId2 <> ? and codeInstance <> ?");
-
-//            getConcept_ps.setString(1, HL72LGConstants.CODE_SYSTEM_OID);
-            // We want only the default case which happens to be uppercase.
-            // Ignore the lower case code
-//            getConcept_ps.setInt(2, 1);
-//            results = getConcept_ps.executeQuery();
-//            while (results.next()) {
             List<MifCodeSystem> codeSystemList = mifVocabularyModel.getCodeSystems();
             for (MifCodeSystem mifCodeSystem : codeSystemList) {
                 List<MifConcept> conceptList = mifCodeSystem.getCodeSystemVersions().get(0).getConcepts();
                 // It is assumed every concept has a single "internalId" conceptProperty
                 MifConceptProperty mifInternalIdProperty = null;
                 for (MifConcept mifConcept : conceptList) {
-//                    int internalId = results.getInt("internalId");
                     List<MifConceptProperty> mifConceptProperties = mifConcept.getConceptProperties();
                     for (MifConceptProperty mifCP : mifConceptProperties) {
                         if (mifCP.getName().equals("internalId")) {
@@ -280,20 +264,15 @@ public class MifVocabularyMapToLexGrid {
                         }
                     }
                     String internalIdStr = mifInternalIdProperty.getValue();
-//                    int internalId = Integer.parseInt(internalIdStr);
                     
-                    // If the concept contains more than one code, get the first "active" code.  If multiple codes and none
-                    // are "active", use the first code in the list.
-                    //    Or, create a concept entity for each code since original design created a string comprised of the 
-                    //    internalId and code's value.
+                    //  Note: if a concept has more than one code defined, the current design will create a concept entity for every code using
+                    //  the code's code value and the concept's internalId value (concept property common to both) as the LexGrid entity's code value. 
                     
                     List<MifConceptCode> mifConceptCodes = mifConcept.getConceptCodes();
                     for (MifConceptCode mifConceptCode : mifConceptCodes) {
                         
-//                        String conceptCode = Integer.toString(internalId) + ":" + results.getString("conceptCode2");
                         String conceptCode = mifConceptCode.getCode() + ":" + internalIdStr;
                         String status = mifConceptCode.getStatus();
-//                        String status = results.getString(SQLTableConstants.TBLCOL_CONCEPTSTATUS);
                         Entity concept = new Entity();
                         concept.setEntityCode(conceptCode);
                         concept.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
@@ -307,12 +286,16 @@ public class MifVocabularyMapToLexGrid {
                         
                         // *** Set concept's presentation ***
                         String sourceCodeSystemName = mifCodeSystem.getName();
+                        String entityDescription = null; 
                         MifPrintName mifPrintName = mifConcept.getPrintName();
-//                        String entityDescription = designationResults.getString("designation");
-                        String entityDescription = mifPrintName.getText(); 
+                        if (mifPrintName != null && mifPrintName.getText() != null) {
+                            entityDescription = mifPrintName.getText(); 
+                        } else {
+                            entityDescription = mifConceptCode.getCode(); 
+                        }                       
                         Presentation p = new Presentation();
                         Text txt = new Text();
-                        txt.setContent((String) entityDescription);
+                        txt.setContent(entityDescription);
                         p.setValue(txt);
                         // Note only the last <printName> having the preferredForLanguage = "true" - count will be 1
                         p.setIsPreferred(Boolean.TRUE);
@@ -321,9 +304,7 @@ public class MifVocabularyMapToLexGrid {
                         concept.setEntityDescription(ed);
                         p.setPropertyName(MifVocabulary2LGConstants.PROPERTY_PRINTNAME);
                         p.setPropertyId("T" + "1");
-//                        p.setPropertyId("T" + concept.getPresentationCount());
                         String propertyLanguage = mifPrintName.getLanguage();
-//                        String propertyLanguage = designationResults.getString("language");
                         if (StringUtils.isBlank(propertyLanguage)) {
                             p.setLanguage(MifVocabulary2LGConstants.DEFAULT_LANGUAGE_EN);
                         } else {
@@ -360,11 +341,7 @@ public class MifVocabularyMapToLexGrid {
                             concept.addProperty(cp);
                         }                        
                         // *** End block - Set the concept's properties ***
-                                             
                         
-                        // TODO might not be able to use multiple codes??? Cannot use concept's internalId as key by itself for multiples
-                        //  in hashtable if concept has multiple codes - will overlay previous put entry.
-//                        internalIdToEntityHash.put(Integer.valueOf(internalId), concept);
                         codeAndInternalIdToEntityHash.put(conceptCode, concept);
                         concepts.addEntity(concept);                        
                     }                   
@@ -376,7 +353,6 @@ public class MifVocabularyMapToLexGrid {
             e.printStackTrace();
         } 
 
-        // process the concept data
         messages_.info("Processing " + codeAndInternalIdToEntityHash.size() + " concepts...");
         csclass.setApproxNumConcepts(new Long(concepts.getEntity().length));
 
@@ -407,46 +383,21 @@ public class MifVocabularyMapToLexGrid {
                     .resolveAssociationPredicates(csclass, MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE).get(0);
             ai = RelationsUtil.subsume(parent_assoc, ai);
 
-            // Get all the code systems except the
-            // legacy code system coding scheme in HL7
-//            PreparedStatement getArtificialTopNodeData = c
-//                    .prepareStatement("select cs.*, code.internalId FROM VCS_code_system AS cs "+
-//                                      "LEFT JOIN  VCS_concept_code_xref AS code "+
-//                                      "ON cs.codeSystemName= code.conceptCode2 " +
-//                                      "where (code.codeSystemId2 = ? OR code.codeSystemId2 is null) AND cs.codesystemid <> ?");
-//            getArtificialTopNodeData.setString(1, HL72LGConstants.CODE_SYSTEM_OID);
-//            getArtificialTopNodeData.setString(2, HL72LGConstants.CODE_SYSTEM_OID);
-//            ResultSet dataResults = getArtificialTopNodeData.executeQuery();
-            
+            // Get all the code systems contained the XML source file which have been parsed into conversion objects and create
+            // concept entities to be a parent (hasSubto the concept entities that contain codes in the source XML file.
             List<MifCodeSystem> codeSystemList = mifVocabularyModel.getCodeSystems();
             
-            for (MifCodeSystem mifCodeSystem : codeSystemList) {
-//            while (dataResults.next()) {
-                
+            for (MifCodeSystem mifCodeSystem : codeSystemList) {                
                 Entity topNode = new Entity();
-//                String nodeName = dataResults.getString("codeSystemName");
                 String nodeName = mifCodeSystem.getName();
-//                String entityDescription = dataResults.getString("fullName");
                 String entityDescription = mifCodeSystem.getTitle();
-//                String oid = dataResults.getString("codeSystemId");
                 String oid = mifCodeSystem.getCodeSystemId();
+                // TODO Once pre-processing that use XSLT to transform the source XML file such the html tags are stripped from the
+                //   codeSytem's annotation <text> sub element has been incorporated and with SAX parser handler changes, use the codeSystem's
+                //   description text for def variable below.  NOTE: some codeSystems do not have description text so code will need to 
+                //   account for this scenario (maybe set the def variable to "" empty string value like below).
                 String def = "";  // Annotation containing description is not being parsed from XML source file
-//                String def = dataResults.getString("description");
-//                String internalId= dataResults.getString("internalId");
-//                if (StringUtils.isNotBlank(def)) {
-//                    int begin = def.lastIndexOf("<p>");
-//                    int end = def.lastIndexOf("</p>");
-//                    if (begin > -1) {
-//                        if (begin + 3 < end)
-//                            def = def.substring(begin + 3, end);
-//                    }
-//                }
                
-//                if (StringUtils.isNotBlank(internalId)) {
-//                    topNode.setEntityCode(internalId + ":" + nodeName);                   
-//                } else {
-//                    topNode.setEntityCode(nodeName + ":" + nodeName);
-//                }
                 topNode.setEntityCode(nodeName + ":" + oid);                   
                 topNode.setEntityCodeNamespace(csclass.getCodingSchemeName());
 
@@ -489,13 +440,11 @@ public class MifVocabularyMapToLexGrid {
                 at.setTargetEntityCodeNamespace(csclass.getCodingSchemeName());
                 RelationsUtil.subsume(ai, at);
 
-                // Now find the top nodes of the scheme and subsume them to this
-                // scheme's artificial top node.
-                // First get a list of all nodes in the scheme.
-                // but again exclude the code system nodes.
+                // Now find the concept of the codeSystem and subsume them to this
+                // artificial top node that is the codeSystem.
                 ArrayList<String> topNodes = new ArrayList<String>();
-                // TODO It appears original code below was using distinct internalId's of HL7 concept as the topNode for the codeSystem. Need
-                //   to do the same and consider multiple codes for a concept scenario?
+                // Need to use internalId of HL7 concept in conjunction with the conceptCode code value to make it distinct given
+                // code values are not unique across the load source file. 
                 List<MifConcept> mifConcepts = mifCodeSystem.getCodeSystemVersions().get(0).getConcepts();
                 for (MifConcept mifConcept : mifConcepts) {
                     
@@ -508,7 +457,6 @@ public class MifVocabularyMapToLexGrid {
                         }
                     }
                     String internalIdStr = mifInternalIdProperty.getValue();
-//                    int internalId = Integer.parseInt(internalIdStr);
                     
                     List<MifConceptCode> mifConceptCodes = mifConcept.getConceptCodes();
                     String code = null;
@@ -517,66 +465,9 @@ public class MifVocabularyMapToLexGrid {
                         topNodes.add(code + ":" + internalIdStr);
                     }                                    
                 }
-//                PreparedStatement getSystemCodes = c
-//                        .prepareStatement("SELECT DISTINCT (internalId), conceptCode2 FROM VCS_concept_code_xref WHERE codeSystemId2 =? AND codeSystemId2 <> ?");
-//                getSystemCodes.setString(1, oid);
-//                getSystemCodes.setString(2, HL72LGConstants.CODE_SYSTEM_OID);
-//                ResultSet systemCodes = getSystemCodes.executeQuery();
-//                while (systemCodes.next()) {
-//                    String testCode = systemCodes.getString("internalId");
-//                    if (testCode != null)
-//                        topNodes.add(testCode);
-//                }
-//                if (systemCodes != null)
-//                    systemCodes.close();
-//                if (getSystemCodes != null)
-//                    getSystemCodes.close();
-
-                // Drop any from the list that aren't top nodes.
-                // TODO For parsed data, all codeSystems should be topNodes for their concepts, right? And none of the concepts and
-                //  their codes should be removed given the parsed data is different than how the RIM database approach is set up.
-//                ArrayList<String> nodesToRemove = new ArrayList<String>();
-//                PreparedStatement checkForTopNode = null;
-//                for (int i = 0; i < topNodes.size(); i++) {
-//                    checkForTopNode = c
-//                            .prepareStatement("SELECT targetInternalId FROM VCS_concept_relationship WHERE targetInternalId =?");
-//                    checkForTopNode.setString(1, (String) topNodes.get(i));
-//                    topNode_results = checkForTopNode.executeQuery();
-//                    if (topNode_results.next()) {
-//                        if (topNodes.get(i).equals(topNode_results.getString(1))) {
-//                            nodesToRemove.add(topNodes.get(i));
-//                        }
-//                    }
-//                    if (topNode_results != null)
-//                        topNode_results.close();
-//                    if (checkForTopNode != null)
-//                        checkForTopNode.close();
-//                }
-//
-//                for (int i = 0; i < nodesToRemove.size(); i++) {
-//                    topNodes.remove(nodesToRemove.get(i));
-//                }
                 
-                // Get the full concept code for each.
-                // TODO Concatenation logic below already done in above iteration of codes for a concept
-//                PreparedStatement getconceptSuffix = null;
-//                ResultSet conceptCode = null;
-//                for (int i = 0; i < topNodes.size(); i++) {
-//                    getconceptSuffix = c
-//                            .prepareStatement("SELECT conceptCode2 FROM VCS_concept_code_xref where internalId = ?");
-//
-//                    getconceptSuffix.setString(1, (String) topNodes.get(i));
-//                    conceptCode = getconceptSuffix.executeQuery();
-//                    conceptCode.next();
-//                    topNodes.set(i, topNodes.get(i) + ":" + conceptCode.getString(1));
-//                    if (conceptCode != null)
-//                        conceptCode.close();
-//                    if (getconceptSuffix != null)
-//                        getconceptSuffix.close();
-//                }
-
-                // For each top node subsume to the current artificial node for
-                // the scheme.
+                // For each HL7 concept having a code, subsume to the current artificial parent node representing the
+                // codeSystem.
                 for (int j = 0; j < topNodes.size(); j++) {
                     try {
                         AssociationSource atn = new AssociationSource();
@@ -594,7 +485,6 @@ public class MifVocabularyMapToLexGrid {
                     }
                 }
             }
-//            dataResults.close();
             messages_.info("Top node processing complete");
         } catch (Exception e) {
             messages_.error("Top node processing failed", e);
@@ -625,9 +515,6 @@ public class MifVocabularyMapToLexGrid {
 
                     String sourceConceptCode = mifConceptCode.getCode() + ":" + internalIdStr;
 
-                    
-//            PreparedStatement relationship_ps = c
-//                   .prepareStatement("SELECT distinct relationCode, sourceInternalId, targetInternalId FROM VCS_concept_relationship");
                     List<MifConceptRelationship> mifConceptRelationships = mifConcept.getConceptRelationships();
                     for (MifConceptRelationship mifConceptRelationship : mifConceptRelationships) {
 
@@ -635,9 +522,6 @@ public class MifVocabularyMapToLexGrid {
 
                         String targetConceptCode = mifConceptRelationship.getTargetConceptCode();
                         String targetCodeSystemId = mifConceptRelationship.getTargetCodeSystemId();
-                        // TODO Remove println's below
-                        System.out.println("DEBUG: loadConceptRelations() - sourceConcept code is " + sourceConceptCode);
-                        System.out.println("DEBUG: loadConceptRelations() - targetConcept code is " + targetConceptCode);
                         String targetConceptCodeKey = null;
                         if (targetCodeSystemId == null) {
                             // Need to find targetConceptCode among the concepts for this codeset in order to grab its Entity.
@@ -646,7 +530,6 @@ public class MifVocabularyMapToLexGrid {
                             // Need to find targetConceptCode among the concepts for a different codeset in order to grab its Entity.
                             targetConceptCodeKey = getKeyValueGivenCodeAndCodeSystem(targetConceptCode, targetCodeSystemId);                            
                         }
-                        System.out.println("DEBUG: loadConceptRelations() - targetConceptCodeKey is " + targetConceptCodeKey);
                         Entity targetEntity = (Entity) codeAndInternalIdToEntity.get(targetConceptCodeKey);
 
                         String association = mifConceptRelationship.getRelationshipName();
