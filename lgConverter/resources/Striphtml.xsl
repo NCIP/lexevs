@@ -11,7 +11,7 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="hl7:p | hl7:b | hl7:li | hl7:ul | hl7:i">
+    <xsl:template match="hl7:p | hl7:b | hl7:li | hl7:ul | hl7:i | hl7:ol">
         <xsl:apply-templates/>
     </xsl:template>
 </xsl:stylesheet>

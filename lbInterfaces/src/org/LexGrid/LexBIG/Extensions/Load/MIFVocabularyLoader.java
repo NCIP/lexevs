@@ -4,6 +4,7 @@
 package org.LexGrid.LexBIG.Extensions.Load;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 
@@ -39,6 +40,7 @@ public interface MIFVocabularyLoader extends Loader {
 	 *            completes or fails. Regardless of setting, the getStatus and
 	 *            getLog calls are used to fetch results.
 	 * @throws LBException
+	 * @throws URISyntaxException 
 	 */
 	public void load(URI source, boolean stopOnErrors, boolean async) throws LBException;
 
