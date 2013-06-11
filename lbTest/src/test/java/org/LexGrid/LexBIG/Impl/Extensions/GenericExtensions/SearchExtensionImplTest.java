@@ -247,9 +247,17 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 and namespace:Automobiles");
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:Automobiles");
 		assertTrue(itr.hasNext());
 		assertEquals("C0001", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchExactCodeAndWrongNamespace() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:AutomobilesINVALID");
 		assertFalse(itr.hasNext());
 	}
 	
