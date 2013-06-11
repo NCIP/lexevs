@@ -44,6 +44,9 @@ public class MifVocabParserHandler extends DefaultHandler {
     protected boolean conceptRelationshipFlag;
     protected boolean conceptTextFlag;
     protected boolean codeSystemTextFlag;
+    protected boolean consumeAllTextFlag;
+    
+    protected StringBuilder textBuilder;
     
     // Debug/statisical data variables - used to get misc info about contents of the load
     // source file.  
@@ -130,6 +133,8 @@ public class MifVocabParserHandler extends DefaultHandler {
 
         // Text data
         if (qName.equalsIgnoreCase("text")) {
+            consumeAllTextFlag = true;
+            textBuilder = new StringBuilder();
             if (state == CODESYSTEM) {
                 codeSystemTextFlag = true;
             } else if (state == CONCEPT) {
@@ -398,7 +403,18 @@ public class MifVocabParserHandler extends DefaultHandler {
             getVocabularyModel().setCodeSystems(codeSystems);
             getVocabularyModel().setSupportedConceptRelationshipsMap(supportedConceptRelationshipsMap);
             getVocabularyModel().setSupportedConceptPropertiesMap(supportedConceptPropertiesMap);
-        }        
+        }
+        if(qName.equalsIgnoreCase("text")){
+            if (codeSystemTextFlag) {
+            codeSystem.setDescription(scrubHtmlFromText(this.textBuilder.toString()));
+            codeSystemTextFlag = false;
+            }
+            if (conceptTextFlag) {
+                concept.setDefinition(scrubHtmlFromText(this.textBuilder.toString()));
+                conceptTextFlag = false;
+            }
+            this.textBuilder = null;
+        }
         
     }
 
@@ -411,16 +427,25 @@ public class MifVocabParserHandler extends DefaultHandler {
         }
         if (codeSystemTextFlag) {
             //System.out.println("Codesystem description text: " + new String(ch, start, length));
-            codeSystem.setDescription(new String(ch, start, length));
-            codeSystemTextFlag = false;
+            //codeSystem.setDescription(new String(ch, start, length));
+            textBuilder.append(ch, start, length);
+            //codeSystemTextFlag = false;
+            
         }
         if (conceptTextFlag) {
             //System.out.println("CSV SupportedLanguage: " + new String(ch, start, length));
-            concept.setDefinition(new String(ch, start, length));
-            conceptTextFlag = false;
+            //concept.setDefinition(new String(ch, start, length));
+            textBuilder.append(ch, start, length);
+           // conceptTextFlag = false;
         }
     }
 
+    public String scrubHtmlFromText(String dirtyText){
+        String noHTMLString = dirtyText.replaceAll("\\<.*?>","");
+       noHTMLString = noHTMLString.replaceAll("&.*?;","");
+       return noHTMLString;
+    }
+    
     public static void main(String[] args) {
         MifVocabParserHandler mifVocabSaxHandler = new MifVocabParserHandler();
         SAXParser p = new SAXParser();
@@ -431,7 +456,7 @@ public class MifVocabParserHandler extends DefaultHandler {
             
             // Below is example file where codeSystem and concept annotations text has been transformed
             // to strip out the numerous html tags
-            p.parse("C:\\temp_downloads_HL7\\Rimvocab_output.xml");
+            p.parse("/Users/m029206/Desktop/rim0241d/DEFN=UV=VO=1189-20121121.coremif");
         } catch (Exception e) {
             e.printStackTrace();
         }

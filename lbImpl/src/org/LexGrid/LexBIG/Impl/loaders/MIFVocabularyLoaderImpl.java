@@ -132,12 +132,12 @@ public class MIFVocabularyLoaderImpl extends BaseLoader implements MIFVocabulary
 
     @Override
     public void load(URI source, boolean stopOnErrors, boolean async) throws LBException {
-        MifHtmlStripper stripper = new MifHtmlStripper(getMessageDirector(), source);
-        URI uri = stripper.transformXML();
+//        MifHtmlStripper stripper = new MifHtmlStripper(getMessageDirector(), source);
+//        URI uri = stripper.transformXML();
         this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         
-        this.load(uri);
+        this.load(source);
     }
 
     @Override
