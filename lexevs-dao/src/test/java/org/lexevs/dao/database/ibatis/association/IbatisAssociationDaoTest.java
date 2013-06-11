@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.ibatis.association;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -342,6 +343,93 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 		assertEquals("1", triple.getAssociationPredicateId());
 	}
 
+	
+	@Test
+	@Transactional
+	public void getAllTriplesTrAncestorsTest() throws SQLException {
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template
+				.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) "
+						+ "values ('1', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into "
+				+ "relation (relationGuid, codingSchemeGuid, containerName) "
+				+ "values ('1', '1', 'c-name')");
+
+		template.execute("insert into "
+				+ "associationpredicate (associationPredicateGuid,"
+				+ "relationGuid, associationName) values "
+				+ "('1', '1', 'apname')");
+		template.execute("insert into "
+				+ "entity (entityGuid, codingSchemeGuid, entityCode, " +
+				"entityCodeNamespace, isDefined, isAnonymous, description, isActive) " + 
+				"values ('1', '1' , 's0', 's-ns', null, null,'sourceDescription', '1')");
+		template.execute("insert into "
+				+ "entity (entityGuid, codingSchemeGuid, entityCode, " +
+				"entityCodeNamespace, isDefined, isAnonymous, description, isActive) " + 
+				"values ('2', '1' , 't0', 't-ns', null, null,'targetDescription', '1')");
+
+
+			template
+					.execute("insert into entityassnstoentitytr"
+							+ " values ('10', '1', 's0', 's-ns', 't0',  't-ns', 'path')");
+
+
+		List<GraphDbTriple> triples = ibatisAssociationDao
+				.getAllAncestorTriplesTrOfCodingScheme("1", "s0", "apname", 0, 1);
+		assertEquals(1, triples.size());
+
+		GraphDbTriple triple = triples.get(0);
+		assertEquals("s0", triple.getSourceEntityCode());
+		assertEquals("t0", triple.getTargetEntityCode());
+		assertEquals("s-ns", triple.getSourceEntityNamespace());
+		assertEquals("t-ns", triple.getTargetEntityNamespace());
+		assertEquals("1", triple.getAssociationPredicateId());
+	}
+	@Test
+	@Transactional
+	public void getAllTriplesTrDescendantsTest() throws SQLException {
+
+		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+		template
+				.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) "
+						+ "values ('1', 'csname', 'csuri', 'csversion')");
+
+		template.execute("insert into "
+				+ "relation (relationGuid, codingSchemeGuid, containerName) "
+				+ "values ('1', '1', 'c-name')");
+
+		template.execute("insert into "
+				+ "associationpredicate (associationPredicateGuid,"
+				+ "relationGuid, associationName) values "
+				+ "('1', '1', 'apname')");
+		template.execute("insert into "
+				+ "entity (entityGuid, codingSchemeGuid, entityCode, " +
+				"entityCodeNamespace, isDefined, isAnonymous, description, isActive) " + 
+				"values ('1', '1' , 's0', 's-ns', null, null,'sourceDescription', '1')");
+		template.execute("insert into "
+				+ "entity (entityGuid, codingSchemeGuid, entityCode, " +
+				"entityCodeNamespace, isDefined, isAnonymous, description, isActive) " + 
+				"values ('2', '1' , 't0', 't-ns', null, null,'targetDescription', '1')");
+
+
+			template
+					.execute("insert into entityassnstoentitytr"
+							+ " values ('10', '1', 's0', 's-ns', 't0',  't-ns', 'path')");
+
+
+		List<GraphDbTriple> triples = ibatisAssociationDao
+				.getAllDescendantTriplesTrOfCodingScheme("1", "t0", "apname", 0, 1);
+		assertEquals(1, triples.size());
+
+		GraphDbTriple triple = triples.get(0);
+		assertEquals("s0", triple.getSourceEntityCode());
+		assertEquals("t0", triple.getTargetEntityCode());
+		assertEquals("s-ns", triple.getSourceEntityNamespace());
+		assertEquals("t-ns", triple.getTargetEntityNamespace());
+		assertEquals("1", triple.getAssociationPredicateId());
+	}
 	/**
 	 * Test insert relations.
 	 * 

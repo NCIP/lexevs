@@ -2218,7 +2218,6 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     
     public List<ResolvedConceptReference> getAncestorsInTransitiveClosure( String codingScheme,
             CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException{
-        
         AbsoluteCodingSchemeVersionReference ref = 
                 ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingScheme, versionOrTag, true);
             final String uri = ref.getCodingSchemeURN();
@@ -2263,6 +2262,18 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     }
 
 
+    public AssociatedConceptList getallIncomingConceptsForAssociation(String codingScheme, CodingSchemeVersionOrTag csvt,
+            String code, String associationName, int maxToReturn) throws LBInvocationException, LBParameterException, LBException{
+        NameAndValueList nvList = Constructors.createNameAndValueList(associationName);
+        ResolvedConceptReferenceList matches = lbs_.getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
+                null).resolveAsList(ConvenienceMethods.createConceptReference(code, codingScheme), false, true, 1, 1,
+                new LocalNameList(), null, null, maxToReturn);
+               ResolvedConceptReference ref =  matches.getResolvedConceptReference(0);
+               AssociationList list = ref.getTargetOf();
+              Association assoc =  list.getAssociation(0);
+             AssociatedConceptList alist =  assoc.getAssociatedConcepts();
+        return alist;
+    }
     
     private boolean useBackwardCompatibleMethods(String codingScheme, CodingSchemeVersionOrTag versionOrTag) throws LBParameterException {
         String VERSION_17 = "1.7";
@@ -2284,7 +2295,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return conRef;
     }
     
-    public class ClosureIterator extends AbstractPageableIterator<GraphDbTriple>{
+    private class ClosureIterator extends AbstractPageableIterator<GraphDbTriple>{
         /**
          * 
          */

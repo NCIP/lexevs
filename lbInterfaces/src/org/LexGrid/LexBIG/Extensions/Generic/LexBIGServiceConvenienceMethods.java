@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Extensions.Generic;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -31,6 +32,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -966,4 +968,39 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
             String codingScheme,
             CodingSchemeVersionOrTag versionOrTag,
             final String code) throws LBException;
+    
+    /**
+     * @param codingScheme the code system
+     * @param csvt the version or tag
+     * @param code the unique identifier in the code system
+     * @param associationName the relationship to restrict this to
+     * @param maxToReturn the maximum number of values to return
+     * @return A list of concepts associated with this term via the indicated association
+     * @throws LBInvocationException 
+     * @throws LBParameterException
+     * @throws LBException
+     */
+    public AssociatedConceptList getallIncomingConceptsForAssociation(String codingScheme, CodingSchemeVersionOrTag csvt,
+            String code, String associationName, int maxToReturn) throws LBInvocationException, LBParameterException, LBException;
+    
+    /**
+     * @param codingScheme the coding scheme
+     * @param versionOrTag the version or tag
+     * @param code the unique identifier in the code system
+     * @param association the relationship to restrict this to
+     * @return a list of all ancestor concepts for this term and relationship
+     * @throws LBParameterException caused by an incorrect parameter for this method
+     */
+    public List<ResolvedConceptReference> getAncestorsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException;
+    /**
+     * @param codingScheme the coding scheme
+     * @param versionOrTag the version or tag
+     * @param code unique id in the code system
+     * @param association relationship to restrict to
+     * @return List of all concepts in the descendant path
+     * @throws LBParameterException incorrect parameter will cause this
+     */
+    public List<ResolvedConceptReference> getDescendentsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException;
 }
