@@ -104,17 +104,8 @@ public class MifVocabularyMapToLexGrid {
            
             // Add SupportedHierarchy Mappings
             SupportedHierarchy hierarchy = new SupportedHierarchy();
-            hierarchy.setLocalId(MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE);
-            ArrayList<String> list = new ArrayList<String>();
-            list.add(MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE);
-            hierarchy.setAssociationNames(list);
-            hierarchy.setRootCode(MifVocabulary2LGConstants.DEFAULT_ROOT_NODE);
-            hierarchy.setIsForwardNavigable(true);
-            csclass.getMappings().addSupportedHierarchy(hierarchy);
-            
-            hierarchy = new SupportedHierarchy();
             hierarchy.setLocalId(MifVocabulary2LGConstants.ASSOCIATION_IS_A);
-            list = new ArrayList<String>();
+            ArrayList<String> list = new ArrayList<String>();
             list.add(MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE);
             hierarchy.setAssociationNames(list);
             hierarchy.setRootCode(MifVocabulary2LGConstants.DEFAULT_ROOT_NODE);
@@ -128,7 +119,6 @@ public class MifVocabularyMapToLexGrid {
         } 
     }
 
-    
     private void loadAssociationEntityAndSupportedMaps(CodingScheme csclass) {
         Relations relations = null;
         Entities concepts = csclass.getEntities();

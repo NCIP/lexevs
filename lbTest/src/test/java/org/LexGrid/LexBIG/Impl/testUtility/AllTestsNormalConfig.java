@@ -237,6 +237,10 @@ public class AllTestsNormalConfig {
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.IsoMapTest.class);
         mainSuite.addTest(umlsLoaderSuite);
         
+        TestSuite hl7MifVocabularyLoaderSuite = new TestSuite("HL7 MIF Vocabulary Loader Tests");
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabularyHierarchyRootsTestIT.class);
+        mainSuite.addTest(hl7MifVocabularyLoaderSuite);
+        
         TestSuite luceneSuite = new TestSuite("Lucene Tests");
         luceneSuite.addTestSuite(QueryGeneratorTest.class);
         luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
