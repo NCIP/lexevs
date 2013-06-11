@@ -16,7 +16,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.xerces.parsers.SAXParser;
 
-import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifHtmlStripper;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabParserHandler;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabulary2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabularyModel;
@@ -132,8 +131,6 @@ public class MIFVocabularyLoaderImpl extends BaseLoader implements MIFVocabulary
 
     @Override
     public void load(URI source, boolean stopOnErrors, boolean async) throws LBException {
-//        MifHtmlStripper stripper = new MifHtmlStripper(getMessageDirector(), source);
-//        URI uri = stripper.transformXML();
         this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         
