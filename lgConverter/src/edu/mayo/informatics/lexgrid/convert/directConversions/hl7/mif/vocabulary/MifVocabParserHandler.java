@@ -441,8 +441,12 @@ public class MifVocabParserHandler extends DefaultHandler {
     }
 
     public String scrubHtmlFromText(String dirtyText){
+        //scrubbing the html tags
         String noHTMLString = dirtyText.replaceAll("\\<.*?>","");
+        //scrubbing the html entities
        noHTMLString = noHTMLString.replaceAll("&.*?;","");
+       //Cleaning up the indentation added by the characters method
+       noHTMLString = noHTMLString.replaceAll("\t", "");
        return noHTMLString;
     }
     
