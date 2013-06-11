@@ -441,16 +441,12 @@ public class MifVocabParserHandler extends DefaultHandler {
         }
         if (codeSystemTextFlag) {
             //System.out.println("Codesystem description text: " + new String(ch, start, length));
-            //codeSystem.setDescription(new String(ch, start, length));
             textBuilder.append(ch, start, length);
-            //codeSystemTextFlag = false;
             
         }
         if (conceptTextFlag) {
             //System.out.println("CSV SupportedLanguage: " + new String(ch, start, length));
-            //concept.setDefinition(new String(ch, start, length));
             textBuilder.append(ch, start, length);
-           // conceptTextFlag = false;
         }
     }
 
