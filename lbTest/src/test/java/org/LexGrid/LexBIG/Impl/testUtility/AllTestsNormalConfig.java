@@ -239,6 +239,9 @@ public class AllTestsNormalConfig {
         
         TestSuite hl7MifVocabularyLoaderSuite = new TestSuite("HL7 MIF Vocabulary Loader Tests");
         hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabularyHierarchyRootsTestIT.class);
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.DefinitionPropertyDataTestIT.class);
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.EntityAssnsToEntityDataTestIT.class);
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.PresentationPropertyDataTestIT.class);
         mainSuite.addTest(hl7MifVocabularyLoaderSuite);
         
         TestSuite luceneSuite = new TestSuite("Lucene Tests");
