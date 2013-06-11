@@ -124,6 +124,7 @@ public class SearchEntityIndexer implements EntityIndexer {
 		PerFieldAnalyzerWrapper analyzer =
 		new PerFieldAnalyzerWrapper(new StandardAnalyzer());
 		analyzer.addAnalyzer("code", new KeywordAnalyzer());
+		analyzer.addAnalyzer("namespace", new KeywordAnalyzer());
 		
 		return analyzer;
 	}
