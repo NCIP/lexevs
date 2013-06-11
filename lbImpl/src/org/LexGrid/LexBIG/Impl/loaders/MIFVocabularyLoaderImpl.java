@@ -16,7 +16,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.xerces.parsers.SAXParser;
 
-import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifHtmlStripper;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabParserHandler;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabulary2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabularyModel;
