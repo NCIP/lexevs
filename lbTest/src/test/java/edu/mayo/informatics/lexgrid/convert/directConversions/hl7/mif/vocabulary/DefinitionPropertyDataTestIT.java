@@ -56,7 +56,7 @@ public class DefinitionPropertyDataTestIT extends DataLoadTestBase {
 		
 		assertTrue(defs.length == 1);
 		
-		assertTrue(defs[0].getValue().getContent().trim().equals("Receiving application successfully processed message."));
+		assertTrue(defs[0].getValue().getContent().equals("Receiving application successfully processed message."));
 	}
 	
 

@@ -420,11 +420,11 @@ public class MifVocabParserHandler extends DefaultHandler {
         }
         if(qName.equalsIgnoreCase("text")){
             if (codeSystemTextFlag) {
-            codeSystem.setDescription(scrubHtmlFromText(this.textBuilder.toString()));
+            codeSystem.setDescription(scrubHtmlFromText(this.textBuilder.toString().trim()));
             codeSystemTextFlag = false;
             }
             if (conceptTextFlag) {
-                concept.setDefinition(scrubHtmlFromText(this.textBuilder.toString()));
+                concept.setDefinition(scrubHtmlFromText(this.textBuilder.toString().trim()));
                 conceptTextFlag = false;
             }
             this.textBuilder = null;
