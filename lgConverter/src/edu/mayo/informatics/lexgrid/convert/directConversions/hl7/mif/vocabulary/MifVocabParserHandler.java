@@ -45,6 +45,7 @@ public class MifVocabParserHandler extends DefaultHandler {
     protected boolean conceptTextFlag;
     protected boolean codeSystemTextFlag;
     protected boolean consumeAllTextFlag;
+    protected boolean validated = false;
     
     protected StringBuilder textBuilder;
     
@@ -105,13 +106,26 @@ public class MifVocabParserHandler extends DefaultHandler {
             codeSystems = new ArrayList<MifCodeSystem>();
             supportedConceptRelationshipsMap = new HashMap<String, MifSupportedConceptRelationship>();
             supportedConceptPropertiesMap = new HashMap<String, MifSupportedConceptProperty>();
-            
-            getVocabularyModel().setXmlns(DEFAULT_CODINGSCHEME_URI);
-            getVocabularyModel().setName(attributes.getValue("name"));
-            getVocabularyModel().setTitle(attributes.getValue("title"));
-            getVocabularyModel().setSchemaVersion(attributes.getValue("schemaVersion"));
+            MifVocabularyModel model = getVocabularyModel();
+            model.setXmlns(DEFAULT_CODINGSCHEME_URI);
+            model.setName(attributes.getValue("name"));
+            model.setTitle(attributes.getValue("title"));
+            model.setSchemaVersion(attributes.getValue("schemaVersion"));
+            if(model.getName() != null |
+                    model.getTitle() != null | 
+                    model.getSchemaVersion() != null | 
+                    !(model.getName().length() < 0) | 
+                    !(model.getTitle().length() < 0) | 
+                    !(model.getSchemaVersion().length() < 0)){
+                validated = true;
+            }
 
         }
+        
+        if(!validated){
+            throw new RuntimeException("Source file is invalid. Please check to see if this is a valid HL7 vocabulary mif file");
+        }
+        
         if (qName.equalsIgnoreCase("packageLocation")) {
             //System.out.println("Start Element :" + qName);
             getVocabularyModel().setCombinedId(attributes.getValue("combinedId"));
@@ -406,11 +420,11 @@ public class MifVocabParserHandler extends DefaultHandler {
         }
         if(qName.equalsIgnoreCase("text")){
             if (codeSystemTextFlag) {
-            codeSystem.setDescription(scrubHtmlFromText(this.textBuilder.toString()));
+            codeSystem.setDescription(scrubHtmlFromText(this.textBuilder.toString().trim()));
             codeSystemTextFlag = false;
             }
             if (conceptTextFlag) {
-                concept.setDefinition(scrubHtmlFromText(this.textBuilder.toString()));
+                concept.setDefinition(scrubHtmlFromText(this.textBuilder.toString().trim()));
                 conceptTextFlag = false;
             }
             this.textBuilder = null;
@@ -427,16 +441,12 @@ public class MifVocabParserHandler extends DefaultHandler {
         }
         if (codeSystemTextFlag) {
             //System.out.println("Codesystem description text: " + new String(ch, start, length));
-            //codeSystem.setDescription(new String(ch, start, length));
             textBuilder.append(ch, start, length);
-            //codeSystemTextFlag = false;
             
         }
         if (conceptTextFlag) {
             //System.out.println("CSV SupportedLanguage: " + new String(ch, start, length));
-            //concept.setDefinition(new String(ch, start, length));
             textBuilder.append(ch, start, length);
-           // conceptTextFlag = false;
         }
     }
 
