@@ -23,6 +23,8 @@
 */
 package org.LexGrid.LexBIG.Extensions.Generic;
 
+import java.io.Serializable;
+
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.codingSchemes.CodingScheme;
 
@@ -31,8 +33,10 @@ import org.LexGrid.codingSchemes.CodingScheme;
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class CodingSchemeReference {
-	
+public class CodingSchemeReference implements Serializable {
+
+	private static final long serialVersionUID = -7922922055849944958L;
+
 	private String codingScheme;
 	
 	private CodingSchemeVersionOrTag versionOrTag;

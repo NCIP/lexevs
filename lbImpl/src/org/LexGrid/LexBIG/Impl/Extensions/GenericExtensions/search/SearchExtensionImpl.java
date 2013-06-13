@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -88,7 +89,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         if (StringUtils.isBlank(text)) {
             return new MatchAllDocsQuery();
         } else {
-            QueryParser parser = new QueryParser("description", analyzer);
+            QueryParser parser = this.createQueryParser(analyzer);
 
             try {
                 return parser.parse(text);
@@ -96,6 +97,13 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 throw new RuntimeException(e);
             }
         }
+    }
+    
+    protected QueryParser createQueryParser(Analyzer analyzer){
+        QueryParser parser = new QueryParser("description", analyzer);
+        parser.setDefaultOperator(Operator.AND);
+        
+        return parser;
     }
     
     private Set<AbsoluteCodingSchemeVersionReference> 
