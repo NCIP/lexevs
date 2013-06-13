@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -26,20 +28,38 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.annotations.LgProxyClass;
 
-@LgClientSideSafe
 public abstract class AbstractListBackedResolvedConceptReferencesIterator<T> implements ResolvedConceptReferencesIterator {
 
     private static final long serialVersionUID = -9172975996526240085L;
     
     private int pos = 0;
+    
+    private TransformerExecutor<T> transformerExecutor = new TransformerExecutor<T>();
    
     private List<T> list;
+    private Transformer<T> transformer;
 
-    protected AbstractListBackedResolvedConceptReferencesIterator(List<T> list){
+    protected AbstractListBackedResolvedConceptReferencesIterator(List<T> list, Transformer<T> transformer){
         super();
         this.list = list;
+        this.transformer = transformer;
+    }
+    
+    public static interface Transformer<T> extends Serializable {
+        public ResolvedConceptReferenceList transform(Iterable<T> items);
+    }
+    
+    @LgProxyClass
+    public static class TransformerExecutor<T> implements Serializable {
+
+        private static final long serialVersionUID = -6065733883014163743L;
+
+        public ResolvedConceptReferenceList transform(Transformer<T> transformer, Iterable<T> items) {
+            return transformer.transform(items);
+        }
+        
     }
 
     @Override
@@ -59,25 +79,30 @@ public abstract class AbstractListBackedResolvedConceptReferencesIterator<T> imp
 
     @Override
     public ResolvedConceptReference next() throws LBResourceUnavailableException, LBInvocationException {
-        return this.doTransform(this.list.get(pos++));
+        ResolvedConceptReferenceList result = this.next(1);
+        
+        if(result == null || result.getResolvedConceptReferenceCount() == 0){
+            return null;
+        } else {
+            if(result.getResolvedConceptReferenceCount() != 1){
+                throw new IllegalStateException("Must have one and only one result.");
+            }
+            
+            return result.getResolvedConceptReference(0);
+        }
     }
-    
-    private ResolvedConceptReferenceList doTransform(List<T> items){
-    	ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
-    	
-    	 for(T item : items){
-             returnList.addResolvedConceptReference(this.doTransform(item));
-         }
-    	 
-    	return returnList;
-    }
-    
-    protected abstract ResolvedConceptReference doTransform(T item);
 
     @Override
     public ResolvedConceptReferenceList next(int maxToReturn) throws LBResourceUnavailableException,
             LBInvocationException {
-        return this.doTransform(this.list.subList(pos, this.adjustEndPos(maxToReturn)));
+        ResolvedConceptReferenceList results = 
+               this.transformerExecutor.transform(
+                      this.transformer, 
+                      new ArrayList<T>(this.list.subList(pos, this.adjustEndPos(pos + maxToReturn))));
+        
+        pos += results.getResolvedConceptReferenceCount();
+        
+        return results;
     }
 
     @Override
@@ -85,7 +110,7 @@ public abstract class AbstractListBackedResolvedConceptReferencesIterator<T> imp
             LBInvocationException, LBParameterException {
         List<T> subList = this.list.subList(start, this.adjustEndPos(end));
         
-        return this.doTransform(subList);
+        return this.transformerExecutor.transform(this.transformer, subList);
     }
 
     private int adjustEndPos(int requestedEnd){
