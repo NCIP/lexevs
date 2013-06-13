@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lgCS:codingScheme
+    xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts"
+    xmlns:lgCS="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets"
+    xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd"
+    codingSchemeName="Automobiles" codingSchemeURI="urn:oid:11.11.0.1"
+    formalName="autos" defaultLanguage="en" approxNumConcepts="24" representsVersion="1.0">
+    <lgCommon:entityDescription>Automobiles</lgCommon:entityDescription>
+    <lgCS:localName>11.11.0.1</lgCS:localName>
+    <lgCS:localName>Automobiles</lgCS:localName>
+    <lgCS:localName>SomeOtherValue</lgCS:localName>
+    <lgCS:source subRef="testSubRef" role="testRole">lexgrid.org</lgCS:source>
+    <lgCS:copyright>Copyright by Mayo Clinic.</lgCS:copyright>
+    <lgCS:mappings>
+        <lgNaming:supportedAssociation localId="A1" uri="http://A1.org"
+            codingScheme="Automobiles" entityCodeNamespace="Automobiles" entityCode="AssocEntity">A1</lgNaming:supportedAssociation>
+        <lgNaming:supportedAssociation localId="differentEntityCodeAssoc">differentEntityCodeAssoc</lgNaming:supportedAssociation>
+        <lgNaming:supportedAssociation localId="hasSubtype" uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
+        <lgNaming:supportedAssociation localId="uses" uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
+        <lgNaming:supportedAssociationQualifier localId="hasEngine" uri="www.something.com">hasEngine</lgNaming:supportedAssociationQualifier>
+        <lgNaming:supportedAssociationQualifier localId="since" uri="www.since.com">since</lgNaming:supportedAssociationQualifier>
+        <lgNaming:supportedAssociationQualifier localId="sold" uri="www.sold.com">sold</lgNaming:supportedAssociationQualifier>
+        <lgNaming:supportedCodingScheme localId="Automobiles"
+            uri="urn:oid:11.11.0.1" isImported="true">Automobiles</lgNaming:supportedCodingScheme>
+        <lgNaming:supportedCodingScheme localId="ExpendableParts"
+            uri="urn:oid:11.11.0.50" isImported="true">Expendable Parts</lgNaming:supportedCodingScheme>
+        <lgNaming:supportedCodingScheme localId="GermanMadeParts"
+            uri="urn:oid:11.11.0.2" isImported="true">German Made Parts</lgNaming:supportedCodingScheme>
+        <lgNaming:supportedContainerName localId="relations">relations</lgNaming:supportedContainerName>
+        <lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
+        <lgNaming:supportedDataType localId="text/plain">text/plain</lgNaming:supportedDataType>
+        <lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
+        <lgNaming:supportedEntityType localId="association">association</lgNaming:supportedEntityType>
+        <lgNaming:supportedEntityType localId="concept">concept</lgNaming:supportedEntityType>
+        <lgNaming:supportedEntityType localId="valueDomain">valueDomain</lgNaming:supportedEntityType>
+        <lgNaming:supportedHierarchy localId="is_a"
+            associationNames="hasSubtype" rootCode="@" isForwardNavigable="true">hasSubtype</lgNaming:supportedHierarchy>
+        <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+        <lgNaming:supportedNamespace localId="Automobiles"
+            uri="urn:oid:11.11.0.1" equivalentCodingScheme="Automobiles">Automobiles</lgNaming:supportedNamespace>
+        <lgNaming:supportedNamespace localId="ExpendableParts"
+            uri="urn:oid:11.11.0.50" equivalentCodingScheme="ExpendableParts">Expendable Parts</lgNaming:supportedNamespace>
+        <lgNaming:supportedNamespace localId="GermanMadePartsNamespace"
+            uri="urn:oid:11.11.0.2" equivalentCodingScheme="GermanMadeParts">German Made Parts</lgNaming:supportedNamespace>
+        <lgNaming:supportedNamespace localId="TestForSameCodeNamespace" uri="urn:oid:11.11.0.99">TestForSameCodeNamespace</lgNaming:supportedNamespace>
+        <lgNaming:supportedProperty localId="definition" propertyType="definition">definition</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="genericProperty" propertyType="property">genericProperty</lgNaming:supportedProperty>
+        <lgNaming:supportedProperty localId="textualPresentation" propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
+        <lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
+        <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+    </lgCS:mappings>
+    <lgCS:properties>
+        <lgCommon:property isActive="true" status="sampleStatus"
+            effectiveDate="2001-12-17T03:30:47.000-06:00"
+            expirationDate="2001-12-17T03:30:47.000-06:00"
+            propertyName="codingSchemeProp" propertyId="p1"
+            propertyType="property" language="en">
+            <lgCommon:owner>sampleOwner</lgCommon:owner>
+            <lgCommon:source subRef="sampleSubRef" role="sampleRole">lexgrid.org</lgCommon:source>
+            <lgCommon:usageContext>sampleUsageContext</lgCommon:usageContext>
+            <lgCommon:propertyQualifier propertyQualifierName="samplePropertyQualifier">
+                <lgCommon:value>Property Qualifier Text</lgCommon:value>
+            </lgCommon:propertyQualifier>
+            <lgCommon:value>Property Text</lgCommon:value>
+        </lgCommon:property>
+    </lgCS:properties>
+    <lgCS:entities/>
+    <lgCS:relations containerName="relations">
+        <lgCommon:entityDescription>asD</lgCommon:entityDescription>
+        <lgRel:associationPredicate associationName="differentEntityCodeAssoc"/>
+        <lgRel:associationPredicate associationName="hasSubtype"/>
+        <lgRel:associationPredicate associationName="uses"/>
+    </lgCS:relations>
+</lgCS:codingScheme>
