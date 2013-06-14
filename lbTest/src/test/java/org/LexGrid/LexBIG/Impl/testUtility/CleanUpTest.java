@@ -262,6 +262,16 @@ public class CleanUpTest extends TestCase {
 
     }
 
+    public void testRemoveHL7MIFVocabulary() throws LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+        		LexBIGServiceTestCase.HL7_MIF_VOCABULARY_URN, LexBIGServiceTestCase.HL7_MIF_VOCABULARY_VERSION);
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+    }
+
     public void testRemoveHL7() throws LBException {
         if (!System.getProperties().getProperty("os.name").contains("Windows")) {
             // Connecting to ms access from Linux is beyond the scope of this

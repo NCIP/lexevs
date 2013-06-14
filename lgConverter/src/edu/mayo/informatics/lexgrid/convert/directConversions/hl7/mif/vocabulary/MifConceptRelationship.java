@@ -18,6 +18,8 @@ public class MifConceptRelationship implements Serializable {
     
     private String targetConceptCode;
     
+    private String targetCodeSystemId;
+    
     public String getVmCombinedId() {
         return vmCombinedId;
     }
@@ -56,6 +58,14 @@ public class MifConceptRelationship implements Serializable {
     
     public void setTargetConceptCode(String targetConceptCode) {
         this.targetConceptCode = targetConceptCode;
+    }
+
+    public String getTargetCodeSystemId() {
+        return targetCodeSystemId;
+    }
+
+    public void setTargetCodeSystemId(String targetCodeSystemId) {
+        this.targetCodeSystemId = targetCodeSystemId;
     }
     
 }

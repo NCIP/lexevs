@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIterator.Transformer;
 
 public class AbstractListBackedResolvedConceptReferencesIteratorTest extends
 		LexBIGServiceTestCase {
@@ -81,14 +82,25 @@ public class AbstractListBackedResolvedConceptReferencesIteratorTest extends
 	private AbstractListBackedResolvedConceptReferencesIterator<Void> create(
 			int size) {
 		return new AbstractListBackedResolvedConceptReferencesIterator<Void>(
-				Arrays.asList(new Void[size])) {
+				Arrays.asList(new Void[size]), new Transformer<Void>(){
+
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					public ResolvedConceptReferenceList transform(
+							Iterable<Void> items) {
+						ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
+						
+						for(@SuppressWarnings("unused") Void item : items){
+							list.addResolvedConceptReference(new ResolvedConceptReference());
+						}
+						
+						return list;
+					}
+					
+				}) {
 
 			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected ResolvedConceptReference doTransform(Void item) {
-				return new ResolvedConceptReference();
-			}
 
 		};
 	}

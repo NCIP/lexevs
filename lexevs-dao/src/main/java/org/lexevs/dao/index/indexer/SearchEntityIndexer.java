@@ -14,6 +14,8 @@ import org.apache.lucene.document.Field;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.service.SystemResourceService;
 
+import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
+
 public class SearchEntityIndexer implements EntityIndexer {
 	
 	/** The current index version. */
@@ -122,8 +124,11 @@ public class SearchEntityIndexer implements EntityIndexer {
 	@Override
 	public Analyzer getAnalyzer() {
 		PerFieldAnalyzerWrapper analyzer =
-		new PerFieldAnalyzerWrapper(new StandardAnalyzer());
+		new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet));
+		
 		analyzer.addAnalyzer("code", new KeywordAnalyzer());
+		analyzer.addAnalyzer("namespace", new KeywordAnalyzer());
 		
 		return analyzer;
 	}
