@@ -35,6 +35,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.cache.CacheSessionManager;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
 import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.dao.database.scheme.PersistenceScheme;
@@ -833,6 +834,7 @@ public class LexEvsResourceManagingService
 		this.deregisterDrivers();
 		
 		this.myClassLoader.shutdown();
+		CacheSessionManager.destroy();
 		
 		try {
 			((ConfigurableApplicationContext) this.applicationContext).close();

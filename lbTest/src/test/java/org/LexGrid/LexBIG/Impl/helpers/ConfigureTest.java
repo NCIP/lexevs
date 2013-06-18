@@ -20,28 +20,25 @@ package org.LexGrid.LexBIG.Impl.helpers;
 
 import junit.framework.TestCase;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.exceptions.InitializationException;
+import org.lexevs.logging.Logger;
+import org.lexevs.system.constants.SystemVariables;
 
-/**
- * this test reconfigured us to single db mode. Call this before rerunning the
- * tests.
- * 
- * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
- * @version subversion $Revision: $ checked in on $Date: $
- */
 public class ConfigureTest extends TestCase {
-    public void testConfigureLexBig() throws LBException {
-        ServiceHolder.instance().configureNext();
 
-        // make sure there aren't any old database tables / databases floating
-        // around
-        // that shouldn't be here.
-        // Clean-up utility is disabled now for Multi-database mode.
-        if(ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode()){
-            CleanUpUtility.removeAllUnusedResources();
-        }
-    }
+	public void testStartUpLexBigBadConfig() throws Exception {
+		String oldName = SystemVariables.CONFIG_FILE_NAME;
+		SystemVariables.CONFIG_FILE_NAME = "zzzzz.props";
+		
+		try {
+			new SystemVariables(new Logger());
+		} catch(InitializationException e){
+			System.out.println(e.getMessage());
+			return;
+		} finally {
+			SystemVariables.CONFIG_FILE_NAME = oldName;
+		}
+		
+		fail("InitializationException not thrown.");
+	}
 }

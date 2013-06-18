@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.connection.SQLConnectionInfo;
+import org.lexevs.exceptions.InitializationException;
 import org.lexevs.logging.Logger;
 import org.lexevs.system.utility.CryptoUtility;
 import org.lexevs.system.utility.PropertiesUtility;
@@ -179,6 +180,35 @@ public class SystemVariables {
             PropertiesUtility.systemVariable = LG_CONFIG_FILE_SYSTEM_VARIABLE;
             String location = PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
                     + CONFIG_FILE_NAME, this.getClass().getName(), logger);
+            
+            if(StringUtils.isBlank(location)){
+            	throw new InitializationException(
+            			"\n============================================" +
+            			"\nError finding the LexBIG Configuration File." +
+            			"\n============================================" +
+            			"\nThe LexGrid system attempts to automatically locate this file in one of two ways:" +
+            			"\n" +
+            			"\nOPTION 1 - AutoSearch" +
+            			"\nIt determines the folder that the LexGrid classes are located (either in" +
+            			"\na jar file, or a folder containing class files).  For this example, lets assume" +
+            			"\nthat the jar file containing LexGrid was found at 'C:\\LexGrid\\LexBIG\\lib\\lbRuntime.jar'" +
+            			"\nThen the path it starts with will be 'C:\\LexGrid\\LexBIG\\lib\\'.  Lets call this" +
+            			"\nlocation 'A'.  Starting from location A, it checks for the following sub-path:" + 
+            			"\n'resources\\config\\config.props'.  Lets call this path 'B'.  If a file exists" + 
+            			"\n'A\\B', the search is over.  If this file is not found - it goes up one directory" +
+            			"\nfrom A, and checks for B again.  So, now it is checking \"A\\..\\B\". - which is" +
+            			"\n'C:\\LexGrid\\LexBIG\\resources\\config\\config.props'.  This process continues until" + 
+            			"\nit finds the file, reaches the root of the file system, or it has gone up 10 levels." +
+            			"\nAt that point, it quits and and the startup fails." +
+            			"\n" +
+            			"\nOPTION 2 - System Variable" +
+            			"\nYou may skip the auto search by setting the System Config variable 'LG_CONFIG_FILE'" +
+            			"\nto the full absolute path of the config.props file." +  
+            			"\nExample - if you were starting from the command line, you would add this parameter to" + 
+            			"\nthe java command to set the 'System Property'" + 
+            			"\n-DLG_CONFIG_FILE=\"C:\\LexGrid\\LexBIG\\resources\\config\\config.props\"");           			
+            }
+            
             Properties props = new Properties();
 
             logger.debug("Reading properties from " + location);

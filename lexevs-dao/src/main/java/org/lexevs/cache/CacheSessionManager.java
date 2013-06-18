@@ -40,4 +40,8 @@ public class CacheSessionManager {
 	public static boolean getCachingStatus() {
 		return SESSION_STATE.get();
 	}
+	
+	public static void destroy(){
+		SESSION_STATE.remove();
+	}
 }
