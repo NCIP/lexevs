@@ -235,7 +235,9 @@ public class LexBIGServiceImpl implements LexBIGService {
                 }
 
                 CodingSchemeTagList tagList = new CodingSchemeTagList();
-                tagList.addTag(entry.getTag());
+                if(StringUtils.isNotBlank(entry.getTag())){
+                    tagList.addTag(entry.getTag());
+                }
                 detail.setVersionTags(tagList);
                 
                 rendering.setRenderingDetail(detail);
