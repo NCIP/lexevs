@@ -29,8 +29,6 @@ import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.concepts.Entities;
-import org.LexGrid.concepts.Entity;
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
@@ -51,7 +49,7 @@ public class OwlApi2LGMain {
     private LgMessageDirectorIF messages = null;
 
     public OwlApi2LGMain(URI owlOntologyURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs,
-            boolean failOnAllErrors, int memorySafe, LgMessageDirectorIF messages)
+            boolean failOnAllErrors,  int memorySafe, LgMessageDirectorIF messages)
             throws Exception {
         this.messages = messages;
 
@@ -73,7 +71,7 @@ public class OwlApi2LGMain {
 
             }
 
-            owl2lg = new OwlApi2LG(owlOntologyURI, manifest, loadPrefs, memorySafe, messages);
+            owl2lg = new OwlApi2LG(owlOntologyURI, manifest, loadPrefs, OwlApi2LGConstants.MEMOPT_LEXGRID_DIRECT_DB, messages);
         } catch (Exception e) {
             messages.fatalAndThrowException("Conversion failed", e);
         }

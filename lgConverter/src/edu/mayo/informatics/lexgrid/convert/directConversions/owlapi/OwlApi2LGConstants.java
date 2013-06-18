@@ -41,8 +41,6 @@ public class OwlApi2LGConstants {
     public static final boolean IS_DBXREF_REPFORM = false;
     public static final int MEMOPT_ALL_IN_MEMORY = 0;
     public static final int MEMOPT_LEXGRID_DIRECT_DB = 1;
-    public static final int MEMOPT_NON_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB = 2;
-    public static final int MEMOPT_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB = 3;
     public static final boolean PROCESS_COMPLEX_PROP = false;
     public static final boolean STRICT_OWL_IMPLEMENTATION = true;
 
