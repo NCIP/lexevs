@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.test.BaseInMemoryLexEvsTest;
+import org.lexevs.system.constants.SystemVariables;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -47,6 +48,7 @@ public class LexEvsTestRunner extends SpringJUnit4ClassRunner {
         super(clazz);
         this.checkForAllowedAnnotations(clazz);
         try {
+        	System.setProperty(SystemVariables.ALL_IN_MEMORY_SYSTEM_VARIABLE, "true");
             BaseInMemoryLexEvsTest.initInMemory();
         } catch (Exception e) {
             throw new InitializationError(e);
