@@ -36,6 +36,13 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
  */
 public interface SearchExtension extends GenericExtension {
 	
+	public enum MatchAlgorithm {
+		PRESENTATION_EXACT, 
+		PRESENTATION_CONTAINS,
+		PRESENTATION_LUCENE,
+		CODE_EXACT
+	}
+	
 	/**
 	 * Search based on a given text string over all coding schemes.
 	 *
@@ -46,7 +53,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 
 	 * @throws LBParameterException
 	 */
-	public ResolvedConceptReferencesIterator search(String text) throws LBParameterException;
+	public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException;
 	
 	/**
      * Search based on a given text string over given coding schemes.
@@ -62,7 +69,8 @@ public interface SearchExtension extends GenericExtension {
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
-			Set<CodingSchemeReference> codingSchemes) throws LBParameterException;
+			Set<CodingSchemeReference> codingSchemes,
+			MatchAlgorithm matchAlgorithm) throws LBParameterException;
 	
 	/**
 	 * Search based on a given text string over given coding schemes, excluding
@@ -85,6 +93,7 @@ public interface SearchExtension extends GenericExtension {
 	public ResolvedConceptReferencesIterator search(
 			String text, 
 			Set<CodingSchemeReference> codingSchemesToInclude,
-			Set<CodingSchemeReference> codingSchemesToExclude) throws LBParameterException;
+			Set<CodingSchemeReference> codingSchemesToExclude,
+			MatchAlgorithm matchAlgorithm) throws LBParameterException;
 	
 }

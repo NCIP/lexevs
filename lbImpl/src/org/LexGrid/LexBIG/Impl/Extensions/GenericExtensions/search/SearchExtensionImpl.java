@@ -35,20 +35,21 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     private static final long serialVersionUID = 8704782086137708226L;
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text) throws LBParameterException {
-        return this.search(text, null, null);
+    public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException {
+        return this.search(text, null, matchAlgorithm);
     }
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems) throws LBParameterException {
-        return this.search(text, codeSystems, null);
+    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException {
+        return this.search(text, codeSystems, null, matchAlgorithm);
     }
 
     @Override
     public ResolvedConceptReferencesIterator search(
-            String text, 
+            final String text, 
             Set<CodingSchemeReference> codeSystemsToInclude,
-            Set<CodingSchemeReference> codeSystemsToExclude) throws LBParameterException {
+            Set<CodingSchemeReference> codeSystemsToExclude, 
+            MatchAlgorithm matchAlgorithm) throws LBParameterException {
         
         LexEvsServiceLocator lexEvsServiceLocator = LexEvsServiceLocator.getInstance();
         List<RegistryEntry> entries = 
@@ -80,11 +81,33 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 getSearchIndexService().
                 query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
                         this.resolveCodeSystemReferences(codeSystemsToExclude),
-                        this.parseQuery(text, analyzer));
+                        this.parseQuery(this.decorateQueryString(text, matchAlgorithm), analyzer));
 
         return new SearchScoreDocIterator(scoreDocs);
     }
     
+    protected String decorateQueryString(String text, MatchAlgorithm matchAlgorithm) {
+        switch(matchAlgorithm){
+        case PRESENTATION_EXACT:
+            return "exactDescription:\"" + QueryParser.escape(text) + "\"";
+        case CODE_EXACT:
+            return "code:" + QueryParser.escape(text);
+        case PRESENTATION_CONTAINS:
+            text = QueryParser.escape(text);
+            StringBuilder sb = new StringBuilder();
+            for(String token : text.split("\\s+")){
+               sb.append("description:");
+               sb.append(token);
+               sb.append("* ");
+            }
+            return sb.toString().trim();
+        case PRESENTATION_LUCENE:
+            return text;
+        default:
+            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
+        }
+    }
+
     protected Query parseQuery(String text, Analyzer analyzer) {
         if (StringUtils.isBlank(text)) {
             return new MatchAllDocsQuery();
