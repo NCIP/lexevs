@@ -21,12 +21,10 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.stanford.smi.protegex.owl.model.OWLNames;
-import edu.stanford.smi.protegex.owl.model.RDFNames;
-import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import org.semanticweb.owlapi.vocab.Namespaces;
 
 /**
- * Constants used by the ProtegeOwl To EMF Implementation.
+ * Constants used by the OwlApi loader Implementation.
  * 
  * Made some changes by deprecating some of the constants, as well as, adding
  * more "OWL specific" ones.
@@ -45,9 +43,9 @@ public class OwlApi2LGConstants {
     public static final boolean STRICT_OWL_IMPLEMENTATION = true;
 
     /* Namespaces */
-    public static final String RDF_NAMESPACE = RDFNames.RDF_NAMESPACE;
-    public static final String OWL_NAMESPACE = OWLNames.OWL_NAMESPACE;
-    public static final String RDFS_NAMESPACE= RDFSNames.RDFS_NAMESPACE;
+    public static final String RDF_NAMESPACE = Namespaces.RDF.toString();
+    public static final String OWL_NAMESPACE = Namespaces.OWL.toString();
+    public static final String RDFS_NAMESPACE= Namespaces.RDFS.toString();
 
     /* Languages */
     public static final String LANG_URI = "urn:oid:2.16.840.1.113883.6.84";
@@ -58,8 +56,8 @@ public class OwlApi2LGConstants {
     public static final String PROPNAME_ENUMERATION = "isEnumeration";
     public static final String PROPNAME_INTERSECTION = "isIntersection";
     public static final String PROPNAME_PRIMITIVE = "primitive";
-    public static final String PROPNAME_RDF_ID = RDFNames.RDF_PREFIX +':'+"id";
-    public static final String PROPNAME_RDFS_LABEL = RDFSNames.RDFS_PREFIX +':'+"label";
+    public static final String PROPNAME_RDF_ID = "rdf:id";
+    public static final String PROPNAME_RDFS_LABEL = "rdfs:label";
     public static final String PROPNAME_TYPE = "type";
     public static final String PROPNAME_UNION = "isUnion";
     
