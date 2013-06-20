@@ -101,7 +101,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                sb.append("* ");
             }
             return sb.toString().trim();
-        case PRESENTATION_LUCENE:
+        case LUCENE:
             return text;
         default:
             throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());

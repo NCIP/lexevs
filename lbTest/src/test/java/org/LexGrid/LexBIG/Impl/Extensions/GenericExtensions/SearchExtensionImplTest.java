@@ -97,7 +97,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 		assertEquals("Jaguar", itr.next().getCode());
 		assertFalse(itr.hasNext());
@@ -117,7 +117,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search(null, MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search(null, MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 	}
 	
@@ -186,7 +186,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		Set<CodingSchemeReference> includes = 
 			new HashSet<CodingSchemeReference>() {{ add(ref); }};
 			
-		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", includes, MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", includes, MatchAlgorithm.LUCENE);
 		assertFalse(itr.hasNext());
 	}
 	
@@ -201,7 +201,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		Set<CodingSchemeReference> excludes = 
 			new HashSet<CodingSchemeReference>() {{ add(ref); }};
 			
-		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", null, excludes, MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", null, excludes, MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 	}
 	
@@ -216,7 +216,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		Set<CodingSchemeReference> excludes = 
 			new HashSet<CodingSchemeReference>() {{ add(ref); }};
 			
-		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", null, excludes, MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Jaguar", null, excludes, MatchAlgorithm.LUCENE);
 		assertFalse(itr.hasNext());
 	}
 	
@@ -237,7 +237,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		Set<CodingSchemeReference> excludes = 
 					new HashSet<CodingSchemeReference>() {{ add(auto); }};
 			
-		ResolvedConceptReferencesIterator itr = searchExtension.search("Tires", includes, excludes, MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Tires", includes, excludes, MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 	}
 	
@@ -258,7 +258,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		Set<CodingSchemeReference> excludes = 
 					new HashSet<CodingSchemeReference>() {{ add(parts); }};
 			
-		ResolvedConceptReferencesIterator itr = searchExtension.search("tire", includes, excludes, MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("tire", includes, excludes, MatchAlgorithm.LUCENE);
 		assertFalse(itr.hasNext());
 	}
 	
@@ -266,7 +266,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("jaguar", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("jaguar", MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 		assertEquals("Jaguar", itr.next().getCode());
 		assertFalse(itr.hasNext());
@@ -276,7 +276,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("jagu*", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("jagu*", MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 		assertEquals("Jaguar", itr.next().getCode());
 		assertFalse(itr.hasNext());
@@ -312,7 +312,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:Automobiles", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:Automobiles", MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 		assertEquals("C0001", itr.next().getCode());
 		assertFalse(itr.hasNext());
@@ -322,7 +322,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:AutomobilesINVALID", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:AutomobilesINVALID", MatchAlgorithm.LUCENE);
 		assertFalse(itr.hasNext());
 	}
 	
@@ -330,7 +330,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 
-		ResolvedConceptReferencesIterator itr = searchExtension.search("(kar~ -Trailer) AND Car", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("(kar~ -Trailer) AND Car", MatchAlgorithm.LUCENE);
 		
 		assertTrue(itr.hasNext());
 		
@@ -361,7 +361,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("((car AND -Trailer) OR (General AND Motors))", MatchAlgorithm.PRESENTATION_LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("((car AND -Trailer) OR (General AND Motors))", MatchAlgorithm.LUCENE);
 		Set<String> codes = new HashSet<String>();
 		while(itr.hasNext()){
 			codes.add(itr.next().getCode());

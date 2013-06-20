@@ -73,6 +73,14 @@ public class SearchEntityIndexer implements EntityIndexer {
 			}
 		}
 		
+		if(entity.getEntityDescription() != null){
+			document.add(
+					this.toField("entityDescription", 
+							entity.getEntityDescription().getContent(),
+							Field.Store.YES, 
+							Field.Index.NO));
+		}
+		
 		document.add(
 				this.toField("code", 
 						entity.getEntityCode(),
