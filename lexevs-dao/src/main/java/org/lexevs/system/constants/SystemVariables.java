@@ -42,7 +42,7 @@ import org.lexevs.system.utility.PropertiesUtility;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SystemVariables {
-	public static final String ALL_IN_MEMORY_SYSTEM_VARIABLE = "in-memory";
+	public static final String ALL_IN_MEMORY_SYSTEM_VARIABLE = "inmemory";
 	public static String LG_CONFIG_FILE_SYSTEM_VARIABLE = "LG_CONFIG_FILE";
     public static String CONFIG_FILE_NAME = "lbconfig.props";
     private static String OVERRIDE_SINGLE_DB_PROP = "OVERRIDE_SINGLE_DB";
