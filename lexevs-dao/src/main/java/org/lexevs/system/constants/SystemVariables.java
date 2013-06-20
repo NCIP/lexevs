@@ -42,6 +42,7 @@ import org.lexevs.system.utility.PropertiesUtility;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class SystemVariables {
+	public static final String ALL_IN_MEMORY_SYSTEM_VARIABLE = "in-memory";
 	public static String LG_CONFIG_FILE_SYSTEM_VARIABLE = "LG_CONFIG_FILE";
     public static String CONFIG_FILE_NAME = "lbconfig.props";
     private static String OVERRIDE_SINGLE_DB_PROP = "OVERRIDE_SINGLE_DB";
@@ -181,7 +182,12 @@ public class SystemVariables {
             String location = PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
                     + CONFIG_FILE_NAME, this.getClass().getName(), logger);
             
-            if(StringUtils.isBlank(location)){
+            //If in in-memory (testing) mode, we can allow this, as config will be handled elsewhere.
+            //If not in in-memory testing mode, throw an error if the config fiel isn't found.
+            boolean inMemory = 
+                BooleanUtils.toBoolean(System.getProperty(ALL_IN_MEMORY_SYSTEM_VARIABLE));
+           
+            if(StringUtils.isBlank(location) && !inMemory){
             	throw new InitializationException(
             			"\n============================================" +
             			"\nError finding the LexBIG Configuration File." +
