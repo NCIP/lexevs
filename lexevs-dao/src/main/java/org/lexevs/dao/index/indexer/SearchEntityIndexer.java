@@ -63,12 +63,12 @@ public class SearchEntityIndexer implements EntityIndexer {
 				String content = presentation.getValue().getContent();
 				document.add(this.toField("description", 
 						content,
-						Field.Store.YES, 
+						Field.Store.NO, 
 						Field.Index.ANALYZED));
 				
 				document.add(this.toField("exactDescription", 
 						content,
-						Field.Store.YES, 
+						Field.Store.NO, 
 						Field.Index.NOT_ANALYZED));
 			}
 		}
