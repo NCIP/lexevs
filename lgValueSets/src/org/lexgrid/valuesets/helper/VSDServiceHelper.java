@@ -764,7 +764,7 @@ public class VSDServiceHelper {
 			Text pqtxt = new Text();
 			pqtxt.setContent(acsvr.getCodingSchemeVersion());
 			pq.setValue(pqtxt);
-
+			prop.getPropertyQualifierAsReference().add(pq);
 			prop.setValue(txt);
 			cs.getProperties().addProperty(prop);
 
