@@ -45,6 +45,7 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	public static String RESOLVED_AGAINST_CODING_SCHEME_VERSION= "resolvedAgainstCodingSchemeVersion";
 	public static String VERSION= "version";
 	public static String GENERIC= "generic";
+	public static String CS_NAME= "codingSchemeName";
 	/**
 	 * Loads supplied valueSetDefinition object
 	 * @param vsdef value set definition to load

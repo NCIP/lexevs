@@ -86,13 +86,17 @@ public class LexEVSResolvedValueSetTest extends TestCase {
         CodingScheme scheme = list.get(0);
     	for (Property prop :scheme.getProperties().getPropertyAsReference()){
     		if(prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)){
-    			System.out.println("Version: " + prop.getPropertyQualifier(0).getValue().getContent());
+    			assertTrue(prop.getPropertyQualifier(0).getValue().getContent().equals("Automobiles"));
+    			assertTrue( prop.getPropertyQualifier(1).getValue().getContent().equals("1.0"));
+    			System.out.println("Coding Scheme: " + prop.getPropertyQualifier(0).getValue().getContent());
+    			System.out.println("Version: " + prop.getPropertyQualifier(1).getValue().getContent());
     		}
     	}
         LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
         CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(), Constructors.createCodingSchemeVersionOrTag(null,scheme.getRepresentsVersion()));
         ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
         while(refs.hasNext()){
+      
         	ResolvedConceptReference ref = refs.next();
         	System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
         	System.out.println("Code: " + ref.getCode());
@@ -116,7 +120,8 @@ public class LexEVSResolvedValueSetTest extends TestCase {
     	URI uri = new URI("SRITEST:AUTO:AllDomesticButGM");
     	CodingScheme scheme = service.getCodingSchemeMetaDataForValueSetURI(uri);
     	assertTrue(scheme.getProperties().getProperty(1).getPropertyName().equals("resolvedAgainstCodingSchemeVersion"));
-    	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(0).getValue().getContent().equals("1.0"));
+    	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(0).getValue().getContent().equals("Automobiles"));
+    	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(1).getValue().getContent().equals("1.0"));
     }
 	
 
