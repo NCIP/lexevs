@@ -89,6 +89,7 @@ import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
 import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
@@ -234,7 +235,9 @@ public class LexBIGServiceImpl implements LexBIGService {
                 }
 
                 CodingSchemeTagList tagList = new CodingSchemeTagList();
-                tagList.addTag(entry.getTag());
+                if(StringUtils.isNotBlank(entry.getTag())){
+                    tagList.addTag(entry.getTag());
+                }
                 detail.setVersionTags(tagList);
                 
                 rendering.setRenderingDetail(detail);
@@ -547,6 +550,7 @@ public class LexBIGServiceImpl implements LexBIGService {
 
         new LexGridMultiLoaderImpl().register();
         new OWLLoaderImpl().register();
+        new OWL2LoaderImpl().register();
         new OBOLoaderImpl().register();
         new MetaDataLoaderImpl().register();
         new RadLexProtegeFramesLoaderImpl().register();

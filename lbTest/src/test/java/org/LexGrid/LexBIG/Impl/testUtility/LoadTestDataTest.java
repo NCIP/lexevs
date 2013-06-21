@@ -39,7 +39,6 @@ import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
@@ -424,7 +423,181 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
+    public void testLoadMeta1() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
+        MetaData_Loader metaLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
+
+        metaLoader.loadAuxiliaryData(
+            new File("resources/testData/metadata1.xml").toURI(),
+            Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION),
+            true, false, true);
+
+        while (metaLoader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+        assertTrue(metaLoader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
+    }
+
+    public void testLoadMeta2() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        MetaData_Loader metaLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
+
+        metaLoader.loadAuxiliaryData(
+            new File("resources/testData/metadata2.xml").toURI(),
+            Constructors.createAbsoluteCodingSchemeVersionReference(PARTS_URN, PARTS_VERSION),
+            true, true, true);
+
+        while (metaLoader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+        assertTrue(metaLoader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
+    }
+    
+    public void testLoadUMLS() throws Exception {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        UmlsBatchLoader loader = (UmlsBatchLoader) lbsm.getLoader("UmlsBatchLoader");
+
+        loader.loadUmls(new File("resources/testData/sampleUMLS-AIR").toURI(), "AIR");
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+    
+    public void testLoadMappingWithDefaultSettings() throws LBException{
+    	
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+        LexEVSAuthoringServiceImpl authoring = new LexEVSAuthoringServiceImpl();
+        
+		AssociationSource source = new AssociationSource();
+		AssociationSource source1 = new AssociationSource();
+		AssociationSource source2 = new AssociationSource();
+		source.setSourceEntityCode("T0001");
+		source.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+		AssociationTarget target = new AssociationTarget();
+		target.setTargetEntityCode("005");
+		target.setTargetEntityCodeNamespace("Automobiles");
+		source.addTarget(target);
+
+		source1.setSourceEntityCode("P0001");
+		source1.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+		AssociationTarget target1 = new AssociationTarget();
+		target1.setTargetEntityCode("A0001");
+		target1.setTargetEntityCodeNamespace("Automobiles");
+		source1.addTarget(target1);
+
+		source2.setSourceEntityCode("P0001");
+		source2.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+		AssociationTarget target2 = new AssociationTarget();
+		target2.setTargetEntityCode("005");
+		target2.setTargetEntityCodeNamespace("Automobiles");
+		source2.addTarget(target2);
+		AssociationSource[] sources = new AssociationSource[] { source,
+				source1, source2 };
+		authoring.createMappingWithDefaultValues(sources, "GermanMadeParts",
+				"2.0", "Automobiles", "1.0", "SY", false);
+		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
+		codingSchemeVersion
+				.setCodingSchemeURN("http://default.mapping.container");
+		codingSchemeVersion.setCodingSchemeVersion("1.0");
+		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
+	
+    }
+    
+    
+    public void testLoadCodingSchemeWithMoreMetaData() throws LBException{
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+        LexEVSAuthoringServiceImpl authoring = new LexEVSAuthoringServiceImpl();
+        MappingTestUtility utility = new MappingTestUtility();
+        
+		List<String> localNameList = Arrays.asList(new String[] { "name1",
+				"name2", "name3" });
+		Source source = new Source();
+		source.setContent("Source_Vocabulary");
+		List<Source> sourceList = Arrays.asList();
+		Text copyright = new Text();
+		copyright.setContent("Mayo copyright");
+		CodingScheme mappingSchemeMetadata = authoring.populateCodingScheme(
+				"Mapping_Test", "Tested_URI", "Formal_Mapping_Name", "EN", 5L,
+				"0.0", localNameList, sourceList, copyright, new Mappings(),
+				null, null, null);
+
+		AssociationTarget target1 = utility.createTargetWithValuesPopulated();
+		AssociationTarget target2 = utility.createTarget("Ford", "Automobiles");
+		AssociationTarget target3 = utility.createTarget("73", "Automobiles");
+		AssociationTarget[] targets = new AssociationTarget[] { target1,
+				target2, target3 };
+		AssociationSource associationSource = new AssociationSource();
+		associationSource.setSourceEntityCode("R0001");
+		associationSource
+				.setSourceEntityCodeNamespace("GermanMadePartsNamespace");
+		associationSource.setTarget(targets);
+		AssociationSource[] sourcesAndTargets = new AssociationSource[] { associationSource };
+		String sourceCodingScheme = MappingTestConstants.SOURCE_SCHEME;
+		String sourceCodingSchemeVersion = MappingTestConstants.SOURCE_VERSION;
+		String targetCodingScheme = MappingTestConstants.TARGET_SCHEME;
+		String targetCodingSchemeVersion = MappingTestConstants.TARGET_VERSION;
+		String associationName = "SY";
+		String relationsContainerName = "GermanMadeParts_to_Automobiles_Mappings";
+		String revisionId = "Non-Default_NEW_Mapping";
+		authoring.createMappingScheme(mappingSchemeMetadata, sourcesAndTargets,
+				sourceCodingScheme, sourceCodingSchemeVersion,
+				targetCodingScheme, targetCodingSchemeVersion, associationName,
+				relationsContainerName, revisionId, false);
+		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
+		codingSchemeVersion.setCodingSchemeURN(mappingSchemeMetadata.getCodingSchemeURI());
+		codingSchemeVersion.setCodingSchemeVersion(mappingSchemeMetadata.getRepresentsVersion());
+		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
+    }
+    
+    public void testLoadAuthoringShellSystem() throws LBException, LBInvocationException, InterruptedException{
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+        loader.load(new File("resources/testData/assoc_authoring/AuthoringTestBase.xml").toURI(), true, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+    
+    public void testLoadMappinglSystem() throws LBException, LBInvocationException, InterruptedException{
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+        loader.load(new File("resources/testData/testMapping.xml").toURI(), true, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
     
     private LexBIGServiceManager getLexBIGServiceManager() throws LBException {
     	return ServiceHolder.instance().getLexBIGService().getServiceManager(null);

@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
@@ -55,12 +56,29 @@ public class SearchEntityIndexer implements EntityIndexer {
 						Field.Store.NO,
 						Field.Index.NOT_ANALYZED));
 
+		for(Presentation presentation : entity.getPresentation()){
+			if(presentation.getValue() != null 
+				&& StringUtils.isNotBlank(presentation.getValue().getContent())){
+				
+				String content = presentation.getValue().getContent();
+				document.add(this.toField("description", 
+						content,
+						Field.Store.NO, 
+						Field.Index.ANALYZED));
+				
+				document.add(this.toField("exactDescription", 
+						content,
+						Field.Store.NO, 
+						Field.Index.NOT_ANALYZED));
+			}
+		}
+		
 		if(entity.getEntityDescription() != null){
 			document.add(
-					this.toField("description", 
+					this.toField("entityDescription", 
 							entity.getEntityDescription().getContent(),
 							Field.Store.YES, 
-							Field.Index.ANALYZED));
+							Field.Index.NO));
 		}
 		
 		document.add(
@@ -129,6 +147,7 @@ public class SearchEntityIndexer implements EntityIndexer {
 		
 		analyzer.addAnalyzer("code", new KeywordAnalyzer());
 		analyzer.addAnalyzer("namespace", new KeywordAnalyzer());
+		analyzer.addAnalyzer("exactDescription", new KeywordAnalyzer());
 		
 		return analyzer;
 	}

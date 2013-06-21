@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Extensions.Load;
 
 public enum OntologyFormat {
     OBO,
+    OWL,
     OWLRDF,
     HL7,
     UMLS,

@@ -153,6 +153,7 @@ import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStr
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestWeightedDoubleMetaphone;
 import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIteratorTest;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturnTest;
+import org.LexGrid.LexBIG.Impl.helpers.ConfigureTest;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImplTest;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparatorTest;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadableCodeToReturnTest;
@@ -189,6 +190,7 @@ public class AllTestsNormalConfig {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
         ServiceHolder.configureForSingleConfig();
 
+        mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
