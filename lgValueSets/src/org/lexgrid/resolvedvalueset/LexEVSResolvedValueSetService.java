@@ -12,7 +12,7 @@ public interface LexEVSResolvedValueSetService {
        
    	public List<CodingScheme> listAllResolvedValueSets() throws LBException;
 	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref);
-	public CodingScheme getResolvedCodingSchemeForValueSetURI(URI uri);
+	public CodingScheme getResolvedValueSetForValueSetURI(URI uri);
 	
 	/**
 	 * Return a list of AbsoluteCodingSchemeVersionReference that was used for resolving the resolvedValueSet

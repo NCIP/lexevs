@@ -118,7 +118,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
     @Test
     public void testGetCodingSchemeMetadataForResolvedValueSetURI() throws URISyntaxException{
     	URI uri = new URI("SRITEST:AUTO:AllDomesticButGM");
-    	CodingScheme scheme = service.getCodingSchemeMetaDataForValueSetURI(uri);
+    	CodingScheme scheme = service.getResolvedValueSetForValueSetURI(uri);
     	assertTrue(scheme.getProperties().getProperty(1).getPropertyName().equals("resolvedAgainstCodingSchemeVersion"));
     	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(0).getValue().getContent().equals("Automobiles"));
     	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(1).getValue().getContent().equals("1.0"));

@@ -115,7 +115,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		return filteredSchemes;
 	}
 	
-	public CodingScheme getResolvedCodingSchemeForValueSetURI(URI uri){
+	public CodingScheme getResolvedValueSetForValueSetURI(URI uri){
 		LexBIGService lbs = getLexBIGService();
 		CodingScheme scheme;
 		try {
