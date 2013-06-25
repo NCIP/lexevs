@@ -759,15 +759,16 @@ public class VSDServiceHelper {
 			prop.setPropertyName(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION);
 			Text txt = new Text();
 			txt.setContent(acsvr.getCodingSchemeURN());
-			PropertyQualifier pq = new PropertyQualifier();
-			pq.setPropertyQualifierName(LexEVSValueSetDefinitionServices.VERSION);
-			Text pqtxt = new Text();
-			pqtxt.setContent(acsvr.getCodingSchemeVersion());
-			pq.setValue(pqtxt);
-			prop.getPropertyQualifierAsReference().add(pq);
 			prop.setValue(txt);
+			PropertyQualifier pq = createPropertyQualifier(
+					LexEVSValueSetDefinitionServices.VERSION, acsvr.getCodingSchemeVersion());
+			prop.getPropertyQualifierAsReference().add(pq);
+			String csSourceName = getSupportedCodingSchemeNameForURI(cs,acsvr.getCodingSchemeURN());
+			if( csSourceName != null){
+				PropertyQualifier pQual = createPropertyQualifier(LexEVSValueSetDefinitionServices.CS_NAME, csSourceName);
+				prop.getPropertyQualifierAsReference().add(pQual);
+			}
 			cs.getProperties().addProperty(prop);
-
 		}
 
 		Entities entities = new Entities();
@@ -780,6 +781,22 @@ public class VSDServiceHelper {
 				messager);
 	}
 
+	private PropertyQualifier createPropertyQualifier(String name,  String value){
+		PropertyQualifier pq = new PropertyQualifier();
+		pq.setPropertyQualifierName(name);
+		Text pqtxt = new Text();
+		pqtxt.setContent(value);
+		pq.setValue(pqtxt);
+		return pq;
+	}
+	private String getSupportedCodingSchemeNameForURI(CodingScheme cs, String URI){
+		for(SupportedCodingScheme scs: cs.getMappings().getSupportedCodingScheme()){
+			if(scs.getUri().equals(URI)){
+				return scs.getLocalId();
+			}
+		}
+		return null;
+	}
 	/** The namespace cognizant marshaller. */
 	private LexEVSMarshaller ns_marshaller;
 	{
