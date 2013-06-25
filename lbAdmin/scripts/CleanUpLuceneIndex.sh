@@ -8,7 +8,7 @@
 # -r,--reindex, Reindex any missing indicies.
 #
 # Note: Lucene Clean Up can only be executed in the default Single Index Mode.
-* 
+#
 # Example:
 # 
 # CleanUPLuceneIndex -r 
