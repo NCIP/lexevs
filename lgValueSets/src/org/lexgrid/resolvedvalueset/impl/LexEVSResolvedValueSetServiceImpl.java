@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -16,12 +17,10 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
-import org.apache.commons.lang.StringUtils;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 
@@ -109,7 +108,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 				}
 			} catch (LBException e) {
 				throw new RuntimeException("There was a problem retreiving entries from this resolved value set"
-				+ cs.getCodingSchemeName() + " " + cs.getRepresentsVersion());
+				+ cs.getCodingSchemeName() + " " + cs.getRepresentsVersion() + e);
 			}
 		}
 		return filteredSchemes;
@@ -121,7 +120,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		try {
 			scheme = lbs.resolveCodingScheme(uri.toString(), null);
 		} catch (LBException e) {
-				throw new RuntimeException("There was a problem retrieving the designated Resolved Value Set: " + uri.toString());
+				throw new RuntimeException("There was a problem retrieving the designated Resolved Value Set: " + uri.toString() + e);
 		}
 		return scheme;
 	}
@@ -135,6 +134,19 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		CodingScheme cs= lbs.resolveCodingScheme(codingSchemeURI, csvt);
 		return cs;
 		
+	}
+	
+	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri){
+		LexBIGService lbs = getLexBIGService();
+		ResolvedConceptReferenceList list;
+		try {
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(uri, null);
+			list = set.resolveToList(null, null, null, -1);
+		} catch (LBException e) {
+			throw new RuntimeException("There was problem retrieving the entities for resolved value set: " + uri);
+		}
+		
+		return list;
 	}
 	
 	boolean isResolvedValueSetCodingScheme(CodingScheme cs) {
