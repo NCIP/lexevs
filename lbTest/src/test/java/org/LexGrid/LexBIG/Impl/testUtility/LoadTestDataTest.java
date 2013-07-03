@@ -18,6 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +45,7 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -219,7 +223,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
     
-    public void testLoadOwl2() throws InterruptedException, LBException {
+    public void testLoadOwlThesaurus() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
@@ -383,6 +387,27 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
+    
+	public void testloadOWL2Snippet() throws Exception {
+		
+		LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
+		loader.load(new File("resources/testData/owl2/owl2-snippet-data.owl")
+				.toURI(), null, 1, true, true);
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(1000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
+				LBConstants.KnownTags.PRODUCTION.toString());
+
+	}
 
 	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
 			InterruptedException {
