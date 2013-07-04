@@ -27,6 +27,14 @@ import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSetService {
 	private transient LexBIGService lbs;
 	
+	public LexEVSResolvedValueSetServiceImpl(){
+		//local constructor
+	}
+	
+	public LexEVSResolvedValueSetServiceImpl(LexBIGService lbs){
+		this.lbs = lbs;
+	}
+	
 	@Override
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		LexBIGService lbs= getLexBIGService();
@@ -169,6 +177,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
             lbs = LexBIGServiceImpl.defaultInstance();
         return lbs;
     }
+    
     
     
 
