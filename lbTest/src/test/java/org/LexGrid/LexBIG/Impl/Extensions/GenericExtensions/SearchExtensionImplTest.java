@@ -349,11 +349,23 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testExactPresentationCaseSensitive() throws LBException {
+	public void testExactPresentationSpecialCharacters() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("a^s sp*cial co{nce]pt", MatchAlgorithm.PRESENTATION_EXACT);
+		assertTrue(itr.hasNext());
+		assertEquals("SpecialCharactersConcept", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testExactPresentationCaseInSensitive() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
 		ResolvedConceptReferencesIterator itr = searchExtension.search("car", MatchAlgorithm.PRESENTATION_EXACT);
+		assertTrue(itr.hasNext());
+		assertEquals("C0001", itr.next().getCode());
 		assertFalse(itr.hasNext());
 	}
 	
