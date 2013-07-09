@@ -1233,6 +1233,10 @@ public class OwlApi2LG {
         String uri = ontologyIRI.toString();
         if (ontology.getOntologyID().getVersionIRI() != null)
             version = ontology.getOntologyID().getVersionIRI().toString();
+        
+        if (StringUtils.isBlank(version)) {
+            version= getVersionInfo();
+        }
 
         if (ontologyIRI != null) {
             String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
@@ -2260,6 +2264,28 @@ public class OwlApi2LG {
         }
     }
 
+    String getVersionInfo() {
+        String version="";
+         for (OWLAnnotation annotation: ontology.getAnnotations())    {
+             String propName = getLocalName(annotation.getProperty());
+             if (propName.contains("versionInfo")  ) {
+                 return getAnnotationValue(annotation);
+             }
+         }
+         return version;
+    }
+    
+    String getAnnotationValue(OWLAnnotation annotation) {
+        OWLAnnotationValue value = annotation.getValue();
+        String annotationValue="";
+        if (value instanceof OWLLiteral) {
+            OWLLiteral literal = (OWLLiteral) value;
+            annotationValue = literal.getLiteral();
+        }
+        return annotationValue;
+    }
+    
+    
     protected void updateApproximateConceptNumber() {
         if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.setApproxNumConcepts(new Long(lgScheme_.getEntities().getEntity().length));
