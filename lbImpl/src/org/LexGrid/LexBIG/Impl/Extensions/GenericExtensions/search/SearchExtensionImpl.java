@@ -95,11 +95,14 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         case PRESENTATION_CONTAINS:
             text = QueryParser.escape(text);
             StringBuilder sb = new StringBuilder();
+            sb.append("(");
             for(String token : text.split("\\s+")){
                sb.append("description:");
                sb.append(token);
                sb.append("* ");
             }
+            sb.append(")");
+            sb.append(" OR description:\""+text+"\"");
             return sb.toString().trim();
         case LUCENE:
             return text;

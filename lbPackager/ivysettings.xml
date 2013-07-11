@@ -7,7 +7,7 @@
 	<property name="informatics.thirdparty.repo" value="http://informatics.mayo.edu/maven/content/repositories/thirdparty" /> 
 	
 	<settings defaultResolver="nci-chain" />
-	<caches defaultCacheDir="${user.home}/.ivy2/lexevs" useOrigin="true"/>
+	<caches defaultCacheDir="${user.home}/.ivy2" useOrigin="true"/>
 	
 	<!-- 
 		Add `-Dinformatics.password=xxxx` to the ant build command
@@ -20,7 +20,7 @@
 	
 	<resolvers>
 		<filesystem name="user-local-repo" local="true" m2compatible="true" changingPattern=".*-SNAPSHOT">
-			<artifact pattern="${user.home}/.ivy2/lexevs/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
+			<artifact pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 			<ivy pattern="${user.home}/.ivy2/[organisation]/[module]/[revision]/ivy.xml" />
   		</filesystem> 
   		
