@@ -111,6 +111,10 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     }
     
     protected String decorateQueryString(String text, MatchAlgorithm matchAlgorithm) {
+        if(StringUtils.isBlank(text)) {
+          return text;  
+        }
+        
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
             return "exactDescription:\"" + QueryParser.escape(text) + "\"";
