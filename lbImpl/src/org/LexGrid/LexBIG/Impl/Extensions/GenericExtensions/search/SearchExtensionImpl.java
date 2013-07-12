@@ -18,12 +18,16 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
@@ -43,13 +47,23 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException {
         return this.search(text, codeSystems, null, matchAlgorithm);
     }
-
+    
     @Override
     public ResolvedConceptReferencesIterator search(
             final String text, 
             Set<CodingSchemeReference> codeSystemsToInclude,
             Set<CodingSchemeReference> codeSystemsToExclude, 
             MatchAlgorithm matchAlgorithm) throws LBParameterException {
+        return this.search(text, codeSystemsToInclude, codeSystemsToExclude, matchAlgorithm, false);
+    }
+
+    @Override
+    public ResolvedConceptReferencesIterator search(
+            final String text, 
+            Set<CodingSchemeReference> codeSystemsToInclude,
+            Set<CodingSchemeReference> codeSystemsToExclude, 
+            MatchAlgorithm matchAlgorithm,
+            boolean includeAnonymous) throws LBParameterException {
         
         LexEvsServiceLocator lexEvsServiceLocator = LexEvsServiceLocator.getInstance();
         List<RegistryEntry> entries = 
@@ -76,12 +90,22 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         
         Analyzer analyzer = service.getAnalyzer();
 
+        Query query = this.parseQuery(this.decorateQueryString(text, matchAlgorithm), analyzer);
+        
+        if(! includeAnonymous){
+            BooleanQuery booleanQuery = new BooleanQuery();
+            booleanQuery.add(query, Occur.MUST);
+            booleanQuery.add(new TermQuery(new Term("anonymous", "false")), Occur.MUST);
+            
+            query = booleanQuery; 
+        }
+        
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
                 query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
                         this.resolveCodeSystemReferences(codeSystemsToExclude),
-                        this.parseQuery(this.decorateQueryString(text, matchAlgorithm), analyzer));
+                        query);
 
         return new SearchScoreDocIterator(scoreDocs);
     }

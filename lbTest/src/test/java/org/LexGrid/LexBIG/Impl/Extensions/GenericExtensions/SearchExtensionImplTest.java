@@ -262,6 +262,24 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
+	public void testSimpleSearchWithAnonymousInclude() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Anonymous-mobile", null, null, MatchAlgorithm.CODE_EXACT, true);
+		assertTrue(itr.hasNext());
+		assertEquals("Anonymous-mobile", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchWithAnonymousExclude() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Anonymous-mobile", null, null, MatchAlgorithm.CODE_EXACT, false);
+		assertFalse(itr.hasNext());
+	}
+	
 	public void testSimpleSearchCaseInsensitive() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");

@@ -96,4 +96,28 @@ public interface SearchExtension extends GenericExtension {
 			Set<CodingSchemeReference> codingSchemesToExclude,
 			MatchAlgorithm matchAlgorithm) throws LBParameterException;
 	
+	/**
+	 * Search based on a given text string over given coding schemes, excluding
+	 * the listed.
+	 * 
+	 * NOTE: If a coding scheme appears in both codingSchemesToInclude 
+	 * and codingSchemesToExclude, the exclude will be given priority.
+	 *
+	 * @param text
+	 * 			The search text
+	 * @param codingSchemesToInclude
+	 * 			The coding schemes to include in the search
+	 * @param codingSchemesToExclude
+	 * 			The coding schemes to include in the search
+	 * @return 
+	 * 			A ResolvedConceptReferencesIterator
+	 * 
+	 * @throws LBParameterException
+	 */
+	public ResolvedConceptReferencesIterator search(
+			String text, 
+			Set<CodingSchemeReference> codingSchemesToInclude,
+			Set<CodingSchemeReference> codingSchemesToExclude,
+			MatchAlgorithm matchAlgorithm,
+			boolean includeAnonymous) throws LBParameterException;
 }

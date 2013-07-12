@@ -7,6 +7,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
@@ -108,6 +109,12 @@ public class SearchEntityIndexer implements EntityIndexer {
 						codingSchemeVersion,
 						Field.Store.YES, 
 						Field.Index.NO));
+		
+		document.add(
+				this.toField("anonymous", 
+						BooleanUtils.toString(entity.getIsAnonymous(), "true", "false", "false"),
+						Field.Store.NO, 
+						Field.Index.NOT_ANALYZED));
 		
 		String codingSchemeName;
 		try {
