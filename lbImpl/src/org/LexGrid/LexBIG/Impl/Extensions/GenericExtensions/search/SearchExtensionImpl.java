@@ -95,7 +95,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         if(! includeAnonymous){
             BooleanQuery booleanQuery = new BooleanQuery();
             booleanQuery.add(query, Occur.MUST);
-            booleanQuery.add(new TermQuery(new Term("anonymous", "false")), Occur.MUST);
+            booleanQuery.add(new TermQuery(new Term("anonymous", "true")), Occur.MUST_NOT);
             
             query = booleanQuery; 
         }
@@ -131,6 +131,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             }
             sb.append(")");
             sb.append(" OR description:\""+text+"\"");
+            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
             return sb.toString().trim();
         case LUCENE:
             return text;
