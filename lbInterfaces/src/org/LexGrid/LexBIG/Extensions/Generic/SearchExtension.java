@@ -121,7 +121,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			Whether or not to include Anonymous Entities
 	 * 			Default: 'false'
 	 * 			NOTE: 'false' -> include "anonymous != 'true'"
-	 * 				  'true'  -> include all
+	 *                'true'  -> include all
 	 * @return 
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
