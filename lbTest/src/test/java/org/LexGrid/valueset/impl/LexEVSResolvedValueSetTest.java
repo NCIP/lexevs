@@ -25,7 +25,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -39,13 +38,11 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.helper.VSDServiceHelper;
+import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 
 /**
  * JUnit for Resolved Value Set Service.
@@ -124,5 +121,11 @@ public class LexEVSResolvedValueSetTest extends TestCase {
     	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(1).getValue().getContent().equals("1.0"));
     }
 	
+    @Test 
+    public void testRemoveResolvedValueSet() throws Exception {
+    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
+    	remove_rvs.remove(acsvrl, true);
+    }
 
 }

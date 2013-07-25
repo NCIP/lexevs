@@ -110,7 +110,7 @@ public class RemoveResolvedValueSet {
 
 	}
 
-	AbsoluteCodingSchemeVersionReferenceList getCodingSchemeVersions(
+	public AbsoluteCodingSchemeVersionReferenceList getCodingSchemeVersions(
 			String csv_list) {
 		AbsoluteCodingSchemeVersionReferenceList acsvl = new AbsoluteCodingSchemeVersionReferenceList();
 		if (csv_list != null) {
@@ -136,7 +136,7 @@ public class RemoveResolvedValueSet {
 		return acsvl;
 	}
 
-	protected void remove(
+	public void remove(
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
 			boolean force) throws Exception {
 		// ResolvedValueSetDefinitionLoader loader =
