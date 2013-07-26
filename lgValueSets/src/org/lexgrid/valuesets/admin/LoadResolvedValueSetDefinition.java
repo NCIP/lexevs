@@ -26,6 +26,9 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceManagerImpl;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.admin.Util;
 import org.LexGrid.annotations.LgAdminFunction;
@@ -61,7 +64,8 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  */
 @LgAdminFunction
 public class LoadResolvedValueSetDefinition {
-
+	boolean activate;
+	
     public static void main(String[] args) {
         try {
             new LoadResolvedValueSetDefinition().run(args);
@@ -97,8 +101,7 @@ public class LoadResolvedValueSetDefinition {
         String urn = cl.getOptionValue("u");
         String csList = cl.getOptionValue("l");
         String csVersionTag = cl.getOptionValue("csVersionTag");
-        boolean force = cl.hasOption("f");
-        CodingSchemeSummary css = null;
+        activate = cl.hasOption("a");
 
         // Find in list of valueset definitions  ...
         if (urn != null) {
@@ -143,7 +146,20 @@ public class LoadResolvedValueSetDefinition {
     	//ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoader.NAME);
     	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
     	loader.load(new URI(valueSetDefinitionURI), valueSetDefinitionRevisionId, csVersionList, csVersionTag);
-    	
+    	Util.displayLoaderStatus(loader);
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(2000);
+		}
+    	LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+        if (activate) {
+            AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+            for (int i = 0; i < refs.length; i++) {
+                AbsoluteCodingSchemeVersionReference ref = refs[i];
+                lbsm.activateCodingSchemeVersion(ref);
+                Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                        + ref.getCodingSchemeVersion());
+            }
+        }
      }
 
     /**
@@ -158,6 +174,12 @@ public class LoadResolvedValueSetDefinition {
         o = new Option("u", "urn", true, "URN uniquely identifying the code system.");
         o.setArgName("urn");
         o.setRequired(true);
+        options.addOption(o);
+        
+        o = new Option("a", "activate", true, "Activate the code system.");
+        o.setArgName("activate");
+        o.setRequired(false);
+        o.setOptionalArg(true);
         options.addOption(o);
 
         o = new Option("l", "list", true, "List of coding schemes to use.");
