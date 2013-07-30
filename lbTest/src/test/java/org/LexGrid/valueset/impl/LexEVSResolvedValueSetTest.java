@@ -58,23 +58,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	public  void setUp(){
 		service= new LexEVSResolvedValueSetServiceImpl();
 	}
-	@Test
-	public void testLoadValueSetDefinition() throws Exception {
-				
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
-		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, null);
-
-		while (loader.getStatus().getEndTime() == null) {
-			Thread.sleep(2000);
-		}
-		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-	}
 
 	@Test
 	public void testListAllResolvedValueSets() throws Exception {
@@ -121,11 +105,6 @@ public class LexEVSResolvedValueSetTest extends TestCase {
     	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(1).getValue().getContent().equals("1.0"));
     }
 	
-    @Test 
-    public void testRemoveResolvedValueSet() throws Exception {
-    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
-    	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
-    	remove_rvs.remove(acsvrl, true);
-    }
+
 
 }
