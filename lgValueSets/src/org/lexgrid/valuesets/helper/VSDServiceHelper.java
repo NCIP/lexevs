@@ -730,6 +730,9 @@ public class VSDServiceHelper {
 		String codingSchemeName = StringUtils.isEmpty(vsd
 				.getValueSetDefinitionName()) ? codingSchemeUri : vsd
 				.getValueSetDefinitionName();
+		if (StringUtils.isNotEmpty(codingSchemeName) && codingSchemeName.length() > 50) {
+			codingSchemeName= codingSchemeName.substring(0, 49);
+		}
 
 		CodingScheme cs = null;
 
