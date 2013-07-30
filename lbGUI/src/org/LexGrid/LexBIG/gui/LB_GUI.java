@@ -57,6 +57,7 @@ import org.LexGrid.LexBIG.gui.load.LoaderExtensionShell;
 import org.LexGrid.LexBIG.gui.load.ManifestLoader;
 import org.LexGrid.LexBIG.gui.load.PostProcessorLauncher;
 import org.LexGrid.LexBIG.gui.load.ReIndexerLoader;
+import org.LexGrid.LexBIG.gui.load.ResolvedValueSetLoader;
 import org.LexGrid.LexBIG.gui.logging.LogViewer;
 import org.LexGrid.LexBIG.gui.restrictions.GraphRestrictionGUI;
 import org.LexGrid.LexBIG.gui.restrictions.RestrictionGUI;
@@ -102,6 +103,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexevs.system.utility.PropertiesUtility;
+import org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl;
 
 /**
  * This is the GUI application for the LexBIG project.
@@ -129,7 +131,7 @@ public class LB_GUI {
 	Button resolveForward, resolveBackward;
 	Text resolveDepth_, graphFocus_, resolveMax_;
 	Combo graphFocusCS_, graphFocusNS_, relationName_;
-	MenuItem enableAdmin_, loadItem_, exportItem_, cleanUpItem_;
+	MenuItem enableAdmin_, loadItem_, exportItem_, cleanUpItem_, loadRSVItem_;
 	Button changeTag_, activate_, deactivate_, removeCodeSystem_,
 			removeCodeSystemHistory_, removeCodeSystemMetadata_, rebuildIndex_, loadManifest_;
 
@@ -1724,6 +1726,11 @@ public class LB_GUI {
 			exportItem_ = new MenuItem(mBar, SWT.CASCADE);
 			exportItem_.setText("&Export Terminology");
 			exportItem_.setEnabled(false);
+			
+			loadRSVItem_ = new MenuItem(mBar, SWT.CASCADE);
+            loadRSVItem_.setText("&Resolved Value Set Loader");
+            loadRSVItem_.setEnabled(false);
+			
 		}
 
 		MenuItem helpItem = new MenuItem(mBar, SWT.CASCADE);
@@ -1755,6 +1762,7 @@ public class LB_GUI {
 				public void widgetSelected(SelectionEvent arg0) {
 					if (enableAdmin_.getSelection()) {
 						loadItem_.setEnabled(true);
+						loadRSVItem_.setEnabled(true);
 						exportItem_.setEnabled(true);
 						cleanUpItem_.setEnabled(true);
 						changeTag_.setEnabled(true);
@@ -1781,6 +1789,7 @@ public class LB_GUI {
 
 					} else {
 						loadItem_.setEnabled(false);
+						loadRSVItem_.setEnabled(false);
 						exportItem_.setEnabled(false);
 						cleanUpItem_.setEnabled(false);
 						changeTag_.setEnabled(false);
@@ -1845,7 +1854,7 @@ public class LB_GUI {
 		    try {
                 for(final ExtensionDescription extension : 
                     lbs_.getServiceManager(null).getExtensionRegistry().getLoadExtensions().getExtensionDescription()){
-
+                    if(extension.getName() != "ResolvedValueSetDefinitionLoader"){
                     MenuItem loadItem = new MenuItem(loadMenu, SWT.NONE);
                     loadItem.setText(extension.getName() + " - " + extension.getDescription());
                     loadItem.addSelectionListener(new SelectionListener() {
@@ -1866,10 +1875,35 @@ public class LB_GUI {
 
                     });
                 }
+                }
             } catch (LBException e) {
                 throw new RuntimeException(e);
             }
 			
+		    
+		    Menu loadRVSMenu = new Menu(shell_, SWT.DROP_DOWN);
+		    MenuItem loadRVSItem = new MenuItem(loadRVSMenu, SWT.NONE);
+		    loadRSVItem_.setMenu(loadRVSMenu);
+		    loadRVSItem.setText(ResolvedValueSetDefinitionLoaderImpl.NAME);
+		    loadRVSItem.addSelectionListener(new SelectionListener() {
+
+                public void widgetSelected(SelectionEvent arg0) {
+                    Loader loader;
+                    try {
+                        loader = lbs_.getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoaderImpl.NAME);
+                    } catch (LBException e) {
+                        throw new RuntimeException(e);
+                    }
+                    
+                    new ResolvedValueSetLoader(LB_GUI.this);
+                }
+
+                public void widgetDefaultSelected(SelectionEvent arg0) {
+                    // not used
+                }
+
+            });
+		    
 
 			// build the Export Menu
 
