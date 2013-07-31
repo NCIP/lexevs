@@ -38,6 +38,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
 import org.junit.Test;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
@@ -50,61 +51,75 @@ import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
  */
 public class LexEVSResolvedValueSetTest extends TestCase {
-	
-	LexEVSResolvedValueSetService service;	
-	
-	private LexEVSValueSetDefinitionServices vds_;
-	
-	public  void setUp(){
-		service= new LexEVSResolvedValueSetServiceImpl();
-	}
 
+	LexEVSResolvedValueSetService service;
+
+	private LexEVSValueSetDefinitionServices vds_;
+
+	public void setUp() {
+		service = new LexEVSResolvedValueSetServiceImpl();
+	}
 
 	@Test
 	public void testListAllResolvedValueSets() throws Exception {
-		List<CodingScheme> list= service.listAllResolvedValueSets();		
-        assertTrue(list.size() > 0 );
-        CodingScheme scheme = list.get(0);
-    	for (Property prop :scheme.getProperties().getPropertyAsReference()){
-    		if(prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)){
-    			assertTrue(prop.getPropertyQualifier(0).getValue().getContent().equals("Automobiles"));
-    			assertTrue( prop.getPropertyQualifier(1).getValue().getContent().equals("1.0"));
-    			System.out.println("Coding Scheme: " + prop.getPropertyQualifier(0).getValue().getContent());
-    			System.out.println("Version: " + prop.getPropertyQualifier(1).getValue().getContent());
-    		}
-    	}
-        LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-        CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(), Constructors.createCodingSchemeVersionOrTag(null,scheme.getRepresentsVersion()));
-        ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
-        while(refs.hasNext()){
-      
-        	ResolvedConceptReference ref = refs.next();
-        	System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
-        	System.out.println("Code: " + ref.getCode());
-        	System.out.println("Description: " + ref.getEntityDescription().getContent());
+		List<CodingScheme> list = service.listAllResolvedValueSets();
+		assertTrue(list.size() > 0);
+		CodingScheme scheme = list.get(0);
+		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
+			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
+						"Automobiles"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.0"));
+				System.out.println("Coding Scheme: "
+						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
+				System.out.println("Version: "
+						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
+			}
+		}
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(),
+				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
+		while (refs.hasNext()) {
 
-        }
+			ResolvedConceptReference ref = refs.next();
+			System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
+			System.out.println("Code: " + ref.getCode());
+			System.out.println("Description: " + ref.getEntityDescription().getContent());
+
+		}
 	}
-    @Test
-    public void testGetResolvedValueSetsforConceptReference(){
-    	ConceptReference ref = new ConceptReference();
-    	ref.setCode("005");
-    	ref.setCodeNamespace("Automobiles");
-    	ref.setCodingSchemeName("Automobiles");
-    	List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
-    	assertTrue(schemes.size() > 0);
-        }
-     
-        
-    @Test
-    public void testGetCodingSchemeMetadataForResolvedValueSetURI() throws URISyntaxException{
-    	URI uri = new URI("SRITEST:AUTO:AllDomesticButGM");
-    	CodingScheme scheme = service.getResolvedValueSetForValueSetURI(uri);
-    	assertTrue(scheme.getProperties().getProperty(1).getPropertyName().equals("resolvedAgainstCodingSchemeVersion"));
-    	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(0).getValue().getContent().equals("Automobiles"));
-    	assertTrue(scheme.getProperties().getProperty(1).getPropertyQualifier(1).getValue().getContent().equals("1.0"));
-    }
-	
 
+	@Test
+	public void testGetResolvedValueSetsforConceptReference() {
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("005");
+		ref.setCodeNamespace("Automobiles");
+		ref.setCodingSchemeName("Automobiles");
+		List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
+		assertTrue(schemes.size() > 0);
+	}
+
+	@Test
+	public void testGetCodingSchemeMetadataForResolvedValueSetURI() throws URISyntaxException {
+		URI uri = new URI("SRITEST:AUTO:AllDomesticButGM");
+		CodingScheme scheme = service.getResolvedValueSetForValueSetURI(uri);
+		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
+			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
+						"Automobiles"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.0"));
+			}
+		}
+	}
+
+	private String getPropertyQualifierValue(String qualifierName, Property prop) {
+		for (PropertyQualifier pq : prop.getPropertyQualifier()) {
+			if (pq.getPropertyQualifierName().equals(qualifierName)) {
+				return pq.getValue().getContent();
+			}
+		}
+		return "";
+	}
 
 }
