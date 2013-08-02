@@ -97,4 +97,14 @@ public class ResolvedValueSetDefinitionLoaderImpl extends BaseLoader implements
 	        return OntologyFormat.RESOLVEDVALUESET;
 	    }
 
+	    //Used for the lbGUI implementation
+		public void loadResolvedValueSet(String valueSetDefinitionURI, String valueSetDefinitionRevisionId, AbsoluteCodingSchemeVersionReferenceList csVersionList,
+				String csVersionTag)throws Exception {
+			this.valueSetDefinitionURI= new URI(valueSetDefinitionURI);
+			this.valueSetDefinitionRevisionId= valueSetDefinitionRevisionId;
+			this.csVersionList= csVersionList;
+			this.csVersionTag= csVersionTag;
+			this.load(new URI(valueSetDefinitionURI));
+		}
+
 }

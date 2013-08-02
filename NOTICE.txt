@@ -1,0 +1,16 @@
+LexEVS
+Copyright 2004 Mayo Foundation for Medical Education and 
+ Research (MFMER)
+
+This project is distributed under the Eclipse Public License.
+Please see LICENSE file for details.
+
+
+Portions of this project were developed as part of the NCI caBIG initiative.
+
+In 2013, as part of the National Cancer Informatics Program (NCIP) Open Development Initiative,
+the LexEVS source code was migrated to GitHub to allow further development by the broader
+community.
+
+LexEVS was developed as a terminology service based on community sourced standards and designed
+to deliver a robust, interoperable API

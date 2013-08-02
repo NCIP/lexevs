@@ -39,7 +39,6 @@ import org.lexevs.system.utility.PropertiesUtility;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class ServiceHolder {
-	public static final String ALL_IN_MEMORY_SYSTEM_VARIABLE = "in-memory";
 	
     private static Properties[] configs_;
     private static int currentConfig_ = 0;
@@ -127,7 +126,7 @@ public class ServiceHolder {
                 singleConfigMode_ = true;
               
                 boolean inMemory = 
-                	BooleanUtils.toBoolean(System.getProperty(ALL_IN_MEMORY_SYSTEM_VARIABLE));
+                	BooleanUtils.toBoolean(System.getProperty(SystemVariables.ALL_IN_MEMORY_SYSTEM_VARIABLE));
                 
                 if(inMemory){
                 	BaseInMemoryLexEvsTest.initInMemory();

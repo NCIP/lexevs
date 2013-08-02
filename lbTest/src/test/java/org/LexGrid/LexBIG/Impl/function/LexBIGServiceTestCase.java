@@ -76,7 +76,12 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String PIZZA_SCHEME_NAME = "pizza.owl";
     public final static String NPO_SCHEME_URI = "http://purl.bioontology.org/ontology/npo";
     public final static String NPO_SCHEME_VERSION = "2012-01-25 (yyyy-mm-dd)";
- 
+    public final static String HL7_MIF_VOCABULARY_SCHEME = "1189-20121121";
+    public final static String HL7_MIF_VOCABULARY_URN = "urn:hl7-org:v3/mif2";
+    public final static String HL7_MIF_VOCABULARY_VERSION = "DEFN=UV=VO=1189-20121121";
+    public final static String OWL2_SNIPPET_VOCABULARY_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2-snippet.owl";
+    public final static String OWL2_SNIPPET_VOCABULARY_VERSION = "13.05d";
+
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
     /**
      * To be implemented by each descendant testcase.

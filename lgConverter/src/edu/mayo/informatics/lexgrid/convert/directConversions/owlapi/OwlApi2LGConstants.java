@@ -21,12 +21,10 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.stanford.smi.protegex.owl.model.OWLNames;
-import edu.stanford.smi.protegex.owl.model.RDFNames;
-import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import org.semanticweb.owlapi.vocab.Namespaces;
 
 /**
- * Constants used by the ProtegeOwl To EMF Implementation.
+ * Constants used by the OwlApi loader Implementation.
  * 
  * Made some changes by deprecating some of the constants, as well as, adding
  * more "OWL specific" ones.
@@ -41,15 +39,13 @@ public class OwlApi2LGConstants {
     public static final boolean IS_DBXREF_REPFORM = false;
     public static final int MEMOPT_ALL_IN_MEMORY = 0;
     public static final int MEMOPT_LEXGRID_DIRECT_DB = 1;
-    public static final int MEMOPT_NON_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB = 2;
-    public static final int MEMOPT_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB = 3;
     public static final boolean PROCESS_COMPLEX_PROP = false;
     public static final boolean STRICT_OWL_IMPLEMENTATION = true;
 
     /* Namespaces */
-    public static final String RDF_NAMESPACE = RDFNames.RDF_NAMESPACE;
-    public static final String OWL_NAMESPACE = OWLNames.OWL_NAMESPACE;
-    public static final String RDFS_NAMESPACE= RDFSNames.RDFS_NAMESPACE;
+    public static final String RDF_NAMESPACE = Namespaces.RDF.toString();
+    public static final String OWL_NAMESPACE = Namespaces.OWL.toString();
+    public static final String RDFS_NAMESPACE= Namespaces.RDFS.toString();
 
     /* Languages */
     public static final String LANG_URI = "urn:oid:2.16.840.1.113883.6.84";
@@ -60,8 +56,8 @@ public class OwlApi2LGConstants {
     public static final String PROPNAME_ENUMERATION = "isEnumeration";
     public static final String PROPNAME_INTERSECTION = "isIntersection";
     public static final String PROPNAME_PRIMITIVE = "primitive";
-    public static final String PROPNAME_RDF_ID = RDFNames.RDF_PREFIX +':'+"id";
-    public static final String PROPNAME_RDFS_LABEL = RDFSNames.RDFS_PREFIX +':'+"label";
+    public static final String PROPNAME_RDF_ID = "rdf:id";
+    public static final String PROPNAME_RDFS_LABEL = "rdfs:label";
     public static final String PROPNAME_TYPE = "type";
     public static final String PROPNAME_UNION = "isUnion";
     
@@ -129,13 +125,13 @@ public class OwlApi2LGConstants {
      * properties within the LexGrid model (can be altered via preferences).
      */
     public static final List<String> PRIORITIZED_COMMENT_NAMES = Arrays.asList(new String[] { "DesignNote", "Editor_Note",
-            "Citation", "VA_Workflow_Comment", "comment" });
+            "Citation", "VA_Workflow_Comment", "rdfs:comment" });
     public static final List<String> PRIORITIZED_DEFINITION_NAMES = Arrays.asList(new String[] { "DEFINITION", "dDEFINITION",
             "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition" });
     public static final List<String> PRIORITIZED_PRESENTATION_NAMES = Arrays.asList(new String[] { "NCI_Preferred_Term",
             "Preferred_Name", "Display_Name", "Search_Name", "FULL_SYN", "Synonym", "VA_Print_Name",
             "VA_National_Formulary_Name", "VA_Abbreviation", "VA_Dose_Form_Print_Name", "VA_Trade_Name", "MeSH_Name",
-            "NDFRT_Name", "RxNorm_Name", "label" });
+            "NDFRT_Name", "RxNorm_Name", "rdfs:label" });
 
     // Regular expressions to enable generic processing of the OWL source.
     // Defaults defined here, changeable via preferences.

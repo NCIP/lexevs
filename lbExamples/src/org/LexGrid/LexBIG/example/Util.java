@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -165,7 +166,11 @@ class Util {
     static ValueSetDefinition promptForValueSetDefinition(String message) {
         return new ValueSetDefinitionSelectionMenu().displayAndGetSelection(message);
     }
-
+    
+    
+    static CodingScheme promptForResolvedValueSetDefinition(String message) {
+        return new RevolvedValueSetSelectionMenu().displayAndGetSelection(message);
+    }
     /**
      * Returns common text to append to displayed help for commands that allow
      * the user to prompt for coding scheme information instead of providing urn

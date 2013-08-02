@@ -6,31 +6,11 @@
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=graph-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="lib/blueprints-core-2.4.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/blueprints-orient-graph-2.4.0-SNAPSHOT.jar" sourcepath="/blueprints-orient-graph/src"/>
-	<classpathentry kind="lib" path="lib/gremlin-groovy-2.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/gremlin-java-2.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/groovy-1.8.9.jar"/>
-	<classpathentry kind="lib" path="lib/hazelcast-2.1.2.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
-	<classpathentry kind="lib" path="lib/jansi-1.5.jar"/>
-	<classpathentry kind="lib" path="lib/javassist.jar"/>
-	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
-	<classpathentry kind="lib" path="lib/jna-3.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/orient-commons-1.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/orientdb-core-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/jna-3.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/mail.jar"/>
-	<classpathentry kind="lib" path="lib/pipes-2.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/platform.jar"/>
-	<classpathentry kind="lib" path="lib/orient-commons-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-client-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-core-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-distributed-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-enterprise-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-graphdb-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-nativeos-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-object-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-server-1.4.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/orientdb-tools-1.4.0-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=graph-loader&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

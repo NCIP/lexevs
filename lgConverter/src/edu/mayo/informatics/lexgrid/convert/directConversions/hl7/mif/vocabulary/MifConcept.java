@@ -18,7 +18,8 @@ public class MifConcept implements Serializable{
     
     // Concept attributes:
     private boolean isIsSelectable = true; // XML attribute name = isSelectable
-    // private String definition;  // sub element path is <annotations>/<documentation>/<definition>/<text>
+
+    private String definition;  // sub element path is <annotations>/<documentation>/<definition>/<text>
     
     private MifPrintName printName;
     
@@ -62,6 +63,14 @@ public class MifConcept implements Serializable{
 
     public void setIsSelectable(boolean isIsSelectable) {
         this.isIsSelectable = isIsSelectable;
+    }
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 
     public MifPrintName getPrintName() {

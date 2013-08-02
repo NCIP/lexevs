@@ -153,6 +153,7 @@ import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStr
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestWeightedDoubleMetaphone;
 import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIteratorTest;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturnTest;
+import org.LexGrid.LexBIG.Impl.helpers.ConfigureTest;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImplTest;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparatorTest;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.LazyLoadableCodeToReturnTest;
@@ -189,6 +190,7 @@ public class AllTestsNormalConfig {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
         ServiceHolder.configureForSingleConfig();
 
+        mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
@@ -236,6 +238,13 @@ public class AllTestsNormalConfig {
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.TuiPropertyDataTestIT.class);
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.IsoMapTest.class);
         mainSuite.addTest(umlsLoaderSuite);
+        
+        TestSuite hl7MifVocabularyLoaderSuite = new TestSuite("HL7 MIF Vocabulary Loader Tests");
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabularyHierarchyRootsTestIT.class);
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.DefinitionPropertyDataTestIT.class);
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.EntityAssnsToEntityDataTestIT.class);
+        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.PresentationPropertyDataTestIT.class);
+        mainSuite.addTest(hl7MifVocabularyLoaderSuite);
         
         TestSuite luceneSuite = new TestSuite("Lucene Tests");
         luceneSuite.addTestSuite(QueryGeneratorTest.class);

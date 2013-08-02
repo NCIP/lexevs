@@ -237,7 +237,15 @@ public class PrintUtility {
 		System.out.println("Result is: " + obj.toString());
 	}
 	
-	
+	public static void print(ResolvedConceptReferencesIterator itr){
+	    try {
+            while(itr.hasNext()){
+                print(itr.next());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+	}
 	
 	/**
 	 * Prints the.
@@ -246,11 +254,7 @@ public class PrintUtility {
 	 */
 	public static void print(CodedNodeSet cns){
 		try {
-			ResolvedConceptReferencesIterator itr = cns.resolve(null,null,null,null,false);
-			
-			while(itr.hasNext()){
-				print(itr.next());
-			}
+		    print(cns.resolve(null,null,null,null,false));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -1,18 +1,26 @@
 package org.lexevs.dao.index.indexer;
 
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.concepts.Presentation;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.analysis.KeywordTokenizer;
+import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.service.SystemResourceService;
+
+import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 
 public class SearchEntityIndexer implements EntityIndexer {
 	
@@ -53,12 +61,29 @@ public class SearchEntityIndexer implements EntityIndexer {
 						Field.Store.NO,
 						Field.Index.NOT_ANALYZED));
 
+		for(Presentation presentation : entity.getPresentation()){
+			if(presentation.getValue() != null 
+				&& StringUtils.isNotBlank(presentation.getValue().getContent())){
+				
+				String content = presentation.getValue().getContent();
+				document.add(this.toField("description", 
+						content,
+						Field.Store.NO, 
+						Field.Index.ANALYZED));
+				
+				document.add(this.toField("exactDescription", 
+						content,
+						Field.Store.NO, 
+						Field.Index.ANALYZED));
+			}
+		}
+		
 		if(entity.getEntityDescription() != null){
 			document.add(
-					this.toField("description", 
+					this.toField("entityDescription", 
 							entity.getEntityDescription().getContent(),
 							Field.Store.YES, 
-							Field.Index.ANALYZED));
+							Field.Index.NO));
 		}
 		
 		document.add(
@@ -84,6 +109,12 @@ public class SearchEntityIndexer implements EntityIndexer {
 						codingSchemeVersion,
 						Field.Store.YES, 
 						Field.Index.NO));
+		
+		document.add(
+				this.toField("anonymous", 
+						BooleanUtils.toString(entity.getIsAnonymous(), "true", "false", "false"),
+						Field.Store.NO, 
+						Field.Index.NOT_ANALYZED));
 		
 		String codingSchemeName;
 		try {
@@ -122,10 +153,24 @@ public class SearchEntityIndexer implements EntityIndexer {
 	@Override
 	public Analyzer getAnalyzer() {
 		PerFieldAnalyzerWrapper analyzer =
-		new PerFieldAnalyzerWrapper(new StandardAnalyzer());
+		new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet));
+		
 		analyzer.addAnalyzer("code", new KeywordAnalyzer());
+		analyzer.addAnalyzer("namespace", new KeywordAnalyzer());
+		analyzer.addAnalyzer("exactDescription", new LowerCaseKeywordAnalyzer());
 		
 		return analyzer;
+	}
+	
+	private class LowerCaseKeywordAnalyzer extends Analyzer {
+
+		@Override
+		public TokenStream tokenStream(String fieldName, Reader reader) {		
+			TokenStream tokenStream = new KeywordTokenizer(reader);
+			
+			return new LowerCaseFilter(tokenStream);
+		}			
 	}
 
 	@Override

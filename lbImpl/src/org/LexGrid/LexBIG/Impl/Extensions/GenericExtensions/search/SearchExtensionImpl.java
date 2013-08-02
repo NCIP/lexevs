@@ -18,11 +18,16 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
@@ -34,20 +39,31 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     private static final long serialVersionUID = 8704782086137708226L;
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text) throws LBParameterException {
-        return this.search(text, null, null);
+    public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException {
+        return this.search(text, null, matchAlgorithm);
     }
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems) throws LBParameterException {
-        return this.search(text, codeSystems, null);
+    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException {
+        return this.search(text, codeSystems, null, matchAlgorithm);
+    }
+    
+    @Override
+    public ResolvedConceptReferencesIterator search(
+            final String text, 
+            Set<CodingSchemeReference> codeSystemsToInclude,
+            Set<CodingSchemeReference> codeSystemsToExclude, 
+            MatchAlgorithm matchAlgorithm) throws LBParameterException {
+        return this.search(text, codeSystemsToInclude, codeSystemsToExclude, matchAlgorithm, false);
     }
 
     @Override
     public ResolvedConceptReferencesIterator search(
-            String text, 
+            final String text, 
             Set<CodingSchemeReference> codeSystemsToInclude,
-            Set<CodingSchemeReference> codeSystemsToExclude) throws LBParameterException {
+            Set<CodingSchemeReference> codeSystemsToExclude, 
+            MatchAlgorithm matchAlgorithm,
+            boolean includeAnonymous) throws LBParameterException {
         
         LexEvsServiceLocator lexEvsServiceLocator = LexEvsServiceLocator.getInstance();
         List<RegistryEntry> entries = 
@@ -74,21 +90,61 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         
         Analyzer analyzer = service.getAnalyzer();
 
+        Query query = this.parseQuery(this.decorateQueryString(text, matchAlgorithm), analyzer);
+        
+        if(! includeAnonymous){
+            BooleanQuery booleanQuery = new BooleanQuery();
+            booleanQuery.add(query, Occur.MUST);
+            booleanQuery.add(new TermQuery(new Term("anonymous", "true")), Occur.MUST_NOT);
+            
+            query = booleanQuery; 
+        }
+        
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
                 query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
                         this.resolveCodeSystemReferences(codeSystemsToExclude),
-                        this.parseQuery(text, analyzer));
+                        query);
 
         return new SearchScoreDocIterator(scoreDocs);
     }
     
+    protected String decorateQueryString(String text, MatchAlgorithm matchAlgorithm) {
+        if(StringUtils.isBlank(text)) {
+          return text;  
+        }
+        
+        switch(matchAlgorithm){
+        case PRESENTATION_EXACT:
+            return "exactDescription:\"" + QueryParser.escape(text) + "\"";
+        case CODE_EXACT:
+            return "code:" + QueryParser.escape(text);
+        case PRESENTATION_CONTAINS:
+            text = QueryParser.escape(text);
+            StringBuilder sb = new StringBuilder();
+            sb.append("(");
+            for(String token : text.split("\\s+")){
+               sb.append("description:");
+               sb.append(token);
+               sb.append("* ");
+            }
+            sb.append(")");
+            sb.append(" OR description:\""+text+"\"");
+            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
+            return sb.toString().trim();
+        case LUCENE:
+            return text;
+        default:
+            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
+        }
+    }
+
     protected Query parseQuery(String text, Analyzer analyzer) {
         if (StringUtils.isBlank(text)) {
             return new MatchAllDocsQuery();
         } else {
-            QueryParser parser = new QueryParser("description", analyzer);
+            QueryParser parser = this.createQueryParser(analyzer);
 
             try {
                 return parser.parse(text);
@@ -96,6 +152,13 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 throw new RuntimeException(e);
             }
         }
+    }
+    
+    protected QueryParser createQueryParser(Analyzer analyzer){
+        QueryParser parser = new QueryParser("description", analyzer);
+        parser.setDefaultOperator(Operator.AND);
+        
+        return parser;
     }
     
     private Set<AbsoluteCodingSchemeVersionReference> 

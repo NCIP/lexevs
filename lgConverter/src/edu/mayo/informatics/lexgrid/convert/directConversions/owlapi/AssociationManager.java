@@ -176,7 +176,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:AllDifferent
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
@@ -203,7 +202,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:complementOf
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
@@ -277,7 +275,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:differentFrom
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
@@ -304,7 +301,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:disjointWith
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw.setIsTransitive(Boolean.FALSE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
@@ -356,7 +352,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX); // owl:equivalentClass
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw.setIsTransitive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
@@ -434,7 +429,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:inverseOf
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);
         lgSupportedMappings_.registerSupportedAssociation(
                 code, 
@@ -505,7 +499,6 @@ public class AssociationManager {
         aw.setEntityCode(code);
         aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:sameAs
         aw.setForwardName(code);
-        aw.setReverseName(code);
         aw.setIsTransitive(Boolean.TRUE);
         aw.setIsNavigable(Boolean.TRUE);
         aw = addAssociation(lgRelationsContainer_Assoc, aw);

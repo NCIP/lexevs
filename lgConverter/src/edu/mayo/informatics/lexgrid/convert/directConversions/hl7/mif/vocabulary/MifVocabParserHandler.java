@@ -14,6 +14,8 @@ public class MifVocabParserHandler extends DefaultHandler {
 
     private MifVocabularyModel vocabularyModel;  
     
+    public final static String DEFAULT_CODINGSCHEME_URI = "urn:hl7-org:v3/mif2";
+    
     protected List<MifCodeSystem> codeSystems;
     protected List<MifCodeSystemVersion> codeSystemVersions;
     protected List<String> csvSupportedLanguages;
@@ -40,6 +42,12 @@ public class MifVocabParserHandler extends DefaultHandler {
     
     protected boolean csvSupportedLanguageFlag;
     protected boolean conceptRelationshipFlag;
+    protected boolean conceptTextFlag;
+    protected boolean codeSystemTextFlag;
+    protected boolean consumeAllTextFlag;
+    protected boolean validated = false;
+    
+    protected StringBuilder textBuilder;
     
     // Debug/statisical data variables - used to get misc info about contents of the load
     // source file.  
@@ -98,13 +106,26 @@ public class MifVocabParserHandler extends DefaultHandler {
             codeSystems = new ArrayList<MifCodeSystem>();
             supportedConceptRelationshipsMap = new HashMap<String, MifSupportedConceptRelationship>();
             supportedConceptPropertiesMap = new HashMap<String, MifSupportedConceptProperty>();
-            
-            getVocabularyModel().setXmlns(attributes.getValue("xmlns"));
-            getVocabularyModel().setName(attributes.getValue("name"));
-            getVocabularyModel().setTitle(attributes.getValue("title"));
-            getVocabularyModel().setSchemaVersion(attributes.getValue("schemaVersion"));
-            getVocabularyModel().setDefaultLanguage("en"); 
+            MifVocabularyModel model = getVocabularyModel();
+            model.setXmlns(DEFAULT_CODINGSCHEME_URI);
+            model.setName(attributes.getValue("name"));
+            model.setTitle(attributes.getValue("title"));
+            model.setSchemaVersion(attributes.getValue("schemaVersion"));
+            if(model.getName() != null |
+                    model.getTitle() != null | 
+                    model.getSchemaVersion() != null | 
+                    !(model.getName().length() < 0) | 
+                    !(model.getTitle().length() < 0) | 
+                    !(model.getSchemaVersion().length() < 0)){
+                validated = true;
+            }
+
         }
+        
+        if(!validated){
+            throw new RuntimeException("Source file is invalid. Please check to see if this is a valid HL7 vocabulary mif file");
+        }
+        
         if (qName.equalsIgnoreCase("packageLocation")) {
             //System.out.println("Start Element :" + qName);
             getVocabularyModel().setCombinedId(attributes.getValue("combinedId"));
@@ -120,9 +141,21 @@ public class MifVocabParserHandler extends DefaultHandler {
             // set CodeSystem attributes
             codeSystem.setName(attributes.getValue("name"));
             codeSystem.setTitle(attributes.getValue("title"));
-            codeSystem.setCodeSystemId(attributes.getValue("codeSystemId"));           
+            codeSystem.setCodeSystemId(attributes.getValue("codeSystemId")); 
+            state = CODESYSTEM;
         }
-                        
+
+        // Text data
+        if (qName.equalsIgnoreCase("text")) {
+            consumeAllTextFlag = true;
+            textBuilder = new StringBuilder();
+            if (state == CODESYSTEM) {
+                codeSystemTextFlag = true;
+            } else if (state == CONCEPT) {
+                conceptTextFlag = true;
+            }
+        }
+
         // CodeSystemVersion data
         if (qName.equalsIgnoreCase("releasedVersion")) {
             //System.out.println("Start Element :" + qName);
@@ -180,6 +213,7 @@ public class MifVocabParserHandler extends DefaultHandler {
             conceptProperties = new ArrayList<MifConceptProperty>();
             conceptCodes = new ArrayList<MifConceptCode>();
             conceptPrintName = new MifPrintName();
+            state = CONCEPT;
             
             // set great grandparent VocabularyModel info
             concept.setVmCombinedId(getVocabularyModel().getCombinedId());
@@ -218,6 +252,10 @@ public class MifVocabParserHandler extends DefaultHandler {
             //System.out.println("Start Element :" + qName);
             // set ConceptRelationship info
             conceptRelationship.setTargetConceptCode(attributes.getValue("code"));
+            
+            if (attributes.getValue("codeSystem") != null) {
+                conceptRelationship.setTargetCodeSystemId(attributes.getValue("codeSystem"));
+            }
         }
 
         // ConceptProperty data
@@ -239,22 +277,15 @@ public class MifVocabParserHandler extends DefaultHandler {
             conceptProperty.setValue(attributes.getValue("value"));
         }
 
-        // Concept printName data
+        // Concept printName data - do not handle when preferredForLanguage is false
         if (qName.equalsIgnoreCase("printName")) {
             //System.out.println("Start Element :" + qName);
-            conceptPrintName = new MifPrintName();
-            
-            // set concept printName attribute info
-            conceptPrintName.setLanguage(attributes.getValue("language"));
-            
             if ((attributes.getValue("preferredForLanguage") != null) && (attributes.getValue("preferredForLanguage").equalsIgnoreCase("true"))) {
+                conceptPrintName = new MifPrintName();
                 conceptPrintName.setPreferredForLanguage(true);
-            }
-            if ((attributes.getValue("preferredForLanguage") != null) && (attributes.getValue("preferredForLanguage").equalsIgnoreCase("false"))) {
-                conceptPrintName.setPreferredForLanguage(false);
-            }
-            
-            conceptPrintName.setText(attributes.getValue("text"));
+                conceptPrintName.setLanguage(attributes.getValue("language"));
+                conceptPrintName.setText(attributes.getValue("text"));
+            }                      
         }
 
         // ConceptCode data
@@ -302,11 +333,12 @@ public class MifVocabParserHandler extends DefaultHandler {
        
         if (qName.equalsIgnoreCase("concept")) {
             //System.out.println("End Element :" + qName); 
+            state = START;
             if (conceptProperties.size() == 0) {
-                System.out.println("WARNING:  A Concept for CodeSystemVersion having CodeSystem name " + codeSystem.getName() 
-                        + " and the CodeSystemVersion releaseDate " 
-                        + codeSystemVersion.getReleaseDate() + " has " + conceptProperties.size() 
-                        + " conceptProperty entries.");
+//                System.out.println("WARNING:  A Concept for CodeSystemVersion having CodeSystem name " + codeSystem.getName() 
+//                        + " and the CodeSystemVersion releaseDate " 
+//                        + codeSystemVersion.getReleaseDate() + " has " + conceptProperties.size() 
+//                        + " conceptProperty entries.");
             } else{
                 boolean notFoundFlag = true;
                 int count = 0;
@@ -330,6 +362,11 @@ public class MifVocabParserHandler extends DefaultHandler {
             }
             if (conceptCodes.size() > 1) {
                 countOfMultipleCodeConcepts += 1;
+                //System.out.print(countOfMultipleCodeConcepts + " A Concept in CodeSystem named " + codeSystem.getName() + " has multiple codes: ");
+                //for (int i=0; i<conceptCodes.size(); i++) {
+                //    System.out.print("code=" + conceptCodes.get(i).getCode() + " status=" + conceptCodes.get(i).getStatus() + "  ");
+                //}
+                //System.out.println();
             }
             concept.setConceptCodes(conceptCodes);
             concept.setConceptRelationships(conceptRelationships);
@@ -369,6 +406,7 @@ public class MifVocabParserHandler extends DefaultHandler {
             }
             */
             codeSystems.add(codeSystem);
+            state = START;
         }
         
         if (qName.equalsIgnoreCase("packageLocation")) {
@@ -379,7 +417,18 @@ public class MifVocabParserHandler extends DefaultHandler {
             getVocabularyModel().setCodeSystems(codeSystems);
             getVocabularyModel().setSupportedConceptRelationshipsMap(supportedConceptRelationshipsMap);
             getVocabularyModel().setSupportedConceptPropertiesMap(supportedConceptPropertiesMap);
-        }        
+        }
+        if(qName.equalsIgnoreCase("text")){
+            if (codeSystemTextFlag) {
+            codeSystem.setDescription(scrubHtmlFromText(this.textBuilder.toString().trim()));
+            codeSystemTextFlag = false;
+            }
+            if (conceptTextFlag) {
+                concept.setDefinition(scrubHtmlFromText(this.textBuilder.toString().trim()));
+                conceptTextFlag = false;
+            }
+            this.textBuilder = null;
+        }
         
     }
 
@@ -390,15 +439,38 @@ public class MifVocabParserHandler extends DefaultHandler {
             csvSupportedLanguages.add(new String(ch, start, length));
             csvSupportedLanguageFlag = false;
         }
+        if (codeSystemTextFlag) {
+            //System.out.println("Codesystem description text: " + new String(ch, start, length));
+            textBuilder.append(ch, start, length);
+            
+        }
+        if (conceptTextFlag) {
+            //System.out.println("CSV SupportedLanguage: " + new String(ch, start, length));
+            textBuilder.append(ch, start, length);
+        }
     }
 
+    public String scrubHtmlFromText(String dirtyText){
+        //scrubbing the html tags
+        String noHTMLString = dirtyText.replaceAll("\\<.*?>","");
+        //scrubbing the html entities
+       noHTMLString = noHTMLString.replaceAll("&.*?;","");
+       //Cleaning up the indentation added by the characters method
+       noHTMLString = noHTMLString.replaceAll("\t", "");
+       return noHTMLString;
+    }
+    
     public static void main(String[] args) {
         MifVocabParserHandler mifVocabSaxHandler = new MifVocabParserHandler();
         SAXParser p = new SAXParser();
         p.setContentHandler(mifVocabSaxHandler);
         
         try {
-            p.parse("C:\\temp_downloads_HL7\\DEFN=UV=VO=1189-20121121.coremif");
+//            p.parse("C:\\temp_downloads_HL7\\DEFN=UV=VO=1189-20121121.coremif");  
+            
+            // Below is example file where codeSystem and concept annotations text has been transformed
+            // to strip out the numerous html tags
+            p.parse("/Users/m029206/Desktop/rim0241d/DEFN=UV=VO=1189-20121121.coremif");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -420,7 +492,29 @@ public class MifVocabParserHandler extends DefaultHandler {
             MifCodeSystemVersion mifCVS = (MifCodeSystemVersion)mifCodeSystem.getCodeSystemVersions().get(0);
             conceptCount += mifCVS.getConcepts().size();
         }
-        
+
+        for (int i=0; i<codeSystemList.size(); i++) {
+            MifCodeSystem mifCodeSystem = (MifCodeSystem)codeSystemList.get(i);
+            if (mifCodeSystem.getCodeSystemId().equals("2.16.840.1.113883.5.6")) {
+                System.out.println("Getting list of concept codes for codesystem 2.16.840.1.113883.5.6 ");
+                List<MifConcept> mifConcepts = mifCodeSystem.getCodeSystemVersions().get(0).getConcepts();
+                for (MifConcept mifConcept : mifConcepts) {
+                    System.out.println("Concept Code:  ");
+                    List<MifConceptCode> conceptCodes = mifConcept.getConceptCodes();
+                    for (MifConceptCode conceptCode : conceptCodes) {
+                        System.out.println("code=" + conceptCode.getCode() + ",status=" + conceptCode.getStatus() + "  ");
+                    }
+                    System.out.println("  Concept Properties:  ");
+                    List<MifConceptProperty> properties = mifConcept.getConceptProperties();
+                    for (MifConceptProperty property : properties) {
+                        System.out.println("name=" + property.getName() + ",value=" + property.getValue() + "  ");
+                    }
+                }
+            }
+            MifCodeSystemVersion mifCVS = (MifCodeSystemVersion)mifCodeSystem.getCodeSystemVersions().get(0);
+            conceptCount += mifCVS.getConcepts().size();
+        }
+
         System.out.println("Number of CodeSystemVersions(<releasedVersion> entries): " + mifVocabSaxHandler.countOfCodeSystemVersions);
         System.out.println("Number of CodeSystemVersions that do not have any Concepts: " + mifVocabSaxHandler.countOfCodeSystemVersionsWithNoConcepts);        
         System.out.println("Total number of Concepts: " + conceptCount);

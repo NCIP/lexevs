@@ -123,6 +123,20 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
     
+	public  void testRemoveOwl2Snippet() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
+				.getServiceManager(null);
+
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
+				.createAbsoluteCodingSchemeVersionReference(
+						LexBIGServiceTestCase.OWL2_SNIPPET_VOCABULARY_URN,
+						LexBIGServiceTestCase.OWL2_SNIPPET_VOCABULARY_VERSION);
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+		lbsm.removeCodingSchemeVersion(a);
+
+	}
+
 
     public void testRemoveOwl() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -134,7 +148,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
     
-    public void testRemoveOwl2() throws LBException {
+    public void testRemoveOwlThesaurus() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
@@ -260,6 +274,16 @@ public class CleanUpTest extends TestCase {
 
         lbsm.removeCodingSchemeVersionMetaData(a);
 
+    }
+
+    public void testRemoveHL7MIFVocabulary() throws LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+        		LexBIGServiceTestCase.HL7_MIF_VOCABULARY_URN, LexBIGServiceTestCase.HL7_MIF_VOCABULARY_VERSION);
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
     }
 
     public void testRemoveHL7() throws LBException {

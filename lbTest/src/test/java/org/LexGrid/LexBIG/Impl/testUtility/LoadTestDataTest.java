@@ -18,6 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.MIFVocabularyLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MedDRA_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
@@ -35,11 +39,13 @@ import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexEVSAuthoringServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -217,7 +223,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
     
-    public void testLoadOwl2() throws InterruptedException, LBException {
+    public void testLoadOwlThesaurus() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
@@ -381,18 +387,55 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
+    
+	public void testloadOWL2Snippet() throws Exception {
+		
+		LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-    public void testLoadHL7RIM() throws InterruptedException, LBException {
+		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
+		loader.load(new File("resources/testData/owl2/owl2-snippet-data.owl")
+				.toURI(), null, 1, true, true);
 
-        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
-            // Connecting to ms access from Linux is beyond the scope of this
-            // application.
-            return;
-        }
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(1000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
+				LBConstants.KnownTags.PRODUCTION.toString());
+
+	}
+
+	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
+			InterruptedException {
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		MIFVocabularyLoader loader = null;
+		try {
+			lbsm = getLexBIGServiceManager();
+			loader = (MIFVocabularyLoaderImpl) lbsm
+					.getLoader(org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl.name);
+			loader.load(new File("resources/testData/German_Made_Parts.xml")
+					.toURI(), true, false);
+		} catch (RuntimeException e) {
+			assertEquals(
+					"Source file is invalid. Please check to see if this is a valid HL7 vocabulary mif file",
+					e.getMessage());
+		} finally {
+			while (loader.getStatus().getEndTime() == null) {
+				Thread.sleep(1000);
+			}
+		}
+	}
+    public void testLoadHL7MifVocabulary() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
+    	File accessPath = new File("resources/testData/hl7MifVocabulary/DEFN=UV=VO=1189-20121121.coremif");
 
-        HL7LoaderImpl loader = (HL7LoaderImpl) lbsm.getLoader("HL7Loader");
-        loader.load(new File("resources/testData/rimSample.mdb").toURI().toString(), true, true);
+    	MIFVocabularyLoader loader = (MIFVocabularyLoaderImpl) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl.name);
+        loader.load(accessPath.toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
@@ -403,7 +446,6 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
     }
 
     public void testLoadMeta1() throws InterruptedException, LBException {
