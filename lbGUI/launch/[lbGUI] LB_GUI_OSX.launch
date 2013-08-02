@@ -19,5 +19,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.LexGrid.LexBIG.gui.LB_GUI"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lbGUI"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1000M  -XX:MaxPermSize=256M -Djava.library.path=../lgSharedLibraries/eclipse/swt/OSX/ -cp ../lgSharedLibraries/eclipse/swt/OSX/swt.jar"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-d32 -Xmx1000M  -XX:MaxPermSize=256M -Djava.library.path=../lgSharedLibraries/eclipse/swt/OSX/ -cp ../lgSharedLibraries/eclipse/swt/OSX/swt.jar"/>
 </launchConfiguration>

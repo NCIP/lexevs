@@ -203,7 +203,7 @@ public class MedDRARecord_pt implements Serializable, DatabaseEntityRecord{
     public List<Property> getProperties() {
         List<Property> properties = new ArrayList<Property>();
 
-        properties.add(MedDRARecord_Utils.createProperty("PSOC", this.pt_soc_code));
+        properties.add(MedDRARecord_Utils.createProperty("PRIMARY_SOC", this.pt_soc_code));
         
         return properties;
     }

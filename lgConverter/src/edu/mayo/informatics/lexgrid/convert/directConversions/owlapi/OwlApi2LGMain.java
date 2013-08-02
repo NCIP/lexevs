@@ -49,7 +49,7 @@ public class OwlApi2LGMain {
     private LgMessageDirectorIF messages = null;
 
     public OwlApi2LGMain(URI owlOntologyURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs,
-            boolean failOnAllErrors,  int memorySafe, LgMessageDirectorIF messages)
+            boolean failOnAllErrors,  int memoryUsage, LgMessageDirectorIF messages)
             throws Exception {
         this.messages = messages;
 
@@ -71,7 +71,7 @@ public class OwlApi2LGMain {
 
             }
 
-            owl2lg = new OwlApi2LG(owlOntologyURI, manifest, loadPrefs, OwlApi2LGConstants.MEMOPT_LEXGRID_DIRECT_DB, messages);
+            owl2lg = new OwlApi2LG(owlOntologyURI, manifest, loadPrefs, memoryUsage, messages);
         } catch (Exception e) {
             messages.fatalAndThrowException("Conversion failed", e);
         }
@@ -133,32 +133,12 @@ public class OwlApi2LGMain {
     public static void main(String args[]) {
         try {
 
-             URI physicalURI =
-             URI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl");
+             //URI physicalURI = URI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl");
+             URI physicalURI = URI.create("file:///Users/m029451/Documents/nci/owl2-snippet-data.owl");
             // URI physicalURI = URI
             // .create("http://protege.cim3.net/file/pub/ontologies/wine/wine.owl");
             // URI physicalURI = URI.create("file:///c:/camera.owl");
-            // URI physicalURI = URI
-            // .create("file:///c:/pizza-original.owl");
-            // URI physicalURI = URI
-            // .create("file:///c:/pizza-modified.owl");
-            // URI physicalURI = URI
-            // .create("file:///c:/AugmentedFood.owl");
-            // URI physicalURI = URI
-            // .create("file:///c:/amino-acid.owl");
-            // URI physicalURI = URI
-            // .create("file:///c:/birnlex.owl");
-            // URI physicalURI = URI
-            // .create("file:///C:/My-Home/Ontologies/fmaOwlDlComponent_2_0.owl");
-            //URI physicalURI = URI.create("file:///c:/koala-good.owl");
-            //URI physicalURI = URI.create("file:///c:/zebrafish.owl");
-            //URI physicalURI = URI.create("file:///c:/pizza-original.owl");
 
-            // URI physicalURI = URI
-            // .create("file:///c:/generations.owl");
-            // URI physicalURI =
-            // URI.create("http://www.co-ode.org/ontologies/amino-acid/2006/05/18/amino-acid.owl");
-            // URI physicalURI = URI.create("file:///c:/Gene-Ontology.owl");
             OwlApi2LGMain moem = new OwlApi2LGMain(physicalURI, null, null, false, OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY,
                     new CommandLineMessageDirector());
 
@@ -168,21 +148,8 @@ public class OwlApi2LGMain {
             // URI output_filename = URI
             // .create("file:///c:/fma-owl-dl.xml");
 
-            URI output_filename = URI.create("/tmp/pizza.xml");
-           // URI output_filename = URI.create("file:///c:/koala-good.xml");
-           // URI output_filename = URI.create("file:///c:/zebrafish.xml");
-            // URI output_filename =
-            // URI.create("file:///c:/pizza-modified.xml");
-            // URI output_filename = URI.create("file:///c:/AugmentedFood.xml");
-            // URI output_filename = URI.create("file:///c:/birnlex.xml");
-            // URI output_filename = URI.create("file:///c:/pizza.xml");
-            // URI output_filename = URI.create("file:///c:/amino-acid.xml");
-            // URI output_filename = URI.create("file:///c:/Gene-Ontology.xml");
-            // URI output_filename = URI.create("file:///c:/amino.xml");
-            // URI output_filename = URI.create("file:///c:/camera.xml");
-            // URI output_filename = URI.create("file:///c:/wine.xml");
-            // URI output_filename = URI
-            // .create("file:///c:/generations.xml");
+            URI output_filename = URI.create("/tmp/owl2-snippet-data.xml");
+        
             moem.writeLexGridXML(cst, output_filename);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -24,6 +24,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -33,6 +34,7 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
@@ -151,6 +153,15 @@ public class CleanUpTest extends TestCase {
 		
 		pickListIds.clear();
 	}
+	
+    @Test 
+    public void testRemoveResolvedValueSet() throws Exception {
+    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
+    	remove_rvs.remove(acsvrl, true);
+    }
+    
+    
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
