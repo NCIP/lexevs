@@ -51,9 +51,9 @@ public class MedDRARecord_smq_list implements Serializable, DatabaseEntityRecord
 	private String smq_description;
 	private String smq_source;
 	private String smq_note;
+    private String MedDRA_version;
     private String status;
     private String smq_algorithm;
-	private String MedDRA_version;
 
     private int[] validFieldIndices = {1,2,3,4,5,6,7,8,9};
     private int[] invalidFieldIndices = null;
