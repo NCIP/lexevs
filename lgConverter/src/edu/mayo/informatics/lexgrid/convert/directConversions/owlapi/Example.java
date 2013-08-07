@@ -48,10 +48,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
 import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxEditorParser;
+import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
 import org.semanticweb.owlapi.expression.ParserException;
@@ -89,15 +91,18 @@ import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxRende
  * the instances of the specified class expression. DLQueryParser - this parses
  * the specified class expression string */
 public class Example {
-    private static final IRI ONTOLOGY_IRI = IRI
-            .create("http://www.co-ode.org/ontologies/pizza/pizza.owl");
-
+//    private static final IRI ONTOLOGY_IRI = IRI
+//            .create("http://www.co-ode.org/ontologies/pizza/pizza.owl");
+  private static final IRI ONTOLOGY_IRI = IRI
+  .create("file:///Users/m029451/Documents/nci/owl2-snippet-data.owl");
+    
     @SuppressWarnings("javadoc")
     public static void main(String[] args) {
         try {
             // Load an example ontology. In this case, we'll just load the pizza
             // ontology.
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+            URI output_filename = URI.create("/tmp/pizza.xml");
             OWLOntology ontology = manager.loadOntologyFromOntologyDocument(ONTOLOGY_IRI);
             System.out.println("Loaded ontology: " + ontology.getOntologyID());
             // We need a reasoner to do our query answering
@@ -118,7 +123,7 @@ public class Example {
             
             
            
-            File newTextFile = new File("pizza.txt");
+            File newTextFile = new File("ncit.txt");
             FileWriter fileWriter = new FileWriter(newTextFile);
             fileWriter.write(renderer.toString());
             fileWriter.close();
@@ -127,27 +132,13 @@ public class Example {
             ManchesterOWLSyntaxRenderer machesterRenderer= new ManchesterOWLSyntaxRenderer();
             StringWriter writerMachester= new StringWriter() ;
             machesterRenderer.render(ontology, writerMachester);
-            File newManchesterTextFile = new File("pizzaManchester.txt");
+            File newManchesterTextFile = new File("ncitManchester.txt");
             FileWriter fileMachesterWriter = new FileWriter(newManchesterTextFile);
             fileMachesterWriter.write(writerMachester.toString());
             fileMachesterWriter.close();
             System.out.println(writerMachester.toString());
             
-            StringWriter writer= new StringWriter() ;
-            OWLTutorialSyntaxObjectRenderer htmlRenderer= new OWLTutorialSyntaxObjectRenderer(ontology, writer);
-            htmlRenderer.visit(ontology);
-            renderer.visit(ontology);
-            File newHtmlFile = new File("pizza.html");
-            FileWriter fileHtmlWriter = new FileWriter(newHtmlFile);
-            fileHtmlWriter.write(writer.toString());
-            fileHtmlWriter.close();
-            System.out.println(writer.toString());
-            
-            for (OWLClass cls : ontology.getClassesInSignature()) {
-
-                System.out.println(cls);
-                dlQueryPrinter.askQuery(cls.getIRI().getFragment());
-            }
+           
             
           
             doQueryLoop(dlQueryPrinter);
@@ -191,7 +182,8 @@ public class Example {
         // obtain the subclasses of a class etc. To do this we use a reasoner
         // factory.
         // Create a reasoner factory.
-        OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+        //OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+        OWLReasonerFactory reasonerFactory = new Reasoner.ReasonerFactory();
         return reasonerFactory.createReasoner(rootOntology);
     }
 }

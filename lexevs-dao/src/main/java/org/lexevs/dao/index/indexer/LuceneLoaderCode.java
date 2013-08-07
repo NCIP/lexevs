@@ -135,10 +135,7 @@ public abstract class LuceneLoaderCode {
     
     /** The Constant QUALIFIER_NAME_VALUE_SPLIT_TOKEN. */
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
-    
-    /** The store lex big minimum. */
-    public static boolean storeLexBIGMinimum = false;
-    
+ 
     private LuceneEntityDao luceneEntityDao;
     
     protected LuceneLoaderCode(){
@@ -201,7 +198,7 @@ public abstract class LuceneLoaderCode {
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
-        generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, store(), true, false);
+        generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, true, true, false);
 
         generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
         generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
@@ -247,12 +244,12 @@ public abstract class LuceneLoaderCode {
         } else {
             tempPropertyType = propertyType;
         }
-        generator_.addTextField("propertyType", tempPropertyType, store(), true, false);
+        generator_.addTextField("propertyType", tempPropertyType, false, true, false);
 
-        generator_.addTextField(propertyFieldName, propertyName, store(), true, false);
+        generator_.addTextField(propertyFieldName, propertyName, false, true, false);
 
         if (StringUtils.isNotBlank(propertyValue)) {
-            generator_.addTextField(PROPERTY_VALUE_FIELD, propertyValue, store(), true, true);
+            generator_.addTextField(PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
             
             generator_.addTextField(REVERSE_PROPERTY_VALUE_FIELD, 
                     reverseTermsInPropertyValue(propertyValue), false, true, true);
@@ -281,29 +278,29 @@ public abstract class LuceneLoaderCode {
 
         if (isActive != null) {
             if (isActive.booleanValue()) {
-                generator_.addTextField("isActive", "T", store(), true, false);
+                generator_.addTextField("isActive", "T", false, true, false);
             } else {
-                generator_.addTextField("isActive", "F", store(), true, false);
+                generator_.addTextField("isActive", "F", false, true, false);
             }
         }
         
         if (isAnonymous != null) {
             if (isAnonymous.booleanValue()) {
-                generator_.addTextField("isAnonymous", "T", store(), true, false);
+                generator_.addTextField("isAnonymous", "T", false, true, false);
             } else {
-                generator_.addTextField("isAnonymous", "F", store(), true, false);
+                generator_.addTextField("isAnonymous", "F", false, true, false);
             }
         }
         
         if (isPreferred != null) {
             if (isPreferred.booleanValue()) {
-                generator_.addTextField("isPreferred", "T", store(), true, false);
+                generator_.addTextField("isPreferred", "T", false, true, false);
             } else {
-                generator_.addTextField("isPreferred", "F", store(), true, false);
+                generator_.addTextField("isPreferred", "F", false, true, false);
             }
         }
         if (format != null && format.length() > 0) {
-            generator_.addTextField(formatFieldName, format, store(), true, false);
+            generator_.addTextField(formatFieldName, format, false, true, false);
         }
 
         // in ldap and sql, languages are optional (missing means default. But
@@ -311,30 +308,30 @@ public abstract class LuceneLoaderCode {
         // you must supply the lanaguage (send in the default if a concept
         // doesn't have one)
         if (language != null && language.length() > 0) {
-            generator_.addTextField("language", language, store(), true, false);
+            generator_.addTextField("language", language, false, true, false);
         } 
 
         if (conceptStatus != null && conceptStatus.length() > 0) {
-            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, store(), true, false);
+            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
         }
 
         if (propertyId != null && propertyId.length() > 0) {
-            generator_.addTextField("propertyId", propertyId, store(), true, false);
+            generator_.addTextField("propertyId", propertyId, false, true, false);
         }
 
         if (degreeOfFidelity != null && degreeOfFidelity.length() > 0) {
-            generator_.addTextField("degreeOfFidelity", degreeOfFidelity, store(), true, false);
+            generator_.addTextField("degreeOfFidelity", degreeOfFidelity, false, true, false);
         }
 
         if (representationalForm != null && representationalForm.length() > 0) {
-            generator_.addTextField("representationalForm", representationalForm, store(), true, false);
+            generator_.addTextField("representationalForm", representationalForm, false, true, false);
         }
 
         if (matchIfNoContext != null) {
             if (matchIfNoContext.booleanValue()) {
-                generator_.addTextField("matchIfNoContext", "T", store(), true, false);
+                generator_.addTextField("matchIfNoContext", "T", false, true, false);
             } else {
-                generator_.addTextField("matchIfNoContext", "F", store(), true, false);
+                generator_.addTextField("matchIfNoContext", "F", false, true, false);
             }
         }
 
@@ -397,26 +394,13 @@ public abstract class LuceneLoaderCode {
     		String entityId,
     		String entityCodeNamespace) throws Exception {
         generator_.startNewDocument(codingSchemeName + "-" + entityId);
-        generator_.addTextField("codingSchemeName", codingSchemeName, store(), true, false);
-        generator_.addTextField("codingSchemeId", codingSchemeId, true, true, false);
+        generator_.addTextField("codingSchemeName", codingSchemeName, false, true, false);
+        generator_.addTextField("codingSchemeId", codingSchemeId, false, true, false);
         generator_.addTextField("codeBoundry", "T", false, true, false);
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
         generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityCodeNamespace), false, true, false);
 
         return generator_.getDocument();
-    }
-
-    /**
-     * Store.
-     * 
-     * @return true, if successful
-     */
-    private boolean store() {
-        if (storeLexBIGMinimum) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     /**
