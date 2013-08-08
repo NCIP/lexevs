@@ -130,7 +130,10 @@ public class MIFVocabularyLoaderImpl extends BaseLoader implements MIFVocabulary
     }
 
     @Override
-    public void load(URI source, boolean stopOnErrors, boolean async) throws LBException {
+    public void load(URI source, URI codingSchemeManifestURI, boolean stopOnErrors, boolean async) throws LBException {
+        if(codingSchemeManifestURI != null) {
+            this.setCodingSchemeManifestURI(codingSchemeManifestURI);
+        }
         this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);
         

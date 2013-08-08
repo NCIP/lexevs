@@ -182,11 +182,17 @@ public class LexBIGServiceImpl implements LexBIGService {
     }
 
     /**
+     * IMPORTANT!!! - This constructor may only be called *ONCE* per JVM. If using this, make sure
+     * it is instantiated via a singleton factory or other mechanism to prevent multiple instantiations.
+     * 
+     * This constructor will be made private in a future release. Please change client code to use:
+     * {@link #defaultInstance()}, as this will guarantee only one instantiation.
+     * 
      * @throws LBInvocationException
      * @throws Exception
-     * 
      */
-    private LexBIGServiceImpl() throws LBException {
+    @Deprecated
+    public LexBIGServiceImpl() throws LBException {
         LexEvsServiceLocator r = LexEvsServiceLocator.getInstance();
 
         registerExtensions();

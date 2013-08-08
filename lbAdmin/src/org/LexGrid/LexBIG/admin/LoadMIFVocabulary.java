@@ -83,7 +83,7 @@ public class LoadMIFVocabulary {
                 Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
             } else {
 //                loader.setCodingSchemeManifestURI(manifest);
-                loader.load(source, false, true);
+                loader.load(source, manifest,  false, true);
                 Util.displayLoaderStatus(loader);
             }
 
