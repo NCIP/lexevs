@@ -42,7 +42,7 @@ public interface MIFVocabularyLoader extends Loader {
 	 * @throws LBException
 	 * @throws URISyntaxException 
 	 */
-	public void load(URI source, boolean stopOnErrors, boolean async) throws LBException;
+	public void load(URI source, URI codingSchemeManifestURI, boolean stopOnErrors, boolean async) throws LBException;
 
 	/**
 	 * Validate content for a candidate resource without performing a load.
@@ -56,5 +56,6 @@ public interface MIFVocabularyLoader extends Loader {
 	 * @throws LBException
 	 */
 	public void validate(URI source, int validationLevel) throws LBException;
+
 
 }
