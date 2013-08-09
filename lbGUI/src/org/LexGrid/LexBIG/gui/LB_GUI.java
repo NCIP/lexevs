@@ -131,7 +131,7 @@ public class LB_GUI {
 	Button resolveForward, resolveBackward;
 	Text resolveDepth_, graphFocus_, resolveMax_;
 	Combo graphFocusCS_, graphFocusNS_, relationName_;
-	MenuItem enableAdmin_, loadItem_, exportItem_, cleanUpItem_, loadRSVItem_;
+	MenuItem enableAdmin_, loadItem_, exportItem_, cleanUpItem_;
 	Button changeTag_, activate_, deactivate_, removeCodeSystem_,
 			removeCodeSystemHistory_, removeCodeSystemMetadata_, rebuildIndex_, loadManifest_;
 
@@ -1727,10 +1727,6 @@ public class LB_GUI {
 			exportItem_.setText("&Export Terminology");
 			exportItem_.setEnabled(false);
 			
-			loadRSVItem_ = new MenuItem(mBar, SWT.CASCADE);
-            loadRSVItem_.setText("&Resolved Value Set Loader");
-            loadRSVItem_.setEnabled(false);
-			
 		}
 
 		MenuItem helpItem = new MenuItem(mBar, SWT.CASCADE);
@@ -1762,7 +1758,6 @@ public class LB_GUI {
 				public void widgetSelected(SelectionEvent arg0) {
 					if (enableAdmin_.getSelection()) {
 						loadItem_.setEnabled(true);
-						loadRSVItem_.setEnabled(true);
 						exportItem_.setEnabled(true);
 						cleanUpItem_.setEnabled(true);
 						changeTag_.setEnabled(true);
@@ -1789,7 +1784,6 @@ public class LB_GUI {
 
 					} else {
 						loadItem_.setEnabled(false);
-						loadRSVItem_.setEnabled(false);
 						exportItem_.setEnabled(false);
 						cleanUpItem_.setEnabled(false);
 						changeTag_.setEnabled(false);
@@ -1874,36 +1868,28 @@ public class LB_GUI {
                         }
 
                     });
+                    }
                 }
-                }
+                    MenuItem loadRVSItem = new MenuItem(loadMenu, SWT.NONE);
+                    loadRVSItem.setText(ResolvedValueSetDefinitionLoaderImpl.NAME + " - " + "Resolves and persists value sets current in the terminology service");
+                    loadRVSItem.addSelectionListener(new SelectionListener() {
+
+                        public void widgetSelected(SelectionEvent arg0) {
+                            
+                            new ResolvedValueSetLoader(LB_GUI.this);
+                        }
+
+                        public void widgetDefaultSelected(SelectionEvent arg0) {
+                            // not used
+                        }
+
+                    });
+         
+
             } catch (LBException e) {
                 throw new RuntimeException(e);
             }
 			
-		    
-		    Menu loadRVSMenu = new Menu(shell_, SWT.DROP_DOWN);
-		    MenuItem loadRVSItem = new MenuItem(loadRVSMenu, SWT.NONE);
-		    loadRSVItem_.setMenu(loadRVSMenu);
-		    loadRVSItem.setText(ResolvedValueSetDefinitionLoaderImpl.NAME);
-		    loadRVSItem.addSelectionListener(new SelectionListener() {
-
-                public void widgetSelected(SelectionEvent arg0) {
-                    Loader loader;
-                    try {
-                        loader = lbs_.getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoaderImpl.NAME);
-                    } catch (LBException e) {
-                        throw new RuntimeException(e);
-                    }
-                    
-                    new ResolvedValueSetLoader(LB_GUI.this);
-                }
-
-                public void widgetDefaultSelected(SelectionEvent arg0) {
-                    // not used
-                }
-
-            });
-		    
 
 			// build the Export Menu
 
