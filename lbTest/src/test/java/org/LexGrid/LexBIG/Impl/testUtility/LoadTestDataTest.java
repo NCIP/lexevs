@@ -419,7 +419,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 			loader = (MIFVocabularyLoaderImpl) lbsm
 					.getLoader(org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl.name);
 			loader.load(new File("resources/testData/German_Made_Parts.xml")
-					.toURI(), true, false);
+					.toURI(), null, true, false);
 		} catch (RuntimeException e) {
 			assertEquals(
 					"Source file is invalid. Please check to see if this is a valid HL7 vocabulary mif file",
@@ -435,7 +435,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     	File accessPath = new File("resources/testData/hl7MifVocabulary/DEFN=UV=VO=1189-20121121.coremif");
 
     	MIFVocabularyLoader loader = (MIFVocabularyLoaderImpl) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl.name);
-        loader.load(accessPath.toURI(), true, true);
+        loader.load(accessPath.toURI(), null, true, true);
 
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
