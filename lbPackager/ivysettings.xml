@@ -29,19 +29,18 @@
 	    </filesystem>
    		
 		<chain name="informatics">
-			<url name="informatics-snapshots" m2compatible="true" changingPattern=".*-SNAPSHOT">
-				<ivy
-					pattern="${informatics.snapshots.repo}/[organisation]/[module]/[revision]/ivy.xml" />
-				<artifact
-					pattern="${informatics.snapshots.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
-			</url>
 			<url name="informatics-releases" m2compatible="true">
 				<ivy
 					pattern="${informatics.releases.repo}/[organisation]/[module]/[revision]/ivy.xml" />
 				<artifact
 					pattern="${informatics.releases.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 			</url>
-			
+			<url name="informatics-snapshots" m2compatible="true" changingPattern=".*-SNAPSHOT">
+				<ivy
+					pattern="${informatics.snapshots.repo}/[organisation]/[module]/[revision]/ivy.xml" />
+				<artifact
+					pattern="${informatics.snapshots.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
+			</url>		
 		</chain>
 	
 		<chain name="nci-chain" checkmodified="true">
