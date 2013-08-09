@@ -121,6 +121,15 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.hasNext());
 	}
 	
+	public void testSearchAllEmptyIncludes() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search(null, null, MatchAlgorithm.LUCENE);
+		assertTrue(itr.hasNext());
+		assertTrue(itr.numberRemaining() > 10);
+	}
+	
 	public void testSearchInactive() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
