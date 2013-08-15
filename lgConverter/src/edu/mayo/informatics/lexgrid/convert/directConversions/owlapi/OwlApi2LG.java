@@ -1225,6 +1225,7 @@ public class OwlApi2LG {
                     OWLRestriction op = (OWLRestriction) operand;
                     processRestriction(op, assocSource, source);
                 } else {
+
                     String lgCode = resolveAnonymousClass(operand, assocSource);
                     String targetNameSpace = getDefaultNameSpace();
                     AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
