@@ -644,8 +644,10 @@ public class OwlApi2LG {
         }
 
         // Does this concept have any parents?
-        // for (OWLClassExpression superClass :
-        // reasoner.getSuperClasses(owlClass, true).getFlattened()) {
+        for (OWLClassExpression superClass : reasoner.getSuperClasses(owlClass, true).getFlattened()) {
+            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
+                    superClass);
+        }
         // for (OWLSubClassOfAxiom ax :
         // ontology.getSubClassAxiomsForSubClass(owlClass)) {
         // relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT,
@@ -653,14 +655,15 @@ public class OwlApi2LG {
         // ax.getSuperClass());
         //
         // }
-
+        //The reasoner.getSuperClasses doesn't return the anonymous classes, so we process them separately.
         for (OWLClassExpression superClass : owlClass.getSuperClasses(ontology)) {
-
-            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
-                    superClass);
-            if (superClass instanceof OWLRestriction) {
-                OWLRestriction restriction = (OWLRestriction) superClass;
-                processRestriction(restriction, null, source);
+            if (superClass.isAnonymous()) {
+                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(),
+                        source, superClass);
+                //if (superClass instanceof OWLRestriction) {
+                //    OWLRestriction restriction = (OWLRestriction) superClass;
+                //    processRestriction(restriction, null, source);
+                //}
             }
 
         }
@@ -1307,7 +1310,7 @@ public class OwlApi2LG {
         // factory.
         // Create a reasoner factory.
         OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-        reasonerFactory = new Reasoner.ReasonerFactory();
+        //reasonerFactory = new Reasoner.ReasonerFactory();
         return reasonerFactory.createReasoner(rootOntology);
     }
 

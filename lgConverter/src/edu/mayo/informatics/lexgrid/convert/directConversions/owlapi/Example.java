@@ -182,8 +182,8 @@ public class Example {
         // obtain the subclasses of a class etc. To do this we use a reasoner
         // factory.
         // Create a reasoner factory.
-        //OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-        OWLReasonerFactory reasonerFactory = new Reasoner.ReasonerFactory();
+        OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+        //OWLReasonerFactory reasonerFactory = new Reasoner.ReasonerFactory();
         return reasonerFactory.createReasoner(rootOntology);
     }
 }
