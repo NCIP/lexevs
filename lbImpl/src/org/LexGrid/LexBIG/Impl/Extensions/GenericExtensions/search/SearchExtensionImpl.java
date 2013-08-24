@@ -1,5 +1,8 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,10 +21,12 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.analysis.Token;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -90,7 +95,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         
         Analyzer analyzer = service.getAnalyzer();
 
-        Query query = this.parseQuery(this.decorateQueryString(text, matchAlgorithm), analyzer);
+        Query query = this.parseQuery(this.decorateQueryString(text, analyzer, matchAlgorithm), analyzer);
         
         if(! includeAnonymous){
             BooleanQuery booleanQuery = new BooleanQuery();
@@ -110,7 +115,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return new SearchScoreDocIterator(scoreDocs);
     }
     
-    protected String decorateQueryString(String text, MatchAlgorithm matchAlgorithm) {
+    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) {
         if(StringUtils.isBlank(text)) {
           return text;  
         }
@@ -122,9 +127,11 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             return "code:" + QueryParser.escape(text);
         case PRESENTATION_CONTAINS:
             text = QueryParser.escape(text);
+            List<String> tokens = tokenize(analyzer, "description", text);
+            
             StringBuilder sb = new StringBuilder();
             sb.append("(");
-            for(String token : text.split("\\s+")){
+            for(String token : tokens){
                sb.append("description:");
                sb.append(token);
                sb.append("* ");
@@ -179,6 +186,24 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         
         return returnSet;
     }
+    
+    public List<String> tokenize(Analyzer analyzer, String field, String keywords) {
+        List<String> result = new ArrayList<String>();
+        TokenStream stream  = analyzer.tokenStream(field, new StringReader(keywords));
+
+        Token token = new Token();
+        try {
+            Token t;
+            while((t = stream.next(token)) != null) {
+                result.add(t.term());
+            }
+        }
+        catch(IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return result;
+    }  
 
     @Override
     protected ExtensionDescription buildExtensionDescription() {
