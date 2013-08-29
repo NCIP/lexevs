@@ -845,6 +845,10 @@ public class ObjectToString {
             buff.append(getBreakAndIndent())
                 .append("Copyright: ").append(lineBreak)
                 .append(toString(o.getCopyright(), indent + sp8));
+        if (o.getProperties() != null)
+            buff.append(getBreakAndIndent())
+                .append("Properties: ").append(lineBreak)
+                .append(toString(o.getProperties(), indent + sp8));
         if (o.getMappings() != null)
             buff.append(getBreakAndIndent())
                 .append("Mappings: ").append(lineBreak)
