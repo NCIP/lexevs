@@ -25,6 +25,14 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.concepts.Comment;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
 
 
 
@@ -32,7 +40,7 @@ import java.io.Serializable;
  *  @author <a href="mailto:hardie.linda@mayo.edu">Linda Hardie</a>
  *
 */
-public class MedDRARecord_meddra_history implements Serializable, DatabaseRecord{
+public class MedDRARecord_meddra_history implements Serializable, DatabaseEntityRecord{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -113,5 +121,58 @@ public class MedDRARecord_meddra_history implements Serializable, DatabaseRecord
     @Override
     public String toString(){
         return MedDRARecord_Utils.recordToString(this, this.validFieldIndices, this.invalidFieldIndices);
+    }
+
+
+    @Override
+    public String getCode() {
+        // TODO Auto-generated method stub
+        return this.term_code;
+    }
+
+
+    @Override
+    public String getName() {
+        // TODO Auto-generated method stub
+        return this.term_name;
+    }
+
+
+    @Override
+    public List<Presentation> getPresentations() {
+       List<Presentation> presentations = new ArrayList<Presentation>();
+        return presentations;
+    }
+
+
+    @Override
+    public List<Definition> getDefinitions() {
+        List<Definition> definitions = new ArrayList<Definition>();
+        return definitions;
+    }
+
+
+    @Override
+    public List<Comment> getComments() {
+        List<Comment> comments = new ArrayList<Comment>();
+        return comments;
+    }
+
+
+    @Override
+    public List<Property> getProperties() {
+        List<Property> properties = new ArrayList<Property>();
+        Property property = MedDRARecord_Utils.createProperty("EDIT_ACTION", this.action);
+        PropertyQualifier pq  = MedDRARecord_Utils.createPropertyQualifier("term_name", this.term_name);
+        property.getPropertyQualifierAsReference().add(pq);
+        pq  = MedDRARecord_Utils.createPropertyQualifier("term_addition_version", this.term_addition_version);
+        property.getPropertyQualifierAsReference().add(pq);
+        pq  = MedDRARecord_Utils.createPropertyQualifier("term_type", this.term_type);
+        property.getPropertyQualifierAsReference().add(pq);
+        pq  = MedDRARecord_Utils.createPropertyQualifier("llt_currency", this.llt_currency);
+        property.getPropertyQualifierAsReference().add(pq);
+        properties.add(property);
+
+        return properties;
     }    
 }
