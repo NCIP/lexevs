@@ -90,7 +90,9 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLHasValueRestriction;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -112,6 +114,7 @@ import org.semanticweb.owlapi.model.OWLPropertyRange;
 import org.semanticweb.owlapi.model.OWLQuantifiedDataRestriction;
 import org.semanticweb.owlapi.model.OWLQuantifiedObjectRestriction;
 import org.semanticweb.owlapi.model.OWLRestriction;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
@@ -124,7 +127,7 @@ import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefi
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
-import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.CreateUtils;
+
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
 
@@ -431,14 +434,14 @@ public class OwlApi2LG {
             // LHS will be the OWLObjectProperty and RHS will be the domain.
             for (OWLClassExpression domain : prop.getDomains(ontology)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDomain(), source,
-                        domain);
+                        domain, null);
             }
 
             // The idea is to create a new association called "range", whose
             // LHS will be the OWLObjectProperty and RHS will be the range.
             for (OWLClassExpression range : prop.getRanges(ontology)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getRange(), source,
-                        range);
+                        range, null);
             }
 
             // //////////////////////////////////////////////////
@@ -516,7 +519,7 @@ public class OwlApi2LG {
 
             for (OWLClassExpression domain : prop.getDomains(ontology)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDomain(), source,
-                        domain);
+                        domain, null);
             }
 
             for (OWLDataRange range : prop.getRanges(ontology)) {
@@ -643,30 +646,36 @@ public class OwlApi2LG {
 
         }
 
-        // Does this concept have any parents?
-        for (OWLClassExpression superClass : reasoner.getSuperClasses(owlClass, true).getFlattened()) {
-            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
-                    superClass);
-        }
-        // for (OWLSubClassOfAxiom ax :
-        // ontology.getSubClassAxiomsForSubClass(owlClass)) {
-        // relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT,
-        // assocManager.getSubClassOf(), source,
-        // ax.getSuperClass());
-        //
-        // }
-        //The reasoner.getSuperClasses doesn't return the anonymous classes, so we process them separately.
-        for (OWLClassExpression superClass : owlClass.getSuperClasses(ontology)) {
-            if (superClass.isAnonymous()) {
+        
+        
+        Set<OWLClass> statedSubClasses= new HashSet<OWLClass>();
+        for (OWLSubClassOfAxiom ax : ontology.getSubClassAxiomsForSubClass(owlClass)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(),
-                        source, superClass);
-                //if (superClass instanceof OWLRestriction) {
-                //    OWLRestriction restriction = (OWLRestriction) superClass;
-                //    processRestriction(restriction, null, source);
-                //}
-            }
-
+                        source, ax.getSuperClass(), ax);
+                if (!ax.getSuperClass().isAnonymous()) {
+                   statedSubClasses.add(ax.getSuperClass().asOWLClass());
+                }
         }
+        
+        //The reasoner.getSuperClasses doesn't return the anonymous classes. The ontology.getSubClassAxiomsForSubClass
+        //method doesn't have information that can be found using the reasoner, so we add in the reasoned expressions.
+        Set<OWLClass> reasonedSubClasses= new HashSet<OWLClass>();
+        reasonedSubClasses.addAll(reasoner.getSuperClasses(owlClass, true).getFlattened());
+        reasonedSubClasses.removeAll(statedSubClasses);
+        for (OWLClassExpression superClass : reasonedSubClasses) {
+            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
+                    superClass, null);
+        }
+        
+        //The reasoner.getSuperClasses doesn't return the anonymous classes, so we process them separately.
+//        for (OWLClassExpression superClass : owlClass.getSuperClasses(ontology)) {
+//            if (superClass.isAnonymous()) {
+//                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(),
+//                        source, superClass);
+//              
+//            }
+//
+//        }
 
     }
 
@@ -676,9 +685,11 @@ public class OwlApi2LG {
      * 
      */
     protected void resolveEquivalentClassRelations(AssociationSource source, OWLClass owlClass) {
-        for (OWLClassExpression equivClassExp : owlClass.getEquivalentClasses(ontology)) {
-            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
-                    source, equivClassExp);
+        for (OWLEquivalentClassesAxiom equivClassAxiom : ontology.getEquivalentClassesAxioms(owlClass)) {
+            for (OWLClassExpression equivClassExpression : equivClassAxiom.getClassExpressionsMinus(owlClass)) {
+                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
+                        source, equivClassExpression, equivClassAxiom);
+            }
         }
     }
 
@@ -687,9 +698,15 @@ public class OwlApi2LG {
      * 
      */
     protected void resolveDisjointWithRelations(AssociationSource source, OWLClass owlClass) {
-        for (OWLClassExpression disjointClassExpression : owlClass.getDisjointClasses(ontology)) {
-            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(), source,
-                    disjointClassExpression);
+//        for (OWLClassExpression disjointClassExpression : owlClass.getDisjointClasses(ontology)) {
+//            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(), source,
+//                    disjointClassExpression);
+//        }
+        for (OWLDisjointClassesAxiom disjointClassAxiom : ontology.getDisjointClassesAxioms(owlClass)) {
+            for (OWLClassExpression disjointClassExpression : disjointClassAxiom.getClassExpressionsMinus(owlClass)) {
+                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
+                        source, disjointClassExpression, disjointClassAxiom);
+            }
         }
 
     }
@@ -808,36 +825,27 @@ public class OwlApi2LG {
      * Defines EMF class RDF properties.
      * 
      */
-    protected void resolveOWLObjectPropertyRelations(AssociationSource source, OWLEntity rdfResource) {
-        for (OWLObjectProperty rdfProp : rdfResource.getObjectPropertiesInSignature()) {
-
-            if (!isAnnotationProperty(rdfProp)) {
-                // Lookup the LexGrid association; ignore if this property does
-                // not match a defined association ...
-                String relationName = getLocalName(rdfProp);
-                AssociationWrapper lgAssoc = assocManager.getAssociation(relationName);
+    protected void resolveOWLObjectPropertyRelations(AssociationSource source, OWLEntity owlClass) {
+        
+        for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
+            String propName = getLocalName(annotationAxiom.getProperty());
+        
+            if (ontology.containsObjectPropertyInSignature(annotationAxiom.getProperty().getIRI())) {
+                AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
 
                 if (lgAssoc == null)
                     return;
-
-                // // Determine the targets ...
-                // Collection propVals = rdfResource.getPropertyValues(rdfProp);
-                // if (propVals != null) {
-                // for (Iterator vals = propVals.iterator(); vals.hasNext();) {
-                // Object val = vals.next();
-                // if (val instanceof OWLNamedClass) {
-                // relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT,
-                // lgAssoc, source,
-                // (OWLNamedClass) val);
-                // } else if (val instanceof OWLIndividual) {
-                // relateAssocSourceWithRDFResourceTarget(EntityTypes.INSTANCE,
-                // lgAssoc, source,
-                // (OWLIndividual) val);
-                // }
-                // }
-                // }
+                OWLAnnotationValue value = annotationAxiom.getValue();
+                if (value instanceof IRI) {
+                    IRI iri_v = (IRI) value;
+                    relateAssocSourceWithIriTarget(EntityTypes.CONCEPT,
+                            lgAssoc, source, iri_v, annotationAxiom);
+                         
+                } 
             }
+                
         }
+            
     }
 
     /**
@@ -866,6 +874,19 @@ public class OwlApi2LG {
         }
     }
 
+    protected void resolveAnonymousProperties(Entity lgEntity, OWLClassExpression owlClass) {
+//        for (OWLAnnotationAssertionAxiom prop : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
+//
+//            String propName = getLocalName(prop.getProperty());
+//            // Do we care about this rdf property?
+//            if (isNoop(propName) || isNoopNamespace(propName))
+//                continue;
+//        ontology.getAnnotationAssertionAxioms(owlClass);
+//       // ontology.getAnnotationAssertionAxioms(owlClass.)
+//       // owlClass.getAnnotations()
+    }
+    
+    
     /**
      * Resolve and assign all property information contained by the given RDF
      * resource to the EMF Entity.
@@ -888,9 +909,9 @@ public class OwlApi2LG {
         int i = 0;
         int presentationCount = 0;
 
-        for (OWLAnnotationAssertionAxiom prop : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
+        for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
 
-            String propName = getLocalName(prop.getProperty());
+            String propName = getLocalName(annotationAxiom.getProperty());
             // Do we care about this rdf property?
             if (isNoop(propName) || isNoopNamespace(propName))
                 continue;
@@ -903,7 +924,7 @@ public class OwlApi2LG {
             // Determine the property name and datatype ...
             String lgDType = owlDatatypeName2lgDatatype_.get(propName);
             String lgLabel = owlDatatypeName2label_.get(propName);
-            OWLAnnotationValue value = prop.getValue();
+            OWLAnnotationValue value = annotationAxiom.getValue();
             String resolvedText = "";
             if (value instanceof OWLLiteral) {
                 OWLLiteral literal = (OWLLiteral) value;
@@ -928,8 +949,8 @@ public class OwlApi2LG {
             // Otherwise instantiate a new EMF property and add the new
             // property to the list to eventually add to the concept.
             else {
-                Property newProp = resolveProp(prop, propClass, generatePropertyID(++i), lgLabel, lgDType,
-                        getNameSpace(prop.getProperty()), resolvedText, null);
+                Property newProp = resolveProp(annotationAxiom, propClass, generatePropertyID(++i), lgLabel, lgDType,
+                        getNameSpace(annotationAxiom.getProperty()), resolvedText, null);
                 if (newProp.getValue() != null) {
                     sortedProps.add(newProp);
                     if (newProp instanceof Presentation)
@@ -2037,7 +2058,7 @@ public class OwlApi2LG {
         for (OWLClassExpression item : individual.getTypes(ontology)) {
             if (!item.isAnonymous()) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getRdfType(), source,
-                        item);
+                        item, null);
             }
         }
     }
@@ -2109,6 +2130,11 @@ public class OwlApi2LG {
             propEntity = ((OWLDataPropertyExpression) tgtProp).asOWLDataProperty();
         }    
         return propEntity;
+    }
+    
+    String getLocalName(IRI iri) {
+        String localNameWithColon = renderer.getPrefixNameShortFormProvider().getShortForm(iri);
+        return getFromLastIndexOfColonOrHash(localNameWithColon);
     }
     
     String getLocalName(OWLEntity entity) {
@@ -2276,17 +2302,31 @@ public class OwlApi2LG {
      * @param tgtResource
      */
     protected void relateAssocSourceWithOWLClassExpressionTarget(EntityTypes type, AssociationWrapper aw,
-            AssociationSource source, OWLClassExpression tgtResource) {
+            AssociationSource source, OWLClassExpression tgtResource, OWLAxiom ax) {
         if (tgtResource.isAnonymous()) {
             String lgCode = this.resolveAnonymousClass(tgtResource, source);
             String namespace = getDefaultNameSpace();
             AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, namespace);
+            processAnnotationsOfOWLAxiom(ax, target);
             relateAssociationSourceTarget(aw, source, target);
+            
         } else {
-            relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, tgtResource.asOWLClass());
+            relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, tgtResource.asOWLClass(), ax);
         }
     }
 
+    
+    
+    protected void relateAssocSourceWithIriTarget(EntityTypes type, AssociationWrapper aw,
+            AssociationSource source, IRI tgtResource, OWLAxiom ax) {
+            String lgCode = getLocalName(tgtResource);
+            String namespace = getNameSpace(tgtResource);
+            AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, namespace);
+            processAnnotationsOfOWLAxiom(ax, target);
+            relateAssociationSourceTarget(aw, source, target);
+                   
+    }
+    
     /**
      * The OWLClass is used to compute the target. The EntityType is passed into
      * the function so that we know what kind of a lookup needs to be made to
@@ -2299,7 +2339,7 @@ public class OwlApi2LG {
      * @param tgtResource
      */
     protected void relateAssocSourceWithOWLClassTarget(EntityTypes type, AssociationWrapper aw,
-            AssociationSource source, OWLClass tgtResource) {
+            AssociationSource source, OWLClass tgtResource, OWLAxiom ax) {
         String targetID = getLocalName(tgtResource);
 
         if (type == EntityTypes.CONCEPT) {
@@ -2309,7 +2349,9 @@ public class OwlApi2LG {
         if (StringUtils.isNotBlank(targetID)) {
             String nameSpace = getNameSpace(tgtResource);
             AssociationTarget target = CreateUtils.createAssociationTarget(targetID, nameSpace);
+            processAnnotationsOfOWLAxiom(ax, target);
             relateAssociationSourceTarget(aw, source, target);
+           
         }
     }
 
@@ -2447,5 +2489,34 @@ public class OwlApi2LG {
                 lgSupportedMappings_);
         return lgQual;
     }
+    
+    /**
+     * Process annotations of OWLAxiom as association qualifiers 
+     * 
+     * @param axiom
+     * @param opTarget
+     */
+    private void processAnnotationsOfOWLAxiom(OWLAxiom axiom, AssociationTarget opTarget) {
+        if (axiom != null) {
+            for (OWLAnnotation annotation : axiom.getAnnotations()) {
+                String annotationName = getLocalName(annotation.getProperty());
+                String annotationValue = "";
+                OWLAnnotationValue value = annotation.getValue();
+                if (value instanceof OWLLiteral) {
+                    OWLLiteral literal = (OWLLiteral) value;
+                    annotationValue = literal.getLiteral();
+                }
+                if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
+                    AssociationQualification acQual = CreateUtils.createAssociationQualification(annotationName, null,
+                            annotationValue, lgSupportedMappings_);
+                    if (opTarget != null) {
+                        opTarget.addAssociationQualification(acQual);
+                    }
+
+                }
+            }
+        }
+    }
+    
 
 } // end of the class
