@@ -375,7 +375,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     	File accessPath = new File("resources/testData/medDRA");
 
         MedDRA_Loader loader = (MedDRALoaderImpl) lbsm.getLoader("MedDRALoader");
-        loader.load(null, accessPath.toURI(), true, true);
+        loader.load(accessPath.toURI(), null, true, true);
 
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
