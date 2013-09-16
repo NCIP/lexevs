@@ -59,6 +59,7 @@ public class CreateUtils {
     public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, SupportedMappings lgSupportedMappings_) {
         AssociationQualification lgQual = new AssociationQualification();
         lgQual.setAssociationQualifier(name);
+        lgQual.setQualifierText(createText(descriptiveText));
         lgSupportedMappings_.registerSupportedAssociationQualifier(name, uri, descriptiveText, false);
         return lgQual;
     }
