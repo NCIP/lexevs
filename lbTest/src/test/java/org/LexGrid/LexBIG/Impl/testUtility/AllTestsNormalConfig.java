@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Impl.CodedNodeSetImplTest;
 import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.AbstractSearchTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.AbstractSortTest;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceTest;
@@ -429,6 +430,9 @@ public class AllTestsNormalConfig {
       
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
+        
+        //Search Extesion tests
+        mainSuite.addTestSuite(SearchExtensionImplTest.class);
         
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
