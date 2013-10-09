@@ -18,21 +18,18 @@
  */
 package org.LexGrid.LexBIG.admin;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.Enumeration;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Extensions.Export.LexGrid_Exporter;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.exporters.LexGridExport;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -110,44 +107,69 @@ public class ExportLgXML {
 
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
-
-            // Find in list of registered vocabularies ...
+            
+            CodingScheme codingScheme = null;
             CodingSchemeSummary css = null;
+            
+            // Find in list of registered vocabularies ...
             if (urn != null && ver != null) {
                 urn = urn.trim();
                 ver = ver.trim();
-                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
-                        .enumerateCodingSchemeRendering();
-                while (schemes.hasMoreElements() && css == null) {
-                    CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
-                    if (urn.equalsIgnoreCase(summary.getCodingSchemeURI())
-                            && ver.equalsIgnoreCase(summary.getRepresentsVersion()))
-                        css = summary;
+                 
+                // Try to resolve the CodingScheme
+                CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+                versionOrTag.setVersion(ver);
+                
+                try {
+                    codingScheme = lbs.resolveCodingScheme(urn, versionOrTag);
                 }
+                catch (LBParameterException lbpe) {
+                    codingScheme = null;
+                } 
             }
 
-            // Found it? If not, prompt...
-            if (css == null) {
+            // If the CodingScheme was not found, prompt for a CodingSchemeSummary
+            if (codingScheme == null) {
                 if (urn != null || ver != null) {
                     Util.displayMessage("No matching coding scheme was found for the given URN or version.");
                     Util.displayMessage("");
                 }
                 css = Util.promptForCodeSystem();
+               
                 if (css == null)
                     return;
             }
-
-            // Find the registered extension handling this type of export ...
-            LexGridExport exporter = (LexGridExport) lbsm.getExporter(LexGridExport.name);
-
-            // Perform the requested action ...
-            CnsCngPair cngCngPair = FilterParser.parse(lbs, css.getCodingSchemeURI(), css.getRepresentsVersion(), cl);
-            exporter.setCng(cngCngPair.getCng());
-            exporter.setCns(cngCngPair.getCns());
+            else {
+               // Find the registered extension handling this type of export ...
+               LexGridExport exporter = (LexGridExport) lbsm.getExporter(LexGridExport.name);
+   
+               // Perform the requested action ...
+               CnsCngPair cngCngPair = FilterParser.parse(lbs, codingScheme.getCodingSchemeURI(), 
+                       codingScheme.getRepresentsVersion(), cl);
+               exporter.setCng(cngCngPair.getCng());
+               exporter.setCns(cngCngPair.getCns());
+               
+               exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(codingScheme.getCodingSchemeURI(), 
+                       codingScheme.getRepresentsVersion()), destination, overwrite,
+                       false, true);
+               Util.displayExporterStatus(exporter);
+            }
             
-            exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(css), destination, overwrite,
-                    false, true);
-            Util.displayExporterStatus(exporter);
+            if (css != null) {
+                // Find the registered extension handling this type of export ...
+                LexGridExport exporter = (LexGridExport) lbsm.getExporter(LexGridExport.name);
+    
+                // Perform the requested action ...
+                CnsCngPair cngCngPair = FilterParser.parse(lbs, css.getCodingSchemeURI(), 
+                        css.getRepresentsVersion(), cl);
+                exporter.setCng(cngCngPair.getCng());
+                exporter.setCns(cngCngPair.getCns());
+                
+                exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(css), 
+                        destination, overwrite,
+                        false, true);
+                Util.displayExporterStatus(exporter);
+            }
         }
     }
     
