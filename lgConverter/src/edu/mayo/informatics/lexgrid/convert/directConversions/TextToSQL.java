@@ -22,14 +22,11 @@ import java.net.URI;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.CodingScheme;
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.Concept;
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.TextUtility;
-import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
  * Converstion tool for loading a delimited text format into SQL.
@@ -134,7 +131,7 @@ public class TextToSQL {
         // this verifies all of the rules except the description rules - and
         // determines A or B.
         try {
-            codingScheme = TextUtility.readAndVerifyConcepts(fileLocation.getPath(), messages_, token_, forceFormatB);
+            codingScheme = TextUtility.readAndVerifyConcepts(fileLocation, messages_, token_, forceFormatB);
         } catch (Exception e) {
            throw new RuntimeException(e);
         }
@@ -148,12 +145,5 @@ public class TextToSQL {
     public CodingScheme getCodingScheme(){
         return codingScheme;
     }
-    
-    private void loadHasSubtypeRelations(CodingScheme codingScheme) throws Exception {
-     
-    }
 
-    private void loadRelations(CodingScheme codingScheme) throws Exception {
-    
-    }
 }

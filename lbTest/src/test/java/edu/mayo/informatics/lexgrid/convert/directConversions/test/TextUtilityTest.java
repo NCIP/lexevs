@@ -19,8 +19,11 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.test;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.lexevs.logging.LoggerFactory;
 
@@ -28,8 +31,6 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.Associa
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.CodingScheme;
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.Concept;
 import edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon.TextUtility;
-
-import junit.framework.TestCase;
 
 public class TextUtilityTest extends TestCase {
 	public List<String> filesA;
@@ -150,7 +151,7 @@ public class TextUtilityTest extends TestCase {
 		// type A
 		for (String f : filesA){
 			try {
-				CodingScheme cs = TextUtility.readAndVerifyConcepts(f, LoggerFactory.getLogger(), token, false);
+				CodingScheme cs = TextUtility.readAndVerifyConcepts(new URI(f), LoggerFactory.getLogger(), token, false);
 				
 				//scheme
 				assertEquals("name: ", "colorsA", cs.codingSchemeName);
@@ -187,7 +188,7 @@ public class TextUtilityTest extends TestCase {
 		// Type B
 		for(String f : filesB) {
 			try {
-				CodingScheme cs = TextUtility.readAndVerifyConcepts(f, LoggerFactory.getLogger(), token, true);
+				CodingScheme cs = TextUtility.readAndVerifyConcepts(new URI(f), LoggerFactory.getLogger(), token, true);
 				
 				//scheme
 				assertEquals("name: ", "colors2", cs.codingSchemeName);
@@ -219,12 +220,12 @@ public class TextUtilityTest extends TestCase {
 	
 	public void testException(){
 		try {
-			CodingScheme cs = TextUtility.readAndVerifyConcepts("does/exist/nofile.txt", LoggerFactory.getLogger(), token, false);
+			CodingScheme cs = TextUtility.readAndVerifyConcepts(new URI("does/exist/nofile.txt"), LoggerFactory.getLogger(), token, false);
 			fail("should raise a filenotfound exception");
 		} catch (Exception success) {
 		}
 		try {
-			CodingScheme cs = TextUtility.readAndVerifyConcepts("resources/testData/textLoaderSamples/textLoad_B_invalid_content.txt", LoggerFactory.getLogger(), token, true);
+			CodingScheme cs = TextUtility.readAndVerifyConcepts(new URI("resources/testData/textLoaderSamples/textLoad_B_invalid_content.txt"), LoggerFactory.getLogger(), token, true);
 			fail("should raise a filenotfound exception");
 		} catch (Exception success) {
 		}

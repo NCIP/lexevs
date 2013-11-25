@@ -21,10 +21,13 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.LexGrid.LexBIG.Extensions.Load.Text_Loader;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 
 /**
@@ -35,6 +38,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
  *          21:55:43 +0000 (Wed, 16 May 2007) $
  */
 public class TextUtility {
+    
     public static Concept getParent(Concept[] concepts, int curPos) {
         int depth = concepts[curPos].depth;
         for (int i = curPos; i >= 0; i--) {
@@ -45,7 +49,7 @@ public class TextUtility {
         return null;
     }
 
-    public static CodingScheme readAndVerifyConcepts(String fileLocation, LgMessageDirectorIF messages, String token,
+    public static CodingScheme readAndVerifyConcepts(URI fileLocation, LgMessageDirectorIF messages, String token,
             boolean forceTypeB) throws Exception {
         CodingScheme codingScheme = new CodingScheme();
         codingScheme.isTypeB = forceTypeB;
@@ -54,8 +58,15 @@ public class TextUtility {
         try {
             List<Concept> concepts = new ArrayList<Concept>();
 
-            BufferedReader fileReader = new BufferedReader(new FileReader(fileLocation));
-            String line = fileReader.readLine();
+               
+            BufferedReader reader;
+            if(fileLocation.toString().equals(Text_Loader.STD_IN_URI)){
+                reader = new BufferedReader(new InputStreamReader(System.in));
+            } else {
+                reader = new BufferedReader(new FileReader(fileLocation.getPath()));
+            }
+            
+            String line = reader.readLine();
 
             int lineNo = 1;
             while (line != null) {
@@ -88,11 +99,11 @@ public class TextUtility {
                     }
 
                     lineNo++;
-                    line = fileReader.readLine();
+                    line = reader.readLine();
                     break;
                 }
                 lineNo++;
-                line = fileReader.readLine();
+                line = reader.readLine();
             }
 
             // read the rest of the lines
@@ -109,7 +120,7 @@ public class TextUtility {
 
                 }
                 lineNo++;
-                line = fileReader.readLine();
+                line = reader.readLine();
             }
 
             Concept[] allConcepts = (Concept[]) concepts.toArray(new Concept[concepts.size()]);
