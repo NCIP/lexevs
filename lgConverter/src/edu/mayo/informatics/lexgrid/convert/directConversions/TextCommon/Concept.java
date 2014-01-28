@@ -18,6 +18,8 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
@@ -31,6 +33,7 @@ public class Concept {
     public String code;
     public String name;
     public String description;
+    public Set<String> alternateDescriptions = new HashSet<String>();
     public int depth;
 
     public Concept(String code, String name, String description, int depth) {
@@ -63,6 +66,9 @@ public class Concept {
             name = description;
             description = tokenizer.nextToken();
             codingScheme.isTypeB = true;
+        }
+        while( tokenizer.hasMoreElements()) {
+            alternateDescriptions.add(tokenizer.nextToken());
         }
     }
 
