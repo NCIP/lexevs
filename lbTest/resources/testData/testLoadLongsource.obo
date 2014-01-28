@@ -1,0 +1,44 @@
+format-version: 1.0
+date: 21:07:2007 19:08
+saved-by: m029451
+auto-generated-by: OBO-Edit 1.100-beta1
+default-namespace: test
+
+
+[Term]
+id: A
+name: A
+
+[Term]
+id: A1
+name: A1
+is_a: A ! A
+
+[Term]
+id: A12
+name: A12
+is_a: A1 ! A1
+
+[Term]
+id: A13
+name: A13
+is_a: A12 ! A12
+
+[Term]
+id: A2
+name: A2
+is_a: A 
+
+
+[Term]
+id: A22
+name: A22
+is_a: A2 ! A2
+
+[Term]
+id: DOID:0050777
+name: Joubert syndrome
+def: "An autosomal recessive disease that is characterized by congenital malformation of the brainstem and agenesis or hypoplasia of the cerebellar vermis leading to an abnormal respiratory pattern, nystagmus, hypotonia, ataxia, and delay in achieving motor milestones resulting from dysfunction of ciliary proteins (ciliopathy)." [url:http\://en.wikipedia.org/wiki/Joubert_syndrome, url:http\://omim.org/entry/213300?search=joubert&highlight=joubert, url:http\://www.orpha.net/consor/cgi-bin/Disease_Search.php?lng=EN&data_id=1022&Disease_Disease_Search_diseaseGroup=Joubert-syndrome&Disease_Disease_Search_diseaseType=Pat&Disease%28s%29/group%20of%20diseases=Joubert-syndrome--Joubert-Boltshauser-syndrome-&title=Joubert-syndrome--Joubert-Boltshauser-syndrome-&search=Disease_Search_Simple]
+xref: OMIM:213300
+created_by: lschriml
+creation_date: 2013-04-04T11:25:32Z
