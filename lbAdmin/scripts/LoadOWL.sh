@@ -1,5 +1,5 @@
 # Loads an OWL file. You can provide a manifest file to configure coding scheme
-# meta data.
+# meta data. 
 #
 # Options:
 #   -in,--input <uri> URI or path specifying location of the source file
