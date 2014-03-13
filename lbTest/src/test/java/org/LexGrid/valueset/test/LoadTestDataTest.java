@@ -167,6 +167,24 @@ public class LoadTestDataTest extends TestCase {
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
 	}
+	
+	@Test
+	public void testLoadValueSetDefinitionForLongName() throws Exception {
+				
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName"), null, null, null);
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(2000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+	}
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
