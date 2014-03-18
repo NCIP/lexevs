@@ -139,7 +139,7 @@
         <lgVD:valueSetDefinition valueSetDefinitionURI="SRITEST:AUTO:AllDomesticButGMWithlt250charName" valueSetDefinitionName="All Domestic Autos But GM  and as many characters as it takes to exceed 50 chars but not 250 chars and that should about do it" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
             <lgVD:properties>
                 <lgCommon:property propertyName="textualPresentation">
-                    <lgCommon:value> Domestic Auto Makers.</lgCommon:value>
+                    <lgCommon:value> Domestic Auto Makers Long Name</lgCommon:value>
                 </lgCommon:property>
             </lgVD:properties>
             <lgVD:definitionEntry ruleOrder="1" operator="OR">

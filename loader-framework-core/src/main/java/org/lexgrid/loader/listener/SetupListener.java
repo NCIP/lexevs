@@ -41,8 +41,8 @@ public class SetupListener extends LoggingBean implements JobExecutionListener{
 	public void afterJob(JobExecution job) {
 		
 	String message = null;
-	Object ob = (job.getStatus().name() == "FAILED"? job.getStatus().name() + " " + exitFailedDescription(job): job.getExitStatus());
-    message = (String)ob;
+	message = job.getStatus().name() == "FAILED"? job.getStatus().name() + " " + exitFailedDescription(job): job.getExitStatus().getExitCode();
+  //
 		getLogger().info("Load Job ended in state: " + message ) ;
 	}
 	

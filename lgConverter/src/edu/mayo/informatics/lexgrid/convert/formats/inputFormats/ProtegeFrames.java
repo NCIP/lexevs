@@ -29,7 +29,7 @@ import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.LexGridXMLOut;
 import edu.mayo.informatics.lexgrid.convert.formats.outputFormats.OBOOut;
 
 /**
- * Details for reading ProtÃ©gÃ© Frames files.
+ * Details for reading Protégé Frames files.
  * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
  * @version subversion $Revision: 3348 $ checked in on $Date: 2006-09-14

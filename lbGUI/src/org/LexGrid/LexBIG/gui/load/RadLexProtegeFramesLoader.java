@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 
 /**
- * GUI to load the RadLex ProtÃ©gÃ© Frames representation to LexBIG.
+ * GUI to load the RadLex ProtégéFrames representation to LexBIG.
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $

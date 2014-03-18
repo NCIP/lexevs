@@ -24,12 +24,12 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 
 /**
  * Validates and/or loads RadLex content, provided by the
- * Radiological Society of North America in ProtÃ©gÃ© frame format.
+ * Radiological Society of North America in Protégé frame format.
  */
 public interface RadlexProtegeFrames_Loader extends Loader {
 
 	/**
-	 * Load the Radiological Lexicon (RadLex) ontology from a ProtÃ©gÃ©
+	 * Load the Radiological Lexicon (RadLex) ontology from a Protégé
 	 * Frames (.pprj) file format.  This will also result in implicit
 	 * generation of standard indices required by the LexBIG runtime.
 	 * <p>
@@ -37,7 +37,7 @@ public interface RadlexProtegeFrames_Loader extends Loader {
 	 * operation is already in progress.
 	 * 
 	 * @param source
-	 *            URI corresponding to the ProtÃ©gÃ© project (typically .pprj) file.
+	 *            URI corresponding to the Protégé project (typically .pprj) file.
 	 * @param stopOnErrors
 	 *            True means stop if any load error is detected. False means
 	 *            attempt to load what can be loaded if recoverable errors are
@@ -60,7 +60,7 @@ public interface RadlexProtegeFrames_Loader extends Loader {
 	 * @throws LBException
 	 * 
 	 * @param source
-	 *            URI corresponding to the ProtÃ©gÃ© project (typically .pprj) file.
+	 *            URI corresponding to the Protégé project (typically .pprj) file.
 	 * @param validationLevel
 	 *            Supported levels of validation include: 0 = Verify the source file
 	 *            exists.
