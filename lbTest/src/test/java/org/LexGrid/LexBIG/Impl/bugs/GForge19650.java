@@ -92,7 +92,7 @@ public class GForge19650 extends LexBIGServiceTestCase {
         loader.load(new File(AUTO_EXPORT_FILE).toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
+            Thread.sleep(3000);
         }
 
         assertTrue(loader.getStatus().getState() == ProcessState.COMPLETED);

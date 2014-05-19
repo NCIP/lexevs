@@ -56,10 +56,15 @@ public class CleanUpTest extends TestCase {
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
                 "urn:oid:11.11.0.1", "1.0");
+        
+        AbsoluteCodingSchemeVersionReference b = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+        		"urn:oid:11.11.0.1.1-extension", "1.0-extension");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.unRegisterCodingSchemeAsSupplement(a, b);
 
         lbsm.removeCodingSchemeVersion(a);
+        //TODO remove b as well?
     }
 
     public void testRemoveGermanMadeParts() throws LBException {
@@ -286,21 +291,21 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 
-    public void testRemoveHL7() throws LBException {
-        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
-            // Connecting to ms access from Linux is beyond the scope of this
-            // application.
-            return;
-        }
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-
-        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://www.hl7.org/Library/data-model/RIM", "V 02-19");
-
-        lbsm.deactivateCodingSchemeVersion(a, null);
-        lbsm.removeCodingSchemeVersion(a);
-
-    }
+//    public void testRemoveHL7() throws LBException {
+//        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
+//            // Connecting to ms access from Linux is beyond the scope of this
+//            // application.
+//            return;
+//        }
+//        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+//
+//        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+//                "http://www.hl7.org/Library/data-model/RIM", "V 02-19");
+//
+//        lbsm.deactivateCodingSchemeVersion(a, null);
+//        lbsm.removeCodingSchemeVersion(a);
+//
+//    }
     
     public void testRemoveManifiestPostLoad() throws Exception {
     	try{

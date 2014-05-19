@@ -86,7 +86,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         loader.load(new File("resources/testData/Automobiles.xml").toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         }
 
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
@@ -106,7 +106,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     	loader.load(new File("resources/testData/testExtension.xml").toURI(), true, true);
 
     	while (loader.getStatus().getEndTime() == null) {
-    		Thread.sleep(500);
+    		Thread.sleep(1000);
     	}
 
     	assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
@@ -122,7 +122,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     			
     }
 
-    public void testLoadGermanMadeParts() throws LBException {
+    public void testLoadGermanMadeParts() throws LBException, InterruptedException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
@@ -130,6 +130,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         // load non-async - this should block
         loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, false);
 
+    	while (loader.getStatus().getEndTime() == null) {
+    		Thread.sleep(1000);
+    	}
         assertTrue(loader.getStatus().getEndTime() != null);
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());

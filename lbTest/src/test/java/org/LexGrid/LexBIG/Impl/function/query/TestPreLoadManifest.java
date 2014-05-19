@@ -79,6 +79,10 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
         loader.setCodingSchemeManifestURI(new File("resources/testData/fungal_anatomy-Manifest.xml").toURI());
         loader.load(new File("resources/testData/fungal_anatomy.obo").toURI(), null, true, false);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(3000);
+        }
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
@@ -94,6 +98,10 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         CodingSchemeManifest csm = createOBOCodingSchemeManifest("02");
         loader.setCodingSchemeManifest(csm);
         loader.load(new File("resources/testData/fungal_anatomy.obo").toURI(), null, true, false);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(3000);
+        }
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
@@ -110,6 +118,10 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         CodingSchemeManifest csm = createOBOCodingSchemeManifest("03");
         loader.setCodingSchemeManifest(csm);
         loader.load(new File("resources/testData/fungal_anatomy.obo").toURI(), null, true, false);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(3000);
+        }
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
         activateCodingScheme(loader, lbsm);
@@ -168,7 +180,7 @@ public class TestPreLoadManifest extends LexBIGServiceTestCase {
         loader.load(new File("resources/testData/amino-acid.owl").toURI(), null, 1, true, true);
 
         while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());

@@ -400,7 +400,8 @@ public class AllTestsNormalConfig {
         bugTests.addTestSuite(GForge22826.class);
         bugTests.addTestSuite(GForge20875.class);
         bugTests.addTestSuite(GForge23103.class);
-        bugTests.addTestSuite(GForge25067.class);
+        //No longer supporting the MSAccess load
+        //bugTests.addTestSuite(GForge25067.class);
         bugTests.addTestSuite(GForge26741.class);
         bugTests.addTestSuite(GForge29772.class);
         bugTests.addTestSuite(GForge29839.class);
@@ -420,7 +421,8 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(AddNamespaceToIndex.class);
         featureRequestTests.addTestSuite(ChangeConfigFileName.class);  
         featureRequestTests.addTestSuite(GForge17019.class);
-        featureRequestTests.addTestSuite(GForge24191.class);
+        //No longer supporting the MSAccess Load
+        //featureRequestTests.addTestSuite(GForge24191.class);
         mainSuite.addTest(featureRequestTests);
         
         //Mapping tests
