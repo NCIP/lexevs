@@ -15,7 +15,7 @@ Please see the NOTICE and LICENSE files for details.
 You will find more details about LexEVS in the following links:
 
 * [LexEVS Home](https://wiki.nci.nih.gov/x/OJG4Aw)
-* [Public Forum](https://cabig-kc.nci.nih.gov/Vocab/forums/viewforum.php?f=13)
+* [Public Forum](https://github.com/lexevs/lexevs/issues)
 * [Issues Tracker](https://tracker.nci.nih.gov/browse/LEXEVS)
 * [Documentation](https://wiki.nci.nih.gov/x/OJG4Aw)
 * [Source code](https://github.com/NCIP/LexEVS)
