@@ -213,7 +213,7 @@ public class GenericSQLModifier {
             datatypeConversion_.put("{AS}", "AS");
             datatypeConversion_.put("{tempTableAs}", "AS");
             datatypeConversion_.put("{tempTable}", "TEMPORARY");
-        } else if (databaseType_.equals("HSQL Database Engine")) {
+        } else if (databaseType_.equals("HSQL Database Engine") || databaseType_.equals("HSQL")) {
             properQuote_ = "";
             datatypeConversion_.put("{boolean}", "boolean");
             datatypeConversion_.put("{IF NOT EXISTS}", "");
