@@ -5,3 +5,4 @@ bin
 classes/
 .metadata/
 .DS_Store
+.settings/
