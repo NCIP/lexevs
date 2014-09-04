@@ -116,6 +116,12 @@ public class SearchEntityIndexer implements EntityIndexer {
 						Field.Store.NO, 
 						Field.Index.NOT_ANALYZED));
 		
+		document.add(
+				this.toField("active", 
+						BooleanUtils.toString(entity.getIsActive(), "true", "false", "true"),
+						Field.Store.NO, 
+						Field.Index.NOT_ANALYZED));
+		
 		String codingSchemeName;
 		try {
 			codingSchemeName = 

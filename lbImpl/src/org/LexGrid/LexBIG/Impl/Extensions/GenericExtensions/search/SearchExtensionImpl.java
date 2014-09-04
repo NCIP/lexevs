@@ -61,6 +61,22 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             MatchAlgorithm matchAlgorithm) throws LBParameterException {
         return this.search(text, codeSystemsToInclude, codeSystemsToExclude, matchAlgorithm, false);
     }
+    
+    @Override
+    public ResolvedConceptReferencesIterator search(
+            final String text, 
+            Set<CodingSchemeReference> codeSystemsToInclude,
+            Set<CodingSchemeReference> codeSystemsToExclude, 
+            MatchAlgorithm matchAlgorithm,
+            boolean includeAnonymous) throws LBParameterException {      
+        return this.search(
+                text, 
+                codeSystemsToInclude, 
+                codeSystemsToExclude, 
+                matchAlgorithm, 
+                includeAnonymous, 
+                false);
+    }
 
     @Override
     public ResolvedConceptReferencesIterator search(
@@ -68,7 +84,8 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             Set<CodingSchemeReference> codeSystemsToInclude,
             Set<CodingSchemeReference> codeSystemsToExclude, 
             MatchAlgorithm matchAlgorithm,
-            boolean includeAnonymous) throws LBParameterException {
+            boolean includeAnonymous,
+            boolean includeInactive) throws LBParameterException {
         
         LexEvsServiceLocator lexEvsServiceLocator = LexEvsServiceLocator.getInstance();
         List<RegistryEntry> entries = 
@@ -97,14 +114,20 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
 
         Query query = this.parseQuery(this.decorateQueryString(text, analyzer, matchAlgorithm), analyzer);
         
-        if(! includeAnonymous){
+        if(! includeAnonymous || ! includeInactive){
             BooleanQuery booleanQuery = new BooleanQuery();
             booleanQuery.add(query, Occur.MUST);
-            booleanQuery.add(new TermQuery(new Term("anonymous", "true")), Occur.MUST_NOT);
+            
+            if(! includeAnonymous){
+                booleanQuery.add(new TermQuery(new Term("anonymous", "true")), Occur.MUST_NOT);
+            }
+            if(! includeInactive){
+                booleanQuery.add(new TermQuery(new Term("active", "false")), Occur.MUST_NOT);
+            }
             
             query = booleanQuery; 
         }
-        
+
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
