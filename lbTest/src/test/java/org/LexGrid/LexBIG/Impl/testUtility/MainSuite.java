@@ -171,7 +171,7 @@ public class MainSuite {
 	        ServiceHolder.configureForSingleConfig();
 
 	        mainSuite.addTestSuite(ConfigureTest.class);
-	        mainSuite.addTestSuite(LoadTestDataTest.class);
+//	        mainSuite.addTestSuite(LoadTestDataTest.class);
 
 	        mainSuite.addTestSuite(CodeToReturnTest.class);
 	        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
