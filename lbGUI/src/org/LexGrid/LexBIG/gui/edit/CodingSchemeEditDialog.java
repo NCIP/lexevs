@@ -33,8 +33,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.lexevs.cts2.LexEvsCTS2Impl;
-import org.lexevs.cts2.author.CodeSystemAuthoringOperation;
+//import org.lexevs.cts2.LexEvsCTS2Impl;
+//import org.lexevs.cts2.author.CodeSystemAuthoringOperation;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -46,8 +46,8 @@ public class CodingSchemeEditDialog extends AbstractEditDialog<CodingScheme>{
     private static String FORMAL_NAME_KEY = "formalName";
     private static String NUM_OF_CONCEPTS_KEY = "approxNumConcepts";
     
-    private CodeSystemAuthoringOperation codeSystemAuthoringOperation = 
-        LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+//    private CodeSystemAuthoringOperation codeSystemAuthoringOperation = 
+//        LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
     
     public CodingSchemeEditDialog(
             LB_GUI lbGui,
@@ -88,36 +88,36 @@ public class CodingSchemeEditDialog extends AbstractEditDialog<CodingScheme>{
                 String.valueOf(codingScheme.getApproxNumConcepts()));
     }
 
-    @Override
-    protected CodingScheme updateItem() {
-
-        String numOfConceptsText = super.getTextBoxContent(NUM_OF_CONCEPTS_KEY);
-        long numOfConcepts = Long.parseLong(numOfConceptsText);
-        Text copyRight = DaoUtility.createText(super.getTextBoxContent(COPYRIGHT_TEXT_KEY));
-        String formalName = super.getTextBoxContent(FORMAL_NAME_KEY);
-
-        try {
-            this.codeSystemAuthoringOperation.updateCodeSystem(
-                    this.buildRevisionInfo(), 
-                    this.codingScheme.getCodingSchemeName(), 
-                    this.codingScheme.getCodingSchemeURI(), 
-                    formalName, 
-                    null, 
-                    numOfConcepts, 
-                    this.codingScheme.getRepresentsVersion(), 
-                    null, 
-                    null, 
-                    copyRight, 
-                    null);
-        } catch (LBException e) {
-            this.getDialogHandler().showError("Update Error", e.getMessage());
-        }
-      
-        return LexEvsServiceLocator.getInstance().
-            getDatabaseServiceManager().
-                getCodingSchemeService().
-                    getCodingSchemeByUriAndVersion(
-                            this.codingScheme.getCodingSchemeURI(), 
-                            this.codingScheme.getRepresentsVersion());
-    }
+//    @Override
+//    protected CodingScheme updateItem() {
+//
+//        String numOfConceptsText = super.getTextBoxContent(NUM_OF_CONCEPTS_KEY);
+//        long numOfConcepts = Long.parseLong(numOfConceptsText);
+//        Text copyRight = DaoUtility.createText(super.getTextBoxContent(COPYRIGHT_TEXT_KEY));
+//        String formalName = super.getTextBoxContent(FORMAL_NAME_KEY);
+//
+//        try {
+//            this.codeSystemAuthoringOperation.updateCodeSystem(
+//                    this.buildRevisionInfo(), 
+//                    this.codingScheme.getCodingSchemeName(), 
+//                    this.codingScheme.getCodingSchemeURI(), 
+//                    formalName, 
+//                    null, 
+//                    numOfConcepts, 
+//                    this.codingScheme.getRepresentsVersion(), 
+//                    null, 
+//                    null, 
+//                    copyRight, 
+//                    null);
+//        } catch (LBException e) {
+//            this.getDialogHandler().showError("Update Error", e.getMessage());
+//        }
+//      
+//        return LexEvsServiceLocator.getInstance().
+//            getDatabaseServiceManager().
+//                getCodingSchemeService().
+//                    getCodingSchemeByUriAndVersion(
+//                            this.codingScheme.getCodingSchemeURI(), 
+//                            this.codingScheme.getRepresentsVersion());
+//    }
 }

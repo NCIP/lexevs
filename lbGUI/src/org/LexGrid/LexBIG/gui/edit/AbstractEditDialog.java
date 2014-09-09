@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.lexevs.cts2.core.update.RevisionInfo;
+//import org.lexevs.cts2.core.update.RevisionInfo;
 
 public abstract class AbstractEditDialog<T> implements ItemUpdateListener<T> {
 
@@ -63,15 +63,15 @@ public abstract class AbstractEditDialog<T> implements ItemUpdateListener<T> {
     
     public List<ItemUpdateListener<T>> listeners = new ArrayList<ItemUpdateListener<T>>();
     
-    protected RevisionInfo buildRevisionInfo(){
-        RevisionInfo revisionInfo = new RevisionInfo();
-        if(getRevisionEditing()) {
-            revisionInfo.setRevisionId(getRevisionId());
-        } else {
-            revisionInfo.setRevisionId(createRandomRevisionId());
-        }
-        return revisionInfo;
-    }
+//    protected RevisionInfo buildRevisionInfo(){
+//        RevisionInfo revisionInfo = new RevisionInfo();
+//        if(getRevisionEditing()) {
+//            revisionInfo.setRevisionId(getRevisionId());
+//        } else {
+//            revisionInfo.setRevisionId(createRandomRevisionId());
+//        }
+//        return revisionInfo;
+//    }
 
     private String createRandomRevisionId() {
         return UUID.randomUUID().toString();
@@ -127,7 +127,7 @@ public abstract class AbstractEditDialog<T> implements ItemUpdateListener<T> {
         });
     }
     
-    protected abstract T updateItem();
+//    protected abstract T updateItem();
     
     public void addItemUpdateListener(ItemUpdateListener<T> listener) {
         this.listeners.add(listener);
@@ -201,26 +201,26 @@ public abstract class AbstractEditDialog<T> implements ItemUpdateListener<T> {
             } 
         });
         
-        Button saveButton = new Button(buttonComposite, SWT.BUTTON1);
-        saveButton.setText("Save");
-        saveButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-               //
-            }
-
-            public void widgetSelected(SelectionEvent arg0) {
-                T updatedItem = updateItem();
-                
-                dialogHandler.showInfo("Update", "Item has been Updated sucessfully", true);
-                
-                for(ItemUpdateListener<T> listener : listeners) {
-                    listener.onItemUpdate(updatedItem);
-                }
-                
-                hasBeenEdited = false;
-            } 
-        });
+//        Button saveButton = new Button(buttonComposite, SWT.BUTTON1);
+//        saveButton.setText("Save");
+//        saveButton.addSelectionListener(new SelectionListener() {
+//
+//            public void widgetDefaultSelected(SelectionEvent arg0) {
+//               //
+//            }
+//
+//            public void widgetSelected(SelectionEvent arg0) {
+//                T updatedItem = updateItem();
+//                
+//                dialogHandler.showInfo("Update", "Item has been Updated sucessfully", true);
+//                
+//                for(ItemUpdateListener<T> listener : listeners) {
+//                    listener.onItemUpdate(updatedItem);
+//                }
+//                
+//                hasBeenEdited = false;
+//            } 
+//        });
         
         GridData gridData = new GridData();
         gridData.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
@@ -229,7 +229,7 @@ public abstract class AbstractEditDialog<T> implements ItemUpdateListener<T> {
         buttonComposite.setLayoutData(gridData);
         buttonComposite.setEnabled(true);
         buttonComposite.setVisible(true);
-        saveButton.setVisible(true);      
+//        saveButton.setVisible(true);      
         
         this.hasBeenEdited = false;
         

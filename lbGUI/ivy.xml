@@ -12,7 +12,6 @@
 	</publications>
 	<dependencies>
 		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
-		<dependency org="lexevs" name="cts2-impl" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexevs-valuesets" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="meta-loader" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
