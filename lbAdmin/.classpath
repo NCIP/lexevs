@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/loader-framework-core"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=lbAdmin&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="lib" path="/tree/target/lexevs-tree-2.1.0.jar" sourcepath="/tree/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
