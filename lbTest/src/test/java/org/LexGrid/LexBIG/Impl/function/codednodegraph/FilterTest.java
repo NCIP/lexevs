@@ -42,7 +42,11 @@ public class FilterTest extends BaseCodedNodeGraphTest {
      */
     public void testFilter() throws Exception {
 
+    	try {
     	ExtensionRegistryImpl.instance().registerFilterExtension(new AllButGMFilter().getExtensionDescription());
+    	}catch(Exception e){
+    		//May already be registered
+    	}
     	
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("005", AUTO_SCHEME), 
