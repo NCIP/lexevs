@@ -524,6 +524,7 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 *            improves performance).
 	 * @param conceptCode
 	 *            The starting point for resolution; not null.
+	 * @param codeNamespace 
 	 * @param resolveConcepts
 	 *            True to fill in all information for concepts identified as
 	 *            part of the returned association; false to return only basic
@@ -548,7 +549,7 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 */
 	AssociationList getHierarchyPathToRoot(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String hierarchyID,
-			String conceptCode, boolean resolveConcepts,
+			String conceptCode, String codeNamespace, boolean resolveConcepts,
 			HierarchyPathResolveOption pathResolveOption,
 			NameAndValueList associationQualifiers) throws LBException;
 

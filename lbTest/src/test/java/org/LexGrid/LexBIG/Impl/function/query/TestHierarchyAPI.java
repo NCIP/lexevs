@@ -156,7 +156,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         }
         String  code= "CL:0000001";
         
-        AssociationList associations = lbscm.getHierarchyPathToRoot(CELL_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(CELL_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
 
     }
@@ -183,7 +183,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         }
         String  code= "B";
         
-        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
 
     }    
@@ -204,7 +204,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         }
         String  code= "DeVille";
         
-        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_EXTENSION_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_EXTENSION_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
        
     }    

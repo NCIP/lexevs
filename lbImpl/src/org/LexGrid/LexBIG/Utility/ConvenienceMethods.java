@@ -496,9 +496,9 @@ public class ConvenienceMethods implements Serializable {
      * @throws LBException
      */
     public AssociationList getHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
-            String hierarchyID, String conceptCode, boolean resolveConcepts,
+            String hierarchyID, String conceptCode, String namespace, boolean resolveConcepts,
             HierarchyPathResolveOption pathResolveOption, NameAndValueList associationQualifiers) throws LBException {
-        return lbcm_.getHierarchyPathToRoot(codingScheme, versionOrTag, hierarchyID, conceptCode, resolveConcepts,
+        return lbcm_.getHierarchyPathToRoot(codingScheme, versionOrTag, hierarchyID, conceptCode, namespace, resolveConcepts,
                 pathResolveOption, associationQualifiers);
     }
 

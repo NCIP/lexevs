@@ -986,7 +986,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
      */
     public AssociationList getHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
-            String hierarchyID, String conceptCode, boolean resolveConcepts,
+            String hierarchyID, String conceptCode, String namespace,  boolean resolveConcepts,
             HierarchyPathResolveOption pathResolveOption, NameAndValueList assocQuals) throws LBException {
 
         getLogger().logMethod(
@@ -1020,7 +1020,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                     // Invoke primitive method that works in terms of
                     // associations and direction.
                     AssociationList toAdd = getHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, fwd,
-                            conceptCode, rootCode, resolveConcepts, assocQuals, maxToReturn);
+                            conceptCode, rootCode, namespace, resolveConcepts, assocQuals, maxToReturn);
 
                     // Add results for this root to the comprehensive result.
                     for (int j = 0; j < toAdd.getAssociationCount(); j++)
@@ -1330,6 +1330,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      * @param fwd
      * @param conceptCode
      * @param rootCode
+     * @param namespace 
      * @param resolveConcepts
      * @param assocQuals
      * @param maxToReturn
@@ -1338,7 +1339,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      */
     @LgClientSideSafe
     protected AssociationList getHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
-            String[] assocNames, boolean fwd, String conceptCode, String rootCode, boolean resolveConcepts,
+            String[] assocNames, boolean fwd, String conceptCode, String rootCode, String namespace, boolean resolveConcepts,
             NameAndValueList assocQuals, int maxToReturn) throws LBException {
 
         getLogger().logMethod(
@@ -1348,7 +1349,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         // Resolve paths using primitive methods ...
         AssociationList val = new AssociationList();
         if (assocNames.length >= 1)
-            val = getHierarchyPathToRootPrim(codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode,
+            val = getHierarchyPathToRootPrim(codingScheme, versionOrTag, assocNames, fwd, conceptCode, namespace, rootCode,
                     resolveConcepts, assocQuals, maxToReturn);
         return val;
     }
@@ -1380,19 +1381,19 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
      */
     @LgClientSideSafe
     protected AssociationList getHierarchyPathToRootPrim(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
-            String[] assocNames, boolean fwd, String conceptCode, String rootCode, boolean resolveConcepts,
+            String[] assocNames, boolean fwd, String conceptCode, String namespace, String rootCode, boolean resolveConcepts,
             NameAndValueList assocQuals, int maxToReturn) throws LBException {
-        return this.getHierarchyPathToRootPrim(codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode,
+        return this.getHierarchyPathToRootPrim(codingScheme, versionOrTag, assocNames, fwd, conceptCode, namespace, rootCode,
                 resolveConcepts, assocQuals, maxToReturn, new ArrayList<String>());
     }
 
     @LgClientSideSafe
     protected AssociationList getHierarchyPathToRootPrim(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
-            String[] assocNames, boolean fwd, String conceptCode, String rootCode, boolean resolveConcepts,
+            String[] assocNames, boolean fwd, String conceptCode,String namespace, String rootCode, boolean resolveConcepts,
             NameAndValueList assocQuals, int maxToReturn, List<String> codeChain) throws LBException {
 
         getLogger().logMethod(
-                new Object[] { codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode, resolveConcepts,
+                new Object[] { codingScheme, versionOrTag, assocNames, fwd, conceptCode, namespace, rootCode, resolveConcepts,
                         assocQuals, maxToReturn });
         int leftToReturn = maxToReturn > 0 ? maxToReturn : Integer.MAX_VALUE;
 
@@ -1406,8 +1407,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         cng = cng.restrictToAssociations(ConvenienceMethods.createNameAndValueList(assocNames, codingScheme),
                 assocQuals);
         int rcDepth = resolveConcepts ? 1 : -1;
-        ResolvedConceptReferenceList rcrl = cng.resolveAsList(ConvenienceMethods.createConceptReference(conceptCode,
-                codingScheme), fwd, !fwd, rcDepth, 1, null, null, null, -1);
+        ConceptReference ref = ConvenienceMethods.createConceptReference(conceptCode,
+                codingScheme);
+        ref.setCodeNamespace(namespace);
+        ResolvedConceptReferenceList rcrl = cng.resolveAsList(ref, fwd, !fwd, rcDepth, 1, null, null, null, -1);
 
         // Run through each neighbor, recursing as necessary to check if
         // there is eventually an embedded match with the stop code.
@@ -1453,7 +1456,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                                 // be forward or reverse, but is always
                                 // narrowing.
                                 AssociationList subbranchAtLeaf = getHierarchyPathToRootPrim(codingScheme,
-                                        versionOrTag, assocNames, fwd, leafCode, rootCode, resolveConcepts, assocQuals,
+                                        versionOrTag, assocNames, fwd, leafCode, namespace, rootCode, resolveConcepts, assocQuals,
                                         maxToReturn, clonedList);
 
                                 // If empty, recursion showed this chain is not
@@ -1772,7 +1775,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 return true;
 
         // No luck; resolve a path ...
-        AssociationList paths = getHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, fwd, conceptCode,
+        AssociationList paths = getHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, fwd, conceptCode, null,
                 rootCode, false, assocQuals, 1);
         return paths.getAssociationCount() > 0;
     }
