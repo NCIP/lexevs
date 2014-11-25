@@ -660,7 +660,7 @@ public class OwlApi2LG {
         //The reasoner.getSuperClasses doesn't return the anonymous classes. The ontology.getSubClassAxiomsForSubClass
         //method doesn't have information that can be found using the reasoner, so we add in the reasoned expressions.
         Set<OWLClass> reasonedSubClasses= new HashSet<OWLClass>();
-        reasonedSubClasses.addAll(reasoner.getSuperClasses(owlClass, true).getFlattened());
+        reasonedSubClasses.addAll(reasoner.getSuperClasses(owlClass, true).getNodes().iterator().next().getEntities());
         reasonedSubClasses.removeAll(statedSubClasses);
         for (OWLClassExpression superClass : reasonedSubClasses) {
             relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
@@ -768,7 +768,7 @@ public class OwlApi2LG {
                         targetNameSpace = getNameSpace((OWLClass) fillerProp);
                     } else if (fillerProp instanceof OWLNamedIndividual) {
                         targetCode = resolveInstanceID((OWLNamedIndividual) fillerProp);
-                        targetNameSpace = getNameSpace((OWLClass) fillerProp);
+                        targetNameSpace = getNameSpace((OWLNamedIndividual) fillerProp);
                     } else {
                         opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
                     }
