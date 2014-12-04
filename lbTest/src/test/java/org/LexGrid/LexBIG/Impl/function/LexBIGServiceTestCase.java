@@ -81,8 +81,11 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     public final static String HL7_MIF_VOCABULARY_VERSION = "DEFN=UV=VO=1189-20121121";
     public final static String OWL2_SNIPPET_VOCABULARY_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2-snippet.owl";
     public final static String OWL2_SNIPPET_VOCABULARY_VERSION = "13.05d";
+	public static final String OWL2_SNIPPET_INDIVIDUAL_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl";
+	public static final String OWL2_SNIPPET_INDIVIDUAL_VERSION = "0.1.2";
 
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
+
     /**
      * To be implemented by each descendant testcase.
      * 

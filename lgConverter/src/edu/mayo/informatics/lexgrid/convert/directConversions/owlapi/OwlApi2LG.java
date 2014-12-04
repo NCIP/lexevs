@@ -1420,12 +1420,12 @@ public class OwlApi2LG {
 
         IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI();
         String uri = ontologyIRI.toString();
-        if (ontology.getOntologyID().getVersionIRI() != null)
-            version = ontology.getOntologyID().getVersionIRI().toString();
+//        if (ontology.getOntologyID().getVersionIRI() != null)
+//            version = ontology.getOntologyID().getVersionIRI().toString();
 
-        if (StringUtils.isBlank(version)) {
+//        if (StringUtils.isBlank(version)) {
             version = getVersionInfo();
-        }
+//        }
 
         if (ontologyIRI != null) {
             String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
