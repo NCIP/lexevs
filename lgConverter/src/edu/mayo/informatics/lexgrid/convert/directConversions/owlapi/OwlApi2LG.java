@@ -81,11 +81,13 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationObjectVisitorEx;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLCardinalityRestriction;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLDataRange;
@@ -121,13 +123,13 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.util.OWLObjectVisitorExAdapter;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
+import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
-
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
 
@@ -190,6 +192,8 @@ public class OwlApi2LG {
 
     private DatabaseServiceManager databaseServiceManager;
 
+    final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+    final static OWLDataFactory factory = manager.getOWLDataFactory();
     /**
      * Create a new instance for conversion.
      * 
@@ -395,10 +399,36 @@ public class OwlApi2LG {
                 resolveDisjointWithRelations(source, namedClass);
                 // resolveComplementOfRelations(source, namedClass);
                 resolveOWLObjectPropertyRelations(source, namedClass);
-                // resolveAnnotationPropertyRelations(source, namedClass);
+                resolveAnnotationPropertyRelations(source, namedClass);
                 // resolveDatatypePropertyRelations(source, namedClass);
             }
 
+        }
+
+    }
+
+    private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
+        for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
+            String propName = getLocalName(annotationAxiom.getProperty());
+            if (isAnyURIDatatype(annotationAxiom)) {
+                AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+                if (lgAssoc == null) {
+                    return;
+                }
+                OWLAnnotation anno = annotationAxiom.getAnnotation();
+                String subject = owlClass.getIRI().getFragment();
+                String prefix = owlClass.getIRI().getStart();
+               // OWLAnnotationValue value = annotationAxiom.getValue();
+                relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
+                       source, anno, annotationAxiom, prefix);
+                //TODO see if this creates the association discussed with Gilberto.
+//                if (value instanceof IRI) {
+//                    IRI iri_v = (IRI) value;
+//                    relateAssocSourceWithIriTarget(EntityTypes.CONCEPT, lgAssoc, source, iri_v, annotationAxiom);
+//
+//                }
+             //   System.out.println(propName);
+            }
         }
 
     }
@@ -829,7 +859,6 @@ public class OwlApi2LG {
         
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
-        
             if (ontology.containsObjectPropertyInSignature(annotationAxiom.getProperty().getIRI())) {
                 AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
 
@@ -843,9 +872,19 @@ public class OwlApi2LG {
                          
                 } 
             }
-                
+     
         }
             
+    }
+
+    private boolean isAnyURIDatatype(OWLAnnotationAssertionAxiom annotationAxiom) {
+       Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
+       while(itr.hasNext()){
+           if(itr.next().getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
+               return true;
+           }
+       }
+        return false;
     }
 
     /**
@@ -1641,14 +1680,42 @@ public class OwlApi2LG {
      */
     protected void initSupportedAssociationAnnotationProperties() {
         for (OWLAnnotationProperty annotationProperty : ontology.getAnnotationPropertiesInSignature()) {
-            // addAnnotationPropertyAssociations(annotationProperty);
+            Iterator<OWLAnnotationPropertyRangeAxiom> itr = ontology.getAnnotationPropertyRangeAxioms(annotationProperty).iterator();
+            while(itr.hasNext()){
+                OWLAnnotationPropertyRangeAxiom OwlAx = itr.next();
+                if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
+                    addAnnotationPropertyAssociations(annotationProperty);
+                }
+                } 
         }
+        
         /*
          * for (Iterator individuals = owlModel_.getOWLIndividuals().iterator();
          * individuals.hasNext();) { RDFIndividual individual = (RDFIndividual)
          * individuals.next(); addAnnotationPropertyAssociations(individual); }
          */
 
+    }
+
+    private void addAnnotationPropertyAssociations(OWLAnnotationProperty annotationProperty) {
+       addAnnotationAsAssociation(annotationProperty);
+        
+    }
+
+    private AssociationWrapper addAnnotationAsAssociation(OWLAnnotationProperty owlProp) {
+        AssociationWrapper assocWrap = new AssociationWrapper();
+        String propertyName = getLocalName(owlProp);
+        assocWrap.setEntityCode(propertyName);
+        String label = resolveLabel(owlProp);
+        assocWrap.setAssociationName(label);
+        assocWrap.setForwardName(getAssociationLabel(label, true));
+        String nameSpace = getNameSpace(owlProp);
+        assocWrap.setEntityCodeNamespace(nameSpace);
+        assocWrap = assocManager.addAssociation(lgRelationsContainer_Assoc, assocWrap);
+        owlDatatypeName2label_.put(propertyName, label);
+        lgSupportedMappings_.registerSupportedAssociation(label, owlProp.getIRI().toString(), label, propertyName,
+                nameSpace, true);
+        return assocWrap;
     }
 
     protected AssociationWrapper addAssociation(OWLProperty owlProp) {
@@ -1916,6 +1983,9 @@ public class OwlApi2LG {
         return null;
     }
 
+    protected String resolveConceptIDfromIRI(IRI iri){
+       return owlClassName2Conceptcode_.get(iri.toString());
+    }
     /**
      * Process the instance information in the ontology.
      * 
@@ -2353,6 +2423,56 @@ public class OwlApi2LG {
             relateAssociationSourceTarget(aw, source, target);
            
         }
+    }
+    
+    protected void relateAssocSourceWithAnnotationTarget(EntityTypes type, AssociationWrapper aw,
+            AssociationSource source, OWLAnnotation tgtResource, OWLAxiom ax, String prefix) {
+        OWLAnnotationValue val = tgtResource.getValue();
+    
+        String targetID = getLocalNameFromAnnotationValue(val, prefix);
+ // targetID = getLocalName(tgtResource);
+        targetID = stripDataType(val.toString());
+        IRI targetIri = IRI.create(targetID);
+        if (type == EntityTypes.CONCEPT) {
+            targetID = resolveConceptIDfromIRI(targetIri);
+        }
+
+        if (StringUtils.isNotBlank(targetID)) {
+            String nameSpace = getNameSpace(targetIri);
+            AssociationTarget target = CreateUtils.createAssociationTarget(targetID, nameSpace);
+            processAnnotationsOfOWLAxiom(ax, target);
+            relateAssociationSourceTarget(aw, source, target);
+           
+        }
+    }
+
+    private String getNameSpaceFromString(String targetID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private String resolveConceptIDFromString(String targetID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private String getLocalNameFromAnnotationValue(OWLAnnotationValue val, String prefix) {
+        String shortForm = val.toString();
+        shortForm = stripPrefixAndDataType(shortForm, prefix);
+        return shortForm;
+    }
+
+    private String stripPrefixAndDataType(String shortForm, String prefix) {
+        shortForm = stripDataType(shortForm);
+        shortForm = shortForm.replaceAll(prefix, "");
+        return shortForm;
+    }
+    
+    private String stripDataType(String shortForm){
+        String substring = shortForm.substring(shortForm.indexOf("^"));
+        String prefix = shortForm.replace(substring,"");
+        prefix = prefix.replace("\"", "");
+        return prefix;
     }
 
     protected void relateAssociationSourceTarget(AssociationWrapper aw, AssociationSource source,
