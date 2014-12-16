@@ -416,18 +416,9 @@ public class OwlApi2LG {
                     return;
                 }
                 OWLAnnotation anno = annotationAxiom.getAnnotation();
-                String subject = owlClass.getIRI().getFragment();
                 String prefix = owlClass.getIRI().getStart();
-               // OWLAnnotationValue value = annotationAxiom.getValue();
                 relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
                        source, anno, annotationAxiom, prefix);
-                //TODO see if this creates the association discussed with Gilberto.
-//                if (value instanceof IRI) {
-//                    IRI iri_v = (IRI) value;
-//                    relateAssocSourceWithIriTarget(EntityTypes.CONCEPT, lgAssoc, source, iri_v, annotationAxiom);
-//
-//                }
-             //   System.out.println(propName);
             }
         }
 
@@ -2429,9 +2420,7 @@ public class OwlApi2LG {
             AssociationSource source, OWLAnnotation tgtResource, OWLAxiom ax, String prefix) {
         OWLAnnotationValue val = tgtResource.getValue();
     
-        String targetID = getLocalNameFromAnnotationValue(val, prefix);
- // targetID = getLocalName(tgtResource);
-        targetID = stripDataType(val.toString());
+        String targetID = stripDataType(val.toString());
         IRI targetIri = IRI.create(targetID);
         if (type == EntityTypes.CONCEPT) {
             targetID = resolveConceptIDfromIRI(targetIri);
@@ -2446,29 +2435,8 @@ public class OwlApi2LG {
         }
     }
 
-    private String getNameSpaceFromString(String targetID) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    private String resolveConceptIDFromString(String targetID) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    private String getLocalNameFromAnnotationValue(OWLAnnotationValue val, String prefix) {
-        String shortForm = val.toString();
-        shortForm = stripPrefixAndDataType(shortForm, prefix);
-        return shortForm;
-    }
-
-    private String stripPrefixAndDataType(String shortForm, String prefix) {
-        shortForm = stripDataType(shortForm);
-        shortForm = shortForm.replaceAll(prefix, "");
-        return shortForm;
-    }
     
-    private String stripDataType(String shortForm){
+    protected String stripDataType(String shortForm){
         String substring = shortForm.substring(shortForm.indexOf("^"));
         String prefix = shortForm.replace(substring,"");
         prefix = prefix.replace("\"", "");

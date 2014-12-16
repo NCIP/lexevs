@@ -439,6 +439,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
 		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
 		try{
+		loader.setLoaderPreferences(new File("resources/testData/owl2/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
 		loader.load(new File("resources/testData/owl2/owl2-test-cases-Defined-Annotated.owl")
 				.toURI(), null, 1, true, true);
 		}

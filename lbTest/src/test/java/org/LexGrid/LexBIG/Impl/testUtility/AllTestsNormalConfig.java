@@ -183,6 +183,10 @@ import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityH
 import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMergerTest;
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQueryTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
 
 public class AllTestsNormalConfig {
@@ -228,6 +232,14 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
 
         mainSuite.addTest(metaLoaderSuite);
+        
+        TestSuite owl2LoaderSuite = new TestSuite("OWL2 Tests");
+        owl2LoaderSuite.addTestSuite(PresentationPropertyTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2LoaderLexGridTest.class);
+        owl2LoaderSuite.addTestSuite(NewOWL2SnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
+        mainSuite.addTest(owl2LoaderSuite);
+        
         
         TestSuite umlsLoaderSuite = new TestSuite("UmlsLoader Tests");
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.EntityAssnsToEntityDataTestIT.class);
@@ -400,8 +412,6 @@ public class AllTestsNormalConfig {
         bugTests.addTestSuite(GForge22826.class);
         bugTests.addTestSuite(GForge20875.class);
         bugTests.addTestSuite(GForge23103.class);
-        //No longer supporting the MSAccess load
-        //bugTests.addTestSuite(GForge25067.class);
         bugTests.addTestSuite(GForge26741.class);
         bugTests.addTestSuite(GForge29772.class);
         bugTests.addTestSuite(GForge29839.class);

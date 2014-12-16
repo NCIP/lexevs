@@ -305,21 +305,6 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 
-//    public void testRemoveHL7() throws LBException {
-//        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
-//            // Connecting to ms access from Linux is beyond the scope of this
-//            // application.
-//            return;
-//        }
-//        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-//
-//        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-//                "http://www.hl7.org/Library/data-model/RIM", "V 02-19");
-//
-//        lbsm.deactivateCodingSchemeVersion(a, null);
-//        lbsm.removeCodingSchemeVersion(a);
-//
-//    }
     
     public void testRemoveManifiestPostLoad() throws Exception {
     	try{
