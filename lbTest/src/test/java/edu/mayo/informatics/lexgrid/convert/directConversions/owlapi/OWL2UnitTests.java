@@ -22,5 +22,13 @@ public class OWL2UnitTests extends TestCase {
 		OwlApi2LG owl2 = new OwlApi2LG(null, null, null, 0, null);
 		assertEquals(expected, owl2.stripDataType(value));
 	}
+	
+	@Test
+	public void testIRIParsingFromRendererResultsLEXEVS_684(){
+		String value = "PrognosisGood>";
+		String expected = "PrognosisGood";
+		OwlApi2LG owl2 = new OwlApi2LG(null, null, null, 0, null);
+		assertEquals(expected, owl2.getFromLastIndexOfColonOrHash(value));
+	}
 
 }
