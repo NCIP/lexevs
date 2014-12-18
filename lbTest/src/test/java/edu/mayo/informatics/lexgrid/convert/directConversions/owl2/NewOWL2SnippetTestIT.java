@@ -76,6 +76,15 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 //		}
 	}
 	
+	@Test
+	public void testAssocLoadingDisjointWith_LEXEVS_685() throws LBInvocationException, LBParameterException {
+		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointWith"), null);
+		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("Person", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+				true, true, 1, 1, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(validateTarget("DiseasesDisordersFindings", itr));
+		}
+	
 	private boolean validateTarget(String target,
 			Iterator<? extends ResolvedConceptReference> itr) {
 		boolean validate = false;

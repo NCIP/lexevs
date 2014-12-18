@@ -725,7 +725,7 @@ public class OwlApi2LG {
 //        }
         for (OWLDisjointClassesAxiom disjointClassAxiom : ontology.getDisjointClassesAxioms(owlClass)) {
             for (OWLClassExpression disjointClassExpression : disjointClassAxiom.getClassExpressionsMinus(owlClass)) {
-                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
+                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(),
                         source, disjointClassExpression, disjointClassAxiom);
             }
         }
