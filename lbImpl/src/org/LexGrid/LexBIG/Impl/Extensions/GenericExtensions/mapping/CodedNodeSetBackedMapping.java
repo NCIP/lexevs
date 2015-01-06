@@ -259,51 +259,36 @@ public class CodedNodeSetBackedMapping implements Mapping {
             
             iterator = restrictingIterator;
         }
+        ResolvedConceptReferencesIterator it = getResolvedConceptReferenceIterator(iterator, count, mappingUri,
+                mappingVersion,
+                relationsContainerName, 
+                sourceCodesCodedNodeSet,
+                targetCodesCodedNodeSet,
+                sourceOrTargetCodesCodedNodeSet,
+                relationshipRestrictions,
+                sortOptionList);
+        return it;
         
-        return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator, count){
-           
-                private static final long serialVersionUID = -6420905230384238295L;
-
-            @Override
-            public ResolvedConceptReferenceList get(int start, int end) throws LBResourceUnavailableException,
-                    LBInvocationException, LBParameterException {
-                Iterator<ResolvedConceptReference> iterator;
-                
-                if(areAllCodedNodeSetsNull()){
-                    iterator = new MappingTripleIterator(
-                             mappingUri,
-                             mappingVersion,
-                             relationsContainerName,
-                             sortOptionList);
-                } else {
-                    iterator = 
-                        new RestrictingMappingTripleIterator(
-                                mappingUri,
-                                mappingVersion,
-                                relationsContainerName, 
-                                sourceCodesCodedNodeSet,
-                                targetCodesCodedNodeSet,
-                                sourceOrTargetCodesCodedNodeSet,
-                                relationshipRestrictions,
-                                sortOptionList);
-                }
-                ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
-                
-                int pos = 0;
-                while(iterator.hasNext() && pos < end){
-                    ResolvedConceptReference ref = iterator.next();
-                    if(pos >= start){
-                        returnList.addResolvedConceptReference(ref);
-                    }
-                    pos++;
-                }
-                
-                return returnList;
-            }
-        };
     }
 
+    
+    private ResolvedConceptReferencesIterator getResolvedConceptReferenceIterator(
+            Iterator<ResolvedConceptReference> iterator, int count, String mappingUri2, String mappingVersion2,
+            String relationsContainerName2, CodedNodeSet sourceCodesCodedNodeSet2,
+            CodedNodeSet targetCodesCodedNodeSet2, CodedNodeSet sourceOrTargetCodesCodedNodeSet2,
+            List<RelationshipRestriction> relationshipRestrictions2, List<MappingSortOption> sortOptionList) {
+        // TODO Auto-generated method stub
+        return new CglibWrappingIteratorBackedRCReferenceIterator(iterator,count, mappingUri,
+                mappingVersion,
+                relationsContainerName, 
+                sourceCodesCodedNodeSet,
+                targetCodesCodedNodeSet,
+                sourceOrTargetCodesCodedNodeSet,
+                relationshipRestrictions,
+                sortOptionList);
+    }
+
+    
     @Override
     public Mapping restrictToMatchingDesignations(
             final String matchText, 
