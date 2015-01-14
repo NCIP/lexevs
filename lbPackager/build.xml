@@ -636,8 +636,8 @@ pause
 		<echo file="${pkg-gui}/Linux-lbGUI.sh">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
-		<echo file="${pkg-gui}/OSX-lbGUI.command">
-java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+		<echo file="${pkg-gui}/OSX-lbGUI.sh">
+java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbGUI.sh">
 java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
@@ -654,7 +654,7 @@ pause
 		<echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
-		<echo file="${pkg-gui}/OSX-lbGUI-browser.command">
+		<echo file="${pkg-gui}/OSX-lbGUI-browser.sh">
 java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-browser-lbGUI.sh">
@@ -663,14 +663,14 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		
 		<!-- Start Value Sets GUI scripts-->
 		<echo file="${pkg-gui}/Windows-lbVSGUI.bat">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI.sh">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
-				<echo file="${pkg-gui}/OSX-lbVSGUI.command">
-		java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+				<echo file="${pkg-gui}/OSX-lbVSGUI.sh">
+java  -Xmx3000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 		<echo file="${pkg-gui}/Windows_64-lbVSGUI.bat">
 java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
@@ -681,21 +681,18 @@ java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/
 pause
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbVSGUI.sh">
-		java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 				<!--create the start scripts-->
 				<echo file="${pkg-gui}/Windows-lbVSGUI-browser.bat">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI-browser.sh">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
-				</echo>
-				<echo file="${pkg-gui}/OSX-lbVSGUI-browser.command">
-		java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 				<echo file="${pkg-gui}/Linux_64-browser-lbVSGUI.sh">
-		java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 		<!-- End Value Sets GUI scripts -->
 		<fixcrlf srcdir="${pkg-gui}/" eol="lf" includes="*.command" />
@@ -910,7 +907,7 @@ pause
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPSUBPATH@@" value="LexGrid/${prodID}/${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPVERSION@@" value="${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_INFO_URL@@"
-			value="https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexBig_and_LexEVS"/>
+			value="https://wiki.nci.nih.gov/display/LexEVS/LexEVS"/>
 		<!-- Create the izPack installer -->
 		<izPack input="${basedir}/izpack-install.xml"
 			output="${out.file}"
