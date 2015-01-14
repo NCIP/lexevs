@@ -1,25 +1,24 @@
 
-     #########################################
-     #                                       #
-     #          LexEVS Documentation         #
-     #                                       #
-     #########################################
+#########################################
+                                       
+          LexEVS Documentation         
+                                       
+#########################################
      
 Documentation for installation, administration and development of LexEVS can be found here:
 
-	https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexEVS_Version_6.0_Highlights
+https://wiki.nci.nih.gov/display/LexEVS/LexEVS+Documentation+and+Training
 
-     ###########################################
-     #                                         #
-     #         Default Connection Details      #
-     #                                         #
-     ###########################################
+###########################################
+                                         
+         Default Connection Details      
+                                         
+###########################################
 
-The default connection set up for LexEVS 6.0 is MySql.  If you have MySql 5.x installed
+The default connection set up for LexEVS 6.2 is MySql 5.5.  If you have MySql 5.5 installed
 then you will still need to download and install the MySql JDBC connector and copy it to
 the runtime/sqlDrivers folder before starting up LexEVS. License restrictions prevent
 shipping of this driver, but it can be downloaded here:
 
-	http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/
-	mysql-connector-java-5.1.6.jar
+http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
 
