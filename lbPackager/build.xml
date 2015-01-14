@@ -907,7 +907,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPSUBPATH@@" value="LexGrid/${prodID}/${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPVERSION@@" value="${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_INFO_URL@@"
-			value="https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexBig_and_LexEVS"/>
+			value="https://wiki.nci.nih.gov/display/LexEVS/LexEVS"/>
 		<!-- Create the izPack installer -->
 		<izPack input="${basedir}/izpack-install.xml"
 			output="${out.file}"
