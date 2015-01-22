@@ -43,9 +43,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.lexevs.cts2.LexEvsCTS2Impl;
-import org.lexevs.cts2.author.CodeSystemAuthoringOperation;
-import org.lexevs.cts2.core.update.RevisionInfo;
+//import org.lexevs.cts2.LexEvsCTS2Impl;
+//import org.lexevs.cts2.author.CodeSystemAuthoringOperation;
+//import org.lexevs.cts2.core.update.RevisionInfo;
 import org.lexevs.dao.database.utility.DaoUtility;
 
 public class EntityEditDialog extends AbstractEditDialog<ResolvedConceptReference> {
@@ -57,8 +57,8 @@ public class EntityEditDialog extends AbstractEditDialog<ResolvedConceptReferenc
     
     private Combo propertyCombo;
 
-    private CodeSystemAuthoringOperation codeSystemAuthoringOperation = 
-        LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+//    private CodeSystemAuthoringOperation codeSystemAuthoringOperation = 
+//        LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
     
     public EntityEditDialog(
             LB_GUI lbGui,
@@ -165,44 +165,44 @@ public class EntityEditDialog extends AbstractEditDialog<ResolvedConceptReferenc
         throw new RuntimeException("No Property found with Prop Id: " + propId);
     }
 
-    @Override
-    protected ResolvedConceptReference updateItem() {
-        Entity entity = resolvedConceptReference.getEntity();
-        
-        entity = (Entity) SerializationUtils.clone(entity);
-        entity.setPresentation(new Presentation[0]);
-        entity.setComment(new Comment[0]);
-        entity.setDefinition(new Definition[0]);
-        entity.setProperty(new Property[0]);
-
-        String entityDescriptionText = super.getTextBoxContent(ENTITY_DESCRIPTION_KEY);
-        boolean isAnonymous = super.getCheckBoxContent(IS_ANONYMOUS_KEY);
-        boolean isDefined = super.getCheckBoxContent(IS_DEFINED_KEY);
-
-        entity.getEntityDescription().setContent(entityDescriptionText);
-        
-        entity.setIsDefined(isAnonymous);
-        entity.setIsAnonymous(isDefined);
-
-        try {
-            codeSystemAuthoringOperation.updateConcept(
-                    resolvedConceptReference.getCodingSchemeURI(), 
-                    resolvedConceptReference.getCodingSchemeVersion(), 
-                    entity, 
-                    this.buildRevisionInfo());
-          
-            org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = this.getLbGui().getLbs().getCodingSchemeConcepts(
-                    resolvedConceptReference.getCodingSchemeURI(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(resolvedConceptReference.getCodingSchemeVersion()));
-
-            ConceptReferenceList list = new ConceptReferenceList();
-            list.addConceptReference(resolvedConceptReference);
-
-            return cns.restrictToCodes(list).resolve(null, null, null).next();
-        } catch (LBException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    protected ResolvedConceptReference updateItem() {
+//        Entity entity = resolvedConceptReference.getEntity();
+//        
+//        entity = (Entity) SerializationUtils.clone(entity);
+//        entity.setPresentation(new Presentation[0]);
+//        entity.setComment(new Comment[0]);
+//        entity.setDefinition(new Definition[0]);
+//        entity.setProperty(new Property[0]);
+//
+//        String entityDescriptionText = super.getTextBoxContent(ENTITY_DESCRIPTION_KEY);
+//        boolean isAnonymous = super.getCheckBoxContent(IS_ANONYMOUS_KEY);
+//        boolean isDefined = super.getCheckBoxContent(IS_DEFINED_KEY);
+//
+//        entity.getEntityDescription().setContent(entityDescriptionText);
+//        
+//        entity.setIsDefined(isAnonymous);
+//        entity.setIsAnonymous(isDefined);
+//
+//        try {
+//            codeSystemAuthoringOperation.updateConcept(
+//                    resolvedConceptReference.getCodingSchemeURI(), 
+//                    resolvedConceptReference.getCodingSchemeVersion(), 
+//                    entity, 
+//                    this.buildRevisionInfo());
+//          
+//            org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = this.getLbGui().getLbs().getCodingSchemeConcepts(
+//                    resolvedConceptReference.getCodingSchemeURI(), 
+//                    Constructors.createCodingSchemeVersionOrTagFromVersion(resolvedConceptReference.getCodingSchemeVersion()));
+//
+//            ConceptReferenceList list = new ConceptReferenceList();
+//            list.addConceptReference(resolvedConceptReference);
+//
+//            return cns.restrictToCodes(list).resolve(null, null, null).next();
+//        } catch (LBException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Override
     public void onItemUpdate(ResolvedConceptReference item) {

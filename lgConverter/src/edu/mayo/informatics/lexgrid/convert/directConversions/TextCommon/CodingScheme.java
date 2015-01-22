@@ -19,7 +19,9 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.TextCommon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Source;
@@ -91,27 +93,26 @@ public class CodingScheme {
 
                 // add presentations to entity
                 // if both name & desc exist, desc is prefered. otherwise use name
-                Presentation p = new Presentation();
-
-                p.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
-                p.setPropertyName("textPresentation");
-
                 EntityDescription enDesc = new EntityDescription();
-                Text presentationText = new Text();
-                if (c.description != null) {
-                    presentationText.setContent(c.description);
-                    enDesc.setContent(c.description);
 
-                } else if (c.name != null) {
-                    presentationText.setContent(c.name);
-                    enDesc.setContent(c.name);
-                } else {
-                    presentationText.setContent(c.code);
-                    enDesc.setContent(c.code);
+                Presentation preferred = null;
+                List<Presentation> alternates = new ArrayList<Presentation>();
+                for(String description : Arrays.asList(c.description,c.name,c.code)){
+                    if(description != null){
+                        if(preferred == null){
+                            preferred = createPresentation(description, true);
+                            enDesc.setContent(description);
+                        } else {
+                            alternates.add(createPresentation(description, false));
+                        }
+                    }
                 }
-                p.setIsPreferred(true);
-                p.setValue(presentationText);
-                e.addPresentation(p);
+
+                e.addPresentation(preferred);
+                for(Presentation alternate : alternates){
+                    e.addPresentation(alternate);
+                }
+               
                 e.setEntityDescription(enDesc);
 
                 cs.getEntities().addEntity(e);
@@ -145,5 +146,20 @@ public class CodingScheme {
         cs.addRelations(relations);
 
         return cs;
+    }
+    
+    private static Presentation createPresentation(String text, boolean perferred){
+        Presentation p = new Presentation();
+
+        p.setPropertyType(SQLTableConstants.TBLCOLVAL_PRESENTATION);
+        p.setPropertyName("textPresentation");
+        p.setIsPreferred(perferred);
+        
+        Text presentationText = new Text();
+        presentationText.setContent(text);
+        
+        p.setValue(presentationText);
+        
+        return p;
     }
 }

@@ -51,7 +51,7 @@ public class MysqlTableBasedBigIntKeyIncrementer
 
 	/** The create sequence table sql. */
 	private String createSequenceTableSql = 
-			"create table @SEQUENCE_TABLE_NAME_PLACEHOLDER@ (" + COLUMN_NAME + " int not null) type=MYISAM; " +
+			"create table @SEQUENCE_TABLE_NAME_PLACEHOLDER@ (" + COLUMN_NAME + " int not null) engine=MYISAM; " +
 			"insert into @SEQUENCE_TABLE_NAME_PLACEHOLDER@ values(0)";
 	
 	/** The drop sequence table sql. */

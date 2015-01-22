@@ -731,15 +731,13 @@ public class VSDServiceHelper {
 		String codingSchemeName = StringUtils.isEmpty(vsd
 				.getValueSetDefinitionName()) ? codingSchemeUri : vsd
 				.getValueSetDefinitionName();
-		if (StringUtils.isNotEmpty(codingSchemeName) && codingSchemeName.length() > 50) {
-			codingSchemeName= codingSchemeName.substring(0, 49);
-		}
+
 
 		CodingScheme cs = null;
 
 		cs = new CodingScheme();
 
-		cs.setCodingSchemeName(codingSchemeName);
+
 		cs.setCodingSchemeURI(codingSchemeUri);
 		cs.setRepresentsVersion(codingSchemeVersion);
 		if (vsd.getEffectiveDate() != null)
@@ -748,6 +746,7 @@ public class VSDServiceHelper {
 			cs.setExpirationDate(vsd.getExpirationDate());
 		cs.setEntryState(vsd.getEntryState());
 		cs.setFormalName(codingSchemeName);
+		cs.setCodingSchemeName(truncateDefNameforCodingSchemeName(codingSchemeName));
 		cs.setIsActive(vsd.getIsActive());
 		cs.setMappings(vsd.getMappings());
 		cs.setOwner(vsd.getOwner());
@@ -789,6 +788,12 @@ public class VSDServiceHelper {
 				messager);
 	}
 
+	private String truncateDefNameforCodingSchemeName(String name){
+		if (StringUtils.isNotEmpty(name) && name.length() > 50) {
+			name = name.substring(0, 49);
+		}
+		return name;
+	}
 	private PropertyQualifier createPropertyQualifier(String name,  String value){
 		PropertyQualifier pq = new PropertyQualifier();
 		pq.setPropertyQualifierName(name);

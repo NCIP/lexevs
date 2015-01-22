@@ -112,7 +112,18 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 			}
 		}
 	}
-
+	
+	@Test
+	public void testCorrectTruncationForFormalNameJIRA_594() throws URISyntaxException {
+		URI uri = new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName");
+		CodingScheme scheme = service.getResolvedValueSetForValueSetURI(uri);
+		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
+			if (prop.getPropertyName().equals("formalName")) {
+				assertTrue(scheme.getFormalName().length() > 50);
+				
+			}
+		}
+	}
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
 		for (PropertyQualifier pq : prop.getPropertyQualifier()) {
 			if (pq.getPropertyQualifierName().equals(qualifierName)) {

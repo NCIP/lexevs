@@ -1,5 +1,5 @@
 # Loads an OWL file. You can provide a manifest file to configure coding scheme
-# meta data.
+# meta data. 
 #
 # Options:
 #   -in,--input <uri> URI or path specifying location of the source file
@@ -17,4 +17,4 @@
 # Example: LoadOWL -in "file:///path/to/somefile.owl" -a
 #          LoadOWL -in "file:///path/to/somefile.owl" -v 0
 #
-java -Xmx3000m -XX:MaxPermSize=256M -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadOWL $@
+java -Xmx3000m -XX:MaxPermSize=256M -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadOWL $@

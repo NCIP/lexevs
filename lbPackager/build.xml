@@ -65,7 +65,6 @@ You may obtain a copy of the License at
 		<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>
 		<property name="lbImpl.dir" location="../lbImpl"/>
 		<property name="lbGui.dir" location="../lbGUI"/>	
-		<property name="cts2.dir" location="../cts2Impl"/>	
 		<property name="lbTest" value="../lbTest" />
 		
 		<property name="libs" value="${lgSharedLibs.dir}"/> <!-- shared libs -->
@@ -549,22 +548,6 @@ You may obtain a copy of the License at
 		</copy>
 	</target>
 	
-	<target name="cts2" depends="lbImpl,cts2-model" description="packages the LexEVS CTS2 Implementation">
-		<antcall target="common-project-build">
-   			<param name="project" value="cts2Impl"/>
-			<param name="module" value="cts2-impl"/>
-  		</antcall>
-	</target>
-	
-	<target name="cts2-model" description="packages the LexEVS CTS2 Model Implementation">
-		<!-- Skip this for now - perhaps remove it
-		<antcall target="common-project-build">
-   			<param name="project" value="cts2-model"/>
-			<param name="module" value="cts2-model"/>
-  		</antcall>
-  		-->
-	</target>
-
 	<target name="lbExamples" depends="lbImpl,lbAdmin" description="packages LexBIG example programs">
 		<antcall target="common-project-build">
    			<param name="project" value="lbExamples"/>
@@ -653,8 +636,8 @@ pause
 		<echo file="${pkg-gui}/Linux-lbGUI.sh">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
-		<echo file="${pkg-gui}/OSX-lbGUI.command">
-java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+		<echo file="${pkg-gui}/OSX-lbGUI.sh">
+java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbGUI.sh">
 java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
@@ -671,7 +654,7 @@ pause
 		<echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
-		<echo file="${pkg-gui}/OSX-lbGUI-browser.command">
+		<echo file="${pkg-gui}/OSX-lbGUI-browser.sh">
 java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-browser-lbGUI.sh">
@@ -680,14 +663,14 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		
 		<!-- Start Value Sets GUI scripts-->
 		<echo file="${pkg-gui}/Windows-lbVSGUI.bat">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI.sh">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
-				<echo file="${pkg-gui}/OSX-lbVSGUI.command">
-		java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+				<echo file="${pkg-gui}/OSX-lbVSGUI.sh">
+java  -Xmx3000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 		<echo file="${pkg-gui}/Windows_64-lbVSGUI.bat">
 java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
@@ -698,21 +681,18 @@ java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/
 pause
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbVSGUI.sh">
-		java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 				<!--create the start scripts-->
 				<echo file="${pkg-gui}/Windows-lbVSGUI-browser.bat">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI-browser.sh">
-		java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
-				</echo>
-				<echo file="${pkg-gui}/OSX-lbVSGUI-browser.command">
-		java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 				<echo file="${pkg-gui}/Linux_64-browser-lbVSGUI.sh">
-		java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 		<!-- End Value Sets GUI scripts -->
 		<fixcrlf srcdir="${pkg-gui}/" eol="lf" includes="*.command" />
@@ -769,7 +749,7 @@ pause
 		lexevs-dao, lgConverter, lexrdf, lbImpl, lbAdmin, 
 		Indexer, lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
-		umls-loader, meta-loader, rxnorm-loader, cts2-model, cts2, lbGUI, lbTest">
+		umls-loader, meta-loader, rxnorm-loader, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
@@ -917,36 +897,7 @@ pause
 			</sourcepath>
 		</javadoc>
 	</target>
-	
-	<!-- ydoc javadoc -->
-	<!-- This task is automatically used if the ydoc license is detected. -->
-	<target name="javadocydoc" depends="lexbig.jar" if="ydoc.present">
-        <property name="ps" value="${path.separator}"/>
-		<property name="theClasspath" refid="classpath" />
-        <javadoc windowtitle="LexGrid Vocabulary Services for caBIG (LexBIG)"
-            source="1.6"      
-            classpath="${theClasspath}"
-            destdir="${pkg-doc}/javadoc"
-        	sourcepath="${temp.doc}"
-            additionalparam="-breakiterator">
-			<package name="*" />
-            <doclet
-                name="ydoc.doclets.YStandard"
-                path="../ydoc/lib/ydoc.jar${ps}../ydoc/lib/class2svg.jar${ps}../ydoc/resources">
-                <param name="-author"/>
-                <param name="-generic"/>
-                <param name="-umlautogen"/>
-            	<param name="-footer" value = "Copyright: (c) 2004-2006 Mayo Foundation for Medical Education and Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the triple-shield Mayo logo are trademarks and service marks of MFMER."/>
-                <param name="-tag" value="y.precondition"/>
-                <param name="-tag" value="y.postcondition"/>
-                <param name="-tag" value="y.complexity"/>
-                <param name="-tag" value="param"/>
-                <param name="-tag" value="return"/>
-                <param name="-tag" value="see"/>
-                <param name="-tag" value="y.uml"/>
-            </doclet>
-        </javadoc>
-    </target>
+
 	
  <!-- depends="lexbig.jar, javadoc" -->
 	<target name="pack"  description="generate the jar file" >
@@ -1092,7 +1043,7 @@ pause
     </target>
 
 	<target name="build-lexbig" depends="
-		build-lexbig-jar, javadoc, javadocydoc, pack"/>
+		build-lexbig-jar, javadoc, pack"/>
 	
 	<target name="deploy" description="build and deploy externally">
 		<fail message="Property &quot;informatics.password&quot; needs to be set to deploy.&#xa;

@@ -49,6 +49,7 @@ import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.mapping.MappingTestConstants;
 import org.LexGrid.LexBIG.mapping.MappingTestUtility;
@@ -85,7 +86,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         loader.load(new File("resources/testData/Automobiles.xml").toURI(), true, true);
 
         while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         }
 
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
@@ -105,7 +106,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     	loader.load(new File("resources/testData/testExtension.xml").toURI(), true, true);
 
     	while (loader.getStatus().getEndTime() == null) {
-    		Thread.sleep(500);
+    		Thread.sleep(1000);
     	}
 
     	assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
@@ -121,7 +122,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     			
     }
 
-    public void testLoadGermanMadeParts() throws LBException {
+    public void testLoadGermanMadeParts() throws LBException, InterruptedException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
@@ -129,6 +130,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         // load non-async - this should block
         loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, false);
 
+    	while (loader.getStatus().getEndTime() == null) {
+    		Thread.sleep(1000);
+    	}
         assertTrue(loader.getStatus().getEndTime() != null);
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
@@ -196,6 +200,26 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
+    public void testLoadLongSourceObo() throws InterruptedException, LBException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
+
+        loader.load(new File("resources/testData/testLoadLongsource.obo").toURI(), null, true, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+        
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "urn:lsid:bioontology.org:test", "UNASSIGNED");
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+
+    }
     public void testLoadOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 

@@ -39,9 +39,22 @@ public class SetupListener extends LoggingBean implements JobExecutionListener{
 	 * @see org.springframework.batch.core.JobExecutionListener#afterJob(org.springframework.batch.core.JobExecution)
 	 */
 	public void afterJob(JobExecution job) {
-		getLogger().info("Load Job ended in state: " + job.getExitStatus()) ;
+		
+	String message = null;
+	message = job.getStatus().name() == "FAILED"? job.getStatus().name() + " " + exitFailedDescription(job): job.getExitStatus().getExitCode();
+  //
+		getLogger().info("Load Job ended in state: " + message ) ;
 	}
-
+	
+	public String exitFailedDescription(JobExecution job){
+		String message =""
+				+ "\n********************************************************************"
+				+ "\n****** FAILED TO Complete LOAD of RRF ******************************"
+				+ "\n****** One or more threads of the batch execution have failed ******"
+				+ "\n****** Please Review Logs for More Information *********************"
+				+ "\n********************************************************************";
+		return message;
+	}
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.JobExecutionListener#beforeJob(org.springframework.batch.core.JobExecution)
 	 */

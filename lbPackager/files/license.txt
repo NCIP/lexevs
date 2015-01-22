@@ -2,9 +2,9 @@ Software User Agreement
 
 12 October, 2010
 
-===============================================================================
+===========================================================================
 Usage of Content 
-===============================================================================
+===========================================================================
 THIS PRODUCTS MAKES AVAILABLE SOFTWARE, DOCUMENTATION, INFORMATION AND/OR OTHER
 MATERIALS (COLLECTIVELY "CONTENT"). USE OF THE CONTENT IS GOVERNED BY THE TERMS
 AND CONDITIONS OF THIS AGREEMENT AND/OR THE TERMS AND CONDITIONS OF LICENSE
@@ -15,15 +15,15 @@ REFERENCED BELOW. IF YOU DO NOT AGREE TO THE TERMS AND CONDITIONS OF THIS
 AGREEMENT AND THE TERMS AND CONDITIONS OF ANY APPLICABLE LICENSE AGREEMENTS OR
 NOTICES INDICATED OR REFERENCED BELOW, THEN YOU MAY NOT USE THE CONTENT.
 
-===============================================================================
+===========================================================================
 Applicable Licenses 
-===============================================================================
+===========================================================================
 
 Unless otherwise noted, content is provided to you under terms and conditions
 of the following agreement: 
 
 Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and
-Research (MFMER).  All rights reserved.  MAYO, MAYO CLINIC, and the
+Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
 triple-shield Mayo logo are trademarks and service marks of MFMER.
 
 Except as contained in the copyright notice above, or as used to
@@ -35,10 +35,10 @@ without prior written authorization of the copyright holder.
 Licensed under the Eclipse Public License, Version 1.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
- 
-              http://www.eclipse.org/legal/epl-v10.html
 
-================================================================================
+http://www.eclipse.org/legal/epl-v10.html
+
+=========================================================================
 
 Content includes redistribution of additional 3rd party software modules, placed
 in the '/runtime-components/extlib' folder of the installation root directory.
@@ -49,11 +49,11 @@ Modules include, but are not limited to, those listed below.
 IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO
 USE OF THE CONTENT. 
 
-================================================================================
+=========================================================================
 Included materials: 
-================================================================================
+=========================================================================
 This product incorporates code and other materials created with NCI funding as
-part of the LexGrid Vocabulary Services for caBIG™ (LexEVS) project, with
+part of the LexGrid Vocabulary Services for caBIG (LexEVS) project, with
 additional funding provided by the National Center for Biomedical Ontology
 (NCBO) as part of the LexGrid Vocabulary Services for NCBO (LexBIO) project.
 
@@ -66,7 +66,7 @@ readable source code form and machine readable, binary, object code form.
 lbRuntime
 ========================================
 The LexEVS runtime code, including all necessary code and dependencies required
-for direct Java-to-Java invocation of the LexEVS API.  This consolidates LexEVS
+for direct Java-to-Java invocation of the LexEVS API. This consolidates LexEVS
 code and 3rd party modules in order to simplify configuration for program
 execution.
 
@@ -98,8 +98,8 @@ ARQ is a query engine for Jena that supports the SPARQL RDF Query language.
 ========================================
 caGrid
 ========================================
-Grid infrastructure to support the caBIG™ community.  Contains tools for
-creating and deploying caBIG™ compliant grid services.
+Grid infrastructure to support the caBIG community.  Contains tools for
+creating and deploying caBIG compliant grid services.
 
 ========================================
 castor
@@ -237,7 +237,7 @@ Used for graph representations in the LexEVS GUI.
 protege, protege-owl
 ========================================
 This product incorporates (or builds upon) [part of] the license open source
-Protégé system. 
+Protg system. 
 
 ========================================
 saxpath
@@ -249,11 +249,11 @@ xerces
 ========================================
 XML parsing services
 
-================================================================================
-================================================================================
+========================================================================
+========================================================================
 Additional License Terms and Conditions
-================================================================================
-================================================================================
+========================================================================
+========================================================================
 
 ========================================
 caGrid
@@ -396,59 +396,59 @@ commons-cli
 commons-discovery
 ========================================
 
- * ====================================================================
- *
+* ===================================================================
+*
  *                     The Apache Software License, Version 1.1
- *
- * Copyright (c) 1999-2001 The Apache Software Foundation.  All rights
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
- *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowlegement may appear in the software itself,
- *    if and wherever such third-party acknowlegements normally appear.
- *
- * 4. The names "The Jakarta Project", "Commons", and "Apache Software
- *    Foundation" must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
- *    permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache"
- *    nor may "Apache" appear in their names without prior written
- *    permission of the Apache Group.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation.  For more
- * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
+*
+* Copyright (c) 1999-2001 The Apache Software Foundation. All rights
+* reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions
+* are met:
+*
+* 1. Redistributions of source code must retain the above copyright
+*    notice, this list of conditions and the following disclaimer.
+*
+* 2. Redistributions in binary form must reproduce the above copyright
+* notice, this list of conditions and the following disclaimer in
+* the documentation and/or other materials provided with the
+* distribution.
+*
+* 3. The end-user documentation included with the redistribution, if
+* any, must include the following acknowlegement:
+* "This product includes software developed by the
+* Apache Software Foundation (http://www.apache.org/)."
+* Alternately, this acknowlegement may appear in the software itself,
+* if and wherever such third-party acknowlegements normally appear.
+*
+* 4. The names "The Jakarta Project", "Commons", and "Apache Software
+* Foundation" must not be used to endorse or promote products derived
+* from this software without prior written permission. For written
+* permission, please contact apache@apache.org.
+*
+* 5. Products derived from this software may not be called "Apache"
+* nor may "Apache" appear in their names without prior written
+* permission of the Apache Group.
+*
+* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+* SUCH DAMAGE.
+* ====================================================================
+*
+* This software consists of voluntary contributions made by many
+* individuals on behalf of the Apache Software Foundation. For more
+* information on the Apache Software Foundation, please see
+* <http://www.apache.org/>.
 
 ========================================
 commons-codec
@@ -620,16 +620,16 @@ CopyOnWriteArrayList and ConcurrentReaderHashMap classes are adapted from
 Sun JDK source code. These are copyright of Sun Microsystems, Inc, and are
 used with their kind permission, as described in the following license:
 
-===============================================================================
+===========================================================================
 
 TECHNOLOGY LICENSE FROM SUN MICROSYSTEMS, INC.
 TO DOUG LEA
 Whereas Doug Lea desires to utlized certain Java Software technologies in the
-util.concurrent technology; and Whereas Sun Microsystems, Inc. (“Sun”) desires
+util.concurrent technology; and Whereas Sun Microsystems, Inc. (Sun) desires
 that Doug Lea utilize certain Java Software technologies in the util.concurrent
 technology; Therefore the parties agree as follows, effective May 31, 2002:
 
-“Java Software technologies” means
+Java Software technologies means
 classes/java/util/ArrayList.java, and
 classes/java/util/HashMap.java.
 The Java Software technologies are Copyright (c) 1994-2000 Sun Microsystems,
@@ -907,7 +907,7 @@ ini
 ========================================
 Unless otherwise noted, the following copyright statement applies:
 
-© Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development
+ Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development
 Company, LP
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -939,11 +939,11 @@ Jena is built on top of other sub-systems which we gratefully acknowledge:
 details of these systems and their version numbers (see
 http://jena.sourceforge.net/Licenses/index.html)
 
-• Xerces
-• JUnit
-• Jakarta ORO
-• ICU4J
-• util.concurrent from Doug Lea
+ Xerces
+ JUnit
+ Jakarta ORO
+ ICU4J
+ util.concurrent from Doug Lea
 
 ========================================
 junit 
@@ -1316,7 +1316,7 @@ Third Party Content
 The Content includes items that have been sourced from third parties as set out
 below. If you did not receive this Content directly from the Eclipse Foundation,
 the following is provided for informational purposes only, and you should look
-to the Redistributor’s license for terms and conditions of use.
+to the Redistributors license for terms and conditions of use.
 
 OSGi Materials
 
@@ -1347,7 +1347,7 @@ Alliance and its members are not responsible and shall not be held responsible
 in any manner for identifying or failing to identify any or all such third party
 intellectual property rights.
 
-OSGi™ is a trademark, registered trademark, or service mark of The OSGi Alliance
+OSGi is a trademark, registered trademark, or service mark of The OSGi Alliance
 in the US and other countries. Java is a trademark, registered trademark, or
 service mark of Sun Microsystems, Inc. in the US and other countries. All other
 trademarks, registered trademarks, or service marks used in the Content are the

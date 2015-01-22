@@ -127,7 +127,7 @@ public class DisplayCodedNodeSet {
 	private ConceptTreeView primaryTree;
 	private final boolean twoGraphs;
 	private TabFolder tabs;
-	private Button editButton;
+	//private Button editButton;
 
 	/*
 	 * The subsetGraph/Tree are used only in the Coded Node Graph case (ie, not
@@ -300,42 +300,42 @@ public class DisplayCodedNodeSet {
 		showSecondaryRel_button.setSelection(showSecondaryRel_selected);
 		showSecondaryRel_button.addSelectionListener(graphingCheckboxListener);
 		
-		editButton = new Button(graphChoices, SWT.BUTTON1);
-		editButton
-                .setText("Edit Entity");
-		editButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                //
-            }
-
-            public void widgetSelected(SelectionEvent arg0) {
-
-                int index = displayedCodeList_.getSelectionIndex();
-                ResolvedConceptReference rcr = displayedResults_.get(index);
-                try {
-                    EntityEditDialog editDialog =
-                        new EntityEditDialog(lb_gui_, null, false, "Edit Entity", shell_, dialog_, rcr);
-                    editDialog.open();
-                    
-                    editDialog.addItemUpdateListener(new ItemUpdateListener<ResolvedConceptReference>() {
-
-                        public void onItemUpdate(ResolvedConceptReference ref) {
-                            displayConceptDetails(ref);
-                            updateGraphForConceptSelection(ref);
-                            addOrUpdateDisplayedResults(ref, -1, -1, -1, SWT.NONE, -1, -1, true);
-                            editButton.setEnabled(false);
-                        }
-                    });
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-		    
-		});
-		
-		editButton.setEnabled(false);
+//		editButton = new Button(graphChoices, SWT.BUTTON1);
+//		editButton
+//                .setText("Edit Entity");
+//		editButton.addSelectionListener(new SelectionListener() {
+//
+//            public void widgetDefaultSelected(SelectionEvent arg0) {
+//                //
+//            }
+//
+//            public void widgetSelected(SelectionEvent arg0) {
+//
+//                int index = displayedCodeList_.getSelectionIndex();
+//                ResolvedConceptReference rcr = displayedResults_.get(index);
+//                try {
+//                    EntityEditDialog editDialog =
+//                        new EntityEditDialog(lb_gui_, null, false, "Edit Entity", shell_, dialog_, rcr);
+//                    editDialog.open();
+//                    
+//                    editDialog.addItemUpdateListener(new ItemUpdateListener<ResolvedConceptReference>() {
+//
+//                        public void onItemUpdate(ResolvedConceptReference ref) {
+//                            displayConceptDetails(ref);
+//                            updateGraphForConceptSelection(ref);
+//                            addOrUpdateDisplayedResults(ref, -1, -1, -1, SWT.NONE, -1, -1, true);
+//                            editButton.setEnabled(false);
+//                        }
+//                    });
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//            }
+//		    
+//		});
+//		
+//		editButton.setEnabled(false);
 
 		// Add graph viewer ...
 		// Graph graph = new Graph(true);
@@ -492,10 +492,10 @@ public class DisplayCodedNodeSet {
 
 		public void widgetSelected(SelectionEvent e) {
 			int index = displayedCodeList_.getSelectionIndex();
-			if (index == -1) {
-			    editButton.setEnabled(false);
-				return;
-			}
+//			if (index == -1) {
+//			    editButton.setEnabled(false);
+//				return;
+//			}
 			if (index == displayedResults_.size()) {
 				if (displayedCodeList_.getItem(index).equals(FETCHING_MORE)) {
 					// in the process of fetching more... do nothing.
@@ -510,7 +510,7 @@ public class DisplayCodedNodeSet {
 
 			} else {
 			    if(lb_gui_.isAdminEnabled()) {
-			        editButton.setEnabled(true);
+//			        editButton.setEnabled(true);
 			    }
 			    
 				ResolvedConceptReference rcr = displayedResults_.get(index);

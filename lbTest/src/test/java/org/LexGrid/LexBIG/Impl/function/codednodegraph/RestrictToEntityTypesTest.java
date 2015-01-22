@@ -70,7 +70,7 @@ public class RestrictToEntityTypesTest extends BaseCodedNodeGraphTest {
         assertEquals(1, 
                 rcr.length);
         
-        assertNull(rcr[0].getSourceOf());
+        assertTrue(rcr[0].getSourceOf().getAssociation().length < 1);
     }
     
     public void testRestrictToEntityTypeForMappingScheme() throws Exception {

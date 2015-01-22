@@ -453,10 +453,11 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	    
 	    uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Ford", new URI("Automobiles"), incsvrl, null);
 	    
-	    assertTrue(uris.size() == 4);
+	    assertTrue(uris.size() == 5);
 	    for (String uri : uris)
 	    {
 	    	assertTrue(uri.equals("SRITEST:AUTO:AllDomesticButGM") ||
+	    			uri.equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName") ||
 	    			uri.equals("SRITEST:AUTO:DomesticAutoMakers") ||
 	    			uri.equals("SRITEST:AUTO:EveryThing") ||
 	    			uri.equals("SRITEST:AUTO:Ford"));
@@ -465,10 +466,11 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	    incsvrl.setAbsoluteCodingSchemeVersionReference(0, Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1"));
 	    uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Focus", new URI("Automobiles"), incsvrl, null);
 	    
-	    assertTrue(uris.size() == 6);
+	    assertTrue(uris.size() == 7);
 	    for (String uri : uris)
 	    {
 	    	assertTrue(uri.equals("SRITEST:AUTO:AllDomesticButGM") ||
+	    			uri.equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName") ||
 	    			uri.equals("SRITEST:AUTO:DomasticLeafOnly") ||
 	    			uri.equals("SRITEST:AUTO:DomesticAutoMakers") ||
 	    			uri.equals("SRITEST:AUTO:EveryThing") ||
@@ -478,10 +480,11 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	    
 	    uris = getValueSetDefinitionService().listValueSetsWithEntityCode("Ford", new URI("Automobiles"), incsvrl, null);
 	    
-	    assertTrue(uris.size() == 4);
+	    assertTrue(uris.size() == 5);
 	    for (String uri : uris)
 	    {
 	    	assertTrue(uri.equals("SRITEST:AUTO:AllDomesticButGM") ||
+	    			uri.equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName") ||
 	    			uri.equals("SRITEST:AUTO:DomesticAutoMakers") ||
 	    			uri.equals("SRITEST:AUTO:EveryThing") ||
 	    			uri.equals("SRITEST:AUTO:Ford"));

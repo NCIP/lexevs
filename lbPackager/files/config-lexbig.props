@@ -115,7 +115,7 @@ CURRENT_PERSISTENCE_SCHEME=2.0
 #
 # 'true' - all ontologies in one common set of tables
 # 'false' - each ontology in a seperate set of tables
-SINGLE_TABLE_MODE=true
+SINGLE_TABLE_MODE=false
 #
 # JDBC Connection URL string used to connect to the database
 # !!!IMPORTANT!!! 

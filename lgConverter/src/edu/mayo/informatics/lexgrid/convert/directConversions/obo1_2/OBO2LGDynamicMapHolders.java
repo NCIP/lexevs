@@ -334,6 +334,12 @@ public class OBO2LGDynamicMapHolders {
                     }
 
                     Source s = new Source();
+                    if(srcVal.length() > 250){
+                        messages_.warn("Property name: " + (prop.getPropertyName() == null?"MISSING": prop.getPropertyName()) +
+                                " value: " + (prop.getValue().getContent() ==  null?"MISSING": prop.getValue().getContent())  + 
+                                " source too long for storage: " + srcVal + " Truncating to 250 characters");
+                        srcVal = srcVal.substring(0,237) + "(TRUNCATED!)";
+                    }
                     s.setContent(srcVal);
                     if (StringUtils.isNotBlank(dbxref.getSubrefAndDescription())) {
                       s.setSubRef(dbxref.getSubrefAndDescription());

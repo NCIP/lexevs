@@ -2115,7 +2115,10 @@ public class ProtegeOwl2LG {
             String prefix = i.next().toString();
             if (StringUtils.isNotEmpty(prefix)) {
                 //lgSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null, false);
-                lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, null,
+                //Create an equivalent Coding Scheme first
+                lgSupportedMappings_.registerSupportedCodingScheme(prefix, nm.getNamespaceForPrefix(prefix), prefix, false, false);
+                //Then follow up by using the prefix as the equivalent coding scheme attribute for the namespace
+                lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, prefix,
                         false);
             }
         }

@@ -24,7 +24,6 @@ import java.net.URI;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.Text_Loader;
@@ -61,7 +60,7 @@ public class TextLoaderImpl extends BaseLoader implements Text_Loader {
 
     public void load(URI source, Character delimiter, boolean readDoublesAsTriples, boolean stopOnErrors, boolean async)
             throws LBException {
-        this.getOptions().getStringOption(DELIMITER_OPTION).setOptionValue(String.valueOf(delimiter));
+        this.getOptions().getStringOption(DELIMITER_OPTION).setOptionValue(delimiter == null ? null : String.valueOf(delimiter));
         this.getOptions().getBooleanOption(FORCE_FORMAT_B_OPTION).setOptionValue(readDoublesAsTriples);
         this.getOptions().getBooleanOption(FAIL_ON_ERROR_OPTION).setOptionValue(stopOnErrors);
         this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(async);

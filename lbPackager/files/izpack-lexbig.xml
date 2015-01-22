@@ -218,10 +218,10 @@ You may obtain a copy of the License at
         <pack name="Graphical Interface Platform Support - OSX" preselected="yes" required="no">
             <description>Installs the graphical interface for OSX.</description>
             <fileset dir="antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
-                <include name="*.command"/>
+                <include name="*.sh"/>
                 <include name="OSX/*"/>
             </fileset>
-            <executable targetfile="$INSTALL_PATH/gui/OSX-lbGUI.command" stage="never" keep="true"></executable>
+            <executable targetfile="$INSTALL_PATH/gui/OSX-lbGUI.sh" stage="never" keep="true"></executable>
         </pack>
     </packs>
 </installation>

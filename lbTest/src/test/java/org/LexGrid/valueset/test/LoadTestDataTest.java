@@ -80,7 +80,7 @@ public class LoadTestDataTest extends TestCase {
         loader.load(new File(fileName).toURI(), true, false);
         
         while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         }
         assertTrue(loader.getStatus().getEndTime() != null);
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
@@ -89,6 +89,8 @@ public class LoadTestDataTest extends TestCase {
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], tag);
+        
+        Thread.sleep(1000);
 	}
 
 	/**
@@ -105,7 +107,7 @@ public class LoadTestDataTest extends TestCase {
 				null, true, true);
 
 		while (loader.getStatus().getEndTime() == null) {
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 		}
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
@@ -114,6 +116,8 @@ public class LoadTestDataTest extends TestCase {
 
 		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
 				LBConstants.KnownTags.PRODUCTION.toString());
+		
+		Thread.sleep(1000);
 	}
 	
 	/**
@@ -159,7 +163,25 @@ public class LoadTestDataTest extends TestCase {
 		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, null);
 
 		while (loader.getStatus().getEndTime() == null) {
-			Thread.sleep(2000);
+			Thread.sleep(3000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+	}
+	
+	@Test
+	public void testLoadValueSetDefinitionForLongName() throws Exception {
+				
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName"), null, null, null);
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(3000);
 		}
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());

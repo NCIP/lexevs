@@ -70,33 +70,33 @@ public class CodeSystemDetails {
 				| SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
 		results_.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		Button editButton = new Button(shell_, SWT.BUTTON1);
-        editButton
-                .setText("Edit Coding Scheme");
-        editButton.addSelectionListener(new SelectionListener() {
+//		Button editButton = new Button(shell_, SWT.BUTTON1);
+//        editButton
+//                .setText("Edit Coding Scheme");
+//        editButton.addSelectionListener(new SelectionListener() {
+//
+//            public void widgetDefaultSelected(SelectionEvent arg0) {
+//                //
+//            }
 
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                //
-            }
-
-            public void widgetSelected(SelectionEvent arg0) {
-                CodingSchemeEditDialog editDialog;
-                try {
-                    editDialog = new CodingSchemeEditDialog(lbGui, null, false, "Edit CodingScheme", shell_, codeSystemDetails, new DialogHandler(shell_));
-                } catch (Exception e) {
-                   throw new RuntimeException(e);
-                }
-                
-                editDialog.addItemUpdateListener(new ItemUpdateListener<CodingScheme>() {
-
-                    public void onItemUpdate(CodingScheme item) {
-                        results_.setText(ObjectToString.toString(item));
-                        lbGui.refreshCodingSchemeList();
-                    }
-                    
-                });
-                editDialog.open();
-            }  
-        });
+//            public void widgetSelected(SelectionEvent arg0) {
+//                CodingSchemeEditDialog editDialog;
+//                try {
+//                    editDialog = new CodingSchemeEditDialog(lbGui, null, false, "Edit CodingScheme", shell_, codeSystemDetails, new DialogHandler(shell_));
+//                } catch (Exception e) {
+//                   throw new RuntimeException(e);
+//                }
+//                
+//                editDialog.addItemUpdateListener(new ItemUpdateListener<CodingScheme>() {
+//
+//                    public void onItemUpdate(CodingScheme item) {
+//                        results_.setText(ObjectToString.toString(item));
+//                        lbGui.refreshCodingSchemeList();
+//                    }
+//                    
+//                });
+//                editDialog.open();
+//            }  
+//        });
 	}
 }

@@ -40,7 +40,7 @@ import edu.stanford.smi.protege.model.Project;
 
 /**
  * Validates and/or loads RadLex content, provided by the
- * Radiological Society of North America in ProtÃ©gÃ© frame format.
+ * Radiological Society of North America in Protégé frame format.
  * 
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @version subversion $Revision: $ checked in on $Date: $

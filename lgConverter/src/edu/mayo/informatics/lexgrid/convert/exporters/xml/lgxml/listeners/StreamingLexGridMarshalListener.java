@@ -125,12 +125,18 @@ public class StreamingLexGridMarshalListener implements MarshalListener {
                             null, -1);
                     Iterator<ResolvedConceptReference> blockIterator;
                     ResolvedConceptReference curConRef;
-                    if (rcrl != null && rcrl.getResolvedConceptReferenceCount() > 0) {
+                    if (rcrl != null) {
                         blockIterator = (Iterator<ResolvedConceptReference>) rcrl.iterateResolvedConceptReference();
                         while (blockIterator.hasNext()) {
                             curConRef = (ResolvedConceptReference) blockIterator.next();
+                         //   long targetStart = System.nanoTime();
                             processTargets(curConRef);
+                         //   long targetEnd = System.nanoTime();
+                        //    System.out.println("process targets time: " +  (targetEnd - targetStart));
+                         //   long assocStart = System.nanoTime();
                             processAssociationList(curConRef.getSourceOf());
+                          //  long assocEnd = System.nanoTime();
+                          //  System.out.println("process assoc time: " +  (assocEnd - assocStart));
                         }
                     }
                     messager.info("association processing complete. marshalled " + this.associationCount

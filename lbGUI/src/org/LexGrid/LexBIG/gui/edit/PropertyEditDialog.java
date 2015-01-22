@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.lexevs.cts2.LexEvsCTS2Impl;
-import org.lexevs.cts2.author.CodeSystemAuthoringOperation;
+//import org.lexevs.cts2.LexEvsCTS2Impl;
+//import org.lexevs.cts2.author.CodeSystemAuthoringOperation;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -63,8 +63,8 @@ public class PropertyEditDialog extends AbstractEditDialog<ResolvedConceptRefere
     private static String MATCH_IF_NO_CONTEXT_KEY = "matchIfNoContextKey";
     private static String IS_PREFERRED_KEY = "isPreferredKey";
     
-    private CodeSystemAuthoringOperation codeSystemAuthoringOperation = 
-        LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
+//    private CodeSystemAuthoringOperation codeSystemAuthoringOperation = 
+//        LexEvsCTS2Impl.defaultInstance().getAuthoringOperation().getCodeSystemAuthoringOperation();
     
     public PropertyEditDialog(
             LB_GUI lbGui,
@@ -157,55 +157,55 @@ public class PropertyEditDialog extends AbstractEditDialog<ResolvedConceptRefere
         }
     }
 
-    @Override
-    protected ResolvedConceptReference updateItem() {
-        property.getValue().setContent(super.getTextBoxContent(PROPERTY_TEXT_KEY));
-        property.getValue().setDataType(super.getTextBoxContent(PROPERTY_FORMAT_KEY));
-        property.setPropertyName(super.getTextBoxContent(PROPERTY_NAME_KEY));
-        
-        PropertyType propType = 
-                DaoUtility.propertyStringToTypeMap.get(
-                        propertyType.getItem(
-                                propertyType.getSelectionIndex()));
-        
-        property.setPropertyType(DaoUtility.propertyTypeToStringMap.get(propType));
-        
-        if( !(property instanceof Presentation) && propType.equals(PropertyType.PRESENTATION)) {
-            Presentation pres = new Presentation();
-            try {
-                BeanUtils.copyProperties(property, pres);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } 
-            property = pres;
-        }
-        
-        if(property instanceof Presentation) {
-            ((Presentation)property).setIsPreferred(super.getCheckBoxContent(IS_PREFERRED_KEY));
-            ((Presentation)property).setMatchIfNoContext(super.getCheckBoxContent(MATCH_IF_NO_CONTEXT_KEY));
-        }
-
-        try {
-            
-            codeSystemAuthoringOperation.updateConceptProperty(
-                    reference.getCodingSchemeURI(), 
-                    reference.getCodingSchemeVersion(), 
-                    reference.getEntity().getEntityCode(),
-                    reference.getEntity().getEntityCodeNamespace(),
-                    property,
-                    this.buildRevisionInfo());
-
-
-            org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = this.getLbGui().getLbs().getCodingSchemeConcepts(
-                    reference.getCodingSchemeURI(), 
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(reference.getCodingSchemeVersion()));
-
-            ConceptReferenceList list = new ConceptReferenceList();
-            list.addConceptReference(reference);
-
-            return cns.restrictToCodes(list).resolve(null, null, null).next();
-        } catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    protected ResolvedConceptReference updateItem() {
+//        property.getValue().setContent(super.getTextBoxContent(PROPERTY_TEXT_KEY));
+//        property.getValue().setDataType(super.getTextBoxContent(PROPERTY_FORMAT_KEY));
+//        property.setPropertyName(super.getTextBoxContent(PROPERTY_NAME_KEY));
+//        
+//        PropertyType propType = 
+//                DaoUtility.propertyStringToTypeMap.get(
+//                        propertyType.getItem(
+//                                propertyType.getSelectionIndex()));
+//        
+//        property.setPropertyType(DaoUtility.propertyTypeToStringMap.get(propType));
+//        
+//        if( !(property instanceof Presentation) && propType.equals(PropertyType.PRESENTATION)) {
+//            Presentation pres = new Presentation();
+//            try {
+//                BeanUtils.copyProperties(property, pres);
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            } 
+//            property = pres;
+//        }
+//        
+//        if(property instanceof Presentation) {
+//            ((Presentation)property).setIsPreferred(super.getCheckBoxContent(IS_PREFERRED_KEY));
+//            ((Presentation)property).setMatchIfNoContext(super.getCheckBoxContent(MATCH_IF_NO_CONTEXT_KEY));
+//        }
+//
+//        try {
+//            
+//            codeSystemAuthoringOperation.updateConceptProperty(
+//                    reference.getCodingSchemeURI(), 
+//                    reference.getCodingSchemeVersion(), 
+//                    reference.getEntity().getEntityCode(),
+//                    reference.getEntity().getEntityCodeNamespace(),
+//                    property,
+//                    this.buildRevisionInfo());
+//
+//
+//            org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = this.getLbGui().getLbs().getCodingSchemeConcepts(
+//                    reference.getCodingSchemeURI(), 
+//                    Constructors.createCodingSchemeVersionOrTagFromVersion(reference.getCodingSchemeVersion()));
+//
+//            ConceptReferenceList list = new ConceptReferenceList();
+//            list.addConceptReference(reference);
+//
+//            return cns.restrictToCodes(list).resolve(null, null, null).next();
+//        } catch(Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

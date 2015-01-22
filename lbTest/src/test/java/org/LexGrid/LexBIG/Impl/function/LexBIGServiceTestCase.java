@@ -55,7 +55,7 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     public final static String AIR_URN = "urn:oid:2.16.840.1.113883.6.110";
     public final static String AIR_VERSION = "1993.bvt";
     public final static String MEDDRA_SCHEME = "MedDRA";
-    public final static String MEDDRA_URN = "http://id.nlm.nih.gov/sab/MDR";
+    public final static String MEDDRA_URN = "urn:oid:2.16.840.1.113883.6.163";
     public final static String MEDDRA_VERSION = "16.0";
     protected final static String AMINOACID_SCHEME = "AminoAcidRegisteredNameFromManifest";
     protected final static String AMINOACID_VERSION = "2005/10/11";
