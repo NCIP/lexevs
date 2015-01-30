@@ -19,7 +19,7 @@
 		<supportedNamespace localId="REX" uri="http://purl.org/obo/owl/REX#" equivalentCodingScheme="npo">REX</supportedNamespace>
 		<supportedNamespace localId="snap" uri="http://www.ifomis.org/bfo/1.1/snap#" equivalentCodingScheme="npo">snap</supportedNamespace>
 		<supportedNamespace localId="span" uri="http://www.ifomis.org/bfo/1.1/span#" equivalentCodingScheme="npo">span</supportedNamespace>
-		<supportedNamespace localId="swrl" uri="http://www.w3.org/2003/11/swrl#" equivalentCodingScheme="swrl">bfo</supportedNamespace>
+		<supportedNamespace localId="swrl" uri="http://www.w3.org/2003/11/swrl#" equivalentCodingScheme="npo">swrl</supportedNamespace>
 		<supportedNamespace localId="swrlb" uri="http://www.w3.org/2003/11/swrlb#" equivalentCodingScheme="npo">swrlb</supportedNamespace>
 		<supportedNamespace localId="UO" uri="http://purl.org/obo/owl/UO#" equivalentCodingScheme="npo">UO</supportedNamespace>
 		<supportedNamespace localId="xsd" uri="http://www.w3.org/2001/XMLSchema#" equivalentCodingScheme="npo">xsd</supportedNamespace>

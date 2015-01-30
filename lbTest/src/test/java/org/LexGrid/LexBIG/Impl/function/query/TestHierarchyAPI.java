@@ -155,8 +155,9 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 hierarchyId = hierarchy;
         }
         String  code= "CL:0000001";
-        
-        AssociationList associations = lbscm.getHierarchyPathToRoot(CELL_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(CELL_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associations.getAssociation().length > 0);
+        associations = lbscm.getHierarchyPathToRoot(CELL_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
 
     }
@@ -182,8 +183,9 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
                 hierarchyId = hierarchy;
         }
         String  code= "B";
-        
-        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associations.getAssociation().length > 0);
+        associations = lbscm.getHierarchyPathToRoot(AUTO_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
 
     }    
@@ -204,11 +206,34 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         }
         String  code= "DeVille";
         
-        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_EXTENSION_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(AUTO_EXTENSION_URN, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
-       
+        associations = lbscm.getHierarchyPathToRoot(AUTO_EXTENSION_URN, csvt, hierarchyId, code, null, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associations.getAssociation().length > 0);
     }    
     
+    public void testGetHierarchyPathToRootFromExtensionWithNamespace() throws InterruptedException, LBException {
+        LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+        LexBIGServiceConvenienceMethods lbscm = (LexBIGServiceConvenienceMethods) lbs
+                .getGenericExtension("LexBIGServiceConvenienceMethods");
+
+        // Iterate through all hierarchies ...
+        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(NPO_SCHEME_MULTI_NAMESPACE_VERSION);
+        String[] hierarchyIDs = lbscm.getHierarchyIDs(NPO_SCHEME_MULTI_NAMESPACE_URL, csvt);
+        String hierarchyId = (hierarchyIDs.length > 0) ? hierarchyIDs[0] : null;
+
+        for (String hierarchy : hierarchyIDs) {
+            if (hierarchy.equalsIgnoreCase("is_a"))
+                hierarchyId = hierarchy;
+        }
+        String  code= "NPO_1607";
+        
+        AssociationList associations = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associations.getAssociation().length > 0);
+        associations = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, "npo", false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associations.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0).getCode().equals("Process"));
+        assertTrue(associations.getAssociation().length > 0);
+    } 
     /**
      * Test getting the next level count for a concept
      * 

@@ -973,6 +973,28 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 assocQuals);
     }
 
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods
+     * #getHierarchyPathToRoot(java.lang.String,
+     * org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag,
+     * java.lang.String, java.lang.String, boolean,
+     * org.LexGrid.LexBIG.Extensions
+     * .Generic.LexBIGServiceConvenienceMethods.HierarchyPathResolveOption,
+     * org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList)
+     */
+    public AssociationList getHierarchyPathToRoot(String codingScheme, CodingSchemeVersionOrTag versionOrTag,
+            String hierarchyID, String conceptCode,  boolean resolveConcepts,
+            HierarchyPathResolveOption pathResolveOption, NameAndValueList assocQuals) throws LBException{
+        
+        return getHierarchyPathToRoot(codingScheme, versionOrTag,
+               hierarchyID, conceptCode, null, resolveConcepts,
+                pathResolveOption, assocQuals);
+    }
+            
     /*
      * (non-Javadoc)
      * 
@@ -1308,6 +1330,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return cng.resolveAsList(ConvenienceMethods.createConceptReference(conceptCode, codingScheme), fwd, !fwd,
                 rDepth, 1, null, null, null, null, -1);
     }
+    
 
     /**
      * Returns a list of associations representing navigable paths between the
@@ -1409,7 +1432,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         int rcDepth = resolveConcepts ? 1 : -1;
         ConceptReference ref = ConvenienceMethods.createConceptReference(conceptCode,
                 codingScheme);
-        ref.setCodeNamespace(namespace);
+//        ref.setCodeNamespace(namespace);
         ResolvedConceptReferenceList rcrl = cng.resolveAsList(ref, fwd, !fwd, rcDepth, 1, null, null, null, -1);
 
         // Run through each neighbor, recursing as necessary to check if

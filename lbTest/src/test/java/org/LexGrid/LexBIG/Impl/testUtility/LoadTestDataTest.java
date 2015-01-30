@@ -332,12 +332,31 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
     
-    public void testLoadGenericOwlWithNPOsansQuals() throws InterruptedException, LBException {
+//    public void testLoadGenericOwlWithNPOsansQuals() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+//        loader.load(new File("resources/testData/npotest.owl").toURI(), null,  1, false, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//
+//    }
+    
+    public void testLoadOWL2NPOwMultiNamespace() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
-        loader.load(new File("resources/testData/npotest.owl").toURI(), null,  1, false, true);
-
+        loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+        loader.load(new File("resources/testData/multiName_npo-2011-12-08_inferred.owl").toURI(), 
+        		new File("resources/testData/NPOMF.xml").toURI(),  1, false, true);
+        
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(1000);
         }

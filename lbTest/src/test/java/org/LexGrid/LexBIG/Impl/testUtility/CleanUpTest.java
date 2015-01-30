@@ -236,7 +236,7 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://purl.bioontology.org/ontology/npo", "2012-01-25 (yyyy-mm-dd)");
+                "http://purl.bioontology.org/ontology/npo", "TestForMultiNamespace");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
         lbsm.removeCodingSchemeVersion(a);
