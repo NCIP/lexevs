@@ -77,7 +77,7 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     public final static String NPO_SCHEME_URI = "http://purl.bioontology.org/ontology/npo";
     public final static String NPO_SCHEME_VERSION = "2012-01-25 (yyyy-mm-dd)";
     public final static String NPO_SCHEME_MULTI_NAMESPACE = "npo";
-    public final static String NPO_SCHEME_MULTI_NAMESPACE_URL = "http://purl.bioontology.org/ontology/npo#";
+    public final static String NPO_SCHEME_MULTI_NAMESPACE_URL = "http://purl.bioontology.org/ontology/npo";
     public final static String NPO_SCHEME_MULTI_NAMESPACE_VERSION = "TestForMultiNamespace";
     public final static String HL7_MIF_VOCABULARY_SCHEME = "1189-20121121";
     public final static String HL7_MIF_VOCABULARY_URN = "urn:hl7-org:v3/mif2";
