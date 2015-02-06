@@ -19,6 +19,8 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 	protected LexBIGService lbs;
 	protected CodedNodeSet cns;
 	protected CodedNodeGraph cng;
+	protected CodedNodeSet cnsp;
+	protected CodedNodeGraph cngp;
 	
 	/**
 	 * Sets the up lbs.
@@ -29,12 +31,12 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		lbs = ServiceHolder.instance().getLexBIGService();
 		cns = lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION));
 		cng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION), null);
+		cnsp = lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION));
+		cngp = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION), null);
 	}
 	
-	public CodedNodeSet getCodedNodeSet() throws Exception {
-		setUp();
-		return lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION));
-	}
 	
 	@Test
 	public void testSetUp() throws Exception {

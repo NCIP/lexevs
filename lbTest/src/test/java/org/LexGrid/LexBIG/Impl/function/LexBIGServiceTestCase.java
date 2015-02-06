@@ -86,6 +86,8 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     public final static String OWL2_SNIPPET_VOCABULARY_VERSION = "13.05d";
 	public static final String OWL2_SNIPPET_INDIVIDUAL_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl";
 	public static final String OWL2_SNIPPET_INDIVIDUAL_VERSION = "0.1.2";
+	public static final String OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION = "0.1.1";
+
 
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
 
