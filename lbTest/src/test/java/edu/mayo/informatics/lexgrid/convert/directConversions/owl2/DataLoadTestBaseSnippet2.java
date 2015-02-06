@@ -1,5 +1,13 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
+import java.util.Iterator;
+
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -41,6 +49,47 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 	@Test
 	public void testSetUp() throws Exception {
 		Assert.noNullElements(new Object[] {lbs,cns,cng});
+	}
+	
+	protected boolean validateQualifier(String code, String qual, Iterator<? extends ResolvedConceptReference> itr){
+		boolean validate = false;
+		while (itr.hasNext()) {
+			ResolvedConceptReference ref = itr.next();
+			AssociationList assoc1 = ref.getSourceOf();
+			Association[] assocs = assoc1.getAssociation();
+			for (Association as : assocs) {
+				AssociatedConceptList acl = as.getAssociatedConcepts();
+				AssociatedConcept[] acs = acl.getAssociatedConcept();
+				for (AssociatedConcept ac : acs) {
+					if (ac.getCode().equals(code)) {
+						for(NameAndValue nv: ac.getAssociationQualifiers().getNameAndValue()){
+						if(nv.getContent().equals(qual))
+						validate = true;
+						}
+					}
+				}
+			}
+		}
+		return validate;
+	}
+	protected boolean validateTarget(String target,
+			Iterator<? extends ResolvedConceptReference> itr) {
+		boolean validate = false;
+		while (itr.hasNext()) {
+			ResolvedConceptReference ref = itr.next();
+			AssociationList assoc1 = ref.getSourceOf();
+			Association[] assocs = assoc1.getAssociation();
+			for (Association as : assocs) {
+				AssociatedConceptList acl = as.getAssociatedConcepts();
+				AssociatedConcept[] acs = acl.getAssociatedConcept();
+				for (AssociatedConcept ac : acs) {
+					if (ac.getCode().equals(target)) {
+						validate = true;
+					}
+				}
+			}
+		}
+		return validate;
 	}
 
 }
