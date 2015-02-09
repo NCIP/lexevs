@@ -1,13 +1,17 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -18,6 +22,8 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.relations.AssociationQualification;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +33,26 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+		
+	}
+	//CodingScheme MetaData Tests
+	
+	@Test
+	public void testForCodingSchemeMetaData(){
+		assertTrue(cs.getDefaultLanguage().equals("en"));
+		
+		Date date = new Date();
+		SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+		String stringDate = "august 08, 2014";
+		assertNotNull(cs.getEffectiveDate());
+		assertTrue(cs.getEffectiveDate().compareTo(date) == 0);
+		
+		assertTrue(cs.getEntityDescription().getContent().equals("Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations."));
+		boolean hasVersionIRI = false;
+		for(Property prop: cs.getProperties().getProperty()){
+			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2"));
+		}
+		assertTrue(hasVersionIRI);
 		
 	}
 
@@ -40,8 +66,138 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertTrue(itr.hasNext());
 	}
 	
+
+	@Test
+	public void testURLForExternalClass2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("http//purl.obolibrary.org/obo/CL_0000148"));
+		ResolvedConceptReferencesIterator itr1 = cns.resolve(null, null, null);
+		assertNotNull(itr1);
+		assertTrue(itr1.hasNext());
+	}
+	
+	@Test
+	public void testEntityForDataTypeProperty1st() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("has_physical_location"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+	}
+	
+	@Test
+	public void testEntityForDataTypePropertyProvenance() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		ConceptReference cr = new ConceptReference();
+		cr.addEntityType("association");
+		cr.setCode("in_organism");
+		
+		ConceptReferenceList list = new ConceptReferenceList();
+		list.addConceptReference(cr);
+		String[] stringList = {"in_organism"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null, null, false);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+				
+		assertTrue(rcr.getEntity().getDefinitionCount() > 0);
+		Definition def = rcr.getEntity().getDefinition()[0];
+		def.getValue().getContent().equals("hello there");
+		
+	}
+	
+	@Test
+	public void testEntityForDataTypePropertySemanticTypeList()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+			cns = cns.restrictToCodes(Constructors.createConceptReferenceList("semanticType"));
+			ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			assertTrue(rcr.getEntity().getDefinitionCount() > 0);
+			Definition def = rcr.getEntity().getDefinition()[0];
+			def.getValue().getContent().equals("Anatomic");
+			Definition def1 = rcr.getEntity().getDefinition()[1];
+			def.getValue().getContent().equals("Conceptual");
+			Definition def2 = rcr.getEntity().getDefinition()[2];
+			def.getValue().getContent().equals("Disease");
+			Definition def3 = rcr.getEntity().getDefinition()[3];
+			def.getValue().getContent().equals("Gene");
+			Definition def4 = rcr.getEntity().getDefinition()[4];
+			def.getValue().getContent().equals("Organism");	
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertyAssociationURI()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationURI"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(validateProperty("term", "Association", rcr));
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertyAssociaitonLIT()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationLIT"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		assertTrue(validateProperty("term", "Association", rcr));
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertyAssociationSTR()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationSTR"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		assertTrue(validateProperty("term", "Association", rcr));
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertySource()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("source"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertyTerm()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("term"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());;
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertyTermType()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("term_type"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+	}
+	
+	@Test
+	public void testEntityForAnnotationPropertyDate()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("date"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+	}
+	
 	
 	//Relationship Unit Tests
+	@Test
+	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
+		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cng.resolveAsList(null, 
+				true, true, 1, 1, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(validateTarget("SickPatient", itr));
+		//TODO develop a better definition of the anonymous node
+		}
+	
 	@Test
 	public void testAssocURIAnnotationLoadAlpha() throws LBInvocationException, LBParameterException {
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), null);

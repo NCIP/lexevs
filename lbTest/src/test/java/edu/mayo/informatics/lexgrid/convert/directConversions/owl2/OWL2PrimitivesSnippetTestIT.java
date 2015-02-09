@@ -18,9 +18,9 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.Test;
 
-public class OWL2PrimativesSnippetTestIT extends DataLoadTestBaseSnippet2 {
+public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 
-	public OWL2PrimativesSnippetTestIT() {
+	public OWL2PrimitivesSnippetTestIT() {
 		// TODO Auto-generated constructor stub
 	}
 	@Test
