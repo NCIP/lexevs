@@ -2171,9 +2171,9 @@ public class OwlApi2LG {
     }
 
     protected String getFromLastIndexOfColonOrHash(String str) {
-        if (str != null && str.lastIndexOf(":") != -1) {
-            str = str.substring(str.lastIndexOf(":") + 1);
-        }
+//        if (str != null && str.lastIndexOf(":") != -1) {
+//            str = str.substring(str.lastIndexOf(":") + 1);
+//        }
 
         if (str != null && str.lastIndexOf("#") != -1) {
             str = str.substring(str.lastIndexOf("#") + 1);
@@ -2181,6 +2181,10 @@ public class OwlApi2LG {
         
         if (str != null && str.endsWith(">")) {
             str = str.substring(0, str.length() - 1);
+        }
+        
+        if (str != null && str.startsWith("<")){
+            str = str.substring(1, str.length());
         }
         return str;
     }
