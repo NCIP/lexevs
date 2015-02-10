@@ -54,7 +54,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 
 	@Test
 	public void testURLForExternalClass() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http//purl.obolibrary.org/obo/CL_0000000"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000000"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
@@ -63,7 +63,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 
 	@Test
 	public void testURLForExternalClass2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http//purl.obolibrary.org/obo/CL_0000148"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000148"));
 		ResolvedConceptReferencesIterator itr1 = cnsp.resolve(null, null, null);
 		assertNotNull(itr1);
 		assertTrue(itr1.hasNext());
