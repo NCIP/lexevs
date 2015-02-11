@@ -327,7 +327,7 @@ public class OwlApi2LG {
 
         messages_.info("Processing OWL Classes.....");
         processAllConceptsAndProperties(snap);
-
+        processAllAnnotationProperties(snap);
         // Step 2: Process OWL individuals. Essentially, determine to which
         // classes these instances belong to, as well as, relations between
         // the individuals themselves (e.g., differentFrom)?
@@ -410,7 +410,8 @@ public class OwlApi2LG {
     private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
-            if (isAnyURIDatatype(annotationAxiom)) {
+            
+            if (isAnyURIDatatype(annotationAxiom) || owlInstanceName2code_.containsKey(propName)) {
                 AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
                 if (lgAssoc == null) {
                     return;
@@ -1977,6 +1978,76 @@ public class OwlApi2LG {
     protected String resolveConceptIDfromIRI(IRI iri){
        return owlClassName2Conceptcode_.get(iri.toString());
     }
+    
+    
+    protected void processAllAnnotationProperties(Snapshot snap) {
+        snap = SimpleMemUsageReporter.snapshot();
+        messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
+                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
+                + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
+        messages_.info("Processing OWL Individuals ...");
+
+        int count = 0;
+       // owlInstanceName2code_ = new HashMap();
+
+        // The idea is to iterate through all the OWL individuals, and register
+        // them as well as find out additional associations (e.g,. From)
+        for (OWLAnnotationProperty aProp : ontology.getAnnotationPropertiesInSignature()) {
+
+            Entity lgProp = resolveAnnotationProperty(aProp);
+            if (lgProp != null) {
+                addEntity(lgProp);
+            }
+            count++;
+            if (count % 1000 == 0) {
+                messages_.info("OWL individuals processed: " + count);
+            }
+
+        }
+        messages_.info("Total OWL individuals processed: " + count);
+        // Now, process all the relationships/associations the
+        // concept has with other concepts. Also, process all
+        // the restrictions the concept has.
+        messages_.info("Instances converted to EMF");
+        snap = SimpleMemUsageReporter.snapshot();
+        messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
+                + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
+                + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
+
+        // If we found at least one, register the supported entity type.
+//        if (!owlInstanceName2code_.isEmpty()) {
+//            String name = EntityTypes.INSTANCE.toString();
+//            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+//        }
+    } // end
+    
+    private Entity resolveAnnotationProperty(OWLAnnotationProperty aProp) {
+        String propName = getLocalName(aProp);
+
+        if (isNoopNamespace(propName))
+            return null;
+
+        String label = resolveLabel(aProp);
+
+        // Create the raw EMF individual and assign label as initial
+        // description,
+        // which may be overridden later by preferred text.
+        Entity lgInstance = new Entity();
+        lgInstance.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(label);
+        lgInstance.setEntityDescription(ed);
+        lgInstance.setEntityCode(propName);
+        String nameSpace = getNameSpace(aProp);
+        lgInstance.setEntityCodeNamespace(nameSpace);
+
+        resolveEntityProperties(lgInstance, aProp);
+
+        // Remember the rdf to code mapping and return.
+//        owlInstanceName2code_.put(aProp.getIRI().toString(), lgInstance.getEntityCode());
+        return lgInstance;
+    }
+
     /**
      * Process the instance information in the ontology.
      * 
