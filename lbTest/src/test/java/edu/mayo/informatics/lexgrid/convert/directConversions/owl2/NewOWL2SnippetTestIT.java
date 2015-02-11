@@ -181,7 +181,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testEntityForAnnotationPropertyDate()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("date"));
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("dc:date"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
