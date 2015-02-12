@@ -19,6 +19,8 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -33,6 +35,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfCodingSchemeName;
@@ -43,6 +46,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Definition;
@@ -180,6 +184,7 @@ public class OwlApi2LG {
     private Set<String> registeredNameSpaceCode_ = new HashSet<String>();
     private Map<String, AssociationSource> lgAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
     private Map<String, String> owlInstanceName2code_ = null;
+    private Map<String, String> owlAnnotationPropertiesTocode_  = null;
 
     // Cached values and state
     private int conceptCount_ = 0;
@@ -411,7 +416,7 @@ public class OwlApi2LG {
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
             
-            if (isAnyURIDatatype(annotationAxiom) || owlInstanceName2code_.containsKey(propName)) {
+            if (isAnyURIDatatype(annotationAxiom)) {
                 AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
                 if (lgAssoc == null) {
                     return;
@@ -420,6 +425,17 @@ public class OwlApi2LG {
                 String prefix = owlClass.getIRI().getStart();
                 relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
                        source, anno, annotationAxiom, prefix);
+            }
+            if(owlAnnotationPropertiesTocode_.containsKey(annotationAxiom.getProperty().getIRI().toString())){
+                    AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+                    if (lgAssoc == null) {
+                        return;
+                    }
+                    OWLAnnotation anno = annotationAxiom.getAnnotation();
+                    String prefix = owlClass.getIRI().getStart();
+                    relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
+                           source, anno, annotationAxiom, prefix);
+                
             }
         }
 
@@ -1443,8 +1459,9 @@ public class OwlApi2LG {
 
     /**
      * Initialize further metadata about the coding scheme.
+     *
      */
-    protected void initSchemeMetadata() {
+    protected void initSchemeMetadata(){
         // Set the ontology version from the versionInfo tag
         String version = "";
         // PrefixManager prefixManager= renderer.getOntologyShortFormProvider();
@@ -1494,7 +1511,42 @@ public class OwlApi2LG {
             } else {
                 lgScheme_.addLocalName(localName);
             }
+            
+            //Use Ontology Annotations to provide more ontology metadata
+            Set<OWLAnnotation> annotations = ontology.getAnnotations();
+            for(OWLAnnotation owl: annotations){
+                if(owl.getProperty().getIRI().getFragment().equals("date")){
+                    
+                    SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+                    Date date = null;
+                    try {
+                        date = formatDate.parse(owl.getValue().toString());
+                    } catch (ParseException e) {
+                        System.out.println("Unable to parse effective date to date format.  Continuing load despite error");
+                        e.printStackTrace();
+                    }
+                    lgScheme_.setEffectiveDate(date);
+                }
+                if(owl.getProperty().getIRI().getFragment().equals("note")){
+                    lgScheme_.setEntityDescription(Constructors.createEntityDescription(owl.getValue().toString()));
+                }
+                if(owl.getProperty().getIRI().getFragment().equals("source")){
+                    Source source = new Source();
+                    source.setContent(owl.getValue().toString());
+                    lgScheme_.getSourceAsReference().add(source);
+                }
+            }
+            
+            IRI versionIRI = ontology.getOntologyID().getVersionIRI();
+            if(versionIRI != null){
+                Properties props = new Properties();
+                Property prop = new Property();
+                prop.setPropertyName(versionIRI.getFragment());
+                prop.setValue(Constructors.createText(versionIRI.toString()));
+                props.addProperty(prop);                
+                lgScheme_.setProperties(props);
 
+            }
             // Override with manifest values, if provided. Note that we only
             // need be concerned with identifying information. Other values
             // from the manifest will be applied outside of this loader code.
@@ -1538,9 +1590,9 @@ public class OwlApi2LG {
             lgScheme_.setCodingSchemeURI(uri);
             lgScheme_.setCodingSchemeName(schemeName);
             lgScheme_.setFormalName(localName);
-            EntityDescription ed = new EntityDescription();
-            ed.setContent(localName);
-            lgScheme_.setEntityDescription(ed);
+//            EntityDescription ed = new EntityDescription();
+//            ed.setContent(localName);
+//            lgScheme_.setEntityDescription(ed);
         }
 
         if (version.length() == 0) {
@@ -1557,6 +1609,8 @@ public class OwlApi2LG {
         lgScheme_.setDefaultLanguage(defaultLanguage);
         lgSupportedMappings_.registerSupportedLanguage(defaultLanguage, OwlApi2LGConstants.LANG_URI + ':'
                 + defaultLanguage, defaultLanguage, false);
+        
+ 
     }
 
     String getDefaultNameSpace() {
@@ -1672,13 +1726,20 @@ public class OwlApi2LG {
      */
     protected void initSupportedAssociationAnnotationProperties() {
         for (OWLAnnotationProperty annotationProperty : ontology.getAnnotationPropertiesInSignature()) {
-            Iterator<OWLAnnotationPropertyRangeAxiom> itr = ontology.getAnnotationPropertyRangeAxioms(annotationProperty).iterator();
+//            Iterator<OWLAnnotationPropertyRangeAxiom> itr = ontology.getAnnotationPropertyRangeAxioms(annotationProperty).iterator();
+//            while(itr.hasNext()){
+//                OWLAnnotationPropertyRangeAxiom OwlAx = itr.next();
+
+//                if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
+//                    addAnnotationPropertyAssociations(annotationProperty);
+//                }
+//                } 
+            Iterator<OWLAnnotationAssertionAxiom> itr = annotationProperty.getAnnotationAssertionAxioms(ontology).iterator();
             while(itr.hasNext()){
-                OWLAnnotationPropertyRangeAxiom OwlAx = itr.next();
-                if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
-                    addAnnotationPropertyAssociations(annotationProperty);
-                }
-                } 
+                OWLAnnotationAssertionAxiom assertion = itr.next();
+                if(assertion.getProperty().getIRI().getFragment().equals("term") && stripDataType(assertion.getValue().toString()).equals("Association"))
+                {addAnnotationPropertyAssociations(annotationProperty);}
+            }
         }
         
         /*
@@ -1695,7 +1756,16 @@ public class OwlApi2LG {
     }
 
     private AssociationWrapper addAnnotationAsAssociation(OWLAnnotationProperty owlProp) {
+        Set<OWLAnnotationAssertionAxiom> assertions = ontology.getAnnotationAssertionAxioms(owlProp.getIRI());
         AssociationWrapper assocWrap = new AssociationWrapper();
+        if(!assertions.isEmpty()){
+        for(OWLAnnotationAssertionAxiom ax : assertions){
+            Property prop = new Property();
+            prop.setPropertyName(ax.getProperty().getIRI().getFragment());
+            prop.setValue(Constructors.createText(stripDataType(ax.getValue().toString())));
+            assocWrap.addProperty(prop);
+        }
+        }
         String propertyName = getLocalName(owlProp);
         assocWrap.setEntityCode(propertyName);
         String label = resolveLabel(owlProp);
@@ -1988,7 +2058,7 @@ public class OwlApi2LG {
         messages_.info("Processing OWL Individuals ...");
 
         int count = 0;
-       // owlInstanceName2code_ = new HashMap();
+        owlAnnotationPropertiesTocode_ = new HashMap();
 
         // The idea is to iterate through all the OWL individuals, and register
         // them as well as find out additional associations (e.g,. From)
@@ -2015,10 +2085,10 @@ public class OwlApi2LG {
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
         // If we found at least one, register the supported entity type.
-//        if (!owlInstanceName2code_.isEmpty()) {
-//            String name = EntityTypes.INSTANCE.toString();
-//            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
-//        }
+        if (!owlAnnotationPropertiesTocode_.isEmpty()) {
+            String name = EntityTypes.CONCEPT.toString();
+            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+        }
     } // end
     
     private Entity resolveAnnotationProperty(OWLAnnotationProperty aProp) {
@@ -2043,8 +2113,7 @@ public class OwlApi2LG {
 
         resolveEntityProperties(lgInstance, aProp);
 
-        // Remember the rdf to code mapping and return.
-//        owlInstanceName2code_.put(aProp.getIRI().toString(), lgInstance.getEntityCode());
+       owlAnnotationPropertiesTocode_.put(aProp.getIRI().toString(), lgInstance.getEntityCode());
         return lgInstance;
     }
 
@@ -2516,10 +2585,16 @@ public class OwlApi2LG {
 
     
     protected String stripDataType(String shortForm){
-        String substring = shortForm.substring(shortForm.indexOf("^"));
-        String prefix = shortForm.replace(substring,"");
+        
+        String substring = null;
+        String prefix = null;
+        if(shortForm.indexOf("^") > -1){
+        substring = shortForm.substring(shortForm.indexOf("^"));
+        prefix = shortForm.replace(substring,"");
         prefix = prefix.replace("\"", "");
         return prefix;
+        }
+        return shortForm;
     }
 
     protected void relateAssociationSourceTarget(AssociationWrapper aw, AssociationSource source,

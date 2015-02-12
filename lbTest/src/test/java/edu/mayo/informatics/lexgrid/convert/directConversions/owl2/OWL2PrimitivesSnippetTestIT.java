@@ -174,7 +174,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testEntityForAnnotationPropertyDate()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("date"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("dc:date"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
