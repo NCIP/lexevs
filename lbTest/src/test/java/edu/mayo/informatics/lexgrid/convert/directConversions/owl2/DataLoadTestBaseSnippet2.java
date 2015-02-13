@@ -30,6 +30,7 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 	/** The lbs. */
 	protected LexBIGService lbs;
 	protected CodingScheme cs;
+	protected CodingScheme csp;
 	protected CodedNodeSet cns;
 	protected CodedNodeGraph cng;
 	protected CodedNodeSet cnsp;
@@ -44,6 +45,8 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		lbs = ServiceHolder.instance().getLexBIGService();
 		cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION));
+		csp = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION));
 		cns = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION), null);
 		cng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION),

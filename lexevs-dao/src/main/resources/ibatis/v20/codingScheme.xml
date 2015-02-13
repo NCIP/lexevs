@@ -18,6 +18,7 @@
 		<result property="copyright.content" column="copyright" />
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
 		<result property="entryState" resultMap="Versions.entryStateResult" />
+		<result property="_effectiveDate" column="effectiveDate" typeHandler="dateTypeHandler"/>
 		<result property="_sourceList" resultMap="CodingScheme.sourceResult"/>
 		<result property="_localNameList" resultMap="CodingScheme.localNameResult"/>
 	</resultMap>

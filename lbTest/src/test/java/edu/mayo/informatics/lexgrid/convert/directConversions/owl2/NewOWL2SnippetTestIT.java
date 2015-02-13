@@ -53,8 +53,9 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertTrue(cs.getEntityDescription().getContent().equals("Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations."));
 		boolean hasVersionIRI = false;
 		for(Property prop: cs.getProperties().getProperty()){
-			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2")){
+			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().getContent().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2")){
 				hasVersionIRI = true;
+				break;
 			}
 		}
 		assertTrue(hasVersionIRI);

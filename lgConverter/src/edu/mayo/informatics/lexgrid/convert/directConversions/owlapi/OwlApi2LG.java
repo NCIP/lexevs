@@ -1516,11 +1516,13 @@ public class OwlApi2LG {
             Set<OWLAnnotation> annotations = ontology.getAnnotations();
             for(OWLAnnotation owl: annotations){
                 if(owl.getProperty().getIRI().getFragment().equals("date")){
-                    
-                    SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+
+                  
                     Date date = null;
                     try {
-                        date = formatDate.parse(owl.getValue().toString());
+                        String textToParse = owl.getValue().toString();
+                        textToParse = stripQuotes(textToParse);
+                        date = parseEffectiveDate(textToParse);
                     } catch (ParseException e) {
                         System.out.println("Unable to parse effective date to date format.  Continuing load despite error");
                         e.printStackTrace();
@@ -1528,11 +1530,13 @@ public class OwlApi2LG {
                     lgScheme_.setEffectiveDate(date);
                 }
                 if(owl.getProperty().getIRI().getFragment().equals("note")){
-                    lgScheme_.setEntityDescription(Constructors.createEntityDescription(owl.getValue().toString()));
+                    String formattedString = stripQuotes(owl.getValue().toString());
+                    formattedString = stripAtLanguageSuffix(formattedString);
+                    lgScheme_.setEntityDescription(Constructors.createEntityDescription(formattedString));
                 }
                 if(owl.getProperty().getIRI().getFragment().equals("source")){
                     Source source = new Source();
-                    source.setContent(owl.getValue().toString());
+                    source.setContent(stripQuotes(owl.getValue().toString()));
                     lgScheme_.getSourceAsReference().add(source);
                 }
             }
@@ -1541,7 +1545,7 @@ public class OwlApi2LG {
             if(versionIRI != null){
                 Properties props = new Properties();
                 Property prop = new Property();
-                prop.setPropertyName(versionIRI.getFragment());
+                prop.setPropertyName("versionIRI");
                 prop.setValue(Constructors.createText(versionIRI.toString()));
                 props.addProperty(prop);                
                 lgScheme_.setProperties(props);
@@ -1611,6 +1615,25 @@ public class OwlApi2LG {
                 + defaultLanguage, defaultLanguage, false);
         
  
+    }
+
+    private String stripAtLanguageSuffix(String str) {
+        if (str != null && str.lastIndexOf("@") != -1) {
+            str = str.substring(0, str.lastIndexOf("@"));
+        }
+        return str;
+    }
+
+    protected String stripQuotes(String textToParse) {
+        textToParse = textToParse.replace("\"", "");
+        return textToParse;
+    }
+
+    protected Date parseEffectiveDate(String dateText) throws ParseException {
+        Date date;
+        SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+        date = formatDate.parse(dateText);
+        return date;
     }
 
     String getDefaultNameSpace() {

@@ -1,5 +1,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -32,21 +33,28 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	//CodingScheme MetaData Tests
 	
 	@Test
-	public void testForCodingSchemeMetaData(){
-		assertTrue(cs.getDefaultLanguage().equals("en"));
+	public void testForCodingSchemeMetaData() throws ParseException{
+		assertTrue(csp.getDefaultLanguage().equals("en"));
 		
-		Date date = new Date();
+		
 		SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+		Date date;
 		String stringDate = "august 08, 2014";
-		assertNotNull(cs.getEffectiveDate());
-		assertTrue(cs.getEffectiveDate().compareTo(date) == 0);
+		date = formatDate.parse(stringDate);
+		assertNotNull(csp.getEffectiveDate());
+		assertTrue(csp.getEffectiveDate().compareTo(date) == 0);
 		
-		assertTrue(cs.getEntityDescription().getContent().equals("Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations."));
+		assertTrue(csp.getEntityDescription().getContent().equals("Test of OWL2 constructions for import into LexEVS.  This file contains primitives with annotations."));
 		boolean hasVersionIRI = false;
-		for(Property prop: cs.getProperties().getProperty()){
-			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2"));
+		for(Property prop: csp.getProperties().getProperty()){
+			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().getContent().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.1")){
+				hasVersionIRI = true;
+				break;
+			}
 		}
 		assertTrue(hasVersionIRI);
+		assertTrue(csp.getSourceCount() > 0);
+		assertTrue(csp.getSource(0).getContent().equals("nci evs"));
 		
 	}
 
