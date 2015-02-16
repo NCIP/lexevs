@@ -95,7 +95,8 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		list.addConceptReference(cr);
 		String[] stringList = {"in_organism"};
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
-		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null, null, false);
+		ResolvedConceptReferenceList rcrlist = cnsp.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		ResolvedConceptReference rcr = itr.next();
@@ -103,7 +104,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertTrue(rcr.getEntity().getDefinitionCount() > 0);
 		Definition def = rcr.getEntity().getDefinition()[0];
 		def.getValue().getContent().equals("hello there");
-		
+		assertTrue(validatePropertyQualifierFromProperty(def, "somebody said so"));
 	}
 	
 	@Test
@@ -194,10 +195,9 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
 		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(null, 
-				false, true, 1, 1, null, null, null, null, -1);
+				true, false, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("SickPatient", itr));
-		//TODO develop a better definition of the anonymous node
 		}
 	
 	@Test
@@ -277,9 +277,11 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("EpithelialCell", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
-				true, true, 1, 1, null, null, null, null, -1);
+				true, false, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_000000", itr));
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000000", itr));
 	}
 	
 	@Test
@@ -359,7 +361,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass1st() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -371,7 +373,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass2nd() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -383,7 +385,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass3rd() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -395,7 +397,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass4th() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -407,7 +409,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass5th() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -419,7 +421,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass6th() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -431,7 +433,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass7th() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -443,7 +445,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass8th() 
 			throws LBInvocationException, LBParameterException{
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnionOf"), null);
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
 		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 

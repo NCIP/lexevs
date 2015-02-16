@@ -89,6 +89,8 @@ public class OwlApi2LGConstants {
     public static final String ASSOC_DIFFERENTFROM_URI = OWL_NAMESPACE + "differentFrom";
     public static final String ASSOC_DISJOINTWITH = "disjointWith";
     public static final String ASSOC_DISJOINTWITH_URI = OWL_NAMESPACE + "disjointWith";
+    public static final String ASSOC_DISJOINTUNION = "disjointUnion";
+    public static final String ASSOC_DISJOINTUNION_URI = "disjointUnion";
     public static final String ASSOC_DOMAIN = "domain";
     public static final String ASSOC_DOMAIN_FWD = "domain";
     public static final String ASSOC_DOMAIN_URI = RDFS_NAMESPACE + "domain";
@@ -127,7 +129,7 @@ public class OwlApi2LGConstants {
     public static final List<String> PRIORITIZED_COMMENT_NAMES = Arrays.asList(new String[] { "DesignNote", "Editor_Note",
             "Citation", "VA_Workflow_Comment", "rdfs:comment" });
     public static final List<String> PRIORITIZED_DEFINITION_NAMES = Arrays.asList(new String[] { "DEFINITION", "dDEFINITION",
-            "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition" });
+            "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition","definition" });
     public static final List<String> PRIORITIZED_PRESENTATION_NAMES = Arrays.asList(new String[] { "NCI_Preferred_Term",
             "Preferred_Name", "Display_Name", "Search_Name", "FULL_SYN", "Synonym", "VA_Print_Name",
             "VA_National_Formulary_Name", "VA_Abbreviation", "VA_Dose_Form_Print_Name", "VA_Trade_Name", "MeSH_Name",

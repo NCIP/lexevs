@@ -11,14 +11,18 @@ import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -63,7 +67,7 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		Assert.noNullElements(new Object[] {lbs,cns,cng});
 	}
 	
-	protected boolean validateQualifier(String code, String qual, Iterator<? extends ResolvedConceptReference> itr){
+	protected boolean validateQualifier(String code, String qual, Iterator<? extends ResolvedConceptReference> itr) throws LBResourceUnavailableException, LBInvocationException{
 		boolean validate = false;
 		while (itr.hasNext()) {
 			ResolvedConceptReference ref = itr.next();
@@ -84,6 +88,21 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		}
 		return validate;
 	}
+	
+	protected boolean validatePropertyQualifierFromProperty(Property prop, String qual){
+		boolean validate = false;
+
+					for(PropertyQualifier pq: prop.getPropertyQualifier()){
+					if(pq.getValue().getContent().equals(qual))
+					validate = true;
+					}
+				
+			
+		
+		return validate;
+	}
+	
+	
 	protected boolean validateTarget(String target,
 			Iterator<? extends ResolvedConceptReference> itr) {
 		boolean validate = false;

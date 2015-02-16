@@ -97,6 +97,7 @@ import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLHasValueRestriction;
@@ -402,6 +403,7 @@ public class OwlApi2LG {
                 resolveEquivalentClassRelations(source, namedClass);
                 resolveSubClassOfRelations(source, namedClass);
                 resolveDisjointWithRelations(source, namedClass);
+                resolveDisjointUnionRelations(source, namedClass);
                 // resolveComplementOfRelations(source, namedClass);
                 resolveOWLObjectPropertyRelations(source, namedClass);
                 resolveAnnotationPropertyRelations(source, namedClass);
@@ -411,6 +413,8 @@ public class OwlApi2LG {
         }
 
     }
+
+
 
     private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
@@ -747,6 +751,17 @@ public class OwlApi2LG {
             }
         }
 
+    }
+    
+    
+    private void resolveDisjointUnionRelations(AssociationSource source, OWLClass namedClass) {
+        for (OWLDisjointUnionAxiom disjointUnionClassAxiom : ontology.getDisjointUnionAxioms(namedClass)) {
+            for (OWLClassExpression disjointClassExpression : disjointUnionClassAxiom.getClassExpressions()) {
+                relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDisjointUnion(),
+                        source, disjointClassExpression, disjointUnionClassAxiom);
+            }
+        }
+        
     }
 
     /**
