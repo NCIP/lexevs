@@ -426,17 +426,17 @@ public class OwlApi2LG {
                 relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
                        source, anno, annotationAxiom, prefix);
             }
-            if(owlAnnotationPropertiesTocode_.containsKey(annotationAxiom.getProperty().getIRI().toString())){
-                    AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
-                    if (lgAssoc == null) {
-                        return;
-                    }
-                    OWLAnnotation anno = annotationAxiom.getAnnotation();
-                    String prefix = owlClass.getIRI().getStart();
-                    relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
-                           source, anno, annotationAxiom, prefix);
-                
-            }
+//            if(owlAnnotationPropertiesTocode_.containsKey(annotationAxiom.getProperty().getIRI().toString())){
+//                    AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+//                    if (lgAssoc == null) {
+//                        return;
+//                    }
+//                    OWLAnnotation anno = annotationAxiom.getAnnotation();
+//                    String prefix = owlClass.getIRI().getStart();
+//                    relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
+//                           source, anno, annotationAxiom, prefix);
+//                
+//            }
         }
 
     }

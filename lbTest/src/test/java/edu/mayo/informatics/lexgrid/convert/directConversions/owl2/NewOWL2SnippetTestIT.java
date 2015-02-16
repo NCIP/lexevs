@@ -124,13 +124,13 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 			Definition def = rcr.getEntity().getDefinition()[0];
 			def.getValue().getContent().equals("Anatomic");
 			Definition def1 = rcr.getEntity().getDefinition()[1];
-			def.getValue().getContent().equals("Conceptual");
+			def1.getValue().getContent().equals("Conceptual");
 			Definition def2 = rcr.getEntity().getDefinition()[2];
-			def.getValue().getContent().equals("Disease");
+			def2.getValue().getContent().equals("Disease");
 			Definition def3 = rcr.getEntity().getDefinition()[3];
-			def.getValue().getContent().equals("Gene");
+			def3.getValue().getContent().equals("Gene");
 			Definition def4 = rcr.getEntity().getDefinition()[4];
-			def.getValue().getContent().equals("Organism");	
+			def4.getValue().getContent().equals("Organism");	
 	}
 	
 	@Test
@@ -297,7 +297,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertFalse(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
 	}
 	
 	@Test
@@ -333,7 +333,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertFalse(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
 	}
 	
 	
