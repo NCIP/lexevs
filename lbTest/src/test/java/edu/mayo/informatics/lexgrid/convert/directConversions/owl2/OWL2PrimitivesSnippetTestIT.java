@@ -190,15 +190,15 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	}
 	
 	
-	//Relationship Unit Tests
-	@Test
-	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
-		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cngp.resolveAsList(null, 
-				true, false, 1, 1, null, null, null, null, -1);
-		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("SickPatient", itr));
-		}
+//	//Relationship Unit Tests
+//	@Test
+//	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
+//		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+//		ResolvedConceptReferenceList list = cngp.resolveAsList(null, 
+//				true, false, 1, 1, null, null, null, null, -1);
+//		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+//		assertTrue(validateTarget("SickPatient", itr));
+//		}
 	
 	@Test
 	public void testAssocURIAnnotationLoadAlpha() throws LBInvocationException, LBParameterException {
@@ -293,7 +293,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertFalse(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
 	}
 	
 	@Test
@@ -329,7 +329,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertFalse(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
 	}
 	
 	
