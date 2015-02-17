@@ -34,6 +34,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -94,6 +95,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
+import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
@@ -130,6 +132,7 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
+import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -1095,7 +1098,25 @@ public class OwlApi2LG {
                 sortedProps.add(lgProp);
             }
         }
+        
+        for (OWLDataProperty prop : owlClass.getDataPropertiesInSignature()) {
+            String propertyName = prop.getIRI().getFragment();
+            Set<OWLDataRange> ranges = prop.getRanges(ontology);
+            if (!ranges.isEmpty()) {
+                OWLDataRange range = prop.getRanges(ontology).iterator().next();
+                if (range.getDataRangeType().getName().equals("DataOneOf")) {
+                    OWLDataOneOfImpl oneOf = (OWLDataOneOfImpl) range;
+                    for (OWLLiteral lit : oneOf.getValues()) {
+                        String literal = lit.getLiteral();
+                        Property lgProp = CreateUtils.createDefinition(generatePropertyID(++i), propertyName, literal,false,
+                                lgSupportedMappings_, prop.getIRI().toString(), "");
+                        sortedProps.add(lgProp);
+                    }
+                }
+            }
+        }
 
+        
         // Now add all the sorted properties to the concept.
         for (Iterator<? extends Property> lgProps = sortedProps.iterator(); lgProps.hasNext();) {
             Property lgProp = lgProps.next();
@@ -1676,6 +1697,8 @@ public class OwlApi2LG {
      */
     protected void initSupportedDataProperties() {
         for (OWLDataProperty prop : ontology.getDataPropertiesInSignature()) {
+
+           
             addAssociation(prop);
         }
 
