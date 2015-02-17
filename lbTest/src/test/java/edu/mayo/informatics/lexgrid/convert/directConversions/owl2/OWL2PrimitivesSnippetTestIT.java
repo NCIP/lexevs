@@ -116,15 +116,15 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 			ResolvedConceptReference rcr = itr.next();
 			assertTrue(rcr.getEntity().getDefinitionCount() > 0);
 			Definition def = rcr.getEntity().getDefinition()[0];
-			def.getValue().getContent().equals("Anatomic");
+			assertTrue(def.getValue().getContent().equals("Anatomic"));
 			Definition def1 = rcr.getEntity().getDefinition()[1];
-			def.getValue().getContent().equals("Conceptual");
+			assertTrue(def1.getValue().getContent().equals("Conceptual"));
 			Definition def2 = rcr.getEntity().getDefinition()[2];
-			def.getValue().getContent().equals("Disease");
+			assertTrue(def2.getValue().getContent().equals("Disease"));
 			Definition def3 = rcr.getEntity().getDefinition()[3];
-			def.getValue().getContent().equals("Gene");
+			assertTrue(def3.getValue().getContent().equals("Gene"));
 			Definition def4 = rcr.getEntity().getDefinition()[4];
-			def.getValue().getContent().equals("Organism");	
+			assertTrue(def4.getValue().getContent().equals("Organism"));	
 	}
 	
 	@Test
