@@ -91,6 +91,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLCardinalityRestriction;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -124,6 +125,7 @@ import org.semanticweb.owlapi.model.OWLQuantifiedDataRestriction;
 import org.semanticweb.owlapi.model.OWLQuantifiedObjectRestriction;
 import org.semanticweb.owlapi.model.OWLRestriction;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
@@ -420,6 +422,7 @@ public class OwlApi2LG {
 
 
     private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
+     //   ontology.getAxioms(owlClass)
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
             
@@ -432,6 +435,10 @@ public class OwlApi2LG {
                 String prefix = owlClass.getIRI().getStart();
                 relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
                        source, anno, annotationAxiom, prefix);
+            }
+            
+            for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
+                //TODO
             }
 //            if(owlAnnotationPropertiesTocode_.containsKey(annotationAxiom.getProperty().getIRI().toString())){
 //                    AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
@@ -705,7 +712,11 @@ public class OwlApi2LG {
         //The reasoner.getSuperClasses doesn't return the anonymous classes. The ontology.getSubClassAxiomsForSubClass
         //method doesn't have information that can be found using the reasoner, so we add in the reasoned expressions.
         Set<OWLClass> reasonedSubClasses= new HashSet<OWLClass>();
-        reasonedSubClasses.addAll(reasoner.getSuperClasses(owlClass, true).getNodes().iterator().next().getEntities());
+        Iterator<Node<OWLClass>> itr = reasoner.getSuperClasses(owlClass, true).getNodes().iterator();
+        while(itr.hasNext()){
+            reasonedSubClasses.addAll(itr.next().getEntities());
+        }
+//        reasonedSubClasses.addAll(reasoner.getSuperClasses(owlClass, true).getNodes().iterator().next().getEntities());
         reasonedSubClasses.removeAll(statedSubClasses);
         for (OWLClassExpression superClass : reasonedSubClasses) {
             relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getSubClassOf(), source,
