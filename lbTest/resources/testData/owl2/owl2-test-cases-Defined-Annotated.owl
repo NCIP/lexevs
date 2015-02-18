@@ -650,13 +650,13 @@
         <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
         <AssociationURI rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationURI>
         <AssociationSTR rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationSTR>
-        <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#prognosisgood</AssociationLIT>
+        <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</AssociationLIT>
         <AssociationV1 rdf:resource="&owl2lexevs;PrognosisGood"/>
         <AssociationURI rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">annotation on an AssociationLIT.</note>
-        <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#prognosisgood</owl:annotatedTarget>
+        <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
     </owl:Axiom>

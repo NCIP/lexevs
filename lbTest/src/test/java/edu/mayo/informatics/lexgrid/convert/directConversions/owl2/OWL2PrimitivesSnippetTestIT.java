@@ -481,37 +481,37 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentClassOneOfFirst() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("equivalentClass"), null);
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
 	ResolvedConceptReferenceList list = cngp.resolveAsList(
-			Constructors.createConceptReference("Finding", 
+			Constructors.createConceptReference("Fever", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Fever", itr));
+	assertTrue(validateTarget("Finding", itr));
 	}
 	
 	@Test
 	public void testEquivalentClassOneOfSecond() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("equivalentClass"), null);
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
 	ResolvedConceptReferenceList list = cngp.resolveAsList(
-			Constructors.createConceptReference("Finding", 
+			Constructors.createConceptReference("PaleSkin", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("PaleSkin", itr));
+	assertTrue(validateTarget("Finding", itr));
 	}
 	
 	@Test
 	public void testEquivalentClassOneOfThird() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("equivalentClass"), null);
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
 	ResolvedConceptReferenceList list = cngp.resolveAsList(
-			Constructors.createConceptReference("Finding", 
+			Constructors.createConceptReference("ShallowBreathing", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("ShallowBreathing", itr));
+	assertTrue(validateTarget("Finding", itr));
 	}
 	@Test
 	public void testEquivalentClassSomeDatatypeRestriction() 
@@ -522,7 +522,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -551,7 +551,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -579,7 +579,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -607,7 +607,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -631,7 +631,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -655,7 +655,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -679,7 +679,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("Gene", itr));
+	assertTrue(validateTarget("C123", itr));
 	}
 	
 	@Test
@@ -703,7 +703,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("Gene", itr));
+		assertTrue(validateTarget("C123", itr));
 	}
 	
 	public void testEquivalentClassObjectHasValueAnd() 
