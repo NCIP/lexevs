@@ -593,7 +593,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentDatatypeHasValueAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("1234"));
+	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("12345"));
 	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());

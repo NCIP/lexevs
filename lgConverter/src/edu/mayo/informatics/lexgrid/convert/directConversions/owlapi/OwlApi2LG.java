@@ -80,6 +80,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.XMLUtils;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.DataRangeType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -94,6 +95,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDataHasValue;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
@@ -135,6 +137,7 @@ import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDataSomeValuesFromImpl;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -402,7 +405,6 @@ public class OwlApi2LG {
         for (OWLClass namedClass : ontology.getClassesInSignature()) {
             String lgConceptCode = resolveConceptID(namedClass);
             String namespace = getNameSpace(namedClass);
-
             if (lgConceptCode != null) {
                 AssociationSource source = CreateUtils.createAssociationSource(lgConceptCode, namespace);
                 resolveEquivalentClassRelations(source, namedClass);
@@ -741,12 +743,25 @@ public class OwlApi2LG {
      * 
      */
     protected void resolveEquivalentClassRelations(AssociationSource source, OWLClass owlClass) {
+//        for(OWLClassExpression expression: owlClass.getEquivalentClasses(ontology)){
+//            for(OWLClassExpression nestedExpression :expression.getNestedClassExpressions()){
+//                OWLClassExpression expressed = nestedExpression.getNestedClassExpressions().iterator().next();
+//                if(expressed.getClassExpressionType().equals(ClassExpressionType.DATA_SOME_VALUES_FROM)){
+////                if(nestedExpression.getClassExpressionType().name().equals("OBJECT_INTERSECTION_OF")){
+//                    expressed.getSignature();
+//                    relateAssocSourceWithOWLClassExpressionTargetValue(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
+//                source, expressed);
+////                }
+//                }
+//            }
+//        }
         for (OWLEquivalentClassesAxiom equivClassAxiom : ontology.getEquivalentClassesAxioms(owlClass)) {
             for (OWLClassExpression equivClassExpression : equivClassAxiom.getClassExpressionsMinus(owlClass)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
                         source, equivClassExpression, equivClassAxiom);
             }
         }
+//      owlClass.getEquivalentClasses(ontology).iterator().next().getClassExpressionType().name().equals("OBJECT_INTERSECTION_OF");
     }
 
     /**
@@ -836,7 +851,10 @@ public class OwlApi2LG {
                     } else if (fillerProp instanceof OWLNamedIndividual) {
                         targetCode = resolveInstanceID((OWLNamedIndividual) fillerProp);
                         targetNameSpace = getNameSpace((OWLNamedIndividual) fillerProp);
-                    } else {
+                    } else if (fillerProp instanceof OWLLiteral){
+                        targetCode = ((OWLLiteral) fillerProp).getLiteral();                       
+                        targetNameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();;
+                    } else {                        
                         opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
                     }
 
@@ -2595,7 +2613,14 @@ public class OwlApi2LG {
             relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, tgtResource.asOWLClass(), ax);
         }
     }
-
+    protected void relateAssocSourceWithOWLClassExpressionTargetValue(EntityTypes type, AssociationWrapper aw,
+            AssociationSource source, OWLClassExpression tgtResource){
+        Iterator<OWLClassExpression> dataValues =  tgtResource.getNestedClassExpressions().iterator();
+        
+        for( OWLClassExpression owlClass :tgtResource.getNestedClassExpressions()){
+ //       relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, owlClass.asOWLClass(), null);
+        }
+    }
     
     
     protected void relateAssocSourceWithIriTarget(EntityTypes type, AssociationWrapper aw,
@@ -2829,8 +2854,23 @@ public class OwlApi2LG {
 
                 }
             }
+
+
+        String target = null;
+        String association = null;
+        for(OWLClassExpression owlex :axiom.getNestedClassExpressions()){
+            if(owlex.getClassExpressionType().name().equals("DATA_SOME_VALUES_FROM")){
+                for(OWLEntity entity : owlex.getSignature()){
+                    if(entity.getEntityType().getName().equals("Datatype")){
+                        target = entity.getIRI().getFragment();
+                    }
+                    if(entity.getEntityType().getName().equals("DataPropertytype")){
+                        association = entity.getIRI().getFragment();
+                    }
+                }
+            }
         }
     }
-    
+    }
 
 } // end of the class
