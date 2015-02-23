@@ -115,9 +115,11 @@ import org.semanticweb.owlapi.model.OWLNaryBooleanClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectHasSelf;
+import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
+import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLProperty;
@@ -1360,8 +1362,36 @@ public class OwlApi2LG {
                     // node...
                     OWLRestriction op = (OWLRestriction) operand;
                     processRestriction(op, assocSource, source);
-                } else {
-
+                } else if (operand instanceof OWLNaryBooleanClassExpression){
+                    //Still has some classes to process.
+                    //OWLObjectIntersectionOf op = (OWLObjectIntersectionOf) operand;
+                    processInnerNAryExpression(operand, assocSource, source);
+//                    if(operand instanceof OWLObjectIntersectionOf){
+//                       for(OWLClassExpression innerOperand : ((OWLNaryBooleanClassExpression) operand).getOperands()){
+//                           if  (innerOperand instanceof OWLRestriction){
+//                               OWLRestriction op = (OWLRestriction) innerOperand;
+//                               processRestriction(op, assocSource, source);
+//                           }
+//                           else{
+//                               System.out.println("Not processing this type yet in intersection of : " +  innerOperand.toString());
+//                           }
+//                       }
+//                    }
+//                  if(operand instanceof OWLObjectUnionOf){
+//                    for(OWLClassExpression innerOperand : ((OWLNaryBooleanClassExpression) operand).getOperands()){
+//                        if  (innerOperand instanceof OWLRestriction){
+//                            OWLRestriction op = (OWLRestriction) innerOperand;
+//                            processRestriction(op, assocSource, source);
+//                        }
+//                        else{
+//                            System.out.println("Not processing this type yet in intersection of : " +  innerOperand.toString());
+//                        }
+//                    }
+//                 }
+              }
+                    
+                else {
+                  
                     String lgCode = resolveAnonymousClass(operand, assocSource);
                     String targetNameSpace = getDefaultNameSpace();
                     AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
@@ -1389,6 +1419,39 @@ public class OwlApi2LG {
         // Return the lg class name
         return lgClass.getEntityCode();
     }
+
+    private void processInnerNAryExpression(OWLClassExpression operand, AssociationSource assocSource,
+            AssociationSource source) {
+        if (operand instanceof OWLObjectIntersectionOf) {
+            for (OWLClassExpression innerOperand : ((OWLNaryBooleanClassExpression) operand).getOperands()) {
+                if (innerOperand instanceof OWLRestriction) {
+                    OWLRestriction op = (OWLRestriction) innerOperand;
+                    processRestriction(op, assocSource, source);
+                } else {
+                    processInnerNAryExpression(innerOperand, assocSource, source);
+                }
+            }
+        } else if (operand instanceof OWLObjectUnionOf) {
+            for (OWLClassExpression innerOperand : ((OWLNaryBooleanClassExpression) operand).getOperands()) {
+                if (innerOperand instanceof OWLRestriction) {
+                    OWLRestriction op = (OWLRestriction) innerOperand;
+                    processRestriction(op, assocSource, source);
+                } else {
+                    processInnerNAryExpression(innerOperand, assocSource, source);
+                }
+            }
+        } else if (operand instanceof OWLNaryBooleanClassExpression) {
+            processInnerNAryExpression(operand, assocSource, source);
+        }
+    }
+
+//    private void processObjectintersectionOf(OWLObjectIntersectionOf op, AssociationSource assocSource,
+//            AssociationSource source) {
+//        for(OWLClass owl :op.getClassesInSignature()){
+//            owl.getClassExpressionType();
+//        }
+//        
+//    }
 
     /**
      * Initialize the Java model from source.
