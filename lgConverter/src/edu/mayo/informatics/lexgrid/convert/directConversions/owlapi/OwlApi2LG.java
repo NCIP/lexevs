@@ -34,7 +34,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -77,17 +76,14 @@ import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.XMLUtils;
-import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.DataRangeType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationObjectVisitorEx;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLCardinalityRestriction;
@@ -95,10 +91,8 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDataHasValue;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
-import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
@@ -139,7 +133,7 @@ import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLDataSomeValuesFromImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -745,25 +739,12 @@ public class OwlApi2LG {
      * 
      */
     protected void resolveEquivalentClassRelations(AssociationSource source, OWLClass owlClass) {
-//        for(OWLClassExpression expression: owlClass.getEquivalentClasses(ontology)){
-//            for(OWLClassExpression nestedExpression :expression.getNestedClassExpressions()){
-//                OWLClassExpression expressed = nestedExpression.getNestedClassExpressions().iterator().next();
-//                if(expressed.getClassExpressionType().equals(ClassExpressionType.DATA_SOME_VALUES_FROM)){
-////                if(nestedExpression.getClassExpressionType().name().equals("OBJECT_INTERSECTION_OF")){
-//                    expressed.getSignature();
-//                    relateAssocSourceWithOWLClassExpressionTargetValue(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
-//                source, expressed);
-////                }
-//                }
-//            }
-//        }
         for (OWLEquivalentClassesAxiom equivClassAxiom : ontology.getEquivalentClassesAxioms(owlClass)) {
             for (OWLClassExpression equivClassExpression : equivClassAxiom.getClassExpressionsMinus(owlClass)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getEquivalentClass(),
                         source, equivClassExpression, equivClassAxiom);
             }
         }
-//      owlClass.getEquivalentClasses(ontology).iterator().next().getClassExpressionType().name().equals("OBJECT_INTERSECTION_OF");
     }
 
     /**
@@ -834,8 +815,9 @@ public class OwlApi2LG {
                 if (restriction instanceof OWLQuantifiedDataRestriction) {
                     OWLQuantifiedDataRestriction rest = (OWLQuantifiedDataRestriction) restriction;
                     OWLDataRange fillerProp = rest.getFiller();
-                
+                    targetNameSpace = getNameSpace(((OWLDatatypeImpl)rest.getFiller()).getIRI());
                     opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
+                    targetCode =  buildDataTypeEntity(fillerProp, targetNameSpace);
 
                 }
                 if (restriction instanceof OWLCardinalityRestriction) {
@@ -857,7 +839,7 @@ public class OwlApi2LG {
                         targetCode = ((OWLLiteral) fillerProp).getLiteral();                       
                         targetNameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();;
                     } else {                        
-                        opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
+                        opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));  
                     }
 
                 }
@@ -895,6 +877,40 @@ public class OwlApi2LG {
 
             }
         }
+    }
+
+    private String buildDataTypeEntity(OWLObject fillerProp, String targetNameSpace) {
+        String code = fillerProp.toString();
+        String nameSpace = targetNameSpace;
+        // Check if this concept has already been processed. We do not want
+        // duplicate concepts.
+        if (isEntityCodeRegistered(nameSpace, code)) {
+            return code;
+        }
+
+        Entity lgClass = new Entity();
+        lgClass.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
+        lgClass.setEntityCode(code);
+        lgClass.setIsAnonymous(Boolean.FALSE);
+
+        lgClass.setEntityCodeNamespace(nameSpace);
+
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(renderer.render(fillerProp));
+        lgClass.setEntityDescription(ed);
+
+        int lgPropNum = 0;
+
+        // Add entity description and matching preferred text presentation to
+        // the browser text we get from the Protege API.
+        // Note: text was derived from the browser text. Since it is unclear
+        // what property it was derived from, we document as 'label'.
+        Presentation pres = CreateUtils.createPresentation(generatePropertyID(++lgPropNum), "label", lgClass
+                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_, null, null);
+        lgClass.addPresentation(pres);
+        // Add to the concept container or write to db...
+        addEntity(lgClass);
+        return code;
     }
 
     /**
@@ -1363,31 +1379,8 @@ public class OwlApi2LG {
                     OWLRestriction op = (OWLRestriction) operand;
                     processRestriction(op, assocSource, source);
                 } else if (operand instanceof OWLNaryBooleanClassExpression){
-                    //Still has some classes to process.
-                    //OWLObjectIntersectionOf op = (OWLObjectIntersectionOf) operand;
+                    //Still has some classes to process that are intersections or unions of.
                     processInnerNAryExpression(operand, assocSource, source);
-//                    if(operand instanceof OWLObjectIntersectionOf){
-//                       for(OWLClassExpression innerOperand : ((OWLNaryBooleanClassExpression) operand).getOperands()){
-//                           if  (innerOperand instanceof OWLRestriction){
-//                               OWLRestriction op = (OWLRestriction) innerOperand;
-//                               processRestriction(op, assocSource, source);
-//                           }
-//                           else{
-//                               System.out.println("Not processing this type yet in intersection of : " +  innerOperand.toString());
-//                           }
-//                       }
-//                    }
-//                  if(operand instanceof OWLObjectUnionOf){
-//                    for(OWLClassExpression innerOperand : ((OWLNaryBooleanClassExpression) operand).getOperands()){
-//                        if  (innerOperand instanceof OWLRestriction){
-//                            OWLRestriction op = (OWLRestriction) innerOperand;
-//                            processRestriction(op, assocSource, source);
-//                        }
-//                        else{
-//                            System.out.println("Not processing this type yet in intersection of : " +  innerOperand.toString());
-//                        }
-//                    }
-//                 }
               }
                     
                 else {
@@ -1440,18 +1433,8 @@ public class OwlApi2LG {
                     processInnerNAryExpression(innerOperand, assocSource, source);
                 }
             }
-        } else if (operand instanceof OWLNaryBooleanClassExpression) {
-            processInnerNAryExpression(operand, assocSource, source);
         }
     }
-
-//    private void processObjectintersectionOf(OWLObjectIntersectionOf op, AssociationSource assocSource,
-//            AssociationSource source) {
-//        for(OWLClass owl :op.getClassesInSignature()){
-//            owl.getClassExpressionType();
-//        }
-//        
-//    }
 
     /**
      * Initialize the Java model from source.

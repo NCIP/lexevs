@@ -119,6 +119,7 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 				for (AssociatedConcept ac : acs) {
 					if (ac.getCode().equals(target)) {
 						validate = true;
+						break;
 					}
 				}
 			}
@@ -138,6 +139,7 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		for(Property prop: props){
 			if(prop.getPropertyName().equals(name)  && prop.getValue().getContent().equals(value)){
 				hasProp = true;
+				break;
 			}
 		}
 		return hasProp;
