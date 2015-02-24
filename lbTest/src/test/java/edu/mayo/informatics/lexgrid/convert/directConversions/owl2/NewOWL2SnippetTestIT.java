@@ -857,7 +857,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("all organisms"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -866,8 +866,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("homo sapiens", itr1));
-		assertTrue(validateQualifier("homo sapiens", "value", itr1));
+		assertTrue(validateTarget("all organisms", itr1));
 	}
 	
 	@Test
@@ -889,14 +888,14 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
 		cng = cng.restrictToAssociations(
-				Constructors.createNameAndValueList("homo sapiens"), null);
+				Constructors.createNameAndValueList("in_organism"), null);
 		ResolvedConceptReferenceList list1 = cng.resolveAsList(
 				Constructors.createConceptReference("Brca1", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("homo sapiens", itr1));
-		assertTrue(validateQualifier("homo sapiens", "value", itr1));
+		assertTrue(validateTarget("homo sapiens", itr1));
+//		assertTrue(validateQualifier("homo sapiens", "value", itr1));
 	}
 	
 

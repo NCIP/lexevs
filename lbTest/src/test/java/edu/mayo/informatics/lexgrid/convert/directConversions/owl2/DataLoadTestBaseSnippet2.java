@@ -78,9 +78,12 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 				AssociatedConcept[] acs = acl.getAssociatedConcept();
 				for (AssociatedConcept ac : acs) {
 					if (ac.getCode().equals(code)) {
+						if(ac.getAssociationQualifiers() != null){
 						for(NameAndValue nv: ac.getAssociationQualifiers().getNameAndValue()){
 						if(nv.getContent().equals(qual))
 						validate = true;
+						break;
+						}
 						}
 					}
 				}

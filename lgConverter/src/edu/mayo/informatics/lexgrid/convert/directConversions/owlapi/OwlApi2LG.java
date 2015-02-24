@@ -541,7 +541,11 @@ public class OwlApi2LG {
                 + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
         messages_.info("Processing OWL Datatype Properties ...");
-
+        //We are doing datatypes as entities.  We'd better register them as supported
+        if(!ontology.getDataPropertiesInSignature().isEmpty()){
+            String name = "datatype";
+            lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
+        }
         for (OWLDataProperty prop : ontology.getDataPropertiesInSignature()) {
 
             // Check if the data type property is an annotation property. We do
@@ -818,7 +822,6 @@ public class OwlApi2LG {
                     targetNameSpace = getNameSpace(((OWLDatatypeImpl)rest.getFiller()).getIRI());
                     opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
                     targetCode =  buildDataTypeEntity(fillerProp, targetNameSpace);
-
                 }
                 if (restriction instanceof OWLCardinalityRestriction) {
                     OWLCardinalityRestriction rest = (OWLCardinalityRestriction) restriction;
@@ -837,7 +840,8 @@ public class OwlApi2LG {
                         targetNameSpace = getNameSpace((OWLNamedIndividual) fillerProp);
                     } else if (fillerProp instanceof OWLLiteral){
                         targetCode = ((OWLLiteral) fillerProp).getLiteral();                       
-                        targetNameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();;
+                        targetNameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();
+                        buildLiteralEntity(targetCode, targetNameSpace);
                     } else {                        
                         opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));  
                     }
@@ -879,6 +883,41 @@ public class OwlApi2LG {
         }
     }
 
+    private String buildLiteralEntity(String targetCode, String targetNameSpace) {
+        String code = targetCode;
+        String nameSpace = targetNameSpace;
+        // Check if this concept has already been processed. We do not want
+        // duplicate concepts.
+        if (isEntityCodeRegistered(nameSpace, code)) {
+            return code;
+        }
+
+        Entity lgClass = new Entity();
+        lgClass.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
+        lgClass.setEntityCode(code);
+        lgClass.setIsAnonymous(Boolean.FALSE);
+
+        lgClass.setEntityCodeNamespace(nameSpace);
+
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(targetCode);
+        lgClass.setEntityDescription(ed);
+
+        int lgPropNum = 0;
+
+        // Add entity description and matching preferred text presentation to
+        // the browser text we get from the Protege API.
+        // Note: text was derived from the browser text. Since it is unclear
+        // what property it was derived from, we document as 'label'.
+        Presentation pres = CreateUtils.createPresentation(generatePropertyID(++lgPropNum), "label", lgClass
+                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_, null, null);
+        lgClass.addPresentation(pres);
+        // Add to the concept container or write to db...
+        addEntity(lgClass);
+        return code;
+        
+    }
+
     private String buildDataTypeEntity(OWLObject fillerProp, String targetNameSpace) {
         String code = fillerProp.toString();
         String nameSpace = targetNameSpace;
@@ -889,7 +928,7 @@ public class OwlApi2LG {
         }
 
         Entity lgClass = new Entity();
-        lgClass.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
+        lgClass.setEntityType(new String[] { "datatype" });
         lgClass.setEntityCode(code);
         lgClass.setIsAnonymous(Boolean.FALSE);
 
