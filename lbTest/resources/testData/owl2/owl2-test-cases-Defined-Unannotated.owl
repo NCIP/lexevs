@@ -23,7 +23,7 @@
         <source>nci evs</source>
         <dc:date>august 8, 2014</dc:date>
         <owl:versionInfo>0.1.3</owl:versionInfo>
-        <note xml:lang="en">Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations.</note>
+        <note xml:lang="en">Test of OWL2 constructions for import into LexEVS.  This file contains defines and unannotation.</note>
         <owl:versionIRI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.3"/>
     </owl:Ontology>
     
