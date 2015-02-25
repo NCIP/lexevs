@@ -210,20 +210,20 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("PrognosisGood", itr));
 		}
-		
-	@Test
-	public void testAssocURIAnnotationLoadBeta() throws LBInvocationException, LBParameterException {
-		NameAndValueList nvlist = new NameAndValueList();
-		NameAndValue nv = new NameAndValue();
-		nv.setName("note");
-		nv.setContent("annotation on an AssociationURI.");
-		nvlist.addNameAndValue(nv);
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), nvlist);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
-				true, true, 1, 1, null, null, null, null, -1);
-		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("PrognosisGood", itr));
-		}
+	// Not a valid test for an unannotated source		
+//	@Test
+//	public void testAssocURIAnnotationLoadBeta() throws LBInvocationException, LBParameterException {
+//		NameAndValueList nvlist = new NameAndValueList();
+//		NameAndValue nv = new NameAndValue();
+//		nv.setName("note");
+//		nv.setContent("annotation on an AssociationURI.");
+//		nvlist.addNameAndValue(nv);
+//		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), nvlist);
+//		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+//				true, true, 1, 1, null, null, null, null, -1);
+//		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+//		assertTrue(validateTarget("PrognosisGood", itr));
+//		}
 	
 	public void testEquivalentClassAnonLoad() throws LBInvocationException, LBParameterException {
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
@@ -530,7 +530,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testClassSomeDatatypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("positiveInteger"));
+	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
 	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
@@ -540,7 +540,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("postiveInteger", itr));
+	assertTrue(validateTarget("xsd:positiveInteger", itr));
 	}
 	
 	
@@ -559,7 +559,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testClassAllDatatypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("positiveInteger"));
+	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
 	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
@@ -569,7 +569,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("postiveInteger", itr));
+	assertTrue(validateTarget("xsd:positiveInteger", itr));
 	}
 	
 	@Test
@@ -845,13 +845,12 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("EpithelialCell", itr));
 		assertTrue(validateQualifier("EpithelialCell", "ObjectSomeValuesFrom", itr));
 	}
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("all organisms"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -860,8 +859,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("homo sapiens", itr1));
-		assertTrue(validateQualifier("homo sapiens", "value", itr1));
+		assertTrue(validateTarget("all organisms", itr1));
 	}
 	
 	@Test
@@ -872,7 +870,6 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("EpithelialCell", itr));
 		assertTrue(validateQualifier("EpithelialCell", "ObjectSomeValuesFrom", itr));
 	}
 	
@@ -881,7 +878,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
-//		assertTrue(rcri.hasNext());
+		assertTrue(rcri.hasNext());
 		cng = cng.restrictToAssociations(
 				Constructors.createNameAndValueList("in_organism"), null);
 		ResolvedConceptReferenceList list1 = cng.resolveAsList(
@@ -889,8 +886,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("homo sapiens", itr1));
-		assertTrue(validateQualifier("homo sapiens", "value", itr1));
+		assertTrue(validateTarget("homo sapiens", itr1));
 	}
 	
 

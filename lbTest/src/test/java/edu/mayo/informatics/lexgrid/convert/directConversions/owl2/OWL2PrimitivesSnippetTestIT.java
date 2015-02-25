@@ -528,7 +528,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testClassSomeDatatypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("positiveInteger"));
+	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
 	ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
@@ -538,7 +538,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("postiveInteger", itr));
+	assertTrue(validateTarget("xsd:positiveInteger", itr));
 	}
 	
 	
@@ -557,7 +557,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testClassAllDatatypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("positiveInteger"));
+	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
 	ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
@@ -567,7 +567,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("postiveInteger", itr));
+	assertTrue(validateTarget("xsd:positiveInteger", itr));
 	}
 	
 	@Test
@@ -849,7 +849,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("all organisms"));
 		ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -858,8 +858,8 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("homo sapiens", itr1));
-		assertTrue(validateQualifier("homo sapiens", "value", itr1));
+		assertTrue(validateTarget("all organisms", itr1));
+//		assertTrue(validateQualifier("all organisms", "value", itr1));
 	}
 	
 	@Test
@@ -887,8 +887,8 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("all organisms", itr1));
-		assertTrue(validateQualifier("homo sapiens", "value", itr1));
+		assertTrue(validateTarget("homo sapiens", itr1));
+//		assertTrue(validateQualifier("homo sapiens", "value", itr1));
 	}
 	
 
