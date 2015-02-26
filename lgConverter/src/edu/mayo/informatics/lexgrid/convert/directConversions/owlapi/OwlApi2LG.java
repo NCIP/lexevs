@@ -140,6 +140,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
+import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
 
 /**
@@ -407,7 +408,7 @@ public class OwlApi2LG {
                 resolveSubClassOfRelations(source, namedClass);
                 resolveDisjointWithRelations(source, namedClass);
                 resolveDisjointUnionRelations(source, namedClass);
-                // resolveComplementOfRelations(source, namedClass);
+//                resolveComplementOfRelations(source, namedClass);
                 resolveOWLObjectPropertyRelations(source, namedClass);
                 resolveAnnotationPropertyRelations(source, namedClass);
                 // resolveDatatypePropertyRelations(source, namedClass);
@@ -756,10 +757,6 @@ public class OwlApi2LG {
      * 
      */
     protected void resolveDisjointWithRelations(AssociationSource source, OWLClass owlClass) {
-//        for (OWLClassExpression disjointClassExpression : owlClass.getDisjointClasses(ontology)) {
-//            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(), source,
-//                    disjointClassExpression);
-//        }
         for (OWLDisjointClassesAxiom disjointClassAxiom : ontology.getDisjointClassesAxioms(owlClass)) {
             for (OWLClassExpression disjointClassExpression : disjointClassAxiom.getClassExpressionsMinus(owlClass)) {
                 relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getDisjointWith(),
@@ -955,13 +952,15 @@ public class OwlApi2LG {
     /**
      * Defines EMF complementOf relations based on OWL source.
      * 
-     * 
-     * protected void resolveComplementOfRelations(AssociationSource source,
-     * OWLClass rdfsNamedClass) { if (rdfsNamedClass.getComplementNNF()
-     * instanceof OWLComplementClass) {
-     * relateAssocSourceWithRDFResourceTarget(EntityTypes.CONCEPT,
-     * assocManager.getComplementOf(), source, rdfsNamedClass); } }
      */
+    protected void resolveComplementOfRelations(AssociationSource source, OWLClass rdfsNamedClass) {
+        if (rdfsNamedClass.getComplementNNF() instanceof OWLObjectComplementOf) {
+        
+            relateAssocSourceWithOWLClassExpressionTarget(EntityTypes.CONCEPT, assocManager.getComplementOf(), source,
+                    rdfsNamedClass.getComplementNNF(), null);
+        }
+    }
+    
 
     /**
      * Defines EMF class RDF properties.
@@ -1417,8 +1416,8 @@ public class OwlApi2LG {
                     // node...
                     OWLRestriction op = (OWLRestriction) operand;
                     processRestriction(op, assocSource, source);
-                } else if (operand instanceof OWLNaryBooleanClassExpression){
-                    //Still has some classes to process that are intersections or unions of.
+                } else if (operand instanceof OWLNaryBooleanClassExpression || operand instanceof OWLObjectComplementOf){
+                    //Still has some classes to process that are intersections or unions of or complements of.
                     processInnerNAryExpression(operand, assocSource, source);
               }
                     
@@ -1436,7 +1435,7 @@ public class OwlApi2LG {
             OWLObjectComplementOf complementClass = (OWLObjectComplementOf) owlClassExp;
             String lgCode = resolveAnonymousClass((OWLClass) complementClass.getOperand(), assocSource);
             String targetNameSpace = getDefaultNameSpace();
-
+          
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
         }
@@ -1450,6 +1449,21 @@ public class OwlApi2LG {
 
         // Return the lg class name
         return lgClass.getEntityCode();
+    }
+
+    private void resolveComplementOfAsLgAssociation(OWLClassExpression owlClass, AssociationSource asscSource, AssociationSource source) {
+       String targetNameSpace = getNameSpace((OWLEntity) owlClass);
+       String targetId        = resolveConceptID((OWLEntity) owlClass);
+       AssociationTarget opTarget = null;
+       if (targetId != null) {
+           opTarget = CreateUtils.createAssociationTarget(targetId, targetNameSpace);
+       } 
+       
+       if (opTarget != null) {
+           relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
+           if (!prefManager.isProcessStrictOWL() && asscSource != null)
+               relateAssociationSourceTarget(assocManager.getComplementOf(), asscSource, opTarget);
+       }
     }
 
     private void processInnerNAryExpression(OWLClassExpression operand, AssociationSource assocSource,
@@ -1472,7 +1486,19 @@ public class OwlApi2LG {
                     processInnerNAryExpression(innerOperand, assocSource, source);
                 }
             }
-        }
+        }else if (operand instanceof OWLObjectComplementOf){
+          OWLClassExpression innerOperand =  ((OWLObjectComplementOf) operand).getOperand();
+                if (innerOperand instanceof OWLRestriction) {
+                    OWLRestriction op = (OWLRestriction) operand;
+                    processRestriction(op, assocSource, source);
+                } 
+                else if (innerOperand instanceof OWLNaryBooleanClassExpression) {
+                    processInnerNAryExpression(innerOperand, assocSource, source);
+                }
+                else {
+                    resolveComplementOfAsLgAssociation(innerOperand, assocSource, source);
+                }
+            }
     }
 
     /**
@@ -2698,14 +2724,14 @@ public class OwlApi2LG {
             relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, tgtResource.asOWLClass(), ax);
         }
     }
-    protected void relateAssocSourceWithOWLClassExpressionTargetValue(EntityTypes type, AssociationWrapper aw,
-            AssociationSource source, OWLClassExpression tgtResource){
-        Iterator<OWLClassExpression> dataValues =  tgtResource.getNestedClassExpressions().iterator();
-        
-        for( OWLClassExpression owlClass :tgtResource.getNestedClassExpressions()){
- //       relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, owlClass.asOWLClass(), null);
-        }
-    }
+//    protected void relateAssocSourceWithOWLClassExpressionTargetValue(EntityTypes type, AssociationWrapper aw,
+//            AssociationSource source, OWLClassExpression tgtResource){
+//        Iterator<OWLClassExpression> dataValues =  tgtResource.getNestedClassExpressions().iterator();
+//        
+//        for( OWLClassExpression owlClass :tgtResource.getNestedClassExpressions()){
+// //       relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, owlClass.asOWLClass(), null);
+//        }
+//    }
     
     
     protected void relateAssocSourceWithIriTarget(EntityTypes type, AssociationWrapper aw,

@@ -457,7 +457,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testEquivalentComplementNamedclass() 
 			throws LBInvocationException, LBParameterException{
-	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("not"), null);
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("complementOf"), null);
 	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("HealthyPatient", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
