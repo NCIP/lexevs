@@ -460,7 +460,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 	@Test
 	public void testEquivalentComplementNamedclass() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("not"), null);
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("complementOf"), null);
 	ResolvedConceptReferenceList list = cng.resolveAsList(
 			Constructors.createConceptReference("HealthyPatient", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 

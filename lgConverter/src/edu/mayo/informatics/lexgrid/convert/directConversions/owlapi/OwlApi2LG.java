@@ -1438,6 +1438,7 @@ public class OwlApi2LG {
           
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
+            processInnerNAryExpression(complementClass, assocSource, source);
         }
         if (owlClassExp instanceof OWLRestriction) {
             OWLRestriction restrictionClassExp = (OWLRestriction) owlClassExp;
@@ -2724,14 +2725,6 @@ public class OwlApi2LG {
             relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, tgtResource.asOWLClass(), ax);
         }
     }
-//    protected void relateAssocSourceWithOWLClassExpressionTargetValue(EntityTypes type, AssociationWrapper aw,
-//            AssociationSource source, OWLClassExpression tgtResource){
-//        Iterator<OWLClassExpression> dataValues =  tgtResource.getNestedClassExpressions().iterator();
-//        
-//        for( OWLClassExpression owlClass :tgtResource.getNestedClassExpressions()){
-// //       relateAssocSourceWithOWLClassTarget(EntityTypes.CONCEPT, aw, source, owlClass.asOWLClass(), null);
-//        }
-//    }
     
     
     protected void relateAssocSourceWithIriTarget(EntityTypes type, AssociationWrapper aw,
