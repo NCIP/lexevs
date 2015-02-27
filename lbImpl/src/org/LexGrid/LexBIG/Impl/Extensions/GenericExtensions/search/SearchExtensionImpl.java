@@ -75,7 +75,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 codeSystemsToExclude, 
                 matchAlgorithm, 
                 includeAnonymous, 
-                false);
+                true);
     }
 
     @Override
