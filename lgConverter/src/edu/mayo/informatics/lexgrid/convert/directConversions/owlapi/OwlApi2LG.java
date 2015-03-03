@@ -92,6 +92,7 @@ import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDatatype;
@@ -112,6 +113,7 @@ import org.semanticweb.owlapi.model.OWLObjectHasSelf;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -191,6 +193,8 @@ public class OwlApi2LG {
     private Map<String, AssociationSource> lgAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
     private Map<String, String> owlInstanceName2code_ = null;
     private Map<String, String> owlAnnotationPropertiesTocode_  = null;
+    //this Map provides us with a set of values that can be used to determine punned individuals
+    private Map<String, String> owlPunnedClassesToCode_ = new HashMap<String, String>();
 
     // Cached values and state
     private int conceptCount_ = 0;
@@ -345,7 +349,8 @@ public class OwlApi2LG {
 
         messages_.info("Processing OWL Individuals.....");
         processAllInstanceAndProperties(snap);
-
+        initPunnedInstanceNamesToCode();
+        
         // Step 3: Process all the concept relations
         processAllConceptsRelations();
 
@@ -421,7 +426,7 @@ public class OwlApi2LG {
 
 
     private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
-     //   ontology.getAxioms(owlClass)
+
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
             
@@ -439,17 +444,6 @@ public class OwlApi2LG {
             for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
                 //TODO
             }
-//            if(owlAnnotationPropertiesTocode_.containsKey(annotationAxiom.getProperty().getIRI().toString())){
-//                    AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
-//                    if (lgAssoc == null) {
-//                        return;
-//                    }
-//                    OWLAnnotation anno = annotationAxiom.getAnnotation();
-//                    String prefix = owlClass.getIRI().getStart();
-//                    relateAssocSourceWithAnnotationTarget(EntityTypes.CONCEPT,  lgAssoc,
-//                           source, anno, annotationAxiom, prefix);
-//                
-//            }
         }
 
     }
@@ -2332,7 +2326,7 @@ public class OwlApi2LG {
 
         int count = 0;
         owlInstanceName2code_ = new HashMap();
-
+        //We need to initialize a record of punned instances to avoid duplicate associations
         // The idea is to iterate through all the OWL individuals, and register
         // them as well as find out additional associations (e.g,. From)
         for (OWLNamedIndividual individual : ontology.getIndividualsInSignature()) {
@@ -2356,13 +2350,66 @@ public class OwlApi2LG {
         messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
                 + " Heap Usage: " + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsage()) + " Heap Delta:"
                 + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
-
+        
         // If we found at least one, register the supported entity type.
         if (!owlInstanceName2code_.isEmpty()) {
             String name = EntityTypes.INSTANCE.toString();
             lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
         }
     } // en
+
+    private void initPunnedInstanceNamesToCode() {
+        int count = 0;
+        for (OWLAnnotationProperty ap : ontology
+                .getAnnotationPropertiesInSignature()) {
+            IRI iri = ap.getIRI();
+            if (ontology.containsDataPropertyInSignature(iri)) {
+
+                OWLDataProperty dp = factory.getOWLDataProperty(iri);
+                for(OWLAxiom axiom: ontology.getReferencingAxioms(dp)){
+                    if(axiom instanceof OWLDataPropertyAssertionAxiom
+                            && !((OWLDataPropertyAssertionAxiom) axiom).getSubject()
+                            .isAnonymous()){
+                        
+                        OWLDataPropertyAssertionAxiom assertion = (OWLDataPropertyAssertionAxiom) axiom;
+                        OWLNamedIndividual subject = assertion.getSubject()
+                                .asOWLNamedIndividual();
+                        Entity lgInstance =  resolvePunnedIndividual(subject);
+                        if (lgInstance != null) {
+                            addEntity(lgInstance);
+                        }
+                        count++;
+                        if (count % 1000 == 0) {
+                            messages_.info("OWL individuals processed: " + count);
+                        }
+                     
+                    }
+                }
+            }
+            if (ontology.containsObjectPropertyInSignature(iri)) {
+                OWLObjectProperty op = factory.getOWLObjectProperty(iri);
+                for (OWLAxiom axiom : ontology.getReferencingAxioms(op)) {
+                    if (axiom instanceof OWLObjectPropertyAssertionAxiom
+                            && !((OWLObjectPropertyAssertionAxiom) axiom).getSubject()
+                                    .isAnonymous()) {
+                        OWLObjectPropertyAssertionAxiom assertion = (OWLObjectPropertyAssertionAxiom) axiom;
+                        if (!(assertion.getObject().isAnonymous())) {
+                            OWLNamedIndividual subject = assertion.getSubject()
+                                    .asOWLNamedIndividual();                          
+                            Entity lgInstance = resolvePunnedIndividual(subject);
+                            if (lgInstance != null) {
+                                addEntity(lgInstance);
+                            }
+                            count++;
+                            if (count % 1000 == 0) {
+                                messages_.info("OWL individuals processed: " + count);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Defines an EMF instance.
@@ -2374,7 +2421,7 @@ public class OwlApi2LG {
             return null;
 
         String label = resolveLabel(owlIndividual);
-
+       
         // Create the raw EMF individual and assign label as initial
         // description,
         // which may be overridden later by preferred text.
@@ -2402,6 +2449,35 @@ public class OwlApi2LG {
         // Updated 05/28/2008: handle the individual OWLObjectProperties
         // and OWLDatatypeProperties. Essentially, both are represented
         // as instanceProperties.
+        resolveEntityProperties(lgInstance, owlIndividual);
+
+        // Remember the rdf to code mapping and return.
+        owlInstanceName2code_.put(owlIndividual.getIRI().toString(), lgInstance.getEntityCode());
+        return lgInstance;
+    }
+    
+    protected Entity resolvePunnedIndividual(OWLNamedIndividual owlIndividual) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getLocalName(owlIndividual)).append("_OWL_IND");
+        String individualName = builder.toString();
+
+        if (isNoopNamespace(individualName))
+            return null;
+
+        String label = resolveLabel(owlIndividual);
+       
+        // Create the raw EMF individual and assign label as initial
+        // description,
+        // which may be overridden later by preferred text.
+        Entity lgInstance = new Entity();
+        lgInstance.setEntityType(new String[] { EntityTypes.INSTANCE.toString() });
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(label);
+        lgInstance.setEntityDescription(ed);
+        lgInstance.setEntityCode(individualName);
+        String nameSpace = getNameSpace(owlIndividual);
+        lgInstance.setEntityCodeNamespace(nameSpace);
+
         resolveEntityProperties(lgInstance, owlIndividual);
 
         // Remember the rdf to code mapping and return.
@@ -2960,20 +3036,20 @@ public class OwlApi2LG {
             }
 
 
-        String target = null;
-        String association = null;
-        for(OWLClassExpression owlex :axiom.getNestedClassExpressions()){
-            if(owlex.getClassExpressionType().name().equals("DATA_SOME_VALUES_FROM")){
-                for(OWLEntity entity : owlex.getSignature()){
-                    if(entity.getEntityType().getName().equals("Datatype")){
-                        target = entity.getIRI().getFragment();
-                    }
-                    if(entity.getEntityType().getName().equals("DataPropertytype")){
-                        association = entity.getIRI().getFragment();
-                    }
-                }
-            }
-        }
+//        String target = null;
+//        String association = null;
+//        for(OWLClassExpression owlex :axiom.getNestedClassExpressions()){
+//            if(owlex.getClassExpressionType().name().equals("DATA_SOME_VALUES_FROM")){
+//                for(OWLEntity entity : owlex.getSignature()){
+//                    if(entity.getEntityType().getName().equals("Datatype")){
+//                        target = entity.getIRI().getFragment();
+//                    }
+//                    if(entity.getEntityType().getName().equals("DataPropertytype")){
+//                        association = entity.getIRI().getFragment();
+//                    }
+//                }
+//            }
+//        }
     }
     }
 

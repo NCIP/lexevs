@@ -244,28 +244,10 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		boolean foundIndividual = false;
 		//TODO insure these duplicate associations are correct.  If not uncomment this and correct it as necessary.  
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround_OWL_IND", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		if(itr.hasNext()){
-			ResolvedConceptReference ref = itr.next();
-			Association[] assocs = ref.getSourceOf().getAssociation();
-			for(Association assoc : assocs){
-				if(assoc.getAssociatedConcepts().getAssociatedConceptCount() > 1){
-				AssociatedConcept[] concepts = assoc.getAssociatedConcepts().getAssociatedConcept();
-
-				for(AssociatedConcept con: concepts){
-					if(con.getEntity().getEntityType(0).equals("instance"))
-					{
-						foundIndividual = true;
-						break;
-					}
-				}
-				assertTrue(foundIndividual);
-				assertNotSame(concepts[0].getCode(),concepts[1].getCode());
-				}
-			}
-		}
+		assertTrue(validateTarget("PrognosisGood", itr));		
 	}
 	
 	@Test
