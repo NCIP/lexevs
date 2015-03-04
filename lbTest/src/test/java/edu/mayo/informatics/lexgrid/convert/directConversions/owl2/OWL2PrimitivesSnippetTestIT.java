@@ -142,9 +142,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("AssociationLIT"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();
-		assertTrue(validateProperty("term", "Association", rcr));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -152,9 +150,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("AssociationSTR"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();
-		assertTrue(validateProperty("term", "Association", rcr));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -162,7 +158,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("source"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -170,7 +166,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("term"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());;
+		assertFalse(itr.hasNext());;
 	}
 	
 	@Test
@@ -178,7 +174,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("term_type"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -186,7 +182,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("dc:date"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	
@@ -236,28 +232,10 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		boolean foundIndividual = false;
 		//TODO insure these duplicate associations are correct.  If not uncomment this and correct it as necessary.  
 		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
-		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround_OWL_IND", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		if(itr.hasNext()){
-			ResolvedConceptReference ref = itr.next();
-			Association[] assocs = ref.getSourceOf().getAssociation();
-			for(Association assoc : assocs){
-				if(assoc.getAssociatedConcepts().getAssociatedConceptCount() > 1){
-				AssociatedConcept[] concepts = assoc.getAssociatedConcepts().getAssociatedConcept();
-
-				for(AssociatedConcept con: concepts){
-					if(con.getEntity().getEntityType(0).equals("instance"))
-					{
-						foundIndividual = true;
-						break;
-					}
-				}
-				assertTrue(foundIndividual);
-				assertNotSame(concepts[0].getCode(),concepts[1].getCode());
-				}
-			}
-		}
+		assertTrue(validateTarget("PrognosisGood", itr));		
 	}
 	
 	@Test

@@ -149,9 +149,9 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationLIT"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();
-		assertTrue(validateProperty("term", "Association", rcr));
+ 		assertFalse(itr.hasNext());
+//		ResolvedConceptReference rcr = itr.next();
+//		assertTrue(validateProperty("term", "Association", rcr));
 	}
 	
 	@Test
@@ -159,9 +159,9 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationSTR"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();
-		assertTrue(validateProperty("term", "Association", rcr));
+		assertFalse(itr.hasNext());
+//		ResolvedConceptReference rcr = itr.next();
+//		assertTrue(validateProperty("term", "Association", rcr));
 	}
 	
 	@Test
@@ -169,7 +169,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("source"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -177,7 +177,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("term"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());;
+		assertFalse(itr.hasNext());;
 	}
 	
 	@Test
@@ -185,7 +185,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("term_type"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -193,7 +193,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("dc:date"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	

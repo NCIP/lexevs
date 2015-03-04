@@ -62,8 +62,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 
 	@Test
 	public void testURLForExternalClass() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000000"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000000"));
+		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 	}
@@ -71,17 +71,17 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 
 	@Test
 	public void testURLForExternalClass2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000148", 
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000148", 
 				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
-		ResolvedConceptReferencesIterator itr1 = cns.resolve(null, null, null);
+		ResolvedConceptReferencesIterator itr1 = cnsp.resolve(null, null, null);
 		assertNotNull(itr1);
 		assertTrue(itr1.hasNext());
 	}
 	
 	@Test
 	public void testEntityForDataTypeProperty1st() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("has_physical_location"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("has_physical_location"));
+		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 	}
@@ -95,23 +95,23 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 		ConceptReferenceList list = new ConceptReferenceList();
 		list.addConceptReference(cr);
 		String[] stringList = {"in_organism"};
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
-		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cnsp.resolveToList(null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		ResolvedConceptReference rcr = itr.next();
-				
-		assertTrue(rcr.getEntity().getDefinitionCount() > 0);
-		Definition def = rcr.getEntity().getDefinition()[0];
-		def.getValue().getContent().equals("hello there");
-		assertTrue(validatePropertyQualifierFromProperty(def, "somebody said so"));
+// provenance not defined because there is no annotation in this source			
+//		assertTrue(rcr.getEntity().getDefinitionCount() > 0);
+//		Definition def = rcr.getEntity().getDefinition()[0];
+//		def.getValue().getContent().equals("hello there");
+//		assertTrue(validatePropertyQualifierFromProperty(def, "somebody said so"));
 	}
 	
 	@Test
 	public void testEntityForDataTypePropertySemanticTypeList()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-			cns = cns.restrictToCodes(Constructors.createConceptReferenceList("semanticType"));
-			ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+			cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("semanticType"));
+			ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 			assertNotNull(itr);
 			assertTrue(itr.hasNext());
 			ResolvedConceptReference rcr = itr.next();
@@ -128,88 +128,89 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 			assertTrue(def4.getValue().getContent().equals("Organism"));	
 	}
 	
-	@Test
-	public void testEntityForAnnotationPropertyAssociationURI()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationURI"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
-		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();		
-		assertTrue(validateProperty("term", "Association", rcr));
-	}
 	
-	@Test
-	public void testEntityForAnnotationPropertyAssociaitonLIT()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationLIT"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
-		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();
-		assertTrue(validateProperty("term", "Association", rcr));
-	}
-	
-	@Test
-	public void testEntityForAnnotationPropertyAssociationSTR()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationSTR"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
-		assertNotNull(itr);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference rcr = itr.next();
-		assertTrue(validateProperty("term", "Association", rcr));
-	}
+//	@Test
+//	public void testEntityForAnnotationPropertyAssociationURI()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+//		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("AssociationURI"));
+//		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
+//		assertNotNull(itr);
+//		assertTrue(itr.hasNext());
+//		ResolvedConceptReference rcr = itr.next();		
+//		assertTrue(validateProperty("term", "Association", rcr));
+//	}
+//	
+//	@Test
+//	public void testEntityForAnnotationPropertyAssociaitonLIT()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+//		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("AssociationLIT"));
+//		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
+//		assertNotNull(itr);
+//		assertTrue(itr.hasNext());
+//		ResolvedConceptReference rcr = itr.next();
+//		assertTrue(validateProperty("term", "Association", rcr));
+//	}
+//	
+//	@Test
+//	public void testEntityForAnnotationPropertyAssociationSTR()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+//		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("AssociationSTR"));
+//		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
+//		assertNotNull(itr);
+//		assertTrue(itr.hasNext());
+//		ResolvedConceptReference rcr = itr.next();
+//		assertTrue(validateProperty("term", "Association", rcr));
+//	}
 	
 	@Test
 	public void testEntityForAnnotationPropertySource()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("source"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("source"));
+		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
 	public void testEntityForAnnotationPropertyTerm()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("term"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("term"));
+		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());;
+		assertFalse(itr.hasNext());;
 	}
 	
 	@Test
 	public void testEntityForAnnotationPropertyTermType()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("term_type"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("term_type"));
+		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
 	public void testEntityForAnnotationPropertyDate()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("dc:date"));
-		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("dc:date"));
+		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
-		assertTrue(itr.hasNext());
+		assertFalse(itr.hasNext());
 	}
 	
 	
 	//Relationship Unit Tests
-	@Test
-	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(null, 
-				true, false, 1, 1, null, null, null, null, -1);
-		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("SickPatient", itr));
-		//TODO develop a better definition of the anonymous node
-		}
+//	@Test
+//	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
+//		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+//		ResolvedConceptReferenceList list = cngp.resolveAsList(null, 
+//				true, false, 1, 1, null, null, null, null, -1);
+//		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+//		assertTrue(validateTarget("SickPatient", itr));
+//		//TODO develop a better definition of the anonymous node
+//		}
 	
-	@Test
-	public void testAssocURIAnnotationLoadAlpha() throws LBInvocationException, LBParameterException {
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
-				true, true, 1, 1, null, null, null, null, -1);
-		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("PrognosisGood", itr));
-		}
+//	@Test
+//	public void testAssocURIAnnotationLoadAlpha() throws LBInvocationException, LBParameterException {
+//		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), null);
+//		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+//				true, true, 1, 1, null, null, null, null, -1);
+//		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+//		assertTrue(validateTarget("PrognosisGood", itr));
+//		}
 	// Not a valid test for an unannotated source		
 //	@Test
 //	public void testAssocURIAnnotationLoadBeta() throws LBInvocationException, LBParameterException {
@@ -218,16 +219,16 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 //		nv.setName("note");
 //		nv.setContent("annotation on an AssociationURI.");
 //		nvlist.addNameAndValue(nv);
-//		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), nvlist);
-//		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+//		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), nvlist);
+//		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 //				true, true, 1, 1, null, null, null, null, -1);
 //		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 //		assertTrue(validateTarget("PrognosisGood", itr));
 //		}
 	
 	public void testEquivalentClassAnonLoad() throws LBInvocationException, LBParameterException {
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("TumorBenign", itr));
@@ -237,8 +238,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	public void testForDuplicateAssociations() throws LBInvocationException, LBParameterException{
 		boolean foundIndividual = false;
 		//TODO insure these duplicate associations are correct.  If not uncomment this and correct it as necessary.  
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		if(itr.hasNext()){
@@ -264,8 +265,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testAssocLoadingDisjointWith_LEXEVS_685() throws LBInvocationException, LBParameterException {
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointWith"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("Person", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointWith"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("Person", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("DiseasesDisordersFindings", itr));
@@ -274,8 +275,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testSubClassOfExternalNamedClass() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("EpithelialCell", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, false, 1, 1, null, null, null, null, -1);
@@ -288,8 +289,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testAssociationExternalClassSTR() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationSTR"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationSTR"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("HappyPatientWalkingAround", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -300,8 +301,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testAssociationExternalClassV1() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("HappyPatientWalkingAround", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -312,8 +313,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testAssociationExternalClassURI() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("HappyPatientWalkingAround", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -324,8 +325,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testAssociationExternalClassLIT() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationLIT"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationLIT"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("HappyPatientWalkingAround", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -338,8 +339,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassIntersectionNamedClass() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("TotalPerson", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -350,8 +351,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassIntersectionNamedClassAnd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("TotalPerson", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -362,8 +363,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass1st() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -374,8 +375,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass2nd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -386,8 +387,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass3rd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -398,8 +399,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass4th() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -410,8 +411,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass5th() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -422,8 +423,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass6th() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -434,8 +435,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass7th() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -446,8 +447,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassUnionNamedDisjointUnionClass8th() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("disjointUnion"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("C123", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -458,8 +459,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentComplementNamedclass() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("complementOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("complementOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("HealthyPatient", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -470,8 +471,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 //	@Test
 //	public void testEquivalentClassOneOf() 
 //			throws LBInvocationException, LBParameterException{
-//	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-//	ResolvedConceptReferenceList list = cng.resolveAsList(
+//	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+//	ResolvedConceptReferenceList list = cngp.resolveAsList(
 //			Constructors.createConceptReference("Finding", 
 //					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 //			true, true, 1, 1, null, null, null, null, -1);
@@ -482,8 +483,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassOneOfFirst() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("Fever", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -494,8 +495,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassOneOfSecond() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("PaleSkin", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -506,8 +507,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassOneOfThird() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("type"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("ShallowBreathing", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -518,8 +519,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassSomeDatatypeRestriction() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("Ras", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -530,12 +531,12 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testClassSomeDatatypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
-	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
+	ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("Ras", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -547,8 +548,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassAllDatatypeRestriction() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("k-Ras", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -559,12 +560,12 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testClassAllDatatypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
-	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("xsd:positiveInteger"));
+	ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("k-Ras", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -575,8 +576,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentDatatypeHasValue() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("OncogeneTim", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -587,12 +588,12 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentDatatypeHasValueAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("12345"));
-	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+	cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("12345"));
+	ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("OncogeneTim", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -603,8 +604,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassSomeObjectTypeRestriction() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("SOS", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -615,8 +616,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassSomeObjectTypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_related_to_disease"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_related_to_disease"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("SOS", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -627,8 +628,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassSomeObjectTypeRestrictionExternalClass() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("BRaf", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -639,8 +640,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassSomeObjectTypeRestrictionExternalClassAnd() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("BRaf", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -651,8 +652,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassAllObjectTypeRestrictionExternalClass() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("Erbb2", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -663,8 +664,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassAllObjectTypeRestrictionExternalClassAnd() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("Erbb2", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -675,8 +676,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassAllObjectTypeRestriction() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("SHH", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -687,8 +688,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassAllObjectTypeRestrictionAnd() 
 			throws LBInvocationException, LBParameterException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_related_to_disease"), null);
-	ResolvedConceptReferenceList list = cng.resolveAsList(
+	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_related_to_disease"), null);
+	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("SHH", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
@@ -699,8 +700,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassObjectHasValue() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("Mefv", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -710,8 +711,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	public void testEquivalentClassObjectHasValueAnd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_related_to_disease"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_related_to_disease"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("Mefv", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -722,8 +723,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassIntersectionObjectRestrictionsAnd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("MildlySickCancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -735,8 +736,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassIntersectionObjectRestrictions2ndAnd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("MildlySickCancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -747,8 +748,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	@Test
 	public void testEquivalentClassIntersectionObjectRestrictions3ndAnd() 
 			throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("MildlySickCancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -758,8 +759,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassUnionObjectRestrictionsAnd() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("VerySickCancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -769,8 +770,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassUnionObjectRestrictions1stOr() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("VerySickCancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -780,8 +781,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassUnionObjectRestrictions2ndOr() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("VerySickCancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -791,8 +792,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassRoleGroup1stAnd() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("CancerPatient", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -802,8 +803,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassRoleGroup2ndAnd() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("PrognosisGood", itr));
@@ -811,8 +812,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassRoleGroup3rdAnd() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_prognosis"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("PrognosisBad", itr));
@@ -820,8 +821,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassRoleGroup4thAnd() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("TumorBenign", itr));
@@ -829,8 +830,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testEquivalentClassRoleGroup5thAnd() throws LBInvocationException, LBParameterException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("TumorMalignant", itr));
@@ -840,8 +841,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testUnionObjectAndDataTypeFirstOr() throws LBException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
@@ -850,12 +851,12 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("all organisms"));
-		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("all organisms"));
+		ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("in_organism"), null);
-		ResolvedConceptReferenceList list1 = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("in_organism"), null);
+		ResolvedConceptReferenceList list1 = cngp.resolveAsList(
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
@@ -864,8 +865,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testIntersectionObjectAndDatatype1stAnd() throws LBException{
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("gene_expressed_in"), null);
+		ResolvedConceptReferenceList list = cngp.resolveAsList(
 				Constructors.createConceptReference("Brca1", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
@@ -875,13 +876,13 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testIntersectionObjectAndDatatype2ndAnd() throws LBException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
-		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
+		ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
-		cng = cng.restrictToAssociations(
+		cngp = cngp.restrictToAssociations(
 				Constructors.createNameAndValueList("in_organism"), null);
-		ResolvedConceptReferenceList list1 = cng.resolveAsList(
+		ResolvedConceptReferenceList list1 = cngp.resolveAsList(
 				Constructors.createConceptReference("Brca1", 
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);

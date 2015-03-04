@@ -84,6 +84,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationObjectVisitorEx;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLCardinalityRestriction;
@@ -342,7 +343,7 @@ public class OwlApi2LG {
 
         messages_.info("Processing OWL Classes.....");
         processAllConceptsAndProperties(snap);
-        processAllAnnotationProperties(snap);
+ //       processAllAnnotationProperties(snap);
         // Step 2: Process OWL individuals. Essentially, determine to which
         // classes these instances belong to, as well as, relations between
         // the individuals themselves (e.g., differentFrom)?
@@ -1922,20 +1923,20 @@ public class OwlApi2LG {
      */
     protected void initSupportedAssociationAnnotationProperties() {
         for (OWLAnnotationProperty annotationProperty : ontology.getAnnotationPropertiesInSignature()) {
-//            Iterator<OWLAnnotationPropertyRangeAxiom> itr = ontology.getAnnotationPropertyRangeAxioms(annotationProperty).iterator();
-//            while(itr.hasNext()){
-//                OWLAnnotationPropertyRangeAxiom OwlAx = itr.next();
-
-//                if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
-//                    addAnnotationPropertyAssociations(annotationProperty);
-//                }
-//                } 
-            Iterator<OWLAnnotationAssertionAxiom> itr = annotationProperty.getAnnotationAssertionAxioms(ontology).iterator();
+            Iterator<OWLAnnotationPropertyRangeAxiom> itr = ontology.getAnnotationPropertyRangeAxioms(annotationProperty).iterator();
             while(itr.hasNext()){
-                OWLAnnotationAssertionAxiom assertion = itr.next();
-                if(assertion.getProperty().getIRI().getFragment().equals("term") && stripDataType(assertion.getValue().toString()).equals("Association"))
-                {addAnnotationPropertyAssociations(annotationProperty);}
-            }
+                OWLAnnotationPropertyRangeAxiom OwlAx = itr.next();
+
+                if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
+                    addAnnotationPropertyAssociations(annotationProperty);
+                }
+                } 
+//            Iterator<OWLAnnotationAssertionAxiom> itr = annotationProperty.getAnnotationAssertionAxioms(ontology).iterator();
+//            while(itr.hasNext()){
+//                OWLAnnotationAssertionAxiom assertion = itr.next();
+//                if(assertion.getProperty().getIRI().getFragment().equals("term") && stripDataType(assertion.getValue().toString()).equals("Association"))
+//                {addAnnotationPropertyAssociations(annotationProperty);}
+//            }
         }
         
         /*
@@ -2259,7 +2260,7 @@ public class OwlApi2LG {
         // The idea is to iterate through all the OWL individuals, and register
         // them as well as find out additional associations (e.g,. From)
         for (OWLAnnotationProperty aProp : ontology.getAnnotationPropertiesInSignature()) {
-
+           // aProp.getReferencingAxioms(ontology)
             Entity lgProp = resolveAnnotationProperty(aProp);
             if (lgProp != null) {
                 addEntity(lgProp);
