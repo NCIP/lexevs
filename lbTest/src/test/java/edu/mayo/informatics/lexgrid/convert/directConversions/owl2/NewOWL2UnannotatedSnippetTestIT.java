@@ -584,7 +584,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 	@Test
 	public void testEquivalentDatatypeHasValueAnd() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("12345"));
+	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("integer"));
 	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
@@ -594,7 +594,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("12345", itr));
+	assertTrue(validateQualifier("integer", "12345", itr));
 	}
 	
 	@Test
@@ -847,7 +847,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("all organisms"));
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("PlainLiteral"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -856,7 +856,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-		assertTrue(validateTarget("all organisms", itr1));
+		assertTrue(validateQualifier("PlainLiteral", "all organisms", itr1));
 	}
 	
 	@Test
@@ -872,7 +872,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 	
 	@Test
 	public void testIntersectionObjectAndDatatype2ndAnd() throws LBException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("homo sapiens"));
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("PlainLiteral"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -883,7 +883,7 @@ public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotated
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-		assertTrue(validateTarget("homo sapiens", itr1));
+		assertTrue(validateQualifier("PlainLiteral", "homo sapiens", itr1));
 	}
 	
 

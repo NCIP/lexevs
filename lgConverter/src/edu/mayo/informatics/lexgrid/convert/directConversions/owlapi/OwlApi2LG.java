@@ -92,6 +92,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDataHasValue;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
@@ -831,9 +832,10 @@ public class OwlApi2LG {
                         targetCode = resolveInstanceID((OWLNamedIndividual) fillerProp);
                         targetNameSpace = getNameSpace((OWLNamedIndividual) fillerProp);
                     } else if (fillerProp instanceof OWLLiteral){
-                        targetCode = ((OWLLiteral) fillerProp).getLiteral();                       
-                        targetNameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();
-                        buildLiteralEntity(targetCode, targetNameSpace);
+                        //  targetCode = ((OWLLiteral) fillerProp).getDatatype().getIRI().getFragment();
+                          targetNameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();
+                          opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
+                          targetCode =  buildDataTypeEntity(fillerProp, targetNameSpace);
                     } else {                        
                         opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));  
                     }
@@ -854,6 +856,22 @@ public class OwlApi2LG {
 
                 if (restriction instanceof OWLQuantifiedObjectRestriction) {
                     AssociationQualification opQual = createAssociationQualification(restriction, lgSupportedMappings_);
+                    if (opData != null) {
+                        opData.addAssociationQualification(opQual);
+                    }
+                    if (opTarget != null) {
+                        opTarget.addAssociationQualification(opQual);
+                    }
+                }
+                
+                if(restriction instanceof OWLDataHasValue){
+                    String label = restriction.getClassExpressionType().getName();
+                    if (label.isEmpty()) {
+                        label = renderer.render(restriction);
+                    }
+                    String value = ((OWLDataHasValue) restriction).getValue().getLiteral();
+                    AssociationQualification opQual = CreateUtils.createAssociationQualification(label, null, value != null? value:label,
+                            lgSupportedMappings_);
                     if (opData != null) {
                         opData.addAssociationQualification(opQual);
                     }
@@ -911,8 +929,23 @@ public class OwlApi2LG {
     }
 
     private String buildDataTypeEntity(OWLObject fillerProp, String targetNameSpace) {
-        String code = fillerProp.toString();
-        String nameSpace = targetNameSpace;
+        String code = null;
+        String nameSpace = null;
+        EntityDescription ed = null;
+        if(fillerProp instanceof OWLDataRange){
+        code = fillerProp.toString();
+        nameSpace = targetNameSpace;
+        ed = new EntityDescription();
+        ed.setContent(renderer.render(fillerProp));
+        }
+        
+        if(fillerProp instanceof OWLLiteral){
+            code = ((OWLLiteral) fillerProp).getDatatype().getBuiltInDatatype().getShortName();
+            nameSpace = ((OWLLiteral) fillerProp).getDatatype().getIRI().getStart();
+            ed = new EntityDescription();
+            ed.setContent(code);
+        }
+        
         // Check if this concept has already been processed. We do not want
         // duplicate concepts.
         if (isEntityCodeRegistered(nameSpace, code)) {
@@ -926,8 +959,8 @@ public class OwlApi2LG {
 
         lgClass.setEntityCodeNamespace(nameSpace);
 
-        EntityDescription ed = new EntityDescription();
-        ed.setContent(renderer.render(fillerProp));
+//        EntityDescription ed = new EntityDescription();
+//        ed.setContent(renderer.render(fillerProp));
         lgClass.setEntityDescription(ed);
 
         int lgPropNum = 0;
