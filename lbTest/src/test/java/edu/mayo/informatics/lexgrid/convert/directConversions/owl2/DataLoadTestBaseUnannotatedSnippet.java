@@ -78,6 +78,7 @@ public class DataLoadTestBaseUnannotatedSnippet extends TestCase {
 						for(NameAndValue nv: ac.getAssociationQualifiers().getNameAndValue()){
 						if(nv.getContent().equals(qual))
 						validate = true;
+						break;
 						}
 					}
 				}
@@ -92,6 +93,7 @@ public class DataLoadTestBaseUnannotatedSnippet extends TestCase {
 					for(PropertyQualifier pq: prop.getPropertyQualifier()){
 					if(pq.getValue().getContent().equals(qual))
 					validate = true;
+					break;
 					}
 				
 			
@@ -116,6 +118,7 @@ public class DataLoadTestBaseUnannotatedSnippet extends TestCase {
 				for (AssociatedConcept ac : acs) {
 					if (ac.getCode().equals(target)) {
 						validate = true;
+						break;
 					}
 				}
 			}

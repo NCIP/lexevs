@@ -121,6 +121,9 @@ public class OwlApi2LGConstants {
     public static final String SUPP_HIERARCHY_ISA_URI = URI_MISSING;
     public static final String[] SUPP_HIERARCHY_ISA_ASSOCIATION_LIST =
         new String[] { ASSOC_SUBCLASSOF };
+    
+    /* Individual designation */
+    public static final String INSTANCE_SUFFIX = "_OWL_IND";
 
     /*
      * Indicate property names to be treated as specific classes of
@@ -172,4 +175,7 @@ public class OwlApi2LGConstants {
     
     //Complex properties namespace
     public static final String COMP_PROP_NAMESPACE = "ncicp";
+    
+    //Entity type for datatype implementation
+    public static final String DATA_TYPE_ENTITY_TYPE = "datatype";
 }

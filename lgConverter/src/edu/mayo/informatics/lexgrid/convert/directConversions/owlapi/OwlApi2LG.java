@@ -93,6 +93,7 @@ import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataHasValue;
+import org.semanticweb.owlapi.model.OWLDataOneOf;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
@@ -196,7 +197,7 @@ public class OwlApi2LG {
     private Map<String, String> owlInstanceName2code_ = null;
     private Map<String, String> owlAnnotationPropertiesTocode_  = null;
     //this Map provides us with a set of values that can be used to determine punned individuals
-    private Map<String, String> owlPunnedClassesToCode_ = new HashMap<String, String>();
+//    private Map<String, String> owlPunnedClassesToCode_ = new HashMap<String, String>();
 
     // Cached values and state
     private int conceptCount_ = 0;
@@ -946,21 +947,17 @@ public class OwlApi2LG {
             ed.setContent(code);
         }
         
-        // Check if this concept has already been processed. We do not want
-        // duplicate concepts.
+        // Check if this concept has already been processed. 
         if (isEntityCodeRegistered(nameSpace, code)) {
             return code;
         }
 
         Entity lgClass = new Entity();
-        lgClass.setEntityType(new String[] { "datatype" });
+        lgClass.setEntityType(new String[] { OwlApi2LGConstants.DATA_TYPE_ENTITY_TYPE });
         lgClass.setEntityCode(code);
         lgClass.setIsAnonymous(Boolean.FALSE);
 
         lgClass.setEntityCodeNamespace(nameSpace);
-
-//        EntityDescription ed = new EntityDescription();
-//        ed.setContent(renderer.render(fillerProp));
         lgClass.setEntityDescription(ed);
 
         int lgPropNum = 0;
@@ -1212,12 +1209,13 @@ public class OwlApi2LG {
             }
         }
         
+        //Giving the One of data properties full definition status.
         for (OWLDataProperty prop : owlClass.getDataPropertiesInSignature()) {
             String propertyName = prop.getIRI().getFragment();
             Set<OWLDataRange> ranges = prop.getRanges(ontology);
             if (!ranges.isEmpty()) {
                 OWLDataRange range = prop.getRanges(ontology).iterator().next();
-                if (range.getDataRangeType().getName().equals("DataOneOf")) {
+                    if (range instanceof OWLDataOneOf) {
                     OWLDataOneOfImpl oneOf = (OWLDataOneOfImpl) range;
                     for (OWLLiteral lit : oneOf.getValues()) {
                         String literal = lit.getLiteral();
@@ -1466,6 +1464,7 @@ public class OwlApi2LG {
           
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
+            //We need to make sure there are no other inner NAry elements.
             processInnerNAryExpression(complementClass, assocSource, source);
         }
         if (owlClassExp instanceof OWLRestriction) {
@@ -1495,6 +1494,8 @@ public class OwlApi2LG {
        }
     }
 
+    //Recurse through any NAry expressions or complement of until all have been parsed and loaded as
+    //associations
     private void processInnerNAryExpression(OWLClassExpression operand, AssociationSource assocSource,
             AssociationSource source) {
         if (operand instanceof OWLObjectIntersectionOf) {
@@ -1669,16 +1670,11 @@ public class OwlApi2LG {
     protected void initSchemeMetadata(){
         // Set the ontology version from the versionInfo tag
         String version = "";
-        // PrefixManager prefixManager= renderer.getOntologyShortFormProvider();
 
         IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI();
         String uri = ontologyIRI.toString();
-//        if (ontology.getOntologyID().getVersionIRI() != null)
-//            version = ontology.getOntologyID().getVersionIRI().toString();
 
-//        if (StringUtils.isBlank(version)) {
             version = getVersionInfo();
-//        }
 
         if (ontologyIRI != null) {
             String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
@@ -1799,9 +1795,6 @@ public class OwlApi2LG {
             lgScheme_.setCodingSchemeURI(uri);
             lgScheme_.setCodingSchemeName(schemeName);
             lgScheme_.setFormalName(localName);
-//            EntityDescription ed = new EntityDescription();
-//            ed.setContent(localName);
-//            lgScheme_.setEntityDescription(ed);
         }
 
         if (version.length() == 0) {
@@ -1964,12 +1957,6 @@ public class OwlApi2LG {
                     addAnnotationPropertyAssociations(annotationProperty);
                 }
                 } 
-//            Iterator<OWLAnnotationAssertionAxiom> itr = annotationProperty.getAnnotationAssertionAxioms(ontology).iterator();
-//            while(itr.hasNext()){
-//                OWLAnnotationAssertionAxiom assertion = itr.next();
-//                if(assertion.getProperty().getIRI().getFragment().equals("term") && stripDataType(assertion.getValue().toString()).equals("Association"))
-//                {addAnnotationPropertyAssociations(annotationProperty);}
-//            }
         }
         
         /*
@@ -1992,7 +1979,8 @@ public class OwlApi2LG {
         for(OWLAnnotationAssertionAxiom ax : assertions){
             Property prop = new Property();
             prop.setPropertyName(ax.getProperty().getIRI().getFragment());
-            prop.setValue(Constructors.createText(stripDataType(ax.getValue().toString())));
+            OWLLiteral literal = (OWLLiteral) ax.getValue();
+            prop.setValue(Constructors.createText(literal.getLiteral()));
             assocWrap.addProperty(prop);
         }
         }
@@ -2264,7 +2252,6 @@ public class OwlApi2LG {
      * @return java.lang.String
      */
     protected String resolveConceptID(OWLEntity rdfResource) {
-        String rdfLocalName = getLocalName(rdfResource);
         String code = owlClassName2Conceptcode_.get(rdfResource.getIRI().toString());
         if (code != null)
             return code;
@@ -2392,6 +2379,10 @@ public class OwlApi2LG {
         }
     } // en
 
+    
+    //OWL2 provides for punning of some OWL classes to individuals allowing the sharing of unique identifiers.
+    //Since this causes issues in LexEVS we need to identify these punned instances before they become
+    //duplicate relationships and provide them with unique identifiers. 
     private void initPunnedInstanceNamesToCode() {
         int count = 0;
         for (OWLAnnotationProperty ap : ontology
@@ -2490,9 +2481,11 @@ public class OwlApi2LG {
         return lgInstance;
     }
     
+    //Create an instance entity from an owl individual and mark it with the instance entity type
     protected Entity resolvePunnedIndividual(OWLNamedIndividual owlIndividual) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getLocalName(owlIndividual)).append("_OWL_IND");
+        //applying a suffix to the OWL identifier to distinguish it in LexEVS
+        builder.append(getLocalName(owlIndividual)).append(OwlApi2LGConstants.INSTANCE_SUFFIX);
         String individualName = builder.toString();
 
         if (isNoopNamespace(individualName))
@@ -2877,9 +2870,9 @@ public class OwlApi2LG {
     
     protected void relateAssocSourceWithAnnotationTarget(EntityTypes type, AssociationWrapper aw,
             AssociationSource source, OWLAnnotation tgtResource, OWLAxiom ax, String prefix) {
-        OWLAnnotationValue val = tgtResource.getValue();
-    
-        String targetID = stripDataType(val.toString());
+        //OWLAnnotationValue val = tgtResource.getValue();
+        OWLLiteral val = (OWLLiteral) tgtResource.getValue();
+        String targetID = val.getLiteral();
         IRI targetIri = IRI.create(targetID);
         if (type == EntityTypes.CONCEPT) {
             targetID = resolveConceptIDfromIRI(targetIri);
@@ -3068,22 +3061,6 @@ public class OwlApi2LG {
 
                 }
             }
-
-
-//        String target = null;
-//        String association = null;
-//        for(OWLClassExpression owlex :axiom.getNestedClassExpressions()){
-//            if(owlex.getClassExpressionType().name().equals("DATA_SOME_VALUES_FROM")){
-//                for(OWLEntity entity : owlex.getSignature()){
-//                    if(entity.getEntityType().getName().equals("Datatype")){
-//                        target = entity.getIRI().getFragment();
-//                    }
-//                    if(entity.getEntityType().getName().equals("DataPropertytype")){
-//                        association = entity.getIRI().getFragment();
-//                    }
-//                }
-//            }
-//        }
     }
     }
 
