@@ -1479,6 +1479,7 @@ public class OwlApi2LG {
         return lgClass.getEntityCode();
     }
 
+    //Resolve the complement of restriction as an association
     private void resolveComplementOfAsLgAssociation(OWLClassExpression owlClass, AssociationSource asscSource, AssociationSource source) {
        String targetNameSpace = getNameSpace((OWLEntity) owlClass);
        String targetId        = resolveConceptID((OWLEntity) owlClass);
