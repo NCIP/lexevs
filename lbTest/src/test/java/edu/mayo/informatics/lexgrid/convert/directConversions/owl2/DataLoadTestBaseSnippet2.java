@@ -1,5 +1,7 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
@@ -131,7 +133,14 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 	}
 	
 	protected boolean validateProperty(String name, String value, ResolvedConceptReference rcr){
-		Property[] props = rcr.getEntity().getAllProperties();
+		Property[] props1 = rcr.getEntity().getAllProperties();
+		Property[] props2 = rcr.getEntity().getDefinition();
+		
+		ArrayList<Property> allProps = new ArrayList<Property>();
+		Collections.addAll(allProps, props1);
+		Collections.addAll(allProps, props2);
+		Property[] props = allProps.toArray(new Property[allProps.size()]);
+		
 		if(props == null){
 			return false;
 		}
@@ -147,5 +156,34 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		}
 		return hasProp;
 	}
-
+	
+	protected boolean validatePropertyQualifier(String name, String value, ResolvedConceptReference rcr){
+		Property[] props1 = rcr.getEntity().getAllProperties();
+		Property[] props2 = rcr.getEntity().getDefinition();
+		
+		ArrayList<Property> allProps = new ArrayList<Property>();
+		Collections.addAll(allProps, props1);
+		Collections.addAll(allProps, props2);
+		Property[] props = allProps.toArray(new Property[allProps.size()]);
+		
+		if(props == null){
+			return false;
+		}
+		if(props.length == 0){
+			return false;
+		}
+		boolean hasProp = false;
+		for(Property prop: props){
+			if(prop.getPropertyName().equals(name) ){
+				for(PropertyQualifier qual : prop.getPropertyQualifier()){
+					if(qual.getValue().getContent().equals(value)){
+					hasProp = true;
+					break;
+					}
+				}
+			}
+		}
+		return hasProp;
+	}
+	
 }

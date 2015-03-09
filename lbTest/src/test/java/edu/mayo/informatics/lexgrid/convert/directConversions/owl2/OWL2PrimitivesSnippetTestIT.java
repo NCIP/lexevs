@@ -128,6 +128,46 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	}
 	
 	@Test
+	public void testPropertyForAnnotationPropertyAssociationURI()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("HappyPatientWalkingAround"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(validateProperty("AssociationURI", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
+	}
+	
+	@Test
+	public void testPropertyForAnnotationPropertyAssociationLIT()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("HappyPatientWalkingAround"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(validateProperty("AssociationLIT", "http://purl.obolibrary.org/obo/cl_0000148", rcr));
+	}
+	
+	@Test
+	public void testPropertyForAnnotationPropertyAssociationSTR()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("HappyPatientWalkingAround"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(validateProperty("AssociationSTR", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
+	}
+	
+	@Test
+	public void testPropertyForAnnotationPropertyAssociationV1()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("HappyPatientWalkingAround"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(validateProperty("AssociationV1", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
+	}
+	
+	@Test
 	public void testEntityForAnnotationPropertyAssociationURI()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("AssociationURI"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
@@ -153,6 +193,37 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertFalse(itr.hasNext());
 	}
 	
+	
+	@Test
+	public void testPropertyForAnnotationPropertySource()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("Person"));
+		ResolvedConceptReferencesIterator itr  = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());	
+		ResolvedConceptReference ref = itr.next();
+		assertTrue(validatePropertyQualifier("definition", "common knowledge", ref));
+	}
+	
+	@Test
+	public void testPropertyForAnnotationPropertyterm()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("PersonRole"));
+		ResolvedConceptReferencesIterator itr  = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());	
+		ResolvedConceptReference ref = itr.next();
+		assertTrue(validateProperty("term", "Personal Role", ref));
+	}
+	
+	public void testPropertyForAnnotationPropertyterm_type()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("PersonRole"));
+		ResolvedConceptReferencesIterator itr  = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());	
+		ResolvedConceptReference ref = itr.next();
+		//Gets term property which has a qualifier of term_type
+		assertTrue(validatePropertyQualifier("term", "SY", ref));
+	}
+		
 	@Test
 	public void testEntityForAnnotationPropertySource()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
 		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("source"));
