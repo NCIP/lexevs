@@ -155,7 +155,48 @@ public class CleanUpTest extends TestCase {
 		lbsm.removeCodingSchemeVersion(a);
 
 	}
+	
+	public  void testRemoveOwl2SnippetPrimitivess() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
+				.getServiceManager(null);
 
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
+				.createAbsoluteCodingSchemeVersionReference(
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION);
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+		lbsm.removeCodingSchemeVersion(a);
+
+	}
+	
+	public  void testRemoveOwl2SnippetIndividualsUnannotated() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
+				.getServiceManager(null);
+
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
+				.createAbsoluteCodingSchemeVersionReference(
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION);
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+		lbsm.removeCodingSchemeVersion(a);
+
+	}
+	
+	public  void testRemoveOwl2SnippetPrimitivessUnannotated() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
+				.getServiceManager(null);
+
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
+				.createAbsoluteCodingSchemeVersionReference(
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION);
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+		lbsm.removeCodingSchemeVersion(a);
+
+	}
 
     public void testRemoveOwl() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);

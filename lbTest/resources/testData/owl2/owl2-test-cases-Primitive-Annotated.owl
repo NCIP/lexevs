@@ -22,9 +22,9 @@
     <owl:Ontology rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">
         <source>nci evs</source>
         <dc:date>august 8, 2014</dc:date>
-        <owl:versionInfo>0.1.2</owl:versionInfo>
-        <note xml:lang="en">Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations.</note>
-        <owl:versionIRI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2"/>
+        <owl:versionInfo>0.1.1</owl:versionInfo>
+        <note xml:lang="en">Test of OWL2 constructions for import into LexEVS.  This file contains primitives with annotations.</note>
+        <owl:versionIRI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.1"/>
     </owl:Ontology>
     
 
@@ -266,32 +266,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf -->
 
     <owl:Class rdf:about="&owl2lexevs;BRaf">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass to external class</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;BRaf"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -300,46 +291,37 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Brca1 -->
 
     <owl:Class rdf:about="&owl2lexevs;Brca1">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Class>
-                        <owl:intersectionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
-                                <owl:hasValue>homo sapiens</owl:hasValue>
-                            </owl:Restriction>
-                        </owl:intersectionOf>
-                    </owl:Class>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                        <owl:hasValue>homo sapiens</owl:hasValue>
+                    </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on intersection of datatype and object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Brca1"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Class>
-                        <owl:intersectionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
-                                <owl:hasValue>homo sapiens</owl:hasValue>
-                            </owl:Restriction>
-                        </owl:intersectionOf>
-                    </owl:Class>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                        <owl:hasValue>homo sapiens</owl:hasValue>
+                    </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:annotatedTarget>
@@ -399,79 +381,70 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;CancerPatient">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;SickPatient"/>
+                <owl:unionOf rdf:parseType="Collection">
                     <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <owl:Class>
-                                <owl:intersectionOf rdf:parseType="Collection">
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
-                                    </owl:Restriction>
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
-                                    </owl:Restriction>
-                                </owl:intersectionOf>
-                            </owl:Class>
-                            <owl:Class>
-                                <owl:intersectionOf rdf:parseType="Collection">
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
-                                    </owl:Restriction>
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
-                                    </owl:Restriction>
-                                </owl:intersectionOf>
-                            </owl:Class>
-                        </owl:unionOf>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
                     </owl:Class>
-                </owl:intersectionOf>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:unionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on role group subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;CancerPatient"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;SickPatient"/>
+                <owl:unionOf rdf:parseType="Collection">
                     <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <owl:Class>
-                                <owl:intersectionOf rdf:parseType="Collection">
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
-                                    </owl:Restriction>
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
-                                    </owl:Restriction>
-                                </owl:intersectionOf>
-                            </owl:Class>
-                            <owl:Class>
-                                <owl:intersectionOf rdf:parseType="Collection">
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
-                                    </owl:Restriction>
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
-                                    </owl:Restriction>
-                                </owl:intersectionOf>
-                            </owl:Class>
-                        </owl:unionOf>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
                     </owl:Class>
-                </owl:intersectionOf>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:unionOf>
             </owl:Class>
         </owl:annotatedTarget>
     </owl:Axiom>
@@ -486,24 +459,24 @@
         <definition>any entity that impacts the health of a patient.</definition>
     </owl:Class>
     <owl:Axiom>
-        <source>nci</source>
-        <owl:annotatedTarget>disease</owl:annotatedTarget>
-        <term_type>pt</term_type>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <provenance>joe blow via lily librarian</provenance>
-        <source>nih</source>
-        <owl:annotatedTarget>any entity that impacts the health of a patient.</owl:annotatedTarget>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
-    </owl:Axiom>
-    <owl:Axiom>
         <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
         <owl:annotatedTarget rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
         <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <provenance>joe blow via lily librarian</provenance>
+        <owl:annotatedTarget>any entity that impacts the health of a patient.</owl:annotatedTarget>
+        <source>nih</source>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget>disease</owl:annotatedTarget>
+        <term_type>pt</term_type>
+        <source>nci</source>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
     </owl:Axiom>
     
 
@@ -516,21 +489,21 @@
         <term>diseases, disorders, and findings</term>
     </owl:Class>
     <owl:Axiom>
+        <owl:annotatedTarget>any entitie categorized as a disease, a disorder, or a finding.</owl:annotatedTarget>
+        <provenance>pers. comm.</provenance>
+        <source>ctep</source>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
         <note>treat disorders as always disjoint with people.</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
         <owl:annotatedTarget rdf:resource="&owl2lexevs;Person"/>
         <owl:annotatedProperty rdf:resource="&owl;disjointWith"/>
     </owl:Axiom>
     <owl:Axiom>
-        <source>ctep</source>
-        <owl:annotatedTarget>any entitie categorized as a disease, a disorder, or a finding.</owl:annotatedTarget>
-        <provenance>pers. comm.</provenance>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <source>nci</source>
         <owl:annotatedTarget>diseases, disorders, and findings</owl:annotatedTarget>
+        <source>nci</source>
         <term_type>sy</term_type>
         <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
@@ -546,12 +519,6 @@
         <definition>a cell located in an epithelial surface.</definition>
     </owl:Class>
     <owl:Axiom>
-        <definition rdf:datatype="&xsd;string">an isa relation to an external entity.</definition>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
-        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
-        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
-    </owl:Axiom>
-    <owl:Axiom>
         <source rdf:datatype="&xsd;string">caDSR</source>
         <term_type>pt</term_type>
         <owl:annotatedTarget>epithelial cell</owl:annotatedTarget>
@@ -559,9 +526,15 @@
         <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
     </owl:Axiom>
     <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">an isa relation to an external entity.</definition>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    <owl:Axiom>
         <provenance rdf:datatype="&xsd;string">NLM</provenance>
-        <source>nci</source>
         <owl:annotatedTarget>a cell located in an epithelial surface.</owl:annotatedTarget>
+        <source>nci</source>
         <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
     </owl:Axiom>
@@ -571,32 +544,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2 -->
 
     <owl:Class rdf:about="&owl2lexevs;Erbb2">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                        <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass to external class</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Erbb2"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                        <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -605,41 +569,37 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding -->
 
     <owl:Class rdf:about="&owl2lexevs;Finding">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
-                    <owl:Class>
-                        <owl:oneOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="&owl2lexevs;Fever"/>
-                            <rdf:Description rdf:about="&owl2lexevs;ShallowBreathing"/>
-                            <rdf:Description rdf:about="&owl2lexevs;PaleSkin"/>
-                        </owl:oneOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Fever"/>
+                    <rdf:Description rdf:about="&owl2lexevs;ShallowBreathing"/>
+                    <rdf:Description rdf:about="&owl2lexevs;PaleSkin"/>
+                </owl:oneOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
         <semanticType rdf:datatype="&xsd;string">Disease</semanticType>
     </owl:Class>
     <owl:Axiom>
-        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
         <note rdf:datatype="&xsd;string">the extension of the class</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Finding"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
-                    <owl:Class>
-                        <owl:oneOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="&owl2lexevs;Fever"/>
-                            <rdf:Description rdf:about="&owl2lexevs;ShallowBreathing"/>
-                            <rdf:Description rdf:about="&owl2lexevs;PaleSkin"/>
-                        </owl:oneOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Fever"/>
+                    <rdf:Description rdf:about="&owl2lexevs;ShallowBreathing"/>
+                    <rdf:Description rdf:about="&owl2lexevs;PaleSkin"/>
+                </owl:oneOf>
             </owl:Class>
         </owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Finding"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
     </owl:Axiom>
     
 
@@ -650,21 +610,15 @@
         <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
         <AssociationURI rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationURI>
         <AssociationSTR rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationSTR>
-        <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</AssociationLIT>
+        <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#prognosisgood</AssociationLIT>
         <AssociationV1 rdf:resource="&owl2lexevs;PrognosisGood"/>
         <AssociationURI rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Class>
     <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationLIT.</note>
-        <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationURI of a class (rdf:resource).</note>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationURI.</note>
+        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
-        <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Axiom>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">annotation on an AssociationV1 of a class.</note>
@@ -673,15 +627,21 @@
         <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Axiom>
     <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationSTR.</note>
-        <owl:annotatedTarget rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationSTR"/>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationURI of a class (rdf:resource).</note>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationLIT</note>
+        <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#prognosisgood</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
     </owl:Axiom>
     <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationURI.</note>
-        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationSTR.</note>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationSTR"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
     </owl:Axiom>
     
@@ -698,6 +658,18 @@
         <AssociationV1 rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
     </owl:Class>
     <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationV! of external.class (rdf:resource).</note>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationV1"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationLIT of external.</note>
+        <owl:annotatedTarget>http://purl.obolibrary.org/obo/cl_0000148</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+    </owl:Axiom>
+    <owl:Axiom>
         <note rdf:datatype="&xsd;string">annotation on an AssociationURI of external class (rdf:resource)</note>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
@@ -708,18 +680,6 @@
         <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationLIT of external.</note>
-        <owl:annotatedTarget>http://purl.obolibrary.org/obo/cl_0000148</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationV! of external.class (rdf:resource).</note>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationV1"/>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
-        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
     </owl:Axiom>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">annotation on an AssociationSTR of external.</note>
@@ -733,29 +693,20 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HealthyPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;HealthyPatient">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
-                    <owl:Class>
-                        <owl:complementOf rdf:resource="&owl2lexevs;SickPatient"/>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:complementOf rdf:resource="&owl2lexevs;SickPatient"/>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">definitely you are healthy if you are not sick.</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HealthyPatient"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
-                    <owl:Class>
-                        <owl:complementOf rdf:resource="&owl2lexevs;SickPatient"/>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:complementOf rdf:resource="&owl2lexevs;SickPatient"/>
             </owl:Class>
         </owl:annotatedTarget>
     </owl:Axiom>
@@ -765,32 +716,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv -->
 
     <owl:Class rdf:about="&owl2lexevs;Mefv">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
-                        <owl:hasValue rdf:resource="&owl2lexevs;Fever"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                <owl:hasValue rdf:resource="&owl2lexevs;Fever"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on object restriction value subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Mefv"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
-                        <owl:hasValue rdf:resource="&owl2lexevs;Fever"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                <owl:hasValue rdf:resource="&owl2lexevs;Fever"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -799,46 +741,37 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;MildlySickCancerPatient">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;MildlySickPatient"/>
+        <rdfs:subClassOf>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
-                    <owl:Class>
-                        <owl:intersectionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
-                            </owl:Restriction>
-                        </owl:intersectionOf>
-                    </owl:Class>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                    </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on intersection of object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;MildlySickCancerPatient"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
-                    <owl:Class>
-                        <owl:intersectionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
-                            </owl:Restriction>
-                        </owl:intersectionOf>
-                    </owl:Class>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                    </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:annotatedTarget>
@@ -866,32 +799,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim -->
 
     <owl:Class rdf:about="&owl2lexevs;OncogeneTim">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
-                        <owl:hasValue rdf:datatype="&xsd;integer">12345</owl:hasValue>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                <owl:hasValue rdf:datatype="&xsd;integer">12345</owl:hasValue>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on datatype restriction value subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;OncogeneTim"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
-                        <owl:hasValue rdf:datatype="&xsd;integer">12345</owl:hasValue>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                <owl:hasValue rdf:datatype="&xsd;integer">12345</owl:hasValue>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -920,19 +844,6 @@
         <term rdf:datatype="&xsd;string">Person</term>
     </owl:Class>
     <owl:Axiom>
-        <note>treat disorders as always disjoint with people.</note>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
-        <owl:annotatedTarget rdf:resource="&owl2lexevs;Person"/>
-        <owl:annotatedProperty rdf:resource="&owl;disjointWith"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <owl:annotatedTarget rdf:datatype="&xsd;string">Human</owl:annotatedTarget>
-        <source rdf:datatype="&xsd;string">LOC</source>
-        <term_type rdf:datatype="&xsd;string">SY</term_type>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;Person"/>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
-    </owl:Axiom>
-    <owl:Axiom>
         <source rdf:datatype="&xsd;string">NCI</source>
         <term_type rdf:datatype="&xsd;string">PT</term_type>
         <owl:annotatedTarget rdf:datatype="&xsd;string">Person</owl:annotatedTarget>
@@ -944,6 +855,19 @@
         <source rdf:datatype="&xsd;string">common knowledge</source>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Person"/>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note>treat disorders as always disjoint with people.</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl;disjointWith"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">Human</owl:annotatedTarget>
+        <source rdf:datatype="&xsd;string">LOC</source>
+        <term_type rdf:datatype="&xsd;string">SY</term_type>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
     </owl:Axiom>
     
 
@@ -974,39 +898,35 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis -->
 
     <owl:Class rdf:about="&owl2lexevs;Prognosis">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="&owl2lexevs;PrognosisBad"/>
-                            <rdf:Description rdf:about="&owl2lexevs;PrognosisGood"/>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;PrognosisBad"/>
+                    <rdf:Description rdf:about="&owl2lexevs;PrognosisGood"/>
+                </owl:unionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
         <semanticType rdf:datatype="&xsd;string">Disease</semanticType>
     </owl:Class>
     <owl:Axiom>
-        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
         <note rdf:datatype="&xsd;string">essentially the sum of subclasses</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Prognosis"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="&owl2lexevs;PrognosisBad"/>
-                            <rdf:Description rdf:about="&owl2lexevs;PrognosisGood"/>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;PrognosisBad"/>
+                    <rdf:Description rdf:about="&owl2lexevs;PrognosisGood"/>
+                </owl:unionOf>
             </owl:Class>
         </owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Prognosis"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
     </owl:Axiom>
     
 
@@ -1042,32 +962,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras -->
 
     <owl:Class rdf:about="&owl2lexevs;Ras">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
-                        <owl:someValuesFrom rdf:resource="&xsd;positiveInteger"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                <owl:someValuesFrom rdf:resource="&xsd;positiveInteger"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on datatype restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;Ras"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
-                        <owl:someValuesFrom rdf:resource="&xsd;positiveInteger"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                <owl:someValuesFrom rdf:resource="&xsd;positiveInteger"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -1076,32 +987,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH -->
 
     <owl:Class rdf:about="&owl2lexevs;SHH">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
-                        <owl:allValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                <owl:allValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;SHH"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
-                        <owl:allValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                <owl:allValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -1110,32 +1012,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS -->
 
     <owl:Class rdf:about="&owl2lexevs;SOS">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
-                        <owl:someValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                <owl:someValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;SOS"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
-                        <owl:someValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                <owl:someValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -1144,37 +1037,28 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;SickPatient">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="&owl2lexevs;CancerPatient"/>
-                            <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
-                            <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;CancerPatient"/>
+                    <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
+                    <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
+                </owl:unionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">essentially the sum of subclasses</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;SickPatient"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="&owl2lexevs;CancerPatient"/>
-                            <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
-                            <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;CancerPatient"/>
+                    <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
+                    <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
+                </owl:unionOf>
             </owl:Class>
         </owl:annotatedTarget>
     </owl:Axiom>
@@ -1184,19 +1068,19 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TotalPerson -->
 
     <owl:Class rdf:about="&owl2lexevs;TotalPerson">
-        <owl:equivalentClass>
+        <rdfs:subClassOf>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
                     <rdf:Description rdf:about="&owl2lexevs;Person"/>
                     <rdf:Description rdf:about="&owl2lexevs;PersonRole"/>
                 </owl:intersectionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">in real life, probably a union.</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;TotalPerson"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1228,47 +1112,38 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;VerySickPatient"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
-                            </owl:Restriction>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                    </owl:Restriction>
+                </owl:unionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on union of object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
-                            </owl:Restriction>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                    </owl:Restriction>
+                </owl:unionOf>
             </owl:Class>
         </owl:annotatedTarget>
     </owl:Axiom>
@@ -1286,47 +1161,38 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin -->
 
     <owl:Class rdf:about="&owl2lexevs;actin">
-        <owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
-                                <owl:hasValue>all organisms</owl:hasValue>
-                            </owl:Restriction>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                        <owl:hasValue>all organisms</owl:hasValue>
+                    </owl:Restriction>
+                </owl:unionOf>
             </owl:Class>
-        </owl:equivalentClass>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on union of datatype and object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;actin"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Class>
-                        <owl:unionOf rdf:parseType="Collection">
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
-                            </owl:Restriction>
-                            <owl:Restriction>
-                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
-                                <owl:hasValue>all organisms</owl:hasValue>
-                            </owl:Restriction>
-                        </owl:unionOf>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                        <owl:hasValue>all organisms</owl:hasValue>
+                    </owl:Restriction>
+                </owl:unionOf>
             </owl:Class>
         </owl:annotatedTarget>
     </owl:Axiom>
@@ -1336,32 +1202,23 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras -->
 
     <owl:Class rdf:about="&owl2lexevs;k-Ras">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
-                        <owl:allValuesFrom rdf:resource="&xsd;positiveInteger"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                <owl:allValuesFrom rdf:resource="&xsd;positiveInteger"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on datatype restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;k-Ras"/>
-        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedTarget>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
-                        <owl:allValuesFrom rdf:resource="&xsd;positiveInteger"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                <owl:allValuesFrom rdf:resource="&xsd;positiveInteger"/>
+            </owl:Restriction>
         </owl:annotatedTarget>
     </owl:Axiom>
     
@@ -1374,8 +1231,8 @@
         <definition>external class from the cl.</definition>
     </owl:Class>
     <owl:Axiom>
-        <provenance>lily librarian</provenance>
         <owl:annotatedTarget>external class from the cl.</owl:annotatedTarget>
+        <provenance>lily librarian</provenance>
         <source>cl</source>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
@@ -1443,9 +1300,9 @@
      -->
 
     <owl:Axiom>
-        <provenance>joe blow</provenance>
-        <source>nci</source>
         <note>gci testing</note>
+        <source>nci</source>
+        <provenance>joe blow</provenance>
         <owl:annotatedTarget rdf:resource="&owl2lexevs;SickPatient"/>
         <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
         <owl:annotatedSource>

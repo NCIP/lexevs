@@ -183,6 +183,9 @@ import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityH
 import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMergerTest;
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQueryTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
@@ -237,6 +240,9 @@ public class AllTestsNormalConfig {
         owl2LoaderSuite.addTestSuite(PresentationPropertyTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2LoaderLexGridTest.class);
         owl2LoaderSuite.addTestSuite(NewOWL2SnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(NewOWL2UnannotatedSnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2PrimitivesSnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2PrimitivesUnannotatedSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
         mainSuite.addTest(owl2LoaderSuite);
         

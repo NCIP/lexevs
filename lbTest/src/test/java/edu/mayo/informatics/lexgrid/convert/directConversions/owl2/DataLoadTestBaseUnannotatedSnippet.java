@@ -2,14 +2,14 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
 import java.util.Iterator;
 
+import junit.framework.TestCase;
+
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
-import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
@@ -19,7 +19,6 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
@@ -27,9 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
-import junit.framework.TestCase;
-
-public class DataLoadTestBaseSnippet2 extends TestCase {
+public class DataLoadTestBaseUnannotatedSnippet extends TestCase {
 
 	/** The lbs. */
 	protected LexBIGService lbs;
@@ -48,17 +45,17 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 	public void setUp() throws Exception{
 		lbs = ServiceHolder.instance().getLexBIGService();
 		cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION));
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION));
 		csp = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION));
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION));
 		cns = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION), null);
-		cng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION),
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION), null);
+		cng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION),
 				null);
 		cnsp = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION), null);
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION), null);
 		cngp = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION), null);
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION), null);
 	}
 	
 	
@@ -78,12 +75,10 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 				AssociatedConcept[] acs = acl.getAssociatedConcept();
 				for (AssociatedConcept ac : acs) {
 					if (ac.getCode().equals(code)) {
-						if(ac.getAssociationQualifiers() != null){
 						for(NameAndValue nv: ac.getAssociationQualifiers().getNameAndValue()){
 						if(nv.getContent().equals(qual))
 						validate = true;
 						break;
-						}
 						}
 					}
 				}
@@ -98,6 +93,7 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 					for(PropertyQualifier pq: prop.getPropertyQualifier()){
 					if(pq.getValue().getContent().equals(qual))
 					validate = true;
+					break;
 					}
 				
 			
@@ -142,7 +138,6 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 		for(Property prop: props){
 			if(prop.getPropertyName().equals(name)  && prop.getValue().getContent().equals(value)){
 				hasProp = true;
-				break;
 			}
 		}
 		return hasProp;

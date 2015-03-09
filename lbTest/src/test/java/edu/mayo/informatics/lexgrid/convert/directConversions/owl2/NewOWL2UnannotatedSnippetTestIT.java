@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
-import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -20,16 +18,14 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Definition;
-import org.LexGrid.relations.AssociationQualification;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
+public class NewOWL2UnannotatedSnippetTestIT extends DataLoadTestBaseUnannotatedSnippet {
 
 	@Before
 	public void setUp() throws Exception {
@@ -50,10 +46,10 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertNotNull(cs.getEffectiveDate());
 		assertTrue(cs.getEffectiveDate().compareTo(date) == 0);
 		
-		assertTrue(cs.getEntityDescription().getContent().equals("Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations."));
+		assertTrue(cs.getEntityDescription().getContent().equals("Test of OWL2 constructions for import into LexEVS.  This file contains defines and unannotation."));
 		boolean hasVersionIRI = false;
 		for(Property prop: cs.getProperties().getProperty()){
-			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().getContent().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2")){
+			if(prop.getPropertyName().equals("versionIRI") && prop.getValue().getContent().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.3")){
 				hasVersionIRI = true;
 				break;
 			}
@@ -149,9 +145,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationLIT"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
- 		assertFalse(itr.hasNext());
-//		ResolvedConceptReference rcr = itr.next();
-//		assertTrue(validateProperty("term", "Association", rcr));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -159,9 +153,6 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationSTR"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
-		assertFalse(itr.hasNext());
-//		ResolvedConceptReference rcr = itr.next();
-//		assertTrue(validateProperty("term", "Association", rcr));
 	}
 	
 	@Test
@@ -216,20 +207,20 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertTrue(validateTarget("PrognosisGood", itr));
 		}
-		
-	@Test
-	public void testAssocURIAnnotationLoadBeta() throws LBInvocationException, LBParameterException {
-		NameAndValueList nvlist = new NameAndValueList();
-		NameAndValue nv = new NameAndValue();
-		nv.setName("note");
-		nv.setContent("annotation on an AssociationURI.");
-		nvlist.addNameAndValue(nv);
-		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), nvlist);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
-				true, true, 1, 1, null, null, null, null, -1);
-		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("PrognosisGood", itr));
-		}
+// Not a valid test for an unannotated source	
+//	@Test
+//	public void testAssocURIAnnotationLoadBeta() throws LBInvocationException, LBParameterException {
+//		NameAndValueList nvlist = new NameAndValueList();
+//		NameAndValue nv = new NameAndValue();
+//		nv.setName("note");
+//		nv.setContent("annotation on an AssociationURI.");
+//		nvlist.addNameAndValue(nv);
+//		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), nvlist);
+//		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+//				true, true, 1, 1, null, null, null, null, -1);
+//		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+//		assertTrue(validateTarget("PrognosisGood", itr));
+//		}
 	
 	public void testEquivalentClassAnonLoad() throws LBInvocationException, LBParameterException {
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
@@ -244,10 +235,28 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		boolean foundIndividual = false;
 		//TODO insure these duplicate associations are correct.  If not uncomment this and correct it as necessary.  
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
-		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround_OWL_IND", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("PrognosisGood", itr));		
+		if(itr.hasNext()){
+			ResolvedConceptReference ref = itr.next();
+			Association[] assocs = ref.getSourceOf().getAssociation();
+			for(Association assoc : assocs){
+				if(assoc.getAssociatedConcepts().getAssociatedConceptCount() > 1){
+				AssociatedConcept[] concepts = assoc.getAssociatedConcepts().getAssociatedConcept();
+
+				for(AssociatedConcept con: concepts){
+					if(con.getEntity().getEntityType(0).equals("instance"))
+					{
+						foundIndividual = true;
+						break;
+					}
+				}
+				assertTrue(foundIndividual);
+				assertNotSame(concepts[0].getCode(),concepts[1].getCode());
+				}
+			}
+		}
 	}
 	
 	@Test
@@ -833,7 +842,6 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("EpithelialCell", itr));
 		assertTrue(validateQualifier("EpithelialCell", "ObjectSomeValuesFrom", itr));
 	}
 	
