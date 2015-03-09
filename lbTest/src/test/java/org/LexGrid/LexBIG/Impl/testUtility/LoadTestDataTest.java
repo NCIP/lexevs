@@ -501,8 +501,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
-		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
-				LBConstants.KnownTags.PRODUCTION.toString());
+//		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
+//				LBConstants.KnownTags.PRODUCTION.toString());
 
 	}
 	
@@ -528,8 +528,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
-		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
-				LBConstants.KnownTags.PRODUCTION.toString());
+//		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
+//				LBConstants.KnownTags.PRODUCTION.toString());
 	}
 	
 	public void testloadOWL2SnippetWithPrimitivesUnannotated() throws Exception {
@@ -554,8 +554,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
-		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
-				LBConstants.KnownTags.PRODUCTION.toString());
+//		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
+//				LBConstants.KnownTags.PRODUCTION.toString());
 	}
 
 	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
