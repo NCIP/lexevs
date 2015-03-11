@@ -127,6 +127,9 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 			assertTrue(def4.getValue().getContent().equals("Organism"));	
 	}
 	
+	
+	//Loading Annotations as Properties
+	
 	@Test
 	public void testPropertyForAnnotationPropertyAssociationURI()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("HappyPatientWalkingAround"));
@@ -257,15 +260,16 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	}
 	
 	
-//	//Relationship Unit Tests
-//	@Test
-//	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
-//		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
-//		ResolvedConceptReferenceList list = cngp.resolveAsList(null, 
-//				true, false, 1, 1, null, null, null, null, -1);
-//		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-//		assertTrue(validateTarget("SickPatient", itr));
-//		}
+	//Relationship Unit Tests
+	@Test
+	public void testAnonNodeWithUnattachedRestriction() throws LBInvocationException, LBParameterException {
+		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+		ResolvedConceptReferenceList list = cng.resolveAsList(null, 
+				true, false, 1, 1, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(validateTarget("SickPatient", itr));
+		//TODO develop a better definition of the anonymous node
+		}
 	
 	@Test
 	public void testAssocURIAnnotationLoadAlpha() throws LBInvocationException, LBParameterException {
@@ -301,11 +305,11 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testForDuplicateAssociations() throws LBInvocationException, LBParameterException{
 		boolean foundIndividual = false;
-		//TODO insure these duplicate associations are correct.  If not uncomment this and correct it as necessary.  
 		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
 		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround_OWL_IND", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(list.getResolvedConceptReferenceCount() == 1);
 		assertTrue(validateTarget("PrognosisGood", itr));		
 	}
 	

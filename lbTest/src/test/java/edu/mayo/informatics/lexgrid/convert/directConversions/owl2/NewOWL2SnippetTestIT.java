@@ -307,12 +307,11 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testForDuplicateAssociations() throws LBInvocationException, LBParameterException{
-		boolean foundIndividual = false;
-		//TODO insure these duplicate associations are correct.  If not uncomment this and correct it as necessary.  
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
 		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("HappyPatientDrivingAround_OWL_IND", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(list.getResolvedConceptReferenceCount() == 1);
 		assertTrue(validateTarget("PrognosisGood", itr));		
 	}
 	
