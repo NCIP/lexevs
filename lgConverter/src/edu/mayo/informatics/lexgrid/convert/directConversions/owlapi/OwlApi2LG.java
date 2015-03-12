@@ -3032,7 +3032,7 @@ public class OwlApi2LG {
         if (label.isEmpty()) {
             label = renderer.render(rdfProp);
         }
-        AssociationQualification lgQual = CreateUtils.createAssociationQualification(label, null, label,
+        AssociationQualification lgQual = CreateUtils.createAssociationQualification(label, null, "",
                 lgSupportedMappings_);
         return lgQual;
     }

@@ -837,7 +837,14 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 		assertTrue(validateTarget("TumorMalignant", itr));
 	}
 	
-	
+	@Test
+	public void testEquivalentClassRoleStopNestingObjectValuesWithEmptyQualValue() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("patient_has_finding"), null);
+		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+				true, true, 1, 1, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(validateQualifier("TumorMalignant", "", itr));
+	}
 	
 	@Test
 	public void testUnionObjectAndDataTypeFirstOr() throws LBException{
@@ -846,7 +853,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("EpithelialCell", "ObjectSomeValuesFrom", itr));
+		assertTrue(validateQualifier("EpithelialCell", "", itr));
 	}
 	
 	@Test
@@ -871,7 +878,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("EpithelialCell", "ObjectSomeValuesFrom", itr));
+		assertTrue(validateQualifier("EpithelialCell", "", itr));
 	}
 	
 	@Test
