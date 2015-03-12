@@ -654,6 +654,23 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	}
 	
 	@Test
+	public void testEquivalentDatatypeHasValueRestrictToValue() 
+			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+	cns = cns.restrictToCodes(Constructors.createConceptReferenceList("integer"));
+	ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+	assertNotNull(rcri);
+	assertTrue(rcri.hasNext());
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), 
+			Constructors.createNameAndValueList("DataHasValue", "12345"));
+	ResolvedConceptReferenceList list = cng.resolveAsList(
+			Constructors.createConceptReference("OncogeneTim", 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+			true, true, 1, 1, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateQualifier("integer", "12345", itr));
+	}
+	
+	@Test
 	public void testEquivalentClassSomeObjectTypeRestriction() 
 			throws LBInvocationException, LBParameterException{
 	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
