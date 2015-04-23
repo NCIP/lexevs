@@ -679,18 +679,18 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SearchExtensionImpl().register();
         
         //Tree Extension
-//        ExtensionDescription treeExt = new ExtensionDescription();
-//        treeExt.setDescription("LexEVS Tree Utility");
-//        treeExt.setExtensionBaseClass("org.lexevs.tree.service.TreeService");
-//        treeExt.setExtensionClass("org.lexevs.tree.service.PathToRootTreeServiceImpl");
-//        treeExt.setVersion("1.0");
-//        treeExt.setName("tree-utility");
-//        try {
-//            ExtensionRegistryImpl.instance().registerGenericExtension(treeExt);
-//
-//        } catch (Exception e) {
-//            getLogger().warn(treeExt.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
-//        }
+        ExtensionDescription treeExt = new ExtensionDescription();
+        treeExt.setDescription("LexEVS Tree Utility");
+        treeExt.setExtensionBaseClass("org.LexGrid.LexBIG.Impl.Extensions.tree.service.TreeService");
+        treeExt.setExtensionClass("org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImpl");
+        treeExt.setVersion("1.0");
+        treeExt.setName("tree-utility");
+        try {
+            ExtensionRegistryImpl.instance().registerGenericExtension(treeExt);
+
+        } catch (Exception e) {
+            getLogger().warn(treeExt.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
+        }
         
     }
 }
