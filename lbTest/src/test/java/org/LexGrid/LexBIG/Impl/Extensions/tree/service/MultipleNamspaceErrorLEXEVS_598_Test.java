@@ -27,5 +27,16 @@ public class MultipleNamspaceErrorLEXEVS_598_Test extends LexEvsTreeTestBase {
 					fail("Null value in tree node");
 				}
 	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testMultipleNamespaceWrongNamespace() {
+	
+				LexEvsTree tree = 	pathToRootTreeServiceImpl.getTree(
+						"Automobiles", 
+						null, 
+						"DifferentNamespaceConcept", "WrongNameSpace");
+
+	}
+	
 
 }

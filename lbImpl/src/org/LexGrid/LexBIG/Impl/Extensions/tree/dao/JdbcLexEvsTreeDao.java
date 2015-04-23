@@ -127,6 +127,7 @@ public class JdbcLexEvsTreeDao extends JdbcDaoSupport implements LexEvsTreeDao {
 				           return node;
 				       }
 				       }
+				    return null;
 				   }
 				return nodes.get(0);
 				} catch (EmptyResultDataAccessException e) {

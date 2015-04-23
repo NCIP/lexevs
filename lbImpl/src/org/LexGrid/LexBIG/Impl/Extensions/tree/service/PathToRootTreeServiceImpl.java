@@ -203,7 +203,9 @@ public class PathToRootTreeServiceImpl extends AbstractExtendable implements Tre
 		List<LexEvsTreeNode> pathToRoot = pathToRootResolver.getPathToRoot(codingScheme, versionOrTag, code, namespace);
 		
 		LexEvsTreeNode focusNode = lexEvsTreeDao.getNode(codingScheme, versionOrTag, code, namespace);
-		
+		if(focusNode == null){
+		    throw new RuntimeException("No node found for codingscheme: " + codingScheme + ", version: " + versionOrTag + ", code: " + code + ", namespace: " + namespace);
+		}
 		for(LexEvsTreeNode node : pathToRoot){
 			focusNode.addPathToRootParents(node);
 			node.addPathToRootChildren(focusNode);
