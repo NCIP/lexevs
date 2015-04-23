@@ -120,12 +120,15 @@ public class JdbcLexEvsTreeDao extends JdbcDaoSupport implements LexEvsTreeDao {
                                             return node;
                                         }
                     });
+                   if(namespace != null){
 				   for(LexEvsTreeNode node: nodes){
+
 				       if(node != null && node.getNamespace().equals(namespace)){
 				           return node;
 				       }
+				       }
 				   }
-				return null;
+				return nodes.get(0);
 				} catch (EmptyResultDataAccessException e) {
 					try {
 						if(! ServiceUtility.isSupplement(codingScheme, versionOrTag)) {
