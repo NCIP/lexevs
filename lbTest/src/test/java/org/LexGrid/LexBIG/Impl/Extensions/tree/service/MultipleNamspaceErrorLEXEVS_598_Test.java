@@ -28,13 +28,18 @@ public class MultipleNamspaceErrorLEXEVS_598_Test extends LexEvsTreeTestBase {
 				}
 	}
 	
-	@Test(expected=RuntimeException.class)
+	@Test
 	public void testMultipleNamespaceWrongNamespace() {
 	
+				try{
 				LexEvsTree tree = 	pathToRootTreeServiceImpl.getTree(
 						"Automobiles", 
 						null, 
 						"DifferentNamespaceConcept", "WrongNameSpace");
+				fail();
+				}catch(RuntimeException e){
+					System.out.println(e.getMessage());
+				}
 
 	}
 	

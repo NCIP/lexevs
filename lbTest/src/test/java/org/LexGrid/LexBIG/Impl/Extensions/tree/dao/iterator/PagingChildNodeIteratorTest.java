@@ -22,23 +22,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class PagingChildNodeIteratorTest extends LexEvsTreeTestBase{
 
-	private PagingChildNodeIterator iterator;
-	private PagingChildNodeIterator iteratorCountOnly;
-	private PagingChildNodeIterator iteratorNotCountOnly;
-	
-	@Autowired
-	@Qualifier("proxy")
-	private LexEvsTreeDao lexEvsTreeDao;
-	
-	private List<String> hierarchyAssocNames;
-	{
-		hierarchyAssocNames = new ArrayList<String>();
-		hierarchyAssocNames.add("hasSubtype");
-		hierarchyAssocNames.add("uses");
-	}
+//	private PagingChildNodeIterator iterator;
+//	private PagingChildNodeIterator iteratorCountOnly;
+//	private PagingChildNodeIterator iteratorNotCountOnly;
+//	
+//	@Autowired
+//	@Qualifier("proxy")
+//	private LexEvsTreeDao lexEvsTreeDao;
+//	
+//	private List<String> hierarchyAssocNames;
+//	{
+//		hierarchyAssocNames = new ArrayList<String>();
+//		hierarchyAssocNames.add("hasSubtype");
+//		hierarchyAssocNames.add("uses");
+//	}
 	
 	@Before
 	public void setUpIterator(){
+		lexEvsTreeDao = (LexEvsTreeDao) ac.getBean("lexEvsTreeDaoImpl");
 		iterator = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "A0001", null, Direction.FORWARD, hierarchyAssocNames, 5);
 		iterator.setLexEvsTreeDao(lexEvsTreeDao);
 		iterator.setIteratorFactory(new ChildTreeNodeIteratorFactory(lexEvsTreeDao, "Automobiles", null, Direction.FORWARD, hierarchyAssocNames, 5));
@@ -59,6 +60,7 @@ public class PagingChildNodeIteratorTest extends LexEvsTreeTestBase{
 
 	@Test
 	public void testHasNext(){
+		iterator.setIteratorFactory(new ChildTreeNodeIteratorFactory(lexEvsTreeDao, "Automobiles", null, Direction.FORWARD, hierarchyAssocNames, 5));
 		assertTrue(iterator.hasNext());
 	}
 	

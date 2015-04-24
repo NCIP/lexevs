@@ -15,8 +15,8 @@ import org.junit.Test;
 @Ignore
 public class LexEvsTreeTest extends LexEvsTreeTestBase {
 	
-	@Resource
-	private PathToRootTreeServiceImpl pathToRootTreeServiceImpl;
+//	@Resource
+//	private PathToRootTreeServiceImpl pathToRootTreeServiceImpl;
 	
 	private LexEvsTree tree;
 	

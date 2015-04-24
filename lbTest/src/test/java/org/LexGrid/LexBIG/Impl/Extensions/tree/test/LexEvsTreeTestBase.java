@@ -1,10 +1,17 @@
 package org.LexGrid.LexBIG.Impl.Extensions.tree.test;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import junit.framework.TestCase;
+
+import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.LexEvsTreeDao;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.LexEvsTreeDao.Direction;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.ChildTreeNodeIteratorFactory;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIterator;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.sqlbuilder.GetChildrenSqlBuilder;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNode;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImpl;
@@ -12,12 +19,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/treeServiceContext.xml"})
-public class LexEvsTreeTestBase {
+public class LexEvsTreeTestBase extends TestCase{
 	
 	@Resource
 	private GetChildrenSqlBuilder getChildrenSqlBuilder;
@@ -25,17 +34,30 @@ public class LexEvsTreeTestBase {
 	@Resource
 	protected PathToRootTreeServiceImpl pathToRootTreeServiceImpl;
 	
-	@Before
-	public void setUp() throws Exception{
-		
-		getChildrenSqlBuilder.setExcludeAnonymous(false);
+	protected ApplicationContext ac;
+	
+	protected PagingChildNodeIterator iterator;
+	protected PagingChildNodeIterator iteratorCountOnly;
+	protected PagingChildNodeIterator iteratorNotCountOnly;
+	protected LexEvsTreeDao lexEvsTreeDao;
+	protected List<String> hierarchyAssocNames;
+	{
+		hierarchyAssocNames = new ArrayList<String>();
+		hierarchyAssocNames.add("hasSubtype");
+		hierarchyAssocNames.add("uses");
 	}
 	
-//	//Users may need to provide an absolute path definition in some OS environments
-//	@BeforeClass
-//	public static void setSystemProp() throws Exception {
-//		System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");	
-//	}
+	@Before
+	public void setUp() throws Exception{
+		ac = new FileSystemXmlApplicationContext("file:src/test/java/org/LexGrid/LexBIG/Impl/Extensions/tree/test/treeServiceContext.xml");
+		pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) ac.getBean("pathToRootTreeServiceImpl");
+		getChildrenSqlBuilder = (GetChildrenSqlBuilder) ac.getBean("getChildrenSqlBuilder");
+//		iterator = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "A0001", null, Direction.FORWARD, hierarchyAssocNames, 5);
+		getChildrenSqlBuilder.setExcludeAnonymous(false);
+		lexEvsTreeDao = (LexEvsTreeDao) ac.getBean("lexEvsTreeDaoImpl");
+		setUpIterator();
+	}
+	
 	
 	@After
 	public void removeAutomobiles() throws Exception {
@@ -64,6 +86,26 @@ public class LexEvsTreeTestBase {
 			}
 		}
 		return false;
+	}
+	
+	public void setUpIterator(){
+		lexEvsTreeDao = (LexEvsTreeDao) ac.getBean("lexEvsTreeDaoImpl");
+		iterator = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "A0001", null, Direction.FORWARD, hierarchyAssocNames, 5);
+		iterator.setLexEvsTreeDao(lexEvsTreeDao);
+//		iterator.setIteratorFactory(new ChildTreeNodeIteratorFactory(lexEvsTreeDao, "Automobiles", null, Direction.FORWARD, hierarchyAssocNames, 5));
+		LexEvsTreeNode iteratorParentNode = lexEvsTreeDao.getNode("Automobiles", null, "A0001", null);
+		iteratorParentNode.setChildIterator(iterator, true);
+		iterator.initIterator(iteratorParentNode, true);
+		
+		iteratorCountOnly = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "005", null, Direction.FORWARD, hierarchyAssocNames, 5);
+		iteratorCountOnly.setLexEvsTreeDao(lexEvsTreeDao);
+//		iteratorCountOnly.setIteratorFactory(new ChildTreeNodeIteratorFactory(lexEvsTreeDao, "Automobiles", null, Direction.FORWARD, hierarchyAssocNames, 5));
+		iteratorCountOnly.initIterator(lexEvsTreeDao.getNode("Automobiles", null, "005", null), true);
+	
+		iteratorNotCountOnly = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "005", null, Direction.FORWARD, hierarchyAssocNames, 5);
+		iteratorNotCountOnly.setLexEvsTreeDao(lexEvsTreeDao);
+//		iteratorNotCountOnly.setIteratorFactory(new ChildTreeNodeIteratorFactory(lexEvsTreeDao, "Automobiles", null, Direction.FORWARD, hierarchyAssocNames, 5));
+		iteratorNotCountOnly.initIterator(lexEvsTreeDao.getNode("Automobiles", null, "005", null), true);
 	}
 	
 	public boolean childrenContainCode(LexEvsTreeNode node, String code){
