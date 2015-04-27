@@ -22,8 +22,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
+//import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImplTest;
 import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
+//import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
@@ -172,7 +174,10 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.junit.runner.RunWith;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
@@ -191,6 +196,13 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLex
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
+
+import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.service.MultipleNamspaceErrorLEXEVS_598_Test;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImplTest;
+
 
 public class AllTestsNormalConfig {
 
@@ -397,7 +409,16 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestPasswordEncryption.class);
 
         mainSuite.addTest(functionalTests);
-
+        
+        TestSuite treeTests = new TestSuite("tree extension tests");
+        treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
+        treeTests.addTestSuite(LexEvsTreeNodeTest.class);
+        treeTests.addTestSuite(LexEvsTreeTest.class);
+        treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
+        treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
+        
+        mainSuite.addTest(treeTests);
+        
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
         bugTests.addTestSuite(GForge19650.class);
