@@ -24,8 +24,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/treeServiceContext.xml"})
 public class LexEvsTreeTestBase extends TestCase{
 	
 	@Resource
