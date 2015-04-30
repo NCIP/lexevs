@@ -49,6 +49,9 @@ public class ChildPagingJsonConverter implements JsonConverter {
 	/** The Constant ONTOLOGY_NODE_NAME. */
 	public static final String ONTOLOGY_NODE_NAME = "ontology_node_name";
 	
+	/** The Constant ONTOLOGY_NODE_NS. */
+	public static final String ONTOLOGY_NODE_NS = "ontology_node_ns"; // namespace
+	
 	/** The Constant CHILDREN_NODES. */
 	public static final String CHILDREN_NODES = "children_nodes";
 	
@@ -207,6 +210,7 @@ public class ChildPagingJsonConverter implements JsonConverter {
 		try {
 			nodeObject.put(ONTOLOGY_NODE_CHILD_COUNT, expandableStatusToInt(node.getExpandableStatus()));
 			nodeObject.put(ONTOLOGY_NODE_ID, node.getCode());
+			nodeObject.put(ONTOLOGY_NODE_NS, node.getNamespace() == null ? "" : node.getNamespace());
 			nodeObject.put(ONTOLOGY_NODE_NAME, node.getEntityDescription());
 
 			JSONArray childrenArray = new JSONArray();

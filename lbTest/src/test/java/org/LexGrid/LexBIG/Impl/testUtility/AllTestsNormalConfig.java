@@ -198,6 +198,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTes
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
 
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeJsonNameSpaceTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.service.MultipleNamspaceErrorLEXEVS_598_Test;
@@ -320,7 +321,7 @@ public class AllTestsNormalConfig {
         TestSuite comparatorSuite = new TestSuite("Comparator Tests");
         comparatorSuite.addTestSuite(ResultComparatorTest.class);
         mainSuite.addTest(comparatorSuite);
-        
+      
         TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
         codedNodeSetSuite.addTestSuite(ResolveTest.class);
         codedNodeSetSuite.addTestSuite(ResolveToListTest.class);
@@ -336,7 +337,7 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
-        
+       
         TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToDirectionalNamesTest.class);
@@ -409,13 +410,14 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestPasswordEncryption.class);
 
         mainSuite.addTest(functionalTests);
-        
+       
         TestSuite treeTests = new TestSuite("tree extension tests");
         treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
         treeTests.addTestSuite(LexEvsTreeNodeTest.class);
         treeTests.addTestSuite(LexEvsTreeTest.class);
         treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
         treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
+        treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
         
         mainSuite.addTest(treeTests);
         
