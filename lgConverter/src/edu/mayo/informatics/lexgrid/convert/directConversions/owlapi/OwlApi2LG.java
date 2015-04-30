@@ -697,6 +697,7 @@ public class OwlApi2LG {
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
 
         }
+        
 
         
         
@@ -1401,9 +1402,9 @@ public class OwlApi2LG {
         String nameSpace = getDefaultNameSpace();
         // Check if this concept has already been processed. We do not want
         // duplicate concepts.
-        if (isEntityCodeRegistered(nameSpace, code)) {
-            return code;
-        }
+        if (!isEntityCodeRegistered(nameSpace, code)) {
+//            return code;
+//        }
 
         Entity lgClass = new Entity();
         lgClass.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
@@ -1427,6 +1428,7 @@ public class OwlApi2LG {
         lgClass.addPresentation(pres);
         // Add to the concept container or write to db...
         addEntity(lgClass);
+    }
         AssociationSource source = CreateUtils.createAssociationSource(code, nameSpace);
 
         if (owlClassExp instanceof OWLNaryBooleanClassExpression) {
@@ -1476,7 +1478,7 @@ public class OwlApi2LG {
         }
 
         // Return the lg class name
-        return lgClass.getEntityCode();
+        return code;
     }
 
     //Resolve the complement of restriction as an association
