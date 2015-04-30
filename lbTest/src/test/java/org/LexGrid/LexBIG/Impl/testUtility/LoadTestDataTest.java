@@ -557,6 +557,29 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 //		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
 //				LBConstants.KnownTags.PRODUCTION.toString());
 	}
+	
+	public void testloadOWL2SnippetSpecialCasesAnnotatedDefined() throws Exception {
+		
+		LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
+		try{
+			loader.setLoaderPreferences(new File("resources/testData/owl2/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+			loader.load(new File("resources/testData/owl2/owl2-special-cases-Defined-Annotated.owl")
+					.toURI(), null, 1, true, true);
+		}
+		catch(ClassCastException e){
+			fail("Failed on class cast exception: " + e.getMessage());
+		}
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(1000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+	}
 
 	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
 			InterruptedException {

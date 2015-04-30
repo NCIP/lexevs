@@ -198,6 +198,19 @@ public class CleanUpTest extends TestCase {
 
 	}
 
+	public  void testRemoveOwl2SnippetSpecialCases() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
+				.getServiceManager(null);
+
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
+				.createAbsoluteCodingSchemeVersionReference(
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+						LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+		lbsm.removeCodingSchemeVersion(a);
+
+	}
     public void testRemoveOwl() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
