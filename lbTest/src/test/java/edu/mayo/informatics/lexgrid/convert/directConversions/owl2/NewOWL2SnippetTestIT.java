@@ -61,8 +61,22 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	//Entity Unit Tests
 
 	@Test
-	public void testURLForExternalClass() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+	public void testNamespaceNotPresentInEntityName1() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000000"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertFalse(itr.hasNext());
+	}
+
+	@Test
+	public void testNamespaceNotPresentInEntityName2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("owl2lexevs:CL_0000000"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testURLForExternalClass() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("CL_0000000"));
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
@@ -71,7 +85,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 
 	@Test
 	public void testURLForExternalClass2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000148", 
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("CL_0000148", 
 				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
 		ResolvedConceptReferencesIterator itr1 = cns.resolve(null, null, null);
 		assertNotNull(itr1);
@@ -335,7 +349,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000000", itr));
+		assertTrue(validateTarget("CL_0000000", itr));
 	}
 	
 	@Test
@@ -359,7 +373,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test
@@ -371,7 +385,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test
@@ -715,7 +729,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+	assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test
@@ -739,7 +753,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+	assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test

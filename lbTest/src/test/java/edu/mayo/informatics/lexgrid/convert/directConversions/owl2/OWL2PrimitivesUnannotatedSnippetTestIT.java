@@ -61,8 +61,22 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	//Entity Unit Tests
 
 	@Test
+	public void testNamespaceNotPresentInEntityName1() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000000"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertFalse(itr.hasNext());
+	}
+
+	@Test
+	public void testNamespaceNotPresentInEntityName2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("owl2lexevs:CL_0000000"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
 	public void testURLForExternalClass() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000000"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("CL_0000000"));
 		ResolvedConceptReferencesIterator itr = cnsp.resolve(null, null, null);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
@@ -71,7 +85,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 
 	@Test
 	public void testURLForExternalClass2() throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("http://purl.obolibrary.org/obo/CL_0000148", 
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("CL_0000148", 
 				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
 		ResolvedConceptReferencesIterator itr1 = cnsp.resolve(null, null, null);
 		assertNotNull(itr1);
@@ -283,7 +297,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000000", itr));
+		assertTrue(validateTarget("CL_0000000", itr));
 	}
 	
 	@Test
@@ -307,7 +321,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test
@@ -319,7 +333,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+		assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test
@@ -646,7 +660,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+	assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test
@@ -670,7 +684,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateTarget("http://purl.obolibrary.org/obo/CL_0000148", itr));
+	assertTrue(validateTarget("CL_0000148", itr));
 	}
 	
 	@Test

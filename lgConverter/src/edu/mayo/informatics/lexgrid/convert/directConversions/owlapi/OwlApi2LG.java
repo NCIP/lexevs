@@ -2650,13 +2650,11 @@ public class OwlApi2LG {
     }
     
     String getLocalName(IRI iri) {
-        String localNameWithColon = renderer.getPrefixNameShortFormProvider().getShortForm(iri);
-        return getFromLastIndexOfColonOrHash(localNameWithColon);
+        return iri.getFragment();
     }
     
     String getLocalName(OWLEntity entity) {
-        String localNameWithColon = renderer.getPrefixNameShortFormProvider().getShortForm(entity);
-        return getFromLastIndexOfColonOrHash(localNameWithColon);
+        return entity.getIRI().getFragment();
     }
 
     protected String getNameSpace(OWLEntity entity) {
