@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package org.LexGrid.LexBIG.Impl.Extensions.tree.service;
+package org.lexevs.tree.service;
 
 import java.io.Serializable;
 
@@ -27,6 +27,7 @@ import org.springframework.aop.framework.Advised;
 /**
  * A factory for creating TreeService objects.
  */
+@Deprecated
 public class TreeServiceFactory implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -90,7 +91,7 @@ public class TreeServiceFactory implements Serializable {
 	 */
 	protected TreeService getTreeServiceExtension(LexBIGService lbs){
 		try {
-			return (TreeService)lbs.getGenericExtension("lex-tree-utility");
+			return (TreeService)lbs.getGenericExtension("tree-utility");
 		} catch (LBException e) {
 			throw new RuntimeException(e);
 		}
