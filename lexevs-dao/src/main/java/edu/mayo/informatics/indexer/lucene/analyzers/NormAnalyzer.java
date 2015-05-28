@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 
 import edu.mayo.informatics.indexer.lucene.filters.NormFilter;
-import edu.mayo.informatics.indexer.utility.CachedNormApi;
+import edu.mayo.informatics.indexer.utility_2.CachedNormApi;
 
 /**
  * This is an analyzer that uses LVG to normalize each term before it is

@@ -21,7 +21,6 @@ package edu.mayo.informatics.indexer.api.test;
 import java.io.File;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
-import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;
 import edu.mayo.informatics.indexer.api.generators.DocumentFromXMLGenerator;
 import edu.mayo.informatics.indexer.api.generators.DocumentFromXSLGenerator;
 
@@ -106,33 +105,6 @@ public class TestAddDocs {
         }
 
         service.closeWriter(index2);
-
-        // This section shows how to build an index from simple string values
-
-        String index3 = "simple_strings";
-        service.createIndex(index3, new edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer());
-        service.openBatchWriter(index3, true, false);
-        DocumentFromStringsGenerator ab = new DocumentFromStringsGenerator();
-        ab.startNewDocument("test1");
-        ab.addTextField("field1", "now listen to my story of a man name jed", true, true, true);
-        ab.addIntField("age", 15, 3, true, true);
-        service.addDocument(index3, ab.getDocument());
-
-        ab.startNewDocument("test1");
-        ab.addTextField("field1", "barely kept his families fed", true, true, true);
-        ab.addIntField("age", 28, 3, true, true);
-        service.addDocument(index3, ab.getDocument());
-
-        ab.startNewDocument("test1");
-        ab.addTextField("field1", "shootin for some food in a trees and leaves", true, true, true);
-        ab.addIntField("age", 7, 3, true, true);
-        service.addDocument(index3, ab.getDocument());
-
-        service.closeWriter(index3);
-
-        // This section shows how to build an index from xml files which need to
-        // be passed
-        // though an xsl transformation to get into the proper format
 
         String index4 = "fromxsl";
         service.createIndex(index4);
