@@ -154,7 +154,6 @@ import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 
-import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.StringAnalyzerTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
@@ -228,7 +227,6 @@ public class MainSuite {
 	        mainSuite.addTest(hl7MifVocabularyLoaderSuite);
 	        
 	        TestSuite luceneSuite = new TestSuite("Lucene Tests");
-	        luceneSuite.addTestSuite(QueryGeneratorTest.class);
 	        luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
 	        luceneSuite.addTestSuite(StringAnalyzerTest.class);
 	        luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
