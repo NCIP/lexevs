@@ -76,59 +76,6 @@ public class Index {
     }
 
     /**
-     * Open the index for adding new documents. Indexes to RAM first for
-     * performance reasons.
-     * 
-     * @param clearContents
-     *            True to erase current contents, false to append to them
-     * @throws IndexWriterAlreadyOpenException
-     *             Thrown if a indexWriter is already open.
-     * @throws InternalIndexerErrorException
-     *             Thrown if an unexpected error occurs.
-     */
-    public void openBatchRAMIndexWriter(boolean clearContents) throws IndexWriterAlreadyOpenException,
-            InternalIndexerErrorException {
-        if (indexWriter_ == null) {
-            // If they didn't say clear contents, and the index doesn't exist,
-            // it will cause an error.
-            // so change clear contents to true, so it makes a new index.
-            if (!clearContents && !IndexReader.indexExists(location_)) {
-                clearContents = true;
-            }
-            logger.info("Opening a RAMBatch Index Writer on " + location_.getAbsolutePath());
-            indexWriter_ = new LuceneRAMBatchIndexWriter(location_, clearContents, analyzer_);
-        } else {
-            throw new IndexWriterAlreadyOpenException("Their is already an index writer open.");
-        }
-    }
-
-    /**
-     * Open the index for adding new documents. Indexes to the File System.
-     * 
-     * @param clearContents
-     *            True to erase current contents, false to append to them
-     * @throws IndexWriterAlreadyOpenException
-     *             Thrown if a indexWriter is already open.
-     * @throws InternalIndexerErrorException
-     *             Thrown if an unexpected error occurs.
-     */
-    public void openBatchFSIndexWriter(boolean clearContents) throws InternalIndexerErrorException,
-            IndexWriterAlreadyOpenException {
-        if (indexWriter_ == null) {
-            // If they didn't say clear contents, and the index doesn't exist,
-            // it will cause an error.
-            // so change clear contents to true, so it makes a new index.
-            if (!clearContents && !IndexReader.indexExists(location_)) {
-                clearContents = true;
-            }
-            logger.info("Opening a FSBatch Index Writer on " + location_.getAbsolutePath());
-            indexWriter_ = new LuceneFSBatchIndexWriter(location_, clearContents, analyzer_);
-        } else {
-            throw new IndexWriterAlreadyOpenException("Their is already an index writer open.");
-        }
-    }
-
-    /**
      * Open the index for adding new documents. Use for small updates. Use a
      * Batch writer for large updates.
      * 
@@ -154,7 +101,7 @@ public class Index {
             throw new IndexWriterAlreadyOpenException("Their is already an index writer open.");
         }
     }
-
+    
     /**
      * Closes the currently opened indexWriter.
      * 

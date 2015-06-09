@@ -67,18 +67,18 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
         searcher_ = new IndexSearcher(index_.getBaseIndexReader());
     }
 
-    public Document[] search(Query query, Filter filter, boolean skipLowScoringHits, int maxToReturn)
-            throws InternalIndexerErrorException {
-        int max = maxToReturn;
-        if (maxToReturn <= 0) {
-            max = Integer.MAX_VALUE;
-        }
-        if (skipLowScoringHits) {
-            return searchSkipLowScoreing(query, filter, max);
-        } else {
-            return searchSkipNone(query, filter, max);
-        }
-    }
+//    public Document[] search(Query query, Filter filter, boolean skipLowScoringHits, int maxToReturn)
+//            throws InternalIndexerErrorException {
+//        int max = maxToReturn;
+//        if (maxToReturn <= 0) {
+//            max = Integer.MAX_VALUE;
+//        }
+//        if (skipLowScoringHits) {
+//            return searchSkipLowScoreing(query, filter, max);
+//        } else {
+//            return searchSkipNone(query, filter, max);
+//        }
+//    }
     
     public void search(Query query, Filter filter, HitCollector hitCollector) throws InternalIndexerErrorException, IndexSearchException{
         try {
@@ -123,56 +123,56 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
 
     }
 
-    private Document[] searchSkipNone(Query query, Filter filter, int maxToReturn) throws InternalIndexerErrorException {
-        this.luceneHits_ = null;
-        this.hits_ = null;
-
-        if (!index_.upToDate()) {
-            reloadSearcher();
-        }
-
-        final ArrayList tempHits = new ArrayList(index_.maxDoc() / 4);
-        readSoFar_ = 0;
-
-        try {
-            searcher_.search(query, filter, new HitCollector() {
-                public void collect(int doc, float score) {
-                    tempHits.add(new LuceneHits(doc, score));
-                }
-            });
-        } catch (IOException e) {
-            logger.error(e);
-            throw new InternalIndexerErrorException("There was an error searching the index " + e);
-        }
-
-        luceneHits_ = (LuceneHits[]) tempHits.toArray(new LuceneHits[tempHits.size()]);
-
-        Arrays.sort(luceneHits_, new HitComparator());
-
-        // normalize the scores
-        float scoreNorm = 1.0f;
-        if (luceneHits_.length > 0 && luceneHits_[0].score_ > 1.0f)
-            scoreNorm = 1.0f / luceneHits_[0].score_;
-
-        for (int i = 0; i < luceneHits_.length; i++)
-            luceneHits_[i].score_ = luceneHits_[i].score_ * scoreNorm;
-
-        // Collect the first set of results
-        int stop = luceneHits_.length >= maxToReturn ? maxToReturn : luceneHits_.length;
-        Document[] temp = new Document[stop];
-        readSoFar_ = stop;
-        lastStartPoint_ = 0;
-        try {
-            for (int i = 0; i < stop; i++) {
-                temp[i] = searcher_.doc(luceneHits_[i].doc_);
-            }
-        } catch (IOException e) {
-            logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
-        }
-
-        return temp;
-    }
+//    private Document[] searchSkipNone(Query query, Filter filter, int maxToReturn) throws InternalIndexerErrorException {
+//        this.luceneHits_ = null;
+//        this.hits_ = null;
+//
+//        if (!index_.upToDate()) {
+//            reloadSearcher();
+//        }
+//
+//        final ArrayList tempHits = new ArrayList(index_.maxDoc() / 4);
+//        readSoFar_ = 0;
+//
+//        try {
+//            searcher_.search(query, filter, new HitCollector() {
+//                public void collect(int doc, float score) {
+//                    tempHits.add(new LuceneHits(doc, score));
+//                }
+//            });
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new InternalIndexerErrorException("There was an error searching the index " + e);
+//        }
+//
+//        luceneHits_ = (LuceneHits[]) tempHits.toArray(new LuceneHits[tempHits.size()]);
+//
+//        Arrays.sort(luceneHits_, new HitComparator());
+//
+//        // normalize the scores
+//        float scoreNorm = 1.0f;
+//        if (luceneHits_.length > 0 && luceneHits_[0].score_ > 1.0f)
+//            scoreNorm = 1.0f / luceneHits_[0].score_;
+//
+//        for (int i = 0; i < luceneHits_.length; i++)
+//            luceneHits_[i].score_ = luceneHits_[i].score_ * scoreNorm;
+//
+//        // Collect the first set of results
+//        int stop = luceneHits_.length >= maxToReturn ? maxToReturn : luceneHits_.length;
+//        Document[] temp = new Document[stop];
+//        readSoFar_ = stop;
+//        lastStartPoint_ = 0;
+//        try {
+//            for (int i = 0; i < stop; i++) {
+//                temp[i] = searcher_.doc(luceneHits_[i].doc_);
+//            }
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+//        }
+//
+//        return temp;
+//    }
 
     public Document[] getNextSearchResults(int howMany) throws InternalIndexerErrorException {
         int hitLength = 0;

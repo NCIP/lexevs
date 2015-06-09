@@ -209,19 +209,19 @@ public class IndexerService {
      * @throws IndexWriterAlreadyOpenException
      * @throws InternalIndexerErrorException
      */
-    public void openBatchWriter(String indexName, boolean clearContents, boolean useRAMIndexer)
-            throws IndexNotFoundException, IndexWriterAlreadyOpenException, InternalIndexerErrorException {
-        Index currentIndex = (Index) indexes_.get(indexName);
-
-        if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
-        }
-        if (useRAMIndexer) {
-            currentIndex.openBatchRAMIndexWriter(clearContents);
-        } else {
-            currentIndex.openBatchFSIndexWriter(clearContents);
-        }
-    }
+//    public void openBatchWriter(String indexName, boolean clearContents, boolean useRAMIndexer)
+//            throws IndexNotFoundException, IndexWriterAlreadyOpenException, InternalIndexerErrorException {
+//        Index currentIndex = (Index) indexes_.get(indexName);
+//
+//        if (currentIndex == null) {
+//            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+//        }
+//        if (useRAMIndexer) {
+//            currentIndex.openBatchRAMIndexWriter(clearContents);
+//        } else {
+//            currentIndex.openBatchFSIndexWriter(clearContents);
+//        }
+//    }
 
     /**
      * Opens an index writer. Best for small updates. Use a Batch Writer for

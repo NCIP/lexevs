@@ -66,8 +66,8 @@ public interface SearchServiceInterface {
      * 
      * @throws InternalIndexerErrorException the internal indexer error exception
      */
-    public Document[] search(Query query, Filter filter, boolean skipLowScoring, int maxToReturn)
-            throws InternalIndexerErrorException;
+//    public Document[] search(Query query, Filter filter, boolean skipLowScoring, int maxToReturn)
+//            throws InternalIndexerErrorException;
 
     /**
      * Gets the next search results.
