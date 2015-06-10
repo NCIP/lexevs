@@ -27,7 +27,6 @@ import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;
 import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
 import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
@@ -141,7 +140,7 @@ public abstract class LuceneLoaderCode {
     protected LuceneLoaderCode(){
     	try {
 			this.initIndexes();
-		} catch (InternalErrorException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
     }
@@ -409,9 +408,9 @@ public abstract class LuceneLoaderCode {
      * @param indexName the index name
      * @param indexLocation the index location
      * 
-     * @throws InternalErrorException the internal error exception
+     * @throws RuntimeException
      */
-    protected void initIndexes() throws InternalErrorException {
+    protected void initIndexes() throws RuntimeException {
     	this.analyzer_ = getAnaylzer();
         generator_ = new DocumentFromStringsGenerator();
     }

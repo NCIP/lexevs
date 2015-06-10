@@ -20,33 +20,30 @@
 package org.lexevs.dao.index.indexregistry;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.store.FSDirectory;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
-import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.factory.InitializingBean;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.utility.MetaData;
 
 public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
@@ -223,7 +220,7 @@ public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 
 			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
 			
-		} catch (InternalErrorException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
 	}

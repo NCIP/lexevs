@@ -35,7 +35,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.springframework.core.io.Resource;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 
 /**
  * This class reads and writes metadata to an xml file.
@@ -60,11 +59,11 @@ public class MetaData {
        root_ = document_.getRootElement();
     }
     
-    public MetaData(Resource rootLocation) throws InternalErrorException, IOException {
+    public MetaData(Resource rootLocation) throws RuntimeException, IOException {
         this(rootLocation.getFile());
     }
 
-    public MetaData(File rootLocation) throws InternalErrorException {
+    public MetaData(File rootLocation) throws RuntimeException {
         try {
             file_ = new File(rootLocation, "metadata.xml");
             WriteLockManager.instance(rootLocation);
@@ -81,9 +80,9 @@ public class MetaData {
                 writeFile(false);
             }
         } catch (JDOMException e) {
-            throw new InternalErrorException("The existing metadata.xml file appears to be invalid.", e);
+            throw new RuntimeException("The existing metadata.xml file appears to be invalid.", e);
         } catch (IOException e) {
-            throw new InternalErrorException("Cannot create the metadata.xml file", e);
+            throw new RuntimeException("Cannot create the metadata.xml file", e);
         } finally {
             WriteLockManager.instance().unlock();
         }
@@ -93,7 +92,7 @@ public class MetaData {
     /**
      * Only rereads if necessary (checks file timestamp
      */
-    public void rereadFile(boolean releaseLockWhenDone) throws InternalErrorException {
+    public void rereadFile(boolean releaseLockWhenDone) throws RuntimeException {
         try {
             if (file_.lastModified() != fileChangeDate_ || file_.length() != fileLength_) {
                 logger.debug("Reading updated index metadata.xml");
@@ -122,9 +121,9 @@ public class MetaData {
 
             }
         } catch (JDOMException e) {
-            throw new InternalErrorException("The existing metadata.xml file appears to be invalid.", e);
+            throw new RuntimeException("The existing metadata.xml file appears to be invalid.", e);
         } catch (IOException e) {
-            throw new InternalErrorException("Cannot read the metadata.xml file", e);
+            throw new RuntimeException("Cannot read the metadata.xml file", e);
         } finally {
             reading_ = false;
             if (releaseLockWhenDone) {
@@ -133,7 +132,7 @@ public class MetaData {
         }
     }
 
-    public String[] getIndexMetaDataKeys(String indexName) throws InternalErrorException {
+    public String[] getIndexMetaDataKeys(String indexName) throws RuntimeException {
         rereadFile(true);
         List list = root_.getChildren("index");
         Iterator iter = list.iterator();
@@ -146,7 +145,7 @@ public class MetaData {
         return new String[] {};
     }
 
-    public String getIndexMetaDataValue(String indexName, String key) throws InternalErrorException {
+    public String getIndexMetaDataValue(String indexName, String key) throws RuntimeException {
         rereadFile(true);
         List list = root_.getChildren("index");
         Iterator iter = list.iterator();
@@ -159,17 +158,17 @@ public class MetaData {
         return "";
     }
 
-    public String[] getIndexMetaDataKeys() throws InternalErrorException {
+    public String[] getIndexMetaDataKeys() throws RuntimeException {
         rereadFile(true);
         return getIndexMetaDataKeys(root_);
     }
 
-    public String getIndexMetaDataValue(String key) throws InternalErrorException {
+    public String getIndexMetaDataValue(String key) throws RuntimeException {
         rereadFile(true);
         return getIndexMetaDataValue(root_, key);
     }
 
-    public void setIndexMetaDataValue(String key, String value) throws InternalErrorException {
+    public void setIndexMetaDataValue(String key, String value) throws RuntimeException {
         try {
             rereadFile(false);
             setIndexMetaDataValue(root_, key, value);
@@ -180,7 +179,7 @@ public class MetaData {
 
     }
 
-    public void setIndexMetaDataValue(String indexName, String key, String value) throws InternalErrorException {
+    public void setIndexMetaDataValue(String indexName, String key, String value) throws RuntimeException {
         try {
             rereadFile(false);
             List list = root_.getChildren("index");
@@ -207,7 +206,7 @@ public class MetaData {
         }
     }
 
-    public void removeIndexMetaDataValue(String key) throws InternalErrorException {
+    public void removeIndexMetaDataValue(String key) throws RuntimeException {
         try {
             rereadFile(false);
             removeIndexMetaDataValue(root_, key);
@@ -218,7 +217,7 @@ public class MetaData {
         }
     }
 
-    public void removeAllIndexMetaDataValue(String indexName) throws InternalErrorException {
+    public void removeAllIndexMetaDataValue(String indexName) throws RuntimeException {
         try {
             rereadFile(false);
             List list = root_.getChildren("index");
@@ -241,7 +240,7 @@ public class MetaData {
         }
     }
 
-    public void removeIndexMetaDataValue(String indexName, String key) throws InternalErrorException {
+    public void removeIndexMetaDataValue(String indexName, String key) throws RuntimeException {
         try {
             rereadFile(false);
             List list = root_.getChildren("index");
@@ -258,7 +257,7 @@ public class MetaData {
 
     }
 
-    private String[] getIndexMetaDataKeys(Element element) throws InternalErrorException {
+    private String[] getIndexMetaDataKeys(Element element) throws RuntimeException {
         ArrayList resultsToReturn = new ArrayList();
         List list = element.getChildren("note");
         Iterator iter = list.iterator();
@@ -269,7 +268,7 @@ public class MetaData {
         return (String[]) resultsToReturn.toArray(new String[resultsToReturn.size()]);
     }
 
-    private String getIndexMetaDataValue(Element element, String key) throws InternalErrorException {
+    private String getIndexMetaDataValue(Element element, String key) throws RuntimeException {
         List list = element.getChildren("note");
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
@@ -282,7 +281,7 @@ public class MetaData {
         return "";
     }
 
-    private void setIndexMetaDataValue(Element inElement, String inKey, String inValue) throws InternalErrorException {
+    private void setIndexMetaDataValue(Element inElement, String inKey, String inValue) throws RuntimeException {
         List list = inElement.getChildren("note");
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
@@ -304,7 +303,7 @@ public class MetaData {
         writeFile(false);
     }
 
-    private void removeIndexMetaDataValue(Element inElement, String inKey) throws InternalErrorException {
+    private void removeIndexMetaDataValue(Element inElement, String inKey) throws RuntimeException {
         List list = inElement.getChildren("note");
         Element[] foo = (Element[]) list.toArray(new Element[list.size()]);
 
@@ -318,7 +317,7 @@ public class MetaData {
         }
     }
 
-    protected synchronized void writeFile(boolean unlockWhenDone) throws InternalErrorException {
+    protected synchronized void writeFile(boolean unlockWhenDone) throws RuntimeException {
         try {
             XMLOutputter xmlFormatter = new XMLOutputter(Format.getPrettyFormat());
 
@@ -337,7 +336,7 @@ public class MetaData {
             fileChangeDate_ = file_.lastModified();
             fileLength_ = file_.length();
         } catch (Exception e) {
-            throw new InternalErrorException("There was a problem writing the metadata file " + e);
+            throw new RuntimeException("There was a problem writing the metadata file " + e);
         } finally {
             writing_ = false;
             if (unlockWhenDone) {

@@ -23,22 +23,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.QueryFilter;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
@@ -47,10 +43,6 @@ import org.lexevs.system.model.LocalCodingScheme;
 
 import edu.mayo.informatics.indexer.api.IndexerService;
 import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.api.exceptions.IndexNotFoundException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-//import edu.mayo.informatics.indexer.lucene.IDFNeutralSimilarity;
 import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 
 /**
@@ -151,7 +143,7 @@ public class IndexInterface {
 
         try {
             service_.refreshAvailableIndexes();
-        } catch (InternalErrorException e) {
+        } catch (RuntimeException e) {
             String logId = getLogger()
                     .error(
                             "There was an unexpected error while rereading the index metadata at "
@@ -196,7 +188,7 @@ public class IndexInterface {
             } 
             */
             codeSystemToIndexMap_ = temp;
-        } catch (InternalErrorException e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("There was a problem reading the index metadata.", e);
         }
     }
@@ -223,66 +215,6 @@ public class IndexInterface {
         }
         return keys;
     }
-    
-    /**
-     * Gets the boundary document iterator.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @return the boundary document iterator
-     */
-//    public DocIdSetIterator getBoundaryDocumentIterator(String internalCodeSystemName, String internalVersionString){
-//        String indexName = this.mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-//        
-//        if(!boundryDocIdSetMap.containsKey(indexName)){
-//            try {
-//                IndexReader reader = getIndexReader(internalCodeSystemName, internalVersionString).getBaseIndexReader();
-//                
-//                boundryDocIdSetMap.put(indexName, this.getCodeBoundryFilter().getDocIdSet(reader));
-//
-//            } catch (Exception e) {
-//                throw new RuntimeException("There was a problem initializing the index.", e);
-//            } 
-//        }
-//        
-//        return boundryDocIdSetMap.get(indexName).iterator();
-//    }
-
-    /*
-     * Get a index reader for a given code system.
-     */
-    /**
-     * Gets the index reader.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @return the index reader
-     */
-//    public LuceneIndexReader getIndexReader(String internalCodeSystemName, String internalVersionString) {
-//        String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-//
-//        LuceneIndexReader lir = (LuceneIndexReader) indexReaders_.get(indexName);
-//
-//        if (lir != null) {
-//            return lir;
-//        }
-//        // if it did equal null, its not in the cache - open one up and put it
-//        // in the cache.
-//        try {
-//            lir = service_.getLuceneIndexReader(indexName);
-//            indexReaders_.put(indexName, lir);
-//
-//            return lir;
-//        } catch (IndexNotFoundException e) {
-//            throw new RuntimeException("There was an error opening the index for " + internalCodeSystemName
-//                    + ".  I tried to open the index " + indexName + " from " + service_.getRootLocation(), e);
-//        } catch (InternalIndexerErrorException e) {
-//            throw new RuntimeException("There was an error opening the index for " + internalCodeSystemName
-//                    + ".  I tried to open the index " + indexName + " from " + service_.getRootLocation(), e);
-//        }
-//    }
 
     /**
      * Reopen meta data index reader.
@@ -293,32 +225,6 @@ public class IndexInterface {
         indexReaders_.remove(indexName);
         indexSearchers_.remove(indexName);
     }
-
-    /**
-     * Gets the meta data index reader.
-     * 
-     * @return the meta data index reader
-     */
-//    public LuceneIndexReader getMetaDataIndexReader() {
-//        String indexName = SystemVariables.getMetaDataIndexName();
-//        LuceneIndexReader lir = (LuceneIndexReader) indexReaders_.get(indexName);
-//
-//        if (lir != null) {
-//            return lir;
-//        }
-//        // if it did equal null, its not in the cache - open one up and put it
-//        // in the cache.
-//        try {
-//            lir = service_.getLuceneIndexReader(indexName);
-//            indexReaders_.put(indexName, lir);
-//
-//            return lir;
-//        } catch (IndexNotFoundException e) {
-//            throw new RuntimeException("There was an error opening the index for the MetaData Index", e);
-//        } catch (InternalIndexerErrorException e) {
-//            throw new RuntimeException("There was an error opening the index for the MetaData Index", e);
-//        }
-//    }
 
     /**
      * Reopen index.
@@ -349,74 +255,10 @@ public class IndexInterface {
             if (ssi != null) {
                 ssi.close();
             }
-        } catch (InternalIndexerErrorException e) {
+        } catch (RuntimeException e) {
             // ignore these errors. These interfaces won't be used again anyway.
         }
     }
-
-    /*
-     * Get an index searcher for a given code system.
-     */
-    /**
-     * Gets the searcher.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @return the searcher
-     */
-//    public SearchServiceInterface getSearcher(String internalCodeSystemName, String internalVersionString){
-//        String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-//
-//        SearchServiceInterface si = (SearchServiceInterface) indexSearchers_.get(indexName);
-//
-//        if (si != null) {
-//            return si;
-//        }
-//        // if it did equal null, its not in the cache - open one up and put it
-//        // in the cache.
-//        try {
-//            si = service_.getIndexSearcher(indexName);
-//            si.setSimilarity(new IDFNeutralSimilarity());
-//            indexSearchers_.put(indexName, si);
-//
-//            return si;
-//        } catch (IndexNotFoundException e) {
-//            throw new RuntimeException("There was an error opening the index searcher for "
-//                    + internalCodeSystemName, e);
-//        } catch (InternalIndexerErrorException e) {
-//            throw new RuntimeException("There was an error opening the index searcher for "
-//                    + internalCodeSystemName, e);
-//        }
-//    }
-
-    /**
-     * Gets the meta data searcher.
-     * 
-     * @return the meta data searcher
-     */
-//    public SearchServiceInterface getMetaDataSearcher() {
-//        String indexName = SystemVariables.getMetaDataIndexName();
-//
-//        SearchServiceInterface si = (SearchServiceInterface) indexSearchers_.get(indexName);
-//
-//        if (si != null) {
-//            return si;
-//        }
-//        // if it did equal null, its not in the cache - open one up and put it
-//        // in the cache.
-//        try {
-//            si = service_.getIndexSearcher(indexName);
-//            si.setSimilarity(new IDFNeutralSimilarity());
-//            indexSearchers_.put(indexName, si);
-//
-//            return si;
-//        } catch (IndexNotFoundException e) {
-//            throw new RuntimeException("There was an error opening the metadata index searcher", e);
-//        } catch (InternalIndexerErrorException e) {
-//            throw new RuntimeException("There was an error opening the metadata index searcher.", e);
-//        }
-//    }
 
     /**
      * Delete index.
@@ -532,7 +374,7 @@ public class IndexInterface {
         while (ssi.hasMoreElements()) {
             try {
                 ssi.nextElement().close();
-            } catch (InternalIndexerErrorException e) {
+            } catch (RuntimeException e) {
                 // do nothing
             }
         }
@@ -541,7 +383,7 @@ public class IndexInterface {
         while (lir.hasMoreElements()) {
             try {
                 lir.nextElement().close();
-            } catch (InternalIndexerErrorException e) {
+            } catch (RuntimeException e) {
                 // do nothing
             }
         }

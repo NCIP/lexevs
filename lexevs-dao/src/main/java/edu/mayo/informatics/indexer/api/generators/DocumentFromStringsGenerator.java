@@ -26,8 +26,6 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 
-import edu.mayo.informatics.indexer.api.exceptions.InvalidValueException;
-import edu.mayo.informatics.indexer.api.exceptions.OperatorErrorException;
 import edu.mayo.informatics.indexer.utility.Utility;
 
 /**
@@ -43,9 +41,9 @@ public class DocumentFromStringsGenerator {
 
     }
 
-    public void startNewDocument(String documentIdentifier) throws InvalidValueException {
+    public void startNewDocument(String documentIdentifier) throws RuntimeException {
         if (documentIdentifier == null || documentIdentifier.length() < 1) {
-            throw new InvalidValueException("Document Identifier.is required");
+            throw new RuntimeException("Document Identifier.is required");
         }
         document_ = null;
         document_ = new Document();
@@ -53,30 +51,30 @@ public class DocumentFromStringsGenerator {
                 documentIdentifier, Store.COMPRESS, Index.UN_TOKENIZED));
     }
 
-    public Document getDocument() throws OperatorErrorException {
+    public Document getDocument() throws RuntimeException {
         if (document_ == null) {
-            throw new OperatorErrorException("You must start a document first (call startNewDocument())");
+            throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
         return document_;
     }
 
     public void addTextField(String name, String value, boolean store, boolean index, boolean tokenize)
-            throws InvalidValueException, OperatorErrorException {
+            throws RuntimeException {
         addTextField(name, value, store, false, index, tokenize);
     }
 
     public void addTextField(String name, String value, boolean store, boolean compress, boolean index, boolean tokenize)
-            throws InvalidValueException, OperatorErrorException {
+            throws RuntimeException {
         if (document_ == null) {
-            throw new OperatorErrorException("You must start a document first (call startNewDocument())");
+            throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
 
         if (name == null || name.length() < 1) {
-            throw new InvalidValueException("Name is required.");
+            throw new RuntimeException("Name is required.");
         }
 
         if (value == null || value.length() < 1) {
-            throw new InvalidValueException("Value is required.");
+            throw new RuntimeException("Value is required.");
         }
 
         Field.Store storeC;
@@ -101,17 +99,17 @@ public class DocumentFromStringsGenerator {
     }
 
     public void addIntField(String name, int value, int padToLength, boolean store, boolean index)
-            throws InvalidValueException, OperatorErrorException {
+            throws RuntimeException {
         if (document_ == null) {
-            throw new OperatorErrorException("You must start a document first (call startNewDocument())");
+            throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
 
         if (value < 0) {
-            throw new InvalidValueException("Currently, intFields only handle Integers >= 0");
+            throw new RuntimeException("Currently, intFields only handle Integers >= 0");
         }
 
         if (name == null || name.length() < 1) {
-            throw new InvalidValueException("Name is required.");
+            throw new RuntimeException("Name is required.");
         }
 
         Field.Store storeC;
@@ -132,18 +130,17 @@ public class DocumentFromStringsGenerator {
 
     }
 
-    public void addDateField(String name, Date value, boolean store, boolean index) throws InvalidValueException,
-            OperatorErrorException {
+    public void addDateField(String name, Date value, boolean store, boolean index) throws RuntimeException {
         if (document_ == null) {
-            throw new OperatorErrorException("You must start a document first (call startNewDocument())");
+            throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
 
         if (value == null) {
-            throw new InvalidValueException("Value is required.");
+            throw new RuntimeException("Value is required.");
         }
 
         if (name == null || name.length() < 1) {
-            throw new InvalidValueException("Name is required.");
+            throw new RuntimeException("Name is required.");
         }
 
         Field.Store storeC;
@@ -164,14 +161,13 @@ public class DocumentFromStringsGenerator {
 
     }
 
-    public void addDateField(String name, long value, boolean store, boolean index) throws InvalidValueException,
-            OperatorErrorException {
+    public void addDateField(String name, long value, boolean store, boolean index) throws RuntimeException {
         if (document_ == null) {
-            throw new OperatorErrorException("You must start a document first (call startNewDocument())");
+            throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
 
         if (name == null || name.length() < 1) {
-            throw new InvalidValueException("Name is required.");
+            throw new RuntimeException("Name is required.");
         }
 
         Field.Store storeC;

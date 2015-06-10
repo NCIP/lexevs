@@ -25,9 +25,6 @@ import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
 
-import edu.mayo.informatics.indexer.api.exceptions.IndexSearchException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-
 /**
  * This is the interface that you use to search an index.
  * 
@@ -50,9 +47,9 @@ public interface SearchServiceInterface {
      * @param filter the filter
      * @param hitCollector the hit collector
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
-    public void search(Query query, Filter filter, HitCollector hitCollector) throws InternalIndexerErrorException, IndexSearchException;
+    public void search(Query query, Filter filter, HitCollector hitCollector) throws RuntimeException;
 
     /**
      * Search.
@@ -64,10 +61,10 @@ public interface SearchServiceInterface {
      * 
      * @return the document[]
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
 //    public Document[] search(Query query, Filter filter, boolean skipLowScoring, int maxToReturn)
-//            throws InternalIndexerErrorException;
+//            throws RuntimeException;
 
     /**
      * Gets the next search results.
@@ -76,9 +73,9 @@ public interface SearchServiceInterface {
      * 
      * @return the next search results
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
-    public Document[] getNextSearchResults(int howMany) throws InternalIndexerErrorException;
+    public Document[] getNextSearchResults(int howMany) throws RuntimeException;
 
     /**
      * Checks for more hits.
@@ -92,9 +89,9 @@ public interface SearchServiceInterface {
      * 
      * @return the scores
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
-    public float[] getScores() throws InternalIndexerErrorException;
+    public float[] getScores() throws RuntimeException;
 
     /**
      * Gets the hit total.
@@ -111,18 +108,18 @@ public interface SearchServiceInterface {
      * 
      * @return the explanation
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
-    public Explanation explain(Query query, int doc) throws InternalIndexerErrorException;
+    public Explanation explain(Query query, int doc) throws RuntimeException;
 
     /**
      * Sets the similarity.
      * 
      * @param similarity the new similarity
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
-    public void setSimilarity(Similarity similarity) throws InternalIndexerErrorException;
+    public void setSimilarity(Similarity similarity) throws RuntimeException;
 
     /**
      * Gets the similarity.
@@ -134,7 +131,7 @@ public interface SearchServiceInterface {
     /**
      * Close.
      * 
-     * @throws InternalIndexerErrorException the internal indexer error exception
+     * @throws RuntimeException
      */
-    public void close() throws InternalIndexerErrorException;
+    public void close() throws RuntimeException;
 }

@@ -21,7 +21,6 @@ package edu.mayo.informatics.indexer.lucene;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
 
 /**
  * Defines the methods that an IndexWriter must implement.
@@ -40,13 +39,13 @@ public interface LuceneIndexWriterInterface {
 
     public void setUseCompoundFile(boolean bool);
 
-    public void addDocument(Document document) throws InternalIndexerErrorException;
+    public void addDocument(Document document) throws RuntimeException;
 
-    public void addDocument(Document document, Analyzer analyzer) throws InternalIndexerErrorException;
+    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException;
 
-    public void optimize() throws InternalIndexerErrorException;
+    public void optimize() throws RuntimeException;
 
-    public void close() throws InternalIndexerErrorException;
+    public void close() throws RuntimeException;
 
     public void setDocsPerTempIndex(int i);
 

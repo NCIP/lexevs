@@ -26,8 +26,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-
 /**
  * Indexing class to be used for small updates, or real time indexing.
  * 
@@ -52,19 +50,19 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
     private final Logger logger = Logger.getLogger("Indexer.Index");
 
     public LuceneFSIndexWriter(File location, boolean clearContents, Analyzer analyzer)
-            throws InternalIndexerErrorException {
+            throws RuntimeException {
         this.location_ = location;
         this.analyzer_ = analyzer;
         openIndex(clearContents);
     }
 
-    private void openIndex(boolean clearContents) throws InternalIndexerErrorException {
+    private void openIndex(boolean clearContents) throws RuntimeException {
         try {
             masterIndexWriter_ = new IndexWriter(location_, analyzer_, clearContents);
             this.updateLuceneVars();
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error opening the index writer. " + e.getMessage());
+            throw new RuntimeException("There was an error opening the index writer. " + e.getMessage());
         }
     }
 
@@ -125,40 +123,40 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
         this.masterIndexWriter_.setUseCompoundFile(useCompoundFile_);
     }
 
-    public void addDocument(Document document) throws InternalIndexerErrorException {
+    public void addDocument(Document document) throws RuntimeException {
         try {
             this.masterIndexWriter_.addDocument(document);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error adding the document. " + e.getMessage());
+            throw new RuntimeException("There was an error adding the document. " + e.getMessage());
         }
     }
 
-    public void addDocument(Document document, Analyzer analyzer) throws InternalIndexerErrorException {
+    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException {
         try {
             this.masterIndexWriter_.addDocument(document, analyzer);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error adding the document. " + e.getMessage());
+            throw new RuntimeException("There was an error adding the document. " + e.getMessage());
         }
     }
 
-    public void optimize() throws InternalIndexerErrorException {
+    public void optimize() throws RuntimeException {
         try {
             this.masterIndexWriter_.optimize();
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error closing the index writer. " + e.getMessage());
+            throw new RuntimeException("There was an error closing the index writer. " + e.getMessage());
         }
     }
 
-    public void close() throws InternalIndexerErrorException {
+    public void close() throws RuntimeException {
         logger.info("Closing the index writer");
         try {
             masterIndexWriter_.close();
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error closing the index writer. " + e.getMessage());
+            throw new RuntimeException("There was an error closing the index writer. " + e.getMessage());
         }
     }
 

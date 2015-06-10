@@ -34,8 +34,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
 
 import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.api.exceptions.IndexSearchException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
 
 /**
  * Used for searching 1 index.
@@ -62,36 +60,23 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
         searcher_ = new IndexSearcher(index.getBaseIndexReader());
     }
 
-    public void reloadSearcher() throws InternalIndexerErrorException {
+    public void reloadSearcher() throws RuntimeException {
         index_.reopen();
         searcher_ = new IndexSearcher(index_.getBaseIndexReader());
     }
-
-//    public Document[] search(Query query, Filter filter, boolean skipLowScoringHits, int maxToReturn)
-//            throws InternalIndexerErrorException {
-//        int max = maxToReturn;
-//        if (maxToReturn <= 0) {
-//            max = Integer.MAX_VALUE;
-//        }
-//        if (skipLowScoringHits) {
-//            return searchSkipLowScoreing(query, filter, max);
-//        } else {
-//            return searchSkipNone(query, filter, max);
-//        }
-//    }
-    
-    public void search(Query query, Filter filter, HitCollector hitCollector) throws InternalIndexerErrorException, IndexSearchException{
+   
+    public void search(Query query, Filter filter, HitCollector hitCollector) throws RuntimeException{
         try {
             searcher_.search(query, filter, hitCollector);
         } catch (BooleanQuery.TooManyClauses e) {
-            throw new IndexSearchException("The specified query is too general and too many results have been returned -- please narrow your query.");
+            throw new RuntimeException("The specified query is too general and too many results have been returned -- please narrow your query.");
         } catch (IOException e) {
-            throw new InternalIndexerErrorException(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }   
     }
 
     private Document[] searchSkipLowScoreing(Query query, Filter filter, int maxToReturn)
-            throws InternalIndexerErrorException {
+            throws RuntimeException {
         this.luceneHits_ = null;
         this.hits_ = null;
 
@@ -103,7 +88,7 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
             hits_ = searcher_.search(query, filter);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error searching the index " + e);
+            throw new RuntimeException("There was an error searching the index " + e);
         }
 
         int stop = hits_.length() >= maxToReturn ? maxToReturn : hits_.length();
@@ -116,65 +101,14 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
             }
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+            throw new RuntimeException("There was an error collecting the results to return " + e);
         }
 
         return temp;
 
     }
 
-//    private Document[] searchSkipNone(Query query, Filter filter, int maxToReturn) throws InternalIndexerErrorException {
-//        this.luceneHits_ = null;
-//        this.hits_ = null;
-//
-//        if (!index_.upToDate()) {
-//            reloadSearcher();
-//        }
-//
-//        final ArrayList tempHits = new ArrayList(index_.maxDoc() / 4);
-//        readSoFar_ = 0;
-//
-//        try {
-//            searcher_.search(query, filter, new HitCollector() {
-//                public void collect(int doc, float score) {
-//                    tempHits.add(new LuceneHits(doc, score));
-//                }
-//            });
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new InternalIndexerErrorException("There was an error searching the index " + e);
-//        }
-//
-//        luceneHits_ = (LuceneHits[]) tempHits.toArray(new LuceneHits[tempHits.size()]);
-//
-//        Arrays.sort(luceneHits_, new HitComparator());
-//
-//        // normalize the scores
-//        float scoreNorm = 1.0f;
-//        if (luceneHits_.length > 0 && luceneHits_[0].score_ > 1.0f)
-//            scoreNorm = 1.0f / luceneHits_[0].score_;
-//
-//        for (int i = 0; i < luceneHits_.length; i++)
-//            luceneHits_[i].score_ = luceneHits_[i].score_ * scoreNorm;
-//
-//        // Collect the first set of results
-//        int stop = luceneHits_.length >= maxToReturn ? maxToReturn : luceneHits_.length;
-//        Document[] temp = new Document[stop];
-//        readSoFar_ = stop;
-//        lastStartPoint_ = 0;
-//        try {
-//            for (int i = 0; i < stop; i++) {
-//                temp[i] = searcher_.doc(luceneHits_[i].doc_);
-//            }
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
-//        }
-//
-//        return temp;
-//    }
-
-    public Document[] getNextSearchResults(int howMany) throws InternalIndexerErrorException {
+    public Document[] getNextSearchResults(int howMany) throws RuntimeException {
         int hitLength = 0;
         if (luceneHits_ != null) {
             hitLength = luceneHits_.length;
@@ -200,7 +134,7 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
 
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+            throw new RuntimeException("There was an error collecting the results to return " + e);
         }
 
         readSoFar_ += stop - readSoFar_;
@@ -219,9 +153,9 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
      * Returned the scores for that last retrieved set of results.
      * 
      * @return An array of scores that match the hits.
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public float[] getScores() throws InternalIndexerErrorException {
+    public float[] getScores() throws RuntimeException {
         float[] temp = new float[readSoFar_ - lastStartPoint_];
         try {
             int j = 0;
@@ -237,7 +171,7 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
 
         } catch (Exception e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+            throw new RuntimeException("There was an error collecting the results to return " + e);
         }
         return temp;
     }
@@ -254,25 +188,25 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
         return (String[]) index_.searchableFields().toArray(new String[index_.searchableFields().size()]);
     }
 
-    public Explanation explain(Query query, int doc) throws InternalIndexerErrorException {
+    public Explanation explain(Query query, int doc) throws RuntimeException {
         try {
             if (!index_.upToDate()) {
                 reloadSearcher();
             }
 
             return searcher_.explain(query, doc);
-        } catch (InternalIndexerErrorException e) {
+        } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new InternalIndexerErrorException("There was a problem generating the explanation" + e);
+            throw new RuntimeException("There was a problem generating the explanation" + e);
         }
     }
 
-    public void setSimilarity(Similarity similarity) throws InternalIndexerErrorException {
+    public void setSimilarity(Similarity similarity) throws RuntimeException {
         try {
             searcher_.setSimilarity(similarity);
         } catch (Exception e) {
-            throw new InternalIndexerErrorException("There was a problem setting the similarity" + e);
+            throw new RuntimeException("There was a problem setting the similarity" + e);
         }
     }
 
@@ -280,11 +214,11 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
         return searcher_.getSimilarity();
     }
 
-    public void close() throws InternalIndexerErrorException {
+    public void close() throws RuntimeException {
         try {
             searcher_.close();
         } catch (IOException e) {
-            throw new InternalIndexerErrorException("There was a problem closing the searcher" + e);
+            throw new RuntimeException("There was a problem closing the searcher" + e);
         }
     }
 }

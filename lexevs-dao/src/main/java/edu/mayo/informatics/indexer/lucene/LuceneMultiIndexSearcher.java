@@ -19,8 +19,6 @@
 package edu.mayo.informatics.indexer.lucene;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
@@ -36,7 +34,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
 
 import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
 
 /**
  * Used for searching 1 or more indexes.
@@ -59,7 +56,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     private int readSoFar = 0;
     private int lastStartPoint = 0;
 
-    public LuceneMultiIndexSearcher(LuceneIndexReader[] indexes, boolean parallel) throws InternalIndexerErrorException {
+    public LuceneMultiIndexSearcher(LuceneIndexReader[] indexes, boolean parallel) throws RuntimeException {
         this.indexes_ = indexes;
         searchers = new IndexSearcher[indexes.length];
 
@@ -75,12 +72,12 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             }
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error opening the multi-index searcher " + e);
+            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
         }
 
     }
 
-    public void reloadSearchers() throws InternalIndexerErrorException {
+    public void reloadSearchers() throws RuntimeException {
         searchers = new IndexSearcher[indexes_.length];
         try {
             for (int i = 0; i < indexes_.length; i++) {
@@ -91,25 +88,16 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             multiSearcher = new MultiSearcher(searchers);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error opening the multi-index searcher " + e);
+            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
         }
     }
 
-    public void search(Query query, Filter filter, HitCollector hitCollector) throws InternalIndexerErrorException {
+    public void search(Query query, Filter filter, HitCollector hitCollector) throws RuntimeException {
         throw new UnsupportedOperationException("Not implemented for MultiIndexSearcher.");    
     }
 
-//    public Document[] search(Query query, Filter filter, boolean skipLowScoringHits, int maxToReturn)
-//            throws InternalIndexerErrorException {
-//        if (skipLowScoringHits) {
-//            return searchSkipLowScoreing(query, filter, maxToReturn);
-//        } else {
-//            return searchSkipNone(query, filter, maxToReturn);
-//        }
-//    }
-
     private Document[] searchSkipLowScoreing(Query query, Filter filter, int maxToReturn)
-            throws InternalIndexerErrorException {
+            throws RuntimeException {
         for (int i = 0; i < indexes_.length; i++) {
             if (!indexes_[i].upToDate()) {
                 reloadSearchers();
@@ -124,7 +112,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             hits = multiSearcher.search(query, filter);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error searching the indexes " + e);
+            throw new RuntimeException("There was an error searching the indexes " + e);
         }
 
         int stop = hits.length() >= maxToReturn ? maxToReturn : hits.length();
@@ -137,66 +125,13 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             }
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+            throw new RuntimeException("There was an error collecting the results to return " + e);
         }
 
         return temp;
     }
 
-//    private Document[] searchSkipNone(Query query, Filter filter, int maxToReturn) throws InternalIndexerErrorException {
-//
-//        for (int i = 0; i < indexes_.length; i++) {
-//            if (!indexes_[i].upToDate()) {
-//                reloadSearchers();
-//                break; // This will keep me from getting hung if someone is
-//                // writing rapidly to the index
-//            }
-//        }
-//
-//        final ArrayList tempHits = new ArrayList(maxDocs() / 4);
-//        readSoFar = 0;
-//
-//        try {
-//            multiSearcher.search(query, filter, new HitCollector() {
-//                public void collect(int doc, float score) {
-//                    tempHits.add(new LuceneHits(doc, score));
-//                }
-//            });
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new InternalIndexerErrorException("There was an error searching the indexes " + e);
-//        }
-//
-//        luceneHits = (LuceneHits[]) tempHits.toArray(new LuceneHits[tempHits.size()]);
-//
-//        Arrays.sort(luceneHits, new HitComparator());
-//
-//        // normalize the scores
-//        float scoreNorm = 1.0f;
-//        if (luceneHits.length > 0 && luceneHits[0].score_ > 1.0f)
-//            scoreNorm = 1.0f / luceneHits[0].score_;
-//
-//        for (int i = 0; i < luceneHits.length; i++)
-//            luceneHits[i].score_ = luceneHits[i].score_ * scoreNorm;
-//
-//        // Collect the first group of hits
-//        int stop = luceneHits.length >= maxToReturn ? maxToReturn : luceneHits.length;
-//        Document[] temp = new Document[stop];
-//        readSoFar = stop;
-//        lastStartPoint = 0;
-//        try {
-//            for (int i = 0; i < stop; i++) {
-//                temp[i] = multiSearcher.doc(luceneHits[i].doc_);
-//            }
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
-//        }
-//
-//        return temp;
-//    }
-
-    public Document[] getNextSearchResults(int howMany) throws InternalIndexerErrorException {
+    public Document[] getNextSearchResults(int howMany) throws RuntimeException {
         int hitLength = 0;
         if (luceneHits != null) {
             hitLength = luceneHits.length;
@@ -221,7 +156,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             }
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+            throw new RuntimeException("There was an error collecting the results to return " + e);
         }
 
         readSoFar += stop - readSoFar;
@@ -258,9 +193,9 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
      * Returned the scores for that last retrieved set of results.
      * 
      * @return An array of scores that match the hits.
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public float[] getScores() throws InternalIndexerErrorException {
+    public float[] getScores() throws RuntimeException {
         float[] temp = new float[readSoFar - lastStartPoint];
         try {
             int j = 0;
@@ -276,12 +211,12 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
 
         } catch (Exception e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error collecting the results to return " + e);
+            throw new RuntimeException("There was an error collecting the results to return " + e);
         }
         return temp;
     }
 
-    public Explanation explain(Query query, int doc) throws InternalIndexerErrorException {
+    public Explanation explain(Query query, int doc) throws RuntimeException {
         try {
             for (int i = 0; i < indexes_.length; i++) {
                 if (!indexes_[i].upToDate()) {
@@ -292,18 +227,18 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             }
 
             return multiSearcher.explain(query, doc);
-        } catch (InternalIndexerErrorException e) {
+        } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new InternalIndexerErrorException("There was a problem generating the explanation" + e);
+            throw new RuntimeException("There was a problem generating the explanation" + e);
         }
     }
 
-    public void setSimilarity(Similarity similarity) throws InternalIndexerErrorException {
+    public void setSimilarity(Similarity similarity) throws RuntimeException {
         try {
             multiSearcher.setSimilarity(similarity);
         } catch (Exception e) {
-            throw new InternalIndexerErrorException("There was a problem setting the similarity" + e);
+            throw new RuntimeException("There was a problem setting the similarity" + e);
         }
     }
 
@@ -319,11 +254,11 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
         return maxSize;
     }
 
-    public void close() throws InternalIndexerErrorException {
+    public void close() throws RuntimeException {
         try {
             multiSearcher.close();
         } catch (IOException e) {
-            throw new InternalIndexerErrorException("There was a problem closing the searcher" + e);
+            throw new RuntimeException("There was a problem closing the searcher" + e);
         }
     }
 }

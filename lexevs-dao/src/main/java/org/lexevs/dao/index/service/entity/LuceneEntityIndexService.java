@@ -45,7 +45,6 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
@@ -277,7 +276,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	
 		try {
 			metaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
-		} catch (InternalErrorException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -309,7 +308,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		String key = this.getCodingSchemeKey(reference);
 		try {
 			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
-		} catch (InternalErrorException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
 	}

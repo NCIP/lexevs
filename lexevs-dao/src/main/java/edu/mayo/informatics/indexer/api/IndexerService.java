@@ -28,12 +28,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 
-import edu.mayo.informatics.indexer.api.exceptions.DocumentMissingUniqueDocumentIdentifierException;
-import edu.mayo.informatics.indexer.api.exceptions.IndexNotFoundException;
-import edu.mayo.informatics.indexer.api.exceptions.IndexWriterAlreadyOpenException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-import edu.mayo.informatics.indexer.api.exceptions.OperatorErrorException;
 import edu.mayo.informatics.indexer.lucene.Index;
 import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 import edu.mayo.informatics.indexer.lucene.LuceneIndexSearcher;
@@ -59,9 +53,9 @@ public class IndexerService {
      *            The directory where all of your indexes are located
      * @param configureLog4j
      *            Whether or not to configure a log4j appender.
-     * @throws InternalErrorException
+     * @throws RuntimeException
      */
-    public IndexerService(String rootLocation, boolean configureLog4j) throws InternalErrorException {
+    public IndexerService(String rootLocation, boolean configureLog4j) throws RuntimeException {
         initServices(rootLocation, configureLog4j);
     }
 
@@ -71,13 +65,13 @@ public class IndexerService {
      * 
      * @param rootLocation
      *            The directory where all of your indexes are located
-     * @throws InternalErrorException
+     * @throws RuntimeException
      */
-    public IndexerService(String rootLocation) throws InternalErrorException {
+    public IndexerService(String rootLocation) throws RuntimeException {
         initServices(rootLocation, false);
     }
 
-    private void initServices(String rootLocation, boolean configureLog4j) throws InternalErrorException {
+    private void initServices(String rootLocation, boolean configureLog4j) throws RuntimeException {
         if (configureLog4j) {
             org.apache.log4j.BasicConfigurator.configure();
         }
@@ -95,7 +89,7 @@ public class IndexerService {
 
     }
 
-    public void refreshAvailableIndexes() throws InternalErrorException {
+    public void refreshAvailableIndexes() throws RuntimeException {
         File[] files = rootLocation_.listFiles();
         HashSet fileNames = new HashSet();
         for (int i = 0; i < files.length; i++) {
@@ -175,16 +169,16 @@ public class IndexerService {
      * @param indexName
      * @throws IndexNotFoundException
      */
-    public void deleteIndex(String indexName) throws IndexNotFoundException, InternalIndexerErrorException {
+    public void deleteIndex(String indexName) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
 
         try {
             currentIndex.closeIndexWriter();
-        } catch (InternalIndexerErrorException e) {
+        } catch (RuntimeException e) {
         }
         try {
             File temp = currentIndex.getLocation();
@@ -192,36 +186,10 @@ public class IndexerService {
             indexes_.remove(indexName);
             currentIndex = null;
         } catch (Exception e) {
-            throw new InternalIndexerErrorException(
+            throw new RuntimeException(
                     "Could not remove the index.. Is another process accessing the files? " + e);
         }
     }
-
-    /**
-     * Opens a new batchIndexWriter. Use this for large updates.
-     * 
-     * @param indexName
-     * @param clearContents
-     *            true erases current content, false appends.
-     * @param useRAMIndexer
-     *            true for a ram indexer, false for a file system indexer
-     * @throws IndexNotFoundException
-     * @throws IndexWriterAlreadyOpenException
-     * @throws InternalIndexerErrorException
-     */
-//    public void openBatchWriter(String indexName, boolean clearContents, boolean useRAMIndexer)
-//            throws IndexNotFoundException, IndexWriterAlreadyOpenException, InternalIndexerErrorException {
-//        Index currentIndex = (Index) indexes_.get(indexName);
-//
-//        if (currentIndex == null) {
-//            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
-//        }
-//        if (useRAMIndexer) {
-//            currentIndex.openBatchRAMIndexWriter(clearContents);
-//        } else {
-//            currentIndex.openBatchFSIndexWriter(clearContents);
-//        }
-//    }
 
     /**
      * Opens an index writer. Best for small updates. Use a Batch Writer for
@@ -232,14 +200,13 @@ public class IndexerService {
      *            True erases the current index. False appends to it.
      * @throws IndexNotFoundException
      * @throws IndexWriterAlreadyOpenException
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public void openWriter(String indexName, boolean clearContents) throws IndexNotFoundException,
-            IndexWriterAlreadyOpenException, InternalIndexerErrorException {
+    public void openWriter(String indexName, boolean clearContents) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.openFSIndexWriter(clearContents);
     }
@@ -249,13 +216,13 @@ public class IndexerService {
      * 
      * @param indexName
      * @throws IndexNotFoundException
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public void closeWriter(String indexName) throws IndexNotFoundException, InternalIndexerErrorException {
+    public void closeWriter(String indexName) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.closeIndexWriter();
     }
@@ -264,14 +231,13 @@ public class IndexerService {
      * Closes the currently open IndexReader.
      * 
      * @param indexName
-     * @throws IndexNotFoundException
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public void closeBatchRemover(String indexName) throws IndexNotFoundException, InternalIndexerErrorException {
+    public void closeBatchRemover(String indexName) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.closeIndexReader();
     }
@@ -283,13 +249,13 @@ public class IndexerService {
      * @param indexName
      *            The index to open
      * @throws IndexNotFoundException
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public void openBatchRemover(String indexName) throws IndexNotFoundException, InternalIndexerErrorException {
+    public void openBatchRemover(String indexName) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.openIndexReader();
     }
@@ -308,18 +274,16 @@ public class IndexerService {
      * @param document
      *            The document to add
      * @throws IndexNotFoundException
-     * @throws InternalIndexerErrorException
-     * @throws IndexWriterNotOpenException
+     * @throws RuntimeException
      */
-    public void addDocument(String indexName, Document document) throws IndexNotFoundException,
-            InternalIndexerErrorException, DocumentMissingUniqueDocumentIdentifierException {
+    public void addDocument(String indexName, Document document) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         if (document.getField(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD) == null) {
-            throw new DocumentMissingUniqueDocumentIdentifierException(
+            throw new RuntimeException(
                     "You must provide a Unique Document Identifier Field.");
         }
         currentIndex.addDocument(document);
@@ -332,13 +296,13 @@ public class IndexerService {
      * 
      * @param indexName
      * @throws IndexNotFoundException
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public void optimizeIndex(String indexName) throws IndexNotFoundException, InternalIndexerErrorException {
+    public void optimizeIndex(String indexName) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
 
         currentIndex.optimizeIndex();
@@ -359,19 +323,16 @@ public class IndexerService {
      *            The document to add
      * @param analyzer
      *            The analyzer to use
-     * @throws IndexNotFoundException
-     * @throws InternalIndexerErrorException
-     * @throws IndexWriterNotOpenException
+     * @throws RuntimeException
      */
-    public void addDocument(String indexName, Document document, Analyzer analyzer) throws IndexNotFoundException,
-            InternalIndexerErrorException, DocumentMissingUniqueDocumentIdentifierException {
+    public void addDocument(String indexName, Document document, Analyzer analyzer) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         if (document.getField(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD) == null) {
-            throw new DocumentMissingUniqueDocumentIdentifierException(
+            throw new RuntimeException(
                     "You must provide a Unique Document Identifier Field.");
         }
         currentIndex.addDocument(document, analyzer);
@@ -389,17 +350,13 @@ public class IndexerService {
      * @param documentIdentifier
      *            The document identifier that was used to add the document.
      * @return The number of documents removed
-     * @throws IndexNotFoundException
-     * @throws IndexReaderNotOpenException
-     * @throws InternalIndexerErrorException
-     * @throws OperatorErrorException
+     * @throws RuntimeException
      */
-    public int removeDocument(String indexName, String documentIdentifier) throws IndexNotFoundException,
-            InternalIndexerErrorException, OperatorErrorException {
+    public int removeDocument(String indexName, String documentIdentifier) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         return currentIndex.removeDocument(documentIdentifier);
     }
@@ -418,17 +375,13 @@ public class IndexerService {
      * @param fieldValue
      *            The value to match.
      * @return The number of documents removed.
-     * @throws IndexNotFoundException
-     * @throws IndexReaderNotOpenException
-     * @throws InternalIndexerErrorException
-     * @throws OperatorErrorException
+     * @throws RuntimeException
      */
-    public int removeDocument(String indexName, String field, String fieldValue) throws IndexNotFoundException,
-            InternalIndexerErrorException, OperatorErrorException {
+    public int removeDocument(String indexName, String field, String fieldValue) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         return currentIndex.removeDocument(field, fieldValue);
     }
@@ -450,19 +403,19 @@ public class IndexerService {
     }
 
     public SearchServiceInterface getIndexSearcher(String[] indexNames, boolean parallelSearch)
-            throws InternalIndexerErrorException, IndexNotFoundException {
+            throws RuntimeException {
         return getIndexSearcher(indexNames, false, parallelSearch);
     }
 
     public SearchServiceInterface getIndexSearcher(String[] indexNames, boolean useInMemoryIndex, boolean parallelSearch)
-            throws InternalIndexerErrorException, IndexNotFoundException {
+            throws RuntimeException {
         LuceneIndexReader[] temp = new LuceneIndexReader[indexNames.length];
 
         for (int i = 0; i < temp.length; i++) {
             Index currentIndex = (Index) indexes_.get(indexNames[i]);
 
             if (currentIndex == null) {
-                throw new IndexNotFoundException("The index " + indexNames[i] + " does not exist.");
+                throw new RuntimeException("The index " + indexNames[i] + " does not exist.");
             }
             temp[i] = currentIndex.getIndexReader(useInMemoryIndex);
         }
@@ -470,28 +423,26 @@ public class IndexerService {
         return new LuceneMultiIndexSearcher(temp, parallelSearch);
     }
 
-    public LuceneIndexReader getLuceneIndexReader(String indexName) throws IndexNotFoundException,
-            InternalIndexerErrorException {
+    public LuceneIndexReader getLuceneIndexReader(String indexName) throws RuntimeException {
         return getLuceneIndexReader(indexName, false);
     }
 
     public LuceneIndexReader getLuceneIndexReader(String indexName, boolean useInMemoryIndex)
-            throws IndexNotFoundException, InternalIndexerErrorException {
+            throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         return currentIndex.getIndexReader(useInMemoryIndex);
     }
 
-    public SearchServiceInterface getIndexSearcher(String indexName) throws InternalIndexerErrorException,
-            IndexNotFoundException {
+    public SearchServiceInterface getIndexSearcher(String indexName) throws RuntimeException {
         return getIndexSearcher(indexName, false);
     }
 
     public SearchServiceInterface getIndexSearcher(String indexName, boolean useInMemoryIndex)
-            throws InternalIndexerErrorException, IndexNotFoundException {
+            throws RuntimeException {
         return new LuceneIndexSearcher(getLuceneIndexReader(indexName, useInMemoryIndex));
     }
 
@@ -505,7 +456,7 @@ public class IndexerService {
         }
     }
 
-    private void initMetaData(File root) throws InternalErrorException {
+    private void initMetaData(File root) throws RuntimeException {
         metadata_ = new MetaData(root);
     }
 
@@ -513,16 +464,14 @@ public class IndexerService {
         return rootLocation_.getAbsolutePath();
     }
 
-    public void forceUnlockIndex(String indexName) throws IndexNotFoundException, InternalIndexerErrorException {
+    public void forceUnlockIndex(String indexName) throws RuntimeException {
         try {
             IndexReader reader = getLuceneIndexReader(indexName).getBaseIndexReader();
             IndexReader.unlock(reader.directory());
-        } catch (IndexNotFoundException e) {
-            throw e;
-        } catch (InternalIndexerErrorException e) {
+        } catch (RuntimeException e) {
             throw e;
         } catch (IOException e) {
-            throw new InternalIndexerErrorException("There was an error while trying to unlock the index " + e);
+            throw new RuntimeException("There was an error while trying to unlock the index " + e);
         }
     }
 
@@ -539,11 +488,11 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws OperatorErrorException
      */
-    public void setDocsPerTempIndex(String indexName, int docs) throws IndexNotFoundException, OperatorErrorException {
+    public void setDocsPerTempIndex(String indexName, int docs) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.setDocsPerTempIndex(docs);
     }
@@ -557,11 +506,11 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws OperatorErrorException
      */
-    public void setMaxBufferedDocs(String indexName, int docs) throws IndexNotFoundException, OperatorErrorException {
+    public void setMaxBufferedDocs(String indexName, int docs) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.setMaxBufferedDocs(docs);
     }
@@ -574,11 +523,11 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws OperatorErrorException
      */
-    public void setMaxFieldLength(String indexName, int size) throws IndexNotFoundException, OperatorErrorException {
+    public void setMaxFieldLength(String indexName, int size) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.setMaxFieldLength(size);
     }
@@ -591,11 +540,11 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws OperatorErrorException
      */
-    public void setMaxMergeDocs(String indexName, int docs) throws IndexNotFoundException, OperatorErrorException {
+    public void setMaxMergeDocs(String indexName, int docs) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.setMaxMergeDocs(docs);
     }
@@ -609,11 +558,11 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws OperatorErrorException
      */
-    public void setMergeFactor(String indexName, int mergeFactor) throws IndexNotFoundException, OperatorErrorException {
+    public void setMergeFactor(String indexName, int mergeFactor) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.setMergeFactor(mergeFactor);
     }
@@ -627,12 +576,11 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws OperatorErrorException
      */
-    public void setUseCompoundFile(String indexName, boolean bool) throws IndexNotFoundException,
-            OperatorErrorException {
+    public void setUseCompoundFile(String indexName, boolean bool) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
-            throw new IndexNotFoundException("The index " + indexName + " does not exist.");
+            throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         currentIndex.setUseCompoundFile(bool);
     }

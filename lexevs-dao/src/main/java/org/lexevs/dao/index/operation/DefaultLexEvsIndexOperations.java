@@ -43,7 +43,6 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
 import edu.mayo.informatics.indexer.utility.MetaData;
 
 public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements LexEvsIndexOperations {
@@ -321,7 +320,7 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 		String key = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion()).getKey();
 		try {
 			metaData.removeIndexMetaDataValue(key);
-		} catch (InternalErrorException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
 	}

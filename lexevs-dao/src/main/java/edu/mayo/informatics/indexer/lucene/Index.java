@@ -26,10 +26,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 
-import edu.mayo.informatics.indexer.api.exceptions.IndexWriterAlreadyOpenException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-import edu.mayo.informatics.indexer.api.exceptions.OperatorErrorException;
-
 /**
  * This is an abstracted view of an lucene index.
  * 
@@ -81,13 +77,9 @@ public class Index {
      * 
      * @param clearContents
      *            True to erase current contents, false to append to them
-     * @throws IndexWriterAlreadyOpenException
-     *             Thrown if a indexWriter is already open.
-     * @throws InternalIndexerErrorException
-     *             Thrown if an unexpected error occurs.
+     * @throws RuntimeException
      */
-    public void openFSIndexWriter(boolean clearContents) throws InternalIndexerErrorException,
-            IndexWriterAlreadyOpenException {
+    public void openFSIndexWriter(boolean clearContents) throws RuntimeException {
         if (indexWriter_ == null) {
             // If they didn't say clear contents, and the index doesn't exist,
             // it will cause an error.
@@ -98,16 +90,16 @@ public class Index {
             logger.info("Opening a FS Index Writer on " + location_.getAbsolutePath());
             indexWriter_ = new LuceneFSIndexWriter(location_, clearContents, analyzer_);
         } else {
-            throw new IndexWriterAlreadyOpenException("Their is already an index writer open.");
+            throw new RuntimeException("Their is already an index writer open.");
         }
     }
     
     /**
      * Closes the currently opened indexWriter.
      * 
-     * @throws InternalIndexerErrorException
+     * @throws RuntimeException
      */
-    public void closeIndexWriter() throws InternalIndexerErrorException {
+    public void closeIndexWriter() throws RuntimeException {
         if (indexWriter_ != null) {
             logger.info("Closing the IndexWriter " + location_.getAbsolutePath());
             indexWriter_.close();
@@ -117,11 +109,11 @@ public class Index {
         }
     }
 
-    public void openIndexReader() throws InternalIndexerErrorException {
+    public void openIndexReader() throws RuntimeException {
         openIndexReader(false);
     }
 
-    public void openIndexReader(boolean useInMemoryIndex) throws InternalIndexerErrorException {
+    public void openIndexReader(boolean useInMemoryIndex) throws RuntimeException {
         if (indexReader_ == null) {
             // If the index does not exist, create it.
             if (!IndexReader.indexExists(location_)) {
@@ -129,7 +121,7 @@ public class Index {
                 try {
                     openFSIndexWriter(true);
                     closeIndexWriter();
-                } catch (IndexWriterAlreadyOpenException e) {
+                } catch (RuntimeException e) {
                     // should be impossible
                 }
 
@@ -144,11 +136,11 @@ public class Index {
         }
     }
 
-    public LuceneIndexReader getIndexReader() throws InternalIndexerErrorException {
+    public LuceneIndexReader getIndexReader() throws RuntimeException {
         return getIndexReader(false);
     }
 
-    public LuceneIndexReader getIndexReader(boolean useInMemoryIndex) throws InternalIndexerErrorException {
+    public LuceneIndexReader getIndexReader(boolean useInMemoryIndex) throws RuntimeException {
         if (indexReader_ == null) {
             openIndexReader(useInMemoryIndex);
         }
@@ -160,7 +152,7 @@ public class Index {
         return indexReader_;
     }
 
-    public void closeIndexReader() throws InternalIndexerErrorException {
+    public void closeIndexReader() throws RuntimeException {
         if (indexReader_ != null) {
             logger.info("Closing the IndexReader " + location_.getAbsolutePath());
             indexReader_.close();
@@ -175,16 +167,15 @@ public class Index {
      * 
      * @param document
      *            The document to add to the index.
-     * @throws InternalIndexerErrorException
-     * @throws IndexWriterNotOpenException
+     * @throws RuntimeException
      */
-    public void addDocument(Document document) throws InternalIndexerErrorException {
+    public void addDocument(Document document) throws RuntimeException {
         boolean iOpened = false;
         if (indexWriter_ == null) {
             iOpened = true;
             try {
                 this.openFSIndexWriter(false);
-            } catch (IndexWriterAlreadyOpenException e) {
+            } catch (RuntimeException e) {
                 // can't happen
             }
         }
@@ -202,16 +193,15 @@ public class Index {
      *            The document to add to the index.
      * @param analyzer
      *            The analyzer to use
-     * @throws InternalIndexerErrorException
-     * @throws IndexWriterNotOpenException
+     * @throws RuntimeException
      */
-    public void addDocument(Document document, Analyzer analyzer) throws InternalIndexerErrorException {
+    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException {
         boolean iOpened = false;
         if (indexWriter_ == null) {
             iOpened = true;
             try {
                 this.openFSIndexWriter(false);
-            } catch (IndexWriterAlreadyOpenException e) {
+            } catch (RuntimeException e) {
                 // can't happen
             }
         }
@@ -222,8 +212,7 @@ public class Index {
         }
     }
 
-    public int removeDocument(String uniqueDocumentIdentifier) throws InternalIndexerErrorException,
-            OperatorErrorException {
+    public int removeDocument(String uniqueDocumentIdentifier) throws RuntimeException {
         boolean iOpened = false;
         if (indexReader_ == null) {
             this.openIndexReader();
@@ -233,7 +222,7 @@ public class Index {
             if (iOpened) {
                 this.closeIndexReader();
             }
-            throw new OperatorErrorException(
+            throw new RuntimeException(
                     "You cannot delete a document while a IndexWriter is open.  Close the IndexWriter, and then try again.");
         }
 
@@ -245,8 +234,7 @@ public class Index {
         return docsRemoved;
     }
 
-    public int removeDocument(String field, String fieldValue) throws OperatorErrorException,
-            InternalIndexerErrorException {
+    public int removeDocument(String field, String fieldValue) throws RuntimeException {
         boolean iOpened = false;
         if (indexReader_ == null) {
             this.openIndexReader();
@@ -257,7 +245,7 @@ public class Index {
             if (iOpened) {
                 this.closeIndexReader();
             }
-            throw new OperatorErrorException(
+            throw new RuntimeException(
                     "You cannot delete a document while a IndexWriter is open.  Close the IndexWriter, and then try again.");
         }
 
@@ -269,13 +257,13 @@ public class Index {
         return docsRemoved;
     }
 
-    public void optimizeIndex() throws InternalIndexerErrorException {
+    public void optimizeIndex() throws RuntimeException {
         boolean iOpened = false;
         if (indexWriter_ == null) {
             iOpened = true;
             try {
                 this.openFSIndexWriter(false);
-            } catch (IndexWriterAlreadyOpenException e) {
+            } catch (RuntimeException e) {
                 // can't happen
             }
         }
@@ -294,11 +282,11 @@ public class Index {
      *            - How many docs to add to the index before opening a new
      *            temporary index.
      */
-    public void setDocsPerTempIndex(int i) throws OperatorErrorException {
+    public void setDocsPerTempIndex(int i) throws RuntimeException {
         if (indexWriter_ != null) {
             indexWriter_.setDocsPerTempIndex(i);
         } else {
-            throw new OperatorErrorException("This method can only be called if a index writer is open.");
+            throw new RuntimeException("This method can only be called if a index writer is open.");
         }
 
     }
@@ -309,11 +297,11 @@ public class Index {
      * @param i
      *            The max length that a field can be.
      */
-    public void setMaxFieldLength(int i) throws OperatorErrorException {
+    public void setMaxFieldLength(int i) throws RuntimeException {
         if (indexWriter_ != null) {
             indexWriter_.setMaxFieldLength(i);
         } else {
-            throw new OperatorErrorException("This method can only be called if a index writer is open.");
+            throw new RuntimeException("This method can only be called if a index writer is open.");
         }
     }
 
@@ -322,11 +310,11 @@ public class Index {
      * 
      * @param i
      */
-    public void setMaxBufferedDocs(int i) throws OperatorErrorException {
+    public void setMaxBufferedDocs(int i) throws RuntimeException {
         if (indexWriter_ != null) {
             indexWriter_.setMaxBufferedDocs(i);
         } else {
-            throw new OperatorErrorException("This method can only be called if a index writer is open.");
+            throw new RuntimeException("This method can only be called if a index writer is open.");
         }
     }
 
@@ -335,11 +323,11 @@ public class Index {
      * 
      * @param i
      */
-    public void setMaxMergeDocs(int i) throws OperatorErrorException {
+    public void setMaxMergeDocs(int i) throws RuntimeException {
         if (indexWriter_ != null) {
             indexWriter_.setMaxMergeDocs(i);
         } else {
-            throw new OperatorErrorException("This method can only be called if a index writer is open.");
+            throw new RuntimeException("This method can only be called if a index writer is open.");
         }
     }
 
@@ -350,11 +338,11 @@ public class Index {
      * @param i
      *            How many docs to add before writing.
      */
-    public void setMergeFactor(int i) throws OperatorErrorException {
+    public void setMergeFactor(int i) throws RuntimeException {
         if (indexWriter_ != null) {
             indexWriter_.setMergeFactor(i);
         } else {
-            throw new OperatorErrorException("This method can only be called if a index writer is open.");
+            throw new RuntimeException("This method can only be called if a index writer is open.");
         }
     }
 
@@ -363,13 +351,13 @@ public class Index {
      * open files, but also reduces the indexing performance.
      * 
      * @param bool
-     * @throws OperatorErrorException
+     * @throws RuntimeException
      */
-    public void setUseCompoundFile(boolean bool) throws OperatorErrorException {
+    public void setUseCompoundFile(boolean bool) throws RuntimeException {
         if (indexWriter_ != null) {
             indexWriter_.setUseCompoundFile(bool);
         } else {
-            throw new OperatorErrorException("This method can only be called if a index writer is open.");
+            throw new RuntimeException("This method can only be called if a index writer is open.");
         }
     }
 

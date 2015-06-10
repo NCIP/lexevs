@@ -23,8 +23,6 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-
 /**
  * This class is used for managing write locks between multiple JVMs running in
  * the same enviroment. This makes sure that only one JVM is reading or writing
@@ -59,7 +57,7 @@ public class WriteLockManager {
         file_ = new File(parentFolder, "lock");
     }
 
-    protected synchronized void lock() throws InternalErrorException {
+    protected synchronized void lock() throws RuntimeException {
         int i = 0;
         long startTime = System.currentTimeMillis();
         while (true) {
@@ -99,18 +97,18 @@ public class WriteLockManager {
 
             i++;
             if (i > 50) {
-                throw new InternalErrorException("Could not aquire lock on the lock file");
+                throw new RuntimeException("Could not aquire lock on the lock file");
             }
         }
     }
 
-    protected synchronized void unlock() throws InternalErrorException {
+    protected synchronized void unlock() throws RuntimeException {
         if (IHaveLock) {
             boolean deleted = file_.delete();
             if (deleted || !file_.exists()) {
                 IHaveLock = false;
             } else {
-                throw new InternalErrorException("Problem deleting the lock file");
+                throw new RuntimeException("Problem deleting the lock file");
             }
         }
     }

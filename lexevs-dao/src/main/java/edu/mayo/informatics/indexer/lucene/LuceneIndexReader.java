@@ -28,7 +28,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.RAMDirectory;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
 
 /**
  * The wrapper for the Index Reader.
@@ -44,13 +43,13 @@ public class LuceneIndexReader {
 
     private final Logger logger = Logger.getLogger("Indexer.Index");
 
-    public LuceneIndexReader(File location) throws InternalIndexerErrorException {
+    public LuceneIndexReader(File location) throws RuntimeException {
         this.location_ = location;
         useInMemoryIndex_ = false;
         openIndex();
     }
 
-    public LuceneIndexReader(File location, boolean useInMemoryIndex) throws InternalIndexerErrorException {
+    public LuceneIndexReader(File location, boolean useInMemoryIndex) throws RuntimeException {
         this.location_ = location;
         useInMemoryIndex_ = useInMemoryIndex;
         openIndex();
@@ -60,7 +59,7 @@ public class LuceneIndexReader {
         return useInMemoryIndex_;
     }
 
-    private void openIndex() throws InternalIndexerErrorException {
+    private void openIndex() throws RuntimeException {
         try {
             if (useInMemoryIndex_) {
                 indexReader_ = IndexReader.open(new RAMDirectory(location_));
@@ -70,16 +69,16 @@ public class LuceneIndexReader {
             this.indexReaderLastModifiedDate = IndexReader.getCurrentVersion(location_);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error opening the index reader. " + e.getMessage());
+            throw new RuntimeException("There was an error opening the index reader. " + e.getMessage());
         }
     }
 
-    public int delete(String uniqueDocumentId) throws InternalIndexerErrorException {
+    public int delete(String uniqueDocumentId) throws RuntimeException {
         try {
             return indexReader_.deleteDocuments(new Term(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD, uniqueDocumentId));
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error removing the document. " + e.getMessage());
+            throw new RuntimeException("There was an error removing the document. " + e.getMessage());
         }
     }
 
@@ -87,22 +86,22 @@ public class LuceneIndexReader {
         return indexReader_;
     }
 
-    public int delete(String field, String uniqueDocumentId) throws InternalIndexerErrorException {
+    public int delete(String field, String uniqueDocumentId) throws RuntimeException {
         try {
             return indexReader_.deleteDocuments(new Term(field, uniqueDocumentId));
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error removing the document. " + e.getMessage());
+            throw new RuntimeException("There was an error removing the document. " + e.getMessage());
         }
     }
 
-    public void close() throws InternalIndexerErrorException {
+    public void close() throws RuntimeException {
         logger.info("Closing the index reader");
         try {
             indexReader_.close();
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error closing the index writer. " + e.getMessage());
+            throw new RuntimeException("There was an error closing the index writer. " + e.getMessage());
         }
 
     }
@@ -120,12 +119,12 @@ public class LuceneIndexReader {
         return indexReader_.maxDoc();
     }
 
-    public Document document(int docIndex) throws InternalIndexerErrorException {
+    public Document document(int docIndex) throws RuntimeException {
         try {
             return indexReader_.document(docIndex);
         } catch (IOException e) {
             logger.error(e);
-            throw new InternalIndexerErrorException("There was an error closing the index writer. " + e.getMessage());
+            throw new RuntimeException("There was an error closing the index writer. " + e.getMessage());
         }
     }
 
@@ -141,7 +140,7 @@ public class LuceneIndexReader {
         }
     }
 
-    public void reopen() throws InternalIndexerErrorException {
+    public void reopen() throws RuntimeException {
         this.close();
         this.openIndex();
     }
