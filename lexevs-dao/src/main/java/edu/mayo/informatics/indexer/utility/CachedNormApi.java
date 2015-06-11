@@ -16,7 +16,7 @@
  * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
-package edu.mayo.informatics.indexer.utility_2;
+package edu.mayo.informatics.indexer.utility;
 
 import java.util.Hashtable;
 import java.util.Vector;

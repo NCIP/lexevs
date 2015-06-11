@@ -34,7 +34,7 @@ import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 
-import edu.mayo.informatics.indexer.utility_2.CachedNormApi;
+import edu.mayo.informatics.indexer.utility.CachedNormApi;
 
 /**
  * Normalizes token text with lvg norm.
