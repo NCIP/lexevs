@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document documentID="15">
-	<intField name="age" store="true" padTo="3" index="true">2</intField>
-	<dateField name="dob" store="true" index="true">2002-12-12</dateField>
-	<textField name="title" store="true" tokenize="true" index="true">A value for testing lots of stuff</textField>
-</document>

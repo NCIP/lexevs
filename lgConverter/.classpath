@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbInterfaces"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Indexer"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgResourceReader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>

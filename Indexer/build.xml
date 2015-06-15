@@ -1,4 +1,0 @@
-<project name="LexBIG Service Interfaces" default="publish" basedir=".">
-	<property file="build.properties"/>
-	<import file="${basedir}/../lbPackager/common-build.xml"/>
-</project>

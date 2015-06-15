@@ -22,7 +22,6 @@
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
-		<dependency org="lexevs" name="indexer" rev="${vBuild}" conf="default"/>
 		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.0.1" conf="default"/>
 		<dependency org="org.codehaus.castor" name="castor-core" rev="1.3.1" conf="default"/>
 		<dependency org="org.codehaus.castor" name="castor-xml" rev="1.3.1" conf="default"/>
@@ -75,5 +74,12 @@
    	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>	
    	    <dependency org="javax.persistence" name="persistence-api" rev="1.0" conf="default->*"/>  
    	    <dependency org="org.mockito" name="mockito-all" rev="1.10.8" conf="default"/>
+   	    <dependency org="org.jdom" name="jdom" rev="1.1" conf="default->*"/>
+  		<dependency org="commons-codec" name="commons-codec" rev="1.3" conf="default"/>
+  		<dependency org="org.apache.lucene" name="lucene-snowball" conf="default" rev="2.4.1" force="true"/>
+  		<dependency org="org.apache.lucene" name="lucene-regex" conf="default" rev="2.4.1" force="true"/>
+  		<dependency org="org.apache.lucene" name="lucene-core" conf="default" rev="2.4.1" force="true"/>
+		<dependency org="org.apache.lucene" name="lucene-analyzers" conf="default" rev="2.4.1" force="true"/>
+		<dependency org="org.apache.lucene" name="lucene-queries" conf="default" rev="2.4.1" force="true"/>
    	 </dependencies>
 </ivy-module>

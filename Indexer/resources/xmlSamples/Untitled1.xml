@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document documentID="15">
-	<intField name="age" store="true" padTo="3" index="true">7</intField>
-	<dateField name="dob" store="true" index="true">2002-05-25</dateField>
-	<textField name="title" store="true" tokenize="true" index="true">my title</textField>
-	<textField name="body" store="false" tokenize="true" index="true">Lets test with this document</textField>
-</document>
