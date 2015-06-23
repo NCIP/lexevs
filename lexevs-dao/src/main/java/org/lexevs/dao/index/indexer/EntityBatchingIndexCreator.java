@@ -32,10 +32,9 @@ import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class EntityBatchingIndexCreator.

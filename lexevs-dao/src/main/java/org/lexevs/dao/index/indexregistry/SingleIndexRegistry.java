@@ -39,12 +39,11 @@ import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.factory.InitializingBean;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 public class SingleIndexRegistry implements IndexRegistry, InitializingBean {
 		

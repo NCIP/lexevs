@@ -31,8 +31,7 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-
-import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
+import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 
 /**
  * The Class LuceneEntityDao.

@@ -30,15 +30,15 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.indexer.api.generators.QueryGenerator;
+import org.lexevs.dao.indexer.lucene.analyzers.EncoderAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.FieldSkippingAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.NormAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.ResourceManager;
 
-import edu.mayo.informatics.indexer.api.generators.QueryGenerator;
-import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.FieldSkippingAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 
 /**

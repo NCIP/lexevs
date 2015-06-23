@@ -35,15 +35,14 @@ import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.QueryFilter;
 import org.apache.lucene.search.TermQuery;
+import org.lexevs.dao.indexer.api.IndexerService;
+import org.lexevs.dao.indexer.api.SearchServiceInterface;
+import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
-
-import edu.mayo.informatics.indexer.api.IndexerService;
-import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 
 /**
  * This classes manages the interactions with a single lucene index directory.

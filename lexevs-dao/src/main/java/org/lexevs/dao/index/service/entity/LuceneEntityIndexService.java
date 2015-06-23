@@ -38,14 +38,13 @@ import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class LuceneEntityIndexService.

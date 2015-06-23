@@ -18,9 +18,8 @@
  */
 package org.lexevs.dao.test;
 
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.springframework.beans.factory.FactoryBean;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 
 /**

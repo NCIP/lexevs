@@ -26,13 +26,12 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
-
-import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;
-import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.StringAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
+import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
+import org.lexevs.dao.indexer.lucene.analyzers.EncoderAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.NormAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 
 /**
  * Base Lucene Loader code.

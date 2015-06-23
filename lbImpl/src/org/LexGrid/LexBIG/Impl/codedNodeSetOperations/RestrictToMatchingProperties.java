@@ -43,9 +43,8 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.indexer.lucene.query.SerializableRegexQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
-
-import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQuery;
 
 /**
  * Holder for the RestrictToMatchingProperties operation.

@@ -18,9 +18,8 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 
 public class SearchEntityIndexer implements EntityIndexer {
 	

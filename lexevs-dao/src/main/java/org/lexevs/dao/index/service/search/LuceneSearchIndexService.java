@@ -49,10 +49,9 @@ import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.IndexCreator.IndexOption;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class LuceneEntityIndexService.

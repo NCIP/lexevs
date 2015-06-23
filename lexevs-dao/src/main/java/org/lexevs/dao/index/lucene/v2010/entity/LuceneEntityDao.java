@@ -44,11 +44,10 @@ import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.custom.NonScoringTermQuery;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-
-import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
-import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMerger;
+import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
+import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
+import org.lexevs.dao.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
+import org.lexevs.dao.indexer.lucene.hitcollector.HitCollectorMerger;
 
 /**
  * The Class LuceneEntityDao.

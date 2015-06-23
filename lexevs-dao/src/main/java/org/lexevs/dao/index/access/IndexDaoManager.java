@@ -31,11 +31,10 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.v2010.entity.SingleTemplateDisposableLuceneCommonEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class IndexDaoManager.

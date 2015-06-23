@@ -27,9 +27,8 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
 import org.apache.lucene.queryParser.QueryParser;
+import org.lexevs.dao.indexer.api.generators.QueryGenerator;
 import org.springframework.util.StringUtils;
-
-import edu.mayo.informatics.indexer.api.generators.QueryGenerator;
 
 /**
  * The Class AbstractSearch.

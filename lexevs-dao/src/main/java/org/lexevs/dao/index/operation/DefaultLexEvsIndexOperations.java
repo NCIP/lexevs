@@ -39,11 +39,10 @@ import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements LexEvsIndexOperations {
 	

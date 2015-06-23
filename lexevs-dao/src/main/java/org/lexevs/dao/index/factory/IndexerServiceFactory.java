@@ -18,10 +18,9 @@
  */
 package org.lexevs.dao.index.factory;
 
+import org.lexevs.dao.indexer.api.IndexerService;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
-
-import edu.mayo.informatics.indexer.api.IndexerService;
 
 /**
  * A factory for creating IndexerService objects.

@@ -153,15 +153,15 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
+import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
+import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
+import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorTest;
+import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollectorTest;
+import org.lexevs.dao.indexer.lucene.hitcollector.HitCollectorMergerTest;
+import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
+import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
-import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
-import edu.mayo.informatics.indexer.lucene.analyzers.StringAnalyzerTest;
-import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorTest;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollectorTest;
-import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMergerTest;
-import edu.mayo.informatics.indexer.lucene.query.SerializableRegexCapabilitiesTest;
-import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQueryTest;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
 
 public class MainSuite {

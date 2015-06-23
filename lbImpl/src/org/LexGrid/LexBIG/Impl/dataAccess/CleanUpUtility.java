@@ -28,13 +28,12 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.lexevs.dao.indexer.api.IndexerService;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.service.XmlRegistry.DBEntry;
 import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
-
-import edu.mayo.informatics.indexer.api.IndexerService;
 
 /**
  * This class implements methods useful for cleaning up orphaned databases and
