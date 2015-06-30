@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
@@ -177,8 +178,8 @@ public class MRMAP2LexGrid {
         service = dbManager.getAuthoringService();
     }
 
-    public CodingScheme[] loadToRevision() throws LBRevisionException{
-       CodingScheme[] schemes = processMrMapToLexGrid();
+    public CodingScheme[] loadToRevision( Map.Entry<String, Relations> relationsMap) throws LBRevisionException{
+       CodingScheme[] schemes = processMrMapToLexGrid(relationsMap);
        CodingScheme[] schemesMinimal = new CodingScheme[schemes.length];
        for(int i = 0; i < schemes.length; i++){
            CodingScheme schemeToReturn = new CodingScheme();
@@ -193,19 +194,19 @@ public class MRMAP2LexGrid {
        return  schemesMinimal;
     }
     
-    public CodingScheme[] processMrMapToLexGrid() {
+    public CodingScheme[] processMrMapToLexGrid(Map.Entry<String, Relations> relationsMap) {
 
        Relations rel = null;
-        HashMap<String, Relations> relationsMap;
+       // HashMap<String, Relations> relationsMap;
         ArrayList<CodingScheme> schemes = new ArrayList<CodingScheme>();
         try {
-        relationsMap = processMrSatBean(satPath, mapPath);
-        Object[] os = relationsMap.keySet().toArray();
+//        relationsMap = processMrSatBean(satPath, mapPath);
+//        Object[] os = relationsMap.keySet().toArray();
 
-        for(Object o: os){
-           rel = relationsMap.get(o);
+//        for(Object o: os){
+           rel = relationsMap.getValue();
            if(rel.isIsMapping() != null && rel.isIsMapping()){
-            rel.addAssociationPredicate(processMrMapBean(mapPath, rel.getSourceCodingScheme(), rel.getTargetCodingScheme(), (String)o));
+            rel.addAssociationPredicate(processMrMapBean(mapPath, rel.getSourceCodingScheme(), rel.getTargetCodingScheme(), rel.getContainerName()));
             CodingScheme scheme = createMrMapScheme(rel,
                     nameForMappingScheme,
                     nameForMappingVersion,
@@ -217,7 +218,7 @@ public class MRMAP2LexGrid {
                     targetVersion,
                     targetURI);
             schemes.add(scheme);
-           }
+//           }
         }
 
         } catch (SecurityException e) {
@@ -249,34 +250,34 @@ public class MRMAP2LexGrid {
     }
     
     
-    protected HashMap<String, Relations> processMrSatBean(String sPath, String mPath) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException {
-        RRFLineReader satReader = new RRFLineReader(sPath);
-        String[] mrSatRow;
-        HashMap<String, Relations> relationsMap = null;
-        int lineCount = 0;
-        int modCount = 0;
-        try {
-         relationsMap = processRelationsContainers(mPath);
-         messages_.info("Searching MRSAT for mapping metadata");
-            while((mrSatRow = satReader.readRRFLine()) != null){
-                lineCount++;
-                MrSat metaData = processMrSatRow(mrSatRow, lineCount);
-               if (relationsMap.containsKey(metaData.getCui())){
-               processMrSatToRelation(metaData, relationsMap.get(metaData.getCui()));
-                }
-               if (lineCount% 100000 == 99999){
-                   modCount = modCount + 100000;
-                   messages_.debug("MRSAT lines processed: " + modCount);
-               }
-            }
-            satReader.close();
-            messages_.info("Finished Searching MRSAT for mapping data");
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-        return relationsMap;
-    }
+//    protected HashMap<String, Relations> processMrSatBean(String sPath, String mPath) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException {
+//        RRFLineReader satReader = new RRFLineReader(sPath);
+//        String[] mrSatRow;
+//        HashMap<String, Relations> relationsMap = null;
+//        int lineCount = 0;
+//        int modCount = 0;
+//        try {
+//         relationsMap = processRelationsContainers(mPath);
+//         messages_.info("Searching MRSAT for mapping metadata");
+//            while((mrSatRow = satReader.readRRFLine()) != null){
+//                lineCount++;
+//                MrSat metaData = processMrSatRow(mrSatRow, lineCount);
+//               if (relationsMap.containsKey(metaData.getCui())){
+//               processMrSatToRelation(metaData, relationsMap.get(metaData.getCui()));
+//                }
+//               if (lineCount% 100000 == 99999){
+//                   modCount = modCount + 100000;
+// //                  messages_.debug("MRSAT lines processed: " + modCount);
+//               }
+//            }
+//            satReader.close();
+//            messages_.info("Finished Searching MRSAT for mapping data");
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//        }
+//        return relationsMap;
+//    }
 
     protected void processMrSatToRelation(MrSat metaData, Relations relation) {
         
@@ -338,8 +339,8 @@ public class MRMAP2LexGrid {
                         processAndMergeIntoSource(map, predicate, sourceSchemeNamespace, targetSchemeNamespace);
                         }
                         else{
-                            messages_.warn("Mapping source: " + map.getFromid() +  " or target: " 
-                                    + map.getToexpr() + " is empty -- skipping relation");
+//                            messages_.warn("Mapping source: " + map.getFromid() +  " or target: " 
+//                                    + map.getToexpr() + " is empty -- skipping relation");
                            
                         }
                     }
@@ -347,7 +348,7 @@ public class MRMAP2LexGrid {
                 messages_.info("Finished Processing MRMAP mappings");
                 mapReader.close();
             } catch (SecurityException e) {
-                // TODO Auto-generated catch block
+                // TODO Auto-generated catch block 
                 e.printStackTrace();
             } catch (IllegalArgumentException e) {
                 // TODO Auto-generated catch block
@@ -476,8 +477,8 @@ public class MRMAP2LexGrid {
             for(AssociationTarget t : targets){
                 //only testing for unique code.  name spaces should be equal
                 if( t.getTargetEntityCode().equals(map.getToexpr())){
-                messages_.warn("source: " + s.getSourceEntityCode() + " and Target: " + t.getTargetEntityCode() 
-                        + "appear to be duplicates, skipping load of this mapping");
+//                messages_.warn("source: " + s.getSourceEntityCode() + " and Target: " + t.getTargetEntityCode() 
+//                        + " appear to be duplicates, skipping load of this mapping");
                 return predicate;
                 }
             }
@@ -486,8 +487,8 @@ public class MRMAP2LexGrid {
             AssociationData[] data = s.getTargetData();
             for(AssociationData d: data){
                if(d.getAssociationInstanceId().equals(map.getMapid())){
-                       messages_.warn("source: " + s.getSourceEntityCode() + " and Target Data: " + d.getAssociationInstanceId() 
-                               + "appear to be duplicates, skipping load of this mapping");
+//                       messages_.warn("source: " + s.getSourceEntityCode() + " and Target Data: " + d.getAssociationInstanceId() 
+//                               + " appear to be duplicates, skipping load of this mapping");
                        return predicate;
                }
             }
