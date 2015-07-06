@@ -266,7 +266,7 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
             String nameforMappingURI, String sourceScheme, String sourceVersion, String sourceURI, String targetScheme,
             String targetVersion, String targetURI, Map.Entry<String, Relations> relation,  boolean stopOnErrors, boolean async) throws LBException{
         this.getOptions().getURIOption(MRSAT_URI).setOptionValue(mrSatSource);
-
+        rel = relation;
         this.load(mrMapsource);
     }
 

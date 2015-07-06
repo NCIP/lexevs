@@ -88,14 +88,19 @@ public void run(String[] args) throws Exception {
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
             MappingRelationsUtil mapUtil = new MappingRelationsUtil();
-            HashMap<String, Relations> relations =  mapUtil.processMrSatBean(sourceSat.toString(), source.toString());
+            HashMap<String, Relations> relations =  mapUtil.processMrSatBean(sourceSat.getPath(), source.getPath());
+            
             for(Map.Entry<String, Relations> rel : relations.entrySet()){
                 Relations relation = rel.getValue();
-           
+                System.out.println("relation : " + relation.getSourceCodingScheme());
             MrMap_Loader loader = (MrMap_Loader) lbsm
                     .getLoader(org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader.name);
 
                 loader.load(source, sourceSat, null, null, null, null, null, null, null, null, null, rel, false, true);
+//              while (loader.getStatus().getEndTime() == null) {
+//                    System.out.println(loader.getStatus().getMessage());
+//                    Thread.sleep(20000);
+//                }
                 Util.displayLoaderStatus(loader);
             }
 

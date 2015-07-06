@@ -75,7 +75,7 @@ public class MappingRelationsUtil {
                 }
                if (lineCount% 100000 == 99999){
                    modCount = modCount + 100000;
-//                   messages.debug("MRSAT lines processed: " + modCount);
+//                  messages_.debug("MRSAT lines processed: " + modCount);
                }
             }
             satReader.close();

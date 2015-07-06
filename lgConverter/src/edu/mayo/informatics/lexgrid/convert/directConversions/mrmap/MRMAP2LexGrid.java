@@ -453,18 +453,71 @@ public class MRMAP2LexGrid {
             Class<?> cl = Class.forName("edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMap");
             Field[] fields = cl.getFields();
            for(Field f: fields){
-               AssociationQualification qualifier = new AssociationQualification();
+
               
-               if(f.get(map) != null && f.getName() != "mapsetcui" && f.getName() != "toexpr"){
-                   qualifier.setAssociationQualifier(f.getName());
+               if(f.get(map) != null && f.getName() != "mapsetcui" && f.getName() != "toexpr" && f.getName() != "mapres" && f.getName() != "maprule"){
+                   AssociationQualification qual = new AssociationQualification();
+                   String value = (String)f.get(map);
+                   if(value.length() <= 250){
+                   qual.setAssociationQualifier(f.getName());
                    Text text = new Text();
                    text.setContent((String)f.get(map));
-                   qualifier.setQualifierText(text);
-                   qualifiers.add(qualifier);
+                   qual.setQualifierText(text);
+                   if(qualifierDoesNotExist(qualifiers, qual)){
+                   qualifiers.add(qual);
+                   }
+                   }else{ 
+                       messages_.warn("Skipping load of this mapping restriction greater than 250 characters to Association Qualifier for " + f.getName() + ": " + value);
+                   
+                   }
+               }
+               if(f.get(map) != null && f.getName() == "mapres"){
+                   String[] restrictions = ((String)f.get(map)).split("&#x7C;");            
+                   for(String s : restrictions){
+                       if(s.length() <= 250){
+                       AssociationQualification qual = new AssociationQualification();
+                       qual.setAssociationQualifier(f.getName());
+                       Text text = new Text();
+                       text.setContent(s.trim());
+                       qual.setQualifierText(text);
+                       if(qualifierDoesNotExist(qualifiers, qual)){
+                       qualifiers.add(qual);
+                       }
+                       }else{ 
+                           messages_.warn("Skipping load of this mapping restriction greater than 250 characters to Association Qualifier for MAPRES: " + s);
+                       
+                       }
+                   }
+               }
+               
+               if(f.get(map) != null && f.getName() == "maprule"){
+                   String[] restrictions = ((String)f.get(map)).split("&#x7C;");            
+                   for(String s : restrictions){
+                       if(s.length() <= 250){
+                       AssociationQualification qual = new AssociationQualification();
+                       qual.setAssociationQualifier(f.getName());
+                       Text text = new Text();
+                       text.setContent(s.trim());
+                       qual.setQualifierText(text);
+                       if(qualifierDoesNotExist(qualifiers, qual)){
+                       qualifiers.add(qual);
+                       }
+                       }else{ 
+                           messages_.warn("Skipping load of this mapping restriction greater than 250 characters to Association Qualifier for MAPRULE: " + s);
+                       
+                       }
+                   }
                }
            }
             
         return qualifiers;
+    }
+
+    private boolean qualifierDoesNotExist(List<AssociationQualification> qualifiers, AssociationQualification qual) {
+      for(AssociationQualification q : qualifiers){
+          if(q.getQualifierText().getContent().equals(qual.getQualifierText().getContent()) && q.getAssociationQualifier().equals(qual.getAssociationQualifier())) {return false;}
+      }
+      return true;
     }
 
     protected AssociationPredicate addTargetToExistingSource(MrMap map, AssociationPredicate predicate, String sourceEntityCodeNamespace, String targetEntityCodeNamespace) throws IndexOutOfBoundsException, LBParameterException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
