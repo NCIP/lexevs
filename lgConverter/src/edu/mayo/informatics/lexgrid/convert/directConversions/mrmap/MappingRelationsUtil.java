@@ -25,10 +25,7 @@ public class MappingRelationsUtil {
     }
     
     //constants
-    public static final String ASSOC_NAME = "mapped_to";
-    public static final String APROX_ASSOC_NAME = "approximately_mapped_to";
     public static final boolean ISMAP = true;
-    public static final String URIPREFIX = "urn:oid";
     
     //relations constants
     public static final String TORSAB = "TORSAB";
@@ -44,7 +41,6 @@ public class MappingRelationsUtil {
     public static final String CODING_SCHEME_URI = "http://does.not.resolve";
     public static final String REPRESENTS_VERSION = "1.0";
     
-//    CachingMessageDirectorIF messages = new CachingMessageDirectorImpl( (LgMessageDirectorIF) new MessageDirector("MappingUtil", new ProcessStatus()));
     
     public static final List<String>   propertyNames = Arrays.asList(new String[]{
             "MAPSETGRAMMER",
@@ -67,6 +63,7 @@ public class MappingRelationsUtil {
         try {
          relationsMap = processRelationsContainers(mPath);
 //         messages.info("Searching MRSAT for mapping metadata");
+         System.out.println("Searching MRSAT for mapping metadata");
             while((mrSatRow = satReader.readRRFLine()) != null){
                 lineCount++;
                 MrSat metaData = processMrSatRow(mrSatRow, lineCount);
@@ -80,9 +77,10 @@ public class MappingRelationsUtil {
             }
             satReader.close();
 //            messages.info("Finished Searching MRSAT for mapping data");
+            System.out.println("Finished Searching MRSAT for mapping data");
         } catch (IOException e) {
 
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return relationsMap;
     }
@@ -112,10 +110,10 @@ public class MappingRelationsUtil {
         }
         }
         catch(IndexOutOfBoundsException e){
-//            messages.warn("Error in row " + lineCount + " of MRSAT -- number of columns is larger than specified for UMLS MRSAT: " + e.getMessage()); 
-//            messages.warn("This associated mapping data will not be processed: " );
+            System.out.println("Error in row " + lineCount + " of MRSAT -- number of columns is larger than specified for UMLS MRSAT: " + e.getMessage()); 
+            System.out.println("This associated mapping data will not be processed: " );
             for(String s : mapRow){
-//                messages.warn(s);
+                System.out.println(s);
             }
             
         }

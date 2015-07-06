@@ -56,9 +56,8 @@ public class TestLoadMrMap2Mappings extends TestCase {
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[1]);
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[1], LBConstants.KnownTags.PRODUCTION.toString());
+
        }
 }
     private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{

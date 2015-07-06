@@ -134,49 +134,21 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
      return this.constructVersionPairsFromCodingSchemes((Object[])schemes);
     }
 
-//    protected HashMap<String, Relations> processMrSatBean(String sPath, String mPath) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException {
-//        RRFLineReader satReader = new RRFLineReader(sPath);
-//        String[] mrSatRow;
-//        HashMap<String, Relations> relationsMap = null;
-//        int lineCount = 0;
-//        int modCount = 0;
-//        try {
-//         relationsMap = processRelationsContainers(mPath);
-//         messages.info("Searching MRSAT for mapping metadata");
-//            while((mrSatRow = satReader.readRRFLine()) != null){
-//                lineCount++;
-//                MrSat metaData = processMrSatRow(mrSatRow, lineCount);
-//               if (relationsMap.containsKey(metaData.getCui())){
-//               processMrSatToRelation(metaData, relationsMap.get(metaData.getCui()));
-//                }
-//               if (lineCount% 100000 == 99999){
-//                   modCount = modCount + 100000;
-//                   messages.debug("MRSAT lines processed: " + modCount);
-//               }
-//            }
-//            satReader.close();
-//            messages.info("Finished Searching MRSAT for mapping data");
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//        }
-//        return relationsMap;
-//    }
     
-    protected HashMap<String, Relations> processRelationsContainers(String mapPath) throws IOException{
-        HashMap<String, Relations> relations = new HashMap<String, Relations>();
-        RRFLineReader mapReader = new RRFLineReader(mapPath);
-        String[] mrMapRow;
-            while((mrMapRow = mapReader.readRRFLine()) != null){
-                if(!relations.containsKey(mrMapRow[0])){
-                    Relations rel = new Relations();
-                    rel.setContainerName(mrMapRow[0]);
-                    relations.put(mrMapRow[0], rel);
-                }
-            }
-        
-        return relations;
-    }
+//    protected HashMap<String, Relations> processRelationsContainers(String mapPath) throws IOException{
+//        HashMap<String, Relations> relations = new HashMap<String, Relations>();
+//        RRFLineReader mapReader = new RRFLineReader(mapPath);
+//        String[] mrMapRow;
+//            while((mrMapRow = mapReader.readRRFLine()) != null){
+//                if(!relations.containsKey(mrMapRow[0])){
+//                    Relations rel = new Relations();
+//                    rel.setContainerName(mrMapRow[0]);
+//                    relations.put(mrMapRow[0], rel);
+//                }
+//            }
+//        
+//        return relations;
+//    }
     
     protected MrSat processMrSatRow(String [] mapRow, int lineCount) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrSat mrSat = new MrSat();

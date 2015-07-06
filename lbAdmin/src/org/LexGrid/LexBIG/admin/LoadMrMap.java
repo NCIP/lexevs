@@ -97,10 +97,6 @@ public void run(String[] args) throws Exception {
                     .getLoader(org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader.name);
 
                 loader.load(source, sourceSat, null, null, null, null, null, null, null, null, null, rel, false, true);
-//              while (loader.getStatus().getEndTime() == null) {
-//                    System.out.println(loader.getStatus().getMessage());
-//                    Thread.sleep(20000);
-//                }
                 Util.displayLoaderStatus(loader);
             }
 
