@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes">
+
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/naming" schemaLocation="naming.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="versions.xsd"/>
+
+        <!-- ================================================= -->
+        <!-- Package: <<XSDschema>> commonTypes  -->
+        <!-- ================================================= -->
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Shared types for the LexGrid package</h2>
+                </xs:documentation>
+                <xs:documentation>Type definitions that are shared by more than one LexGrid module</xs:documentation>
+        </xs:annotation>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<XSDsimpleType>> entityCode  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="entityCode">
+                <xs:annotation>
+                        <xs:documentation>The label for an entity that is defined or referenced by a codingScheme.  entityCode must be unique within the context of its corresponding namespace.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsCaseSensitiveIA5String">
+                        <xs:minLength value="1"/>
+                </xs:restriction>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<XSDsimpleType>> associationName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="associationName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of an association used in the codingScheme relations container.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: associationQualifier  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="associationQualifierName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a qualifier that is used in one or more semantic assertions. Typical association qualifiers include the description logic  "some", "all", as well as various statistical and probabilistic assertions.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: codingSchemeName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="codingSchemeName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier used to reference a particular coding scheme</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: conceptDomain  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="conceptDomain">
+                <xs:annotation>
+                        <xs:documentation>The local identifier used to reference concept domain.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: containerName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="containerName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier used to name a collection of semantic assertions</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: context  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="context">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a realm, context or situation that pertains to a lexical or semantic assertion about an entity</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: dataType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="dataType">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a format and/or datatype of textual data. Data types are typically drawn from XML Schema or mime types.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: degreeOfFidelity  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="degreeOfFidelity">
+                <xs:annotation>
+                        <xs:documentation>A local identifier that specifies how closely a given presentation represents the intended meaning of a entity. Typical values represent notions such as  "broader", "narrower", "exact", etc.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: status  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="status">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a possible status of an assertion in the codingScheme. Status identifiers are usually related to the workflow of the coding scheme creators, and include notions such as "proposed", "active", "depricated", "retired", etc.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: entityType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="entityType">
+                <xs:annotation>
+                        <xs:documentation>The local identifier that specifies the type of thing that a given entity represents. Typical entityTypes and include "concept", "instance", "association", etc.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: EntityTypes  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="EntityTypes">
+                <xs:restriction base="xs:string">
+                        <xs:annotation>
+                                <xs:documentation>A list of entityTypes to be used where appropriate.  Service behavior may be keyed off of these local identifiers, independent of the associated URI's</xs:documentation>
+                        </xs:annotation>
+                        <xs:enumeration value="concept">
+                                <xs:annotation>
+                                        <xs:documentation>The entity represents a class or category.</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="instance">
+                                <xs:annotation>
+                                        <xs:documentation>The entity represents an individual or instance.</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="association">
+                                <xs:annotation>
+                                        <xs:documentation>The entity represents a relationship, association or "property".</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                </xs:restriction>
+        </xs:simpleType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyTypes  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyTypes">
+                <xs:restriction base="xs:string">
+                        <xs:annotation>
+                                <xs:documentation>A list of propertyTypes to be used where appropriate.  Service behavior may be keyed off of these local identifiers, independent of the associated URI's</xs:documentation>
+                        </xs:annotation>
+                        <xs:enumeration value="presentation">
+                                <xs:annotation>
+                                        <xs:documentation>Property of type 'presentation'.</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="definition">
+                                <xs:annotation>
+                                        <xs:documentation>Property of type 'definition'</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="comment">
+                                <xs:annotation>
+                                        <xs:documentation>Property of type 'comment'</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="property">
+                                <xs:annotation>
+                                        <xs:documentation>Property of type 'property'</xs:documentation>
+                                </xs:annotation>
+                        </xs:enumeration>
+                </xs:restriction>
+        </xs:simpleType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: language  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="language">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a spoken or written language. Example: "en", "English", "de", "EN-UK", etc.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: language  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="namespaceName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of the namespace of one or more entityCodes.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyLinkName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyLinkName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of link that can be asserted between two properties of the same concept. Examples include: "literal translation", "acronym for", "abbreviation of", etc.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a the "tag" portion of a "tag/value" pair in a property.  As an example, "label" might be the local identifier of a property derived from "rdfs:label".</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyType">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of an attribute or relation in the LexGrid model that a given property represents. As an example, "presentation" might be the propertyType of a property derived from "rdfs:label".</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyQualifierName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyQualifierName">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a qualifier used to add additional information to a property. </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyQualifierType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyQualifierType">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of an attribute or relation in the LexGrid model that a given property qualifier represents.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: representationalForm  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="representationalForm">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a form that a presentation takes in the model. Examples include "acronym", "abbreviation", etc.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: source  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="source">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a person, organization of bibliographic resource that played a role in the creation or maintenance of a resource.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:extension base="lgBuiltin:tsLocalId">
+                                <xs:attribute name="subRef" type="lgBuiltin:tsCaseIgnoreIA5String" use="optional">
+                                        <xs:annotation>
+                                                <xs:documentation>The page, subheading, id or other localized information within the source itself.   Used to make a source reference more precise. Must be absent in supportedSource.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="role" type="sourceRole" use="optional">
+                                        <xs:annotation>
+                                                <xs:documentation>The role or purpose of the the source for this particular resource (e.g. author, distributor).  Must be absent in supportedSource</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:simpleContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: sourceRole  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="sourceRole">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of a role a source plays in an associated resource.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: sortOrder  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="sortOrder">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of an ordering to be applied to a list of resources.  The local identifier also identifies the specific fields to be ordered.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsLocalId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: nodeId  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="nodeId">
+                <xs:annotation>
+                        <xs:documentation> An identifier used to render a given node within the model unique within a given context.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsCaseIgnoreIA5String"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyId  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="propertyId">
+                <xs:annotation>
+                        <xs:documentation> The identifier of a property / resource combination. If supplied, propertyId must be unique within the context of the resource associated with the property although the scope of uniqueness may be broader</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="nodeId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: changeSetId  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="changeSetId">
+                <xs:annotation>
+                        <xs:documentation> The identifier of a set of entityState changes. Must be unique within the context of a terminology or pick list implementation.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="nodeId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: revisionId  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="revisionId">
+                <xs:annotation>
+                        <xs:documentation>An identifier of unique version within the context of a coding scheme.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="nodeId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  version  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="version">
+                <xs:annotation>
+                        <xs:documentation>A version identifier.</xs:documentation>
+                        <xs:documentation>NOTE: The use of this type is deprecated.  This is here for backwards compatibility with the existing LexBIG implementation.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="nodeId"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: entryOrder  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="entryOrder">
+                <xs:annotation>
+                        <xs:documentation>The relative order of an entry in a collection.  Ordering is ascending based in integer value.</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsInteger"/>
+        </xs:simpleType>
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: URI  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:simpleType name="URI">
+                <xs:annotation>
+                        <xs:documentation>A Universal Resource Identifier</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="lgBuiltin:tsURI"/>
+        </xs:simpleType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Mixin>>  describable  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="describable">
+                <xs:annotation>
+                        <xs:documentation>Any resource that can have an associated description.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="entityDescription" type="entityDescription" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>The description of the resource.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Mixin>>  versionable     -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="versionable">
+                <xs:annotation>
+                        <xs:documentation>A resource that can undergo change over time while maintaining its identity.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="owner" type="lgBuiltin:tsCaseIgnoreIA5String" minOccurs="0"  maxOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The owner of the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="entryState" type="lgVer:entryState" minOccurs="0"  maxOccurs="1" >
+                                <xs:annotation>
+                                        <xs:documentation>The description of the current state of the resource and its change history.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+                <xs:attribute name="isActive" type="lgBuiltin:tsBoolean" use="optional">
+                        <xs:annotation>
+                                <xs:documentation>True means that this resource is searchable and browsable if the temporal context of the operation falls between effectiveDate and expirationDate. False means that this resource is only accessible if requested by id or by a search that specifies that inactive retrievals are allowed. Default: True</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="status" type="status" use="optional">
+                        <xs:annotation>
+                                <xs:documentation>The status code associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="effectiveDate" type="lgBuiltin:tsTimestamp" use="optional">
+                        <xs:annotation>
+                                <xs:documentation>The date and time that this resource is considered to be active.  To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate.  If omitted, all temporal contexts are considered to be valid.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="expirationDate" type="lgBuiltin:tsTimestamp" use="optional">
+                        <xs:annotation>
+                                <xs:documentation>The date and time that this resource is considered to become inActive.  To be considered active, isActive must be true, and the temporal context of the operation must be less than expirationDate.  If omitted, all temporal contexts are considered to be valid.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+        </xs:complexType>
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Mixin>>  versionableAndDescribable  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="versionableAndDescribable">
+                <xs:annotation>
+                        <xs:documentation>A resource that is both versionable and describable.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="versionable">
+                                <xs:sequence>
+                                        <xs:element name="entityDescription" type="entityDescription" minOccurs="0" >
+                                                <xs:annotation>
+                                                        <xs:documentation>The description of the resource.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: propertyQualifier  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="propertyQualifier">
+                <xs:annotation>
+                        <xs:documentation>Additional information about the property and/or its association with the resource.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="value" type="text" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="propertyQualifierName" type="propertyQualifierName" use="required">
+                        <xs:annotation>
+                                <xs:documentation>The local name of the qualifier.  Must match a local id of a supportedPropertyQualifier in the corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="propertyQualifierType" type="propertyQualifierType">
+                        <xs:annotation>
+                                <xs:documentation>The local name of the qualifier type. Must match a local id of a supportedPropertyQualifierType in the corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: property  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="property">
+                <xs:annotation>
+                        <xs:documentation>A description, definition, annotation or other attribute that serves to further define or identify an resource.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="versionable">
+                                <xs:sequence>
+                                        <xs:element name="source" type="source" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the source(s) of this property. Must match a local id of a supportedSource in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="usageContext" type="context" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the context(s) in which this property applies. Must match a local id of a supportedContext in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="propertyQualifier" type="propertyQualifier" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>A qualifier that provides additional information about this particular property and/or its association with the resource.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="value" type="text" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>The value of the property associated with this particular resource.  Note that "text" may be any type, including a URI, html fragment, etc.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="propertyName" type="propertyName" use="required">
+                                        <xs:annotation>
+                                                <xs:documentation>The local identifier that defines the meaning of this particular property entry. Must match a local id of a supportedProperty in the corresponding mappings section.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="propertyId" type="propertyId">
+                                        <xs:annotation>
+                                                <xs:documentation>A unique identifier of this particular propert/resource/value instance.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="propertyType" type="propertyType" use="optional">
+                                        <xs:annotation>
+                                                <xs:documentation>The LexGrid model element that this property represents.  As an example, the codingScheme "copyright" attribute could be represented by a property with a propertyType that mapped to lgCS:copyRight. Must match a local id of a supportedPropertyType in the corresponding mappings section.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="language" type="language" use="optional">
+                                        <xs:annotation>
+                                                <xs:documentation>The local identifier of the language of the property value. Must match a local id of a supportedLanguage in the corresponding mappings section. If omitted, and language is applicable to this property, the defaultLanguage of the surrounding resource is used.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  properties  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="properties">
+                <xs:annotation>
+                        <xs:documentation>A collection of properties.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="property" type="property" minOccurs="0" maxOccurs="unbounded">
+                                <xs:annotation>
+                                        <xs:documentation>An entry in the property list.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  entityDescription  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType mixed="true" name="entityDescription">
+                <xs:annotation>
+                        <xs:documentation>The description of a resource.  (Note: entityDescription may apply to any describable resource, not just "entities".</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgBuiltin:tsAnyType"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: text  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType mixed="true" name="text">
+                <xs:annotation>
+                        <xs:documentation>The value of an entityDescription, property, etc.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgBuiltin:tsAnyType">
+                                <xs:attribute name="dataType" type="dataType">
+                                        <xs:annotation>
+                                                <xs:documentation>The local identifier of the format or data type of the text. Must match a local id of a supportedDataType in the corresponding mappings section.  Default: tsCaseSensitiveIA5String</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+
+</xs:schema>
