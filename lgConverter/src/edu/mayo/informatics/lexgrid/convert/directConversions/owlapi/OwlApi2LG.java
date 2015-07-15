@@ -148,6 +148,8 @@ import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
 
+import org.apache.commons.lang.time.DateUtils;
+
 /**
  * This is the main class containing the logic for the conversion from OWL to
  * LexEVS..
@@ -1461,7 +1463,7 @@ public class OwlApi2LG {
 
         if (owlClassExp instanceof OWLObjectComplementOf) {
             OWLObjectComplementOf complementClass = (OWLObjectComplementOf) owlClassExp;
-            String lgCode = resolveAnonymousClass((OWLClass) complementClass.getOperand(), assocSource);
+            String lgCode = resolveAnonymousClass((OWLClassExpression) complementClass.getOperand(), assocSource);
             String targetNameSpace = getDefaultNameSpace();
           
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
@@ -1522,7 +1524,7 @@ public class OwlApi2LG {
         }else if (operand instanceof OWLObjectComplementOf){
           OWLClassExpression innerOperand =  ((OWLObjectComplementOf) operand).getOperand();
                 if (innerOperand instanceof OWLRestriction) {
-                    OWLRestriction op = (OWLRestriction) operand;
+                    OWLRestriction op = (OWLRestriction) innerOperand;
                     processRestriction(op, assocSource, source);
                 } 
                 else if (innerOperand instanceof OWLNaryBooleanClassExpression) {
@@ -1724,7 +1726,7 @@ public class OwlApi2LG {
                   
                     Date date = null;
                     try {
-                        String textToParse = owl.getValue().toString();
+                        String textToParse = getAnnotationValue(owl);
                         textToParse = stripQuotes(textToParse);
                         date = parseEffectiveDate(textToParse);
                     } catch (ParseException e) {
@@ -1831,9 +1833,10 @@ public class OwlApi2LG {
     }
 
     protected Date parseEffectiveDate(String dateText) throws ParseException {
-        Date date;
-        SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
-        date = formatDate.parse(dateText);
+        Date date = DateUtils.parseDate(dateText, OwlApi2LGConstants.DATEFORMATS);
+//        SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+//        formatDate.setLenient(true);
+//        date = formatDate.parse(dateText);
         return date;
     }
 
