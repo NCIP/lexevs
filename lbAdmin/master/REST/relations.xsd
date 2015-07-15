@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema         xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes"
+        xmlns:lgRESTBuiltins="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins"
+        xmlns:lgRESTCon="http://LexGrid.org/schema/2010/01/LexGrid/REST/concepts"
+        xmlns:lgRESTRel="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" 
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/relations" elementFormDefault="qualified">
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/concepts" schemaLocation="concepts.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+        
+        <!-- ================================================= -->
+        <!-- Package: <<XSDschema> relations  -->
+        <!-- ================================================= -->
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Semantic relationships package for LexGrid REST</h2>
+                </xs:documentation>
+                <xs:documentation>REST extensions for the LexGrid baseline association package</xs:documentation>
+        </xs:annotation>
+        
+        <!-- ========================================================================== -->
+        <!-- Triple - a subject, predicate and object along with a set of qualifiers and provenance information -->
+        <!-- ========================================================================== -->
+        <xs:element name="associationEntry" type="associationEntry">
+                <xs:annotation>
+                        <xs:appinfo>id: (associatableElement.associationInstanceId)</xs:appinfo>
+                </xs:annotation>
+        </xs:element>
+        <xs:complexType name="associationEntry">
+                <xs:complexContent>
+                        <xs:extension base="associatableElement">
+                                 <xs:sequence>
+                                         <xs:element name="subject" type="lgRESTCon:entityDirectoryEntry"/>
+                                         <xs:element name="predicate" type="lgRESTCon:entityDirectoryEntry"/>
+                                         <xs:element name="target" type="associationTarget"/>
+                                         <xs:element name="relationsContainer" type="lgRESTCommon:containerName"/>
+                                 </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ========================================================================== -->
+        <!-- associationEntrySetLink - a link to an association tnry set                                                                      -->
+        <!-- ========================================================================== -->  
+        <xs:complexType name="associationEntrySetLink">
+                <xs:simpleContent>
+                        <xs:extension base="lgRESTBuiltins:resource"/>
+                </xs:simpleContent>
+        </xs:complexType>
+       
+        <!-- ========================================================================== -->
+        <!-- associationEntrySet - a collection of triples                                                                                                -->
+        <!-- ========================================================================== --> 
+        <xs:element name="associationEntrySet" type="associationEntrySet"/>
+         <xs:complexType name="associationEntrySet">
+                <xs:sequence>
+                        <xs:element name="continuation" type="lgRESTCommon:continuation"/>
+                        <xs:element type="associationEntry" name="associationEntry" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+        </xs:complexType>
+        
+
+        <!-- ========================================================================== -->
+        <!-- associationObject - the target of an association                                                                         -->
+        <!-- ========================================================================== -->     
+        <xs:complexType name="associationTarget">
+                <xs:sequence>
+                        <xs:choice>
+                                <xs:element name="targetEntity" type="lgRESTCon:entityDirectoryEntry"/>
+                                <xs:element name="targetData" type="lgCommon:text"/>
+                        </xs:choice>
+                </xs:sequence>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Mixin>> associatableElement  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associatableElement">
+                <xs:annotation>
+                        <xs:documentation>Information common to both the entity and data form of the "to" (or right hand) side of an association.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:versionable">
+                                <xs:sequence>
+                                        <xs:element name="associationInstanceId" type="lgCommon:nodeId">
+                                                <xs:annotation>
+                                                        <xs:documentation>The unique identifier assigned to the particular relation, from, to triple.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="usageContext" type="lgRESTCommon:context" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the context(s) in which this association instance applies. Must match a local id of a supportedContext in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="associationQualification" type="associationQualification" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>A set of qualifers that server to modify or qualify this association instance.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>               
+                                </xs:sequence>                   
+                                <xs:attribute name="isInferred" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="isDefining" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that this association instance is considered to be part of the definition of source entity, false means that it is an "accidental" characteristic. If omitted, this information is not known. </xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="idIsPublic" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that the association instance identifier was assigned by the resource authors.  False means that it was internally generated and cannot be used for identification purposes</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+                
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: associationQualification  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationQualification">
+                <xs:annotation>
+                        <xs:documentation>A modifier that further qualifies the particular association instance.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="associationQualifier" type="lgRESTCommon:associationQualifierName">
+                                <xs:annotation>
+                                        <xs:documentation>The local name of the association qualifier. codingSchemeName must match a local id of a supportedAssociationQualifier in the mappings section.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="qualifierText" type="lgCommon:text" minOccurs="0" maxOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The value associated with this qualifier, if any.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>        
+        </xs:complexType>
+
+        <!-- ========================================================================== -->
+        <!-- relationsLink  - a link point to a collection of relations asserted by a coding scheme                        -->
+        <!-- ========================================================================== -->      
+        <xs:complexType name="relationsLink">
+                <xs:annotation>
+                        <xs:documentation>A hyperlink from the current node to a collection of relations</xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:extension base="lgRESTCommon:collectionLink"/>
+                </xs:simpleContent>
+        </xs:complexType>
+        
+        <!-- ========================================================================== -->
+        <!-- relationsDirectory - a collection of relations (assertion sets)                                                                  -->
+        <!-- ========================================================================== --> 
+        <xs:element name="relationsDirectory" type="relationsDirectory">
+                <xs:annotation>
+                        <xs:documentation>id: "relations".  A relationsDirectory carries a set of relations and does not support filters</xs:documentation>
+                </xs:annotation>
+        </xs:element>
+        <xs:complexType name="relationsDirectory">
+                <xs:sequence>
+                        <xs:element name="continuation" type="lgRESTCommon:continuation"/>
+                        <xs:element name="relation" type="relation" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+        </xs:complexType>
+        
+        <!-- ========================================================================== -->
+        <!-- relationsDirectory - a collection of relations (assertion sets)                                                                  -->
+        <!-- ========================================================================== --> 
+         <xs:element name="relation" type="relation">
+                 <xs:annotation>
+                         <xs:appinfo>id: "relations"/{containtainerName}</xs:appinfo>
+                 </xs:annotation>
+         </xs:element>
+        <xs:complexType name="relation">
+                <xs:annotation>
+                        <xs:documentation>A collection of association triples asserted from a particular perspective, use case or community point of view</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:describable">
+                                <xs:sequence>
+                                        <xs:element name="containerName" type="lgCommon:containerName">
+                                                <xs:annotation>
+                                                        <xs:documentation>The unique identifier of this collection. Required if there is more than one collection of relations in a coding scheme</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="source" type="lgCommon:source" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the source(s) of this collection. Must match a local id of a supportedSource in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="assertions" type="associationEntrySet" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>The collection of assertions that are represented.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>                              
+                                <xs:attribute name="isNative" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that this set of relations are considered native to the coding scheme itself.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        
+</xs:schema>

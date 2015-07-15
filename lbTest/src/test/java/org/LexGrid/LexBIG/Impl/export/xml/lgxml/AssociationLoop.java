@@ -47,7 +47,7 @@ public class AssociationLoop extends TestCase {
     private final String[] assoc1 = {
     		"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
                 "<lgRel:target targetEntityCode=\"1\" targetEntityCodeNamespace=\"colors\"/>",
             "</lgRel:source>"};
@@ -55,7 +55,7 @@ public class AssociationLoop extends TestCase {
     private final String[] assoc2 = {
     		"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"1\">",
                 "<lgRel:target targetEntityCode=\"2\" targetEntityCodeNamespace=\"colors\"/>",
             "</lgRel:source>"};
@@ -63,7 +63,7 @@ public class AssociationLoop extends TestCase {
     private final String[] assoc3 = {
     		"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"2\">",
                 "<lgRel:target targetEntityCode=\"3\" targetEntityCodeNamespace=\"colors\"/>",
             "</lgRel:source>"};
@@ -71,7 +71,7 @@ public class AssociationLoop extends TestCase {
     private final String[] assoc4 = {
     		"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"3\">",
                 "<lgRel:target targetEntityCode=\"4\" targetEntityCodeNamespace=\"colors\"/>",
             "</lgRel:source>"};
@@ -79,7 +79,7 @@ public class AssociationLoop extends TestCase {
     private final String[] assoc5 = {
     		"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"4\">",
                 "<lgRel:target targetEntityCode=\"1\" targetEntityCodeNamespace=\"colors\"/>",
             "</lgRel:source>"};
@@ -87,7 +87,7 @@ public class AssociationLoop extends TestCase {
     private final String[] entity1 = {    
     		"<lgCon:entity",
     		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
     		"entityCode=\"1\" entityCodeNamespace=\"colors\"",
     		"isAnonymous=\"false\" isDefined=\"true\">",
     		"<lgCommon:entityDescription>Holder of colors</lgCommon:entityDescription>",

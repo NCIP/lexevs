@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+    xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" xmlns:lgRESTVer="http://LexGrid.org/schema/2010/01/LexGrid/REST/versions" elementFormDefault="qualified" targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes">
+
+    <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+    <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+    <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+    <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/versions" schemaLocation="versions.xsd"/>
+
+    <!-- ================================================= -->
+    <!-- Package: <<XSDschema>> commonTypes  -->
+    <!-- ================================================= -->
+    <xs:annotation>
+        <xs:documentation>
+            <h2>Shared types for the LexGrid REST package</h2>
+        </xs:documentation>
+        <xs:documentation>These are the common types that are specific to the LexGrid REST package. They are extensions of the core LexGrid common types</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType name="collectionLink">
+        <xs:annotation>
+            <xs:documentation>A hyperlink from the current node to a collection of target entities</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="entityCode">
+        <xs:annotation>
+            <xs:documentation>An entity code that includes a link</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="URI">
+        <xs:annotation>
+            <xs:documentation>A URI that includes a URL hyperlink</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="version">
+        <xs:annotation>
+            <xs:documentation>A version identifier and an optional URL hyperlink</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="nodeId">
+        <xs:annotation>
+            <xs:documentation> An identifier used to render a given node within the model unique within a given context.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="revisionId">
+        <xs:annotation>
+            <xs:documentation>An identifier of unique version within the context of a coding scheme.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="propertyId">
+        <xs:annotation>
+            <xs:documentation>An identifier of property within the context of a coding scheme.</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="associationName">
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="associationQualifierName">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a qualifier that is used in one or more semantic assertions. Typical association qualifiers include the description logic "some", "all", as well as various statistical and probabilistic assertions.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="codingSchemeName">
+        <xs:annotation>
+            <xs:documentation>The local identifier used to reference a particular coding scheme</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="localNames">
+        <xs:annotation>
+            <xs:documentation>A collection of coding scheme names.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="localName" type="codingSchemeName" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="containerName">
+        <xs:annotation>
+            <xs:documentation>The local identifier used to name a collection of semantic assertions</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="context">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a realm, context or situation that pertains to a lexical or semantic assertion about an entity</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="dataType">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a format and/or datatype of textual data. Data types are typically drawn from XML Schema or mime types.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="degreeOfFidelity">
+        <xs:annotation>
+            <xs:documentation>A local identifier that specifies how closely a given presentation represents the intended meaning of a entity. Typical values represent notions such as "broader", "narrower", "exact", etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="status">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a possible status of an assertion in the codingScheme. Status identifiers are usually related to the workflow of the coding scheme creators, and include notions such as "proposed", "active", "depricated", "retired", etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="entityType">
+        <xs:annotation>
+            <xs:documentation>The local identifier that specifies the type of thing that a given entity represents. Typical entityTypes and include "concept", "instance", "association", etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="language">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a spoken or written language. Example: "en", "English", "de", "EN-UK", etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="namespaceName">
+        <xs:annotation>
+            <xs:documentation>The local identifier of the namespace of one or more entityCodes.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="propertyLinkName">
+        <xs:annotation>
+            <xs:documentation>The local identifier of link that can be asserted between two properties of the same concept. Examples include: "literal translation", "acronym for", "abbreviation of", etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="propertyName">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a the "tag" portion of a "tag/value" pair in a property. As an example, "label" might be the local identifier of a property derived from "rdfs:label".</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="propertyType">
+        <xs:annotation>
+            <xs:documentation>The local identifier of an attribute or relation in the LexGrid model that a given property represents. As an example, "presentation" might be the propertyType of a property derived from "rdfs:label".</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="propertyQualifierName">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a qualifier used to add additional information to a property. </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="propertyQualifierType">
+        <xs:annotation>
+            <xs:documentation>The local identifier of an attribute or relation in the LexGrid model that a given property qualifier represents.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="representationalForm">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a form that a presentation takes in the model. Examples include "acronym", "abbreviation", etc.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="source">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a person, organization of bibliographic resource that played a role in the creation or maintenance of a resource.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="source" type="lgRESTBuiltin:tsLocalId"/>
+            <xs:element name="subRef" type="lgBuiltin:tsCaseIgnoreIA5String" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The page, subheading, id or other localized information within the source itself. Used to make a source reference more precise. Must be absent in supportedSource.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="role" type="sourceRole" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>The role or purpose of the the source for this particular resource (e.g. author, distributor). Must be absent in supportedSource</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="sources">
+        <xs:annotation>
+            <xs:documentation>A collection of sources.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="source" type="source" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="sourceRole">
+        <xs:annotation>
+            <xs:documentation>The local identifier of a role a source plays in an associated resource.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="sortOrder">
+        <xs:annotation>
+            <xs:documentation>The local identifier of an ordering to be applied to a list of resources. The local identifier also identifies the specific fields to be ordered.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="lgRESTBuiltin:tsLocalId"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Class: <<Mixin>>  versionable     -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <xs:complexType name="versionable">
+        <xs:annotation>
+            <xs:documentation>A resource that can undergo change over time while maintaining its identity.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="owner" type="source" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>The owner of the resource. The specific semantics of owner is defined by the busniess rules of the implementor, including the rules of the owner field is absent.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="entryState" type="lgRESTVer:entryState" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>A link to the revision and state change that made this what it is</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isActive" type="lgBuiltin:tsBoolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>True means that this resource is searchable and browsable if the temporal context of the operation falls between effectiveDate and expirationDate. False means that this resource is only accessible if requested by id or by a search that specifies that inactive
+                        retrievals are allowed. Default: True</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="status" type="status" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The status code associated with the particular resource. The semantics and business rules of entryStatus are defined by the containing system, but there needs to be a mapping into isActive above.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="effectiveDate" type="lgBuiltin:tsTimestamp" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The date and time that this resource is considered to be active. To be considered active, isActive must be true, and the temporal context of the operation must be greater than effectiveDate. If omitted, all temporal contexts are considered to be
+                        valid.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="expirationDate" type="lgBuiltin:tsTimestamp" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The date and time that this resource is considered to become inActive. To be considered active, isActive must be true, and the temporal context of the operation must be less than expirationDate. If omitted, all temporal contexts are considered to be
+                        valid.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Class: <<Mixin>>  versionableAndDescribable  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <xs:complexType name="versionableAndDescribable">
+        <xs:annotation>
+            <xs:documentation>A resource that is both versionable and describable.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="versionable">
+                <xs:sequence>
+                    <xs:element name="entityDescription" type="lgCommon:entityDescription" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>The description of the resource.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- ===============================================================================
+            =   An instance of a property link - represented in situ                                                                                        =
+            ===============================================================================-->
+    <xs:complexType name="propertyLinkInstance">
+        <xs:sequence>
+            <xs:element name="propertyLinkName" type="propertyLinkName">
+                <xs:annotation>
+                    <xs:documentation>The identifier of the particular link</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="toProperty" type="propertyId">
+                <xs:annotation>
+                    <xs:documentation>A link between a containing property and a target</xs:documentation>
+                </xs:annotation>
+
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Class: propertyQualifier  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <xs:complexType name="propertyQualifier">
+        <xs:annotation>
+            <xs:documentation>Additional information about the property and/or its association with the resource.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="value" type="lgCommon:text" minOccurs="0"/>
+            <xs:element name="propertyQualifierName" type="propertyQualifierName">
+                <xs:annotation>
+                    <xs:documentation>The local name of the qualifier. Must match a local id of a supportedPropertyQualifier in the corresponding mappings section.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="propertyQualifierType" type="propertyQualifierType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The local name of the qualifier type. Must match a local id of a supportedPropertyQualifierType in the corresponding mappings section.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Class: property  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <xs:element name="property" type="properties">
+        <xs:annotation>
+            <xs:documentation>A list of properties that match the particular criterion.</xs:documentation>
+            <xs:appinfo>id: "property"/{propertyid} or "property"/{propertyName}</xs:appinfo>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="property">
+        <xs:annotation>
+            <xs:documentation>A description, definition, annotation or other attribute that serves to further define or identify an resource.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="versionable">
+                <xs:sequence>
+                    <xs:element name="source" type="source" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>The local identifiers of the source(s) of this property. Must match a local id of a supportedSource in the corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="usageContext" type="context" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>The local identifiers of the context(s) in which this property applies. Must match a local id of a supportedContext in the corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="propertyQualifier" type="propertyQualifier" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>A qualifier that provides additional information about this particular property and/or its association with the resource.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="value" type="lgCommon:text" minOccurs="0" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>The value of the property associated with this particular resource. Note that "text" may be any type, including a URI, html fragment, etc.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="propertyName" type="propertyName">
+                        <xs:annotation>
+                            <xs:documentation>The local identifier that defines the meaning of this particular property entry. Must match a local id of a supportedProperty in the corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="propertyId" type="lgCommon:propertyId" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>A unique identifier of this particular propert/resource/value instance.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="propertyType" type="propertyType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>The LexGrid model element that this property represents. As an example, the codingScheme "copyright" attribute could be represented by a property with a propertyType that mapped to lgCS:copyRight. Must match a local id of a supportedPropertyType in the
+                                corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="language" type="language" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>The local identifier of the language of the property value. Must match a local id of a supportedLanguage in the corresponding mappings section. If omitted, and language is applicable to this property, the defaultLanguage of the surrounding resource is
+                                used.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="propertyLink" type="propertyLinkInstance" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>A collection of links between this property and another.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element type="lgRESTBuiltin:resource" name="containingResource">
+                        <xs:annotation>
+                            <xs:documentation>The resource that contains this particular property</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!--================================================================
+              =  A collection of properties -                                                                                                =
+              ================================================================ -->
+    <xs:complexType name="propertiesLink">
+        <xs:annotation>
+            <xs:documentation>A hyperlink from the current node to a collection of properties</xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="lgRESTBuiltin:resource"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:element name="properties" type="properties">
+        <xs:annotation>
+            <xs:appinfo>id: "properties"[/{filter}]</xs:appinfo>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:complexType name="properties">
+        <xs:annotation>
+            <xs:documentation>A collection of properties.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="property" type="property" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>An entry in the property list.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- A note on the "text" datatype.  To be complete, we should really copy "text " into the REST services -->
+    <!--   and change the data type element to a linked data type.  This is probably more detail than is required -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!--================================================================
+                =  Continuation data type                                                                                    =
+                ================================================================ -->
+    <xs:complexType name="continuation">
+        <xs:annotation>
+            <xs:documentation>A continuation record - associated with REST directory type entries. When a directory is requested, the "maxToReturn" parameter can be set to "-1", which means unlimited, a positive integer which means return, no more than "n" and "0" which means optimize it as you
+                see</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="next" type="lgRESTBuiltin:resource" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>If more entries exist in a directory structure, this contains a link to the next block of records</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="prev" type="lgRESTBuiltin:resource" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>If a preceeding block of entries exist, this contains that link</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="numEntries" type="lgBuiltin:tsInteger" use="required">
+            <xs:annotation>
+                <xs:documentation>The number of entries returned in this block</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="isComplete" type="lgBuiltin:tsBoolean" use="required">
+            <xs:annotation>
+                <xs:documentation>True means that this directory contains all of the entries for the requested resource, false means that some are not prexent</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="isMore" type="lgBuiltin:tsBoolean" use="required">
+            <xs:annotation>
+                <xs:documentation>True means that there are more to come , false means you've seen it all.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+</xs:schema>
