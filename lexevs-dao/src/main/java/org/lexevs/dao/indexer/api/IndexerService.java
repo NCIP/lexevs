@@ -466,11 +466,12 @@ public class IndexerService {
     public void forceUnlockIndex(String indexName) throws RuntimeException {
         try {
             IndexReader reader = getLuceneIndexReader(indexName).getBaseIndexReader();
-            IndexReader.unlock(reader.directory());
+  //          IndexReader.unlock(reader.directory());
         } catch (RuntimeException e) {
             throw e;
-        } catch (IOException e) {
-            throw new RuntimeException("There was an error while trying to unlock the index " + e);
+           //TODO fix unlock functionality
+//        } catch (IOException e) {
+//            throw new RuntimeException("There was an error while trying to unlock the index " + e);
         }
     }
 
