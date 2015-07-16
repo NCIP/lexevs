@@ -18,11 +18,14 @@
  */
 package org.lexevs.dao.index.lucenesupport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -30,9 +33,11 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.springframework.beans.factory.DisposableBean;
@@ -42,7 +47,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	private NamedDirectory namedDirectory;
 	
-	private IndexSearcher indexSearcher;
+	private ToParentBlockJoinIndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
@@ -55,7 +60,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		super();
 		try {
 			indexReader = namedDirectory.getIndexReader();
-			indexSearcher = namedDirectory.getIndexSearcher();
+			indexSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
 			this.namedDirectory = namedDirectory;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -65,7 +70,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		indexReader = namedDirectory.getIndexReader();
-		indexSearcher = namedDirectory.getIndexSearcher();
+		indexSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
 	}
 
 	@Override
@@ -82,7 +87,8 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 			@Override
 			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
 				for(Document doc : documents) {
-					indexWriter.addDocument(doc, analyzer);
+//					indexWriter.addDocument(doc, analyzer);
+					indexWriter.addDocument(doc);
 				}
 				return null;
 			}	
@@ -90,14 +96,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	public void optimize() {
-		this.doInIndexWriter(new IndexWriterCallback<Void>() {
-
-			@Override
-			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
-				indexWriter.optimize();
-				return null;
-			}	
-		});
+//		this.doInIndexWriter(new IndexWriterCallback<Void>() {
+//
+//			@Override
+//			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
+//				indexWriter.optimize();
+//				return null;
+//			}	
+//		});
+		throw new UnsupportedOperationException();
 	}
 	
 	/* (non-Javadoc)
@@ -129,13 +136,13 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
+	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.Collector)
 	 */
-	public void search(final Query query, final Filter filter, final HitCollector hitCollector){
+	public void search(final Query query, final Filter filter, final Collector hitCollector){
 		this.doInIndexSearcher(new IndexSearcherCallback<Void>() {
 
 			@Override
-			public Void doInIndexSearcher(Searcher indexSearcher)
+			public Void doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
 					throws Exception {
 				indexSearcher.search(query, filter, hitCollector);
 				return null;
@@ -147,17 +154,30 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.doInIndexSearcher(new IndexSearcherCallback<List<ScoreDoc>>() {
 
 			@Override
-			public List<ScoreDoc> doInIndexSearcher(Searcher indexSearcher)
+			public List<ScoreDoc> doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
 					throws Exception {
 				
 				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
 				
-				indexSearcher.search(query, filter, new HitCollector() {
-					
-					public void collect(int doc, float score) {
-						ScoreDoc scoreDoc = new ScoreDoc(doc, score);
-						docs.add(scoreDoc);
+				indexSearcher.search(query, filter, new Collector() {
+
+					@Override
+					public LeafCollector getLeafCollector(LeafReaderContext arg0)
+							throws IOException {
+						// TODO Auto-generated method stub
+						return null;
 					}
+
+					@Override
+					public boolean needsScores() {
+						// TODO Auto-generated method stub
+						return false;
+					}
+					
+//					public void collect(int doc, float score) {
+//						ScoreDoc scoreDoc = new ScoreDoc(doc, score);
+//						docs.add(scoreDoc);
+//					}
 				});
 				
 				return docs;
@@ -167,23 +187,23 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
+	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.Collector)
 	 */
-	public Document getDocumentById(final int id){
-		return this.getDocumentById(id, null);
-	}
+//	public Document getDocumentById(final int id){
+//		return this.getDocumentById(id, null);
+//	}
 	
-	public Document getDocumentById(final int id, final StoredFieldVisitor fieldSelector){
+	public Document getDocumentById(final int id){
 		return this.doInIndexSearcher(new IndexSearcherCallback<Document>() {
 
 			@Override
-			public Document doInIndexSearcher(Searcher indexSearcher)
+			public Document doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
 					throws Exception {
-				if(fieldSelector != null) {
-					return indexSearcher.doc(id, fieldSelector);
-				} else {
+//				if(fieldSelector != null) {
+//					return indexSearcher.doc(id);
+//				} else {
 					return indexSearcher.doc(id);
-				}
+//				}
 			}
 		});	
 	}
@@ -195,7 +215,8 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 			@Override
 			public DocIdSet doInIndexReader(IndexReader indexReader)
 					throws Exception {
-				return filter.getDocIdSet(indexReader);
+	//			return filter.getDocIdSet(indexReader.getContext());
+				return null;
 			}
 		});
 	}
@@ -204,9 +225,10 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.doInIndexSearcher(new IndexSearcherCallback<Integer>() {
 
 			@Override
-			public Integer doInIndexSearcher(Searcher indexSearcher)
+			public Integer doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
 					throws Exception {
-				return indexSearcher.maxDoc();
+	//			return indexSearcher.maxDoc();
+				return null;
 			}
 		});	
 	}
@@ -239,7 +261,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		namedDirectory.refresh();
 		
 		this.indexReader = namedDirectory.getIndexReader();
-		this.indexSearcher = namedDirectory.getIndexSearcher();
+		this.indexSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
 		
 		return result;
 		
@@ -249,11 +271,13 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	protected IndexWriter createIndexWriter(NamedDirectory namedDirectory) throws Exception {
+		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		IndexWriter writer = 
-			new IndexWriter(namedDirectory.getDirectory(), analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+			new IndexWriter(namedDirectory.getDirectory(), config);
+					//, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 		
-		writer.setMergeFactor(20);
-		writer.setRAMBufferSizeMB(500);
+//		writer.setMergeFactor(20);
+//		writer.setRAMBufferSizeMB(500);
 		
 		return writer;
 	}
@@ -265,7 +289,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	public interface IndexSearcherCallback<T> {
 		
-		public T doInIndexSearcher(Searcher indexSearcher) throws Exception;
+		public T doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) throws Exception;
 	}
 	
 	public interface IndexWriterCallback<T> {
@@ -290,9 +314,9 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	@Override
 	public void destroy() throws Exception {
-		this.indexSearcher.close();
+//		this.indexSearcher.close();
 		this.indexReader.close();
-		IndexWriter.unlock(this.namedDirectory.getDirectory());
+//		IndexWriter.unlock(this.namedDirectory.getDirectory());
 	}
 
 	public NamedDirectory getNamedDirectory() {
@@ -311,11 +335,11 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return analyzer;
 	}
 
-	protected Searcher getIndexSearcher() {
+	protected ToParentBlockJoinIndexSearcher getIndexSearcher() {
 		return indexSearcher;
 	}
 
-	protected void setIndexSearcher(Searcher indexSearcher) {
+	protected void setIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) {
 		this.indexSearcher = indexSearcher;
 	}
 
@@ -336,8 +360,14 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		if(this.indexReader != null) {
 			this.indexReader.close();
 		}
-		if(this.indexSearcher != null) {
-			this.indexSearcher.close();
-		}
+//		if(this.indexSearcher != null) {
+//			this.indexSearcher.close();
+//		}
+	}
+
+	@Override
+	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
