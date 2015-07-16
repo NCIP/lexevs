@@ -33,41 +33,44 @@ import org.springframework.util.Assert;
 public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractFilteringLuceneIndexTemplateDao {
 
 	protected Filter getBoundaryDocFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-		if(CollectionUtils.isEmpty(codingSchemes)) {
-			return null;
-		}
-		
-		String key = getFilterMapKey(codingSchemes);
-		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
-			Filter[] filters = new Filter[codingSchemes.size()];
-			for(int i=0;i<codingSchemes.size();i++) {
-				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
-				
-				filters[i] = this.getBoundaryDocFilterForCodingScheme(
-						ref.getCodingSchemeURN(), 
-						ref.getCodingSchemeVersion());
-			}
-			
-			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
-			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, chainedFilter);
-		}
-		return this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
+//		if(CollectionUtils.isEmpty(codingSchemes)) {
+//			return null;
+//		}
+//		
+//		String key = getFilterMapKey(codingSchemes);
+//		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
+//			Filter[] filters = new Filter[codingSchemes.size()];
+//			for(int i=0;i<codingSchemes.size();i++) {
+//				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
+//				
+//				filters[i] = this.getBoundaryDocFilterForCodingScheme(
+//						ref.getCodingSchemeURN(), 
+//						ref.getCodingSchemeVersion());
+//			}
+//			
+//			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
+//			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, chainedFilter);
+//		}
+//		return this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
+		return null;
 	}
 	
 	protected Filter getBoundaryDocFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
 		
-		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
-		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
-			Filter filter1 = createBoundaryDocFilter();
-			
-			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter1));
-		}
+//		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
+//		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
+//			Filter filter1 = createBoundaryDocFilter();
+//			
+//			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter1));
+//		}
+//		
+//		Filter returnFilter = this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
+//		
+//		Assert.notNull(returnFilter);
+//
+//		return returnFilter;
+		return null;
 		
-		Filter returnFilter = this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
-		
-		Assert.notNull(returnFilter);
-
-		return returnFilter;
 	}
 	
 	protected Filter createBoundaryDocFilter() {
