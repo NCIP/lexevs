@@ -32,7 +32,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.IndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.springframework.beans.factory.DisposableBean;
@@ -42,7 +42,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	private NamedDirectory namedDirectory;
 	
-	private Searcher indexSearcher;
+	private IndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();

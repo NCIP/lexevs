@@ -131,7 +131,6 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
 //            logger.error(e);
 //            throw new RuntimeException("There was an error collecting the results to return " + e);
 //        }
-
 //        return temp;
         return null;
     }
@@ -185,6 +184,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
 //            return hits.length();
 //        }
     	return -1;
+
     }
 
     public String[] searchableFields() {

@@ -73,6 +73,7 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
 //        } catch (IOException e) {
 //            throw new RuntimeException(e.getMessage());
 //        }   
+
     }
 
     private Document[] searchSkipLowScoreing(Query query, Filter filter, int maxToReturn)
