@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.index.lucene.v2013.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,9 +26,11 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.ScoreDocComparator;
@@ -93,12 +96,24 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	
 			final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
 					
-			HitCollector collector = new HitCollector(){
-
-				@Override
+			Collector collector = new Collector(){
+				
 				public void collect(int doc, float score) {
 					ScoreDoc scoreDoc = new ScoreDoc(doc, score);
 					docs.add(scoreDoc);
+				}
+
+				@Override
+				public LeafCollector getLeafCollector(LeafReaderContext arg0)
+						throws IOException {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public boolean needsScores() {
+					// TODO Auto-generated method stub
+					return false;
 				}
 				
 			};
