@@ -28,7 +28,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
+//import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -78,17 +79,17 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 				Set<String> indexSet = new HashSet<String>();
 				
 				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
-				TermEnum termEnum = indexReader.terms(term);
+//				TermsEnum termEnum = indexReader.
 				
 				boolean hasNext = true;
-				while(hasNext && 
-						termEnum.term() != null && 
-						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
-					String key = termEnum.term().text();
-					indexSet.add(key);
-					
-					hasNext = termEnum.next();
-				}
+//				while(hasNext && 
+//						termEnum.term() != null && 
+//						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
+//					String key = termEnum.term().text();
+//					indexSet.add(key);
+//					
+//					hasNext = termEnum.next();
+//				}
 				
 				Set<String> foundIndexSet = new HashSet<String>(indexSet);
 				foundIndexSet.removeAll(expectedMap.keySet());
@@ -161,14 +162,14 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 								createIndex(ref);
 				}
 				
-				if(! indexReader.isOptimized()) {
-					getLogger().warn("Index is not optimized, optimizing now...");
-					
-					indexRegistry.getCommonLuceneIndexTemplate().optimize();
-					getLogger().warn("Optimizing Complete.");
-				} else {
-					getLogger().warn("Index is optimized.");
-				}
+//				if(! indexReader.isOptimized()) {
+//					getLogger().warn("Index is not optimized, optimizing now...");
+//					
+//					indexRegistry.getCommonLuceneIndexTemplate().optimize();
+//					getLogger().warn("Optimizing Complete.");
+//				} else {
+//					getLogger().warn("Index is optimized.");
+//				}
 				
 				return null;
 			}
@@ -208,17 +209,17 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 				Set<String> indexSet = new HashSet<String>();
 				
 				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
-				TermEnum termEnum = indexReader.terms(term);
+//				TermEnum termEnum = indexReader.terms(term);
 				
 				boolean hasNext = true;
-				while(hasNext && 
-						termEnum.term() != null && 
-						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
-					String key = termEnum.term().text();
-					indexSet.add(key);
-					
-					hasNext = termEnum.next();
-				}
+//				while(hasNext && 
+//						termEnum.term() != null && 
+//						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
+//					String key = termEnum.term().text();
+//					indexSet.add(key);
+//					
+//					hasNext = termEnum.next();
+//				}
 				
 				Set<String> foundIndexSet = new HashSet<String>(indexSet);
 				foundIndexSet.removeAll(expectedMap.keySet());
@@ -288,14 +289,14 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 								createIndex(ref);
 				}
 				
-				if(! indexReader.isOptimized()) {
-					getLogger().warn("Search Index is not optimized, optimizing now...");
-					
-					searchTemplate.optimize();
-					getLogger().warn("Optimizing Complete.");
-				} else {
-					getLogger().warn("Search Index is optimized.");
-				}
+//				if(! indexReader.isOptimized()) {
+//					getLogger().warn("Search Index is not optimized, optimizing now...");
+//					
+//					searchTemplate.optimize();
+//					getLogger().warn("Optimizing Complete.");
+//				} else {
+//					getLogger().warn("Search Index is optimized.");
+//				}
 				
 				return null;
 			}
