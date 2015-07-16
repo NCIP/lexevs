@@ -29,12 +29,13 @@ import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexReader;
-import org.apache.lucene.search.ParallelMultiReader;
+//import org.apache.lucene.search.Hits;
+//import org.apache.lucene.search.IndexReader;
+//import org.apache.lucene.search.ParallelMultiReader;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Similarity;
+//import org.apache.lucene.search.Similarity;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.indexer.api.SearchServiceInterface;
 
 /**
@@ -51,7 +52,8 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     private final Logger logger = Logger.getLogger("Indexer.Index");
 
     private LuceneIndexReader[] indexes_;
-    private MultiReader multiSearcher;
+    private MultiReader multiReader;
+    private  ToParentBlockJoinIndexSearcher multiSearcher;
     private IndexReader[] searchers;
     private LuceneHits[] luceneHits = null;
     private TopDocs hits = null;
@@ -67,11 +69,11 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
         }
 
         try {
-            if (parallel) {
-                multiSearcher = new MultiReader(searchers, new ThreadPoolExecutor());
-            } else {
-                multiSearcher = new MultiReader(searchers);
-            }
+//            if (parallel) {
+//                multiSearcher = new MultiReader(searchers, new ThreadPoolExecutor());
+//            } else {
+                multiReader = new MultiReader(searchers);
+//            }
         } catch (IOException e) {
             logger.error(e);
             throw new RuntimeException("There was an error opening the multi-index searcher " + e);
@@ -80,18 +82,18 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     }
 
     public void reloadSearchers() throws RuntimeException {
-        searchers = new IndexReader[indexes_.length];
-        try {
-            for (int i = 0; i < indexes_.length; i++) {
-                indexes_[i].reopen();
-                searchers[i] = indexes_[i].getBaseIndexReader();
-            }
-
-            multiSearcher = new MultiReader(searchers);
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
-        }
+//        searchers = new IndexReader[indexes_.length];
+//        try {
+//            for (int i = 0; i < indexes_.length; i++) {
+//                indexes_[i].reopen();
+//                searchers[i] = indexes_[i].getBaseIndexReader();
+//            }
+//
+//            multiSearcher = new MultiReader(searchers);
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
+//        }
     }
 
     public void search(Query query, Filter filter, Collector hitCollector) throws RuntimeException {
@@ -100,85 +102,89 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
 
     private Document[] searchSkipLowScoreing(Query query, Filter filter, int maxToReturn)
             throws RuntimeException {
-        for (int i = 0; i < indexes_.length; i++) {
-            if (!indexes_[i].upToDate()) {
-                reloadSearchers();
-                break; // This will keep me from getting hung if someone is
-                // writing rapidly to the index
-            }
-        }
+//        for (int i = 0; i < indexes_.length; i++) {
+//            if (!indexes_[i].upToDate()) {
+//                reloadSearchers();
+//                break; // This will keep me from getting hung if someone is
+//                // writing rapidly to the index
+//            }
+//        }
+//
+//        readSoFar = 0;
+//
+//        try {
+//            hits = multiSearcher.search(query, filter);
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error searching the indexes " + e);
+//        }
+//
+//        int stop = hits.length() >= maxToReturn ? maxToReturn : hits.length();
+        Document[] temp;
+//        readSoFar = stop;
+//        lastStartPoint = 0;
+//        try {
+//            for (int i = 0; i < stop; i++) {
+//                temp[i] = hits.doc(i);
+//            }
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error collecting the results to return " + e);
+//        }
 
-        readSoFar = 0;
-
-        try {
-            hits = multiSearcher.search(query, filter);
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error searching the indexes " + e);
-        }
-
-        int stop = hits.length() >= maxToReturn ? maxToReturn : hits.length();
-        Document[] temp = new Document[stop];
-        readSoFar = stop;
-        lastStartPoint = 0;
-        try {
-            for (int i = 0; i < stop; i++) {
-                temp[i] = hits.doc(i);
-            }
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error collecting the results to return " + e);
-        }
-
-        return temp;
+//        return temp;
+        return null;
     }
 
     public Document[] getNextSearchResults(int howMany) throws RuntimeException {
-        int hitLength = 0;
-        if (luceneHits != null) {
-            hitLength = luceneHits.length;
-        } else {
-            hitLength = hits.length();
-        }
-
-        int stop = hitLength >= readSoFar + howMany ? readSoFar + howMany : hitLength;
-        Document[] temp = new Document[stop - readSoFar];
-        lastStartPoint = readSoFar;
-
-        try {
-            int j = 0;
-            if (luceneHits != null) {
-                for (int i = readSoFar; i < stop; i++) {
-                    temp[j++] = multiSearcher.doc(luceneHits[i].doc_);
-                }
-            } else {
-                for (int i = readSoFar; i < stop; i++) {
-                    temp[j++] = hits.doc(i);
-                }
-            }
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error collecting the results to return " + e);
-        }
-
-        readSoFar += stop - readSoFar;
-        return temp;
+//        int hitLength = 0;
+//        if (luceneHits != null) {
+//            hitLength = luceneHits.length;
+//        } else {
+//            hitLength = hits.length();
+//        }
+//
+//        int stop = hitLength >= readSoFar + howMany ? readSoFar + howMany : hitLength;
+        Document[] temp;
+//        lastStartPoint = readSoFar;
+//
+//        try {
+//            int j = 0;
+//            if (luceneHits != null) {
+//                for (int i = readSoFar; i < stop; i++) {
+//                    temp[j++] = multiSearcher.doc(luceneHits[i].doc_);
+//                }
+//            } else {
+//                for (int i = readSoFar; i < stop; i++) {
+//                    temp[j++] = hits.doc(i);
+//                }
+//            }
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error collecting the results to return " + e);
+//        }
+//
+//        readSoFar += stop - readSoFar;
+//        return temp;
+        return null;
     }
 
     public boolean hasMoreHits() {
-        if (this.luceneHits != null) {
-            return readSoFar < luceneHits.length;
-        } else {
-            return readSoFar < this.hits.length();
-        }
+//        if (this.luceneHits != null) {
+//            return readSoFar < luceneHits.length;
+//        } else {
+//            return readSoFar < this.hits.length();
+//        }
+    return false;
     }
 
     public int getHitTotal() {
-        if (this.luceneHits != null) {
-            return luceneHits.length;
-        } else {
-            return hits.length();
-        }
+//        if (this.luceneHits != null) {
+//            return luceneHits.length;
+//        } else {
+//            return hits.length();
+//        }
+    	return -1;
     }
 
     public String[] searchableFields() {
@@ -257,10 +263,10 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     }
 
     public void close() throws RuntimeException {
-        try {
-            multiSearcher.close();
-        } catch (IOException e) {
-            throw new RuntimeException("There was a problem closing the searcher" + e);
-        }
+//        try {
+//            multiSearcher.close();
+//        } catch (IOException e) {
+//            throw new RuntimeException("There was a problem closing the searcher" + e);
+//        }
     }
 }

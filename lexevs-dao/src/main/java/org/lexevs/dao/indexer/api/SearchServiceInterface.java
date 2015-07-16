@@ -23,7 +23,7 @@ import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Similarity;
+//import org.apache.lucene.search.Similarity;
 
 /**
  * This is the interface that you use to search an index.
@@ -110,7 +110,7 @@ public interface SearchServiceInterface {
      * 
      * @throws RuntimeException
      */
-    public Explanation explain(Query query, int doc) throws RuntimeException;
+//    public Explanation explain(Query query, int doc) throws RuntimeException;
 
     /**
      * Sets the similarity.
@@ -119,14 +119,14 @@ public interface SearchServiceInterface {
      * 
      * @throws RuntimeException
      */
-    public void setSimilarity(Similarity similarity) throws RuntimeException;
+//    public void setSimilarity(Similarity similarity) throws RuntimeException;
 
     /**
      * Gets the similarity.
      * 
      * @return the similarity
      */
-    public Similarity getSimilarity();
+//    public Similarity getSimilarity();
 
     /**
      * Close.
