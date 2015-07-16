@@ -33,15 +33,15 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanFilter;
+import org.apache.lucene.queries.BooleanFilter;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.FilterClause;
+import org.apache.lucene.queries.FilterClause;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.queries.TermsFilter;
 import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -254,7 +254,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 					LuceneLoaderCode.createCodingSchemeUriVersionKey(
 							codingSchemeUri, codingSchemeVersion));
 			TermsFilter filter = new TermsFilter();
-			filter.addTerm(term);
+//			filter..addTerm(term);
 			this.cachedFilters.put(key, new CachingWrapperFilter(filter));
 		}
 		return this.cachedFilters.get(key);
