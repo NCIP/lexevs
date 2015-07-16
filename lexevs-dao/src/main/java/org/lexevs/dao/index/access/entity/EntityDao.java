@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
@@ -51,7 +51,7 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	public Document getDocumentById(String codingSchemeUri, String version, int id);
 	
 	public Document getDocumentById(String codingSchemeUri, String version,
-			int id, FieldSelector fieldSelector);
+			int id, StoredFieldVisitor fieldSelector);
 
 	public Query getMatchAllDocsQuery(
 			String codingSchemeUri, String version);

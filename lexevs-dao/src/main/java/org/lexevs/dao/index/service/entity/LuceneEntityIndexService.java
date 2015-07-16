@@ -25,7 +25,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
@@ -133,13 +133,13 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	@Override
 	public Document getDocumentById(
 			String codingSchemeUri,
-			String codingSchemeVersion, int id, FieldSelector fieldSelector) {
+			String codingSchemeVersion, int id, StoredFieldVisitor storedFieldVisitor) {
 		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).
 			getDocumentById(
 					codingSchemeUri,
 					codingSchemeVersion, 
 					id, 
-					fieldSelector);
+					storedFieldVisitor);
 	}
 
 	@Override

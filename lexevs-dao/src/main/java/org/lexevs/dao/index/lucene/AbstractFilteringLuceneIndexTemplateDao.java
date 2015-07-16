@@ -31,7 +31,7 @@ import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.queries.TermsFilter;
 import org.apache.lucene.util.DocIdBitSet;
 import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;

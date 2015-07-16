@@ -19,13 +19,14 @@
 package org.lexevs.dao.indexer.lucene.analyzers;
 
 import java.io.Reader;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.lexevs.dao.indexer.lucene.filters.CharRemovingFilter;
 import org.lexevs.dao.indexer.lucene.tokenizers.CustomWhiteSpaceTokenizer;
@@ -61,7 +62,7 @@ public class WhiteSpaceLowerCaseAnalyzer extends Analyzer {
      */
     public WhiteSpaceLowerCaseAnalyzer() {
         super();
-        stopTable = StopFilter.makeStopSet(StandardAnalyzer.STOP_WORDS);
+        stopTable = StopFilter.makeStopSet((List<?>) StandardAnalyzer.STOP_WORDS_SET);
         charRemovalTable = CharRemovingFilter.makeCharRemovalSet(getDefaultCharRemovalSet());
         charWhiteSpaceTable = CustomWhiteSpaceTokenizer.makeCharWhiteSpaceSet(getDefaultWhiteSpaceSet());
     }
@@ -164,22 +165,23 @@ public class WhiteSpaceLowerCaseAnalyzer extends Analyzer {
     /*
      * Create a token stream for this analyzer.
      */
-    public final TokenStream tokenStream(String fieldname, final Reader reader) {
-        TokenStream result;
-        if (charWhiteSpaceTable == null) {
-            result = new WhitespaceTokenizer(reader);
-        } else {
-            result = new CustomWhiteSpaceTokenizer(reader, charWhiteSpaceTable);
-        }
-        result = new LowerCaseFilter(result);
-        if (charRemovalTable != null) {
-            result = new CharRemovingFilter(result, charRemovalTable);
-        }
-        if (stopTable != null) {
-            result = new StopFilter(result, stopTable);
-        }
-        return result;
-    }
+      // CANNOT OVERRIDE FINAL METHOD
+//    public final TokenStream tokenStream(String fieldname, final Reader reader) {
+//        TokenStream result;
+//        if (charWhiteSpaceTable == null) {
+//            result = new WhitespaceTokenizer(reader);
+//        } else {
+//            result = new CustomWhiteSpaceTokenizer(reader, charWhiteSpaceTable);
+//        }
+//        result = new LowerCaseFilter(result);
+//        if (charRemovalTable != null) {
+//            result = new CharRemovingFilter(result, charRemovalTable);
+//        }
+//        if (stopTable != null) {
+//            result = new StopFilter(result, stopTable);
+//        }
+//        return result;
+//    }
 
     public Set getCurrentCharRemovalTable() {
         return this.charRemovalTable;
@@ -192,4 +194,10 @@ public class WhiteSpaceLowerCaseAnalyzer extends Analyzer {
     public Set getCurrentStopWordTable() {
         return this.stopTable;
     }
+
+	@Override
+	protected TokenStreamComponents createComponents(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

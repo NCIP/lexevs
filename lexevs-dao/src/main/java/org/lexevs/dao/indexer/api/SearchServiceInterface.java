@@ -21,7 +21,7 @@ package org.lexevs.dao.indexer.api;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
 
@@ -45,11 +45,11 @@ public interface SearchServiceInterface {
      * 
      * @param query the query
      * @param filter the filter
-     * @param hitCollector the hit collector
+     * @param Collector the collector
      * 
      * @throws RuntimeException
      */
-    public void search(Query query, Filter filter, HitCollector hitCollector) throws RuntimeException;
+    public void search(Query query, Filter filter, Collector collector) throws RuntimeException;
 
     /**
      * Search.

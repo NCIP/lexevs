@@ -59,4 +59,10 @@ public final class EncoderFilter extends TokenFilter {
             throw new IOException("There was a problem with the encoder - " + e);
         }
     }
+
+	@Override
+	public boolean incrementToken() throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

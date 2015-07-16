@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Comparator;
 
 import org.apache.lucene.search.DocIdSetIterator;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.ScoreDoc;
 
 /**
@@ -30,7 +30,7 @@ import org.apache.lucene.search.ScoreDoc;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public abstract class AbstractBestScoreOfEntityHitCollector<T> extends HitCollector {
+public abstract class AbstractBestScoreOfEntityHitCollector<T> implements Collector {
     
     /** The boundry doc iterator. */
     private DocIdSetIterator boundryDocIterator;
@@ -80,12 +80,12 @@ public abstract class AbstractBestScoreOfEntityHitCollector<T> extends HitCollec
      */
     private void setNextBoundaryDocPosition(int currentHitDoc){
         try {
-            if(boundryDocIterator.doc() == 0){
-                boundryDocIterator.next();
+            if(boundryDocIterator.docID() == 0){
+                boundryDocIterator.nextDoc();
             }
-            while(boundryDocIterator.doc() <= currentHitDoc){
-                startOfBoundary = boundryDocIterator.doc();
-                if(!boundryDocIterator.next()){
+            while(boundryDocIterator.docID() <= currentHitDoc){
+                startOfBoundary = boundryDocIterator.docID();
+                if(boundryDocIterator.nextDoc() == DocIdSetIterator.NO_MORE_DOCS){
                     atEndOfDocs = true;
                     break;
                 }
@@ -103,13 +103,12 @@ public abstract class AbstractBestScoreOfEntityHitCollector<T> extends HitCollec
      * @return true, if successful
      */
     private boolean inGroup(int docId){
-        return  docId < boundryDocIterator.doc() || atEndOfDocs;
+        return  docId < boundryDocIterator.docID() || atEndOfDocs;
     }
   
     /* (non-Javadoc)
      * @see org.apache.lucene.search.HitCollector#collect(int, float)
      */
-    @Override
     public void collect(int docId, float score) {  
         if(!initialized){
             setNextBoundaryDocPosition(docId);
@@ -147,7 +146,7 @@ public abstract class AbstractBestScoreOfEntityHitCollector<T> extends HitCollec
         if(this.atEndOfDocs){
             return this.maxDoc + 1;
         } else {
-            return this.boundryDocIterator.doc();
+            return this.boundryDocIterator.docID();
         }
     }
     

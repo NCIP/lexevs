@@ -23,13 +23,13 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
@@ -173,7 +173,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.getDocumentById(id, null);
 	}
 	
-	public Document getDocumentById(final int id, final FieldSelector fieldSelector){
+	public Document getDocumentById(final int id, final StoredFieldVisitor fieldSelector){
 		return this.doInIndexSearcher(new IndexSearcherCallback<Document>() {
 
 			@Override

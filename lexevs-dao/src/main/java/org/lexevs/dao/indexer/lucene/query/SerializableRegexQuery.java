@@ -19,7 +19,7 @@
 package org.lexevs.dao.indexer.lucene.query;
 
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.regex.RegexQuery;
+import org.apache.lucene.search.regex.RegexQuery;  //org.apache.lucene.search.RegexpQuery; replace with this one?
 
 /**
  * The Class SerializableRegexQuery.

@@ -66,15 +66,15 @@ public class HitCollectorMerger {
 
            while(scoreDocsItr.hasNext()){
                int firstMatchingDoc = scoreDocsItr.next().doc;
-               while(boundryDocIterator.doc() < firstMatchingDoc){
-                   start = boundryDocIterator.doc();
-                   atEnd = boundryDocIterator.next();    
+               while(boundryDocIterator.docID() < firstMatchingDoc){
+                   start = boundryDocIterator.docID();
+                   atEnd = boundryDocIterator.nextDoc() == DocIdSetIterator.NO_MORE_DOCS;    
                }
                
                if(atEnd){
                    end = maxDocs;
                } else {
-                   end = boundryDocIterator.doc();
+                   end = boundryDocIterator.docID();
                }
                
                ScoreDoc combinedDoc = getCombinedScoreDoc(start, end);

@@ -22,7 +22,7 @@ import java.io.Reader;
 import java.util.HashSet;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.CharTokenizer;
+import org.apache.lucene.analysis.util.CharTokenizer;
 import org.apache.lucene.analysis.TokenStream;
 
 /**
@@ -44,19 +44,20 @@ public class FieldSkippingAnalyzer extends Analyzer {
         }
     }
 
-    public TokenStream tokenStream(String field, final Reader reader) {
-        // do not tokenize fields in the skip set.
-        if (fieldsToSkip_.contains(field)) {
-            return new CharTokenizer(reader) {
-                protected boolean isTokenChar(char c) {
-                    return true;
-                }
-            };
-        } else {
-            // use supplied analyzer
-            return suppliedAnalyzer_.tokenStream(field, reader);
-        }
-    }
+    // CANNOT OVERRIDE FINAL METHOD
+//    public TokenStream tokenStream(String field, final Reader reader) {
+//        // do not tokenize fields in the skip set.
+//        if (fieldsToSkip_.contains(field)) {
+//            return new CharTokenizer(reader) {
+//                protected boolean isTokenChar(char c) {
+//                    return true;
+//                }
+//            };
+//        } else {
+//            // use supplied analyzer
+//            return suppliedAnalyzer_.tokenStream(field, reader);
+//        }
+//    }
 
     public Analyzer getSuppliedAnalyzer() {
         return this.suppliedAnalyzer_;
@@ -65,5 +66,11 @@ public class FieldSkippingAnalyzer extends Analyzer {
     public void setSuppliedAnalyzer(Analyzer suppliedAnalyzer) {
         this.suppliedAnalyzer_ = suppliedAnalyzer;
     }
+
+	@Override
+	protected TokenStreamComponents createComponents(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

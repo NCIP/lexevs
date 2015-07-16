@@ -108,4 +108,10 @@ public final class NormFilter extends TokenFilter {
         // pull one off the buffer and return it.
         return (Token) tokenBuffer_.remove(0);
     }
+
+	@Override
+	public boolean incrementToken() throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

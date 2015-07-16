@@ -24,7 +24,7 @@ import java.util.UUID;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;

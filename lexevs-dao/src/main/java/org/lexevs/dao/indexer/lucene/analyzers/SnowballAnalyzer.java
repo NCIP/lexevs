@@ -95,10 +95,11 @@ public class SnowballAnalyzer extends Analyzer {
     /*
      * Create a token stream for this analyzer.
      */
-    public final TokenStream tokenStream(String fieldname, final Reader reader) {
-        TokenStream result = wslc.tokenStream(fieldname, reader);
-        return result = new SnowballFilter(snowballName_, result, keepOrigional_);
-    }
+ // CANNOT OVERRIDE FINAL METHOD
+//    public final TokenStream tokenStream(String fieldname, final Reader reader) {
+//        TokenStream result = wslc.tokenStream(fieldname, reader);
+//        return result = new SnowballFilter(snowballName_, result, keepOrigional_);
+//    }
 
     /**
      * This method should not be part of the public API - but design
@@ -115,4 +116,10 @@ public class SnowballAnalyzer extends Analyzer {
     public void setWhiteSpaceLowerCaseAnalyzer(WhiteSpaceLowerCaseAnalyzer whiteSpaceLowerCaseAnalyzer) {
         this.wslc = whiteSpaceLowerCaseAnalyzer;
     }
+
+	@Override
+	protected TokenStreamComponents createComponents(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

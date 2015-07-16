@@ -40,9 +40,9 @@ public class DefaultLuceneDirectoryCreator implements LuceneDirectoryCreator{
 		try {
 			
 			if(SystemUtils.IS_OS_WINDOWS){
-				directory = FSDirectory.getDirectory(baseDirectory);
+				directory = FSDirectory.open(baseDirectory.toPath()); //getDirectory(baseDirectory);
 			} else {
-				directory = NIOFSDirectory.getDirectory(baseDirectory);
+				directory = NIOFSDirectory.open(baseDirectory.toPath()); //getDirectory(baseDirectory);
 			}
 
 		} catch (IOException e) {

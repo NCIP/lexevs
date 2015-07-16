@@ -18,9 +18,12 @@
  */
 package org.lexevs.dao.indexer.lucene.hitcollector;
 
+import java.io.IOException;
 import java.util.BitSet;
 
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.DocIdSetIterator;
+import org.apache.lucene.search.LeafCollector;
 
 /**
  * The Class BestScoreOfEntityHitCollector.
@@ -47,5 +50,18 @@ public class BitSetBestScoreOfEntityHitCollector extends AbstractBestScoreOfEnti
     @Override
     protected BitSet initializeResults() {
         return new BitSet();
-    }   
+    }
+
+	@Override
+	public LeafCollector getLeafCollector(LeafReaderContext arg0)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean needsScores() {
+		// TODO Auto-generated method stub
+		return false;
+	}   
 }

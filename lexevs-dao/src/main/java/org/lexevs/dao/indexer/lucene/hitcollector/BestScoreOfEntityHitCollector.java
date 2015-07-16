@@ -18,10 +18,13 @@
  */
 package org.lexevs.dao.indexer.lucene.hitcollector;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.DocIdSetIterator;
+import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.ScoreDoc;
 
 /**
@@ -45,5 +48,18 @@ public class BestScoreOfEntityHitCollector extends AbstractBestScoreOfEntityHitC
     @Override
     protected List<ScoreDoc> initializeResults() {
         return new ArrayList<ScoreDoc>();
-    }   
+    }
+
+	@Override
+	public LeafCollector getLeafCollector(LeafReaderContext arg0)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean needsScores() {
+		// TODO Auto-generated method stub
+		return false;
+	}   
 }
