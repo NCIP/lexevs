@@ -27,7 +27,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -64,9 +64,9 @@ public class LuceneIndexSearcher implements SearchServiceInterface {
         searcher_ = new IndexSearcher(index_.getBaseIndexReader());
     }
    
-    public void search(Query query, Filter filter, HitCollector hitCollector) throws RuntimeException{
+    public void search(Query query, Filter filter, Collector collector) throws RuntimeException{
         try {
-            searcher_.search(query, filter, hitCollector);
+            searcher_.search(query, filter, collector);
         } catch (BooleanQuery.TooManyClauses e) {
             throw new RuntimeException("The specified query is too general and too many results have been returned -- please narrow your query.");
         } catch (IOException e) {

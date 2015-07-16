@@ -18,11 +18,13 @@
  */
 package org.lexevs.dao.index.lucenesupport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -30,6 +32,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
@@ -129,15 +132,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
+	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.Collector)
 	 */
-	public void search(final Query query, final Filter filter, final HitCollector hitCollector){
+	public void search(final Query query, final Filter filter, final Collector collector){
 		this.doInIndexSearcher(new IndexSearcherCallback<Void>() {
 
 			@Override
 			public Void doInIndexSearcher(Searcher indexSearcher)
 					throws Exception {
-				indexSearcher.search(query, filter, hitCollector);
+				indexSearcher.search(query, filter, collector);
 				return null;
 			}
 		});	
@@ -152,11 +155,24 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 				
 				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
 				
-				indexSearcher.search(query, filter, new HitCollector() {
+				indexSearcher.search(query, filter, new Collector() {
 					
 					public void collect(int doc, float score) {
 						ScoreDoc scoreDoc = new ScoreDoc(doc, score);
 						docs.add(scoreDoc);
+					}
+
+					@Override
+					public LeafCollector getLeafCollector(LeafReaderContext arg0)
+							throws IOException {
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					public boolean needsScores() {
+						// TODO Auto-generated method stub
+						return false;
 					}
 				});
 				
@@ -167,7 +183,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
+	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.Collector)
 	 */
 	public Document getDocumentById(final int id){
 		return this.getDocumentById(id, null);
