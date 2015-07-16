@@ -117,7 +117,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
             throw new RuntimeException("There was an error searching the indexes " + e);
         }
 
-        int stop = hits.length() >= maxToReturn ? maxToReturn : hits.length();
+        int stop = hits.totalHits >= maxToReturn ? maxToReturn : hits.totalHits;
         Document[] temp = new Document[stop];
         readSoFar = stop;
         lastStartPoint = 0;
@@ -138,7 +138,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
         if (luceneHits != null) {
             hitLength = luceneHits.length;
         } else {
-            hitLength = hits.length();
+            hitLength = hits.totalHits;
         }
 
         int stop = hitLength >= readSoFar + howMany ? readSoFar + howMany : hitLength;
@@ -169,7 +169,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
         if (this.luceneHits != null) {
             return readSoFar < luceneHits.length;
         } else {
-            return readSoFar < this.hits.length();
+            return readSoFar < this.hits.totalHits;
         }
     }
 
@@ -177,7 +177,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
         if (this.luceneHits != null) {
             return luceneHits.length;
         } else {
-            return hits.length();
+            return hits.totalHits;
         }
     }
 
