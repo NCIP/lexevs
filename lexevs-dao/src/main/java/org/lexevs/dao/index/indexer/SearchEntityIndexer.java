@@ -2,7 +2,9 @@ package org.lexevs.dao.index.indexer;
 
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
@@ -10,11 +12,9 @@ import org.LexGrid.concepts.Presentation;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.KeywordTokenizer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
@@ -157,24 +157,33 @@ public class SearchEntityIndexer implements EntityIndexer {
 
 	@Override
 	public Analyzer getAnalyzer() {
+		
+		 Map<String,Analyzer> analyzerPerField = new HashMap<String,Analyzer>();
+		 analyzerPerField.put("code", new KeywordAnalyzer());
+		 analyzerPerField.put("namespace", new KeywordAnalyzer());
+		 analyzerPerField.put("exactDescription", new LowerCaseKeywordAnalyzer());
 		PerFieldAnalyzerWrapper analyzer =
 		new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet));
+                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet),analyzerPerField);
 		
-		analyzer.addAnalyzer("code", new KeywordAnalyzer());
-		analyzer.addAnalyzer("namespace", new KeywordAnalyzer());
-		analyzer.addAnalyzer("exactDescription", new LowerCaseKeywordAnalyzer());
 		
 		return analyzer;
 	}
 	
 	private class LowerCaseKeywordAnalyzer extends Analyzer {
 
+//		@Override
+//		public TokenStream tokenStream(String fieldName, Reader reader) {		
+//			TokenStream tokenStream = new KeywordTokenizer(reader);
+//			
+//			return new LowerCaseFilter(tokenStream);
+//		}
+		//TODO. Revise for updated Analyzer. Probably going to need this.
+
 		@Override
-		public TokenStream tokenStream(String fieldName, Reader reader) {		
-			TokenStream tokenStream = new KeywordTokenizer(reader);
-			
-			return new LowerCaseFilter(tokenStream);
+		protected TokenStreamComponents createComponents(String arg0) {
+			// TODO Auto-generated method stub
+			return null;
 		}			
 	}
 
