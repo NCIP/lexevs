@@ -24,8 +24,9 @@ import java.util.List;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.MultiReader;
-import org.apache.lucene.search.MultiSearcher;
-import org.apache.lucene.search.Searchable;
+import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
+//import org.apache.lucene.search.MultiSearcher;
+//import org.apache.lucene.search.Searchable;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 
 public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
@@ -47,13 +48,19 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 		}
 	}
 
-	protected MultiSearcher createIndexSearcher(List<NamedDirectory> namedDirectories) throws Exception {
-		List<Searchable> searchables = new ArrayList<Searchable>();
+	private ToParentBlockJoinIndexSearcher createIndexSearcher(
+			List<NamedDirectory> namedDirectories2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	protected MultiReader createReader(IndexReader[] namedDirectories) throws Exception {
+//		List<Searchable> searchables = new ArrayList<Searchable>();
 		
-		for(NamedDirectory dir : namedDirectories) {
-			searchables.add(dir.getIndexSearcher());
-		}
-		return new MultiSearcher(searchables.toArray(new Searchable[searchables.size()]));
+//		for(NamedDirectory dir : namedDirectories) {
+//			searchables.add(dir.getIndexSearcher());
+//		}
+		return new MultiReader(namedDirectories);
 	}
 	
 	protected MultiReader createIndexReader(List<NamedDirectory> namedDirectories) throws Exception {
@@ -72,9 +79,9 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 			IndexWriter writer = 
 				createIndexWriter(namedDirectory);
 			
-			if(! namedDirectory.getIndexReader().isOptimized()){
-				writer.optimize();
-			}
+//			if(! namedDirectory.getIndexReader().isOptimized()){
+//				writer.optimize();
+//			}
 			
 			namedDirectory.refresh();
 			
