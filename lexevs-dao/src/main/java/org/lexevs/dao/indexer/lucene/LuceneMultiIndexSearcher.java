@@ -20,18 +20,21 @@ package org.lexevs.dao.indexer.lucene;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MultiSearcher;
-import org.apache.lucene.search.ParallelMultiSearcher;
+import org.apache.lucene.search.IndexReader;
+import org.apache.lucene.search.ParallelMultiReader;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Similarity;
+import org.apache.lucene.search.TopDocs;
 import org.lexevs.dao.indexer.api.SearchServiceInterface;
 
 /**
@@ -48,26 +51,26 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     private final Logger logger = Logger.getLogger("Indexer.Index");
 
     private LuceneIndexReader[] indexes_;
-    private MultiSearcher multiSearcher;
-    private IndexSearcher[] searchers;
+    private MultiReader multiSearcher;
+    private IndexReader[] searchers;
     private LuceneHits[] luceneHits = null;
-    private Hits hits = null;
+    private TopDocs hits = null;
     private int readSoFar = 0;
     private int lastStartPoint = 0;
 
     public LuceneMultiIndexSearcher(LuceneIndexReader[] indexes, boolean parallel) throws RuntimeException {
         this.indexes_ = indexes;
-        searchers = new IndexSearcher[indexes.length];
+        searchers = new IndexReader[indexes.length];
 
         for (int i = 0; i < indexes.length; i++) {
-            searchers[i] = new IndexSearcher(indexes[i].getBaseIndexReader());
+            searchers[i] = indexes[i].getBaseIndexReader();
         }
 
         try {
             if (parallel) {
-                multiSearcher = new ParallelMultiSearcher(searchers);
+                multiSearcher = new MultiReader(searchers, new ThreadPoolExecutor());
             } else {
-                multiSearcher = new MultiSearcher(searchers);
+                multiSearcher = new MultiReader(searchers);
             }
         } catch (IOException e) {
             logger.error(e);
@@ -77,22 +80,22 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     }
 
     public void reloadSearchers() throws RuntimeException {
-        searchers = new IndexSearcher[indexes_.length];
+        searchers = new IndexReader[indexes_.length];
         try {
             for (int i = 0; i < indexes_.length; i++) {
                 indexes_[i].reopen();
-                searchers[i] = new IndexSearcher(indexes_[i].getBaseIndexReader());
+                searchers[i] = indexes_[i].getBaseIndexReader();
             }
 
-            multiSearcher = new MultiSearcher(searchers);
+            multiSearcher = new MultiReader(searchers);
         } catch (IOException e) {
             logger.error(e);
             throw new RuntimeException("There was an error opening the multi-index searcher " + e);
         }
     }
 
-    public void search(Query query, Filter filter, HitCollector hitCollector) throws RuntimeException {
-        throw new UnsupportedOperationException("Not implemented for MultiIndexSearcher.");    
+    public void search(Query query, Filter filter, Collector hitCollector) throws RuntimeException {
+        throw new UnsupportedOperationException("Not implemented for MultiIndexReader.");    
     }
 
     private Document[] searchSkipLowScoreing(Query query, Filter filter, int maxToReturn)
@@ -204,7 +207,7 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
                 }
             } else {
                 for (int i = lastStartPoint; i < readSoFar; i++) {
-                    temp[j++] = hits.score(i);
+                    temp[j++] = hits.scoreDocs[i].score;
                 }
             }
 
@@ -215,35 +218,35 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
         return temp;
     }
 
-    public Explanation explain(Query query, int doc) throws RuntimeException {
-        try {
-            for (int i = 0; i < indexes_.length; i++) {
-                if (!indexes_[i].upToDate()) {
-                    reloadSearchers();
-                    break; // This will keep me from getting hung if someone is
-                    // writing rapidly to the index
-                }
-            }
+//    public Explanation explain(Query query, int doc) throws RuntimeException {
+//        try {
+//            for (int i = 0; i < indexes_.length; i++) {
+//                if (!indexes_[i].upToDate()) {
+//                    reloadSearchers();
+//                    break; // This will keep me from getting hung if someone is
+//                    // writing rapidly to the index
+//                }
+//            }
+//
+//            return multiSearcher.explain(query, doc);
+//        } catch (RuntimeException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            throw new RuntimeException("There was a problem generating the explanation" + e);
+//        }
+//    }
 
-            return multiSearcher.explain(query, doc);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("There was a problem generating the explanation" + e);
-        }
-    }
+//    public void setSimilarity(Similarity similarity) throws RuntimeException {
+//        try {
+//            multiSearcher.setSimilarity(similarity);
+//        } catch (Exception e) {
+//            throw new RuntimeException("There was a problem setting the similarity" + e);
+//        }
+//    }
 
-    public void setSimilarity(Similarity similarity) throws RuntimeException {
-        try {
-            multiSearcher.setSimilarity(similarity);
-        } catch (Exception e) {
-            throw new RuntimeException("There was a problem setting the similarity" + e);
-        }
-    }
-
-    public Similarity getSimilarity() {
-        return multiSearcher.getSimilarity();
-    }
+//    public Similarity getSimilarity() {
+//        return multiSearcher.getSimilarity();
+//    }
 
     private int maxDocs() {
         int maxSize = 0;
