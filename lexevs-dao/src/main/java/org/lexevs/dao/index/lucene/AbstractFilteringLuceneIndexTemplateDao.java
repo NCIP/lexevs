@@ -32,7 +32,6 @@ import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.queries.TermsFilter;
-import org.apache.lucene.util.DocIdBitSet;
 import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
@@ -44,11 +43,13 @@ public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBa
 	
 	private IndexRegistry indexRegistry;
 	
-	protected class CachingChainedFilter extends ChainedFilter {
+	protected abstract class CachingChainedFilter extends ChainedFilter {
 
 		private static final long serialVersionUID = 5154482258370999758L;
 		
-		private Map<Integer,DocIdBitSet> bitSetCache = new HashMap<Integer,DocIdBitSet>();
+		private Map<Integer,DocIdSet> bitSetCache = new HashMap<Integer,DocIdSet>();
+
+		private IndexRegistry indexRegistry;
 		
 		public CachingChainedFilter(Filter[] chain, int logic) {
 			super(chain, logic);
@@ -57,28 +58,30 @@ public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBa
 		@Override
 		public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
 			int key = reader.hashCode();
-			if(! bitSetCache.containsKey(key)){
-				bitSetCache.clear();
-
-				DocIdSet superIdSet = super.getDocIdSet(reader);
-
-				BitSet bitSet = new BitSet();
-				
-				DocIdSetIterator itr = superIdSet.iterator();
-				bitSet = docIdSetIteratorToBitSet(itr);
-				
-				bitSetCache.put(key, new DocIdBitSet(bitSet));
-			}
+//			if(! bitSetCache.containsKey(key)){
+//				bitSetCache.clear();
+//
+//				DocIdSet superIdSet = super.getDocIdSet(reader);
+//
+//				BitSet bitSet = new BitSet();
+//				
+//				DocIdSetIterator itr = superIdSet.iterator();
+//				bitSet = docIdSetIteratorToBitSet(itr);
+//				
+//				bitSetCache.put(key, new DocIdBitSet(bitSet));
+//			}
+//			
+//			return bitSetCache.get(key);
+//		}
 			
-			return bitSetCache.get(key);
-		}
+			return null;
 	}
 	
 	private BitSet docIdSetIteratorToBitSet(DocIdSetIterator itr) throws IOException {
 		BitSet bitSet = new BitSet();
 
-		while(itr.next()){
-			bitSet.set(itr.doc());
+		while(itr.nextDoc() != itr.NO_MORE_DOCS){
+			bitSet.set(itr.docID());
 		}
 		
 		return bitSet;
@@ -96,7 +99,9 @@ public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBa
 						ref.getCodingSchemeVersion());
 			}
 			
-			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
+//			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
+			
+			Filter chainedFilter = null;
 			indexRegistry.getCodingSchemeFilterMap().put(key, chainedFilter);
 		}
 		return indexRegistry.getCodingSchemeFilterMap().get(key);
@@ -104,15 +109,15 @@ public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBa
 	
 	protected Filter getCodingSchemeFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
 		String key = getFilterMapKey(codingSchemeUri, codingSchemeVersion);
-		if(!this.indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
-			Term term = new Term(
-					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-							codingSchemeUri, codingSchemeVersion));
-			TermsFilter filter = new TermsFilter();
-			filter.addTerm(term);
-			indexRegistry.getCodingSchemeFilterMap().put(key, new CachingWrapperFilter(filter));
-		}
+//		if(!this.indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
+//			Term term = new Term(
+//					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+//					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+//							codingSchemeUri, codingSchemeVersion));
+//			TermsFilter filter = new TermsFilter();
+//			filter.addTerm(term);
+//			indexRegistry.getCodingSchemeFilterMap().put(key, new CachingWrapperFilter(filter));
+//		}
 		return indexRegistry.getCodingSchemeFilterMap().get(key);
 	}
 	
@@ -133,4 +138,5 @@ public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBa
 	public IndexRegistry getIndexRegistry() {
 		return indexRegistry;
 	}
+}
 }
