@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.lexevs.dao.indexer.lucene.Index;
@@ -97,7 +98,7 @@ public class IndexerService {
 
                 // add new ones
                 if (!indexes_.contains(files[i].getName())) {
-                    Index temp = new Index(files[i], new String[] {});
+                    Index temp = new Index(files[i], new CharArraySet(0,false));
                     indexes_.put(files[i].getName(), temp);
                 }
             }
@@ -123,7 +124,7 @@ public class IndexerService {
      * @param stopwords
      *            Words not to index
      */
-    public void createIndex(String indexName, String[] stopwords) {
+    public void createIndex(String indexName, CharArraySet stopwords) {
         File newIndexLocation = new File(rootLocation_, indexName);
         newIndexLocation.mkdir();
         Index newIndex = new Index(newIndexLocation, stopwords);
@@ -139,7 +140,7 @@ public class IndexerService {
     public void createIndex(String indexName) {
         File newIndexLocation = new File(rootLocation_, indexName);
         newIndexLocation.mkdir();
-        Index newIndex = new Index(newIndexLocation, new String[] {});
+        Index newIndex = new Index(newIndexLocation, new CharArraySet(0,false));
         indexes_.put(indexName, newIndex);
     }
 
@@ -297,15 +298,15 @@ public class IndexerService {
      * @throws IndexNotFoundException
      * @throws RuntimeException
      */
-    public void optimizeIndex(String indexName) throws RuntimeException {
-        Index currentIndex = (Index) indexes_.get(indexName);
-
-        if (currentIndex == null) {
-            throw new RuntimeException("The index " + indexName + " does not exist.");
-        }
-
-        currentIndex.optimizeIndex();
-    }
+//    public void optimizeIndex(String indexName) throws RuntimeException {
+//        Index currentIndex = (Index) indexes_.get(indexName);
+//
+//        if (currentIndex == null) {
+//            throw new RuntimeException("The index " + indexName + " does not exist.");
+//        }
+//
+//        currentIndex.optimizeIndex();
+//    }
 
     /**
      * Add a document to the index. Note: If you construct your own document
@@ -351,13 +352,13 @@ public class IndexerService {
      * @return The number of documents removed
      * @throws RuntimeException
      */
-    public int removeDocument(String indexName, String documentIdentifier) throws RuntimeException {
+    public void removeDocument(String indexName, String documentIdentifier) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
             throw new RuntimeException("The index " + indexName + " does not exist.");
         }
-        return currentIndex.removeDocument(documentIdentifier);
+        currentIndex.removeDocument(documentIdentifier);
     }
 
     /**
@@ -376,13 +377,13 @@ public class IndexerService {
      * @return The number of documents removed.
      * @throws RuntimeException
      */
-    public int removeDocument(String indexName, String field, String fieldValue) throws RuntimeException {
+    public void removeDocument(String indexName, String field, String fieldValue) throws RuntimeException {
         Index currentIndex = (Index) indexes_.get(indexName);
 
         if (currentIndex == null) {
             throw new RuntimeException("The index " + indexName + " does not exist.");
         }
-        return currentIndex.removeDocument(field, fieldValue);
+        currentIndex.removeDocument(field, fieldValue);
     }
 
     /**
@@ -449,7 +450,7 @@ public class IndexerService {
         File[] files = rootLocation_.listFiles();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
-                Index temp = new Index(files[i], new String[] {});
+                Index temp = new Index(files[i], new CharArraySet(0,false));
                 indexes_.put(files[i].getName(), temp);
             }
         }
