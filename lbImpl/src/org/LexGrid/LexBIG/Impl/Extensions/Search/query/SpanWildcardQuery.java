@@ -21,10 +21,13 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search.query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermContext;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -34,6 +37,7 @@ import org.apache.lucene.search.spans.SpanOrQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.search.spans.Spans;
+import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.ToStringUtils;
 
 /**
@@ -136,5 +140,12 @@ public class SpanWildcardQuery extends SpanQuery {
         buffer.append(")");
         buffer.append(ToStringUtils.boost(getBoost()));
         return buffer.toString();
+    }
+
+   
+    @Override
+    public Spans getSpans(LeafReaderContext arg0, Bits arg1, Map<Term, TermContext> arg2) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
