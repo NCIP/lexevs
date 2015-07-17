@@ -36,7 +36,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 
 public class LuceneDirectoryFactory implements FactoryBean {
-
+//TODO adjust or rewrite for multi directory concurrency.
 	private String indexName;
 	
 	private Resource indexDirectory;
