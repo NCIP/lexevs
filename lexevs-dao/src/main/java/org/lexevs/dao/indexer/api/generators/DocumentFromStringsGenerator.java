@@ -47,7 +47,7 @@ public class DocumentFromStringsGenerator {
         document_ = null;
         document_ = new Document();
         document_.add(new Field(org.lexevs.dao.indexer.lucene.Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD,
-                documentIdentifier, Store.COMPRESS, Index.UN_TOKENIZED));
+                documentIdentifier, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
     }
 
     public Document getDocument() throws RuntimeException {
@@ -79,7 +79,7 @@ public class DocumentFromStringsGenerator {
         Field.Store storeC;
         Field.Index indexC;
         if (store && compress) {
-            storeC = Store.COMPRESS;
+            storeC = Store.YES;
         } else if (store) {
             storeC = Store.YES;
         } else {
@@ -87,9 +87,9 @@ public class DocumentFromStringsGenerator {
         }
 
         if (index && tokenize) {
-            indexC = Field.Index.TOKENIZED;
+            indexC = Field.Index.ANALYZED;
         } else if (index && !tokenize) {
-            indexC = Field.Index.UN_TOKENIZED;
+            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
         } else {
             indexC = Field.Index.NO;
         }
@@ -120,7 +120,7 @@ public class DocumentFromStringsGenerator {
         }
 
         if (index) {
-            indexC = Field.Index.UN_TOKENIZED;
+            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
         } else {
             indexC = Field.Index.NO;
         }
@@ -151,7 +151,7 @@ public class DocumentFromStringsGenerator {
         }
 
         if (index) {
-            indexC = Field.Index.UN_TOKENIZED;
+            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
         } else {
             indexC = Field.Index.NO;
         }
@@ -178,7 +178,7 @@ public class DocumentFromStringsGenerator {
         }
 
         if (index) {
-            indexC = Field.Index.UN_TOKENIZED;
+            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
         } else {
             indexC = Field.Index.NO;
         }
