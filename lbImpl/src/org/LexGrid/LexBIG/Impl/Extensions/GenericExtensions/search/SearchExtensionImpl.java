@@ -23,9 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -33,6 +30,9 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
@@ -44,12 +44,12 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     private static final long serialVersionUID = 8704782086137708226L;
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException {
+    public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
         return this.search(text, null, matchAlgorithm);
     }
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException {
+    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
         return this.search(text, codeSystems, null, matchAlgorithm);
     }
     
@@ -58,7 +58,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             final String text, 
             Set<CodingSchemeReference> codeSystemsToInclude,
             Set<CodingSchemeReference> codeSystemsToExclude, 
-            MatchAlgorithm matchAlgorithm) throws LBParameterException {
+            MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
         return this.search(text, codeSystemsToInclude, codeSystemsToExclude, matchAlgorithm, false);
     }
     
@@ -68,7 +68,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             Set<CodingSchemeReference> codeSystemsToInclude,
             Set<CodingSchemeReference> codeSystemsToExclude, 
             MatchAlgorithm matchAlgorithm,
-            boolean includeAnonymous) throws LBParameterException {      
+            boolean includeAnonymous) throws LBParameterException, IOException {      
         return this.search(
                 text, 
                 codeSystemsToInclude, 
@@ -85,7 +85,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             Set<CodingSchemeReference> codeSystemsToExclude, 
             MatchAlgorithm matchAlgorithm,
             boolean includeAnonymous,
-            boolean includeInactive) throws LBParameterException {
+            boolean includeInactive) throws LBParameterException, IOException {
         
         LexEvsServiceLocator lexEvsServiceLocator = LexEvsServiceLocator.getInstance();
         List<RegistryEntry> entries = 
@@ -138,7 +138,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return new SearchScoreDocIterator(scoreDocs);
     }
     
-    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) {
+    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) throws IOException {
         if(StringUtils.isBlank(text)) {
           return text;  
         }
@@ -210,20 +210,20 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return returnSet;
     }
     
-    public List<String> tokenize(Analyzer analyzer, String field, String keywords) {
+    public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException {
         List<String> result = new ArrayList<String>();
         TokenStream stream  = analyzer.tokenStream(field, new StringReader(keywords));
 
-        Token token = new Token();
-        try {
-            Token t;
-            while((t = stream.next(token)) != null) {
-                result.add(t.term());
-            }
-        }
-        catch(IOException e) {
-            throw new IllegalStateException(e);
-        }
+//        Token token = new Token();
+//        try {
+//            Token t;
+//            while((t = stream.next(token)) != null) {
+//                result.add(t.term());
+//            }
+//        }
+//        catch(IOException e) {
+//            throw new IllegalStateException(e);
+//        }
 
         return result;
     }  

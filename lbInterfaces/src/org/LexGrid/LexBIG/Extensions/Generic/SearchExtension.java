@@ -23,6 +23,7 @@
 */
 package org.LexGrid.LexBIG.Extensions.Generic;
 
+import java.io.IOException;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -54,8 +55,9 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
-	public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException;
+	public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException;
 	
 	/**
      * Search based on a given text string over given coding schemes.
@@ -70,11 +72,12 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
 			Set<CodingSchemeReference> codingSchemes,
-			MatchAlgorithm matchAlgorithm) throws LBParameterException;
+			MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException;
 	
 	/**
 	 * Search based on a given text string over given coding schemes, excluding
@@ -95,12 +98,13 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
 			Set<CodingSchemeReference> codingSchemesToInclude,
 			Set<CodingSchemeReference> codingSchemesToExclude,
-			MatchAlgorithm matchAlgorithm) throws LBParameterException;
+			MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException;
 	
 	/**
 	 * Search based on a given text string over given coding schemes, excluding
@@ -126,13 +130,14 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
 			Set<CodingSchemeReference> codingSchemesToInclude,
 			Set<CodingSchemeReference> codingSchemesToExclude,
 			MatchAlgorithm matchAlgorithm,
-			boolean includeAnonymous) throws LBParameterException;
+			boolean includeAnonymous) throws LBParameterException, IOException;
 	
 	
 	/**
@@ -165,6 +170,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
@@ -172,5 +178,5 @@ public interface SearchExtension extends GenericExtension {
 			Set<CodingSchemeReference> codingSchemesToExclude,
 			MatchAlgorithm matchAlgorithm,
 			boolean includeAnonymous,
-			boolean includeInactive) throws LBParameterException;
+			boolean includeInactive) throws LBParameterException, IOException;
 }
