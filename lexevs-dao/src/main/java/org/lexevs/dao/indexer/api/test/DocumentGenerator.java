@@ -28,6 +28,8 @@ import java.util.Set;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.TextField;
 import org.lexevs.dao.indexer.lucene.Index;
 
 /**
@@ -85,7 +87,7 @@ public class DocumentGenerator {
             fieldValue.append(" ").append(_words[rand]);
         }
         // System.out.println("Title: " + fieldValue);
-        doc.add(new Field("title", fieldValue.toString(), Field.Store.YES, Field.Index.TOKENIZED));
+        doc.add(new TextField("title", fieldValue.toString(), Store.YES));
 
         fieldValue.setLength(0);
         // fieldValue.setLength(WORDS_PER_BODY * 8);
@@ -95,10 +97,9 @@ public class DocumentGenerator {
             fieldValue.append(" ").append(_words[rand]);
         }
         // System.out.println("Body: " + fieldValue);
-        doc.add(new Field("body", fieldValue.toString(), Field.Store.NO, Field.Index.TOKENIZED));
+        doc.add(new TextField("body", fieldValue.toString(), Store.YES));
 
-        doc.add(new Field(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD, docCounter++ + "", Field.Store.YES,
-                Field.Index.TOKENIZED));
+        doc.add(new TextField(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD, docCounter++ + "",  Store.YES));
 
         return doc;
     }
