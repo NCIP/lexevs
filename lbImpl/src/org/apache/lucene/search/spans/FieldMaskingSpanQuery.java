@@ -36,13 +36,18 @@ package org.apache.lucene.search.spans;
  */
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermContext;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.search.Weight;
+import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.ToStringUtils;
 
 /**
@@ -107,28 +112,28 @@ public class FieldMaskingSpanQuery extends SpanQuery {
   // :NOTE: getBoost and setBoost are not proxied to the maskedQuery
   // ...this is done to be more consistent with thigns like SpanFirstQuery
   
-  public Spans getSpans(IndexReader reader) throws IOException {
-    return maskedQuery.getSpans(reader);
-  }
-  public PayloadSpans getPayloadSpans(IndexReader reader) throws IOException {
-    return maskedQuery.getPayloadSpans(reader);
-  }
+//  public Spans getSpans(IndexReader reader) throws IOException {
+//    return maskedQuery.getSpans(reader);
+//  }
+//  public PayloadSpans getPayloadSpans(IndexReader reader) throws IOException {
+//    return maskedQuery.getPayloadSpans(reader);
+//  }
 
-  public Collection getTerms() {
-    return maskedQuery.getTerms();
-  }
+//  public Collection getTerms() {
+//    return maskedQuery.getTerms();
+//  }
   
-  public void extractTerms(Set terms) {
-    maskedQuery.extractTerms(terms);
-  }  
+//  public void extractTerms(Set terms) {
+//    maskedQuery.extractTerms(terms);
+//  }  
 
-  protected Weight createWeight(Searcher searcher) throws IOException {
-    return maskedQuery.createWeight(searcher);
+  protected Weight createWeight(IndexSearcher searcher) throws IOException {
+    return maskedQuery.createWeight(searcher, true);
   }
 
-  public Similarity getSimilarity(Searcher searcher) {
-    return maskedQuery.getSimilarity(searcher);
-  }
+//  public Similarity getSimilarity(IndexSearcher searcher) {
+//    return maskedQuery.getSimilarity(searcher);
+//  }
 
   public Query rewrite(IndexReader reader) throws IOException {
     FieldMaskingSpanQuery clone = null;
@@ -172,4 +177,15 @@ public class FieldMaskingSpanQuery extends SpanQuery {
       ^ getField().hashCode()
       ^ Float.floatToRawIntBits(getBoost());
   }
+
+@Override
+protected void extractTerms(Set<Term> arg0) {
+    maskedQuery.extractTerms(arg0);
+}
+
+@Override
+public Spans getSpans(LeafReaderContext arg0, Bits arg1, Map<Term, TermContext> arg2) throws IOException {
+    // TODO Auto-generated method stub
+    return null;
+}
 }
