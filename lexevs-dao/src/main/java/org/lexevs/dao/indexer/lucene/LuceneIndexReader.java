@@ -20,13 +20,21 @@ package org.lexevs.dao.indexer.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.MMapDirectory;
 import org.apache.lucene.store.RAMDirectory;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
 
 /**
@@ -35,15 +43,21 @@ import org.apache.lucene.store.RAMDirectory;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust </A>
  */
 public class LuceneIndexReader {
+	//At least some of this class doesn't seem to be surfaced. We may be able to remove.  Just the same I pulled in
+	//Some classes to do some of the work IndexReader can't do anymore.  See IndexWriter use here.
     private final File location_;
 
     private IndexReader indexReader_;
+    private IndexWriter indexWriter_;
     private long indexReaderLastModifiedDate;
     private boolean useInMemoryIndex_ = false;
 
     private final Logger logger = Logger.getLogger("Indexer.Index");
 
-    public LuceneIndexReader(File location) throws RuntimeException {
+    public LuceneIndexReader(File location) throws RuntimeException, IOException {
+    	Directory dir = new MMapDirectory(location.toPath());
+		IndexWriterConfig iwc= new IndexWriterConfig(LuceneLoaderCode.getAnaylzer());
+		IndexWriter writer = new IndexWriter(dir, iwc);
         this.location_ = location;
         useInMemoryIndex_ = false;
         openIndex();
@@ -62,20 +76,24 @@ public class LuceneIndexReader {
     private void openIndex() throws RuntimeException {
         try {
             if (useInMemoryIndex_) {
-                indexReader_ = IndexReader.open(new RAMDirectory(location_));
+                indexReader_ = DirectoryReader.open(new RAMDirectory());
             } else {
-                indexReader_ = IndexReader.open(location_);
+            	Path path = Paths.get(location_.toURI());
+            	Directory directory = new MMapDirectory(path);
+                indexReader_ = DirectoryReader.open(directory);
             }
-            this.indexReaderLastModifiedDate = IndexReader.getCurrentVersion(location_);
+//            this.indexReaderLastModifiedDate = DirectoryReader.;  We aren't going to support earlier versions.
         } catch (IOException e) {
             logger.error(e);
             throw new RuntimeException("There was an error opening the index reader. " + e.getMessage());
         }
     }
 
-    public int delete(String uniqueDocumentId) throws RuntimeException {
+    public void delete(String uniqueDocumentId) throws RuntimeException {
+    	//TODO figure out what this is intended to do.  If we are deleting an entire entity -
+    	//Then we should be deleting a set of documents.  Even in the old version.
         try {
-            return indexReader_.deleteDocuments(new Term(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD, uniqueDocumentId));
+            indexWriter_.deleteDocuments(new Term(Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD, uniqueDocumentId));
         } catch (IOException e) {
             logger.error(e);
             throw new RuntimeException("There was an error removing the document. " + e.getMessage());
@@ -86,9 +104,9 @@ public class LuceneIndexReader {
         return indexReader_;
     }
 
-    public int delete(String field, String uniqueDocumentId) throws RuntimeException {
+    public void  delete(String field, String uniqueDocumentId) throws RuntimeException {
         try {
-            return indexReader_.deleteDocuments(new Term(field, uniqueDocumentId));
+           indexWriter_.deleteDocuments(new Term(field, uniqueDocumentId));
         } catch (IOException e) {
             logger.error(e);
             throw new RuntimeException("There was an error removing the document. " + e.getMessage());
@@ -107,9 +125,10 @@ public class LuceneIndexReader {
     }
 
     public Collection searchableFields() {
-        Collection temp;
-        temp = indexReader_.getFieldNames(IndexReader.FieldOption.ALL);
-        temp.remove(""); // for some reason, there is an empty string field in
+    	//TODO remove this method if we can.  Doesn't look like it gets surfaced anywhere.
+        Collection temp = null;
+//        temp = indexReader_.getFieldNames(IndexReader.FieldOption.ALL);
+//        temp.remove(""); // for some reason, there is an empty string field in
         // there...
 
         return temp;
@@ -129,15 +148,17 @@ public class LuceneIndexReader {
     }
 
     public boolean upToDate() {
-        try {
-            if (IndexReader.getCurrentVersion(this.location_) != this.indexReaderLastModifiedDate)
-                return false;
-            else
-                return true;
-        } catch (IOException e) {
-            logger.error("Error reading index date" + e);
-            return false;
-        }
+    	//Doesn't look like we use this either TODO drop method.
+//        try {
+//            if (IndexReader.getCurrentVersion(this.location_) != this.indexReaderLastModifiedDate)
+//                return false;
+//            else
+//                return true;
+//        } catch (IOException e) {
+//            logger.error("Error reading index date" + e);
+//            return false;
+//        }
+    	return false;
     }
 
     public void reopen() throws RuntimeException {
