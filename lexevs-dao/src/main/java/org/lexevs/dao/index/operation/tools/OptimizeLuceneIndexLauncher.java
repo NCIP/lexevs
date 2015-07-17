@@ -26,21 +26,22 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.lexevs.locator.LexEvsServiceLocator;
-
+//TODO Drop this class entirely.
 public class OptimizeLuceneIndexLauncher {
 
 	@Option(name="-h", aliases={"--help"}, usage="Prints usage information.") 
 	private boolean help;
 
 	private void execute() {
-		try {
-			LexEvsServiceLocator.getInstance().
-				getIndexServiceManager().
-					getEntityIndexService().
-						optimizeAll();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+//		try {
+//			LexEvsServiceLocator.getInstance().
+//				getIndexServiceManager().
+//					getEntityIndexService().
+//						optimizeAll();
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//		throw new OperationNotsupportedException();
 	}
 	
 	public static void main(String[] args) throws Exception{

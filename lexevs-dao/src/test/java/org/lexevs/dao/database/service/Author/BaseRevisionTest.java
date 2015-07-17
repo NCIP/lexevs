@@ -32,7 +32,7 @@ public class BaseRevisionTest extends LexEvsDbUnitTestBase {
 	
 	@Before
 	public void loadSystemRelease() throws Exception {
-		entityIndexService.optimizeAll();
+//		entityIndexService.optimizeAll();
 	}
 	
 	@Test

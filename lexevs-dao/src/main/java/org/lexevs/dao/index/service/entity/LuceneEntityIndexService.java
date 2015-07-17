@@ -77,51 +77,51 @@ public class LuceneEntityIndexService implements EntityIndexService {
 			getIndexName(codingSchemeUri, codingSchemeVersion);
 	}
 
-	@Override
-	public void optimizeAll() {
-		for(RegistryEntry entry :
-			registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
-			try {
-				this.optimizeIndex(entry.getResourceUri(), entry.getResourceVersion());
-			} catch (Exception e) {
-				LoggerFactory.getLogger().warn("Error Optimizing Index for Coding Scheme URI: " + entry.getResourceUri() + " Version: " + entry.getResourceVersion() + "." +
-						" Error reported was: " + e.getMessage() + ". Skipping...");
-			}
-		}
-		
-		boolean isCommonIndexOptimized = indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Boolean>() {
-
-			@Override
-			public Boolean doInIndexReader(IndexReader indexReader)
-					throws Exception {
-				return indexReader.isOptimized();
-			}
-		});
-		
-		if(!isCommonIndexOptimized) {
-			indexRegistry.getCommonLuceneIndexTemplate().optimize();
-		}
-	}
-	
-	@Override
-	public void optimizeIndex(final String codingSchemeUri, final String codingSchemeVersion) {
-		boolean isOptimized = indexRegistry.getLuceneIndexTemplate(codingSchemeUri, codingSchemeVersion).executeInIndexReader(new IndexReaderCallback<Boolean>() {
-
-			@Override
-			public Boolean doInIndexReader(IndexReader indexReader)
-					throws Exception {
-				return indexReader.isOptimized();
-			}
-			
-		});
-		
-		if(isOptimized) {
-			LoggerFactory.getLogger().info("Index of URI: " + codingSchemeUri + " Version: " + codingSchemeVersion + " is already optimized.");
-		} else {
-			LoggerFactory.getLogger().info("Optimizing: " + codingSchemeUri + " Version: " + codingSchemeVersion + ".");
-			indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).optimizeIndex(codingSchemeUri, codingSchemeVersion);
-		}
-	}
+//	@Override
+//	public void optimizeAll() {
+//		for(RegistryEntry entry :
+//			registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
+//			try {
+//				this.optimizeIndex(entry.getResourceUri(), entry.getResourceVersion());
+//			} catch (Exception e) {
+//				LoggerFactory.getLogger().warn("Error Optimizing Index for Coding Scheme URI: " + entry.getResourceUri() + " Version: " + entry.getResourceVersion() + "." +
+//						" Error reported was: " + e.getMessage() + ". Skipping...");
+//			}
+//		}
+//		
+//		boolean isCommonIndexOptimized = indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Boolean>() {
+//
+//			@Override
+//			public Boolean doInIndexReader(IndexReader indexReader)
+//					throws Exception {
+//				return indexReader.isOptimized();
+//			}
+//		});
+//		
+//		if(!isCommonIndexOptimized) {
+//			indexRegistry.getCommonLuceneIndexTemplate().optimize();
+//		}
+//	}
+//	
+//	@Override
+//	public void optimizeIndex(final String codingSchemeUri, final String codingSchemeVersion) {
+//		boolean isOptimized = indexRegistry.getLuceneIndexTemplate(codingSchemeUri, codingSchemeVersion).executeInIndexReader(new IndexReaderCallback<Boolean>() {
+//
+//			@Override
+//			public Boolean doInIndexReader(IndexReader indexReader)
+//					throws Exception {
+//				return indexReader.isOptimized();
+//			}
+//			
+//		});
+//		
+//		if(isOptimized) {
+//			LoggerFactory.getLogger().info("Index of URI: " + codingSchemeUri + " Version: " + codingSchemeVersion + " is already optimized.");
+//		} else {
+//			LoggerFactory.getLogger().info("Optimizing: " + codingSchemeUri + " Version: " + codingSchemeVersion + ".");
+//			indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).optimizeIndex(codingSchemeUri, codingSchemeVersion);
+//		}
+//	}
 	
 	@Override
 	public Document getDocumentById(
