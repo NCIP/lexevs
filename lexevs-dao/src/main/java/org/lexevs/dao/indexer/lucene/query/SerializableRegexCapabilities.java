@@ -20,7 +20,7 @@ package org.lexevs.dao.indexer.lucene.query;
 
 import java.io.Serializable;
 
-import org.apache.lucene.search.regex.JavaUtilRegexCapabilities;
+import org.apache.lucene.sandbox.queries.regex.JavaUtilRegexCapabilities;
 
 /**
  * The Class SerializableRegexCapabilities.
