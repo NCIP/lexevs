@@ -20,10 +20,11 @@ package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.document.MapFieldSelector;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+
+import aj.org.objectweb.asm.FieldVisitor;
 
 /**
  * The Class NonProxyLazyCodeToReturn.
@@ -72,15 +73,17 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
             this.getEntityIndexService().getDocumentById(uri, internalVersionString, this.getDocumentId(), this.doGetFieldSelector());
     }
     
-    protected FieldSelector doGetFieldSelector() {
-        return new MapFieldSelector(
-                new String[] {
-                        SQLTableConstants.TBLCOL_ENTITYCODE,
-                        LuceneLoaderCode.ENTITY_UID_FIELD,
-                        SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,
-                        LuceneLoaderCode.CODING_SCHEME_ID_FIELD,
-                        LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
-                        SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
-                        "entityType"});
+    protected StoredFieldVisitor doGetFieldSelector() {
+        //TODO find a replacement as necessary for this.  Short term research did not turn up a replacement in 5.2.1
+//        return new MapFieldSelector(
+//                new String[] {
+//                        SQLTableConstants.TBLCOL_ENTITYCODE,
+//                        LuceneLoaderCode.ENTITY_UID_FIELD,
+//                        SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,
+//                        LuceneLoaderCode.CODING_SCHEME_ID_FIELD,
+//                        LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
+//                        SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
+//                        "entityType"});
+        return null;
     }
 }
