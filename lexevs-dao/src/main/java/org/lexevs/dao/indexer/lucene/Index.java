@@ -23,6 +23,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 
@@ -64,7 +65,7 @@ public class Index {
      *            Optional list of stopwords (words not to index) to use in the
      *            StandardAnalyzer.
      */
-    public Index(File location, String[] stopWords) {
+    public Index(File location, CharArraySet stopWords) {
         this.location_ = location;
         this.analyzer_ = new StandardAnalyzer(stopWords);
 
@@ -84,9 +85,12 @@ public class Index {
             // If they didn't say clear contents, and the index doesn't exist,
             // it will cause an error.
             // so change clear contents to true, so it makes a new index.
-            if (!clearContents && !IndexReader.indexExists(location_)) {
-                clearContents = true;
-            }
+        	//Shouldn't need this anymore, but we don't have a way of handling problems when 
+        	//LuceneFSIndexWriter is opened on a non existant path
+        	//TODO fix the above
+//            if (!clearContents && !IndexReader.indexExists(location_)) {
+//                clearContents = true;
+//            }
             logger.info("Opening a FS Index Writer on " + location_.getAbsolutePath());
             indexWriter_ = new LuceneFSIndexWriter(location_, clearContents, analyzer_);
         } else {
@@ -116,8 +120,9 @@ public class Index {
     public void openIndexReader(boolean useInMemoryIndex) throws RuntimeException {
         if (indexReader_ == null) {
             // If the index does not exist, create it.
-            if (!IndexReader.indexExists(location_)) {
-                logger.info("Index does not yet exist, creating a new (blank) index");
+//            if (!IndexReader.indexExists(location_)) {
+//                logger.info("Index does not yet exist, creating a new (blank) index");
+        	//This doesn't work this way anymore.  
                 try {
                     openFSIndexWriter(true);
                     closeIndexWriter();
@@ -125,7 +130,7 @@ public class Index {
                     // should be impossible
                 }
 
-            }
+//            }
             logger.info("Opening a IndexReader on " + location_.getAbsolutePath());
             indexReader_ = new LuceneIndexReader(location_, useInMemoryIndex);
         } else if (indexReader_.isInMemory() != useInMemoryIndex) {
@@ -205,7 +210,10 @@ public class Index {
                 // can't happen
             }
         }
-        indexWriter_.addDocument(document, analyzer);
+        
+        //Analyzer is added during init.  
+///        indexWriter_.addDocument(document, analyzer);
+        indexWriter_.addDocument(document);
 
         if (iOpened) {
             this.closeIndexWriter();
@@ -256,23 +264,23 @@ public class Index {
         }
         return docsRemoved;
     }
-
-    public void optimizeIndex() throws RuntimeException {
-        boolean iOpened = false;
-        if (indexWriter_ == null) {
-            iOpened = true;
-            try {
-                this.openFSIndexWriter(false);
-            } catch (RuntimeException e) {
-                // can't happen
-            }
-        }
-        indexWriter_.optimize();
-
-        if (iOpened) {
-            this.closeIndexWriter();
-        }
-    }
+//TODO disable and deprecate in the upper level API.
+//    public void optimizeIndex() throws RuntimeException {
+//        boolean iOpened = false;
+//        if (indexWriter_ == null) {
+//            iOpened = true;
+//            try {
+//                this.openFSIndexWriter(false);
+//            } catch (RuntimeException e) {
+//                // can't happen
+//            }
+//        }
+//        indexWriter_.optimize();
+//
+//        if (iOpened) {
+//            this.closeIndexWriter();
+//        }
+//    }
 
     /**
      * How many documents to write out per temporary index. Used for
