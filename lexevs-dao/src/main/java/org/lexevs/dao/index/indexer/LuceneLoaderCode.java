@@ -418,10 +418,7 @@ public abstract class LuceneLoaderCode {
     }
     
     public static PerFieldAnalyzerWrapper getAnaylzer() {
-    	// no stop words, default character removal set.
-    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet));
-
+    	
     	Map<String,Analyzer> analyzerPerField = new HashMap<>();
     	    	
         //add a literal analyzer -- keep all special characters
@@ -456,6 +453,9 @@ public abstract class LuceneLoaderCode {
         analyzerPerField.put("usageContexts", sa);
         analyzerPerField.put("qualifiers", sa);
         
+        // no stop words, default character removal set.
+    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet), analyzerPerField);
         return analyzer;
     }
 
