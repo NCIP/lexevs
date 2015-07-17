@@ -19,8 +19,10 @@
 package org.LexGrid.LexBIG.Impl.helpers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -35,11 +37,16 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queries.TermsFilter;
+import org.apache.lucene.queries.TermsQuery;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
+import org.apache.lucene.util.Bits;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder.TripleIterator;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
@@ -152,14 +159,17 @@ public class MappingCodingSchemeFilterRegistry {
 
         String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
         
-        TermsFilter filter = new TermsFilter();
+
         
         ConceptReferenceList codeList = this.buildConceptReferenceList(uri, version);
-        
+
+        List<Term> termList = new ArrayList<Term>();
         for(ConceptReference ref : codeList.getConceptReference()){
-            filter.addTerm(new Term(codeField, ref.getCode()));
+            termList.add(new Term(codeField, ref.getCode()));
         }
-        
+        Query query = new TermsQuery(termList);
+//        TermsFilter filter = new TermsFilter(termList);
+        QueryWrapperFilter filter = new QueryWrapperFilter(query);
         LoggerFactory.getLogger().info("Finished building mapping filter for URI: " + uri + "Version: " + version);
         
         return decorateFilter(filter);
@@ -206,19 +216,31 @@ public class MappingCodingSchemeFilterRegistry {
             this.version = version;
         }
 
-        @SuppressWarnings("deprecation")
+//        @SuppressWarnings("deprecation")
+//        public BitSet bits(IndexReader reader) throws IOException {
+//            return 
+//                MappingCodingSchemeFilterRegistry.defaultInstance().
+//                    getMappingCodingSchemeFilter(uri, version, false).bits(reader);
+//        }
+
+
+//        public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
+//            return 
+//                MappingCodingSchemeFilterRegistry.defaultInstance().
+//                    getMappingCodingSchemeFilter(uri, version, false).getDocIdSet(reader);
+//        }
+
         @Override
-        public BitSet bits(IndexReader reader) throws IOException {
+        public DocIdSet getDocIdSet(LeafReaderContext arg0, Bits arg1) throws IOException {
             return 
-                MappingCodingSchemeFilterRegistry.defaultInstance().
-                    getMappingCodingSchemeFilter(uri, version, false).bits(reader);
+                    MappingCodingSchemeFilterRegistry.defaultInstance().
+                        getMappingCodingSchemeFilter(uri, version, false).getDocIdSet(arg0, arg1);
         }
 
         @Override
-        public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-            return 
-                MappingCodingSchemeFilterRegistry.defaultInstance().
-                    getMappingCodingSchemeFilter(uri, version, false).getDocIdSet(reader);
+        public String toString(String arg0) {
+            // TODO Auto-generated method stub
+            return null;
         } 
     }
     
