@@ -20,11 +20,16 @@ package org.lexevs.dao.indexer.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.MMapDirectory;
 
 /**
  * Indexing class to be used for small updates, or real time indexing.
@@ -57,8 +62,12 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
     }
 
     private void openIndex(boolean clearContents) throws RuntimeException {
+    	//TODO determine the purpose of this method which may be rolling back changes.
         try {
-            masterIndexWriter_ = new IndexWriter(location_, analyzer_, clearContents);
+        	Path path = Paths.get(location_.getAbsolutePath());
+        	Directory dir = MMapDirectory.open(path);
+        	IndexWriterConfig config = new IndexWriterConfig(analyzer_);
+            masterIndexWriter_ = new IndexWriter(dir, config);
             this.updateLuceneVars();
         } catch (IOException e) {
             logger.error(e);
@@ -108,19 +117,20 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
     }
 
     private void updateLuceneVars() {
-        if (maxFieldLength_ > 1) {
-            this.masterIndexWriter_.setMaxFieldLength(maxFieldLength_);
-        }
-        if (maxMergeDocs_ > 1) {
-            this.masterIndexWriter_.setMaxMergeDocs(maxMergeDocs_);
-        }
-        if (mergeFactor_ > 1) {
-            this.masterIndexWriter_.setMergeFactor(mergeFactor_);
-        }
-        if (maxBufferedDocs_ > 1) {
-            this.masterIndexWriter_.setMaxBufferedDocs(maxBufferedDocs_);
-        }
-        this.masterIndexWriter_.setUseCompoundFile(useCompoundFile_);
+    	//None of these methods exist.  We are going to let Lucene manage it's own indexes at this point. 
+//        if (maxFieldLength_ > 1) {
+//            this.masterIndexWriter_.setMaxFieldLength(maxFieldLength_);
+//        }
+//        if (maxMergeDocs_ > 1) {
+//            this.masterIndexWriter_.setMaxMergeDocs(maxMergeDocs_);
+//        }
+//        if (mergeFactor_ > 1) {
+//            this.masterIndexWriter_.setMergeFactor(mergeFactor_);
+//        }
+//        if (maxBufferedDocs_ > 1) {
+//            this.masterIndexWriter_.setMaxBufferedDocs(maxBufferedDocs_);
+//        }
+//        this.masterIndexWriter_.setUseCompoundFile(useCompoundFile_);
     }
 
     public void addDocument(Document document) throws RuntimeException {
@@ -132,23 +142,23 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
         }
     }
 
-    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException {
-        try {
-            this.masterIndexWriter_.addDocument(document, analyzer);
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error adding the document. " + e.getMessage());
-        }
-    }
+//    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException {
+//        try {
+//            this.masterIndexWriter_.addDocument(document, analyzer);
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error adding the document. " + e.getMessage());
+//        }
+//    }
 
-    public void optimize() throws RuntimeException {
-        try {
-            this.masterIndexWriter_.optimize();
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error closing the index writer. " + e.getMessage());
-        }
-    }
+//    public void optimize() throws RuntimeException {
+//        try {
+//            this.masterIndexWriter_.optimize();
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error closing the index writer. " + e.getMessage());
+//        }
+//    }
 
     public void close() throws RuntimeException {
         logger.info("Closing the index writer");
