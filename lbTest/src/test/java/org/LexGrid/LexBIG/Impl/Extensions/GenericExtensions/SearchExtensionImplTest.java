@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertNotNull(searchExtension);
 	}
 	
-	public void testCodeSearchSpecialCharacters() throws LBException {
+	public void testCodeSearchSpecialCharacters() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -57,7 +58,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testExactPresentationSearchSpecialCharacters() throws LBException {
+	public void testExactPresentationSearchSpecialCharacters() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -67,7 +68,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testExactPresentationMissingSearchSpecialCharacters() throws LBException {
+	public void testExactPresentationMissingSearchSpecialCharacters() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -75,7 +76,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testExactPresentationNonPreferred() throws LBException {
+	public void testExactPresentationNonPreferred() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -85,7 +86,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 
-	public void testCodeSearchWrongSpecialCharacters() throws LBException {
+	public void testCodeSearchWrongSpecialCharacters() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -93,7 +94,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearch() throws LBException {
+	public void testSimpleSearch() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -103,7 +104,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchContains() throws LBException {
+	public void testSimpleSearchContains() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -113,7 +114,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSearchAll() throws LBException {
+	public void testSearchAll() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -121,7 +122,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.hasNext());
 	}
 	
-	public void testSearchAllEmptyIncludes() throws LBException {
+	public void testSearchAllEmptyIncludes() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -130,7 +131,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertTrue(itr.numberRemaining() > 10);
 	}
 	
-	public void testSearchInactive() throws LBException {
+	public void testSearchInactive() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -148,7 +149,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		}
 	}
 
-	public void testSimpleSearchCorrectFields() throws LBException {
+	public void testSimpleSearchCorrectFields() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -168,7 +169,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@SuppressWarnings("serial")
-	public void testSimpleSearchLimitedToCodingScheme() throws LBException {
+	public void testSimpleSearchLimitedToCodingScheme() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -185,7 +186,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@SuppressWarnings("serial")
-	public void testSimpleSearchLimitedToDifferentCodingScheme() throws LBException {
+	public void testSimpleSearchLimitedToDifferentCodingScheme() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -200,7 +201,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@SuppressWarnings("serial")
-	public void testSimpleSearchExcludeCodingScheme() throws LBException {
+	public void testSimpleSearchExcludeCodingScheme() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -215,7 +216,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@SuppressWarnings("serial")
-	public void testSimpleSearchExcludeCodingSchemeNoneReturned() throws LBException {
+	public void testSimpleSearchExcludeCodingSchemeNoneReturned() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -230,7 +231,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@SuppressWarnings("serial")
-	public void testSimpleSearchLimitedWithIncludeAndExclude() throws LBException {
+	public void testSimpleSearchLimitedWithIncludeAndExclude() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -251,7 +252,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@SuppressWarnings("serial")
-	public void testSimpleSearchLimitedWithIncludeAndExcludeAllExcluded() throws LBException {
+	public void testSimpleSearchLimitedWithIncludeAndExcludeAllExcluded() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -271,7 +272,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchWithAnonymousInclude() throws LBException {
+	public void testSimpleSearchWithAnonymousInclude() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
@@ -281,7 +282,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchWithAnonymousExclude() throws LBException {
+	public void testSimpleSearchWithAnonymousExclude() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
@@ -289,7 +290,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchDefault1() throws LBException {
+	public void testSimpleSearchDefault1() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
@@ -300,7 +301,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchDefault2() throws LBException {
+	public void testSimpleSearchDefault2() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
@@ -311,7 +312,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchWithInactiveInclude() throws LBException {
+	public void testSimpleSearchWithInactiveInclude() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
@@ -321,7 +322,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchWithInactiveExclude() throws LBException {
+	public void testSimpleSearchWithInactiveExclude() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
@@ -329,7 +330,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchCaseInsensitive() throws LBException {
+	public void testSimpleSearchCaseInsensitive() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -339,7 +340,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchCaseInsensitiveAndWildcard() throws LBException {
+	public void testSimpleSearchCaseInsensitiveAndWildcard() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -349,7 +350,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchNone() throws LBException {
+	public void testSimpleSearchNone() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -357,7 +358,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchExactCode() throws LBException {
+	public void testSimpleSearchExactCode() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -367,7 +368,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void tesExactCodeWrongCase() throws LBException {
+	public void tesExactCodeWrongCase() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -375,7 +376,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchExactCodeAndNamespace() throws LBException {
+	public void testSimpleSearchExactCodeAndNamespace() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -385,7 +386,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchExactCodeAndWrongNamespace() throws LBException {
+	public void testSimpleSearchExactCodeAndWrongNamespace() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -393,7 +394,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testSimpleSearchFuzzyAndNegationWithGrouping() throws LBException {
+	public void testSimpleSearchFuzzyAndNegationWithGrouping() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 
@@ -406,7 +407,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		}
 	}
 	
-	public void testExactPresentation() throws LBException {
+	public void testExactPresentation() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -416,7 +417,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testExactPresentationSpecialCharacters() throws LBException {
+	public void testExactPresentationSpecialCharacters() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -426,7 +427,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testExactPresentationCaseInSensitive() throws LBException {
+	public void testExactPresentationCaseInSensitive() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
@@ -436,7 +437,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
-	public void testGrouping() throws LBException {
+	public void testGrouping() throws LBException, IOException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
