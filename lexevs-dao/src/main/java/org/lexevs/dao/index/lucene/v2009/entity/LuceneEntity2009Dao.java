@@ -57,7 +57,7 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2009);
 	}
 	
-	@Override
+	//@Override
 	protected Filter getCodingSchemeFilterForCodingScheme(
 			String codingSchemeUri, String codingSchemeVersion) {
 		return new QueryWrapperFilter(new MatchAllDocsQuery());
@@ -66,6 +66,10 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
+		
+		// TODO New Lucene will not support or be compatible with older versions.
+		
+		//return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
+		return null;
 	}
 }

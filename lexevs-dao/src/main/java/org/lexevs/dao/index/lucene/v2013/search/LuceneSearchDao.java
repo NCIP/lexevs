@@ -33,7 +33,7 @@ import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.ScoreDocComparator;
+import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
@@ -58,7 +58,10 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	private static final Comparator<ScoreDoc> SCORE_DOC_COMPARATOR = new Comparator<ScoreDoc>(){
 		@Override
 		public int compare(ScoreDoc o1, ScoreDoc o2) {
-			return ScoreDocComparator.RELEVANCE.compare(o1, o2);
+			// TODO New Lucene will not support or be compatible with older versions.
+			
+			//return FieldComparator.RELEVANCE.compare(o1, o2);
+			return 0;
 		}
 	};
 
@@ -81,7 +84,11 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 
 	@Override
 	public Filter getCodingSchemeFilter(String uri, String version) {
-		return this.getCodingSchemeFilterForCodingScheme(uri, version);
+		
+		// TODO New Lucene will not support or be compatible with older versions.
+		
+		//return this.getCodingSchemeFilterForCodingScheme(uri, version);
+		return null;
 	}
 
 	@Override
@@ -154,7 +161,7 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2013);
 	}
 	
-	@Override
+	// @Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
 		return this.luceneIndexTemplate;

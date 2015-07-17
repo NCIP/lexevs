@@ -48,7 +48,8 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 			IndexRegistry indexRegistry,
 			LuceneIndexTemplate template,
 			List<AbsoluteCodingSchemeVersionReference> references){
-		this.setIndexRegistry(indexRegistry);
+		// TODO New Lucene will not support or be compatible with older versions.
+//		this.setIndexRegistry(indexRegistry);
 		this.template = template;
 		this.references = references;
 	}
@@ -65,18 +66,22 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 
 	@Override
 	public List<ScoreDoc> query(Query query) {
-		int maxDoc = template.getMaxDoc();
-
-		Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(references);
 		
-		DocIdSet docIdSet = template.getDocIdSet(boundaryDocFilter);
-
-		BestScoreOfEntityHitCollector hitCollector = 
-			new BestScoreOfEntityHitCollector(docIdSet.iterator(), maxDoc);
-
-		template.search(query, this.getCodingSchemeFilterForCodingScheme(references), hitCollector);
+		// TODO New Lucene will not support or be compatible with older versions.
 		
-		return hitCollector.getResult();
+//		int maxDoc = template.getMaxDoc();
+//
+//		Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(references);
+//		
+//		DocIdSet docIdSet = template.getDocIdSet(boundaryDocFilter);
+//
+//		BestScoreOfEntityHitCollector hitCollector = 
+//			new BestScoreOfEntityHitCollector(docIdSet.iterator(), maxDoc);
+//
+//		template.search(query, this.getCodingSchemeFilterForCodingScheme(references), hitCollector);
+//		
+//		return hitCollector.getResult();
+		return null;
 	}
 
 	@Override
@@ -84,7 +89,6 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 		template.optimize();
 	}
 
-	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
 		return this.template;
