@@ -33,7 +33,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.QueryFilter;
+import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.indexer.api.IndexerService;
 import org.lexevs.dao.indexer.api.SearchServiceInterface;
@@ -127,7 +127,7 @@ public class IndexInterface {
         // stuff is used for.
         BooleanQuery includesFilterQuery = new BooleanQuery();
         includesFilterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST));
-        codeBoundryFilter_ = new QueryFilter(includesFilterQuery);
+        codeBoundryFilter_ = new QueryWrapperFilter(includesFilterQuery);
        
         initCodingSchemes();
     }
