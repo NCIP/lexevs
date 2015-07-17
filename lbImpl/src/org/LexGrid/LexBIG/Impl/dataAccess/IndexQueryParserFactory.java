@@ -18,16 +18,19 @@
  */
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.indexer.api.generators.QueryGenerator;
@@ -72,9 +75,36 @@ public class IndexQueryParserFactory {
         WhiteSpaceLowerCaseAnalyzer wslca = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
                 WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
 
+        Map<String,Analyzer> analyzerPerField = new HashMap<>();
+        
         extraWhiteSpaceChars_ = wslca.getCurrentCharRemovalTable();
 
-        // The PerFieldAnalyzerWrapper allows me to use the proper analyzer per
+        
+        EncoderAnalyzer ea = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {}, WhiteSpaceLowerCaseAnalyzer
+                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+        analyzerPerField.put("dm_propertyValue", ea);
+
+        if (ResourceManager.instance().getSystemVariables().isNormEnabled()) {
+            try {
+                NormAnalyzer temp = new NormAnalyzer(ResourceManager.instance().getSystemVariables()
+                        .getNormConfigFile(), false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
+                        .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+                analyzerPerField.put("norm_propertyValue", temp);
+            } catch (NoClassDefFoundError e) {
+                getLogger().error("Error initializing Normalized Searcher", e);
+            }
+        }
+        
+        analyzerPerField.put("literal_propertyValue", LuceneLoaderCode.literalAnalyzer);
+        
+        analyzerPerField.put(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, 
+                new KeywordAnalyzer());
+
+        SnowballAnalyzer sa = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
+                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+        analyzerPerField.put("stem_propertyValue", sa);
+        
+       // The PerFieldAnalyzerWrapper allows me to use the proper analyzer per
         // field - if you are
         // doing a norm search, you need to analyze with a norm analyzer etc.
 
@@ -92,32 +122,9 @@ public class IndexQueryParserFactory {
                         SQLTableConstants.TBLCOL_LANGUAGE, SQLTableConstants.TBLCOL_CONCEPTSTATUS,
                         SQLTableConstants.TBLCOL_PROPERTYID, "dataType", SQLTableConstants.TBLCOL_DEGREEOFFIDELITY,
                         SQLTableConstants.TBLCOL_REPRESENTATIONALFORM, SQLTableConstants.TBLCOL_MATCHIFNOCONTEXT,
-                        SQLTableConstants.TBLCOL_PROPERTY, SQLTableConstants.TBLCOL_PROPERTYNAME }, wslca));
-
-        EncoderAnalyzer ea = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-        analyzer.addAnalyzer("dm_propertyValue", ea);
-
-        if (ResourceManager.instance().getSystemVariables().isNormEnabled()) {
-            try {
-                NormAnalyzer temp = new NormAnalyzer(ResourceManager.instance().getSystemVariables()
-                        .getNormConfigFile(), false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                        .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-                analyzer.addAnalyzer("norm_propertyValue", temp);
-            } catch (NoClassDefFoundError e) {
-                getLogger().error("Error initializing Normalized Searcher", e);
-            }
-        }
+                        SQLTableConstants.TBLCOL_PROPERTY, SQLTableConstants.TBLCOL_PROPERTYNAME }, wslca),
+                        analyzerPerField);
         
-        analyzer.addAnalyzer("literal_propertyValue", LuceneLoaderCode.literalAnalyzer);
-        
-        analyzer.addAnalyzer(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, 
-                new KeywordAnalyzer());
-
-        SnowballAnalyzer sa = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-        analyzer.addAnalyzer("stem_propertyValue", sa);
-
         parser_ = new QueryParser(SQLTableConstants.TBLCOL_PROPERTYVALUE, analyzer);
         
         //Allow leading wildcards for searches.
