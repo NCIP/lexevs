@@ -23,10 +23,14 @@ import java.util.WeakHashMap;
 
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Bits;
 
 /**
  * Class to search a lucene index, but the result is a bit set that indicates
@@ -47,7 +51,7 @@ public class ScoredQueryFilter extends Filter {
     private static final long serialVersionUID = -104041362110167918L;
     private Query query;
     private transient WeakHashMap<IndexReader, ScoredBitSet> cache = null;
-
+    //TODO determine if we need this any longer.  It won't be the same in the new implementation anyway.
     /**
      * Constructs a filter which only matches documents matching
      * <code>query</code>.
@@ -56,7 +60,6 @@ public class ScoredQueryFilter extends Filter {
         this.query = query;
     }
 
-    @Override
     public ScoredBitSet bits(IndexReader reader) throws IOException {
 
         if (cache == null) {
@@ -72,10 +75,22 @@ public class ScoredQueryFilter extends Filter {
 
         final ScoredBitSet bits = new ScoredBitSet(reader.maxDoc());
 
-        new IndexSearcher(reader).search(query, new HitCollector() {
-            @Override
+        new IndexSearcher(reader).search(query, new Collector() {
+
             public final void collect(int doc, float score) {
                 bits.set(doc, score); // set bit for hit
+            }
+
+            @Override
+            public LeafCollector getLeafCollector(LeafReaderContext arg0) throws IOException {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public boolean needsScores() {
+                // TODO Auto-generated method stub
+                return false;
             }
         });
 
@@ -86,11 +101,11 @@ public class ScoredQueryFilter extends Filter {
         return bits;
     }
 
-    @Override
-    @LgClientSideSafe
-    public String toString() {
-        return "QueryFilter(" + query + ")";
-    }
+//    @Override
+//    @LgClientSideSafe
+//    public String toString() {
+//        return "QueryFilter(" + query + ")";
+//    }
 
     @Override
     @LgClientSideSafe
@@ -104,5 +119,17 @@ public class ScoredQueryFilter extends Filter {
     @LgClientSideSafe
     public int hashCode() {
         return query.hashCode() ^ 0x923F64B9;
+    }
+
+    @Override
+    public DocIdSet getDocIdSet(LeafReaderContext arg0, Bits arg1) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String toString(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -33,6 +33,7 @@ import org.lexevs.dao.indexer.utility.Utility;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  */
 public class DocumentFromStringsGenerator {
+	//TODO look into tossing this.  Doesn't align well with the new lucene.  Will want to reimplement at the very least.
     private Document document_;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
 
