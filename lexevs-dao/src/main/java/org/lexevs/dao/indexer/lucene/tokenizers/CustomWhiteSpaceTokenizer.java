@@ -22,7 +22,7 @@ import java.io.Reader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.lucene.analysis.CharTokenizer;
+import org.apache.lucene.analysis.util.CharTokenizer;
 
 /**
  * A WhiteSpace Tokenizer that allows additional whitespace characters.
@@ -46,7 +46,9 @@ public class CustomWhiteSpaceTokenizer extends CharTokenizer {
 
     /** Construct a new WhitespaceTokenizer. */
     public CustomWhiteSpaceTokenizer(Reader in, Set whiteSpaceChars) {
-        super(in);
+        //super(in);
+    	// TODO New Lucene will not support or be compatible with older versions.
+    	
         whiteSpaceChars_ = whiteSpaceChars;
     }
 
@@ -62,4 +64,10 @@ public class CustomWhiteSpaceTokenizer extends CharTokenizer {
             return true;
         }
     }
+
+	@Override
+	protected boolean isTokenChar(int arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
