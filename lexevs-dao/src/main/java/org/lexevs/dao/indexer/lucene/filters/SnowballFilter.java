@@ -74,46 +74,46 @@ public final class SnowballFilter extends TokenFilter {
     public final Token next() throws IOException {
         // If the tokenBuffer is empty, populate it with the results of the norm
         // call for the next token.
-        if (tokenBuffer_.size() == 0) {
-            Token t = input.next();
-
-            if (t == null) {
-                return null;
-            }
-
-            try {
-                if (keepOrigionalToken_) {
-                    tokenBuffer_.add(t);
-                }
-
-                stemmer.setCurrent(t.termText());
-                stemMethod.invoke(stemmer, EMPTY_ARGS);
-                String result = stemmer.getCurrent();
-
-                // only add the stemmed word if it is different from the kept
-                // origional,
-                // or if the origional wasn't kept.
-                if (!keepOrigionalToken_ || !t.termText().equals(result)) {
-
-                    Token temp = new Token(result, t.startOffset(), t.endOffset());
-                    if (keepOrigionalToken_) {
-                        // if we are adding more than one token from one token,
-                        // then set the
-                        // position increment to 0 on all of the subsequent
-                        // tokens.
-                        // position increment defaults to 1 - only change it on
-                        // subsequent adds.
-                        temp.setPositionIncrement(0);
-                    }
-
-                    tokenBuffer_.add(temp);
-                }
-
-            } catch (Exception e) {
-                logger.error("Norm problem", e);
-                throw new IOException();
-            }
-        }
+//        if (tokenBuffer_.size() == 0) {
+//            Token t = input.next();
+//
+//            if (t == null) {
+//                return null;
+//            }
+//
+//            try {
+//                if (keepOrigionalToken_) {
+//                    tokenBuffer_.add(t);
+//                }
+//
+//                stemmer.setCurrent(t.termText());
+//                stemMethod.invoke(stemmer, EMPTY_ARGS);
+//                String result = stemmer.getCurrent();
+//
+//                // only add the stemmed word if it is different from the kept
+//                // origional,
+//                // or if the origional wasn't kept.
+//                if (!keepOrigionalToken_ || !t.termText().equals(result)) {
+//
+//                    Token temp = new Token(result, t.startOffset(), t.endOffset());
+//                    if (keepOrigionalToken_) {
+//                        // if we are adding more than one token from one token,
+//                        // then set the
+//                        // position increment to 0 on all of the subsequent
+//                        // tokens.
+//                        // position increment defaults to 1 - only change it on
+//                        // subsequent adds.
+//                        temp.setPositionIncrement(0);
+//                    }
+//
+//                    tokenBuffer_.add(temp);
+//                }
+//
+//            } catch (Exception e) {
+//                logger.error("Norm problem", e);
+//                throw new IOException();
+//            }
+//        }
 
         // pull one off the buffer and return it.
         return (Token) tokenBuffer_.remove(0);

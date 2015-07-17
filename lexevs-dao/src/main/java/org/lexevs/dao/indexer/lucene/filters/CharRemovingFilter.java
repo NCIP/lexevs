@@ -35,7 +35,8 @@ import org.apache.lucene.analysis.TokenStream;
 public class CharRemovingFilter extends TokenFilter {
     StringBuffer temp = new StringBuffer();
     Set charsToRemove;
-
+// TODO Hopefully going away.  We may need to reimplement using updated TokenFilter, 
+// but until then we comment out the non working stuff.
     /**
      * Builds a Set from an array of chars to remove, appropriate for passing
      * into the CharRemovingFilter constructor.
@@ -58,36 +59,37 @@ public class CharRemovingFilter extends TokenFilter {
 
         temp.setLength(0);
 
-        while (true) {
-            // scan through tokens until we find one with characters that we
-            // don't want to throw away.
-            t = input.next();
+//        while (true) {
+//            // scan through tokens until we find one with characters that we
+//            // don't want to throw away.
+//            t = input.incrementToken();
+//
+//            if (t == null) {
+//                // end of the token stream.
+//                return null;
+//            }
+//
+//            String current = t.termText();
 
-            if (t == null) {
-                // end of the token stream.
-                return null;
-            }
+//            for (int i = 0; i < current.length(); i++) {
+//                if (!charsToRemove.contains(new Character(current.charAt(i)))) {
+//                    temp.append(current.charAt(i));
+//                }
+//            }
 
-            String current = t.termText();
-
-            for (int i = 0; i < current.length(); i++) {
-                if (!charsToRemove.contains(new Character(current.charAt(i)))) {
-                    temp.append(current.charAt(i));
-                }
-            }
-
-            if (temp.length() > 0) {
-                // we found characters to keep in the token, break out of the
-                // loop.
-                break;
-            }
-
-        }
-
-        Token returnValue = new Token(temp.toString(), t.startOffset(), t.endOffset());
-        temp.setLength(0);
-
-        return returnValue;
+//            if (temp.length() > 0) {
+//                // we found characters to keep in the token, break out of the
+//                // loop.
+//                break;
+//            }
+//
+//        }
+//
+//        Token returnValue = new Token(temp.toString(), t.startOffset(), t.endOffset());
+//        temp.setLength(0);
+//
+//        return returnValue;
+        return null;
     }
 
 	@Override

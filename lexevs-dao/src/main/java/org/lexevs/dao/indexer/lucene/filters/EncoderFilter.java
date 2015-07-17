@@ -45,19 +45,20 @@ public final class EncoderFilter extends TokenFilter {
      * with the result.
      */
     public final Token next() throws IOException {
-        Token t = input.next();
-
-        if (t == null) {
-            return null;
-        }
-
-        String result;
-        try {
-            result = encoder_.encode(t.termText()).toString();
-            return new Token(result, t.startOffset(), t.endOffset());
-        } catch (EncoderException e) {
-            throw new IOException("There was a problem with the encoder - " + e);
-        }
+//        Token t = input.next();
+//
+//        if (t == null) {
+//            return null;
+//        }
+//
+//        String result;
+//        try {
+//            result = encoder_.encode(t.termText()).toString();
+//            return new Token(result, t.startOffset(), t.endOffset());
+//        } catch (EncoderException e) {
+//            throw new IOException("There was a problem with the encoder - " + e);
+//        }
+    	return null;
     }
 
 	@Override

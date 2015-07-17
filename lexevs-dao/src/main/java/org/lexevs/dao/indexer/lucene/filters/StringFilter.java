@@ -42,15 +42,15 @@ public class StringFilter extends TokenFilter {
     }
 
     public Token next() throws IOException {
-        while (currentText == null || currentText.length() == 0) {
-            currentToken = input.next();
-            if (currentToken == null) {
-                // out of tokens.
-                return null;
-            }
-            currentText = currentToken.termText();
-            startAt = 0;
-        }
+//        while (currentText == null || currentText.length() == 0) {
+//            currentToken = input.next();
+//            if (currentToken == null) {
+//                // out of tokens.
+//                return null;
+//            }
+//            currentText = currentToken.termText();
+//            startAt = 0;
+//        }
 
         // Ok, now I have some text to work with.
         int index = currentText.indexOf(stringToTokenizeOn, startAt);

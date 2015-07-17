@@ -62,48 +62,48 @@ public final class NormFilter extends TokenFilter {
     public final Token next() throws IOException {
         // If the tokenBuffer is empty, populate it with the results of the norm
         // call for the next token.
-        if (tokenBuffer_.size() == 0) {
-            Token t = input.next();
-
-            if (t == null) {
-                return null;
-            }
-
-            try {
-                if (keepOrigionalToken_) {
-                    tokenBuffer_.add(t);
-                }
-                Vector result = norm_.Mutate(t.termText());
-
-                for (int i = 0; i < result.size(); i++) {
-                    // make sure we aren't adding the origional - sometimes norm
-                    // returns the input text
-                    if (!((String) result.get(i)).equals(t.termText())) {
-                        Token temp = new Token((String) result.get(i), t.startOffset(), t.endOffset());
-                        if (i > 0 || keepOrigionalToken_) {
-                            // if we are adding more than one token from one
-                            // token, then set the
-                            // position increment to 0 on all of the subsequent
-                            // tokens.
-                            // position increment defaults to 1 - only change it
-                            // on subsequent adds.
-                            temp.setPositionIncrement(0);
-                        }
-
-                        tokenBuffer_.add(temp);
-                    }
-                }
-                if (tokenBuffer_.size() == 0) {
-                    // If we didn't add anything, then the token must already be
-                    // normalized. Put it on the buffer.
-                    // (should have at least one to return)
-                    tokenBuffer_.add(t);
-                }
-            } catch (Exception e) {
-                logger.error("Norm problem", e);
-                throw new IOException();
-            }
-        }
+//        if (tokenBuffer_.size() == 0) {
+//            Token t = input.next();
+//
+//            if (t == null) {
+//                return null;
+//            }
+//
+//            try {
+//                if (keepOrigionalToken_) {
+//                    tokenBuffer_.add(t);
+//                }
+//                Vector result = norm_.Mutate(t.termText());
+//
+//                for (int i = 0; i < result.size(); i++) {
+//                    // make sure we aren't adding the origional - sometimes norm
+//                    // returns the input text
+//                    if (!((String) result.get(i)).equals(t.termText())) {
+//                        Token temp = new Token((String) result.get(i), t.startOffset(), t.endOffset());
+//                        if (i > 0 || keepOrigionalToken_) {
+//                            // if we are adding more than one token from one
+//                            // token, then set the
+//                            // position increment to 0 on all of the subsequent
+//                            // tokens.
+//                            // position increment defaults to 1 - only change it
+//                            // on subsequent adds.
+//                            temp.setPositionIncrement(0);
+//                        }
+//
+//                        tokenBuffer_.add(temp);
+//                    }
+//                }
+//                if (tokenBuffer_.size() == 0) {
+//                    // If we didn't add anything, then the token must already be
+//                    // normalized. Put it on the buffer.
+//                    // (should have at least one to return)
+//                    tokenBuffer_.add(t);
+//                }
+//            } catch (Exception e) {
+//                logger.error("Norm problem", e);
+//                throw new IOException();
+//            }
+//        }
 
         // pull one off the buffer and return it.
         return (Token) tokenBuffer_.remove(0);
