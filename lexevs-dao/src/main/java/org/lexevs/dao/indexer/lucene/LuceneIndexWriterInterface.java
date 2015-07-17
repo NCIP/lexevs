@@ -41,9 +41,9 @@ public interface LuceneIndexWriterInterface {
 
     public void addDocument(Document document) throws RuntimeException;
 
-    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException;
-
-    public void optimize() throws RuntimeException;
+//    public void addDocument(Document document, Analyzer analyzer) throws RuntimeException;
+//
+//    public void optimize() throws RuntimeException;
 
     public void close() throws RuntimeException;
 
