@@ -18,7 +18,9 @@
  */
 package org.lexevs.dao.index.metadata;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -127,21 +129,19 @@ public class BaseMetaDataLoader {
     }
 
     public static Analyzer getMetadataAnalyzer() {
-        // no stop words, default character removal set.
-        PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet));
-
+    	Map<String,Analyzer> analyzerPerField = new HashMap<>();
+    	
         if (doubleMetaphoneEnabled_) {
             EncoderAnalyzer temp = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {},
                     WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet);
-            analyzer.addAnalyzer(doubleMetaphonePrefix_ + "propertyValue", temp);
+            analyzerPerField.put(doubleMetaphonePrefix_ + "propertyValue", temp);
         }
-
+ 
         if (normEnabled_) {
             try {
                 NormAnalyzer temp = new NormAnalyzer(false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
                         .getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet);
-                analyzer.addAnalyzer(normPrefix_ + "propertyValue", temp);
+                analyzerPerField.put(normPrefix_ + "propertyValue", temp);
             } catch (NoClassDefFoundError e) {
                 // norm is not available
                 normEnabled_ = false;
@@ -151,13 +151,18 @@ public class BaseMetaDataLoader {
         if (stemmingEnabled_) {
             SnowballAnalyzer temp = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
                     .getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet);
-            analyzer.addAnalyzer(stemmingPrefix_ + "propertyValue", temp);
+            analyzerPerField.put(stemmingPrefix_ + "propertyValue", temp);
         }
 
         // these fields just get simple analyzing.
         StringAnalyzer sa = new StringAnalyzer(STRING_TOKEINZER_TOKEN);
-        analyzer.addAnalyzer("parentContainers", sa);
+        analyzerPerField.put("parentContainers", sa);
 
+        // no stop words, default character removal set.
+        PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), LuceneLoaderCode.lexGridWhiteSpaceIndexSet), analyzerPerField);
+
+        
         return analyzer;
     }
 }
