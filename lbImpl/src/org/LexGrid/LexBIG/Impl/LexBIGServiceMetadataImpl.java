@@ -29,10 +29,10 @@ import org.LexGrid.LexBIG.Impl.dataAccess.MetaDataQuery;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.sandbox.queries.regex.RegexQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.regex.RegexQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
