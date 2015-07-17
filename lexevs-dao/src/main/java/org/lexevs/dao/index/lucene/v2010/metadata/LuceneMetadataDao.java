@@ -28,7 +28,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -53,42 +52,46 @@ public class LuceneMetadataDao implements MetadataDao {
 	
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
-	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
-
-           try {
-        	   TermEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermEnum>() {
-
-				@Override
-				public TermEnum doInIndexReader(IndexReader indexReader)
-						throws Exception {
-					return indexReader.terms(new Term("codingSchemeNameVersion", ""));
-				}  
-        	   });
-
-			   boolean hasNext = true;
-			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
-			       Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
-
-			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);
-			       if (d.size() > 0) {
-
-			           ScoreDoc doc = d.get(0);
-			           AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-			           
-			           Document document = luceneIndexTemplate.getDocumentById(doc.doc);
-			           acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
-			           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
-
-			           result.addAbsoluteCodingSchemeVersionReference(acsvr);
-			       }
-			       hasNext = te.next();
-			   }
-			   te.close();
-			   
-			   return result;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} 
+		
+		// TODO commenting out - TermEnum will be replaced in the new Lucene.
+		
+//	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
+	       
+//           try {
+//        	   TermsEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermsEnum>() {
+//
+//				@Override
+//				public TermsEnum doInIndexReader(IndexReader indexReader)
+//						throws Exception {
+//					return indexReader.terms(new Term("codingSchemeNameVersion", ""));
+//				}  
+//        	   });
+//
+//			   boolean hasNext = true;
+//			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
+//			       Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
+//
+//			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);
+//			       if (d.size() > 0) {
+//
+//			           ScoreDoc doc = d.get(0);
+//			           AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+//			           
+//			           Document document = luceneIndexTemplate.getDocumentById(doc.doc);
+//			           acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
+//			           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
+//
+//			           result.addAbsoluteCodingSchemeVersionReference(acsvr);
+//			       }
+//			       hasNext = te.next();
+//			   }
+//			   te.close();
+//			   
+//			   return result;
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		} 
+	       return null;
 	}
 	
 	@Override
