@@ -220,7 +220,7 @@ public class Index {
         }
     }
 
-    public int removeDocument(String uniqueDocumentIdentifier) throws RuntimeException {
+    public void removeDocument(String uniqueDocumentIdentifier) throws RuntimeException {
         boolean iOpened = false;
         if (indexReader_ == null) {
             this.openIndexReader();
@@ -234,15 +234,15 @@ public class Index {
                     "You cannot delete a document while a IndexWriter is open.  Close the IndexWriter, and then try again.");
         }
 
-        int docsRemoved = indexReader_.delete(uniqueDocumentIdentifier);
+       indexReader_.delete(uniqueDocumentIdentifier);
 
         if (iOpened) {
             this.closeIndexReader();
         }
-        return docsRemoved;
+        //return docsRemoved;
     }
 
-    public int removeDocument(String field, String fieldValue) throws RuntimeException {
+    public void removeDocument(String field, String fieldValue) throws RuntimeException {
         boolean iOpened = false;
         if (indexReader_ == null) {
             this.openIndexReader();
@@ -257,12 +257,12 @@ public class Index {
                     "You cannot delete a document while a IndexWriter is open.  Close the IndexWriter, and then try again.");
         }
 
-        int docsRemoved = indexReader_.delete(field, fieldValue);
+        indexReader_.delete(field, fieldValue);
 
         if (iOpened) {
             this.closeIndexReader();
         }
-        return docsRemoved;
+      
     }
 //TODO disable and deprecate in the upper level API.
 //    public void optimizeIndex() throws RuntimeException {
