@@ -36,7 +36,6 @@ import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
@@ -86,25 +85,16 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 			@Override
 			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
-				for(Document doc : documents) {
-//					indexWriter.addDocument(doc, analyzer);
-					indexWriter.addDocument(doc);
-				}
+				indexWriter.addDocuments(documents);
 				return null;
 			}	
 		});
 	}
 	
+	@Deprecated
 	public void optimize() {
-//		this.doInIndexWriter(new IndexWriterCallback<Void>() {
-//
-//			@Override
-//			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
-//				indexWriter.optimize();
-//				return null;
-//			}	
-//		});
-		throw new UnsupportedOperationException();
+//		throw new UnsupportedOperationException("Optimizing is an outdated indexing operation and is no longer supported");
+		System.out.println("Optimizing is an outdated indexing operation and is no longer supported");
 	}
 	
 	/* (non-Javadoc)

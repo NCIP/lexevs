@@ -112,13 +112,6 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 						this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop));
 			}
 			
-//			Document endBoundryDoc = this.addEntityBoundryDocument(
-//					codingSchemeName, 
-//					codingSchemeUri, 
-//					codingSchemeVersion, 
-//					entity.getEntityCode(),
-//					entity.getEntityCodeNamespace());
-			
 			returnList.add(parentDoc);
 			
 			return returnList;
