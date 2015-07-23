@@ -18,13 +18,14 @@
  */
 package org.lexevs.dao.indexer.api.generators;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.lexevs.dao.indexer.utility.Utility;
 
 /**
@@ -33,10 +34,7 @@ import org.lexevs.dao.indexer.utility.Utility;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  */
 public class DocumentFromStringsGenerator {
-	//TODO look into tossing this.  Doesn't align well with the new lucene.  Will want to reimplement at the very least.
     private Document document_;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-
     public DocumentFromStringsGenerator() {
 
     }
@@ -47,8 +45,9 @@ public class DocumentFromStringsGenerator {
         }
         document_ = null;
         document_ = new Document();
-        document_.add(new Field(org.lexevs.dao.indexer.lucene.Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD,
-                documentIdentifier, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
+        
+        document_.add(new StringField(org.lexevs.dao.indexer.lucene.Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD,
+                documentIdentifier, Store.YES));
     }
 
     public Document getDocument() throws RuntimeException {
@@ -60,12 +59,8 @@ public class DocumentFromStringsGenerator {
 
     public void addTextField(String name, String value, boolean store, boolean index, boolean tokenize)
             throws RuntimeException {
-        addTextField(name, value, store, false, index, tokenize);
-    }
-
-    public void addTextField(String name, String value, boolean store, boolean compress, boolean index, boolean tokenize)
-            throws RuntimeException {
-        if (document_ == null) {
+        
+    	if (document_ == null) {
             throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
 
@@ -77,25 +72,19 @@ public class DocumentFromStringsGenerator {
             throw new RuntimeException("Value is required.");
         }
 
-        Field.Store storeC;
-        Field.Index indexC;
-        if (store && compress) {
-            storeC = Store.YES;
-        } else if (store) {
+        Store storeC;
+        if (store) {
             storeC = Store.YES;
         } else {
             storeC = Store.NO;
         }
 
         if (index && tokenize) {
-            indexC = Field.Index.ANALYZED;
+        	document_.add(new TextField(name, value, storeC));
         } else if (index && !tokenize) {
-            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
-        } else {
-            indexC = Field.Index.NO;
+        	document_.add(new StringField(name, value, storeC));
         }
-
-        document_.add(new Field(name, value, storeC, indexC));
+        
     }
 
     public void addIntField(String name, int value, int padToLength, boolean store, boolean index)
@@ -112,25 +101,18 @@ public class DocumentFromStringsGenerator {
             throw new RuntimeException("Name is required.");
         }
 
-        Field.Store storeC;
-        Field.Index indexC;
+        Store storeC;
         if (store) {
             storeC = Store.YES;
         } else {
             storeC = Store.NO;
         }
 
-        if (index) {
-            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
-        } else {
-            indexC = Field.Index.NO;
-        }
-
-        document_.add(new Field(name, Utility.padInt(value, '0', padToLength, true), storeC, indexC));
+        document_.add(new IntField(name, Integer.valueOf(Utility.padInt(value, '0', padToLength, true)), storeC));
 
     }
 
-    public void addDateField(String name, Date value, boolean store, boolean index) throws RuntimeException {
+    public void addDateField(String name, Date value, boolean store) throws RuntimeException {
         if (document_ == null) {
             throw new RuntimeException("You must start a document first (call startNewDocument())");
         }
@@ -143,21 +125,14 @@ public class DocumentFromStringsGenerator {
             throw new RuntimeException("Name is required.");
         }
 
-        Field.Store storeC;
-        Field.Index indexC;
+        Store storeC;
         if (store) {
             storeC = Store.YES;
         } else {
             storeC = Store.NO;
         }
 
-        if (index) {
-            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
-        } else {
-            indexC = Field.Index.NO;
-        }
-
-        document_.add(new Field(name, formatter.format(value), storeC, indexC));
+        document_.add(new StringField(name, DateTools.dateToString(value, DateTools.Resolution.DAY), storeC));
 
     }
 
@@ -170,21 +145,14 @@ public class DocumentFromStringsGenerator {
             throw new RuntimeException("Name is required.");
         }
 
-        Field.Store storeC;
-        Field.Index indexC;
+        Store storeC;
         if (store) {
             storeC = Store.YES;
         } else {
             storeC = Store.NO;
         }
 
-        if (index) {
-            indexC = Field.Index.NOT_ANALYZED_NO_NORMS;
-        } else {
-            indexC = Field.Index.NO;
-        }
-
-        document_.add(new Field(name, formatter.format(new Date(value)), storeC, indexC));
+        document_.add(new StringField(name, DateTools.timeToString(value, DateTools.Resolution.DAY), storeC));
     }
 
     public String toString() {

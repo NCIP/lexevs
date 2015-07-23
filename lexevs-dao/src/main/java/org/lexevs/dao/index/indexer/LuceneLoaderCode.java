@@ -21,6 +21,7 @@ package org.lexevs.dao.index.indexer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang.StringUtils;
@@ -125,8 +126,8 @@ public abstract class LuceneLoaderCode {
     
     public static String CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD = "codingSchemeUriVersionCodeNamespaceKey";
 
-    /** The create boundry documents. */
-    protected boolean createBoundryDocuments = true;
+    /** Used to identify the parent document as opposed to the child document. */
+    protected boolean isParent = true;
     
     /** The analyzer_. */
     protected PerFieldAnalyzerWrapper analyzer_ = null;
@@ -199,10 +200,10 @@ public abstract class LuceneLoaderCode {
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
-        generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, true, true, false);
+//        generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, true, true, false);
 
-        generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
-        generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
+//        generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
+//        generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
         generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
         generator_.addTextField(idFieldName, entityCode, true, true, false);
         generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
@@ -216,16 +217,16 @@ public abstract class LuceneLoaderCode {
         generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
         generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityCode, entityNamespace), false, true, false);
        
-        if(StringUtils.isNotBlank(entityUid)) {
-        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
-        }
+//        if(StringUtils.isNotBlank(entityUid)) {
+//        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
+//        }
         
         //If the EntityDescription is an empty String, replace it with a single space.
         //Lucene will not index an empty String but it will index a space.
-        if(StringUtils.isBlank(entityDescription)){
-            entityDescription = " ";
-        }
-        generator_.addTextField("entityDescription", entityDescription, true, true, false);
+//        if(StringUtils.isBlank(entityDescription)){
+//            entityDescription = " ";
+//        }
+//        generator_.addTextField("entityDescription", entityDescription, true, true, false);
       
         generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, true, true, false);
 
@@ -277,21 +278,21 @@ public abstract class LuceneLoaderCode {
             }
         }
 
-        if (isActive != null) {
-            if (isActive.booleanValue()) {
-                generator_.addTextField("isActive", "T", false, true, false);
-            } else {
-                generator_.addTextField("isActive", "F", false, true, false);
-            }
-        }
-        
-        if (isAnonymous != null) {
-            if (isAnonymous.booleanValue()) {
-                generator_.addTextField("isAnonymous", "T", false, true, false);
-            } else {
-                generator_.addTextField("isAnonymous", "F", false, true, false);
-            }
-        }
+//        if (isActive != null) {
+//            if (isActive.booleanValue()) {
+//                generator_.addTextField("isActive", "T", false, true, false);
+//            } else {
+//                generator_.addTextField("isActive", "F", false, true, false);
+//            }
+//        }
+//        
+//        if (isAnonymous != null) {
+//            if (isAnonymous.booleanValue()) {
+//                generator_.addTextField("isAnonymous", "T", false, true, false);
+//            } else {
+//                generator_.addTextField("isAnonymous", "F", false, true, false);
+//            }
+//        }
         
         if (isPreferred != null) {
             if (isPreferred.booleanValue()) {
@@ -312,9 +313,9 @@ public abstract class LuceneLoaderCode {
             generator_.addTextField("language", language, false, true, false);
         } 
 
-        if (conceptStatus != null && conceptStatus.length() > 0) {
-            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
-        }
+//        if (conceptStatus != null && conceptStatus.length() > 0) {
+//            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
+//        }
 
         if (propertyId != null && propertyId.length() > 0) {
             generator_.addTextField("propertyId", propertyId, false, true, false);
@@ -403,6 +404,83 @@ public abstract class LuceneLoaderCode {
 
         return generator_.getDocument();
     }
+    
+    protected Document createParentDocument(
+    		String codingSchemeName,
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String entityCode, 
+			String entityCodeNamespace,
+			EntityDescription entityDescription, 
+			Boolean isActive,
+			Boolean isAnonymous, 
+			Boolean isDefined,
+			String[] entityTypes,
+			String conceptStatus,
+			String entityUid,
+			Boolean isParentDoc) {
+    	
+    	generator_.startNewDocument(codingSchemeName + "-" + entityCode);
+    	generator_.addTextField("codingSchemeName", codingSchemeName, true, true, false);
+    	generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
+    	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
+    	generator_.addTextField("entityCode", entityCode, true, true, false);
+    	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
+    	generator_.addTextField("entityDescription", entityDescription.getContent(), true, true, false);
+    	
+    	if (isActive != null) {
+            if (isActive.booleanValue()) {
+                generator_.addTextField("isActive", "T", false, true, false);
+            } else {
+                generator_.addTextField("isActive", "F", false, true, false);
+            }
+        }
+        
+        if (isAnonymous != null) {
+            if (isAnonymous.booleanValue()) {
+                generator_.addTextField("isAnonymous", "T", false, true, false);
+            } else {
+                generator_.addTextField("isAnonymous", "F", false, true, false);
+            }
+        }
+    	
+        if (isDefined != null) {
+            if (isDefined.booleanValue()) {
+                generator_.addTextField("isDefined", "T", false, true, false);
+            } else {
+                generator_.addTextField("isDefined", "F", false, true, false);
+            }
+        }
+        
+        if(entityTypes != null) {
+        	for(String entityType : entityTypes) {
+        		generator_.addTextField("entityType", entityType, true, true, false);
+        	}
+        }
+        
+        if (conceptStatus != null && conceptStatus.length() > 0) {
+            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
+        }
+        
+        if(StringUtils.isNotBlank(entityUid)) {
+        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
+        }
+        
+        if (isParentDoc != null) {
+        	generator_.addTextField("isParentDoc", Boolean.toString(isParentDoc), false, true, false);
+        }else {
+        	throw new RuntimeException("isParentDoc is not defined.");
+        }
+    	
+    	// TODO not sure these are needed?
+    	generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
+    			createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
+    	generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+    			createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeUri, codingSchemeVersion, entityCode, entityCodeNamespace), false, true, false);
+        
+    	return generator_.getDocument();
+	}
+
 
     /**
      * Inits the indexes.

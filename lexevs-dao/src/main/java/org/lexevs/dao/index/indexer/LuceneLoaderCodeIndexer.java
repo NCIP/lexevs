@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -76,15 +77,31 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 		try {
 			String codingSchemeName = 
 				  systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, codingSchemeVersion);
-
-			Document startBoundryDoc = this.addEntityBoundryDocument(
+			
+			String entityUid = null;
+			if(entity instanceof IdableEntity) {
+				entityUid = ((IdableEntity)entity).getId();
+			}
+			
+			Document parentDoc = this.createParentDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
 					codingSchemeVersion, 
 					entity.getEntityCode(),
-					entity.getEntityCodeNamespace());
+					entity.getEntityCodeNamespace(),
+					entity.getEntityDescription(),
+					entity.getIsActive(),
+					entity.getIsAnonymous(),
+					entity.getIsDefined(),
+					entity.getEntityType(),
+					entity.getStatus(),
+					entityUid,
+					isParent);
 			
-			returnList.add(startBoundryDoc);
+			// TODO ensure entityCodeLowerCase is created in the child doc
+			// TODO format was in the original index not present here.
+			
+			//returnList.add(parentDoc);
 			
 			if(entity.getAllProperties().length == 0) {
 				entity.addPresentation(
@@ -95,14 +112,14 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 						this.indexEntity(codingSchemeUri, codingSchemeVersion, entity, prop));
 			}
 			
-			Document endBoundryDoc = this.addEntityBoundryDocument(
-					codingSchemeName, 
-					codingSchemeUri, 
-					codingSchemeVersion, 
-					entity.getEntityCode(),
-					entity.getEntityCodeNamespace());
+//			Document endBoundryDoc = this.addEntityBoundryDocument(
+//					codingSchemeName, 
+//					codingSchemeUri, 
+//					codingSchemeVersion, 
+//					entity.getEntityCode(),
+//					entity.getEntityCodeNamespace());
 			
-			returnList.add(endBoundryDoc);
+			returnList.add(parentDoc);
 			
 			return returnList;
 			
@@ -111,6 +128,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 		}
 	}
 
+	
 	protected Presentation getDefaultPresentation(Entity entity) {
 		Presentation defaultPresentation = new Presentation();
 		defaultPresentation.setPropertyType(PropertyType.PRESENTATION.toString());
