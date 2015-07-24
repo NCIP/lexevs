@@ -128,12 +128,12 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 								reference.getCodingSchemeVersion(), entity));
 					}
 					
-					if(option.equals(IndexOption.BOTH) || option.equals(IndexOption.SEARCH)){
-						searchDocs.addAll(
-							searchIndexer.indexEntity(
-									reference.getCodingSchemeURN(), 
-									reference.getCodingSchemeVersion(), entity));
-					}
+//					if(option.equals(IndexOption.BOTH) || option.equals(IndexOption.SEARCH)){
+//						searchDocs.addAll(
+//							searchIndexer.indexEntity(
+//									reference.getCodingSchemeURN(), 
+//									reference.getCodingSchemeVersion(), entity));
+//					}
 					
 					totalIndexedEntities++;
 

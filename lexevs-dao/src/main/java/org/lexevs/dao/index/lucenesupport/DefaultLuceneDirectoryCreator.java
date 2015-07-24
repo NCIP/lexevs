@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.MMapDirectory;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 
@@ -42,7 +43,7 @@ public class DefaultLuceneDirectoryCreator implements LuceneDirectoryCreator{
 			if(SystemUtils.IS_OS_WINDOWS){
 				directory = FSDirectory.open(baseDirectory.toPath()); //getDirectory(baseDirectory);
 			} else {
-				directory = NIOFSDirectory.open(baseDirectory.toPath()); //getDirectory(baseDirectory);
+				directory = MMapDirectory.open(baseDirectory.toPath()); //getDirectory(baseDirectory);
 			}
 
 		} catch (IOException e) {

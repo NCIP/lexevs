@@ -141,12 +141,11 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		private void initIndexDirectory(Directory directory) throws IOException,
 			CorruptIndexException, LockObtainFailedException {
 
-//			if(!IndexReader.indexExists(directory)){
+
 				IndexWriterConfig config = new IndexWriterConfig(LuceneLoaderCode.getAnaylzer());
 				IndexWriter writer = new IndexWriter(directory, config);
 
 				writer.close();
-//			}
 		}
 		
 		public void refresh() {
