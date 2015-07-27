@@ -32,17 +32,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.queries.BooleanFilter;
+import org.apache.lucene.queries.TermsFilter;
 import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.queries.FilterClause;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.queries.TermsFilter;
-import org.compass.core.lucene.support.ChainedFilter;
+//import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
@@ -192,10 +190,10 @@ public class LuceneSearchIndexService implements SearchIndexService {
 			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToInclude){
 				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
 			}
-			booleanFilter.add(
-				new FilterClause(new ChainedFilter(
-					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
-					BooleanClause.Occur.MUST));
+//			booleanFilter.add(
+//				new FilterClause(new ChainedFilter(
+//					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
+//					BooleanClause.Occur.MUST));
 		}
 		
 		if(hasExcludes){
@@ -204,10 +202,10 @@ public class LuceneSearchIndexService implements SearchIndexService {
 			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToExclude){
 				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
 			}
-			booleanFilter.add(
-				new FilterClause(new ChainedFilter(
-					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
-					BooleanClause.Occur.MUST_NOT));
+//			booleanFilter.add(
+//				new FilterClause(new ChainedFilter(
+//					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
+//					BooleanClause.Occur.MUST_NOT));
 		}
 		
 		Query queryToUse;

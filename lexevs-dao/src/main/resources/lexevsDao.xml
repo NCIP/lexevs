@@ -932,7 +932,6 @@
 	
 	<bean id="multiIndexRegistry" class="org.lexevs.dao.index.indexregistry.MultiIndexRegistry">
 		<property name="systemVariables" ref="systemVariables"/> 
-		<property name="metaData" ref="luceneIndexMetadataFactory"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
 		<property name="searchLuceneIndexTemplate" ref="luceneSearchIndexTemplate"/>

@@ -50,7 +50,6 @@
 		<dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="4.0.0.Final" conf="default" />
 		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.1.2.GA" conf="default" />
 		<dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.0-api" rev="1.0.1.Final" conf="default" />
-		<dependency org="org.compass-project" name="compass" rev="2.2.0" conf="default" />
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" conf="default" />
 		<dependency org="log4j" name="log4j" rev="1.2.14" conf="default" />
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false" conf="default->*"/>

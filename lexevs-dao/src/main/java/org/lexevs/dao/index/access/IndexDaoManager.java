@@ -119,15 +119,18 @@ public class IndexDaoManager {
 			String codingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(uri, version);
 			
 			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
-			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
+//			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
 	
-			String indexVersion = metaData.getIndexMetaDataValue(indexName, "lgModel");
+//			String indexVersion = metaData.getIndexMetaDataValue(indexName, "lgModel");
 			
-			Assert.state(StringUtils.isNotBlank(indexName) &&
-					StringUtils.isNotBlank(indexVersion), "A Lucene Index could not be found for URI: " +
-					uri + " Version: " + version + ". Reindexing may be needed.");
+//			Assert.state(StringUtils.isNotBlank(indexName) &&
+//					StringUtils.isNotBlank(indexVersion), "A Lucene Index could not be found for URI: " +
+//					uri + " Version: " + version + ". Reindexing may be needed.");
+			LexEvsIndexFormatVersion indexVersion = new LexEvsIndexFormatVersion();
+			indexVersion.setModelFormatVersion("2010");
+//			return LexEvsIndexFormatVersion.parseStringToVersion(indexVersion);
+			return indexVersion;
 			
-			return LexEvsIndexFormatVersion.parseStringToVersion(indexVersion);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -22,13 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.CachingWrapperFilter;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.queries.TermsFilter;
-import org.compass.core.lucene.support.ChainedFilter;
-import org.springframework.util.Assert;
+import org.apache.lucene.search.Filter;
+///import org.compass.core.lucene.support.ChainedFilter;
 
 public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractFilteringLuceneIndexTemplateDao {
 

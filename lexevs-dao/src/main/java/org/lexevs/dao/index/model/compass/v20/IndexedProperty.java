@@ -21,12 +21,12 @@ package org.lexevs.dao.index.model.compass.v20;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.compass.annotations.Reverse;
-import org.compass.annotations.Searchable;
-import org.compass.annotations.SearchableId;
-import org.compass.annotations.SearchableMetaData;
-import org.compass.annotations.SearchableMetaDatas;
-import org.compass.annotations.SearchableProperty;
+//import org.compass.annotations.Reverse;
+//import org.compass.annotations.Searchable;
+//import org.compass.annotations.SearchableId;
+//import org.compass.annotations.SearchableMetaData;
+//import org.compass.annotations.SearchableMetaDatas;
+//import org.compass.annotations.SearchableProperty;
 import org.lexevs.dao.index.model.IndexableResource;
 
 /**
@@ -34,42 +34,42 @@ import org.lexevs.dao.index.model.IndexableResource;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Searchable
+//@Searchable
 public class IndexedProperty implements IndexableResource<Object>{
 	
 	/** The ALIAS. */
 	public static String ALIAS = "IndexedProperty";
 	
-	/** The id. */
-	@SearchableId
-	private String id;
-	
-	/** The entity code. */
-	@SearchableProperty 
-	private String entityCode;
-	
-	/** The entity code namespace. */
-	@SearchableProperty 
-	private String entityCodeNamespace;
-	
-	/** The entity description. */
-	@SearchableProperty 
-	private String entityDescription;
-	
-	/** The property type. */
-	@SearchableProperty
-	private String propertyType;
-	
-	/** The property name. */
-	@SearchableProperty
-	private String propertyName;
-	
-	/** The value. */
-	@SearchableProperty
-	@SearchableMetaDatas(value={
-			@SearchableMetaData(name = "literalValue"), 
-			@SearchableMetaData(name = "reverseLiteralValue", reverse=Reverse.STRING)
-	})
+//	/** The id. */
+//	@SearchableId
+//	private String id;
+//	
+//	/** The entity code. */
+//	@SearchableProperty 
+//	private String entityCode;
+//	
+//	/** The entity code namespace. */
+//	@SearchableProperty 
+//	private String entityCodeNamespace;
+//	
+//	/** The entity description. */
+//	@SearchableProperty 
+//	private String entityDescription;
+//	
+//	/** The property type. */
+//	@SearchableProperty
+//	private String propertyType;
+//	
+//	/** The property name. */
+//	@SearchableProperty
+//	private String propertyName;
+//	
+//	/** The value. */
+//	@SearchableProperty
+//	@SearchableMetaDatas(value={
+//			@SearchableMetaData(name = "literalValue"), 
+//			@SearchableMetaData(name = "reverseLiteralValue", reverse=Reverse.STRING)
+//	})
 	private String value;
 	
 	/** The all property qualifiers. */
@@ -82,7 +82,7 @@ public class IndexedProperty implements IndexableResource<Object>{
 	private List<String> allUsageContexts = new ArrayList<String>();
 	
 	/** The all property names. */
-	@SearchableProperty
+//	@SearchableProperty
 	private List<String> allPropertyNames = new ArrayList<String>();
 	
 	/** The all property types. */
@@ -116,113 +116,113 @@ public class IndexedProperty implements IndexableResource<Object>{
 		*/
 	}
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * Gets the entity code.
-	 * 
-	 * @return the entity code
-	 */
-	public String getEntityCode() {
-		return entityCode;
-	}
-
-	/**
-	 * Sets the entity code.
-	 * 
-	 * @param entityCode the new entity code
-	 */
-	public void setEntityCode(String entityCode) {
-		this.entityCode = entityCode;
-	}
-
-	/**
-	 * Gets the entity code namespace.
-	 * 
-	 * @return the entity code namespace
-	 */
-	public String getEntityCodeNamespace() {
-		return entityCodeNamespace;
-	}
-
-	/**
-	 * Sets the entity code namespace.
-	 * 
-	 * @param entityCodeNamespace the new entity code namespace
-	 */
-	public void setEntityCodeNamespace(String entityCodeNamespace) {
-		this.entityCodeNamespace = entityCodeNamespace;
-	}
-
-	/**
-	 * Gets the entity description.
-	 * 
-	 * @return the entity description
-	 */
-	public String getEntityDescription() {
-		return entityDescription;
-	}
-
-	/**
-	 * Sets the entity description.
-	 * 
-	 * @param entityDescription the new entity description
-	 */
-	public void setEntityDescription(String entityDescription) {
-		this.entityDescription = entityDescription;
-	}
-
-	/**
-	 * Gets the property type.
-	 * 
-	 * @return the property type
-	 */
-	public String getPropertyType() {
-		return propertyType;
-	}
-
-	/**
-	 * Sets the property type.
-	 * 
-	 * @param propertyType the new property type
-	 */
-	public void setPropertyType(String propertyType) {
-		this.propertyType = propertyType;
-	}
-
-	/**
-	 * Gets the property name.
-	 * 
-	 * @return the property name
-	 */
-	public String getPropertyName() {
-		return propertyName;
-	}
-
-	/**
-	 * Sets the property name.
-	 * 
-	 * @param propertyName the new property name
-	 */
-	public void setPropertyName(String propertyName) {
-		this.propertyName = propertyName;
-	}
+//	/**
+//	 * Gets the id.
+//	 * 
+//	 * @return the id
+//	 */
+//	public String getId() {
+//		return id;
+//	}
+//
+//	/**
+//	 * Sets the id.
+//	 * 
+//	 * @param id the new id
+//	 */
+//	public void setId(String id) {
+//		this.id = id;
+//	}
+//
+//	/**
+//	 * Gets the entity code.
+//	 * 
+//	 * @return the entity code
+//	 */
+//	public String getEntityCode() {
+//		return entityCode;
+//	}
+//
+//	/**
+//	 * Sets the entity code.
+//	 * 
+//	 * @param entityCode the new entity code
+//	 */
+//	public void setEntityCode(String entityCode) {
+//		this.entityCode = entityCode;
+//	}
+//
+//	/**
+//	 * Gets the entity code namespace.
+//	 * 
+//	 * @return the entity code namespace
+//	 */
+//	public String getEntityCodeNamespace() {
+//		return entityCodeNamespace;
+//	}
+//
+//	/**
+//	 * Sets the entity code namespace.
+//	 * 
+//	 * @param entityCodeNamespace the new entity code namespace
+//	 */
+//	public void setEntityCodeNamespace(String entityCodeNamespace) {
+//		this.entityCodeNamespace = entityCodeNamespace;
+//	}
+//
+//	/**
+//	 * Gets the entity description.
+//	 * 
+//	 * @return the entity description
+//	 */
+//	public String getEntityDescription() {
+//		return entityDescription;
+//	}
+//
+//	/**
+//	 * Sets the entity description.
+//	 * 
+//	 * @param entityDescription the new entity description
+//	 */
+//	public void setEntityDescription(String entityDescription) {
+//		this.entityDescription = entityDescription;
+//	}
+//
+//	/**
+//	 * Gets the property type.
+//	 * 
+//	 * @return the property type
+//	 */
+//	public String getPropertyType() {
+//		return propertyType;
+//	}
+//
+//	/**
+//	 * Sets the property type.
+//	 * 
+//	 * @param propertyType the new property type
+//	 */
+//	public void setPropertyType(String propertyType) {
+//		this.propertyType = propertyType;
+//	}
+//
+//	/**
+//	 * Gets the property name.
+//	 * 
+//	 * @return the property name
+//	 */
+//	public String getPropertyName() {
+//		return propertyName;
+//	}
+//
+//	/**
+//	 * Sets the property name.
+//	 * 
+//	 * @param propertyName the new property name
+//	 */
+//	public void setPropertyName(String propertyName) {
+//		this.propertyName = propertyName;
+//	}
 
 	/**
 	 * Gets the value.

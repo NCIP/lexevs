@@ -421,8 +421,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		String codingSchemeUri, String version) {
 		// TODO New Lucene will not support or be compatible with older versions.
 		
-//		return this.getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
-			return null;
+		return this.getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {

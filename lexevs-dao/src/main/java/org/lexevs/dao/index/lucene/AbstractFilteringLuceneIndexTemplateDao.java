@@ -31,8 +31,9 @@ import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredDocIdSet;
 import org.apache.lucene.queries.TermsFilter;
-import org.compass.core.lucene.support.ChainedFilter;
+//import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.AbstractBaseIndexDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
@@ -40,22 +41,28 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 
 public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBaseIndexDao {
-	
 	private IndexRegistry indexRegistry;
 	
-	protected abstract class CachingChainedFilter extends ChainedFilter {
+	public IndexRegistry getIndexRegistry() {
+		return indexRegistry;
+	}
 
+	public void setIndexRegistry(IndexRegistry indexRegistry) {
+		this.indexRegistry = indexRegistry;
+	}
+
+	protected abstract class CachingChainedFilter extends FilteredDocIdSet {
+//TODO see if we can drop this class entirely
 		private static final long serialVersionUID = 5154482258370999758L;
 		
 		private Map<Integer,DocIdSet> bitSetCache = new HashMap<Integer,DocIdSet>();
 
 		private IndexRegistry indexRegistry;
 		
-		public CachingChainedFilter(Filter[] chain, int logic) {
-			super(chain, logic);
+		public CachingChainedFilter(DocIdSet idset, int logic) {
+			super(idset);
 		}
 
-		@Override
 		public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
 			int key = reader.hashCode();
 //			if(! bitSetCache.containsKey(key)){

@@ -25,6 +25,7 @@ import java.util.UUID;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
@@ -100,13 +101,13 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option) {	
 		String indexName = this.getIndexName(reference);
 		
-		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
-		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
+//		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+//		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		if(!onlyRegister) {
 
 			EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			SearchDao searchIndexService = indexDaoManager.getSearchDao();
+//			SearchDao searchIndexService = indexDaoManager.getSearchDao();
 
 			int totalIndexedEntities = 0;
 
@@ -146,17 +147,17 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 					}
 				}
 
-				this.getLogger().info("Flusing " + fullEntityDocs.size() + searchDocs.size() + " Documents to the Index.");
+				this.getLogger().info("Flushing " + fullEntityDocs.size() + searchDocs.size() + " Documents to the Index.");
 				entityIndexService.addDocuments(
 						reference.getCodingSchemeURN(), 
 						reference.getCodingSchemeVersion(), 
 						fullEntityDocs, analyzer);
 				
-				searchIndexService.addDocuments(
-						reference.getCodingSchemeURN(), 
-						reference.getCodingSchemeVersion(), 
-						searchDocs, 
-						this.searchIndexer.getAnalyzer());
+//				searchIndexService.addDocuments(
+//						reference.getCodingSchemeURN(), 
+//						reference.getCodingSchemeVersion(), 
+//						searchDocs, 
+//						this.searchIndexer.getAnalyzer());
 			}
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
@@ -213,11 +214,19 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	}
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
-		if(systemVariables.getIsSingleIndex()){
-			return IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
-		} else {
-			return UUID.randomUUID().toString();
-		}
+//		if(systemVariables.getIsSingleIndex()){
+//			return IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
+//		} else {
+//			return UUID.randomUUID().toString();
+//		}
+	    String indexName = reference.getCodingSchemeURN() + "-" + reference.getCodingSchemeVersion();
+	    char charsToReplace[] = {
+	    '!', '#', '$', '%' ,'&' ,'\'', '@', '^', '`', '~' ,'+',',','.', ';',':' ,'=' ,')', '(','>','<','+','|','\\','/','*','"'
+	    };
+	    for(char c: charsToReplace){
+	    indexName = StringUtils.replaceChars(indexName, c, '_');
+	    } 
+	    return indexName;
 	}
 	
 	protected String getSearchIndexName() {

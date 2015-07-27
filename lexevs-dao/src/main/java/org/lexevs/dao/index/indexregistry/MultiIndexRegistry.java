@@ -27,11 +27,48 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
+	}
+
+	public SystemResourceService getSystemResourceService() {
+		return systemResourceService;
+	}
+
+	public void setSystemResourceService(SystemResourceService systemResourceService) {
+		this.systemResourceService = systemResourceService;
+	}
+
+	public LuceneIndexTemplate getLuceneIndexTemplate() {
+		return luceneIndexTemplate;
+	}
+
+	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
+		this.luceneIndexTemplate = luceneIndexTemplate;
+	}
+
+	public LuceneDirectoryCreator getLuceneDirectoryCreator() {
+		return luceneDirectoryCreator;
+	}
+
+	public void setLuceneDirectoryCreator(
+			LuceneDirectoryCreator luceneDirectoryCreator) {
+		this.luceneDirectoryCreator = luceneDirectoryCreator;
+	}
+
+	public void setSearchLuceneIndexTemplate(
+			LuceneIndexTemplate searchLuceneIndexTemplate) {
+		this.searchLuceneIndexTemplate = searchLuceneIndexTemplate;
+	}
 	//TODO make any needed adjustments for a multi-Index implementation
 	private SystemVariables systemVariables;
 	
 	//Wired to LuceneIndexMetadataFactory
-	private MetaData metaData;
+//	private MetaData metaData;
 	
 	//Wired to DelegatingSystemResourceService
 	private SystemResourceService systemResourceService;
@@ -58,10 +95,14 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	private Map<String,Filter> codingSchemeFilterMap = new HashMap<String,Filter>();
 	
 
-	private String singleIndexName;
+//	private String singleIndexName;
 	
 
 	
+	public void setCodingSchemeFilterMap(Map<String, Filter> codingSchemeFilterMap) {
+		this.codingSchemeFilterMap = codingSchemeFilterMap;
+	}
+
 	public MultiIndexRegistry() {
 		// TODO Auto-generated constructor stub
 	}
@@ -106,8 +147,13 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	@Override
 	public LuceneIndexTemplate getLuceneIndexTemplate(String codingSchemeUri,
 			String version) {
-		// TODO Auto-generated method stub
-		return null;
+		CodingSchemeUriVersionPair key = new CodingSchemeUriVersionPair(codingSchemeUri,version);
+		if(! this.luceneCodingSchemeToIndexNameMap.containsKey(key)) {
+			this.autoRegisterIndex(codingSchemeUri, version);
+		}
+		String indexName = luceneCodingSchemeToIndexNameMap.get(key);
+		
+		return this.luceneIndexNameToTemplateMap.get(indexName);
 	}
 
 	@Override
@@ -187,7 +233,8 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 //						"Reindexing may be needed.");
 //			}
 
-//			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
+			String indexName = null;
+			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
 			
 		} catch (RuntimeException e) {
 			throw new RuntimeException(e);

@@ -676,7 +676,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new OntologyFormatAddingPostProcessor().register();
         new SupplementExtensionImpl().register();
         new HierarchyCheckingPostProcessor().register();
-        new SearchExtensionImpl().register();
+//        new SearchExtensionImpl().register();
         
         //Tree Extension (Deprecated)
         ExtensionDescription treeExt = new ExtensionDescription();

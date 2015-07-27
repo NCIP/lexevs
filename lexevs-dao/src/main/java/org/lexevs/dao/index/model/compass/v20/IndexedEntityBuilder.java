@@ -25,10 +25,10 @@ import java.util.Random;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
-import org.compass.core.Compass;
-import org.compass.core.Resource;
-import org.compass.core.Property.Index;
-import org.compass.core.Property.Store;
+//import org.compass.core.Compass;
+//import org.compass.core.Resource;
+//import org.compass.core.Property.Index;
+//import org.compass.core.Property.Store;
 import org.lexevs.dao.index.model.IndexableResourceBuilder;
 
 /**
@@ -36,10 +36,13 @@ import org.lexevs.dao.index.model.IndexableResourceBuilder;
 	 * 
 	 * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
 	 */
-public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,Resource>{	
+public class IndexedEntityBuilder 
+//implements 
+//IndexableResourceBuilder<Entity,Resource>
+{	
 		
 		/** The compass. */
-		private Compass compass;
+//		private Compass compass;
 	
 		/**
 		 * Gets the all qualifiers.
@@ -138,31 +141,31 @@ public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,Res
 		}
 		
 	
-
-		/* (non-Javadoc)
-		 * @see org.lexevs.dao.index.model.IndexableResourceBuilder#buildIndexableResource(java.lang.Object)
-		 */
-		public Resource buildIndexableResource(Entity input) {
-			Property[] allProps = input.getAllProperties();
-			List<String> allContexts = getAllContexts(allProps);
-			List<String> allQualifiers = getAllQualifiers(allProps);
-			List<String> allSources = getAllSources(allProps);
-			List<String> allPropertyTypes = getAllPropertyTypes(allProps);
-			List<String> allPropertyNames = getAllPropertyNames(allProps);
-			
-			Resource resource = compass.getResourceFactory().createResource("Entity");
-			
-			for(int i=0;i<allProps.length;i++) {
-				org.compass.core.Property prop = compass.
-					getResourceFactory().
-					createProperty("p"+String.valueOf(i), 
-							allProps[i].getValue().getContent(), 
-							Store.NO, Index.TOKENIZED);
-				resource.addProperty(prop);
-			}
-			
-			return resource;
-		}
+//
+//		/* (non-Javadoc)
+//		 * @see org.lexevs.dao.index.model.IndexableResourceBuilder#buildIndexableResource(java.lang.Object)
+//		 */
+//		public Resource buildIndexableResource(Entity input) {
+//			Property[] allProps = input.getAllProperties();
+//			List<String> allContexts = getAllContexts(allProps);
+//			List<String> allQualifiers = getAllQualifiers(allProps);
+//			List<String> allSources = getAllSources(allProps);
+//			List<String> allPropertyTypes = getAllPropertyTypes(allProps);
+//			List<String> allPropertyNames = getAllPropertyNames(allProps);
+//			
+//			Resource resource = compass.getResourceFactory().createResource("Entity");
+//			
+//			for(int i=0;i<allProps.length;i++) {
+//				org.compass.core.Property prop = compass.
+//					getResourceFactory().
+//					createProperty("p"+String.valueOf(i), 
+//							allProps[i].getValue().getContent(), 
+//							Store.NO, Index.TOKENIZED);
+//				resource.addProperty(prop);
+//			}
+//			
+//			return resource;
+//		}
 
 		/* (non-Javadoc)
 		 * @see org.lexevs.dao.index.model.IndexableResourceBuilder#resolveId(java.lang.Object)
@@ -171,23 +174,23 @@ public class IndexedEntityBuilder implements IndexableResourceBuilder<Entity,Res
 			return input.getEntityCode() + input.getEntityCodeNamespace() + new Random().nextInt();
 		}
 
-		/**
-		 * Sets the compass.
-		 * 
-		 * @param compass the new compass
-		 */
-		public void setCompass(Compass compass) {
-			this.compass = compass;
-		}
-
-		/**
-		 * Gets the compass.
-		 * 
-		 * @return the compass
-		 */
-		public Compass getCompass() {
-			return compass;
-		}
+//		/**
+//		 * Sets the compass.
+//		 * 
+//		 * @param compass the new compass
+//		 */
+//		public void setCompass(Compass compass) {
+//			this.compass = compass;
+//		}
+//
+//		/**
+//		 * Gets the compass.
+//		 * 
+//		 * @return the compass
+//		 */
+//		public Compass getCompass() {
+//			return compass;
+//		}
 		
 		
 
