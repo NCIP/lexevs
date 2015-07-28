@@ -2,11 +2,10 @@ package org.lexevs.dao.indexer.utility;
 
 public class CodingSchemeMetaData {
 
-	public CodingSchemeMetaData() {
-		// TODO Auto-generated constructor stub
+	private CodingSchemeMetaData() {
+		// No one else should be calling this.
 	}
 	
-
 
 	String indexDirectoryName;
 	String codingSchemeUri;
@@ -55,14 +54,11 @@ public class CodingSchemeMetaData {
 	        if (obj == null) return false;
 	        if (getClass() != obj.getClass()) return false;
 	        final CodingSchemeMetaData other = (CodingSchemeMetaData) obj;
-	        boolean sameindexDirectoryName = (this.indexDirectoryName == other.indexDirectoryName) || 
-	        		(this.indexDirectoryName != null && this.indexDirectoryName.equalsIgnoreCase(other.indexDirectoryName));
+	        boolean sameindexDirectoryName = equals(this.indexDirectoryName, other.indexDirectoryName);
 	        if (!sameindexDirectoryName) return false;
-	        boolean samecodingSchemeUri = (this.codingSchemeUri == other.codingSchemeUri) || 
-	        		(this.codingSchemeUri != null && this.codingSchemeUri.equalsIgnoreCase(other.codingSchemeUri));
+	        boolean samecodingSchemeUri = equals(this.codingSchemeUri, other.codingSchemeUri);
 	        if (!samecodingSchemeUri) return false;
-	        boolean samecodingSchemeVersion = (this.codingSchemeVersion == other.codingSchemeVersion) ||
-	        		(this.codingSchemeVersion != null && this.codingSchemeVersion.equalsIgnoreCase(other.codingSchemeVersion));
+	        boolean samecodingSchemeVersion = equals(this.codingSchemeVersion, other.codingSchemeVersion);
 	        if (!samecodingSchemeVersion) return false;
 	        boolean samehasNormFields = (this.hasNormFields == other.hasNormFields);
 	        if (!samehasNormFields) return false;
@@ -73,8 +69,9 @@ public class CodingSchemeMetaData {
 	        boolean sameindexComplete = (this.indexComplete == other.indexComplete); 
 	        if (!sameindexComplete) return false;
 	        boolean sameuriVersionPair = (this.uriVersionPair == other.uriVersionPair) ||
-	        		(this.uriVersionPair != null && (this.uriVersionPair.getURIVersion().equalsIgnoreCase(other.uriVersionPair.getURIVersion()) 
-	        				&& this.uriVersionPair.getDirectoryName().equalsIgnoreCase(other.uriVersionPair.getDirectoryName())));
+	        		(this.uriVersionPair != null && other.uriVersionPair != null &&
+	        		(equals(this.uriVersionPair.getURIVersion(), other.uriVersionPair.getURIVersion()) &&
+	        		 equals(this.uriVersionPair.getDirectoryName(), other.uriVersionPair.getDirectoryName())));
 	        if (!sameuriVersionPair) return false;
 	        return true;
 	    }
@@ -85,6 +82,17 @@ public class CodingSchemeMetaData {
 	        hash = 89 * hash + (this.codingSchemeVersion == null ? 0 :this.codingSchemeVersion.toUpperCase().hashCode());
 	        hash = 89 * hash + (this.codingSchemeUri == null ? 0 : this.codingSchemeUri.toUpperCase().hashCode());
 	        return hash;
+	    }
+	    
+	    
+	    /**
+	     * String equality check.
+	     * @param a
+	     * @param b
+	     * @return
+	     */
+	    private boolean equals(String a, String b) {
+			return (a == b) || (a != null && b != null && a.equalsIgnoreCase(b));
 	    }
 
 }
