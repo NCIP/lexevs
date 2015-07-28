@@ -66,28 +66,24 @@ public class CodingSchemeMetaData {
 	        if (!samecodingSchemeVersion) return false;
 	        boolean samehasNormFields = (this.hasNormFields == other.hasNormFields);
 	        if (!samehasNormFields) return false;
-	        boolean sameA = (this.a == other.a) || (this.a != null && this.a.equalsIgnoreCase(other.a));
-	        if (!sameA) return false;
-	        boolean sameA = (this.a == other.a) || (this.a != null && this.a.equalsIgnoreCase(other.a));
-	        if (!sameA) return false;
-	        boolean sameA = (this.a == other.a) || (this.a != null && this.a.equalsIgnoreCase(other.a));
-	        if (!sameA) return false;
-	    	String ;
-	    	String ;
-	    	String ;
-	    	boolean hasNormFields;
-	    	boolean hasDoubleMetaphoneFields;
-	    	boolean indexStarted;
-	    	boolean indexComplete;
-	    	SchemeURIVersionPair uriVersionPair;
+	        boolean samehasDoubleMetaphoneFields = (this.hasDoubleMetaphoneFields == other.hasDoubleMetaphoneFields); 
+	        if (!samehasDoubleMetaphoneFields) return false;
+	        boolean sameindexStarted = (this.indexStarted == other.indexStarted);
+	        if (!sameindexStarted) return false;
+	        boolean sameindexComplete = (this.indexComplete == other.indexComplete); 
+	        if (!sameindexComplete) return false;
+	        boolean sameuriVersionPair = (this.uriVersionPair == other.uriVersionPair) ||
+	        		(this.uriVersionPair != null && (this.uriVersionPair.getURIVersion().equalsIgnoreCase(other.uriVersionPair.getURIVersion()) 
+	        				&& this.uriVersionPair.getDirectoryName().equalsIgnoreCase(other.uriVersionPair.getDirectoryName())));
+	        if (!sameuriVersionPair) return false;
 	        return true;
 	    }
 
 	    @Override
 	    public int hashCode() {
 	        int hash = 3;
-	        hash = 89 * hash + (this.a == null ? 0 :this.a.toUpperCase().hashCode());
-	        hash = 89 * hash + (this.b == null ? 0 : this.b.toUpperCase().hashCode());
+	        hash = 89 * hash + (this.codingSchemeVersion == null ? 0 :this.codingSchemeVersion.toUpperCase().hashCode());
+	        hash = 89 * hash + (this.codingSchemeUri == null ? 0 : this.codingSchemeUri.toUpperCase().hashCode());
 	        return hash;
 	    }
 
