@@ -20,6 +20,9 @@ package org.lexevs.dao.indexer.utility;
 
 import java.io.File;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Small utility type routines used in the indexer.
  * 
@@ -79,5 +82,16 @@ public class Utility {
     public static String padInt(int input, char padChar, int desiredLength, boolean prepend) {
         return padStringBuffer(new StringBuffer(input + ""), padChar, desiredLength, prepend);
     }
+    
+    public static String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
+	    String indexName = reference.getCodingSchemeURN() + "-" + reference.getCodingSchemeVersion();
+	    char charsToReplace[] = {
+	    '!', '#', '$', '%' ,'&' ,'\'', '@', '^', '`', '~' ,'+',',','.', ';',':' ,'=' ,')', '(','>','<','+','|','\\','/','*','"'
+	    };
+	    for(char c: charsToReplace){
+	    indexName = StringUtils.replaceChars(indexName, c, '_');
+	    } 
+	    return indexName;
+	}
 
 }

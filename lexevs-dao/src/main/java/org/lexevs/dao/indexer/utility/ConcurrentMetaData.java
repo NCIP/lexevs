@@ -1,9 +1,12 @@
 package org.lexevs.dao.indexer.utility;
 
+import java.io.File;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConcurrentMetaData {
 
+	private File file_;
+	 
 	private ConcurrentMetaData() {
 		list = new CopyOnWriteArrayList<CodingSchemeMetaData>();
 	}
@@ -11,7 +14,7 @@ public class ConcurrentMetaData {
 	private static ConcurrentMetaData instance;
 	private CopyOnWriteArrayList<CodingSchemeMetaData> list;
 	
-	public ConcurrentMetaData getInstance(){
+	public static ConcurrentMetaData getInstance(String fileLocation){
 		if(instance == null){
 			return new ConcurrentMetaData();
 		}

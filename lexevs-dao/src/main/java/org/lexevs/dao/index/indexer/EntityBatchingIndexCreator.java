@@ -34,6 +34,7 @@ import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
 import org.lexevs.dao.indexer.utility.MetaData;
+import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -214,19 +215,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	}
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
-//		if(systemVariables.getIsSingleIndex()){
-//			return IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
-//		} else {
-//			return UUID.randomUUID().toString();
-//		}
-	    String indexName = reference.getCodingSchemeURN() + "-" + reference.getCodingSchemeVersion();
-	    char charsToReplace[] = {
-	    '!', '#', '$', '%' ,'&' ,'\'', '@', '^', '`', '~' ,'+',',','.', ';',':' ,'=' ,')', '(','>','<','+','|','\\','/','*','"'
-	    };
-	    for(char c: charsToReplace){
-	    indexName = StringUtils.replaceChars(indexName, c, '_');
-	    } 
-	    return indexName;
+		return Utility.getIndexName(reference);
 	}
 	
 	protected String getSearchIndexName() {
