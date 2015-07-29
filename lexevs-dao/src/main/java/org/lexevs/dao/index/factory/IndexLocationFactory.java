@@ -36,7 +36,7 @@ public class IndexLocationFactory implements FactoryBean {
 
 	@Override
 	public Object getObject() throws Exception {
-		Assert.hasText(indexName);
+	//	Assert.hasText(indexName);
 
 		return new FileSystemResource(systemVariables.getAutoLoadIndexLocation() +
 			File.separator + indexName);

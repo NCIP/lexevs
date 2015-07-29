@@ -1,12 +1,14 @@
 package org.lexevs.dao.indexer.utility;
 
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+
 public class CodingSchemeMetaData {
-
-	private CodingSchemeMetaData() {
-		// No one else should be calling this.
-	}
 	
-
+//	private LuceneMultiDirecoryFactory luceneDirectoryFactory;
+	
+	NamedDirectory directory;
+	
+	
 	String indexDirectoryName;
 	String codingSchemeUri;
 	String codingSchemeVersion;
@@ -15,18 +17,22 @@ public class CodingSchemeMetaData {
 	boolean indexStarted;
 	boolean indexComplete;
 	
-	public CodingSchemeMetaData(String indexDirectoryName,
+	private CodingSchemeMetaData() {
+		// No one else should be calling this.
+	}
+	
+	public CodingSchemeMetaData(
 			String codingSchemeUri, String codingSchemeVersion,
 			boolean hasNormFields, boolean hasDoubleMetaphoneFields,
-			boolean indexStarted, boolean indexComplete) {
+			boolean indexStarted, boolean indexComplete, NamedDirectory directory) {
 		super();
-		this.indexDirectoryName = indexDirectoryName;
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
 		this.hasNormFields = hasNormFields;
 		this.hasDoubleMetaphoneFields = hasDoubleMetaphoneFields;
 		this.indexStarted = indexStarted;
 		this.indexComplete = indexComplete;
+		this.directory = directory;
 	}
 
 	public class SchemeURIVersionPair{

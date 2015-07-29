@@ -7,16 +7,24 @@ import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.core.io.FileSystemResource;
 
-public class LuceneMultiIndexMetaDataFactory implements FactoryBean<CodingSchemeMetaData> {
+public class LuceneMultiIndexMetaDataFactory implements FactoryBean<ConcurrentMetaData> {
 	
-	private SystemVariables systemVariables;
-	private ConcurrentMetaData codingSchemes;
+
+	public FileSystemResource getFileLocation() {
+		return fileLocation;
+	}
+
+	public void setFileLocation(FileSystemResource fileLocation) {
+		this.fileLocation = fileLocation;
+	}
+
+	private FileSystemResource fileLocation;
 
 	@Override
-	public CodingSchemeMetaData getObject() throws Exception {
-//		return new MetaData(new File(systemVariables.getAutoLoadIndexLocation()));
-		return null;
+	public ConcurrentMetaData getObject() throws Exception {
+		return ConcurrentMetaData.getInstance(fileLocation.getPath());
 	}
 
 	@Override
@@ -28,14 +36,5 @@ public class LuceneMultiIndexMetaDataFactory implements FactoryBean<CodingScheme
 	public boolean isSingleton() {
 		return true;
 	}
-
-	public void setSystemVariables(SystemVariables systemVariables) {
-		this.systemVariables = systemVariables;
-	}
-
-	public SystemVariables getSystemVariables() {
-		return systemVariables;
-	}
-
 
 }

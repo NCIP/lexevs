@@ -30,6 +30,7 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
+import org.lexevs.dao.index.lucenesupport.LuceneMultiDirectoryFactory;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
@@ -57,8 +58,10 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	private IndexDaoManager indexDaoManager;
 	
-//	private MetaData metaData;
+	private LuceneMultiDirectoryFactory indexDirectoryFactory;
 	
+//	private MetaData metaData;
+
 	private ConcurrentMetaData codingSchemes;
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
@@ -189,11 +192,10 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			CodingSchemeMetaData metaData = null;
 			
 		try {	  
-			String codingSchemeName = 
-				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			metaData = new CodingSchemeMetaData(indexName,
-					reference.getCodingSchemeURN(), 
-					reference.getCodingSchemeVersion(),
+//			String codingSchemeName = 
+//				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+			metaData = indexDirectoryFactory.getCodingSchemeMetaData(indexName,
+					reference,
 					false, 
 					true,
 					false, 
@@ -345,5 +347,22 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	public IndexDaoManager getIndexDaoManager() {
 		return indexDaoManager;
+	}
+	
+	public LuceneMultiDirectoryFactory getIndexDirectoryFactory() {
+		return indexDirectoryFactory;
+	}
+
+	public void setIndexDirectoryFactory(
+			LuceneMultiDirectoryFactory indexDirectoryFactory) {
+		this.indexDirectoryFactory = indexDirectoryFactory;
+	}
+
+	public ConcurrentMetaData getCodingSchemes() {
+		return codingSchemes;
+	}
+
+	public void setCodingSchemes(ConcurrentMetaData codingSchemes) {
+		this.codingSchemes = codingSchemes;
 	}
 }
