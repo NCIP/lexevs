@@ -20,20 +20,18 @@ package org.lexevs.dao.index.indexer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
-import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
-import org.lexevs.dao.indexer.utility.MetaData;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
@@ -59,7 +57,9 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	private IndexDaoManager indexDaoManager;
 	
-	private MetaData metaData;
+//	private MetaData metaData;
+	
+	private ConcurrentMetaData codingSchemes;
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
 	
@@ -102,7 +102,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option) {	
 		String indexName = this.getIndexName(reference);
 		
-//		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
+		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 //		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		if(!onlyRegister) {
@@ -185,34 +185,37 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 */
 	protected void addEntityIndexMetadata(
 			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
+		
+			CodingSchemeMetaData metaData = null;
+			
 		try {	  
 			String codingSchemeName = 
 				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+			metaData = new CodingSchemeMetaData(indexName,
+					reference.getCodingSchemeURN(), 
+					reference.getCodingSchemeVersion(),
+					false, 
+					true,
+					false, 
+					false);
+			
+			codingSchemes.add(metaData);
 
-			metaData.setIndexMetaDataValue(codingSchemeName + "[:]" + reference.getCodingSchemeVersion(), indexName);
-
-			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-			metaData.setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
-			metaData.setIndexMetaDataValue(indexName, "has 'Double Metaphone' fields", true + "");
-			metaData.setIndexMetaDataValue(indexName, "indexing started", "");
-			metaData.setIndexMetaDataValue(indexName, "indexing finished", "");
-
-			metaData.rereadFile(true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	protected void addSearchIndexMetadata(
-			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
-		try {	  
-			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-
-			metaData.rereadFile(true);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	protected void addSearchIndexMetadata(
+//			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
+//		try {	  
+//			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
+//
+//			metaData.rereadFile(true);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
 		return Utility.getIndexName(reference);
@@ -328,13 +331,13 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		this.searchIndexer = searchIndexer;
 	}
 
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
-
-	public MetaData getMetaData() {
-		return metaData;
-	}
+//	public void setMetaData(MetaData metaData) {
+//		this.metaData = metaData;
+//	}
+//
+//	public MetaData getMetaData() {
+//		return metaData;
+//	}
 
 	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
 		this.indexDaoManager = indexDaoManager;

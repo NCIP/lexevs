@@ -14,13 +14,11 @@ public class CodingSchemeMetaData {
 	boolean hasDoubleMetaphoneFields;
 	boolean indexStarted;
 	boolean indexComplete;
-	SchemeURIVersionPair uriVersionPair;
 	
 	public CodingSchemeMetaData(String indexDirectoryName,
 			String codingSchemeUri, String codingSchemeVersion,
 			boolean hasNormFields, boolean hasDoubleMetaphoneFields,
-			boolean indexStarted, boolean indexComplete,
-			SchemeURIVersionPair uriVersionPair) {
+			boolean indexStarted, boolean indexComplete) {
 		super();
 		this.indexDirectoryName = indexDirectoryName;
 		this.codingSchemeUri = codingSchemeUri;
@@ -29,24 +27,17 @@ public class CodingSchemeMetaData {
 		this.hasDoubleMetaphoneFields = hasDoubleMetaphoneFields;
 		this.indexStarted = indexStarted;
 		this.indexComplete = indexComplete;
-		this.uriVersionPair = uriVersionPair;
 	}
 
 	public class SchemeURIVersionPair{
-		public SchemeURIVersionPair(String directoryName){
+		public SchemeURIVersionPair(){
 			URIVersion = codingSchemeUri + ":" + codingSchemeVersion;
-			directoryName = indexDirectoryName;
 		}
 		private String URIVersion;
-		private String directoryName;
 		
 		public String getURIVersion(){
 			return URIVersion;
-		}
-		
-		public String getDirectoryName(){
-			return directoryName;
-		}
+		}		
 	}
 	
 	  @Override
@@ -68,11 +59,6 @@ public class CodingSchemeMetaData {
 	        if (!sameindexStarted) return false;
 	        boolean sameindexComplete = (this.indexComplete == other.indexComplete); 
 	        if (!sameindexComplete) return false;
-	        boolean sameuriVersionPair = (this.uriVersionPair == other.uriVersionPair) ||
-	        		(this.uriVersionPair != null && other.uriVersionPair != null &&
-	        		(equals(this.uriVersionPair.getURIVersion(), other.uriVersionPair.getURIVersion()) &&
-	        		 equals(this.uriVersionPair.getDirectoryName(), other.uriVersionPair.getDirectoryName())));
-	        if (!sameuriVersionPair) return false;
 	        return true;
 	    }
 

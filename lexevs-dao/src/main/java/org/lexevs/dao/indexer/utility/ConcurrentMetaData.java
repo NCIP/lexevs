@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConcurrentMetaData {
 
-	private File file_;
+	private String path;
 	 
 	private ConcurrentMetaData() {
 		list = new CopyOnWriteArrayList<CodingSchemeMetaData>();
