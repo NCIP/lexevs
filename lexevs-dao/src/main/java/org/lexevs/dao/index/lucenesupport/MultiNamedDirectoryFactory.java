@@ -11,15 +11,14 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
 
-public class MultiNamedDirectoryFactory implements FactoryBean {
+public class MultiNamedDirectoryFactory implements FactoryBean<List<NamedDirectory>>{
 
 	private SystemVariables systemVariables;
 	private LuceneDirectoryCreator directoryCreator;
-	private LuceneMultiIndexMetaDataFactory luceneMultiIndexMetaDataFactory;
 	private ConcurrentMetaData concurrentMetaData;
 	
 	@Override
-	public Object getObject() throws Exception {
+	public List<NamedDirectory> getObject() throws Exception {
 		
 		
 		LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
