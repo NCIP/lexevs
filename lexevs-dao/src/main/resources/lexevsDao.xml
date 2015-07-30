@@ -929,28 +929,33 @@
 <!--  		<property name="namedDirectory" ref="commonIndexDirectory"/>-->
 	</bean>
 	
+<!--	
 	<bean id="luceneSearchIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
-<!-- 		<property name="namedDirectory" ref="searchIndexDirectory"/> -->
+ 		<property name="namedDirectory" ref="searchIndexDirectory"/> 
 	</bean>
-	
+-->	
 	<bean id="luceneMetadataIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
 		<property name="namedDirectory" ref="metadataIndexDirectory"/>
 	</bean>
+	
+	<bean id="luceneMultiIndexTemplate" class="org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate">
+		<property name="namedDirectories" ref="namedDirectoryListFactory"/>
+	</bean>
 
-	<bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry">
+	<!--  bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry">
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="metaData" ref="luceneIndexMetadataFactory"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
 		<property name="searchLuceneIndexTemplate" ref="luceneSearchIndexTemplate"/>
 		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
-	</bean>
+	</bean-->
 	
 	<bean id="multiIndexRegistry" class="org.lexevs.dao.index.indexregistry.MultiIndexRegistry">
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
-		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
-		<property name="searchLuceneIndexTemplate" ref="luceneSearchIndexTemplate"/>
+		<property name="luceneIndexTemplate" ref="luceneMultiIndexTemplate"/>
+		<!--  property name="searchLuceneIndexTemplate" ref="luceneSearchIndexTemplate"/-->
 		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
 	</bean>
 	

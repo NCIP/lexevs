@@ -7,84 +7,91 @@ public class CodingSchemeMetaData {
 //	private LuceneMultiDirecoryFactory luceneDirectoryFactory;
 	
 	NamedDirectory directory;
-	
-	
+
 	String indexDirectoryName;
 	String codingSchemeUri;
 	String codingSchemeVersion;
-	boolean hasNormFields;
-	boolean hasDoubleMetaphoneFields;
-	boolean indexStarted;
-	boolean indexComplete;
+	String codingSchemeName;
+	String uriVersion;
 	
 	private CodingSchemeMetaData() {
 		// No one else should be calling this.
 	}
-	
+
+
 	public CodingSchemeMetaData(
-			String codingSchemeUri, String codingSchemeVersion,
-			boolean hasNormFields, boolean hasDoubleMetaphoneFields,
-			boolean indexStarted, boolean indexComplete, NamedDirectory directory) {
+			String codingSchemeUri, String codingSchemeVersion, String codingSchemeName,
+		    NamedDirectory directory) {
 		super();
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
-		this.hasNormFields = hasNormFields;
-		this.hasDoubleMetaphoneFields = hasDoubleMetaphoneFields;
-		this.indexStarted = indexStarted;
-		this.indexComplete = indexComplete;
+		this.codingSchemeName = codingSchemeName;
+		this.uriVersion = codingSchemeUri + ":" + codingSchemeVersion;
 		this.directory = directory;
 	}
 
-	public class SchemeURIVersionPair{
-		public SchemeURIVersionPair(){
-			URIVersion = codingSchemeUri + ":" + codingSchemeVersion;
-		}
-		private String URIVersion;
-		
-		public String getURIVersion(){
-			return URIVersion;
-		}		
-	}
-	
-	  @Override
-	    public boolean equals(Object obj) {
-	        if (obj == null) return false;
-	        if (getClass() != obj.getClass()) return false;
-	        final CodingSchemeMetaData other = (CodingSchemeMetaData) obj;
-	        boolean sameindexDirectoryName = equals(this.indexDirectoryName, other.indexDirectoryName);
-	        if (!sameindexDirectoryName) return false;
-	        boolean samecodingSchemeUri = equals(this.codingSchemeUri, other.codingSchemeUri);
-	        if (!samecodingSchemeUri) return false;
-	        boolean samecodingSchemeVersion = equals(this.codingSchemeVersion, other.codingSchemeVersion);
-	        if (!samecodingSchemeVersion) return false;
-	        boolean samehasNormFields = (this.hasNormFields == other.hasNormFields);
-	        if (!samehasNormFields) return false;
-	        boolean samehasDoubleMetaphoneFields = (this.hasDoubleMetaphoneFields == other.hasDoubleMetaphoneFields); 
-	        if (!samehasDoubleMetaphoneFields) return false;
-	        boolean sameindexStarted = (this.indexStarted == other.indexStarted);
-	        if (!sameindexStarted) return false;
-	        boolean sameindexComplete = (this.indexComplete == other.indexComplete); 
-	        if (!sameindexComplete) return false;
-	        return true;
-	    }
 
-	    @Override
-	    public int hashCode() {
-	        int hash = 3;
-	        hash = 89 * hash + (this.codingSchemeVersion == null ? 0 :this.codingSchemeVersion.toUpperCase().hashCode());
-	        hash = 89 * hash + (this.codingSchemeUri == null ? 0 : this.codingSchemeUri.toUpperCase().hashCode());
-	        return hash;
-	    }
-	    
-	    
-	    /**
-	     * String equality check.
-	     * @param a
-	     * @param b
-	     * @return
-	     */
-	    private boolean equals(String a, String b) {
-			return (a == b) || (a != null && b != null && a.equalsIgnoreCase(b));
-	    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((codingSchemeName == null) ? 0 : codingSchemeName.hashCode());
+		result = prime * result
+				+ ((codingSchemeUri == null) ? 0 : codingSchemeUri.hashCode());
+		result = prime
+				* result
+				+ ((codingSchemeVersion == null) ? 0 : codingSchemeVersion
+						.hashCode());
+		result = prime
+				* result
+				+ ((indexDirectoryName == null) ? 0 : indexDirectoryName
+						.hashCode());
+		result = prime * result
+				+ ((uriVersion == null) ? 0 : uriVersion.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CodingSchemeMetaData other = (CodingSchemeMetaData) obj;
+		if (codingSchemeName == null) {
+			if (other.codingSchemeName != null)
+				return false;
+		} else if (!codingSchemeName.equals(other.codingSchemeName))
+			return false;
+		if (codingSchemeUri == null) {
+			if (other.codingSchemeUri != null)
+				return false;
+		} else if (!codingSchemeUri.equals(other.codingSchemeUri))
+			return false;
+		if (codingSchemeVersion == null) {
+			if (other.codingSchemeVersion != null)
+				return false;
+		} else if (!codingSchemeVersion.equals(other.codingSchemeVersion))
+			return false;
+		if (indexDirectoryName == null) {
+			if (other.indexDirectoryName != null)
+				return false;
+		} else if (!indexDirectoryName.equals(other.indexDirectoryName))
+			return false;
+		if (uriVersion == null) {
+			if (other.uriVersion != null)
+				return false;
+		} else if (!uriVersion.equals(other.uriVersion))
+			return false;
+		return true;
+	}
+
+
+	
 
 }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.io.Resource;
 
 public class LuceneMultiDirectoryFactory {
@@ -41,18 +42,16 @@ public class LuceneMultiDirectoryFactory {
 	}
 	
 	public CodingSchemeMetaData getCodingSchemeMetaData(String indexName,
-			AbsoluteCodingSchemeVersionReference ref, 
-			boolean norm, 
-			boolean dMphone, 
-			boolean start, 
-			boolean finish
-			) throws IOException{
+			AbsoluteCodingSchemeVersionReference ref) throws IOException{
+		
+		String codingSchemeName = LexEvsServiceLocator.getInstance().getResourceManager()
+				.getExternalCodingSchemeNameForUserCodingSchemeNameOrId(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+		
 		return new CodingSchemeMetaData(
 				ref.getCodingSchemeURN(), 
 				ref.getCodingSchemeVersion(), 
-				norm, dMphone, start, finish,
+				codingSchemeName,
 				getNamedDirectory(indexName));
-		
 	}
 
 }

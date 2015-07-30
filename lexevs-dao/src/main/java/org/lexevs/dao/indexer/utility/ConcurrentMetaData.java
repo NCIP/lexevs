@@ -1,6 +1,5 @@
 package org.lexevs.dao.indexer.utility;
 
-import java.io.File;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConcurrentMetaData {

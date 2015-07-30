@@ -7,19 +7,13 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.apache.lucene.search.Filter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.search.Filter;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.index.factory.IndexLocationFactory;
-import org.lexevs.dao.index.indexregistry.SingleIndexRegistry.CodingSchemeUriVersionPair;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
-import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
-import org.lexevs.dao.indexer.utility.MetaData;
+import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
@@ -27,43 +21,6 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
-	public SystemVariables getSystemVariables() {
-		return systemVariables;
-	}
-
-	public void setSystemVariables(SystemVariables systemVariables) {
-		this.systemVariables = systemVariables;
-	}
-
-	public SystemResourceService getSystemResourceService() {
-		return systemResourceService;
-	}
-
-	public void setSystemResourceService(SystemResourceService systemResourceService) {
-		this.systemResourceService = systemResourceService;
-	}
-
-	public LuceneIndexTemplate getLuceneIndexTemplate() {
-		return luceneIndexTemplate;
-	}
-
-	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
-		this.luceneIndexTemplate = luceneIndexTemplate;
-	}
-
-	public LuceneDirectoryCreator getLuceneDirectoryCreator() {
-		return luceneDirectoryCreator;
-	}
-
-	public void setLuceneDirectoryCreator(
-			LuceneDirectoryCreator luceneDirectoryCreator) {
-		this.luceneDirectoryCreator = luceneDirectoryCreator;
-	}
-
-	public void setSearchLuceneIndexTemplate(
-			LuceneIndexTemplate searchLuceneIndexTemplate) {
-		this.searchLuceneIndexTemplate = searchLuceneIndexTemplate;
-	}
 	//TODO make any needed adjustments for a multi-Index implementation
 	private SystemVariables systemVariables;
 	
@@ -82,7 +39,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	//Wired to DefaultLuceneDirectoryCreator
 	private LuceneDirectoryCreator luceneDirectoryCreator;
 	
-	
 	private Map<String,LuceneIndexTemplate> luceneIndexNameToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
 	
 	private Map<String,LuceneIndexTemplate> multiCodingSchemeKeyToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
@@ -93,11 +49,8 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		new HashMap<CodingSchemeUriVersionPair,String>();
 	
 	private Map<String,Filter> codingSchemeFilterMap = new HashMap<String,Filter>();
-	
 
 //	private String singleIndexName;
-	
-
 	
 	public void setCodingSchemeFilterMap(Map<String, Filter> codingSchemeFilterMap) {
 		this.codingSchemeFilterMap = codingSchemeFilterMap;
@@ -128,7 +81,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 			String mapKey = DaoUtility.createKey(codingSchemeUri, version);
 			this.codingSchemeFilterMap.remove(mapKey);
 		}
-
 	}
 	
 	protected NamedDirectory createIndexDirectory(String indexName) {
@@ -157,49 +109,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	}
 
 	@Override
-	public LuceneIndexTemplate getCommonLuceneIndexTemplate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public LuceneIndexTemplate getCommonLuceneIndexTemplate(
-			List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public LuceneIndexTemplate getSearchLuceneIndexTemplate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void destroyIndex(String indexName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getCommonIndexName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, Filter> getCodingSchemeFilterMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, Filter> getBoundaryDocFilterMap() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Boundary Docs no longer in use");
-	}
-
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
 		for (File f : indexDir.listFiles()) {
@@ -208,9 +117,7 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 						luceneIndexTemplate);
 			}
 		}
-		
 	}
-	
 	
 	protected void autoRegisterIndex(String codingSchemeUri, String version) {
 		String codingSchemeName;
@@ -280,6 +187,86 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 				return false;
 			return true;
 		}	
+	}
+	
+	@Override
+	public LuceneIndexTemplate getCommonLuceneIndexTemplate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LuceneIndexTemplate getCommonLuceneIndexTemplate(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LuceneIndexTemplate getSearchLuceneIndexTemplate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void destroyIndex(String indexName) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public String getCommonIndexName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, Filter> getCodingSchemeFilterMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, Filter> getBoundaryDocFilterMap() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Boundary Docs no longer in use");
+	}
+	
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
+	}
+
+	public SystemResourceService getSystemResourceService() {
+		return systemResourceService;
+	}
+
+	public void setSystemResourceService(SystemResourceService systemResourceService) {
+		this.systemResourceService = systemResourceService;
+	}
+
+	public LuceneIndexTemplate getLuceneIndexTemplate() {
+		return luceneIndexTemplate;
+	}
+
+	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
+		this.luceneIndexTemplate = luceneIndexTemplate;
+	}
+
+	public LuceneDirectoryCreator getLuceneDirectoryCreator() {
+		return luceneDirectoryCreator;
+	}
+
+	public void setLuceneDirectoryCreator(
+			LuceneDirectoryCreator luceneDirectoryCreator) {
+		this.luceneDirectoryCreator = luceneDirectoryCreator;
+	}
+
+	public void setSearchLuceneIndexTemplate(
+			LuceneIndexTemplate searchLuceneIndexTemplate) {
+		this.searchLuceneIndexTemplate = searchLuceneIndexTemplate;
 	}
 
 }

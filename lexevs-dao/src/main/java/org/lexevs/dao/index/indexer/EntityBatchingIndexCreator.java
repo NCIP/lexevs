@@ -195,11 +195,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 //			String codingSchemeName = 
 //				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 			metaData = indexDirectoryFactory.getCodingSchemeMetaData(indexName,
-					reference,
-					false, 
-					true,
-					false, 
-					false);
+					reference);
 			
 			codingSchemes.add(metaData);
 
