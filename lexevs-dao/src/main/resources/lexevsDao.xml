@@ -925,7 +925,7 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 	
-	<bean id="namedDirectoryListFactory" class="MultiNamedDirectoryFactory">
+	<bean id="namedDirectoryListFactory" class="org.lexevs.dao.index.lucenesupport.MultiNamedDirectoryFactory">
 		<property name="systemVariables" ref="systemVariables"/>
 		<property name="directoryCreator" ref="defaultLuceneDirectoryCreator"/>
 		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>

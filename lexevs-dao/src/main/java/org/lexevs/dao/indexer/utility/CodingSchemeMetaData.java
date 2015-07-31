@@ -31,6 +31,66 @@ public class CodingSchemeMetaData {
 	}
 
 
+	public NamedDirectory getDirectory() {
+		return directory;
+	}
+
+
+	public void setDirectory(NamedDirectory directory) {
+		this.directory = directory;
+	}
+
+
+	public String getIndexDirectoryName() {
+		return indexDirectoryName;
+	}
+
+
+	public void setIndexDirectoryName(String indexDirectoryName) {
+		this.indexDirectoryName = indexDirectoryName;
+	}
+
+
+	public String getCodingSchemeUri() {
+		return codingSchemeUri;
+	}
+
+
+	public void setCodingSchemeUri(String codingSchemeUri) {
+		this.codingSchemeUri = codingSchemeUri;
+	}
+
+
+	public String getCodingSchemeVersion() {
+		return codingSchemeVersion;
+	}
+
+
+	public void setCodingSchemeVersion(String codingSchemeVersion) {
+		this.codingSchemeVersion = codingSchemeVersion;
+	}
+
+
+	public String getCodingSchemeName() {
+		return codingSchemeName;
+	}
+
+
+	public void setCodingSchemeName(String codingSchemeName) {
+		this.codingSchemeName = codingSchemeName;
+	}
+
+
+	public String getUriVersion() {
+		return uriVersion;
+	}
+
+
+	public void setUriVersion(String uriVersion) {
+		this.uriVersion = uriVersion;
+	}
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

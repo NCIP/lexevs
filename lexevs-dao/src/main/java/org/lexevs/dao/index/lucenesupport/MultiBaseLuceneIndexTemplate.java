@@ -28,9 +28,12 @@ import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 //import org.apache.lucene.search.MultiSearcher;
 //import org.apache.lucene.search.Searchable;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 
 public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 	
+	private ConcurrentMetaData metaDirectories;
 	private List<NamedDirectory> namedDirectories;
 	
 	public MultiBaseLuceneIndexTemplate(){
@@ -42,10 +45,19 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 		try {
 			this.setIndexSearcher(this.createIndexSearcher(namedDirectories));
 			this.setIndexReader(this.createIndexReader(namedDirectories));
-			this.namedDirectories = namedDirectories;
+			this.namedDirectories = getNamedDirectories(metaDirectories);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private List<NamedDirectory> getNamedDirectories(
+			ConcurrentMetaData metaDirectories) {
+		List<NamedDirectory> directories = new ArrayList<NamedDirectory>();
+		for(CodingSchemeMetaData csmd : metaDirectories.getCodingSchemeList()){
+			directories.add(csmd.getDirectory());
+		}
+		return directories;
 	}
 
 	private ToParentBlockJoinIndexSearcher createIndexSearcher(
@@ -55,11 +67,6 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 	}
 
 	protected MultiReader createReader(IndexReader[] namedDirectories) throws Exception {
-//		List<Searchable> searchables = new ArrayList<Searchable>();
-		
-//		for(NamedDirectory dir : namedDirectories) {
-//			searchables.add(dir.getIndexSearcher());
-//		}
 		return new MultiReader(namedDirectories);
 	}
 	
@@ -73,22 +80,11 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 	}
 
 	@Override
+	@Deprecated
 	public void optimize() {
-		for(NamedDirectory namedDirectory : this.namedDirectories) {
-		try {
-			IndexWriter writer = 
-				createIndexWriter(namedDirectory);
-			
-//			if(! namedDirectory.getIndexReader().isOptimized()){
-//				writer.optimize();
-//			}
-			
-			namedDirectory.refresh();
-			
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} 
-		}
+		
+	System.out.println("Optimizing is no longer recommended or supported");
+	
 	}
 
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
@@ -99,4 +95,22 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 		//no-op -- this is a prototype-scoped class, don't close underlying Lucene
 		//resources on finalize
 	}
+
+	public ConcurrentMetaData getMetaDirectories() {
+		return metaDirectories;
+	}
+
+	public void setMetaDirectories(ConcurrentMetaData metaDirectories) {
+		this.metaDirectories = metaDirectories;
+	}
+
+	public List<NamedDirectory> getNamedDirectories() {
+		return namedDirectories;
+	}
+
+	public void setNamedDirectories(List<NamedDirectory> namedDirectories) {
+		this.namedDirectories = namedDirectories;
+	}
+	
+	
 }

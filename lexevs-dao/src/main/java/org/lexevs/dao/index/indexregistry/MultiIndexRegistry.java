@@ -110,13 +110,13 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
-		for (File f : indexDir.listFiles()) {
-			if (f.exists() && f.isDirectory()) {
-				luceneIndexNameToTemplateMap.put(f.getName(),
-						luceneIndexTemplate);
-			}
-		}
+//		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
+//		for (File f : indexDir.listFiles()) {
+//			if (f.exists() && f.isDirectory()) {
+//				luceneIndexNameToTemplateMap.put(f.getName(),
+//						luceneIndexTemplate);
+//			}
+//		}
 	}
 	
 	protected void autoRegisterIndex(String codingSchemeUri, String version) {
