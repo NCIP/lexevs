@@ -970,5 +970,9 @@
 	</bean>
 
 
-	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.LazyLoadMetaData" />
-</beans>
+	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.LazyLoadMetaData" >
+		<property name="systemVariables" ref="systemVariables"/>
+		<property name="directoryCreator" ref="defaultLuceneDirectoryCreator"/>
+	</bean>
+	
+	</beans>

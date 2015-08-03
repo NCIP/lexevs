@@ -42,7 +42,7 @@ import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate {
+public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTemplate {
 
 	private NamedDirectory namedDirectory;
 	
@@ -66,11 +66,6 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		}
 	}
 	
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		indexReader = namedDirectory.getIndexReader();
-		indexSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
-	}
 
 	@Override
 	public String getIndexName() {

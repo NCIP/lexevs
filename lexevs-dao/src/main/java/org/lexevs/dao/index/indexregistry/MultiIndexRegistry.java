@@ -14,6 +14,7 @@ import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
@@ -139,8 +140,10 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 //						"The Lucene index for this CodingScheme may have been dropped, or indexing may have failed. " +
 //						"Reindexing may be needed.");
 //			}
-
-			String indexName = null;
+			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+			ref.setCodingSchemeURN(codingSchemeUri);
+			ref.setCodingSchemeVersion(version);
+			String indexName = Utility.getIndexName(ref);
 			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
 			
 		} catch (RuntimeException e) {

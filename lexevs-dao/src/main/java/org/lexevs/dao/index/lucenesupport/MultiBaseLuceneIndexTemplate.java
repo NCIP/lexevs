@@ -49,7 +49,6 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 	
 	private ConcurrentMetaData metaDirectories;
 	private List<NamedDirectory> namedDirectories;
-	
 	private ToParentBlockJoinIndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
@@ -209,8 +208,7 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 
 	@Override
 	public void destroy() throws Exception {
-		// TODO Auto-generated method stub
-		
+		this.indexReader.close();
 	}
 
 	@Override
