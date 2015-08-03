@@ -970,5 +970,5 @@
 	</bean>
 
 
-	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.ApplicationListenerBean" />
+	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.LazyLoadMetaData" />
 </beans>

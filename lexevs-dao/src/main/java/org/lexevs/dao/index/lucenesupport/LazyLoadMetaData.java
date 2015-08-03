@@ -3,22 +3,25 @@ package org.lexevs.dao.index.lucenesupport;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.ContextStartedEvent;
 
-public class ApplicationListenerBean implements ApplicationListener<ContextRefreshedEvent> {
+public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEvent> {
 	
+	private LexEvsServiceLocator locator;
+
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
 		System.out.println("*** ContextRefreshedEvent");
-	}
+		
+		LexEvsServiceLocator locator = LexEvsServiceLocator.getInstance();
 
-	public void onApplicationEvent(ContextStartedEvent contextStartedEvent) {
-		
-		System.out.println("*** ContextStartedEvent");
-		LexEvsServiceLocator testLocator = LexEvsServiceLocator.getInstance();
-		
 		System.out.println("***  got service locator");
-		
 	}
 
+	public LexEvsServiceLocator getLocator() {
+		return locator;
+	}
+
+	public void setLocator(LexEvsServiceLocator locator) {
+		this.locator = locator;
+	}
 }

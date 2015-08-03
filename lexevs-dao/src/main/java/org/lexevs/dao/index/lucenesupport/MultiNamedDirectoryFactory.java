@@ -25,19 +25,19 @@ public class MultiNamedDirectoryFactory implements FactoryBean<ConcurrentMetaDat
 	
 	@Override
 	public ConcurrentMetaData getObject() throws Exception {
-//		List<RegistryEntry> registeredSchemes = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
-//		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();
-//		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
-//		for (File f : indexDir.listFiles()) {
-//			if (f.exists() && f.isDirectory()) {
-//				
-//				for(RegistryEntry re: registeredSchemes){
-//				    if(fileMatch(re,f)){
-//					concurrentMetaData.add(reconciliateDbToIndex(re, f, namedDirectories, directoryCreator));
-//				    }
-//				}
-//			}
-//		}
+		List<RegistryEntry> registeredSchemes = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();
+		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
+		for (File f : indexDir.listFiles()) {
+			if (f.exists() && f.isDirectory()) {
+				
+				for(RegistryEntry re: registeredSchemes){
+				    if(fileMatch(re,f)){
+					concurrentMetaData.add(reconciliateDbToIndex(re, f, namedDirectories, directoryCreator));
+				    }
+				}
+			}
+		}
 		return concurrentMetaData;
 	}
 
