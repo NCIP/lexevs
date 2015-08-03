@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -64,7 +65,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	private ConcurrentMetaData codingSchemes;
 
-	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
+//	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
+	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	private EntityIndexer entityIndexer;
 	

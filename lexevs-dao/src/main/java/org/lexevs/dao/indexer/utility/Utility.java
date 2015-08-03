@@ -22,6 +22,8 @@ import java.io.File;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 /**
  * Small utility type routines used in the indexer.
@@ -93,5 +95,9 @@ public class Utility {
 	    } 
 	    return indexName;
 	}
+    
+    public static Analyzer getAnalyzer(){
+    	return new StandardAnalyzer();
+    }
 
 }

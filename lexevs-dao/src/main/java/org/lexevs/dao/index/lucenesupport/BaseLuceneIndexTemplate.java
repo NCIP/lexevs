@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LeafReaderContext;
@@ -39,6 +40,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.dao.indexer.utility.Utility;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -49,7 +51,8 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 	private ToParentBlockJoinIndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
-	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
+//	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
+	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	public BaseLuceneIndexTemplate(){
 		super();
