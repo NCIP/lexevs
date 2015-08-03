@@ -28,13 +28,13 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
 		System.out.println("*** ContextRefreshedEvent");
 		
-		LexEvsServiceLocator locator = LexEvsServiceLocator.getInstance();
+		this.locator = LexEvsServiceLocator.getInstance();
 		try {
 			lazyLoadMetadata();
 		} catch (LBParameterException | IOException e) {
 			throw new RuntimeException(e);
 		}
-		System.out.println("***  got service locator");
+		System.out.println("*** Got service locator");
 	}
 
 	public LexEvsServiceLocator getLocator() {
@@ -47,7 +47,7 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 	
 	public void lazyLoadMetadata() throws LBParameterException, IOException{
 		ConcurrentMetaData concurrentMetaData = ConcurrentMetaData.getInstance(null);
-		List<RegistryEntry> registeredSchemes = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+		List<RegistryEntry> registeredSchemes = locator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();
 		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
 		for (File f : indexDir.listFiles()) {
@@ -70,7 +70,7 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 			LuceneDirectoryCreator directoryCreator) throws LBParameterException, IOException {
 		CodingSchemeMetaData csMetaData = null;
 		    	csMetaData = new CodingSchemeMetaData(re.getResourceUri(), re.getResourceVersion(), 
-		    			LexEvsServiceLocator.getInstance().getSystemResourceService().
+		    			locator.getSystemResourceService().
 		    			getInternalCodingSchemeNameForUserCodingSchemeName(re.getResourceUri(),re.getResourceVersion()),
 		    		    makeNewDirectoryIfNone(re));
 		    	
