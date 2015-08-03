@@ -969,4 +969,6 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 
+
+	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.ApplicationListenerBean" />
 </beans>
