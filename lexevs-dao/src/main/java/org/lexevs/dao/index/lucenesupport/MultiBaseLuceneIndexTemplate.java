@@ -21,20 +21,37 @@ package org.lexevs.dao.index.lucenesupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.MultiReader;
+import org.apache.lucene.index.StoredFieldVisitor;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.DocIdSet;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
+import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexSearcherCallback;
+import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexWriterCallback;
 //import org.apache.lucene.search.MultiSearcher;
 //import org.apache.lucene.search.Searchable;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
-public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
+public class MultiBaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate{
 	
 	private ConcurrentMetaData metaDirectories;
 	private List<NamedDirectory> namedDirectories;
+	
+	private ToParentBlockJoinIndexSearcher indexSearcher;
+	private IndexReader indexReader;
 	
 	public MultiBaseLuceneIndexTemplate(){
 		super();
@@ -111,6 +128,113 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate {
 	public void setNamedDirectories(List<NamedDirectory> namedDirectories) {
 		this.namedDirectories = namedDirectories;
 	}
+
+	@Override
+	public void addDocuments(List<Document> documents, Analyzer analyzer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeDocuments(Term term) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeDocuments(Query query) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void search(Query query, Filter filter, Collector Collector) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getMaxDoc() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Document getDocumentById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DocIdSet getDocIdSet(Filter filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getIndexName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T executeInIndexReader(IndexReaderCallback<T> callback) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T executeInIndexSearcher(IndexSearcherCallback<T> callback) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T executeInIndexWriter(IndexWriterCallback<T> callback) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ScoreDoc> search(Query query, Filter filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public ToParentBlockJoinIndexSearcher getIndexSearcher() {
+		return indexSearcher;
+	}
+
+	public void setIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) {
+		this.indexSearcher = indexSearcher;
+	}
+
+	public IndexReader getIndexReader() {
+		return indexReader;
+	}
+
+	public void setIndexReader(IndexReader indexReader) {
+		this.indexReader = indexReader;
+	}
+	
 	
 	
 }

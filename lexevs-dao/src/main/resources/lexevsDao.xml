@@ -777,7 +777,7 @@
 	 	<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 	 	<property name="indexRegistry" ref="multiIndexRegistry"/>
 	 	<property name="metaData" ref="luceneIndexMetadataFactory"/>
-	 </bean>
+	</bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.SearchIndexAwareEntityIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
@@ -847,7 +847,7 @@
 	<bean id="baseMetaDataLoader" class="org.lexevs.dao.index.metadata.BaseMetaDataLoader" />
 
 	<bean id="luceneIndexEntityDao" class="org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao">
-		<property name="luceneIndexTemplate" ref="luceneEntityIndexTemplate"/>
+		<property name="luceneIndexTemplate" ref="luceneMultiIndexTemplate"/>
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
 	</bean>
 	
@@ -856,7 +856,7 @@
 	</bean>
 	
 	<bean id="luceneSearch2013Dao" class="org.lexevs.dao.index.lucene.v2013.search.LuceneSearchDao">
-		<property name="luceneIndexTemplate" ref="luceneSearchIndexTemplate"/>
+		<property name="luceneIndexTemplate" ref="luceneMultiIndexTemplate"/>
 	</bean>
 	
 	<bean id="commonIndexLoaderCodeIndexer" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
@@ -931,9 +931,9 @@
 		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
 	</bean>
 	
-      <bean id="luceneEntityIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
+ <!--    <bean id="luceneEntityIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate"> -->  
 <!--  		<property name="namedDirectory" ref="commonIndexDirectory"/>-->
-	</bean>
+<!--	</bean>-->
 	
 <!--	
 	<bean id="luceneSearchIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
@@ -945,7 +945,7 @@
 	</bean>
 	
 	<bean id="luceneMultiIndexTemplate" class="org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate">
-		<property name="namedDirectories" ref="namedDirectoryListFactory"/>
+		<property name="metaDirectories" ref="namedDirectoryListFactory"/>
 	</bean>
 
 	<!--  bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry">
