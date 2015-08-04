@@ -426,7 +426,7 @@ public abstract class LuceneLoaderCode {
     	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
     	generator_.addTextField("entityCode", entityCode, true, true, false);
     	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
-    	generator_.addTextField("entityDescription", entityDescription.getContent(), true, true, false);
+    	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
     	
     	if (isActive != null) {
             if (isActive.booleanValue()) {
