@@ -47,7 +47,7 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 	}
 	
 	public void lazyLoadMetadata() throws LBParameterException, IOException{
-		ConcurrentMetaData concurrentMetaData = ConcurrentMetaData.getInstance(null);
+		ConcurrentMetaData concurrentMetaData = ConcurrentMetaData.getInstance();
 		List<RegistryEntry> registeredSchemes = locator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();
 		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());

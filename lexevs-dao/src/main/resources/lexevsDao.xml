@@ -768,9 +768,8 @@
 		<property name=	"luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
 	</bean>
 	
-	<bean id="concurrentCodingSchemeFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiIndexMetaDataFactory">
-		<property name="fileLocation" ref="multiIndexLocation"/>
-	</bean>
+	<bean id="concurrentCodingSchemeFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiIndexMetaDataFactory"/>
+
 	
 	<bean id="defaultLexEvsIndexOperations"
 		 class="org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations" parent="loggingBean">

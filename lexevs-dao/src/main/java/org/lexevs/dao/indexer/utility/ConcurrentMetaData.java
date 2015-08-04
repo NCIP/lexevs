@@ -1,10 +1,11 @@
 package org.lexevs.dao.indexer.utility;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConcurrentMetaData {
 
-	private String path;
 	private static ConcurrentMetaData instance;
 	private CopyOnWriteArrayList<CodingSchemeMetaData> list;
 	
@@ -12,14 +13,15 @@ public class ConcurrentMetaData {
 		list = new CopyOnWriteArrayList<CodingSchemeMetaData>();
 	}
 
-	public static ConcurrentMetaData getInstance(String fileLocation){
+	public static ConcurrentMetaData getInstance(){
 		if(instance == null){
-			return new ConcurrentMetaData();
+			instance = new ConcurrentMetaData();
+			return instance;
 		}
 		return instance;
 	}
 	
-	public CopyOnWriteArrayList<CodingSchemeMetaData> getCodingSchemeList(){
+	public List<CodingSchemeMetaData> getCodingSchemeList(){
 		return list;
 	}
 	
@@ -32,8 +34,11 @@ public class ConcurrentMetaData {
 	}
 
 	public void removeIndexMetaDataValue(String key) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
+	}
+	
+	public Iterator<CodingSchemeMetaData> refreshIterator(){
+		return list.iterator();
 	}
 
 	public String getIndexMetaDataValue(String key) {
