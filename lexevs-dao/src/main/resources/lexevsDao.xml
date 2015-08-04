@@ -920,10 +920,10 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 	</bean>
 
-	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
+<!-- 	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneIndexMetadataFactory"
 	depends-on="commonIndexDirectory">
 		<property name="systemVariables" ref="systemVariables"/> 
-	</bean>
+	</bean> -->
 	
 	<bean id="namedDirectoryListFactory" class="org.lexevs.dao.index.lucenesupport.MultiNamedDirectoryFactory">
 		<property name="systemVariables" ref="systemVariables"/>
