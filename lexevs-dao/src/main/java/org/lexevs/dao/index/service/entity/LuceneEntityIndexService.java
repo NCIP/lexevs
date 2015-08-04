@@ -26,7 +26,6 @@ import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.StoredFieldVisitor;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
@@ -34,15 +33,11 @@ import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.IndexCreator;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
-import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
-import org.lexevs.dao.indexer.utility.MetaData;
-import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -64,7 +59,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
+	private ConcurrentMetaData concurrentMetaData;
 	
 	private IndexRegistry indexRegistry;
 	
@@ -274,7 +269,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		this.doDropIndex(reference);
 	
 		try {
-			metaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
+			concurrentMetaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
 		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
@@ -306,7 +301,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
 		String key = this.getCodingSchemeKey(reference);
 		try {
-			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
+			return StringUtils.isNotBlank(concurrentMetaData.getIndexMetaDataValue(key));
 		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
@@ -357,16 +352,26 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		this.systemResourceService = systemResourceService;
 	}
 
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
+//	public void setMetaData(MetaData metaData) {
+//		this.metaData = metaData;
+//	}
+//
+//	public MetaData getMetaData() {
+//		return metaData;
+//	}
 
-	public MetaData getMetaData() {
-		return metaData;
-	}
-
+	
+	
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;
+	}
+
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
+	}
+
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
 	}
 
 	public EntityIndexer getEntityIndexer() {

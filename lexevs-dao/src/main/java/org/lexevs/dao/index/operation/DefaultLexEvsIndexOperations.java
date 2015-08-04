@@ -40,6 +40,7 @@ import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
@@ -50,7 +51,8 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	private IndexCreator indexCreator;
 	private IndexRegistry indexRegistry;
 	private IndexDaoManager indexDaoManager;
-	private MetaData metaData;
+	//private MetaData metaData;
+	private ConcurrentMetaData concurrentMetaData;
 	
 	@Override
 	public void registerCodingSchemeEntityIndex(String codingSchemeUri,
@@ -319,7 +321,7 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 		
 		String key = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion()).getKey();
 		try {
-			metaData.removeIndexMetaDataValue(key);
+			concurrentMetaData.removeIndexMetaDataValue(key);
 		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
@@ -333,17 +335,27 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 		this.indexDaoManager = indexDaoManager;
 	}
 
-	public MetaData getMetaData() {
-		return metaData;
-	}
-
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
+//	public MetaData getMetaData() {
+//		return metaData;
+//	}
+//
+//	public void setMetaData(MetaData metaData) {
+//		this.metaData = metaData;
+//	}
+	
+	
 
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
 	}
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
+	}
+
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
+	}
+
 	public IndexCreator getIndexCreator() {
 		return indexCreator;
 	}

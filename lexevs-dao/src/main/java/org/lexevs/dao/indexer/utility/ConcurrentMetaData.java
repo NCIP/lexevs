@@ -30,6 +30,16 @@ public class ConcurrentMetaData {
 	public boolean remove(CodingSchemeMetaData scheme){
 		return list.remove(scheme);
 	}
+
+	public void removeIndexMetaDataValue(String key) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getIndexMetaDataValue(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

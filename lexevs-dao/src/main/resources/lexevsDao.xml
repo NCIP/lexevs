@@ -776,7 +776,7 @@
 		 class="org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations" parent="loggingBean">
 	 	<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 	 	<property name="indexRegistry" ref="multiIndexRegistry"/>
-	 	<property name="metaData" ref="luceneIndexMetadataFactory"/>
+	 	<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
 	</bean>
 	
 	<bean id="luceneEntityIndexService" class="org.lexevs.dao.index.service.entity.SearchIndexAwareEntityIndexService">
@@ -784,7 +784,7 @@
 		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="entityIndexer" ref="commonIndexLoaderCodeIndexer"/>
-		<property name="metaData" ref="luceneIndexMetadataFactory"/>
+		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
 		<property name="searchIndexService" ref="luceneSearchIndexService"/>
 		<property name="registry" ref="registry"/>
@@ -810,7 +810,7 @@
 	
 	<bean id="indexDaoManager" class="org.lexevs.dao.index.access.IndexDaoManager">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
-		<property name="metaData" ref="luceneIndexMetadataFactory"/>
+		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
 		<property name="entityDaos">
 			<list>

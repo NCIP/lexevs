@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
@@ -31,7 +30,7 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.v2010.entity.SingleTemplateDisposableLuceneCommonEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-import org.lexevs.dao.indexer.utility.MetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
@@ -55,7 +54,7 @@ public class IndexDaoManager {
 	/** The system resource service. */
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
+	private ConcurrentMetaData concurrentMetaData;
 	
 	private IndexRegistry indexRegistry;
 
@@ -208,12 +207,12 @@ public class IndexDaoManager {
 		return metadataDaos;
 	}
 
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
 	}
 
-	public MetaData getMetaData() {
-		return metaData;
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
 	}
 
 	public IndexRegistry getIndexRegistry() {
