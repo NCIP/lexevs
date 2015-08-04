@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+<!-- <import resource="classpath:lexevsDao.xml" /> -->	
+
+
+
+<!-- 	<bean id="lazyLoadMetaDataTest" class="org.lexevs.dao.indexer.utility.LazyLoadMetaDataTest">
+		<property name="applicationListener" ref="eventListenerBean"/>
+	</bean> -->
+		<bean id="concurrentCodingSchemeFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiIndexMetaDataFactory"/>
+		
+	<bean id="metadataFactoryTest" class="org.lexevs.dao.indexer.utility.LuceneMultiIndexMetaDataFactoryTest" >
+		<property name="metadataFactory" ref="concurrentCodingSchemeFactory"/>
+	</bean>
+	
+</beans>

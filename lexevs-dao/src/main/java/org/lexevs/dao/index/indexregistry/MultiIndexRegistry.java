@@ -25,17 +25,11 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	//TODO make any needed adjustments for a multi-Index implementation
 	private SystemVariables systemVariables;
 	
-	//Wired to LuceneIndexMetadataFactory
-//	private MetaData metaData;
-	
 	//Wired to DelegatingSystemResourceService
 	private SystemResourceService systemResourceService;
 	
 	//Wired to BaseLuceneIndexTemplate
-	private LuceneIndexTemplate luceneIndexTemplate;
-	
-	//Wired to BaseLuceneIndexTemplate
-	private LuceneIndexTemplate searchLuceneIndexTemplate;
+	private LuceneIndexTemplate luceneIndexTemplate;	
 
 	//Wired to DefaultLuceneDirectoryCreator
 	private LuceneDirectoryCreator luceneDirectoryCreator;
@@ -267,9 +261,5 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		this.luceneDirectoryCreator = luceneDirectoryCreator;
 	}
 
-	public void setSearchLuceneIndexTemplate(
-			LuceneIndexTemplate searchLuceneIndexTemplate) {
-		this.searchLuceneIndexTemplate = searchLuceneIndexTemplate;
-	}
 
 }

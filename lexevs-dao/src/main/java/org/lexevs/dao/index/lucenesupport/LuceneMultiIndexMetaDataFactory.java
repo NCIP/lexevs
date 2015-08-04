@@ -7,15 +7,6 @@ import org.springframework.core.io.FileSystemResource;
 
 public class LuceneMultiIndexMetaDataFactory implements FactoryBean<ConcurrentMetaData> {
 
-//	private FileSystemResource fileLocation;
-//
-//	public FileSystemResource getFileLocation() {
-//		return fileLocation;
-//	}
-//
-//	public void setFileLocation(FileSystemResource fileLocation) {
-//		this.fileLocation = fileLocation;
-//	}
 
 	@Override
 	public ConcurrentMetaData getObject() throws Exception {

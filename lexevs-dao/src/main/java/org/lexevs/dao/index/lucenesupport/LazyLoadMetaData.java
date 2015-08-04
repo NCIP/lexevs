@@ -18,8 +18,9 @@ import org.lexevs.system.constants.SystemVariables;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEvent> {
-	
+public class LazyLoadMetaData implements
+		ApplicationListener<ContextRefreshedEvent> {
+
 	private LexEvsServiceLocator locator;
 	private SystemVariables systemVariables;
 	private LuceneDirectoryCreator directoryCreator;
@@ -27,69 +28,65 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
-		System.out.println("*** ContextRefreshedEvent");
-		
 		this.locator = LexEvsServiceLocator.getInstance();
 		try {
 			lazyLoadMetadata();
 		} catch (LBParameterException | IOException e) {
 			throw new RuntimeException(e);
 		}
-		System.out.println("*** Got service locator");
 	}
 
-	public LexEvsServiceLocator getLocator() {
-		return locator;
-	}
 
-	public void setLocator(LexEvsServiceLocator locator) {
-		this.locator = locator;
-	}
-	
-	public void lazyLoadMetadata() throws LBParameterException, IOException{
-		ConcurrentMetaData concurrentMetaData = ConcurrentMetaData.getInstance();
-		List<RegistryEntry> registeredSchemes = locator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+
+	public void lazyLoadMetadata() throws LBParameterException, IOException {
+		ConcurrentMetaData concurrentMetaData = ConcurrentMetaData
+				.getInstance();
+		List<RegistryEntry> registeredSchemes = locator.getRegistry()
+				.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();
 		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
 		for (File f : indexDir.listFiles()) {
 			if (f.exists() && f.isDirectory()) {
-				
-				for(RegistryEntry re: registeredSchemes){
-				    if(fileMatch(re,f)){
-					concurrentMetaData.add(reconciliateDbToIndex(re, f, namedDirectories, directoryCreator));
-				    }
+
+				for (RegistryEntry re : registeredSchemes) {
+					if (fileMatch(re, f)) {
+						concurrentMetaData.add(reconciliateDbToIndex(re, f,
+								namedDirectories, directoryCreator));
+					}
 				}
 			}
 		}
-		
+
 	}
-	
-	private CodingSchemeMetaData reconciliateDbToIndex(
-			RegistryEntry re, 
-			File f, 
-			List<NamedDirectory> namedDirectories, 
-			LuceneDirectoryCreator directoryCreator) throws LBParameterException, IOException {
+
+	private CodingSchemeMetaData reconciliateDbToIndex(RegistryEntry re,
+			File f, List<NamedDirectory> namedDirectories,
+			LuceneDirectoryCreator directoryCreator)
+			throws LBParameterException, IOException {
 		CodingSchemeMetaData csMetaData = null;
-		    	csMetaData = new CodingSchemeMetaData(re.getResourceUri(), re.getResourceVersion(), 
-		    			locator.getSystemResourceService().
-		    			getInternalCodingSchemeNameForUserCodingSchemeName(re.getResourceUri(),re.getResourceVersion()),
-		    		    makeNewDirectoryIfNone(re));
-		    	
+		csMetaData = new CodingSchemeMetaData(re.getResourceUri(),
+				re.getResourceVersion(), locator.getSystemResourceService()
+						.getInternalCodingSchemeNameForUserCodingSchemeName(
+								re.getResourceUri(), re.getResourceVersion()),
+				makeNewDirectoryIfNone(re));
+
 		return csMetaData;
 	}
 
-	private NamedDirectory makeNewDirectoryIfNone(RegistryEntry re) throws IOException {
+	private NamedDirectory makeNewDirectoryIfNone(RegistryEntry re)
+			throws IOException {
 		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 		reference.setCodingSchemeURN(re.getResourceUri());
 		reference.setCodingSchemeVersion(re.getResourceVersion());
-		return multiDirectoryFactory.getNamedDirectory(Utility.getIndexName(reference));
+		return multiDirectoryFactory.getNamedDirectory(Utility
+				.getIndexName(reference));
 	}
 
 	private boolean fileMatch(RegistryEntry re, File f) {
 		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 		reference.setCodingSchemeURN(re.getResourceUri());
 		reference.setCodingSchemeVersion(re.getResourceVersion());
-		if(Utility.getIndexName(reference).equals(f.getName())){
+		if (Utility.getIndexName(reference).equals(f.getName())) {
 			return true;
 		}
 		return false;
@@ -120,6 +117,12 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 		this.multiDirectoryFactory = multiDirectoryFactory;
 	}
 	
-	
-	
+	public LexEvsServiceLocator getLocator() {
+		return locator;
+	}
+
+	public void setLocator(LexEvsServiceLocator locator) {
+		this.locator = locator;
+	}
+
 }

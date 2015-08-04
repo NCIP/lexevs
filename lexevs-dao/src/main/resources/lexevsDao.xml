@@ -924,11 +924,11 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean> -->
 	
-	<bean id="namedDirectoryListFactory" class="org.lexevs.dao.index.lucenesupport.MultiNamedDirectoryFactory">
+<!-- 	<bean id="namedDirectoryListFactory" class="org.lexevs.dao.index.lucenesupport.MultiNamedDirectoryFactory">
 		<property name="systemVariables" ref="systemVariables"/>
 		<property name="directoryCreator" ref="defaultLuceneDirectoryCreator"/>
 		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
-	</bean>
+	</bean> -->
 	
  <!--    <bean id="luceneEntityIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate"> -->  
 <!--  		<property name="namedDirectory" ref="commonIndexDirectory"/>-->
@@ -944,7 +944,7 @@
 	</bean>
 	
 	<bean id="luceneMultiIndexTemplate" class="org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate">
-		<property name="metaDirectories" ref="namedDirectoryListFactory"/>
+		<property name="metaDirectories" ref="concurrentCodingSchemeFactory"/>
 	</bean>
 
 	<!--  bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry">
