@@ -23,6 +23,7 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 	private LexEvsServiceLocator locator;
 	private SystemVariables systemVariables;
 	private LuceneDirectoryCreator directoryCreator;
+	private LuceneMultiDirectoryFactory multiDirectoryFactory;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
@@ -78,7 +79,6 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 	}
 
 	private NamedDirectory makeNewDirectoryIfNone(RegistryEntry re) throws IOException {
-		LuceneMultiDirectoryFactory multiDirectoryFactory = new LuceneMultiDirectoryFactory();
 		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 		reference.setCodingSchemeURN(re.getResourceUri());
 		reference.setCodingSchemeVersion(re.getResourceVersion());
@@ -110,6 +110,16 @@ public class LazyLoadMetaData implements ApplicationListener<ContextRefreshedEve
 	public void setDirectoryCreator(LuceneDirectoryCreator directoryCreator) {
 		this.directoryCreator = directoryCreator;
 	}
+
+	public LuceneMultiDirectoryFactory getMultiDirectoryFactory() {
+		return multiDirectoryFactory;
+	}
+
+	public void setMultiDirectoryFactory(
+			LuceneMultiDirectoryFactory multiDirectoryFactory) {
+		this.multiDirectoryFactory = multiDirectoryFactory;
+	}
+	
 	
 	
 }
