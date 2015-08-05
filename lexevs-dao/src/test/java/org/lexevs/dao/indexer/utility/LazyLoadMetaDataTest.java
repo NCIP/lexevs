@@ -9,28 +9,32 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexevs.dao.index.lucenesupport.LazyLoadMetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"/lexevsDao.xml"})
 public class LazyLoadMetaDataTest {
 	
 	LazyLoadMetaData applicationListener;
 	LexEvsServiceLocator locator;
 	
-	@BeforeClass
-	public static void setUp() throws Exception {
-	Field field = LexEvsServiceLocator.class.getDeclaredField("CONTEXT_FILE");
-		
-		field.setAccessible(true);
-		
-		field.set(null, "lexevsDao-testLLMD.xml");
-		
-		LexEvsServiceLocator.getInstance();
+	@Autowired
+	ApplicationContext context;
+	
+	@Before
+	public void setUp() throws Exception {
+
 	}
 
 	@Test
 	public void test() {
+		applicationListener = (LazyLoadMetaData)context.getBean("eventListenerBean");
 		try {
 			applicationListener.lazyLoadMetadata();
 		} catch (LBParameterException | IOException e) {
