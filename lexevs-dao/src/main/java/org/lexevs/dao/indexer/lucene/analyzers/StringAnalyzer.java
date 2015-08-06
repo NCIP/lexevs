@@ -47,11 +47,11 @@ import org.lexevs.dao.indexer.lucene.filters.StringFilter;
 // TODO - this analyzer needs testing.
 public class StringAnalyzer extends Analyzer {
     private String tokenString_;
-    private KeywordAnalyzer baseAnalyzer_;
+//    private KeywordAnalyzer baseAnalyzer_;
 
     public StringAnalyzer(String stringToTokenizeOn) {
         tokenString_ = stringToTokenizeOn;
-        baseAnalyzer_ = new KeywordAnalyzer();
+//        baseAnalyzer_ = new KeywordAnalyzer();
     }
 
       // CANNOT OVERRIDE FINAL METHOD
@@ -61,8 +61,8 @@ public class StringAnalyzer extends Analyzer {
 //    }
 
 	@Override
-	protected TokenStreamComponents createComponents(String fieldName) {	
-        final KeywordTokenizer source = new KeywordTokenizer();
+	protected TokenStreamComponents createComponents(String fieldName) {
+        final KeywordTokenizer source = new KeywordTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY, KeywordTokenizer.DEFAULT_BUFFER_SIZE );
         TokenStream filter = new StringFilter(source, tokenString_);
         return new TokenStreamComponents(source, filter);
 	}

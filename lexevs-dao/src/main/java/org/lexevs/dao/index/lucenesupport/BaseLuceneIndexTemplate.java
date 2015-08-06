@@ -51,8 +51,8 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 	private ToParentBlockJoinIndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
-//	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
-	private Analyzer analyzer = Utility.getAnalyzer();
+	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
+//	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	public BaseLuceneIndexTemplate(){
 		super();

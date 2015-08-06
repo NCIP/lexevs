@@ -359,7 +359,7 @@ public abstract class LuceneLoaderCode {
                     temp.append(STRING_TOKEINZER_TOKEN);
                 }
             }
-            generator_.addTextField("sources", temp.toString(), false, true, true);
+            generator_.addTextField("sources", temp.toString(), false, true, false);
         }
 
         if (usageContexts != null && usageContexts.length > 0) {
@@ -370,7 +370,7 @@ public abstract class LuceneLoaderCode {
                     temp.append(STRING_TOKEINZER_TOKEN);
                 }
             }
-            generator_.addTextField("usageContexts", temp.toString(), false, true, true);
+            generator_.addTextField("usageContexts", temp.toString(), false, true, false);
         }
 
         if (qualifiers != null && qualifiers.length > 0) {
@@ -382,7 +382,7 @@ public abstract class LuceneLoaderCode {
                     temp.append(STRING_TOKEINZER_TOKEN);
                 }
             }
-            generator_.addTextField("qualifiers", temp.toString(), false, true, true);
+            generator_.addTextField("qualifiers", temp.toString(), false, true, false);
         }
 
         return generator_.getDocument();
@@ -553,7 +553,7 @@ public abstract class LuceneLoaderCode {
                     TokenStream filter = new StandardFilter(source);
                     filter = new LowerCaseFilter( filter);
                     filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
-                    filter = new SnowballFilter(filter, fieldName);
+                    filter = new SnowballFilter(filter, "English");
                     return new TokenStreamComponents(source, filter);
                 }
             };
@@ -567,8 +567,7 @@ public abstract class LuceneLoaderCode {
         analyzerPerField.put("qualifiers", sa);
         
         // no stop words, default character removal set.
-    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet), analyzerPerField);
+    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET), analyzerPerField);
         return analyzer;
     }
 

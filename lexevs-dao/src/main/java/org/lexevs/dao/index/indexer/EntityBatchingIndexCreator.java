@@ -65,8 +65,8 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	private ConcurrentMetaData codingSchemes;
 
-//	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
-	private Analyzer analyzer = Utility.getAnalyzer();
+	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
+//	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	private EntityIndexer entityIndexer;
 	

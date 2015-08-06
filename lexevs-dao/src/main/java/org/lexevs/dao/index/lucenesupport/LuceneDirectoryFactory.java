@@ -144,7 +144,7 @@ public class LuceneDirectoryFactory implements FactoryBean {
 			CorruptIndexException, LockObtainFailedException {
 
 
-				IndexWriterConfig config = new IndexWriterConfig(Utility.getAnalyzer());
+				IndexWriterConfig config = new IndexWriterConfig(LuceneLoaderCode.getAnaylzer());
 				IndexWriter writer = new IndexWriter(directory, config);
 
 				writer.close();
