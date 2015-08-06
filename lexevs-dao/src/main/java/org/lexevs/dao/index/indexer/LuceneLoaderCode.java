@@ -27,8 +27,19 @@ import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.phonetic.DoubleMetaphoneFilter;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.util.AttributeFactory;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
 import org.lexevs.dao.indexer.lucene.analyzers.EncoderAnalyzer;
@@ -139,6 +150,8 @@ public abstract class LuceneLoaderCode {
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
  
     private LuceneEntityDao luceneEntityDao;
+
+    private AttributeFactory reader;
     
     protected LuceneLoaderCode(){
     	try {
@@ -157,8 +170,9 @@ public abstract class LuceneLoaderCode {
     // TODO add a GUI option for the codeBoundry stuff.
     
     /** The literal analyzer. */
-    public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-            new char[]{}, new char[]{}); 
+//    public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+//            new char[]{}, new char[]{}); 
+    public static Analyzer literalAnalyzer = new KeywordAnalyzer();
     /**
      * Adds the entity.
      * 
@@ -504,15 +518,25 @@ public abstract class LuceneLoaderCode {
     	analyzerPerField.put(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer); 
 
         if (doubleMetaphoneEnabled_) {
-            EncoderAnalyzer temp = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {},
-                    WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
+            Analyzer temp = new Analyzer() {
+            	
+                @Override
+                protected TokenStreamComponents createComponents(String fieldName) {
+                    final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                    source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                    TokenStream filter = new StandardFilter(source);
+                    filter = new LowerCaseFilter( filter);
+                    filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
+                    filter = new DoubleMetaphoneFilter(filter, 4, true);
+                    return new TokenStreamComponents(source, filter);
+                }
+            };
             analyzerPerField.put(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, temp);
         }
 
         if (normEnabled_) {
             try {
-                NormAnalyzer temp = new NormAnalyzer(false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                        .getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
+                Analyzer temp = new StandardAnalyzer(CharArraySet.EMPTY_SET);
                 analyzerPerField.put(NORM_PROPERTY_VALUE_FIELD, temp);
             } catch (NoClassDefFoundError e) {
                //
@@ -520,8 +544,19 @@ public abstract class LuceneLoaderCode {
         }
 
         if (stemmingEnabled_) {
-            SnowballAnalyzer temp = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                    .getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
+        Analyzer temp = new Analyzer() {
+            	
+                @Override
+                protected TokenStreamComponents createComponents(String fieldName) {
+                    final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                    source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                    TokenStream filter = new StandardFilter(source);
+                    filter = new LowerCaseFilter( filter);
+                    filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
+                    filter = new SnowballFilter(filter, fieldName);
+                    return new TokenStreamComponents(source, filter);
+                }
+            };
             analyzerPerField.put(STEMMING_PROPERTY_VALUE_FIELD, temp);
         }
 

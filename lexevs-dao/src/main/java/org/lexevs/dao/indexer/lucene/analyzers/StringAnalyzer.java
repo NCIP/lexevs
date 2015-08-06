@@ -21,8 +21,17 @@ package org.lexevs.dao.indexer.lucene.analyzers;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.core.KeywordTokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.util.AttributeFactory;
 import org.lexevs.dao.indexer.lucene.filters.StringFilter;
 
 /**
@@ -52,8 +61,9 @@ public class StringAnalyzer extends Analyzer {
 //    }
 
 	@Override
-	protected TokenStreamComponents createComponents(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	protected TokenStreamComponents createComponents(String fieldName) {	
+        final KeywordTokenizer source = new KeywordTokenizer();
+        TokenStream filter = new StringFilter(source, tokenString_);
+        return new TokenStreamComponents(source, filter);
 	}
 }
