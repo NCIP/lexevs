@@ -18,12 +18,13 @@
  */
 package org.lexevs.dao.index.indexer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -42,11 +43,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.util.AttributeFactory;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
-import org.lexevs.dao.indexer.lucene.analyzers.EncoderAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.NormAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 
 /**
  * Base Lucene Loader code.
@@ -141,10 +137,10 @@ public abstract class LuceneLoaderCode {
     protected boolean isParent = true;
     
     /** The analyzer_. */
-    protected PerFieldAnalyzerWrapper analyzer_ = null;
+    protected static PerFieldAnalyzerWrapper analyzer_ = null;
 
     /** The Constant STRING_TOKEINZER_TOKEN. */
-    public static final String STRING_TOKEINZER_TOKEN = "<:>";
+    public static final String STRING_TOKENIZER_TOKEN = "<:>";
     
     /** The Constant QUALIFIER_NAME_VALUE_SPLIT_TOKEN. */
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
@@ -356,10 +352,10 @@ public abstract class LuceneLoaderCode {
             for (int i = 0; i < sources.length; i++) {
                 temp.append(sources[i]);
                 if (i + 1 < sources.length) {
-                    temp.append(STRING_TOKEINZER_TOKEN);
+                    temp.append(STRING_TOKENIZER_TOKEN);
                 }
             }
-            generator_.addTextField("sources", temp.toString(), false, true, false);
+            generator_.addTextField("sources", temp.toString(), false, true, true);
         }
 
         if (usageContexts != null && usageContexts.length > 0) {
@@ -367,10 +363,10 @@ public abstract class LuceneLoaderCode {
             for (int i = 0; i < usageContexts.length; i++) {
                 temp.append(usageContexts[i]);
                 if (i + 1 < usageContexts.length) {
-                    temp.append(STRING_TOKEINZER_TOKEN);
+                    temp.append(STRING_TOKENIZER_TOKEN);
                 }
             }
-            generator_.addTextField("usageContexts", temp.toString(), false, true, false);
+            generator_.addTextField("usageContexts", temp.toString(), false, true, true);
         }
 
         if (qualifiers != null && qualifiers.length > 0) {
@@ -379,10 +375,10 @@ public abstract class LuceneLoaderCode {
                 temp.append(qualifiers[i].qualifierName + QUALIFIER_NAME_VALUE_SPLIT_TOKEN
                         + qualifiers[i].qualifierValue);
                 if (i + 1 < qualifiers.length) {
-                    temp.append(STRING_TOKEINZER_TOKEN);
+                    temp.append(STRING_TOKENIZER_TOKEN);
                 }
             }
-            generator_.addTextField("qualifiers", temp.toString(), false, true, false);
+            generator_.addTextField("qualifiers", temp.toString(), false, true, true);
         }
 
         return generator_.getDocument();
@@ -403,21 +399,6 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws Exception the exception
      */
-    protected Document addEntityBoundryDocument(
-    		String codingSchemeName, 
-    		String codingSchemeId, 
-    		String codingSchemeVersion, 
-    		String entityId,
-    		String entityCodeNamespace) throws Exception {
-        generator_.startNewDocument(codingSchemeName + "-" + entityId);
-        generator_.addTextField("codingSchemeName", codingSchemeName, false, true, false);
-        generator_.addTextField("codingSchemeId", codingSchemeId, false, true, false);
-        generator_.addTextField("codeBoundry", "T", false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityCodeNamespace), false, true, false);
-
-        return generator_.getDocument();
-    }
     
     protected Document createParentDocument(
     		String codingSchemeName,
@@ -559,15 +540,17 @@ public abstract class LuceneLoaderCode {
             };
             analyzerPerField.put(STEMMING_PROPERTY_VALUE_FIELD, temp);
         }
-
-        // these fields just get simple analyzing.
-        StringAnalyzer sa = new StringAnalyzer(STRING_TOKEINZER_TOKEN);
+        
+        List<String> dividerList = new ArrayList<String>();
+        dividerList.add(STRING_TOKENIZER_TOKEN);
+        Analyzer sa = new StandardAnalyzer(new CharArraySet(dividerList, true));
         analyzerPerField.put("sources", sa);
         analyzerPerField.put("usageContexts", sa);
         analyzerPerField.put("qualifiers", sa);
         
         // no stop words, default character removal set.
     	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET), analyzerPerField);
+    	System.out.println(analyzer.toString());
         return analyzer;
     }
 
@@ -615,7 +598,7 @@ public abstract class LuceneLoaderCode {
 	}
 	
 	public Analyzer getAnalyzer() {
-		return this.analyzer_;
+		return analyzer_;
 	}
 
 	/**
