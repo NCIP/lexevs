@@ -550,7 +550,6 @@ public abstract class LuceneLoaderCode {
         
         // no stop words, default character removal set.
     	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET), analyzerPerField);
-    	System.out.println(analyzer.toString());
         return analyzer;
     }
 

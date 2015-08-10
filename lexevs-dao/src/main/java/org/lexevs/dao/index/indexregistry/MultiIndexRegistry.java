@@ -1,12 +1,16 @@
 package org.lexevs.dao.index.indexregistry;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.Filter;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -207,7 +211,13 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
 	@Override
 	public void destroyIndex(String indexName) {
-		// TODO Auto-generated method stub
+		String location = systemVariables.getAutoLoadIndexLocation();
+		try {
+			Path path = Paths.get(location,indexName);
+			FileUtils.deleteDirectory(new File(path.toString()));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

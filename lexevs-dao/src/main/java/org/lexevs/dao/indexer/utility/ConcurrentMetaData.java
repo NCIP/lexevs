@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.lexevs.system.model.LocalCodingScheme;
+
 public class ConcurrentMetaData {
 
 	private static ConcurrentMetaData instance;
@@ -34,7 +36,12 @@ public class ConcurrentMetaData {
 	}
 
 	public void removeIndexMetaDataValue(String key) {
-		// TODO Auto-generated method stub		
+		for(CodingSchemeMetaData csm : list){
+			if(key.equals(LocalCodingScheme.getLocalCodingScheme(
+					csm.getCodingSchemeName(), csm.getCodingSchemeVersion()).getKey())){
+				list.remove(csm);
+			}
+		}
 	}
 	
 	public Iterator<CodingSchemeMetaData> refreshIterator(){
