@@ -230,7 +230,8 @@ public class CleanUpUtility {
 
             IndexerService is = new IndexerService(indexParentFolder.getAbsolutePath(), false);
             is.deleteIndex(index);
-            is.getMetaData().removeAllIndexMetaDataValue(index);
+            //TODO Check correctness of the index value
+            is.getMetaData().removeIndexMetaDataValue(index);
         } catch (LBParameterException e) {
             throw e;
         } catch (Exception e) {

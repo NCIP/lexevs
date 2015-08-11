@@ -32,6 +32,7 @@ import org.lexevs.dao.indexer.lucene.Index;
 import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
 import org.lexevs.dao.indexer.lucene.LuceneIndexSearcher;
 import org.lexevs.dao.indexer.lucene.LuceneMultiIndexSearcher;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 
@@ -43,7 +44,8 @@ import org.lexevs.dao.indexer.utility.Utility;
 public class IndexerService {
     private File rootLocation_; // The root directory of the indexes
     private Hashtable indexes_; // will hold all of the current indexes
-    private MetaData metadata_;
+//    private MetaData metadata_;
+    private ConcurrentMetaData concurrentMetaData;
 
     /**
      * Create an indexer service on a directory. A Indexer Service can contain
@@ -57,6 +59,7 @@ public class IndexerService {
      */
     public IndexerService(String rootLocation, boolean configureLog4j) throws RuntimeException {
         initServices(rootLocation, configureLog4j);
+        concurrentMetaData = ConcurrentMetaData.getInstance();
     }
 
     /**
@@ -69,6 +72,7 @@ public class IndexerService {
      */
     public IndexerService(String rootLocation) throws RuntimeException {
         initServices(rootLocation, false);
+        concurrentMetaData = ConcurrentMetaData.getInstance();
     }
 
     private void initServices(String rootLocation, boolean configureLog4j) throws RuntimeException {
@@ -112,7 +116,9 @@ public class IndexerService {
                 indexes_.remove(indexName);
             }
         }
-        metadata_.rereadFile(true);
+    //    metadata_.rereadFile(true);
+        //This doesn't really do anything.
+        concurrentMetaData.refreshIterator();
     }
 
     /**
@@ -457,7 +463,7 @@ public class IndexerService {
     }
 
     private void initMetaData(File root) throws RuntimeException {
-        metadata_ = new MetaData(root);
+       ConcurrentMetaData.getInstance();
     }
 
     public String getRootLocation() {
@@ -476,8 +482,8 @@ public class IndexerService {
         }
     }
 
-    public MetaData getMetaData() {
-        return metadata_;
+    public ConcurrentMetaData getMetaData() {
+        return concurrentMetaData;
     }
 
     /**

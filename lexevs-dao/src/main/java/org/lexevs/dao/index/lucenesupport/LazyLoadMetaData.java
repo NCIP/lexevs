@@ -63,6 +63,7 @@ public class LazyLoadMetaData implements
 			File f, List<NamedDirectory> namedDirectories,
 			LuceneDirectoryCreator directoryCreator)
 			throws LBParameterException, IOException {
+		//TODO do not build indexes if not there, but flag in the metadat object.
 		CodingSchemeMetaData csMetaData = null;
 		csMetaData = new CodingSchemeMetaData(re.getResourceUri(),
 				re.getResourceVersion(), locator.getSystemResourceService()

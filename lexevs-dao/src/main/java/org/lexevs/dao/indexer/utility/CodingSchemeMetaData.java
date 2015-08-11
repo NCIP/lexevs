@@ -13,6 +13,7 @@ public class CodingSchemeMetaData {
 	String codingSchemeVersion;
 	String codingSchemeName;
 	String uriVersion;
+	private boolean hasIndex = false;
 	
 	private CodingSchemeMetaData() {
 		// No one else should be calling this.
@@ -26,8 +27,9 @@ public class CodingSchemeMetaData {
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
 		this.codingSchemeName = codingSchemeName;
-		this.uriVersion = codingSchemeUri + ":" + codingSchemeVersion;
+		this.uriVersion = codingSchemeUri + "[:]" + codingSchemeVersion;
 		this.directory = directory;
+		if(directory != null){hasIndex = true;}
 	}
 
 
@@ -89,6 +91,13 @@ public class CodingSchemeMetaData {
 	public void setUriVersion(String uriVersion) {
 		this.uriVersion = uriVersion;
 	}
+
+	
+
+	public boolean isHasIndex() {
+		return hasIndex;
+	}
+
 
 
 	@Override

@@ -38,6 +38,7 @@ import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.indexer.api.IndexerService;
 import org.lexevs.dao.indexer.api.SearchServiceInterface;
 import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
@@ -56,6 +57,8 @@ public class IndexInterface {
     
     /** The service_. */
     private IndexerService service_;
+    
+    private ConcurrentMetaData  metadataService_;
 
     /** The index searchers_. */
     private Hashtable<String, SearchServiceInterface> indexSearchers_;
@@ -294,7 +297,7 @@ public class IndexInterface {
 
             // clean up the index metadata file.
 
-            service_.getMetaData().removeAllIndexMetaDataValue(indexName);
+            //service_.getMetaData().removeAllIndexMetaDataValue(indexName);
             service_.getMetaData().removeIndexMetaDataValue(lcs.getKey());
 
             // delete the index
@@ -331,13 +334,13 @@ public class IndexInterface {
      * 
      * @return the meta location
      */
-    public String getMetaLocation() {
-        try {
-            return service_.getMetaData().getMetaLocation();
-        } catch (IOException e) {
-            throw new RuntimeException("Unexpected Error", e);
-        }
-    }
+//    public String getMetaLocation() {
+//        try {
+//            return service_.getMetaData().getMetaLocation();
+//        } catch (IOException e) {
+//            throw new RuntimeException("Unexpected Error", e);
+//        }
+//    }
 
     /**
      * Gets the base indexer service.

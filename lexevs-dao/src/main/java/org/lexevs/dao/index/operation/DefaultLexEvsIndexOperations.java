@@ -28,12 +28,10 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-//import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.index.TermsEnum;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
@@ -41,10 +39,10 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
-import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
+//import org.apache.lucene.index.TermEnum;
 
 public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements LexEvsIndexOperations {
 	
@@ -164,14 +162,6 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 								createIndex(ref);
 				}
 				
-//				if(! indexReader.isOptimized()) {
-//					getLogger().warn("Index is not optimized, optimizing now...");
-//					
-//					indexRegistry.getCommonLuceneIndexTemplate().optimize();
-//					getLogger().warn("Optimizing Complete.");
-//				} else {
-//					getLogger().warn("Index is optimized.");
-//				}
 				
 				return null;
 			}

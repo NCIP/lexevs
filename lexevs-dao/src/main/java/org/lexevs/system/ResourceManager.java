@@ -347,15 +347,15 @@ public class ResourceManager implements SystemResourceService {
      * @throws LBInvocationException the LB invocation exception
      * @throws UnexpectedInternalError the unexpected internal error
      */
-    public void rereadAutoLoadIndexes() throws LBInvocationException, UnexpectedInternalError {
-        // This wont handle removes - but does handle additions.
-        IndexInterface is = indexInterfaces_.get(getSystemVariables().getAutoLoadIndexLocation());
-        is.initCodingSchemes();
-        ArrayList<String> keys = is.getCodeSystemKeys();
-        for (int i = 0; i < keys.size(); i++) {
-            codingSchemeToIndexMap_.put(keys.get(i), getSystemVariables().getAutoLoadIndexLocation());
-        }
-    }
+//    public void rereadAutoLoadIndexes() throws LBInvocationException, UnexpectedInternalError {
+//        // This wont handle removes - but does handle additions.
+//        IndexInterface is = indexInterfaces_.get(getSystemVariables().getAutoLoadIndexLocation());
+//        is.initCodingSchemes();
+//        ArrayList<String> keys = is.getCodeSystemKeys();
+//        for (int i = 0; i < keys.size(); i++) {
+//            codingSchemeToIndexMap_.put(keys.get(i), getSystemVariables().getAutoLoadIndexLocation());
+//        }
+//    }
 
     /**
      * The alias are the different names that a codingscheme can be referenced.
@@ -938,11 +938,11 @@ public class ResourceManager implements SystemResourceService {
      * 
      * @return the meta data index interface
      */
-    public IndexInterface getMetaDataIndexInterface() {
-        logger_.debug("Returning MetaData index interface");
-        // metadata index is always in the autoload index location
-        return indexInterfaces_.get(systemVars_.getAutoLoadIndexLocation());
-    }
+//    public IndexInterface getMetaDataIndexInterface() {
+//        logger_.debug("Returning MetaData index interface");
+//        // metadata index is always in the autoload index location
+//        return indexInterfaces_.get(systemVars_.getAutoLoadIndexLocation());
+//    }
 
     /**
      * Gets the all sql interfaces.
