@@ -215,9 +215,9 @@ public class LexEvsResourceManagingService
 			String supplementsUri = entry.getSupplementsUri();
 			String supplementsVersion = entry.getSupplementsVersion();
 			
-			if(StringUtils.equals(supplementsUri, uri)
+			if(supplementsUri != null
 					&&
-					StringUtils.equals(supplementsVersion, version)){
+					supplementsVersion != null){
 				throw new LBParameterException("The Coding Scheme Resource URI: " +
 						uri +
 						" Version: " + 

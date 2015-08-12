@@ -40,16 +40,17 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
  */
 public class CleanUpTest extends TestCase {
 	
-	public void testRemoveAutombilesExtension() throws LBException {
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-
-		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-				"urn:oid:11.11.0.1.1-extension", "1.0-extension");
-
-		lbsm.deactivateCodingSchemeVersion(a, null);
-
-		lbsm.removeCodingSchemeVersion(a);
-	}
+	//Should not be able to run before it is unregistered
+//	public void testRemoveAutombilesExtension() throws LBException {
+//		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+//
+//		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+//				"urn:oid:11.11.0.1.1-extension", "1.0-extension");
+//
+//		lbsm.deactivateCodingSchemeVersion(a, null);
+//
+//		lbsm.removeCodingSchemeVersion(a);
+//	}
 	 
     public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -61,10 +62,11 @@ public class CleanUpTest extends TestCase {
         		"urn:oid:11.11.0.1.1-extension", "1.0-extension");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.deactivateCodingSchemeVersion(b, null);
         lbsm.unRegisterCodingSchemeAsSupplement(a, b);
 
         lbsm.removeCodingSchemeVersion(a);
-        //TODO remove b as well?
+        lbsm.removeCodingSchemeVersion(b);
     }
 
     public void testRemoveGermanMadeParts() throws LBException {
