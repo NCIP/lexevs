@@ -1,10 +1,10 @@
 package org.lexevs.dao.indexer.utility;
 
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.system.model.LocalCodingScheme;
 
 public class CodingSchemeMetaData {
 	
-//	private LuceneMultiDirecoryFactory luceneDirectoryFactory;
 	
 	NamedDirectory directory;
 
@@ -12,12 +12,9 @@ public class CodingSchemeMetaData {
 	String codingSchemeUri;
 	String codingSchemeVersion;
 	String codingSchemeName;
-	String uriVersion;
-	private boolean hasIndex = false;
+	String nameVersionKey;
 	
-	private CodingSchemeMetaData() {
-		// No one else should be calling this.
-	}
+	private boolean hasIndex = false;
 
 
 	public CodingSchemeMetaData(
@@ -27,7 +24,8 @@ public class CodingSchemeMetaData {
 		this.codingSchemeUri = codingSchemeUri;
 		this.codingSchemeVersion = codingSchemeVersion;
 		this.codingSchemeName = codingSchemeName;
-		this.uriVersion = codingSchemeUri + "[:]" + codingSchemeVersion;
+		this.nameVersionKey =  LocalCodingScheme.getLocalCodingScheme(
+				codingSchemeName, codingSchemeVersion).getKey();
 		this.directory = directory;
 		if(directory != null){hasIndex = true;}
 	}
@@ -83,13 +81,13 @@ public class CodingSchemeMetaData {
 	}
 
 
-	public String getUriVersion() {
-		return uriVersion;
+	public String getNameVersionKey() {
+		return nameVersionKey;
 	}
 
 
-	public void setUriVersion(String uriVersion) {
-		this.uriVersion = uriVersion;
+	public void setNameVersionKey(String nameVersion) {
+		this.nameVersionKey = nameVersion ;
 	}
 
 	
@@ -118,7 +116,7 @@ public class CodingSchemeMetaData {
 				+ ((indexDirectoryName == null) ? 0 : indexDirectoryName
 						.hashCode());
 		result = prime * result
-				+ ((uriVersion == null) ? 0 : uriVersion.hashCode());
+				+ ((nameVersionKey == null) ? 0 : nameVersionKey.hashCode());
 		return result;
 	}
 
@@ -152,10 +150,10 @@ public class CodingSchemeMetaData {
 				return false;
 		} else if (!indexDirectoryName.equals(other.indexDirectoryName))
 			return false;
-		if (uriVersion == null) {
-			if (other.uriVersion != null)
+		if (nameVersionKey == null) {
+			if (other.nameVersionKey != null)
 				return false;
-		} else if (!uriVersion.equals(other.uriVersion))
+		} else if (!nameVersionKey.equals(other.nameVersionKey))
 			return false;
 		return true;
 	}

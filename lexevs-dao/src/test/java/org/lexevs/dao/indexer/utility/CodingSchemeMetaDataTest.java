@@ -56,7 +56,7 @@ public class CodingSchemeMetaDataTest {
 	@Test
 	public void testCodingSchemeMetaDataGetURIVersion() {
 
-        assertTrue(csmd1.getUriVersion().equals(codingSchemeUri + ":" + codingSchemeVersion));
+        assertTrue(csmd1.getNameVersionKey().equals(codingSchemeName + "[:]" + codingSchemeVersion));
 	}
 	
 	@After

@@ -50,7 +50,7 @@ public class ConcurrentMetaData {
 
 	public String getIndexMetaDataValue(String key) {
 		for(CodingSchemeMetaData csmd: list){
-			if(csmd.getUriVersion().equals(key)){
+			if(csmd.getNameVersionKey().equals(key)){
 				if(csmd.getDirectory() != null){
 				return csmd.getDirectory().getIndexName();
 				}
@@ -63,7 +63,7 @@ public class ConcurrentMetaData {
 		String[] keys = new String[list.size()];
 		for(int i = 0; i < list.size(); i++){
 			
-			keys[i] = list.get(i).getUriVersion();
+			keys[i] = list.get(i).getNameVersionKey();
 		}
 		return keys;
 		
