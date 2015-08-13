@@ -84,10 +84,6 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 		return null;
 	}
 
-	@Override
-	public void optimizeIndex() {
-		template.optimize();
-	}
 
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {

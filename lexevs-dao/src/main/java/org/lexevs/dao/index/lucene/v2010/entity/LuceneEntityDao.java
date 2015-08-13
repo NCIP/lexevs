@@ -96,10 +96,10 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		return getLuceneIndexTemplate(codingSchemeUri, version).getIndexName();
 	}
 
-	@Override
-	public void optimizeIndex(String codingSchemeUri, String version) {
-		getLuceneIndexTemplate(codingSchemeUri, version).optimize();
-	}
+//	@Override
+//	public void optimizeIndex(String codingSchemeUri, String version) {
+//		getLuceneIndexTemplate(codingSchemeUri, version).optimize();
+//	}
 
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query) {
 		

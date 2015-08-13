@@ -148,10 +148,10 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		return query;
 	}
 
-	@Override
-	public void optimizeIndex() {
-		this.luceneIndexTemplate.optimize();
-	}
+//	@Override
+//	public void optimizeIndex() {
+//		this.luceneIndexTemplate.optimize();
+//	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.AbstractBaseIndexDao#doGetSupportedLexEvsIndexFormatVersions()

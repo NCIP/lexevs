@@ -47,7 +47,7 @@ public class LuceneMetadataDao implements MetadataDao {
 			List<Document> documents, Analyzer analyzer) {
 		this.luceneIndexTemplate.addDocuments(documents, analyzer);
 		
-		luceneIndexTemplate.optimize();
+//		luceneIndexTemplate.optimize();
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public class LuceneMetadataDao implements MetadataDao {
 						codingSchemeUri
 						+ BaseMetaDataLoader.CONCATINATED_VALUE_SPLIT_TOKEN + version));
 		
-		luceneIndexTemplate.optimize();
+//		luceneIndexTemplate.optimize();
 	}
 
 	@Override

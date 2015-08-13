@@ -39,7 +39,7 @@ public interface SearchIndexService {
 	
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity);
 
-	public void optimize();
+//	public void optimize();
 
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,

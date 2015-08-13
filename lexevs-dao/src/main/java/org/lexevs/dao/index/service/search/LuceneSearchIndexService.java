@@ -163,10 +163,10 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		}
 	}
 
-	@Override
-	public void optimize() {
-		indexDaoManager.getSearchDao().optimizeIndex();
-	}
+//	@Override
+//	public void optimize() {
+//		indexDaoManager.getSearchDao().optimizeIndex();
+//	}
 
 	@Override
 	public Analyzer getAnalyzer() {

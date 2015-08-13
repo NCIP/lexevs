@@ -182,7 +182,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 					this.indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 				
 				this.getLogger().info("In multi-directory index mode, optimizing...");
-				entityIndexDao.optimizeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+//				entityIndexDao.optimizeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 				this.getLogger().info("Optimizing complete.");
 			}
 		}

@@ -95,13 +95,13 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 		return new MultiReader(readers.toArray(new IndexReader[readers.size()]));
 	}
 
-	@Override
-	@Deprecated
-	public void optimize() {
-		
-	System.out.println("Optimizing is no longer recommended or supported");
-	
-	}
+//	@Override
+//	@Deprecated
+//	public void optimize() {
+//		
+//	System.out.println("Optimizing is no longer recommended or supported");
+//	
+//	}
 
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
 		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");

@@ -38,7 +38,7 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	
 	public String getIndexName(String codingSchemeUri, String version);
 	
-	public void optimizeIndex(String codingSchemeUri, String version);
+//	public void optimizeIndex(String codingSchemeUri, String version);
 
 	public List<ScoreDoc> query(String codingSchemeUri, String version, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 

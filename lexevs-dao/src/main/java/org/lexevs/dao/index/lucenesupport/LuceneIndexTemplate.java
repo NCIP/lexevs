@@ -45,7 +45,7 @@ public interface LuceneIndexTemplate {
 	public void search(Query query, Filter filter,
 			Collector Collector);
 	
-	public void optimize();
+//	public void optimize();
 	
 	public int getMaxDoc();
 	
