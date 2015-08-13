@@ -54,7 +54,7 @@ public class ConcurrentMetaDataTest {
 	
 	@Test
 	public void getMetaDataKeys(){
-		meta.getIndexMetaDataKeys();
+		assertTrue(meta.getIndexMetaDataKeys().length == 2);
 	}
 	
 	@Test
@@ -72,6 +72,7 @@ public class ConcurrentMetaDataTest {
 			assertTrue(meta.getCodingSchemeList().size() == 1);
 		}
 	}
+	
 	@Test
 	public void getMetaDataValueUsingKey(){
 		assertTrue(meta.getIndexMetaDataValue("TwoTest[:]v2.0").
