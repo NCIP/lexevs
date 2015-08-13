@@ -75,7 +75,7 @@ public class LazyLoadMetaData implements
 	}
 
 	private NamedDirectory makeNewDirectoryIfNone(RegistryEntry re)
-			throws IOException {
+			throws IOException, LBParameterException {
 		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 		reference.setCodingSchemeURN(re.getResourceUri());
 		reference.setCodingSchemeVersion(re.getResourceVersion());
@@ -83,7 +83,7 @@ public class LazyLoadMetaData implements
 				.getIndexName(reference));
 	}
 
-	private boolean fileMatch(RegistryEntry re, File f) {
+	private boolean fileMatch(RegistryEntry re, File f) throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 		reference.setCodingSchemeURN(re.getResourceUri());
 		reference.setCodingSchemeVersion(re.getResourceVersion());

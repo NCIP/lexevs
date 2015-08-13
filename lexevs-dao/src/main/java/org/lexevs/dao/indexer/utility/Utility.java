@@ -21,9 +21,11 @@ package org.lexevs.dao.indexer.utility;
 import java.io.File;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
  * Small utility type routines used in the indexer.
@@ -85,8 +87,12 @@ public class Utility {
         return padStringBuffer(new StringBuffer(input + ""), padChar, desiredLength, prepend);
     }
     
-    public static String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
-	    String indexName = reference.getCodingSchemeURN() + "-" + reference.getCodingSchemeVersion();
+    public static String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
+    	
+    	String codingSchemeName = LexEvsServiceLocator.getInstance().getSystemResourceService().
+    		getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+    	
+	    String indexName = codingSchemeName + "-" + reference.getCodingSchemeVersion();
 	    char charsToReplace[] = {
 	    '!', '#', '$', '%' ,'&' ,'\'', '@', '^', '`', '~' ,'+',',','.', ';',':' ,'=' ,')', '(','>','<','+','|','\\','/','*','"'
 	    };

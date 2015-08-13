@@ -962,6 +962,8 @@
 		<property name="luceneIndexTemplate" ref="luceneMultiIndexTemplate"/>
 		<!--  property name="searchLuceneIndexTemplate" ref="luceneSearchIndexTemplate"/-->
 		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
+		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
+		
 	</bean>
 	
 	<bean id="cacheConfigLocationFactory" class="org.lexevs.cache.CacheConfigLocationFactory">

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
@@ -105,7 +106,15 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option) {	
-		String indexName = this.getIndexName(reference);
+		
+		String indexName;
+		try {
+			indexName = this.getIndexName(reference);
+		} catch (LBParameterException e) {
+			throw new RuntimeException("Problems getting coding scheme name. uri = " + 
+					reference.getCodingSchemeURN()  + " version = " + reference.getCodingSchemeVersion(), e);
+		}
+
 		
 		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
 //		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
@@ -217,7 +226,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 //		}
 //	}
 	
-	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
+	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
 		return Utility.getIndexName(reference);
 	}
 	

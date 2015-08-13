@@ -18,7 +18,7 @@ import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
-import org.lexevs.dao.indexer.utility.Utility;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
@@ -37,6 +37,8 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
 	//Wired to DefaultLuceneDirectoryCreator
 	private LuceneDirectoryCreator luceneDirectoryCreator;
+	
+	private ConcurrentMetaData concurrentMetaData;
 	
 	private Map<String,LuceneIndexTemplate> luceneIndexNameToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
 	
@@ -120,32 +122,26 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	protected void autoRegisterIndex(String codingSchemeUri, String version) {
 		String codingSchemeName;
+		
 		try {
 			codingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeUri, version);
-		} catch (LBParameterException e) {
-			throw new RuntimeException(e);
-		}
-		
-		LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
-		try {
-//TODO these seem to be query dependencies. We'll try to fix them later. The local map might be the place to deal with this but I think we
-// should look at how lucene handles this first.
-//			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
+			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
 			
-//			if(StringUtils.isBlank(indexName)) {
-//				throw new RuntimeException(
-//						"Cannot autoregister index for CodingScheme: " + codingSchemeUri + " Version: " + version + ".\n" +
-//						"The Lucene index for this CodingScheme may have been dropped, or indexing may have failed. " +
-//						"Reindexing may be needed.");
-//			}
-			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-			ref.setCodingSchemeURN(codingSchemeUri);
-			ref.setCodingSchemeVersion(version);
-			String indexName = Utility.getIndexName(ref);
+			String indexName = concurrentMetaData.getIndexMetaDataValue(lcs.getKey());
+			
+			if(StringUtils.isBlank(indexName)) {
+				throw new RuntimeException(
+						"Cannot autoregister index for CodingScheme: " + codingSchemeUri + " Version: " + version + ".\n" +
+						"The Lucene index for this CodingScheme may have been dropped, or indexing may have failed. " +
+						"Reindexing may be needed.");
+			}
 			this.registerCodingSchemeIndex(codingSchemeUri, version, indexName);
 			
 		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
+		} catch (LBParameterException e) {
+            throw new RuntimeException("Problems getting coding scheme name. uri = " +
+            		codingSchemeUri  + " version = " + version, e);
 		}
 	}
 	protected static class CodingSchemeUriVersionPair {
@@ -270,6 +266,16 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 			LuceneDirectoryCreator luceneDirectoryCreator) {
 		this.luceneDirectoryCreator = luceneDirectoryCreator;
 	}
+
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
+	}
+
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
+	}
+	
+	
 
 
 }
