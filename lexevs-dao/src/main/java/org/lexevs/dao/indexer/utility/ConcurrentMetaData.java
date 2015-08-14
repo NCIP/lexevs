@@ -39,7 +39,7 @@ public class ConcurrentMetaData {
 		for(CodingSchemeMetaData csm : list){
 			if(key.equals(LocalCodingScheme.getLocalCodingScheme(
 					csm.getCodingSchemeName(), csm.getCodingSchemeVersion()).getKey())){
-				list.remove(csm);
+				remove(csm);
 			}
 		}
 	}
