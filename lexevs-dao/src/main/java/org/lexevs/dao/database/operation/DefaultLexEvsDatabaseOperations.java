@@ -206,6 +206,11 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
 		this.doExecuteSql(this.codingSchemeHistoryXmlDdl, new DropSchemaPlatformActor(), prefix);	
 	}
+	
+	@Override
+	public void dropCodingSchemeHistoryTablesByPrefix(String prefix) {
+		this.doExecuteSql(this.codingSchemeHistoryXmlDdl, new DropSchemaPlatformActor(), prefix);	
+	}
 
 	@Override
 	public void dropCodingSchemeTables(String codingSchemeUri, String version) {
@@ -228,6 +233,26 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 					dropCodingSchemeHistoryTables(codingSchemeUri, version);
 				}
 				
+				doExecuteSql(codingSchemeXmlDdl, new DropSchemaPlatformActor(), prefix);	
+				
+				return null;
+			}
+		});
+	}
+	
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void dropCodingSchemeTablesByPrefix(final String prefix){
+
+		TransactionTemplate template = new TransactionTemplate(this.getTransactionManager());
+		template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		
+		template.execute(new TransactionCallback() {
+
+			@Override
+			public Object doInTransaction(TransactionStatus status) {
+				
+				dropCodingSchemeHistoryTablesByPrefix(prefix); 
 				doExecuteSql(codingSchemeXmlDdl, new DropSchemaPlatformActor(), prefix);	
 				
 				return null;

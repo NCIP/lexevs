@@ -92,7 +92,7 @@ public class SystemVariables {
     private static boolean SINGLE_TABLE_MODE_DEFAULT = false;
     
     private static String LUCENE_SINGLE_INDEX_PROP = "LUCENE_SINGLE_INDEX";
-    private static String LUCENE_SINGLE_INDEX_DEFAULT = "true";
+    private static String LUCENE_SINGLE_INDEX_DEFAULT = "false";
     
     private boolean isSingleIndex = true;
 
