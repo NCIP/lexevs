@@ -122,7 +122,7 @@ public class LuceneMetadataDao implements MetadataDao {
              curr.setValue(d.get("propertyValue"));
 
              String temp = d.get("parentContainers");
-             curr.setContext(temp.split(BaseMetaDataLoader.STRING_TOKEINZER_TOKEN));
+             curr.setContext(temp.split(BaseMetaDataLoader.STRING_TOKENIZER_TOKEN));
 
              mdpl.addMetadataProperty(curr);
          }
