@@ -18,6 +18,8 @@
  */
 package org.lexevs.dao.indexer.lucene.analyzers;
 
+import junit.framework.TestCase;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.TokenStream;
@@ -40,7 +42,7 @@ import org.junit.runners.Suite;
  *          $
  */
 
-public class SnowballAnalyzerTest extends BaseTokenStreamTestCase {
+public class SnowballAnalyzerTest extends TestCase {
 	
 	@Test
     public void testDontKeepOrigional() throws Exception {
@@ -60,7 +62,11 @@ public class SnowballAnalyzerTest extends BaseTokenStreamTestCase {
         
         String input = new String("The trees have Leaves!");
         String[] output = {"tree", "have", "leav"};
-    	assertAnalyzesTo(temp, input, output);
+        BaseTokenStreamTestCase.assertAnalyzesTo(temp, input, output);
+    }
+	
+	public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SnowballAnalyzerTest.class);
     }
     
 // This gives a sense of what we used to do.

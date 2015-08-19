@@ -38,7 +38,7 @@ import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
  * @version 1.0 - cvs $Revision: 1.1 $ checked in on $Date: 2005/08/24 15:00:43
  *          $
  */
-public class StringAnalyzerTest extends BaseTokenStreamTestCase {
+public class StringAnalyzerTest extends TestCase {
 	
 	private List<String> getList(){
 	    List<String> list = new ArrayList<String>();
@@ -52,7 +52,7 @@ public class StringAnalyzerTest extends BaseTokenStreamTestCase {
 // Was    	 String[] output = {"The","trees", "have","Leaves!"};
 // Changed to
     	 String[] output = {"the","trees", "have","leaves"};
-    	assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , false)), input, output);
+    	 BaseTokenStreamTestCase.assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , false)), input, output);
 //        StringAnalyzer temp = new StringAnalyzer("<:>");
 
  //       String input = new String("The<:>trees<:>have<:>Leaves!");

@@ -20,7 +20,9 @@ package org.lexevs.dao.indexer.lucene.analyzers;
 
 import java.util.ArrayList;
 import java.util.List;
- 
+
+import junit.framework.TestCase;
+
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -33,7 +35,7 @@ import org.apache.lucene.analysis.util.CharArraySet;
  *          $
  */
 
-public class WhiteSpaceLowerCaseAnalyzerTest extends BaseTokenStreamTestCase {
+public class WhiteSpaceLowerCaseAnalyzerTest extends TestCase {
 	
 	private List<String> getList(){
     List<String> list = new ArrayList<String>();
@@ -46,7 +48,7 @@ public class WhiteSpaceLowerCaseAnalyzerTest extends BaseTokenStreamTestCase {
 
         String input = new String("A test String foo Foo");
         String[] output = {"a", "test", "string"};
-        assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
+        BaseTokenStreamTestCase.assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
         
 //        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
 //                new char[] { ',' }, new char[] { '-' });
@@ -79,7 +81,7 @@ public class WhiteSpaceLowerCaseAnalyzerTest extends BaseTokenStreamTestCase {
     	
         String input = new String("foo, test, me");
         String[] output = {"test", "me"};
-    	assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
+        BaseTokenStreamTestCase.assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
     	
 //        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
 //                new char[] { ',' }, new char[] { '-' });
@@ -107,7 +109,7 @@ public class WhiteSpaceLowerCaseAnalyzerTest extends BaseTokenStreamTestCase {
     	
     	String input = new String("foo,- Test-some me-");
         String[] output = {"test","some", "me"};
-    	assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
+        BaseTokenStreamTestCase.assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
 
 //        String input = new String("foo,- Test-some me-");
 //
