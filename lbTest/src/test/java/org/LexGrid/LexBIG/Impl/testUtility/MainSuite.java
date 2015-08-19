@@ -227,9 +227,9 @@ public class MainSuite {
 	        mainSuite.addTest(hl7MifVocabularyLoaderSuite);
 	        
 	        TestSuite luceneSuite = new TestSuite("Lucene Tests");
-	        luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
-	        luceneSuite.addTestSuite(StringAnalyzerTest.class);
-	        luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
+//	        luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
+//	        luceneSuite.addTestSuite(StringAnalyzerTest.class);
+//	        luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
 	        luceneSuite.addTestSuite(BestScoreOfEntityHitCollectorTest.class);
 	        luceneSuite.addTestSuite(BitSetBestScoreOfEntityHitCollectorTest.class);
 	        luceneSuite.addTestSuite(HitCollectorMergerTest.class);

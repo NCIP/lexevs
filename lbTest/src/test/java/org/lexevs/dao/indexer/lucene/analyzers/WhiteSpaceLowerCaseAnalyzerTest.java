@@ -18,13 +18,12 @@
  */
 package org.lexevs.dao.indexer.lucene.analyzers;
 
-import java.io.StringReader;
-
-import junit.framework.TestCase;
-
-import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenStream;
-import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
+import java.util.ArrayList;
+import java.util.List;
+ 
+import org.apache.lucene.analysis.BaseTokenStreamTestCase;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 
 /**
  * Test cases for the WhiteSpaceLowerCaseAnalyzer.
@@ -33,15 +32,27 @@ import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
  * @version 1.0 - cvs $Revision: 1.1 $ checked in on $Date: 2005/08/24 15:00:43
  *          $
  */
-public class WhiteSpaceLowerCaseAnalyzerTest extends TestCase {
+
+public class WhiteSpaceLowerCaseAnalyzerTest extends BaseTokenStreamTestCase {
+	
+	private List<String> getList(){
+    List<String> list = new ArrayList<String>();
+    list.add("foo");
+    list.add("bar");
+    return list;
+	}
+    
     public void testLowerCaseStopRemoval() throws Exception {
-        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
-                new char[] { ',' }, new char[] { '-' });
 
         String input = new String("A test String foo Foo");
-
-        StringReader reader = new StringReader(input);
-        TokenStream result = temp.tokenStream("test", reader);
+        String[] output = {"a", "test", "string"};
+        assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
+        
+//        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
+//                new char[] { ',' }, new char[] { '-' });
+//        String input = new String("A test String foo Foo");
+//        StringReader reader = new StringReader(input);
+//        TokenStream result = temp.tokenStream("test", reader);
 
 //        Token token = result.next();
 //        assertTrue(token.termText().equals("a"));
@@ -65,9 +76,13 @@ public class WhiteSpaceLowerCaseAnalyzerTest extends TestCase {
     }
 
     public void testCharRemoval() throws Exception {
-        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
-                new char[] { ',' }, new char[] { '-' });
-
+    	
+        String input = new String("foo, test, me");
+        String[] output = {"test", "me"};
+    	assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
+    	
+//        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
+//                new char[] { ',' }, new char[] { '-' });
 //        String input = new String("foo, test, me");
 //
 //        StringReader reader = new StringReader(input);
@@ -89,8 +104,10 @@ public class WhiteSpaceLowerCaseAnalyzerTest extends TestCase {
     }
 
     public void testWhiteSpaceAdditions() throws Exception {
-        WhiteSpaceLowerCaseAnalyzer temp = new WhiteSpaceLowerCaseAnalyzer(new String[] { "foo", "bar" },
-                new char[] { ',' }, new char[] { '-' });
+    	
+    	String input = new String("foo,- Test-some me-");
+        String[] output = {"test","some", "me"};
+    	assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , true)), input, output);
 
 //        String input = new String("foo,- Test-some me-");
 //

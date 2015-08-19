@@ -19,11 +19,16 @@
 package org.lexevs.dao.indexer.lucene.analyzers;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
 
 /**
@@ -33,14 +38,27 @@ import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
  * @version 1.0 - cvs $Revision: 1.1 $ checked in on $Date: 2005/08/24 15:00:43
  *          $
  */
-public class StringAnalyzerTest extends TestCase {
+public class StringAnalyzerTest extends BaseTokenStreamTestCase {
+	
+	private List<String> getList(){
+	    List<String> list = new ArrayList<String>();
+	    list.add("<:>");
+	    return list;
+		}
+	
     public void testStringAnalyzer() throws Exception {
-        StringAnalyzer temp = new StringAnalyzer("<:>");
+    	
+    	 String input = new String("The<:>trees<:>have<:>Leaves!");
+// Was    	 String[] output = {"The","trees", "have","Leaves!"};
+// Changed to
+    	 String[] output = {"the","trees", "have","leaves"};
+    	assertAnalyzesTo(new StandardAnalyzer(new CharArraySet(getList() , false)), input, output);
+//        StringAnalyzer temp = new StringAnalyzer("<:>");
 
-        String input = new String("The<:>trees<:>have<:>Leaves!");
+ //       String input = new String("The<:>trees<:>have<:>Leaves!");
 
-        StringReader reader = new StringReader(input);
-        TokenStream result = temp.tokenStream("test", reader);
+ //       StringReader reader = new StringReader(input);
+ //       TokenStream result = temp.tokenStream("test", reader);
 
 //        Token token = result.next();
 //        assertTrue(token.termText().equals("The"));
@@ -71,9 +89,5 @@ public class StringAnalyzerTest extends TestCase {
 //        assertTrue(result.next() == null);
     }
 
-    public static void main(String[] args) throws Exception {
-        StringAnalyzerTest foo = new StringAnalyzerTest();
-        foo.testStringAnalyzer();
-    }
 
 }

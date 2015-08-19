@@ -18,13 +18,19 @@
  */
 package org.lexevs.dao.indexer.lucene.analyzers;
 
-import java.io.StringReader;
-
-import junit.framework.TestCase;
-
-import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.TokenStream;
-import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.util.AttributeFactory;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * Test cases for the SnowballAnalyzer.
@@ -33,8 +39,31 @@ import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzer;
  * @version 1.0 - cvs $Revision: 1.1 $ checked in on $Date: 2005/08/24 15:00:43
  *          $
  */
-public class SnowballAnalyzerTest extends TestCase {
-//    public void testDontKeepOrigional() throws Exception {
+
+public class SnowballAnalyzerTest extends BaseTokenStreamTestCase {
+	
+	@Test
+    public void testDontKeepOrigional() throws Exception {
+        Analyzer temp = new Analyzer() {
+        	
+            @Override
+            protected TokenStreamComponents createComponents(String fieldName) {
+                final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                TokenStream filter = new StandardFilter(source);
+                filter = new LowerCaseFilter( filter);
+                filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
+                filter = new SnowballFilter(filter, "English");
+                return new TokenStreamComponents(source, filter);
+            }
+        };
+        
+        String input = new String("The trees have Leaves!");
+        String[] output = {"tree", "have", "leav"};
+    	assertAnalyzesTo(temp, input, output);
+    }
+    
+// This gives a sense of what we used to do.
 //        SnowballAnalyzer temp = new SnowballAnalyzer(false, "English", new String[] { "foo", "bar" },
 //                new char[] { '!' }, new char[] { '-' });
 
