@@ -64,6 +64,7 @@ import org.LexGrid.LexBIG.Impl.bugs.GForge29860;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29924;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29940;
 import org.LexGrid.LexBIG.Impl.bugs.TestBugFixes;
+import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtilityTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.RegistryTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManagerTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsTest;
@@ -488,6 +489,8 @@ public class AllTestsNormalConfig {
         //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
+        //Broken Load Clean Up Function tests
+        mainSuite.addTestSuite(CleanUpUtilityTest.class);
         //CTS2 tests
         //Run this outside of this scope.
         //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));

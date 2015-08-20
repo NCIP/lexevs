@@ -1,10 +1,9 @@
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -19,7 +18,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
-public class CleanUpUtilityTest {
+public class CleanUpUtilityTest extends TestCase {
 	
 	RegistryEntry entry;
 
