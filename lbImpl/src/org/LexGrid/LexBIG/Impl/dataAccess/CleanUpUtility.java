@@ -118,10 +118,12 @@ public class CleanUpUtility {
 
             HashSet<String> registeredDBs = new HashSet<String>();
             for (RegistryEntry reg : regEntries) {
+            	if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null){
                 AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
                 reference.setCodingSchemeURN(reg.getResourceUri());
                 reference.setCodingSchemeVersion(reg.getResourceVersion());
                 registeredDBs.add(Utility.getIndexName(reference));
+            	}
             }
 
             String indexLocation = LexEvsServiceLocator.getInstance().getSystemResourceService().
@@ -182,6 +184,7 @@ public class CleanUpUtility {
             getLogger().debug("Removing index '" + index + "'.");
             List<RegistryEntry> regEntries =  LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
                 for (RegistryEntry reg: regEntries) {
+                	if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null){
                     AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
                     ref.setCodingSchemeURN(reg.getResourceUri());
                     ref.setCodingSchemeVersion(reg.getResourceVersion());
@@ -190,6 +193,7 @@ public class CleanUpUtility {
                         throw new LBParameterException(
                                 "That index is registered with the service.  Please use the appropriate service delete method.");
                     }
+                	}
                 }
 
             String indexLocation = LexEvsServiceLocator.getInstance().getSystemResourceService().
@@ -220,9 +224,11 @@ public class CleanUpUtility {
             
           List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
           for (RegistryEntry reg: regEntries) {
+              if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getPrefix() != null){
               if (reg.getPrefix().equals(dbName)) {
                   throw new LBParameterException(
                           "That database is registered with the service.  Please use the appropriate service delete method.");
+              }
               }
           }
                
@@ -252,9 +258,11 @@ public class CleanUpUtility {
         // Ok, the table exists - make sure its not registered.
             List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
             for (RegistryEntry reg: regEntries) {
+                if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getPrefix() != null){
                 if (reg.getPrefix().equals(prefix)) {
                     throw new LBParameterException(
                             "That table prefix is registered with the service.  Please use the appropriate service delete method.");
+                }
                 }
             }
 

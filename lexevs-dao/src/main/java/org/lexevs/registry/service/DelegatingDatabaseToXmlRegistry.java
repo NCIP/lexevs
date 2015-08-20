@@ -195,7 +195,7 @@ public class DelegatingDatabaseToXmlRegistry implements Registry {
 	 */
 	@ClearCache(clearCaches = {"DatabaseRegistryCache","DelegatingSystemResourceServiceCache"})
 	public void removeEntry(RegistryEntry entry) throws LBParameterException {
-		throw new UnsupportedOperationException();
+		databaseRegistry.removeEntry(entry);
 	}
 	
 	/* (non-Javadoc)
