@@ -30,9 +30,13 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermsEnum;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
@@ -53,21 +57,38 @@ public class LuceneMetadataDao implements MetadataDao {
 	
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
-		
 
-		
 	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
 	       
            try {
-        	   TermsEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermsEnum>() {
+        	   final TopDocs td = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TopDocs>() {
 
 				@Override
-				public TermsEnum doInIndexReader(IndexReader indexReader)
+				public TopDocs doInIndexReader(IndexReader indexReader)
 						throws Exception {
-	
-					return null;
+					
+					// TODO - Predetermine the number of hits - remove the 1000
+					TopScoreDocCollector collector = TopScoreDocCollector.create(1000);
+					
+					IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+					Query temp = new TermQuery(new Term("codingSchemeNameVersion","*"));
+					indexSearcher.search(temp, collector);					
+					TopDocs topDocs = collector.topDocs();
+
+					return topDocs;
 				}  
         	   });
+        	   
+        	   ScoreDoc[] scoreDocs = td.scoreDocs;
+        	   
+        	   for (ScoreDoc scoreDoc : scoreDocs) {
+        		   AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+        		   Document document = luceneIndexTemplate.getDocumentById(scoreDoc.doc);
+        		   acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
+		           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
+
+		           result.addAbsoluteCodingSchemeVersionReference(acsvr);
+        	   }
 
 //			   boolean hasNext = true;
 //			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
@@ -89,10 +110,10 @@ public class LuceneMetadataDao implements MetadataDao {
 //			   }
 //			   te.close();
 //			   
-//			   return result;
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		} 
+			   return result;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
 	}
 	
 	@Override
