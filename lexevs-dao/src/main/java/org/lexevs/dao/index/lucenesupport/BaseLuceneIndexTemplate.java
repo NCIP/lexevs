@@ -34,10 +34,10 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.indexer.utility.Utility;
@@ -48,7 +48,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 
 	private NamedDirectory namedDirectory;
 	
-	private ToParentBlockJoinIndexSearcher indexSearcher;
+	private IndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
@@ -62,7 +62,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		super();
 		try {
 			indexReader = namedDirectory.getIndexReader();
-			indexSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
+			indexSearcher = new IndexSearcher(indexReader);
 			this.namedDirectory = namedDirectory;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -130,7 +130,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		this.doInIndexSearcher(new IndexSearcherCallback<Void>() {
 
 			@Override
-			public Void doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+			public Void doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
 				indexSearcher.search(query, filter, hitCollector);
 				return null;
@@ -142,7 +142,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		return this.doInIndexSearcher(new IndexSearcherCallback<List<ScoreDoc>>() {
 
 			@Override
-			public List<ScoreDoc> doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+			public List<ScoreDoc> doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
 				
 				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
@@ -185,7 +185,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		return this.doInIndexSearcher(new IndexSearcherCallback<Document>() {
 
 			@Override
-			public Document doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+			public Document doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
 //				if(fieldSelector != null) {
 //					return indexSearcher.doc(id);
@@ -213,7 +213,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		return this.doInIndexSearcher(new IndexSearcherCallback<Integer>() {
 
 			@Override
-			public Integer doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+			public Integer doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
 	//			return indexSearcher.maxDoc();
 				return null;
@@ -249,7 +249,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		namedDirectory.refresh();
 		
 		this.indexReader = namedDirectory.getIndexReader();
-		this.indexSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
+		this.indexSearcher = new IndexSearcher(indexReader);
 		
 		return result;
 		
@@ -277,7 +277,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 	
 	public interface IndexSearcherCallback<T> {
 		
-		public T doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) throws Exception;
+		public T doInIndexSearcher(IndexSearcher indexSearcher) throws Exception;
 	}
 	
 	public interface IndexWriterCallback<T> {
@@ -323,11 +323,11 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 		return analyzer;
 	}
 
-	protected ToParentBlockJoinIndexSearcher getIndexSearcher() {
+	protected IndexSearcher getIndexSearcher() {
 		return indexSearcher;
 	}
 
-	protected void setIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) {
+	protected void setIndexSearcher(IndexSearcher indexSearcher) {
 		this.indexSearcher = indexSearcher;
 	}
 

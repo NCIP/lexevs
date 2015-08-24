@@ -27,13 +27,16 @@ import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.dao.index.lucenesupport.MetaDataIndexTemplate;
 import org.lexevs.dao.index.metadata.BaseMetaDataLoader;
 
 public class LuceneMetadataDao implements MetadataDao {
@@ -45,28 +48,27 @@ public class LuceneMetadataDao implements MetadataDao {
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
 			List<Document> documents, Analyzer analyzer) {
-		this.luceneIndexTemplate.addDocuments(documents, analyzer);
-		
-//		luceneIndexTemplate.optimize();
+		this.luceneIndexTemplate.addDocuments(documents, analyzer);		
 	}
 	
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
 		
-		// TODO commenting out - TermEnum will be replaced in the new Lucene.
+
 		
-//	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
+	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
 	       
-//           try {
-//        	   TermsEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermsEnum>() {
-//
-//				@Override
-//				public TermsEnum doInIndexReader(IndexReader indexReader)
-//						throws Exception {
-//					return indexReader.terms(new Term("codingSchemeNameVersion", ""));
-//				}  
-//        	   });
-//
+           try {
+        	   TermsEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermsEnum>() {
+
+				@Override
+				public TermsEnum doInIndexReader(IndexReader indexReader)
+						throws Exception {
+	
+					return null;
+				}  
+        	   });
+
 //			   boolean hasNext = true;
 //			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
 //			       Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
@@ -91,7 +93,6 @@ public class LuceneMetadataDao implements MetadataDao {
 //		} catch (Exception e) {
 //			throw new RuntimeException(e);
 //		} 
-	       return null;
 	}
 	
 	@Override
@@ -100,8 +101,6 @@ public class LuceneMetadataDao implements MetadataDao {
 				new Term("codingSchemeNameVersion",
 						codingSchemeUri
 						+ BaseMetaDataLoader.CONCATINATED_VALUE_SPLIT_TOKEN + version));
-		
-//		luceneIndexTemplate.optimize();
 	}
 
 	@Override
@@ -131,12 +130,13 @@ public class LuceneMetadataDao implements MetadataDao {
 
 	}
 
-	public void setBaseMetaDataLoader(BaseMetaDataLoader baseMetaDataLoader) {
-		this.baseMetaDataLoader = baseMetaDataLoader;
-	}
 
 	public BaseMetaDataLoader getBaseMetaDataLoader() {
 		return baseMetaDataLoader;
+	}
+
+	public void setBaseMetaDataLoader(BaseMetaDataLoader baseMetaDataLoader) {
+		this.baseMetaDataLoader = baseMetaDataLoader;
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {

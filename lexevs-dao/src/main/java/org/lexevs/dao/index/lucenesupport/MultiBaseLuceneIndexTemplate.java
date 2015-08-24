@@ -130,20 +130,19 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 
 	@Override
 	public void addDocuments(List<Document> documents, Analyzer analyzer) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 		
 	}
 
 	@Override
 	public void removeDocuments(Term term) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 		
 	}
 
 	@Override
 	public void removeDocuments(Query query) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 	}
 
 	@Override
