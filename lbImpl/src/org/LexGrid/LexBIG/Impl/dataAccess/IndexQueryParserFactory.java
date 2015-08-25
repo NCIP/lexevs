@@ -72,37 +72,37 @@ public class IndexQueryParserFactory {
     }
 
     protected IndexQueryParserFactory() {
-        WhiteSpaceLowerCaseAnalyzer wslca = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-
-        Map<String,Analyzer> analyzerPerField = new HashMap<>();
+//        WhiteSpaceLowerCaseAnalyzer wslca = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
+//                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+//
+//        Map<String,Analyzer> analyzerPerField = new HashMap<>();
+//        
+//        extraWhiteSpaceChars_ = wslca.getCurrentCharRemovalTable();
+//
+//        
+//        EncoderAnalyzer ea = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {}, WhiteSpaceLowerCaseAnalyzer
+//                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+//        analyzerPerField.put("dm_propertyValue", ea);
+//
+//        if (ResourceManager.instance().getSystemVariables().isNormEnabled()) {
+//            try {
+//                NormAnalyzer temp = new NormAnalyzer(ResourceManager.instance().getSystemVariables()
+//                        .getNormConfigFile(), false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
+//                        .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+//                analyzerPerField.put("norm_propertyValue", temp);
+//            } catch (NoClassDefFoundError e) {
+//                getLogger().error("Error initializing Normalized Searcher", e);
+//            }
+//        }
         
-        extraWhiteSpaceChars_ = wslca.getCurrentCharRemovalTable();
-
-        
-        EncoderAnalyzer ea = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-        analyzerPerField.put("dm_propertyValue", ea);
-
-        if (ResourceManager.instance().getSystemVariables().isNormEnabled()) {
-            try {
-                NormAnalyzer temp = new NormAnalyzer(ResourceManager.instance().getSystemVariables()
-                        .getNormConfigFile(), false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                        .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-                analyzerPerField.put("norm_propertyValue", temp);
-            } catch (NoClassDefFoundError e) {
-                getLogger().error("Error initializing Normalized Searcher", e);
-            }
-        }
-        
-        analyzerPerField.put("literal_propertyValue", LuceneLoaderCode.literalAnalyzer);
-        
-        analyzerPerField.put(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, 
-                new KeywordAnalyzer());
-
-        SnowballAnalyzer sa = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
-        analyzerPerField.put("stem_propertyValue", sa);
+//        analyzerPerField.put("literal_propertyValue", LuceneLoaderCode.literalAnalyzer);
+//        
+//        analyzerPerField.put(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, 
+//                new KeywordAnalyzer());
+//
+//        SnowballAnalyzer sa = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
+//                .getDefaultCharRemovalSet(), Constants.lexGridWhiteSpaceIndexSet);
+//        analyzerPerField.put("stem_propertyValue", sa);
         
        // The PerFieldAnalyzerWrapper allows me to use the proper analyzer per
         // field - if you are
@@ -114,18 +114,18 @@ public class IndexQueryParserFactory {
         // necessary anymore, since
         // I'm building these parts of the query manually. But it doesn't hurt,
         // so i will leave it in.
-        PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new FieldSkippingAnalyzer(
-                new String[] { SQLTableConstants.TBLCOL_CODINGSCHEMENAME, SQLTableConstants.TBLCOL_ENTITYCODE,
-                        SQLTableConstants.TBLCOL_ID, SQLTableConstants.TBLCOL_ENTITYTYPE, "codeBoundry",
-                        SQLTableConstants.TBLCOL_ISACTIVE, SQLTableConstants.TBLCOL_ISPREFERRED,
-                        SQLTableConstants.TBLCOL_PRESENTATIONFORMAT, SQLTableConstants.TBLCOL_FORMAT,
-                        SQLTableConstants.TBLCOL_LANGUAGE, SQLTableConstants.TBLCOL_CONCEPTSTATUS,
-                        SQLTableConstants.TBLCOL_PROPERTYID, "dataType", SQLTableConstants.TBLCOL_DEGREEOFFIDELITY,
-                        SQLTableConstants.TBLCOL_REPRESENTATIONALFORM, SQLTableConstants.TBLCOL_MATCHIFNOCONTEXT,
-                        SQLTableConstants.TBLCOL_PROPERTY, SQLTableConstants.TBLCOL_PROPERTYNAME }, wslca),
-                        analyzerPerField);
+//        PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new FieldSkippingAnalyzer(
+//                new String[] { SQLTableConstants.TBLCOL_CODINGSCHEMENAME, SQLTableConstants.TBLCOL_ENTITYCODE,
+//                        SQLTableConstants.TBLCOL_ID, SQLTableConstants.TBLCOL_ENTITYTYPE, "codeBoundry",
+//                        SQLTableConstants.TBLCOL_ISACTIVE, SQLTableConstants.TBLCOL_ISPREFERRED,
+//                        SQLTableConstants.TBLCOL_PRESENTATIONFORMAT, SQLTableConstants.TBLCOL_FORMAT,
+//                        SQLTableConstants.TBLCOL_LANGUAGE, SQLTableConstants.TBLCOL_CONCEPTSTATUS,
+//                        SQLTableConstants.TBLCOL_PROPERTYID, "dataType", SQLTableConstants.TBLCOL_DEGREEOFFIDELITY,
+//                        SQLTableConstants.TBLCOL_REPRESENTATIONALFORM, SQLTableConstants.TBLCOL_MATCHIFNOCONTEXT,
+//                        SQLTableConstants.TBLCOL_PROPERTY, SQLTableConstants.TBLCOL_PROPERTYNAME }, wslca),
+//                        analyzerPerField);
         
-        parser_ = new QueryParser(SQLTableConstants.TBLCOL_PROPERTYVALUE, analyzer);
+        parser_ = new QueryParser(SQLTableConstants.TBLCOL_PROPERTYVALUE, LuceneLoaderCode.getAnaylzer());
         
         //Allow leading wildcards for searches.
         parser_.setAllowLeadingWildcard(true);
