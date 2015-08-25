@@ -20,6 +20,7 @@ package org.lexevs.dao.index.lucenesupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -38,13 +39,15 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.SimpleCollector;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTemplate {
+public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate {
 
 	private NamedDirectory namedDirectory;
 	
@@ -132,7 +135,7 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 			@Override
 			public Void doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
-				indexSearcher.search(query, filter, hitCollector);
+				indexSearcher.search(query, hitCollector);
 				return null;
 			}
 		});	
@@ -145,32 +148,32 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 			public List<ScoreDoc> doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
 				
-				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
-				
-				indexSearcher.search(query, filter, new Collector() {
-
-					@Override
-					public LeafCollector getLeafCollector(LeafReaderContext arg0)
-							throws IOException {
-						// TODO Auto-generated method stub
-						return null;
-					}
-
-					@Override
-					public boolean needsScores() {
-						// TODO Auto-generated method stub
-						return false;
-					}
-					
-//					public void collect(int doc, float score) {
-//						ScoreDoc scoreDoc = new ScoreDoc(doc, score);
-//						docs.add(scoreDoc);
+				List<ScoreDoc> docs = null;
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(1000);
+				indexSearcher.search(query, collector
+//						new SimpleCollector() {
+//
+//
+//					@Override
+//					public boolean needsScores() {
+//						// TODO Auto-generated method stub
+//						return false;
 //					}
-				});
-				
+//
+//					@Override
+//					public void collect(int doc) throws IOException {
+//						ScoreDoc scoreDoc = new ScoreDoc(doc, 0);
+//						docs.add(scoreDoc);
+//						
+//					}
+//					
+//				}
+				);
+				docs = Arrays.asList(collector.topDocs().scoreDocs);
 				return docs;
 			}
-		});	
+		}
+		);	
 		
 	}
 	
@@ -357,5 +360,12 @@ public class BaseLuceneIndexTemplate implements DisposableBean, LuceneIndexTempl
 	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		indexReader = namedDirectory.getIndexReader();
+		indexSearcher = namedDirectory.getIndexSearcher();
+		
 	}
 }

@@ -26,9 +26,12 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
@@ -37,6 +40,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.util.BytesRef;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
@@ -61,55 +65,63 @@ public class LuceneMetadataDao implements MetadataDao {
 	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
 	       
            try {
-        	   final TopDocs td = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TopDocs>() {
+        	   final TermsEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermsEnum>() {
 
 				@Override
-				public TopDocs doInIndexReader(IndexReader indexReader)
+				public TermsEnum doInIndexReader(IndexReader indexReader)
 						throws Exception {
-					
+					TermsEnum termsEnum = null;
+					Fields fields = MultiFields.getFields(indexReader);
+					if(fields != null){
+						Terms terms = fields.terms("codingSchemeNameVersion");
+						if(terms != null){
+				
+							termsEnum = terms.iterator();
+						}
+					}
 					// TODO - Predetermine the number of hits - remove the 1000
-					TopScoreDocCollector collector = TopScoreDocCollector.create(1000);
-					
-					IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-					Query temp = new TermQuery(new Term("codingSchemeNameVersion","*"));
-					indexSearcher.search(temp, collector);					
-					TopDocs topDocs = collector.topDocs();
+//					TopScoreDocCollector collector = TopScoreDocCollector.create(1000);
+//					
+//					IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+//					Query temp = new TermQuery(new Term("codingSchemeNameVersion","*"));
+//					indexSearcher.search(temp, collector);					
+//					TopDocs topDocs = collector.topDocs();
 
-					return topDocs;
+					return termsEnum;
 				}  
         	   });
         	   
-        	   ScoreDoc[] scoreDocs = td.scoreDocs;
-        	   
-        	   for (ScoreDoc scoreDoc : scoreDocs) {
-        		   AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-        		   Document document = luceneIndexTemplate.getDocumentById(scoreDoc.doc);
-        		   acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
-		           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
+//        	   ScoreDoc[] scoreDocs = td.scoreDocs;
+//        	   
+//        	   for (ScoreDoc scoreDoc : scoreDocs) {
+//        		   AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+//        		   Document document = luceneIndexTemplate.getDocumentById(scoreDoc.doc);
+//        		   acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
+//		           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
+//
+//		           result.addAbsoluteCodingSchemeVersionReference(acsvr);
+//        	   }
+// TODO see Multifield for a better implementation of this.
+			  BytesRef text = null;
+			   while ((text = te.next()) != null) {
+			       Query temp = new TermQuery(new Term("codingSchemeNameVersion", text.utf8ToString()));
 
-		           result.addAbsoluteCodingSchemeVersionReference(acsvr);
-        	   }
+			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);
+			       if (d.size() > 0) {
 
-//			   boolean hasNext = true;
-//			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
-//			       Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
-//
-//			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);
-//			       if (d.size() > 0) {
-//
-//			           ScoreDoc doc = d.get(0);
-//			           AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-//			           
-//			           Document document = luceneIndexTemplate.getDocumentById(doc.doc);
-//			           acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
-//			           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
-//
-//			           result.addAbsoluteCodingSchemeVersionReference(acsvr);
-//			       }
-//			       hasNext = te.next();
-//			   }
-//			   te.close();
-//			   
+			           ScoreDoc doc = d.get(0);
+			           AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
+			           
+			           Document document = luceneIndexTemplate.getDocumentById(doc.doc);
+			           acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
+			           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
+
+			           result.addAbsoluteCodingSchemeVersionReference(acsvr);
+			       }
+
+			   }
+
+			   
 			   return result;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
