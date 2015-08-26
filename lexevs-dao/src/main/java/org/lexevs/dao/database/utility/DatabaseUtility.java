@@ -18,6 +18,9 @@
  */
 package org.lexevs.dao.database.utility;
 
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.springframework.core.io.Resource;
 
 /**
@@ -53,6 +56,13 @@ public interface DatabaseUtility {
 	 * @return true, if successful
 	 */
 	public boolean doesTableExist(String tableName);
+	
+	/**
+	 * Get the URI and Version for the given table name
+	 * @param tableName the table name
+	 * @return
+	 */
+	public List <AbsoluteCodingSchemeVersionReference> getUriAndVersionForTableName(String tableName);
 	
 	/**
 	 * Execute script.

@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.prefix.CyclingCharDbPrefixGenerator;
 import org.lexevs.dao.indexer.api.IndexerService;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -272,6 +273,26 @@ public class CleanUpUtility {
 
     }
 
+    public static void removeMetadataEntry() throws LBInvocationException, LBParameterException {
+        ConcurrentMetaData concurrentMetaData = ConcurrentMetaData.getInstance();
+        
+        String[] temp = listUnusedDatabases();
+        for (int i = 0; i < temp.length; i++) {
+            List <AbsoluteCodingSchemeVersionReference> list = 
+                        LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDatabaseUtility().getUriAndVersionForTableName(temp[i]);
+            
+            if (list != null) {
+                // TODO: remove from metadata here
+            }
+        }
+        
+        String [] unusedIndex = listUnusedIndexes();
+        for (int i = 0; i < unusedIndex.length; i++) {
+            
+        }
+        
+    }
+    
     private static boolean doesTableExist(String server, String driver, String username, String password,
             String prefix) {
             return LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDatabaseUtility().doesTableExist(prefix);
