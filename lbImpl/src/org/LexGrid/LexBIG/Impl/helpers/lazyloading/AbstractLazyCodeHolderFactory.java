@@ -29,13 +29,13 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -87,14 +87,14 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
-        
-        Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
-        
+
         BooleanQuery combinedQuery = new BooleanQuery();
         for(Query query : queries) {
             combinedQuery.add(query, Occur.MUST);
         }
-
+        
+        //TODO.  Figure out what the filters were doing and duplicate if necessary for the wrapper filter.
+        Filter chainedFilter = new QueryWrapperFilter(combinedQuery);
         Query query;
         if(CollectionUtils.isNotEmpty(filters)) {
             query = new FilteredQuery(combinedQuery, chainedFilter);
