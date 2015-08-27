@@ -195,7 +195,7 @@ public class CleanUpUtility {
         return temp;
     }
     
-    public static String[] removeAllUnusedMetaData() throws LBParameterException, LBInvocationException {
+    public static void removeAllUnusedMetaData() throws LBParameterException, LBInvocationException {
 
         List<AbsoluteCodingSchemeVersionReference> temp = listOrphanedMetaData();
         List<String> returnValues = new ArrayList<String>();
@@ -203,7 +203,6 @@ public class CleanUpUtility {
             removeMetadataEntry(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
             returnValues.add(ref.getCodingSchemeURN()+URI_VERSION_SEPARATOR+ ref.getCodingSchemeVersion());
         }
-        return (String[]) returnValues.toArray();
     }
 
     public static void removeUnusedIndex(String index) throws LBParameterException, LBInvocationException {
