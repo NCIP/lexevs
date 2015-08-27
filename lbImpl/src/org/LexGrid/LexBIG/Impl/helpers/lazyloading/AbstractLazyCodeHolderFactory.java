@@ -53,28 +53,31 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory#buildCodeHolder(java.lang.String, java.lang.String, org.apache.lucene.search.Query)
      */
-    public CodeHolder buildCodeHolder(
-            String internalCodeSystemName,
-            String internalVersionString, 
-            List<BooleanQuery> combinedQuery, 
-            List<Query> bitSetQueries) throws LBInvocationException, LBParameterException {
-        IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
-        EntityIndexService entityService = indexServiceManager.getEntityIndexService();
-        
-        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
-        
-        AbsoluteCodingSchemeVersionReference ref =
-            Constructors.createAbsoluteCodingSchemeVersionReference(
-                uri, internalVersionString);
-
-        List<ScoreDoc> scoreDocs = entityService.query(
-                ref.getCodingSchemeURN(), 
-                ref.getCodingSchemeVersion(), 
-                        combinedQuery, bitSetQueries);
-
-        return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
-    }
+    
+    //Doesn't seem to have any calling code.  commenting out for now.  The BitSet query mechanism is complex
+    //if we aren't using it we should avoid maintining it.  
+//    public CodeHolder buildCodeHolder(
+//            String internalCodeSystemName,
+//            String internalVersionString, 
+//            List<BooleanQuery> combinedQuery, 
+//            List<Query> bitSetQueries) throws LBInvocationException, LBParameterException {
+//        IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+//        EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+//        
+//        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+//        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
+//        
+//        AbsoluteCodingSchemeVersionReference ref =
+//            Constructors.createAbsoluteCodingSchemeVersionReference(
+//                uri, internalVersionString);
+//
+//        List<ScoreDoc> scoreDocs = entityService.query(
+//                ref.getCodingSchemeURN(), 
+//                ref.getCodingSchemeVersion(), 
+//                        combinedQuery, bitSetQueries);
+//
+//        return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
+//    }
     
     @Override
     public CodeHolder buildCodeHolderWithFilters(

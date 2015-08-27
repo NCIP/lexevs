@@ -46,10 +46,10 @@ public interface CodeHolderFactory extends Serializable {
      * @throws Exception the exception
      */
 
-    public CodeHolder buildCodeHolder(String internalCodeSystemName,
-            String internalVersionString, 
-            List<BooleanQuery> combinedQueries,
-            List<Query> individualQueries) throws LBInvocationException, LBParameterException;
+//    public CodeHolder buildCodeHolder(String internalCodeSystemName,
+//            String internalVersionString, 
+//            List<BooleanQuery> combinedQueries,
+//            List<Query> individualQueries) throws LBInvocationException, LBParameterException;
     
     public CodeHolder buildCodeHolderWithFilters(String internalCodeSystemName,
             String internalVersionString, 

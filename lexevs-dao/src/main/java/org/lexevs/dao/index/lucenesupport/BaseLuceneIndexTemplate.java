@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -206,20 +207,19 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 			@Override
 			public DocIdSet doInIndexReader(IndexReader indexReader)
 					throws Exception {
-	//			return filter.getDocIdSet(indexReader.getContext());
+//	 			return filter.getDocIdSet(indexReader);
 				return null;
 			}
 		});
 	}
 
 	public int getMaxDoc(){
-		return this.doInIndexSearcher(new IndexSearcherCallback<Integer>() {
+		return this.doInIndexReader(new IndexReaderCallback<Integer>() {
 
 			@Override
-			public Integer doInIndexSearcher(IndexSearcher indexSearcher)
+			public Integer doInIndexReader(IndexReader indexReader)
 					throws Exception {
-	//			return indexSearcher.maxDoc();
-				return null;
+				return indexReader.maxDoc();
 			}
 		});	
 	}
@@ -367,5 +367,13 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		indexReader = namedDirectory.getIndexReader();
 		indexSearcher = namedDirectory.getIndexSearcher();
 		
+	}
+
+	@Override
+	public Query getCombinedQueryFromSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
+			Query query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

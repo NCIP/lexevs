@@ -20,6 +20,7 @@ package org.lexevs.dao.index.lucene.v2010.entity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
@@ -38,6 +39,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.util.Bits;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -105,26 +107,24 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		
 		// TODO New Lucene will not support or be compatible with older versions.
 		
-//		try {
-//			LuceneIndexTemplate template = getLuceneIndexTemplate(codingSchemeUri, version);
-//
-//			Filter codingSchemeFilter = getCodingSchemeFilterForCodingScheme(codingSchemeUri, version);
-//
-//			int maxDoc = template.getMaxDoc();
-//
+		try {
+			LuceneIndexTemplate template = getLuceneIndexTemplate(codingSchemeUri, version);
+
+			Filter codingSchemeFilter = null;
+
+			int maxDoc = template.getMaxDoc();
+
 //			Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
-//
+
 //			DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
-//
+
 //			BestScoreOfEntityHitCollector hitCollector = new BestScoreOfEntityHitCollector(boundaryDocIds.iterator(), maxDoc);
-//
-//			template.search(query, codingSchemeFilter, hitCollector);
-//
-//			return hitCollector.getResult();
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-		return null;
+			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
+			template.search(query, codingSchemeFilter, hitCollector);
+			return Arrays.asList(hitCollector.topDocs().scoreDocs);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -148,28 +148,31 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 
 	public List<ScoreDoc> query(List<AbsoluteCodingSchemeVersionReference> codingSchemes, Query query) {
 		
-		// TODO New Lucene will not support or be compatible with older versions.
+		// TODO New Lucene will not support or be compatible with older versions.  This appears to be the entry point
+		// for the multi scheme/ all schemes implementation we'll have to update the template to work with a multireader.
 		
-//		try {
-//			LuceneIndexTemplate template = this.getCommonLuceneIndexTemplate();
-//			
-//			int maxDoc = template.getMaxDoc();
-//
+		try {
+			//TODO this needs to return the MultiScheme template.  
+			LuceneIndexTemplate template = this.getCommonLuceneIndexTemplate();
+			
+			int maxDoc = template.getMaxDoc();
+
 //			Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(codingSchemes);
-//
+
 //			DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
-//
+
 //			BestScoreOfEntityHitCollector hitCollector = new BestScoreOfEntityHitCollector(boundaryDocIds.iterator(), maxDoc);
-//
+
 //			Filter codingSchemeFilter = getCodingSchemeFilterForCodingScheme(codingSchemes);
-//			
-//			template.search(query, codingSchemeFilter, hitCollector);
-//
-//			return hitCollector.getResult();
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-		return null;
+			
+			//TODO create query that holds all coding schems as 
+			Query combinedQuery = template.getCombinedQueryFromSchemes(codingSchemes, query);
+			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
+			template.search(combinedQuery, null, hitCollector);
+			return Arrays.asList(hitCollector.topDocs().scoreDocs);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected LuceneIndexTemplate getCommonLuceneIndexTemplate() {

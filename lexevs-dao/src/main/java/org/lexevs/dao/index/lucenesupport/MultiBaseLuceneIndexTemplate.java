@@ -21,6 +21,7 @@ package org.lexevs.dao.index.lucenesupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -230,6 +231,14 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 
 	public void setIndexReader(IndexReader indexReader) {
 		this.indexReader = indexReader;
+	}
+
+	@Override
+	public Query getCombinedQueryFromSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
+			Query query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

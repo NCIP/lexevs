@@ -20,6 +20,7 @@ package org.lexevs.dao.index.lucenesupport;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.StoredFieldVisitor;
@@ -64,4 +65,8 @@ public interface LuceneIndexTemplate {
 	public <T> T executeInIndexWriter(IndexWriterCallback<T> callback);
 	
 	public List<ScoreDoc> search(final Query query, final Filter filter);
+
+	public Query getCombinedQueryFromSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
+			Query query);
 }

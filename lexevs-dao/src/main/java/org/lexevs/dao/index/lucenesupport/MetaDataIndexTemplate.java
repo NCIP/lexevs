@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -203,6 +204,14 @@ public class MetaDataIndexTemplate implements LuceneIndexTemplate {
 	@Override
 	public <T> T executeInIndexSearcher(
 			org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexSearcherCallback<T> callback) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Query getCombinedQueryFromSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
+			Query query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
