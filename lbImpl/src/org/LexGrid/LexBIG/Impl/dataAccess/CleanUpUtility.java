@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -30,7 +31,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.prefix.CyclingCharDbPrefixGenerator;
 import org.lexevs.dao.indexer.api.IndexerService;
-import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -47,7 +47,13 @@ import org.lexevs.system.constants.SystemVariables;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+/**
+ * @author m029206
+ *
+ */
 public class CleanUpUtility {
+    
+    public static final String URI_VERSION_SEPARATOR = "~`~";
     protected static LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
@@ -151,6 +157,15 @@ public class CleanUpUtility {
             throw new LBInvocationException("There was a problem trying to read the indexes", logId);
         }
     }
+    
+   public static String[] listUnusedMetadata(){
+       List<AbsoluteCodingSchemeVersionReference> list = listOrphanedMetaData();
+       String[] md = new String[list.size()];
+       for(int i=0; i < list.size() ; i++){
+           md[i] = list.get(i).getCodingSchemeURN()+ URI_VERSION_SEPARATOR + list.get(i).getCodingSchemeVersion();
+       }
+       return md;
+   }
 
     public static void removeAllUnusedResources() throws LBParameterException, LBInvocationException {
         String[] temp = listUnusedDatabases();
@@ -178,6 +193,17 @@ public class CleanUpUtility {
             removeUnusedDatabase(temp[i]);
         }
         return temp;
+    }
+    
+    public static String[] removeAllUnusedMetaData() throws LBParameterException, LBInvocationException {
+
+        List<AbsoluteCodingSchemeVersionReference> temp = listOrphanedMetaData();
+        List<String> returnValues = new ArrayList<String>();
+        for (AbsoluteCodingSchemeVersionReference ref :temp) {
+            removeMetadataEntry(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+            returnValues.add(ref.getCodingSchemeURN()+URI_VERSION_SEPARATOR+ ref.getCodingSchemeVersion());
+        }
+        return (String[]) returnValues.toArray();
     }
 
     public static void removeUnusedIndex(String index) throws LBParameterException, LBInvocationException {
@@ -272,29 +298,68 @@ public class CleanUpUtility {
         LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropCodingSchemeTablesByPrefix(prefix);
 
     }
+    
+    public static List<AbsoluteCodingSchemeVersionReference> listOrphanedMetaData() {
+        AbsoluteCodingSchemeVersionReferenceList indexRefs = LexEvsServiceLocator.getInstance()
+                .getIndexServiceManager().getMetadataIndexService().listCodingSchemes();
 
-    public static void removeMetadataEntry() throws LBInvocationException, LBParameterException {
-        ConcurrentMetaData concurrentMetaData = ConcurrentMetaData.getInstance();
-        
-        String[] temp = listUnusedDatabases();
-        for (int i = 0; i < temp.length; i++) {
-            List <AbsoluteCodingSchemeVersionReference> list = 
-                        LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDatabaseUtility().getUriAndVersionForTableName(temp[i]);
-            
-            if (list != null) {
-                // TODO: remove from metadata here
+        List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+
+        List<AbsoluteCodingSchemeVersionReference> registeredMD = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+        boolean notFound = false;
+        for (AbsoluteCodingSchemeVersionReference ref : indexRefs.getAbsoluteCodingSchemeVersionReference()) {
+
+            for (RegistryEntry reg : regEntries) {
+                if (reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null) {
+                    if (!reg.getResourceUri().equals(ref.getCodingSchemeURN())
+                           || !reg.getResourceVersion().equals(ref.getCodingSchemeVersion())) {
+                       notFound = true;
+                    }
+                    else{
+                        notFound = false;
+                        break;
+                    }
+                }
+
             }
+            if(notFound){registeredMD.add(ref);}
         }
-        
-        String [] unusedIndex = listUnusedIndexes();
-        for (int i = 0; i < unusedIndex.length; i++) {
-            
-        }
-        
+        return registeredMD;
     }
+    
+    
+
+    public static void removeMetadataEntry(String codingSchemeURI, String version) throws LBInvocationException, LBParameterException {
+            getLogger().debug("Removing MetaData '" + codingSchemeURI + "'.");
+            List<RegistryEntry> regEntries =  LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+                for (RegistryEntry reg: regEntries) {
+                    if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null){
+
+                    if (reg.getResourceUri().equals(codingSchemeURI) && reg.getResourceVersion().equals(version)) {
+                        throw new LBParameterException(
+                                "That MetaData is associated with an entity registered with the service.  Please use the appropriate service delete method.");
+                    }
+                    }
+                }
+        
+        LexEvsServiceLocator.getInstance().getIndexServiceManager().getMetadataIndexService().removeMetadata(codingSchemeURI, version);
+    }
+    
+    
     
     private static boolean doesTableExist(String server, String driver, String username, String password,
             String prefix) {
             return LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDatabaseUtility().doesTableExist(prefix);
+    }
+
+    public static void removeUnusedMetaData(String temp){
+        String[] entry = temp.split(URI_VERSION_SEPARATOR);
+       try {
+        removeMetadataEntry(entry[0], entry[1]);
+    } catch (LBInvocationException e) {
+        throw new RuntimeException("There was a problem removing the Metadata for value: " + temp, e);
+    } catch (LBParameterException e) {
+        throw new RuntimeException("There was a problem removing the Metadata for value: " + temp, e);
+    }
     }
 }

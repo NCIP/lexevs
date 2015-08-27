@@ -247,30 +247,5 @@ public class DefaultDatabaseUtility extends JdbcDaoSupport implements DatabaseUt
 		}
 	}
 
-	@Override
-	public List <AbsoluteCodingSchemeVersionReference> getUriAndVersionForTableName(String tableName) {
-		String sql = "SELECT * FROM " + tableName;
-
-		RowMapper<AbsoluteCodingSchemeVersionReference> rowMapper = new RowMapper<AbsoluteCodingSchemeVersionReference>() {
-
-			@Override
-			public AbsoluteCodingSchemeVersionReference mapRow(ResultSet result, int arg1) throws SQLException {
-				
-				AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-				acsvr.setCodingSchemeURN(result.getString("codingSchemeURI"));
-				acsvr.setCodingSchemeVersion(result.getString("representsVersion"));
-					
-				return acsvr;
-			}
-		};
-		
-		try {
-			List <AbsoluteCodingSchemeVersionReference> results = getJdbcTemplate().query(sql, rowMapper);
-			return results;
-
-		} catch (Throwable e) {
-			throw new RuntimeException("You may not have enough data left to determine the metadata entry, if one exists");
-		}
-	}
 
 }

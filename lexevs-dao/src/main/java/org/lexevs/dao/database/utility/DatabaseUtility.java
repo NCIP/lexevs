@@ -58,13 +58,6 @@ public interface DatabaseUtility {
 	public boolean doesTableExist(String tableName);
 	
 	/**
-	 * Get the URI and Version for the given table name
-	 * @param tableName the table name
-	 * @return
-	 */
-	public List <AbsoluteCodingSchemeVersionReference> getUriAndVersionForTableName(String tableName);
-	
-	/**
 	 * Execute script.
 	 * 
 	 * @param creationScript the creation script

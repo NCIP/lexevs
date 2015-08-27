@@ -91,7 +91,13 @@ public class CleanUp {
 				for (int i = 0; i < dbs.length; i++) {
 					temp.add("Database: " + dbs[i]);
 				}
-
+				
+				String[] md = CleanUpUtility.listUnusedMetadata();
+			    for (int i = 0; i < md.length; i++) {
+                    temp.add("Metadata: " + md[i]);
+                }
+				
+				
 				shell_.getDisplay().syncExec(new Runnable() {
 					public void run() {
 						orphans_
@@ -139,10 +145,14 @@ public class CleanUp {
 							temp = items[i].substring("Index: ".length());
 							CleanUpUtility.removeUnusedIndex(temp);
 
-						} else {
+						} else if (items[i].startsWith("Database: ")){
 							temp = items[i].substring("Database: ".length());
 							CleanUpUtility.removeUnusedDatabase(temp);
 						}
+						else if (items[i].startsWith("Metadata: ")){
+                            temp = items[i].substring("Metadata: ".length());
+                            CleanUpUtility.removeUnusedMetaData(temp);
+                        }
 
 					}
 					shell_.getDisplay().syncExec(new Runnable() {
