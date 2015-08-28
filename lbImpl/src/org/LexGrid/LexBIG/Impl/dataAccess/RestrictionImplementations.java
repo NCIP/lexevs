@@ -321,7 +321,7 @@ public class RestrictionImplementations {
                 masterQuery.add(nestedQuery, Occur.MUST);
             }
 
-            masterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT));
+            //masterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT));
 
             getLogger().debug("Generated Query: " + masterQuery.toString());          
 

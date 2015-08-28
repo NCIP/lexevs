@@ -18,33 +18,28 @@
  */
 package org.lexevs.dao.index.lucenesupport;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.LeafReaderContext;
-import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SimpleCollector;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
-import org.lexevs.dao.indexer.utility.Utility;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -357,9 +352,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 
 	@Override
-	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector) {
-		// TODO Auto-generated method stub
-		return null;
+	public Document getDocumentById(final int id, final Set<String> fields) {
+		return this.doInIndexReader(new IndexReaderCallback<Document>() {
+
+			@Override
+			public Document doInIndexReader(IndexReader indexReader)
+					throws Exception {
+				return indexReader.document(id, fields);
+			}
+		});	
 	}
 
 	@Override
@@ -369,10 +370,17 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		
 	}
 
+
 	@Override
 	public Query getCombinedQueryFromSchemes(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
-			Query query) {
+			BooleanQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector) {
 		// TODO Auto-generated method stub
 		return null;
 	}

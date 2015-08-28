@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DocumentStoredFieldVisitor;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
@@ -69,12 +70,14 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
     @Override
     protected Document buildDocument() throws Exception {
         String uri = this.getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
+        //TODO start here for updates to the Set<String>
         return 
             this.getEntityIndexService().getDocumentById(uri, internalVersionString, this.getDocumentId(), this.doGetFieldSelector());
     }
     
     protected StoredFieldVisitor doGetFieldSelector() {
         //TODO find a replacement as necessary for this.  Short term research did not turn up a replacement in 5.2.1
+        //TODO return this as a Set<String>
 //        return new MapFieldSelector(
 //                new String[] {
 //                        SQLTableConstants.TBLCOL_ENTITYCODE,
@@ -84,6 +87,12 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
 //                        LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
 //                        SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
 //                        "entityType"});
-        return null;
+        return new DocumentStoredFieldVisitor(SQLTableConstants.TBLCOL_ENTITYCODE,
+              LuceneLoaderCode.ENTITY_UID_FIELD,
+              SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,
+              LuceneLoaderCode.CODING_SCHEME_ID_FIELD,
+              LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
+              SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
+              "entityType");
     }
 }

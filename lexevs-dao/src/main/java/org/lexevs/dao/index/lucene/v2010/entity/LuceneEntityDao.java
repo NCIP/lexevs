@@ -31,6 +31,7 @@ import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
@@ -65,6 +66,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	/** The supported index version2010. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
 
+	
 	private LuceneIndexTemplate luceneIndexTemplate;
 
 	@Override
@@ -121,7 +123,9 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 //			BestScoreOfEntityHitCollector hitCollector = new BestScoreOfEntityHitCollector(boundaryDocIds.iterator(), maxDoc);
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
 			template.search(query, codingSchemeFilter, hitCollector);
-			return Arrays.asList(hitCollector.topDocs().scoreDocs);
+			ScoreDoc[] arrayDocs = hitCollector.topDocs().scoreDocs;
+			List<ScoreDoc> docs = new ArrayList<ScoreDoc>(Arrays.asList(arrayDocs));
+			return docs;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -130,7 +134,9 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	@Override
 	public List<ScoreDoc> query(Query query) {
 		try {
-			LuceneIndexTemplate template = this.getCommonLuceneIndexTemplate();
+			
+			//Gets a multi index template for this query
+			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 			
 			int maxDoc = template.getMaxDoc();
 
@@ -146,14 +152,14 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		}
 	}
 
-	public List<ScoreDoc> query(List<AbsoluteCodingSchemeVersionReference> codingSchemes, Query query) {
+	public List<ScoreDoc> query(List<AbsoluteCodingSchemeVersionReference> codingSchemes, BooleanQuery query) {
 		
 		// TODO New Lucene will not support or be compatible with older versions.  This appears to be the entry point
 		// for the multi scheme/ all schemes implementation we'll have to update the template to work with a multireader.
 		
 		try {
 			//TODO this needs to return the MultiScheme template.  
-			LuceneIndexTemplate template = this.getCommonLuceneIndexTemplate();
+			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 			
 			int maxDoc = template.getMaxDoc();
 
@@ -175,9 +181,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		}
 	}
 
-	protected LuceneIndexTemplate getCommonLuceneIndexTemplate() {
-		return this.luceneIndexTemplate;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.entity.EntityDao#query(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.util.List, java.util.List)
@@ -365,6 +368,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	@Override
 	public Document getDocumentById(String codingSchemeUri, String version,
 			int id, StoredFieldVisitor fieldSelector) {
+		//TODO redo with a Set<String> field
 		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fieldSelector);
 	}
 
@@ -427,11 +431,13 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		return this.getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
+	public LuceneIndexTemplate getLuceneIndexTemplate() {
+		return luceneIndexTemplate;
+	}
+
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
 		this.luceneIndexTemplate = luceneIndexTemplate;
 	}
 
-	public LuceneIndexTemplate getLuceneIndexTemplate() {
-		return luceneIndexTemplate;
-	}
+
 }

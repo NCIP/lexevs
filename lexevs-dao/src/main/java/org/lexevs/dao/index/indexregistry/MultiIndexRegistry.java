@@ -18,6 +18,7 @@ import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
@@ -115,11 +116,22 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		for (File f : indexDir.listFiles()) {
 			if (f.exists() && f.isDirectory()) {
 				luceneIndexNameToTemplateMap.put(f.getName(),
-						luceneIndexTemplate);
+						buildTemplateForIndexName(f.getName()));
 			}
 		}
 	}
 	
+	private LuceneIndexTemplate buildTemplateForIndexName(String name) {
+		BaseLuceneIndexTemplate baseTemplate = new BaseLuceneIndexTemplate();
+		for(CodingSchemeMetaData md : ConcurrentMetaData.getInstance().getCodingSchemeList()){
+			if(md.getIndexDirectoryName().equals(name)){
+				new BaseLuceneIndexTemplate(md.getDirectory());
+				break;
+			}
+		}
+		return baseTemplate;
+	}
+
 	protected void autoRegisterIndex(String codingSchemeUri, String version) {
 		String codingSchemeName;
 		
@@ -207,6 +219,7 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
 	@Override
 	public void destroyIndex(String indexName) {
+		//TODO Coordinate with ConcurrentMetaData List? Not sure we should even allow this here.   
 		String location = systemVariables.getAutoLoadIndexLocation();
 		try {
 			Path path = Paths.get(location,indexName);

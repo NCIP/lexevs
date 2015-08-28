@@ -13,6 +13,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
@@ -208,10 +209,11 @@ public class MetaDataIndexTemplate implements LuceneIndexTemplate {
 		return null;
 	}
 
+
 	@Override
 	public Query getCombinedQueryFromSchemes(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
-			Query query) {
+			BooleanQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

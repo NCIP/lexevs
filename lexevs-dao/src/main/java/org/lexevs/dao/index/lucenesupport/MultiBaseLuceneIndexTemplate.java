@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -29,12 +30,17 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexSearcherCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexWriterCallback;
@@ -236,11 +242,11 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 	@Override
 	public Query getCombinedQueryFromSchemes(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
-			Query query) {
-		// TODO Auto-generated method stub
-		return null;
+			BooleanQuery query) {
+		for(AbsoluteCodingSchemeVersionReference ref: codingSchemes){
+			query.add(new BooleanClause(new TermQuery(new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,"" )),Occur.MUST));
+		}
+		return query;
 	}
-	
-	
-	
+		
 }
