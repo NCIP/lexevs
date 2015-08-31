@@ -29,7 +29,16 @@ import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.join.BitDocIdSetCachingWrapperFilter;
+import org.apache.lucene.search.join.BitDocIdSetFilter;
+import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -54,8 +63,7 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
      * @see org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory#buildCodeHolder(java.lang.String, java.lang.String, org.apache.lucene.search.Query)
      */
     
-    //Doesn't seem to have any calling code.  commenting out for now.  The BitSet query mechanism is complex
-    //if we aren't using it we should avoid maintining it.  
+    //Doesn't seem to have any calling code.  commenting out for now.  The BitSet query mechanism is complex  
 //    public CodeHolder buildCodeHolder(
 //            String internalCodeSystemName,
 //            String internalVersionString, 
@@ -90,22 +98,33 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
+        BitDocIdSetFilter codingScheme = null;
+        try {
+            codingScheme = new BitDocIdSetCachingWrapperFilter(
+                    new QueryWrapperFilter(new QueryParser("parentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("yes")));
+        } catch (ParseException e) {
+          new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
+        }
 
         BooleanQuery combinedQuery = new BooleanQuery();
         for(Query query : queries) {
             combinedQuery.add(query, Occur.MUST);
         }
         
-        //TODO.  Figure out what the filters were doing and duplicate if necessary for the wrapper filter.
-        Filter chainedFilter = new QueryWrapperFilter(combinedQuery);
-        Query query;
-        if(CollectionUtils.isNotEmpty(filters)) {
-            query = new FilteredQuery(combinedQuery, chainedFilter);
-        } else {
-            query = combinedQuery;
-        }
+        ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+                combinedQuery, 
+                codingScheme,
+                ScoreMode.Total);
         
-        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, query);
+//        Filter chainedFilter = new QueryWrapperFilter(combinedQuery);
+//        Query query;
+//        if(CollectionUtils.isNotEmpty(filters)) {
+//            query = new FilteredQuery(combinedQuery, chainedFilter);
+//        } else {
+//            query = combinedQuery;
+//        }
+        
+        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);
 
         return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
     }

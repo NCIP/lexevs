@@ -27,11 +27,15 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
@@ -42,6 +46,11 @@ import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.join.BitDocIdSetCachingWrapperFilter;
+import org.apache.lucene.search.join.BitDocIdSetFilter;
+import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.util.Bits;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -116,12 +125,12 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			Filter codingSchemeFilter = null;
 
 			int maxDoc = template.getMaxDoc();
-
-//			Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
-
-//			DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
-
-//			BestScoreOfEntityHitCollector hitCollector = new BestScoreOfEntityHitCollector(boundaryDocIds.iterator(), maxDoc);
+//		  BitDocIdSetFilter parent = new BitDocIdSetCachingWrapperFilter(
+//		              new QueryWrapperFilter(new QueryParser("parentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("yes")));
+//		  ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+//				    query, 
+//				    parent,
+//				    ScoreMode.Total);
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
 			template.search(query, codingSchemeFilter, hitCollector);
 			ScoreDoc[] arrayDocs = hitCollector.topDocs().scoreDocs;
