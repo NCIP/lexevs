@@ -380,7 +380,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 
 	@Override
-	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector) {
+	public Document getDocumentById(int id, StoredFieldVisitor visitor) {
 		// TODO Auto-generated method stub
 		return null;
 	}

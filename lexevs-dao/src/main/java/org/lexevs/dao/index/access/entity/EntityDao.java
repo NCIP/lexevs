@@ -19,6 +19,7 @@
 package org.lexevs.dao.index.access.entity;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -51,7 +52,7 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	public Document getDocumentById(String codingSchemeUri, String version, int id);
 	
 	public Document getDocumentById(String codingSchemeUri, String version,
-			int id, StoredFieldVisitor fieldSelector);
+			int id, Set<String> field);
 
 	public Query getMatchAllDocsQuery(
 			String codingSchemeUri, String version);

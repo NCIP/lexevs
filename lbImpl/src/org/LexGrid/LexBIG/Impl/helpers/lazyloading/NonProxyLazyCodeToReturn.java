@@ -25,6 +25,11 @@ import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import aj.org.objectweb.asm.FieldVisitor;
 
 /**
@@ -72,7 +77,7 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
         String uri = this.getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
         //TODO start here for updates to the Set<String>
         return 
-            this.getEntityIndexService().getDocumentById(uri, internalVersionString, this.getDocumentId(), this.doGetFieldSelector());
+            this.getEntityIndexService().getDocumentById(uri, internalVersionString, this.getDocumentId(), this.doGetStringFields());
     }
     
     protected StoredFieldVisitor doGetFieldSelector() {
@@ -94,5 +99,16 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
               LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
               SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
               "entityType");
+    }
+    
+    protected Set<String> doGetStringFields() {
+        return new HashSet<String>(Arrays.asList(
+                        SQLTableConstants.TBLCOL_ENTITYCODE,
+                        LuceneLoaderCode.ENTITY_UID_FIELD,
+                        SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,
+                        LuceneLoaderCode.CODING_SCHEME_ID_FIELD,
+                        LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
+                        SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
+                        "entityType"));
     }
 }

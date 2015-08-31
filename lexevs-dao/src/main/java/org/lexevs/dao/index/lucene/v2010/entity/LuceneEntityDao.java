@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
@@ -367,9 +368,9 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	
 	@Override
 	public Document getDocumentById(String codingSchemeUri, String version,
-			int id, StoredFieldVisitor fieldSelector) {
+			int id, Set<String> fields) {
 		//TODO redo with a Set<String> field
-		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fieldSelector);
+		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fields);
 	}
 
 	/* (non-Javadoc)

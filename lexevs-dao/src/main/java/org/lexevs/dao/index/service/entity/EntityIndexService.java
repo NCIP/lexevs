@@ -19,6 +19,7 @@
 package org.lexevs.dao.index.service.entity;
 
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
@@ -54,8 +55,8 @@ public interface EntityIndexService {
 //	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion);
 	
 	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id);
-	
-	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id, StoredFieldVisitor fieldSelector);
+	 
+	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id,  Set<String> fields);
 	
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,

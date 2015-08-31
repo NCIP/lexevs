@@ -3,6 +3,7 @@ package org.lexevs.dao.index.lucenesupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
@@ -214,6 +215,12 @@ public class MetaDataIndexTemplate implements LuceneIndexTemplate {
 	public Query getCombinedQueryFromSchemes(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
 			BooleanQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Document getDocumentById(int id, Set<String> fields) {
 		// TODO Auto-generated method stub
 		return null;
 	}

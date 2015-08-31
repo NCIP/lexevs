@@ -20,6 +20,7 @@ package org.lexevs.dao.index.lucenesupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -247,6 +248,12 @@ public class MultiBaseLuceneIndexTemplate implements InitializingBean, Disposabl
 			query.add(new BooleanClause(new TermQuery(new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,"" )),Occur.MUST));
 		}
 		return query;
+	}
+
+	@Override
+	public Document getDocumentById(int id, Set<String> fields) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 		
 }

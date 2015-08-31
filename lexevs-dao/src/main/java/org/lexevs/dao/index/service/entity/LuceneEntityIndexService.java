@@ -19,6 +19,7 @@
 package org.lexevs.dao.index.service.entity;
 
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -128,13 +129,13 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	@Override
 	public Document getDocumentById(
 			String codingSchemeUri,
-			String codingSchemeVersion, int id, StoredFieldVisitor storedFieldVisitor) {
+			String codingSchemeVersion, int id, Set<String> fields) {
 		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).
 			getDocumentById(
 					codingSchemeUri,
 					codingSchemeVersion, 
 					id, 
-					storedFieldVisitor);
+					fields);
 	}
 
 	@Override
