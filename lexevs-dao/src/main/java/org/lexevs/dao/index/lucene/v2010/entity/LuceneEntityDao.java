@@ -117,7 +117,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query) {
 		
-		// TODO New Lucene will not support or be compatible with older versions.
 		
 		try {
 			LuceneIndexTemplate template = getLuceneIndexTemplate(codingSchemeUri, version);
@@ -125,14 +124,8 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			Filter codingSchemeFilter = null;
 
 			int maxDoc = template.getMaxDoc();
-//		  BitDocIdSetFilter parent = new BitDocIdSetCachingWrapperFilter(
-//		              new QueryWrapperFilter(new QueryParser("parentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("yes")));
-//		  ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
-//				    query, 
-//				    parent,
-//				    ScoreMode.Total);
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
-			template.search(query, codingSchemeFilter, hitCollector);
+			template.blockJoinSearch(query, codingSchemeFilter, hitCollector);
 			ScoreDoc[] arrayDocs = hitCollector.topDocs().scoreDocs;
 			List<ScoreDoc> docs = new ArrayList<ScoreDoc>(Arrays.asList(arrayDocs));
 			return docs;
@@ -292,15 +285,15 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		}
 	}
 	
-	private int getPreviousSetBit(BitSet bitSet, int index) {
-		for(int i=index;i>=0;i--) {
-			if(bitSet.get(i)) {
-				return i;
-			}
-		}
-		return 0;
-	}
-		
+//	private int getPreviousSetBit(BitSet bitSet, int index) {
+//		for(int i=index;i>=0;i--) {
+//			if(bitSet.get(i)) {
+//				return i;
+//			}
+//		}
+//		return 0;
+//	}
+//		
 
 	/**
 	 * Builds the score docs.

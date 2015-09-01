@@ -727,14 +727,14 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             
             //TODO: Move this block of logic somewhere else so we don't have to rely on a flag
             if(! hasMatchAllDocsQueryBeenAdded){
-                this.queries.add(new MatchAllDocsQuery());
-
-                if(this.isShouldCodingSchemeSpecificRestriction()) {
-                    Query codingSchemeQuery = 
-                        entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
-
-                    this.queries.add(codingSchemeQuery);
-                }
+//                this.queries.add(new MatchAllDocsQuery());
+//
+//                if(this.isShouldCodingSchemeSpecificRestriction()) {
+//                    Query codingSchemeQuery = 
+//                        entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
+//
+//                    this.queries.add(codingSchemeQuery);
+//                }
                 
                 hasMatchAllDocsQueryBeenAdded = true;
             } 

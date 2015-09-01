@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -45,6 +46,7 @@ import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -105,12 +107,12 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         } catch (ParseException e) {
           new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
         }
-
+        
         BooleanQuery combinedQuery = new BooleanQuery();
         for(Query query : queries) {
             combinedQuery.add(query, Occur.MUST);
         }
-        
+//        Query finalQuery = new QueryParser(null, LuceneLoaderCode.getAnaylzer()).getBooleanQuery(Arrays.asList(combinedQuery.getClauses()), true);
         ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
                 combinedQuery, 
                 codingScheme,

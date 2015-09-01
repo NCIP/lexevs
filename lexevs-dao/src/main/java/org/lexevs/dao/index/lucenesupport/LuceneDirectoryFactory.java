@@ -29,9 +29,11 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.store.MMapDirectory;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.springframework.beans.factory.FactoryBean;
@@ -91,6 +93,7 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		private Directory directory;
 		private String indexName;
 		private IndexSearcher indexSearcher;
+		private ToParentBlockJoinIndexSearcher blockJoinSearcher;
 		private IndexReader indexReader;
 
 		public NamedDirectory(Directory directory, String indexName) {
@@ -101,10 +104,12 @@ public class LuceneDirectoryFactory implements FactoryBean {
 				this.initIndexDirectory(directory);
 				this.indexReader = this.createIndexReader(directory);
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
+				this.blockJoinSearcher = this.createBlockJoinIndexSearcher(this.indexReader);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
+
 		public Directory getDirectory() {
 			return directory;
 		}
@@ -124,6 +129,17 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		public void setIndexSearcher(IndexSearcher indexSearcher) {
 			this.indexSearcher = indexSearcher;
 		}
+		
+		
+		public ToParentBlockJoinIndexSearcher getBlockJoinSearcher() {
+			return blockJoinSearcher;
+		}
+
+		public void setBlockJoinSearcher(
+				ToParentBlockJoinIndexSearcher blockJoinSearcher) {
+			this.blockJoinSearcher = blockJoinSearcher;
+		}
+
 		public IndexReader getIndexReader() {
 			return indexReader;
 		}
@@ -134,7 +150,10 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		protected IndexSearcher createIndexSearcher(IndexReader indexReader) throws Exception {
 			return new IndexSearcher(indexReader);
 		}
-
+		private ToParentBlockJoinIndexSearcher createBlockJoinIndexSearcher(
+				IndexReader indexReader) {
+			return new ToParentBlockJoinIndexSearcher(indexReader);
+		}
 		protected IndexReader createIndexReader(Directory directory) throws Exception {
 			IndexReader reader = DirectoryReader.open(directory);
 			return reader;
@@ -158,8 +177,6 @@ public class LuceneDirectoryFactory implements FactoryBean {
 					this.indexReader.close();
 					this.indexReader = this.createIndexReader(this.directory);
 				}
-				
-//				this.indexSearcher.close();
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -168,13 +185,17 @@ public class LuceneDirectoryFactory implements FactoryBean {
 
 		public void remove() {
 			try {
-//				this.indexSearcher.close();
 				this.indexReader.close();
 
 				if(this.directory instanceof FSDirectory) {
 					FSDirectory dir = (FSDirectory)this.directory;
 					FileUtils.deleteDirectory(new File(dir.getDirectory().toUri()));
 				}
+				else if (this.directory instanceof MMapDirectory){
+					MMapDirectory dir = (MMapDirectory)this.directory;
+					FileUtils.deleteDirectory(new File(dir.getDirectory().toUri()));
+				}
+				
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

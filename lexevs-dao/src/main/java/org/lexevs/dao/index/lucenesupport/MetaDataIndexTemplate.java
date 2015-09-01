@@ -22,6 +22,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
@@ -223,6 +224,13 @@ public class MetaDataIndexTemplate implements LuceneIndexTemplate {
 	public Document getDocumentById(int id, Set<String> fields) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void blockJoinSearch(Query query, Filter codingSchemeFilter,
+			TopScoreDocCollector hitCollector) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

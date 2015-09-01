@@ -63,12 +63,20 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		try {
 			indexReader = namedDirectory.getIndexReader();
 			indexSearcher = new IndexSearcher(indexReader);
+			blockJoinSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
 			this.namedDirectory = namedDirectory;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		indexReader = namedDirectory.getIndexReader();
+		indexSearcher = namedDirectory.getIndexSearcher();
+		blockJoinSearcher = namedDirectory.getBlockJoinSearcher();
+		
+	}
 
 	@Override
 	public String getIndexName() {
@@ -157,16 +165,32 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		
 	}
 	
+	@Override
+	public void blockJoinSearch(final Query query, final Filter codingSchemeFilter,
+			final TopScoreDocCollector collector) {
+		this.doInBlockJoinIndexSearcher(new ToParentBlockJoinIndexSearcherCallback<Void>() {
+
+			@Override
+			public Void doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+					throws Exception {
+				indexSearcher.search(query, collector);
+				return null;
+			}
+		}
+		);	
+		
+	}
+	
 	public List<ScoreDoc> blockJoinSearch(final Query query, final Filter filter){
 		return this.doInBlockJoinIndexSearcher(new ToParentBlockJoinIndexSearcherCallback<List<ScoreDoc>>() {
 
 			@Override
-			public List<ScoreDoc> doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+			public List<ScoreDoc> doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcher blockJoinSearcher)
 					throws Exception {
 				
 				List<ScoreDoc> docs = null;
 				final TopScoreDocCollector collector = TopScoreDocCollector.create(getMaxDoc());
-				indexSearcher.search(query, collector
+				blockJoinSearcher.search(query, collector
 				);
 				docs = Arrays.asList(collector.topDocs().scoreDocs);
 				return docs;
@@ -232,7 +256,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	protected <T> T doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcherCallback<T> toParentBlockJoinIndexSearcherCallback) {
 		try {
-			return toParentBlockJoinIndexSearcherCallback.doInIndexSearcher(blockJoinSearcher);
+			return toParentBlockJoinIndexSearcherCallback.doInBlockJoinIndexSearcher(blockJoinSearcher);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -282,7 +306,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	public interface ToParentBlockJoinIndexSearcherCallback<T> {
-		public T doInIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) throws Exception;
+		public T doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) throws Exception;
 	}
 	
 	public interface IndexWriterCallback<T> {
@@ -371,13 +395,6 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		});	
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		indexReader = namedDirectory.getIndexReader();
-		indexSearcher = namedDirectory.getIndexSearcher();
-		
-	}
-
 
 	@Override
 	public Query getCombinedQueryFromSchemes(
@@ -392,4 +409,6 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 }

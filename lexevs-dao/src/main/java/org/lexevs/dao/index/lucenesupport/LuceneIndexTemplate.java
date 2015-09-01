@@ -32,6 +32,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexSearcherCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexWriterCallback;
@@ -74,4 +75,7 @@ public interface LuceneIndexTemplate {
 			BooleanQuery query);
 
 	Document getDocumentById(int id, Set<String> fields);
+
+	public void blockJoinSearch(Query query, Filter codingSchemeFilter,
+			TopScoreDocCollector hitCollector);
 }
