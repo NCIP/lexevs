@@ -99,7 +99,7 @@ public abstract class LuceneLoaderCode {
     public static String CODING_SCHEME_NAME_FIELD = "codingSchemeName";
     
     /** The CODIN g_ schem e_ i d_ field. */
-    public static String CODING_SCHEME_ID_FIELD = "codingSchemeId";
+    public static String CODING_SCHEME_ID_FIELD = "codingSchemeUri";
     
     /** The CODIN g_ schem e_ i d_ field. */
     public static String CODING_SCHEME_VERSION_FIELD = "codingSchemeVersion";
