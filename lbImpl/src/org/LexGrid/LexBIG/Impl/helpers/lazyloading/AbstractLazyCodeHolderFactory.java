@@ -100,10 +100,10 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
-        BitDocIdSetFilter codingScheme = null;
+        BitDocIdSetFilter parentFilter = null;
         try {
-            codingScheme = new BitDocIdSetCachingWrapperFilter(
-                    new QueryWrapperFilter(new QueryParser("parentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("yes")));
+            parentFilter = new BitDocIdSetCachingWrapperFilter(
+                    new QueryWrapperFilter(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true")));
         } catch (ParseException e) {
           new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
         }
@@ -115,16 +115,8 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
 //        Query finalQuery = new QueryParser(null, LuceneLoaderCode.getAnaylzer()).getBooleanQuery(Arrays.asList(combinedQuery.getClauses()), true);
         ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
                 combinedQuery, 
-                codingScheme,
+                parentFilter,
                 ScoreMode.Total);
-        
-//        Filter chainedFilter = new QueryWrapperFilter(combinedQuery);
-//        Query query;
-//        if(CollectionUtils.isNotEmpty(filters)) {
-//            query = new FilteredQuery(combinedQuery, chainedFilter);
-//        } else {
-//            query = combinedQuery;
-//        }
         
         List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);
 
