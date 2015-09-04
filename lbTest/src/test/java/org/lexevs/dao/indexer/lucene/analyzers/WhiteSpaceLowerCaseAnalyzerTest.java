@@ -18,12 +18,14 @@
  */
 package org.lexevs.dao.indexer.lucene.analyzers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 
@@ -135,6 +137,13 @@ public class WhiteSpaceLowerCaseAnalyzerTest extends TestCase {
 //        assertTrue(token.endOffset() == 18);
 //
 //        assertTrue(result.next() == null);
+    }
+    
+    public void testCaseSensitiveAnalyzer() throws IOException{
+    	
+    	String input = new String("Test");
+        String[] output = {"Test"};
+        BaseTokenStreamTestCase.assertAnalyzesTo(new KeywordAnalyzer(), input, output);
     }
 
 }

@@ -63,6 +63,22 @@ public class TestContains extends BaseSearchAlgorithmTest {
     }
     
     /**
+     * Test contains.
+     * 
+     * @throws Exception the exception
+     */
+    public void testContainsWithNonNormalizedSearch() throws Exception {
+        CodedNodeSet cns = super.getAutosCodedNodeSet();
+        cns.restrictToMatchingDesignations("Automob", SearchDesignationOption.ALL, getAlgorithm(), null);
+
+        ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+
+        assertTrue("Length: " + rcrl.length, rcrl.length == 1);
+
+        assertTrue(checkForMatch(rcrl, matchCode));
+    }
+    
+    /**
      * Test contains two terms.
      * 
      * @throws Exception the exception
