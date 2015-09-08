@@ -20,8 +20,10 @@ package org.LexGrid.LexBIG.gui.load;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.MultiValueOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.Option;
@@ -177,6 +179,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             uriOptionLable.setToolTipText(uriOption.getHelpText());
 
             final Text uriOptionFile = new Text(group1, SWT.BORDER);
+            //uriOptionFile.clearSelection();
             uriOptionFile.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
             uriOptionFile.setToolTipText(uriOption.getHelpText());
 
@@ -187,7 +190,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             uriOptionfileChooseButton.addSelectionListener(new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent arg0) {
-                    //
+                //
                 }
 
                 public void widgetSelected(SelectionEvent arg0) {
@@ -395,8 +398,15 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 				setLoading(true);
 				loader.load(uri);
 				setLoading(false);
-				uriChooseButton.setEnabled(false);
-				load.setEnabled(false);
+				Loader newLoader = null;
+				try {
+                    newLoader = lb_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
+                } catch (LBException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+			if(!isLoading())
+				buildGUI(shell, newLoader);
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
