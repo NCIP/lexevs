@@ -59,7 +59,11 @@ public class DoubleMetaphoneSearch extends AbstractSearch {
         try {
             return queryParser.parse(
                     LuceneLoaderCode.DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD + 
-                    ":(" + this.handleWhiteSpaceCharacters(searchText) + ")");
+                    ":(" + 
+//                            this.handleWhiteSpaceCharacters(
+                                    searchText
+//                                    ) 
+                                    + ")");
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

@@ -177,8 +177,9 @@ public class RestrictionImplementations {
             if (activeOption != null) {
                 if (activeOption.equals(ActiveOption.ACTIVE_ONLY)) {
                     // This is a MUST_NOT query - do not set addedSomething to true
-                    masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "F")),
-                            Occur.MUST_NOT));
+                    //Remove the MUST_NOT to make this work with BlockJoin.
+                    masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "T")),
+                            Occur.MUST));
                 } else if (activeOption.equals(ActiveOption.INACTIVE_ONLY)) {
                     masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "F")),
                             Occur.MUST));
@@ -190,8 +191,8 @@ public class RestrictionImplementations {
                     masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "T")),
                             Occur.MUST));
                 } else if (anonymousOption.equals(AnonymousOption.NON_ANONYMOUS_ONLY)) {
-                    masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "T")),
-                            Occur.MUST_NOT));
+                    masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "F")),
+                            Occur.MUST));
                 }
             }
             

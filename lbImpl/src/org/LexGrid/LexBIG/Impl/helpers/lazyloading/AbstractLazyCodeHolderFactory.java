@@ -112,7 +112,6 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         for(Query query : queries) {
             combinedQuery.add(query, Occur.MUST);
         }
-//        Query finalQuery = new QueryParser(null, LuceneLoaderCode.getAnaylzer()).getBooleanQuery(Arrays.asList(combinedQuery.getClauses()), true);
         ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
                 combinedQuery, 
                 parentFilter,

@@ -210,10 +210,6 @@ public abstract class LuceneLoaderCode {
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
-//        generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, true, true, false);
-
-//        generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
-//        generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
         generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
         generator_.addTextField(idFieldName, entityCode, true, true, false);
         generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
@@ -288,21 +284,25 @@ public abstract class LuceneLoaderCode {
             }
         }
 
-//        if (isActive != null) {
-//            if (isActive.booleanValue()) {
-//                generator_.addTextField("isActive", "T", false, true, false);
-//            } else {
-//                generator_.addTextField("isActive", "F", false, true, false);
-//            }
-//        }
-//        
-//        if (isAnonymous != null) {
-//            if (isAnonymous.booleanValue()) {
-//                generator_.addTextField("isAnonymous", "T", false, true, false);
-//            } else {
-//                generator_.addTextField("isAnonymous", "F", false, true, false);
-//            }
-//        }
+        if (isActive != null) {
+            if (isActive.booleanValue()) {
+                generator_.addTextField("isActive", "T", false, true, false);
+            } else {
+                generator_.addTextField("isActive", "F", false, true, false);
+            }
+        }else{
+        	generator_.addTextField("isActive", "T", false, true, false);
+        }
+        
+        if (isAnonymous != null) {
+            if (isAnonymous.booleanValue()) {
+                generator_.addTextField("isAnonymous", "T", false, true, false);
+            } else {
+                generator_.addTextField("isAnonymous", "F", false, true, false);
+            }
+        }else{
+        	generator_.addTextField("isAnonymous", "F", false, true, false);
+        }
         
         if (isPreferred != null) {
             if (isPreferred.booleanValue()) {
@@ -423,21 +423,25 @@ public abstract class LuceneLoaderCode {
     	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
     	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
     	
-    	if (isActive != null) {
-            if (isActive.booleanValue()) {
-                generator_.addTextField("isActive", "T", false, true, false);
-            } else {
-                generator_.addTextField("isActive", "F", false, true, false);
-            }
-        }
-        
-        if (isAnonymous != null) {
-            if (isAnonymous.booleanValue()) {
-                generator_.addTextField("isAnonymous", "T", false, true, false);
-            } else {
-                generator_.addTextField("isAnonymous", "F", false, true, false);
-            }
-        }
+//    	if (isActive != null) {
+//            if (isActive.booleanValue()) {
+//                generator_.addTextField("isActive", "T", false, true, false);
+//            } else {
+//                generator_.addTextField("isActive", "F", false, true, false);
+//            }
+//        }else{
+//        	 generator_.addTextField("isActive", "T", false, true, false);
+//        }
+//        
+//        if (isAnonymous != null) {
+//            if (isAnonymous.booleanValue()) {
+//                generator_.addTextField("isAnonymous", "T", true, true, false);
+//            } else {
+//                generator_.addTextField("isAnonymous", "F", true, true, false);
+//            }
+//        }else{
+//        	generator_.addTextField("isAnonymous", "F", true, true, false);
+//        }
     	
         if (isDefined != null) {
             if (isDefined.booleanValue()) {
@@ -462,12 +466,11 @@ public abstract class LuceneLoaderCode {
         }
         
         if (isParentDoc != null) {
-        	generator_.addTextField("isParentDoc", Boolean.toString(isParentDoc), false, true, false);
+        	generator_.addTextField("isParentDoc", Boolean.toString(isParentDoc), true, true, false);
         }else {
         	throw new RuntimeException("isParentDoc is not defined.");
         }
     	
-    	// TODO not sure these are needed?
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
     			createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 

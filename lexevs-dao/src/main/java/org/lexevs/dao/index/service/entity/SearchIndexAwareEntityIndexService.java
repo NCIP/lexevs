@@ -30,7 +30,7 @@ public class SearchIndexAwareEntityIndexService extends LuceneEntityIndexService
 	@Override
 	protected void doDropIndex(AbsoluteCodingSchemeVersionReference reference) {
 		super.doDropIndex(reference);
-		this.searchIndexService.dropIndex(reference);
+//		this.searchIndexService.dropIndex(reference);
 	}
 
 	public SearchIndexService getSearchIndexService() {
