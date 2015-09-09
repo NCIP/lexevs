@@ -130,10 +130,12 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	 * @param loader the loader
 	 */
 	private void buildGUI(final Shell shell, final Loader loader) {
+
 	    Group options = new Group(shell, SWT.NONE);
 	    options.setText("Load Options");
 	    shell.setLayout(new GridLayout());
 
+        
 	    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 	    options.setLayoutData(gd);
 	    
@@ -179,14 +181,12 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             uriOptionLable.setToolTipText(uriOption.getHelpText());
 
             final Text uriOptionFile = new Text(group1, SWT.BORDER);
-            //uriOptionFile.clearSelection();
             uriOptionFile.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
             uriOptionFile.setToolTipText(uriOption.getHelpText());
 
             Button uriOptionfileChooseButton = Utility.getFileChooseButton(group1, uriOptionFile,
                     uriOption.getAllowedFileExtensions().toArray(new String[0]), null);
             uriOptionfileChooseButton.setToolTipText(uriOption.getHelpText());
-            
             uriOptionfileChooseButton.addSelectionListener(new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -367,6 +367,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	        }
 	    
 	    final Button load = new Button(options, SWT.PUSH);
+        final Button nextLoad = new Button(options, SWT.PUSH);
 	    load.setText("Load");
 	    gd = new GridData(GridData.CENTER);
 	    gd.widthHint = 60;
@@ -396,24 +397,73 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 				}
 
 				setLoading(true);
+				load.setEnabled(false);
 				loader.load(uri);
+				while(loader.getStatus() != null && loader.getStatus().getEndTime() == null){
+				    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                       throw new RuntimeException("This threading error should never happen", e);
+                    }
+				}
+				nextLoad.setEnabled(true);
 				setLoading(false);
-				Loader newLoader = null;
-				try {
-                    newLoader = lb_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
-                } catch (LBException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-			if(!isLoading())
-				buildGUI(shell, newLoader);
-			}
+	        }
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// 
 			}
 
 		});
+	    
+	    
+
+	        nextLoad.setText("Next Load");
+	        gd = new GridData(GridData.END);
+	        gd.widthHint = 100;
+	        nextLoad.setLayoutData(gd);
+	        nextLoad.setToolTipText("Start Load Process.");
+	        nextLoad.setEnabled(false);
+	        nextLoad.addSelectionListener(new SelectionListener() {
+
+	            public void widgetSelected(SelectionEvent arg0) {
+
+	                Loader newLoader = null;
+	                try {
+	                    newLoader = lb_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
+	                } catch (LBException e) {
+	                    // TODO Auto-generated catch block
+	                    e.printStackTrace();
+	                }
+	            if(!isLoading()){
+                    shell.dispose();
+                    setMonitorLoader(true);
+	                Shell newShell = new Shell(lb_gui_.getShell().getDisplay());
+	               try {
+
+	                   newShell.setImage(new Image(newShell.getDisplay(), this.getClass()
+	                           .getResourceAsStream("/icons/load.gif")));
+
+	                   dialog_ = new DialogHandler(newShell);
+	                   
+	                   newShell.setText(newLoader.getName());
+
+	                   buildGUI(newShell, newLoader);
+	                   newShell.pack();
+	                   newShell.open();
+	           
+	                   newShell.addShellListener(shellListener);
+	               } catch (Exception e) {
+	                   dialog_.showError("Unexpected Error", e.toString());
+	               }
+	            }
+	            }
+
+	            public void widgetDefaultSelected(SelectionEvent arg0) {
+	                // 
+	            }
+
+	        });
 
 		Composite status = getStatusComposite(shell, loader);
 		gd = new GridData(GridData.FILL_BOTH);
