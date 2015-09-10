@@ -48,6 +48,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
@@ -70,27 +71,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	 */
 	public LoaderExtensionShell(LB_GUI lb_gui, Loader loader) {
 		super(lb_gui);
-		try {
-			Shell shell = new Shell(lb_gui_.getShell().getDisplay());
-			
-		
-			shell.setImage(new Image(shell.getDisplay(), this.getClass()
-					.getResourceAsStream("/icons/load.gif")));
-
-			dialog_ = new DialogHandler(shell);
-			
-			shell.setText(loader.getName());
-
-			buildGUI(shell, loader);
-			shell.pack();
-			
-			shell.open();
-	
-			shell.addShellListener(shellListener);
-		} catch (Exception e) {
-			dialog_.showError("Unexpected Error", e.toString());
-		}
-
+		initializeLBGui(loader);
 	}
 	
 	/**
@@ -122,6 +103,29 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         }
 
     }
+    
+    private void initializeLBGui(Loader loader) {
+        try {
+            Shell shell = new Shell(lb_gui_.getShell().getDisplay());
+            
+        
+            shell.setImage(new Image(shell.getDisplay(), this.getClass()
+                    .getResourceAsStream("/icons/load.gif")));
+
+            dialog_ = new DialogHandler(shell);
+            
+            shell.setText(loader.getName());
+
+            buildGUI(shell, loader);
+            shell.pack();
+            
+            shell.open();
+    
+            shell.addShellListener(shellListener);
+        } catch (Exception e) {
+            dialog_.showError("Unexpected Error", e.toString());
+        }
+    }
 
 	/**
 	 * Builds the gui.
@@ -134,7 +138,6 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	    Group options = new Group(shell, SWT.NONE);
 	    options.setText("Load Options");
 	    shell.setLayout(new GridLayout());
-
         
 	    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 	    options.setLayoutData(gd);
@@ -365,15 +368,18 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                });
 	            }
 	        }
-	    
-	    final Button load = new Button(options, SWT.PUSH);
-        final Button nextLoad = new Button(options, SWT.PUSH);
-	    load.setText("Load");
-	    gd = new GridData(GridData.CENTER);
-	    gd.widthHint = 60;
-	    load.setLayoutData(gd);
-	    load.setToolTipText("Start Load Process.");
 
+	    Group groupControlButtons = new Group(options, SWT.NONE);
+        groupControlButtons.setLayout(new GridLayout(3, false));
+        groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	    
+        final Button load = new Button(groupControlButtons, SWT.PUSH);
+        final Button nextLoad = new Button(groupControlButtons, SWT.PUSH);
+        final Button close = new Button(groupControlButtons, SWT.PUSH);
+        close.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true, 1, 1));
+        
+	    load.setText("Load");
+	    load.setToolTipText("Start Load Process.");
 	    load.addSelectionListener(new SelectionListener() {
 
 	        public void widgetSelected(SelectionEvent arg0) {
@@ -398,16 +404,14 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 
 				setLoading(true);
 				load.setEnabled(false);
+				close.setEnabled(false);
 				loader.load(uri);
-				while(loader.getStatus() != null && loader.getStatus().getEndTime() == null){
-				    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                       throw new RuntimeException("This threading error should never happen", e);
-                    }
-				}
-				nextLoad.setEnabled(true);
-				setLoading(false);
+				
+				// Create/start a new thread to update the buttons when the load completes.
+				ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
+				Thread t = new Thread(buttonUpdater);
+		        t.setDaemon(true);
+		        t.start();  
 	        }
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -416,60 +420,51 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 
 		});
 	    
-	    
+        nextLoad.setText("Next Load");
+        nextLoad.setToolTipText("Start a New Load Process.");
+        nextLoad.setEnabled(false);
+        nextLoad.addSelectionListener(new SelectionListener() {
 
-	        nextLoad.setText("Next Load");
-	        gd = new GridData(GridData.END);
-	        gd.widthHint = 100;
-	        nextLoad.setLayoutData(gd);
-	        nextLoad.setToolTipText("Start Load Process.");
-	        nextLoad.setEnabled(false);
-	        nextLoad.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent arg0) {
 
-	            public void widgetSelected(SelectionEvent arg0) {
-
-	                Loader newLoader = null;
-	                try {
-	                    newLoader = lb_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
-	                } catch (LBException e) {
-	                    // TODO Auto-generated catch block
-	                    e.printStackTrace();
-	                }
+                Loader newLoader = null;
+                try {
+                    newLoader = lb_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
+                } catch (LBException e) {
+                    e.printStackTrace();
+                }
 	            if(!isLoading()){
+	                
+	                // close the current window and create/initialize it again with the same loader
                     shell.dispose();
                     setMonitorLoader(true);
-	                Shell newShell = new Shell(lb_gui_.getShell().getDisplay());
-	               try {
-
-	                   newShell.setImage(new Image(newShell.getDisplay(), this.getClass()
-	                           .getResourceAsStream("/icons/load.gif")));
-
-	                   dialog_ = new DialogHandler(newShell);
-	                   
-	                   newShell.setText(newLoader.getName());
-
-	                   buildGUI(newShell, newLoader);
-	                   newShell.pack();
-	                   newShell.open();
-	           
-	                   newShell.addShellListener(shellListener);
-	               } catch (Exception e) {
-	                   dialog_.showError("Unexpected Error", e.toString());
-	               }
+                    initializeLBGui(newLoader);
 	            }
-	            }
+            }
 
-	            public void widgetDefaultSelected(SelectionEvent arg0) {
-	                // 
-	            }
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // 
+            }
 
-	        });
+        });
+        
+        close.setText("Close");
+        close.setToolTipText("Close this Loader Window.");
+        close.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent arg0) {
+                shell.dispose();
+            }
+
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // 
+            }
+
+        });
 
 		Composite status = getStatusComposite(shell, loader);
 		gd = new GridData(GridData.FILL_BOTH);
 		status.setLayoutData(gd);
-		
-
 	}
 	
 	/**
@@ -537,8 +532,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     }
                 }
 
-                loader.load(uri);
                 load.setEnabled(false);
+                loader.load(uri);
             }
 
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -546,6 +541,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             }
 
         });
+        
         Composite status = null;
         
         if (loadingVS)
@@ -555,6 +551,43 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         
         gd = new GridData(GridData.FILL_BOTH);
         status.setLayoutData(gd);
+    }
+    
+    /**
+     * Runnable class to update the buttons when the load finishes.
+     */
+    protected class ButtonUpdater implements Runnable {
 
+        protected Button nextLoadBtn;
+        protected Button closeBtn;
+        protected Loader loader;
+        
+        ButtonUpdater(Button nextLoadButton, Button closeButton, Loader loader){
+            nextLoadBtn = nextLoadButton; 
+            closeBtn = closeButton;
+            this.loader = loader;
+        }
+        
+        @Override
+        public void run() {
+            while(loader.getStatus() != null && loader.getStatus().getEndTime() == null){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Error while waiting for load to complete.", e);
+                }
+            }
+            
+            // Needs to be called from the SWT Display thread.
+            Display.getDefault().syncExec(new Runnable() {
+                public void run() {
+                    nextLoadBtn.setEnabled(true);
+                    closeBtn.setEnabled(true);
+                    setLoading(false);
+                }
+            });
+            
+        }
+    
     }
 }
