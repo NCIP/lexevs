@@ -751,6 +751,12 @@
 		class="org.lexevs.dao.database.service.listener.CodingSchemeRegisteringListener">
 	</bean>
 	
+	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.LazyLoadMetaData" >
+		<property name="systemVariables" ref="systemVariables"/>
+		<property name="directoryCreator" ref="defaultLuceneDirectoryCreator"/>
+		<property name="multiDirectoryFactory" ref="luceneMultiDirectoryFactory"/>
+	</bean>
+	
 	<bean id="entityBatchingIndexCreator" class="org.lexevs.dao.index.indexer.EntityBatchingIndexCreator">
 		<property name="entityService" ref="entityService"/>
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
@@ -924,12 +930,9 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean> -->
 	
-<!-- 	<bean id="namedDirectoryListFactory" class="org.lexevs.dao.index.lucenesupport.MultiNamedDirectoryFactory">
-		<property name="systemVariables" ref="systemVariables"/>
-		<property name="directoryCreator" ref="defaultLuceneDirectoryCreator"/>
+	<bean id="multiReaderFactory" class="org.lexevs.dao.index.lucenesupport.MultiReaderFactory">
 		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
-	</bean> -->
-	
+	</bean>
  <!--    <bean id="luceneEntityIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate"> -->  
 <!--  		<property name="namedDirectory" ref="commonIndexDirectory"/>-->
 <!--	</bean>-->
@@ -945,6 +948,7 @@
 	
 	<bean id="luceneMultiIndexTemplate" class="org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate">
 		<property name="metaDirectories" ref="concurrentCodingSchemeFactory"/>
+		<property name="indexReader" ref="multiReaderFactory"/>
 	</bean>
 
 	<!--  bean id="indexRegistry" class="org.lexevs.dao.index.indexregistry.SingleIndexRegistry">
@@ -970,11 +974,5 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 
-
-	<bean id="eventListenerBean" class="org.lexevs.dao.index.lucenesupport.LazyLoadMetaData" >
-		<property name="systemVariables" ref="systemVariables"/>
-		<property name="directoryCreator" ref="defaultLuceneDirectoryCreator"/>
-		<property name="multiDirectoryFactory" ref="luceneMultiDirectoryFactory"/>
-	</bean>
 	
 	</beans>

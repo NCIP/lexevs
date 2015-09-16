@@ -76,7 +76,9 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	/** The supported index version2010. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2010 = LexEvsIndexFormatVersion.parseStringToVersion("2010");
 
-	
+	//This is wired to a multi index template in spring but many of the services 
+	// created in this class are run through single index templates pulled from the 
+	// metadata structure that tracks templates associated with index directories
 	private LuceneIndexTemplate luceneIndexTemplate;
 
 	@Override

@@ -20,6 +20,7 @@ package org.lexevs.dao.index.lucene.v2013.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
@@ -101,32 +103,10 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		try {
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 	
-			final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
-					
-			Collector collector = new Collector(){
-				
-				public void collect(int doc, float score) {
-					ScoreDoc scoreDoc = new ScoreDoc(doc, score);
-					docs.add(scoreDoc);
-				}
-
-				@Override
-				public LeafCollector getLeafCollector(LeafReaderContext arg0)
-						throws IOException {
-					// TODO Auto-generated method stub
-					return null;
-				}
-
-				@Override
-				public boolean needsScores() {
-					// TODO Auto-generated method stub
-					return false;
-				}
-				
-			};
+			TopScoreDocCollector collector = TopScoreDocCollector.create(template.getMaxDoc());
 			
 			template.search(query, null, collector);
-
+			final List<ScoreDoc> docs  = Arrays.asList(collector.topDocs().scoreDocs);
 			Collections.sort(docs, SCORE_DOC_COMPARATOR);
 			
 			return docs;
