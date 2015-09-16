@@ -146,6 +146,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
+import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -690,9 +691,8 @@ public class OwlApi2LG {
     protected void resolveSubClassOfRelations(AssociationSource source, OWLClass owlClass) {
         // Process parent-child (rdfs:subClassOf) relationships
         // Does this concept represent the root of a concept branch that should
-        // be centrally linked to the top node for subclass traversal?
-        OWLClass thing = reasoner.getTopClassNode().getEntities().iterator().next();
-        if (owlClass.isTopEntity() || reasoner.getSuperClasses(owlClass, true).getFlattened().contains(thing)) {
+        // be centrally linked to the top node for subclass traversal?;
+        if (isRootNode(owlClass)) {
             // always give the root node the default namespace
             AssociationTarget target = CreateUtils.createAssociationTarget(OwlApi2LGConstants.ROOT_CODE,
                     getDefaultNameSpace());
@@ -2109,15 +2109,17 @@ public class OwlApi2LG {
      * @author
      * @param rdfsNamedClass
      * @return
-     * 
-     *         protected boolean isRootNode(RDFSNamedClass rdfsNamedClass) { if
-     *         (prefManager.getMatchRootName() != null) { String conceptName =
-     *         resolveConceptID(rdfsNamedClass); return
-     *         prefManager.getMatchRootName().matcher(conceptName).matches(); }
-     *         else { return
-     *         rdfsNamedClass.getSuperclasses(false).contains(owlModel_
-     *         .getOWLThingClass()); } }
      */
+    protected boolean isRootNode(OWLClass owlClass) {
+        OWLClass thing = reasoner.getTopClassNode().getEntities().iterator().next();
+        if (prefManager.getMatchRootName() != null) {
+            String conceptName = resolveConceptID(owlClass);
+            return prefManager.getMatchRootName().matcher(conceptName).matches();
+        } else if (owlClass.isTopEntity()) {
+            return true;
+        }else  return reasoner.getSuperClasses(owlClass, true).getFlattened().contains(thing);       
+    }
+     
     /**
      * Constructs a new property id with the given integer suffix.
      * 
