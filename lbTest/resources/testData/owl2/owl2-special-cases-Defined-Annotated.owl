@@ -1406,6 +1406,18 @@
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
     </owl:Class>
     
+        <!-- http://www.w3.org/2002/07/owl#Nothing -->
+
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Nothing">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+    
 
 
     <!-- 

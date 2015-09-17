@@ -14,6 +14,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -26,6 +27,7 @@ public class DataLoadTestBaseSpecialCases extends TestCase {
 	protected LexBIGService lbs;
 	protected CodedNodeSet cns;
 	protected CodedNodeGraph cng;
+	protected ConvenienceMethods cm;
 	
 	/**
 	 * Sets the up lbs.
@@ -35,6 +37,7 @@ public class DataLoadTestBaseSpecialCases extends TestCase {
 	public void setUp() throws Exception{
 		lbs = ServiceHolder.instance().getLexBIGService();
 		lbs.getSupportedCodingSchemes();
+		cm = new ConvenienceMethods(lbs);
 		cns = lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION ));
 		cng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION ), null);
 	}
@@ -68,6 +71,18 @@ public class DataLoadTestBaseSpecialCases extends TestCase {
 						break;
 					}
 				}
+			}
+		}
+		return validate;
+	}
+	
+	public boolean validateCodeInList(String target,
+			Iterator<? extends ResolvedConceptReference> itr){
+		boolean validate = false;
+		while (itr.hasNext()) {
+			ResolvedConceptReference ref = itr.next();
+			if(ref.getCode().equals(target)){
+				return true;
 			}
 		}
 		return validate;
