@@ -614,6 +614,10 @@ public class OwlApi2LG {
 
         if (owlClassName2Conceptcode_.containsKey(owlClass.getIRI().toString()))
             return null;
+        
+        if(isNoopTopOrBottomOWLEntity(owlClass)){
+            return null;
+        }
 
         String label = resolveLabel(owlClass);
 
@@ -648,6 +652,13 @@ public class OwlApi2LG {
         owlClassName2Conceptcode_.put(owlClass.getIRI().toString(), concept.getEntityCode());
 
         return concept;
+    }
+
+    private boolean isNoopTopOrBottomOWLEntity(OWLClass owlClass) {
+        if(owlClass.isTopEntity() || owlClass.isBottomEntity()){
+            return true;
+        }
+        else return false;
     }
 
     /**
@@ -2115,9 +2126,12 @@ public class OwlApi2LG {
         if (prefManager.getMatchRootName() != null) {
             String conceptName = resolveConceptID(owlClass);
             return prefManager.getMatchRootName().matcher(conceptName).matches();
-        } else if (owlClass.isTopEntity()) {
-            return true;
-        }else  return reasoner.getSuperClasses(owlClass, true).getFlattened().contains(thing);       
+//        } else if (owlClass.isTopEntity()) {
+//            return true;
+        }else 
+        { 
+            return reasoner.getSuperClasses(owlClass, true).getFlattened().contains(thing); 
+            }      
     }
      
     /**
