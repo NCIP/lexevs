@@ -82,33 +82,13 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
      */
     public LoaderExtensionShell(LB_VSD_GUI lb_vsd_gui, Loader loader, boolean loadingVS, boolean loadingPL) {
         super(lb_vsd_gui);
-        try {
-            Shell shell = new Shell(lb_vsd_gui.getShell().getDisplay());
-            shell.setSize(500, 600);
-        
-            shell.setImage(new Image(shell.getDisplay(), this.getClass()
-                    .getResourceAsStream("/icons/load.gif")));
-
-            dialog_ = new DialogHandler(shell);
-            
-            shell.setText(loader.getName());
-
-            buildVSGUI(shell, loader, loadingVS, loadingPL);
-
-            shell.open();
-
-            shell.addShellListener(shellListener);
-        } catch (Exception e) {
-            dialog_.showError("Unexpected Error", e.toString());
-        }
-
+        initializeLBVSDGui(loader, loadingVS, loadingPL);
     }
     
     private void initializeLBGui(Loader loader) {
         try {
             Shell shell = new Shell(lb_gui_.getShell().getDisplay());
             
-        
             shell.setImage(new Image(shell.getDisplay(), this.getClass()
                     .getResourceAsStream("/icons/load.gif")));
 
@@ -125,6 +105,28 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         } catch (Exception e) {
             dialog_.showError("Unexpected Error", e.toString());
         }
+    }
+    
+    private void initializeLBVSDGui(Loader loader, boolean loadingVS, boolean loadingPL) {
+        try {
+            Shell shell = new Shell(lb_vd_gui_.getShell().getDisplay());
+            shell.setSize(500, 600);
+        
+            shell.setImage(new Image(shell.getDisplay(), this.getClass()
+                    .getResourceAsStream("/icons/load.gif")));
+
+            dialog_ = new DialogHandler(shell);
+            
+            shell.setText(loader.getName());
+
+            buildVSGUI(shell, loader, loadingVS, loadingPL);
+
+            shell.open();
+
+            shell.addShellListener(shellListener);
+        } catch (Exception e) {
+            dialog_.showError("Unexpected Error", e.toString());
+        } 
     }
 
 	/**
@@ -473,7 +475,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
      * @param shell the shell
      * @param loader the loader
      */
-    private void buildVSGUI(Shell shell, final Loader loader, boolean loadingVS, boolean loadingPL) {
+    private void buildVSGUI(final Shell shell, final Loader loader, final boolean loadingVS, final boolean loadingPL) {
         Group options = new Group(shell, SWT.NONE);
         options.setText("Load Options");
         shell.setLayout(new GridLayout());
@@ -504,12 +506,18 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         
-        final Button load = new Button(options, SWT.PUSH);
+        Group groupControlButtons = new Group(options, SWT.NONE);
+        groupControlButtons.setLayout(new GridLayout(3, false));
+        groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        final Button load = new Button(groupControlButtons, SWT.PUSH);
+        final Button nextLoad = new Button(groupControlButtons, SWT.PUSH);
+        final Button close = new Button(groupControlButtons, SWT.PUSH);
+        close.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true, 1, 1));
+        
         load.setText("Load");
-        gd = new GridData(GridData.CENTER);
-        gd.widthHint = 60;
-        load.setLayoutData(gd);
-
+        load.setToolTipText("Start Load Process.");
+        
         load.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
@@ -532,8 +540,16 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     }
                 }
 
+                setLoading(true);
                 load.setEnabled(false);
+                close.setEnabled(false);
                 loader.load(uri);
+                
+                // Create/start a new thread to update the buttons when the load completes.
+                ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
+                Thread t = new Thread(buttonUpdater);
+                t.setDaemon(true);
+                t.start();  
             }
 
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -541,6 +557,48 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             }
 
         });
+        
+        nextLoad.setText("Next Load");
+        nextLoad.setToolTipText("Start a New Load Process.");
+        nextLoad.setEnabled(false);
+        nextLoad.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent arg0) {
+
+                Loader newLoader = null;
+                try {
+                    newLoader = lb_vd_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
+                } catch (LBException e) {
+                    e.printStackTrace();
+                }
+                if(!isLoading()){
+                    
+                    // close the current window and create/initialize it again with the same loader
+                    shell.dispose();
+                    setMonitorLoader(true);
+                    initializeLBVSDGui(newLoader, loadingVS, loadingPL);
+                }
+            }
+
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // 
+            }
+        });
+        
+        close.setText("Close");
+        close.setToolTipText("Close this Loader Window.");
+        close.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent arg0) {
+                shell.dispose();
+            }
+
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // 
+            }
+
+        });
+
         
         Composite status = null;
         

@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Group;
  */
 public abstract class LoadExportBaseShell {
 	public LB_GUI lb_gui_;
-	protected LB_VSD_GUI lb_vd_gui_;
+	public LB_VSD_GUI lb_vd_gui_;
 	
 	protected boolean loadingPL_ = false;
 	protected boolean loadingVD_ = false;
