@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
 /**
  * The Class AbstractContainsSearch.
@@ -38,8 +39,11 @@ public abstract class AbstractContainsSearch extends AbstractExactMatchBoostingS
     public Query doBuildQuery(String searchText) {
         QueryParser queryParser = super.getQueryParser();
         
+        if(getLuceneSearchField() == LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD){
+            queryParser.setLowercaseExpandedTerms(false);
+        }
+
         searchText = super.addTrailingWildcardToAllTokens(searchText);
-        
         try {
             return queryParser.parse(getLuceneSearchField() + ":(" + searchText + ")");
         } catch (ParseException e) {
