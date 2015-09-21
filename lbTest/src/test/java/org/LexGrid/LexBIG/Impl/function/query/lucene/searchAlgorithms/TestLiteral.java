@@ -85,7 +85,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      */
     public void testLiteralCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Sp*cIaL", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns.restrictToMatchingDesignations("sp*cial", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

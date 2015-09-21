@@ -20,9 +20,11 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -96,18 +98,20 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
      * @return the query
      */
     protected Query buildSpanNearQuery(String[] tokens, String luceneSearchField, int slop, boolean inOrder){
-        SpanQuery[] spanQuery = new SpanQuery[tokens.length];
-        
+//        SpanQuery[] spanQuery = new SpanQuery[tokens.length];
+        PhraseQuery query = new PhraseQuery();
         for(int i=0;i<tokens.length;i++){
-            try {
-                TermQuery termQuery = (TermQuery)super.getQueryParser().parse(luceneSearchField + ":( " + tokens[i] + ")");
-                spanQuery[i] = new SpanTermQuery(termQuery.getTerm());
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+            	query.add(new Term(luceneSearchField, tokens[i]));
+//                TermQuery termQuery = (TermQuery)super.getQueryParser().parse(luceneSearchField + ":( " + tokens[i] + ")");
+ //               spanQuery[i] = new SpanTermQuery(termQuery.getTerm());
+//            } catch (ParseException e) {
+//                throw new RuntimeException(e);
+//            }
         }
-
-        SpanNearQuery spanNearQuery = new SpanNearQuery(spanQuery, slop, inOrder);
-        return spanNearQuery;
+query.setSlop(1);
+//        SpanNearQuery spanNearQuery = new SpanNearQuery(spanQuery, slop, inOrder);
+//        return spanNearQuery;
+        return query;
     }
 }

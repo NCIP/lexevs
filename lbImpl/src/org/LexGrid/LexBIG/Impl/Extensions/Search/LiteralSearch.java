@@ -55,9 +55,9 @@ public class LiteralSearch extends AbstractLiteralSearch {
      */
     public Query doBuildQuery(String searchText) {
         QueryParser queryParser = super.getQueryParser();
-        
+        String escapedValue = excapeSpecialCharacters(searchText);
         try {
-            return queryParser.parse(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD + ":(" + searchText + ")");
+            return queryParser.parse(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD + ":(" + escapedValue + ")");
         } catch (ParseException e) {
            throw new RuntimeException(e);
         }

@@ -48,7 +48,10 @@ public abstract class AbstractLiteralSearch extends AbstractSearch {
      */
     public Query buildQuery(String searchText) {
         return doBuildQuery(
-                excapeSpecialCharacters(searchText));
+         //       excapeSpecialCharacters(
+                        searchText
+         //               )
+                        );
     } 
     
     /**

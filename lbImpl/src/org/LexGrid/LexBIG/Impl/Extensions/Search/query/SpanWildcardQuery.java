@@ -33,6 +33,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.apache.lucene.search.spans.SpanOrQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
@@ -67,10 +68,11 @@ public class SpanWildcardQuery extends SpanQuery {
      */
     public Query rewrite(IndexReader reader) throws IOException {
         WildcardQuery orig = new WildcardQuery(term);
+        orig.setRewriteMethod(SpanMultiTermQueryWrapper.SCORING_SPAN_QUERY_REWRITE);
 
         Query rewritten = orig.rewrite(reader);
         SpanQuery[] spanQueries = null;
-
+        SpanOrQuery termQuery = null;
         if(rewritten instanceof BooleanQuery){
             BooleanQuery booleanQuery = (BooleanQuery)rewritten;
             BooleanClause[] clauses = booleanQuery.getClauses();
@@ -83,21 +85,22 @@ public class SpanWildcardQuery extends SpanQuery {
 
                 spanQueries[i] = new SpanTermQuery(tq.getTerm());
                 spanQueries[i].setBoost(tq.getBoost());
+                return new SpanOrQuery(spanQueries);
             }
 
         } else {
-            TermQuery termQuery = (TermQuery)rewritten;
-            SpanTermQuery spanTermQuery = new SpanTermQuery(termQuery.getTerm());
-            spanTermQuery.setBoost(termQuery.getBoost());
+            termQuery = (SpanOrQuery)rewritten;
+//            SpanTermQuery spanTermQuery = new SpanTermQuery(termQuery.getTerm());
+//            spanTermQuery.setBoost(termQuery.getBoost());
 
-            spanQueries = new SpanQuery[]{
-                    spanTermQuery };                         
+//           spanQueries = new SpanQuery[]{
+ //                   spanTermQuery };                         
         }
 
-        SpanOrQuery query = new SpanOrQuery(spanQueries);
-        query.setBoost(orig.getBoost());       
+ //       SpanOrQuery query = new SpanOrQuery(spanQueries);
+        termQuery.setBoost(orig.getBoost());       
 
-        return query;
+        return termQuery;
     }
 
     /* (non-Javadoc)
