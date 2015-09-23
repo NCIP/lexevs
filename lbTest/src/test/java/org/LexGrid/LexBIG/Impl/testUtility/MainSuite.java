@@ -157,8 +157,6 @@ import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorTest;
-import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollectorTest;
-import org.lexevs.dao.indexer.lucene.hitcollector.HitCollectorMergerTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
@@ -231,8 +229,6 @@ public class MainSuite {
 	        luceneSuite.addTestSuite(StringAnalyzerTest.class);
 	        luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
 	        luceneSuite.addTestSuite(BestScoreOfEntityHitCollectorTest.class);
-	        luceneSuite.addTestSuite(BitSetBestScoreOfEntityHitCollectorTest.class);
-	        luceneSuite.addTestSuite(HitCollectorMergerTest.class);
 	        luceneSuite.addTestSuite(LuceneLoaderCodeTest.class);
 	        luceneSuite.addTestSuite(SerializableRegexCapabilitiesTest.class);
 	        luceneSuite.addTestSuite(SerializableRegexQueryTest.class);

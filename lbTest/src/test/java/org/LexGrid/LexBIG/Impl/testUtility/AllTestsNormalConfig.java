@@ -185,8 +185,6 @@ import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorTest;
-import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollectorTest;
-import org.lexevs.dao.indexer.lucene.hitcollector.HitCollectorMergerTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
@@ -273,40 +271,38 @@ public class AllTestsNormalConfig {
 //        hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.PresentationPropertyDataTestIT.class);
 //        mainSuite.addTest(hl7MifVocabularyLoaderSuite);
 //        
-//        TestSuite luceneSuite = new TestSuite("Lucene Tests");
-//        luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
-//        luceneSuite.addTestSuite(StringAnalyzerTest.class);
-//        luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
-//        luceneSuite.addTestSuite(BestScoreOfEntityHitCollectorTest.class);
-//        luceneSuite.addTestSuite(BitSetBestScoreOfEntityHitCollectorTest.class);
-//        luceneSuite.addTestSuite(HitCollectorMergerTest.class);
-//        luceneSuite.addTestSuite(LuceneLoaderCodeTest.class);
-//        luceneSuite.addTestSuite(SerializableRegexCapabilitiesTest.class);
-//        luceneSuite.addTestSuite(SerializableRegexQueryTest.class);
-//        mainSuite.addTest(luceneSuite);    
-//        
-//        TestSuite luceneSearchSuite = new TestSuite("Lucene Search Tests");
-//        luceneSearchSuite.addTestSuite(TestContains.class);
-//        luceneSearchSuite.addTestSuite(TestContainsLiteralContains.class);
-//        luceneSearchSuite.addTestSuite(TestDoubleMetaphone.class);      
-//        luceneSearchSuite.addTestSuite(TestExactMatch.class);
-//        luceneSearchSuite.addTestSuite(TestLeadingAndTrailingWildcard.class);
-//        luceneSearchSuite.addTestSuite(TestLiteral.class); 
-//        luceneSearchSuite.addTestSuite(TestLiteralContains.class); 
-//        luceneSearchSuite.addTestSuite(TestLiteralLiteralContains.class); 
-//        luceneSearchSuite.addTestSuite(TestLiteralSpellingErrorTolerantSubString.class); 
-//        luceneSearchSuite.addTestSuite(TestLiteralSubString.class); 
-//        luceneSearchSuite.addTestSuite(TestPhrase.class);
-//        luceneSearchSuite.addTestSuite(TestRegExp.class);
-//        luceneSearchSuite.addTestSuite(TestSearchByPreferred.class);
-//        luceneSearchSuite.addTestSuite(TestSpellingErrorTolerantSubString.class); 
-//        luceneSearchSuite.addTestSuite(TestStartsWith.class);
-//        luceneSearchSuite.addTestSuite(TestStemming.class);
-//        luceneSearchSuite.addTestSuite(TestSubString.class); 
-//        luceneSearchSuite.addTestSuite(TestSubStringLiteralSubString.class);
-//        luceneSearchSuite.addTestSuite(TestWeightedDoubleMetaphone.class);
-//        luceneSearchSuite.addTestSuite(TestSubStringNonLeadingWildcardLiteralSubString.class);
-//        mainSuite.addTest(luceneSearchSuite);
+        TestSuite luceneSuite = new TestSuite("Lucene Tests");
+        luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
+        luceneSuite.addTestSuite(StringAnalyzerTest.class);
+        luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
+        luceneSuite.addTestSuite(BestScoreOfEntityHitCollectorTest.class);
+        luceneSuite.addTestSuite(LuceneLoaderCodeTest.class);
+        luceneSuite.addTestSuite(SerializableRegexCapabilitiesTest.class);
+        luceneSuite.addTestSuite(SerializableRegexQueryTest.class);
+        mainSuite.addTest(luceneSuite);    
+        
+        TestSuite luceneSearchSuite = new TestSuite("Lucene Search Tests");
+        luceneSearchSuite.addTestSuite(TestContains.class);
+        luceneSearchSuite.addTestSuite(TestContainsLiteralContains.class);
+        luceneSearchSuite.addTestSuite(TestDoubleMetaphone.class);      
+        luceneSearchSuite.addTestSuite(TestExactMatch.class);
+        luceneSearchSuite.addTestSuite(TestLeadingAndTrailingWildcard.class);
+        luceneSearchSuite.addTestSuite(TestLiteral.class); 
+        luceneSearchSuite.addTestSuite(TestLiteralContains.class); 
+        luceneSearchSuite.addTestSuite(TestLiteralLiteralContains.class); 
+        luceneSearchSuite.addTestSuite(TestLiteralSpellingErrorTolerantSubString.class); 
+        luceneSearchSuite.addTestSuite(TestLiteralSubString.class); 
+        luceneSearchSuite.addTestSuite(TestPhrase.class);
+        luceneSearchSuite.addTestSuite(TestRegExp.class);
+        luceneSearchSuite.addTestSuite(TestSearchByPreferred.class);
+        luceneSearchSuite.addTestSuite(TestSpellingErrorTolerantSubString.class); 
+        luceneSearchSuite.addTestSuite(TestStartsWith.class);
+        luceneSearchSuite.addTestSuite(TestStemming.class);
+        luceneSearchSuite.addTestSuite(TestSubString.class); 
+        luceneSearchSuite.addTestSuite(TestSubStringLiteralSubString.class);
+        luceneSearchSuite.addTestSuite(TestWeightedDoubleMetaphone.class);
+        luceneSearchSuite.addTestSuite(TestSubStringNonLeadingWildcardLiteralSubString.class);
+        mainSuite.addTest(luceneSearchSuite);
 //        
 //        TestSuite lazyLoadingSuite = new TestSuite("Lazy Loading Tests");
 //        lazyLoadingSuite.addTestSuite(LazyLoadableCodeToReturnTest.class);
@@ -484,7 +480,7 @@ public class AllTestsNormalConfig {
 //        mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
         //Broken Load Clean Up Function tests
-        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
         //CTS2 tests
         //Run this outside of this scope.
         //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));

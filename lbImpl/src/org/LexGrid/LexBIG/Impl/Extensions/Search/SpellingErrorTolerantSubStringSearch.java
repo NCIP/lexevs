@@ -64,7 +64,7 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
      */
     public Query doBuildQuery(String searchText) {  
         searchText = QueryParser.escape(searchText);
-        searchText = searchText.toLowerCase();
+//        searchText = searchText.toLowerCase();
         String[] tokens = searchText.split(" ");
      
         BooleanQuery booleanQuery = new BooleanQuery();
@@ -72,7 +72,7 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
         String[] tokensWithoutSpecialChars = super.getTokensWithoutSpecialCharacters(tokens); 
         Query doubleMetaphoneQuery = buildSpanNearQuery(tokensWithoutSpecialChars, 
                 LuceneLoaderCode.DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, 
-                tokens.length - tokensWithoutSpecialChars.length, true);
+                tokens.length - tokensWithoutSpecialChars.length, false);
         booleanQuery.add(new BooleanClause(doubleMetaphoneQuery, Occur.SHOULD));
         
         Query literalQuery = buildSpanNearQuery(tokens, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, 0, true);
@@ -99,7 +99,7 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
      * 
      * @return the query
      */
-    protected Query buildSpanNearQuery(String[] tokens, String luceneSearchField, int slop, boolean inOrder){
+    protected Query buildSpanNearQuery(String[] tokens, String luceneSearchField, int slop, boolean boostLiteral){
 //        SpanQuery[] spanQuery = new SpanQuery[tokens.length];
         PhraseQuery query = new PhraseQuery();
 
@@ -140,7 +140,10 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
  //               spanQuery[i] = new SpanTermQuery(termQuery.getTerm());
 
         }
-query.setSlop(1);
+query.setSlop(slop);
+if(boostLiteral){
+query.setBoost(0.5f);
+}
 //        SpanNearQuery spanNearQuery = new SpanNearQuery(spanQuery, slop, inOrder);
 //        return spanNearQuery;
         return query;

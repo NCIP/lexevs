@@ -46,9 +46,9 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
-        assertTrue("Length: " + rcrl.length, rcrl.length == 0);
+        assertTrue("Length: " + rcrl.length, rcrl.length == 1);
 
-        assertFalse(checkForMatch(rcrl, matchCode));
+        assertTrue(checkForMatch(rcrl, matchCode));
     }
     
     /**

@@ -55,6 +55,8 @@ public abstract class AbstractSubStringSearch extends AbstractExactMatchBoosting
         int numberOfQueries = tokens.length;
 
         if(numberOfQueries == 1){
+            
+            
             return handleSingleTermQuery(tokens[0]);
         } else {
             for(int i=0;i<numberOfQueries;i++){

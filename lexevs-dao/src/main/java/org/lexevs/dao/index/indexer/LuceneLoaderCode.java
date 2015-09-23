@@ -33,6 +33,7 @@ import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.phonetic.DoubleMetaphoneFilter;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
@@ -169,7 +170,15 @@ public abstract class LuceneLoaderCode {
     /** The literal analyzer. */
 //    public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
 //            new char[]{}, new char[]{}); 
-    public static Analyzer literalAnalyzer = new WhitespaceAnalyzer();
+    public static Analyzer literalAnalyzer = new Analyzer() {
+    	
+        @Override
+        protected TokenStreamComponents createComponents(String fieldName) {
+            final WhitespaceTokenizer source = new WhitespaceTokenizer();
+            TokenStream filter = new LowerCaseFilter(source);
+            return new TokenStreamComponents(source, filter);
+        }
+    };
     /**
      * Adds the entity.
      * 
