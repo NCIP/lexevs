@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PhraseQuery;
@@ -61,7 +62,8 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Query.Search#buildQuery(java.lang.String)
      */
-    public Query doBuildQuery(String searchText) {    
+    public Query doBuildQuery(String searchText) {  
+        searchText = QueryParser.escape(searchText);
         searchText = searchText.toLowerCase();
         String[] tokens = searchText.split(" ");
      
@@ -100,14 +102,43 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
     protected Query buildSpanNearQuery(String[] tokens, String luceneSearchField, int slop, boolean inOrder){
 //        SpanQuery[] spanQuery = new SpanQuery[tokens.length];
         PhraseQuery query = new PhraseQuery();
+
         for(int i=0;i<tokens.length;i++){
-//            try {
-            	query.add(new Term(luceneSearchField, tokens[i]));
-//                TermQuery termQuery = (TermQuery)super.getQueryParser().parse(luceneSearchField + ":( " + tokens[i] + ")");
- //               spanQuery[i] = new SpanTermQuery(termQuery.getTerm());
-//            } catch (ParseException e) {
-//                throw new RuntimeException(e);
+            Query parsedQuery = null;
+            try {
+//                super.getQueryParser().setAutoGeneratePhraseQueries(true);
+                parsedQuery = super.getQueryParser().parse(luceneSearchField + ":( " + tokens[i] + ")");
+                parsedQuery.toString();
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if(parsedQuery instanceof BooleanQuery){
+                BooleanQuery booleanQuery = (BooleanQuery) parsedQuery;
+                TermQuery tq = null;
+                for(BooleanClause clause: booleanQuery.getClauses()){
+                    
+                   if(clause.getQuery() instanceof BooleanQuery){
+                    tq = (TermQuery)clause.getQuery();
+                  }
+                  else{
+                      tq = (TermQuery) clause.getQuery();   
+                  }
+                  query.add(tq.getTerm());
+                }
+
+                
+            
+            	
 //            }
+                }
+            	else{
+            	    TermQuery tq = (TermQuery) parsedQuery;
+            	    query.add(tq.getTerm());
+            	}
+
+ //               spanQuery[i] = new SpanTermQuery(termQuery.getTerm());
+
         }
 query.setSlop(1);
 //        SpanNearQuery spanNearQuery = new SpanNearQuery(spanQuery, slop, inOrder);

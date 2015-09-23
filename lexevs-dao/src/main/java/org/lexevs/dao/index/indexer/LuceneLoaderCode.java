@@ -512,7 +512,7 @@ public abstract class LuceneLoaderCode {
                     TokenStream filter = new StandardFilter(source);
                     filter = new LowerCaseFilter( filter);
                     filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
-                    filter = new DoubleMetaphoneFilter(filter, 4, true);
+                    filter = new DoubleMetaphoneFilter(filter, 4, false);
                     return new TokenStreamComponents(source, filter);
                 }
             };
