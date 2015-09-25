@@ -104,7 +104,7 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
         List<Filter> filters = cns.getFilters();
         List<Query> queries = cns.getQueries();
 
-        Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
+//        Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
 
         BooleanQuery combinedQuery = new BooleanQuery();
         for (Query query : queries) {
@@ -113,7 +113,7 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
 
         Query query;
         if (CollectionUtils.isNotEmpty(filters)) {
-            query = new FilteredQuery(combinedQuery, chainedFilter);
+            query = new FilteredQuery(combinedQuery, null);
         } else {
             query = combinedQuery;
         }

@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.index.lucenesupport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,7 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		super();
 		try {
 			this.setIndexReader(this.createIndexReader(namedDirectories));
-			this.namedDirectories = getNamedDirectories(metaDirectories);
+			this.namedDirectories = namedDirectories;
 			this.setIndexSearcher(this.createIndexSearcher(indexReader));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -163,8 +164,11 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 
 	@Override
 	public Document getDocumentById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	   try {
+		return indexReader.document(id);
+	} catch (IOException e) {
+		throw new RuntimeException("Failed reading document id in Multi Reader", e);
+	}
 	}
 
 	@Override
@@ -271,10 +275,8 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 	public Query getCombinedQueryFromSchemes(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
 			BooleanQuery query) {
-		for(AbsoluteCodingSchemeVersionReference ref: codingSchemes){
-			query.add(new BooleanClause(new TermQuery(new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,"" )),Occur.MUST));
-		}
-		return query;
+		throw new UnsupportedOperationException(
+				"no longer supported in multi-index environment");
 	}
 
 	@Override

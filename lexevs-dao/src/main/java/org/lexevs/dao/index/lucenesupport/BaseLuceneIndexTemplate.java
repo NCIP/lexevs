@@ -52,7 +52,6 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	private IndexReader indexReader;
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
-//	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	public BaseLuceneIndexTemplate(){
 		super();

@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.index.lucene.v2010.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -26,11 +27,13 @@ import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.dao.indexer.lucene.hitcollector.AbstractBestScoreOfEntityHitCollector;
 import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 
 /**
@@ -67,21 +70,14 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 	@Override
 	public List<ScoreDoc> query(Query query) {
 		
-		// TODO New Lucene will not support or be compatible with older versions.
-		
-//		int maxDoc = template.getMaxDoc();
-//
-//		Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(references);
-//		
-//		DocIdSet docIdSet = template.getDocIdSet(boundaryDocFilter);
-//
-//		BestScoreOfEntityHitCollector hitCollector = 
-//			new BestScoreOfEntityHitCollector(docIdSet.iterator(), maxDoc);
-//
-//		template.search(query, this.getCodingSchemeFilterForCodingScheme(references), hitCollector);
-//		
-//		return hitCollector.getResult();
-		return null;
+		int maxDoc = template.getMaxDoc();
+
+		TopScoreDocCollector hitCollector = 
+				TopScoreDocCollector.create(maxDoc);
+
+			template.search(query, null, hitCollector);
+			List<ScoreDoc> scoreDocs = Arrays.asList(hitCollector.topDocs().scoreDocs);
+		return scoreDocs;
 	}
 
 

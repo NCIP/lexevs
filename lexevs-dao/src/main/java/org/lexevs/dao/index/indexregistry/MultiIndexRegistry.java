@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.system.constants.SystemVariables;
@@ -207,8 +209,7 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	@Override
 	public LuceneIndexTemplate getCommonLuceneIndexTemplate(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-		// TODO Auto-generated method stub
-		return null;
+		return getLuceneIndexTemplate(codingSchemes);
 	}
 
 	@Override
@@ -288,7 +289,25 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		this.concurrentMetaData = concurrentMetaData;
 	}
 	
-	
+    private LuceneIndexTemplate getLuceneIndexTemplate(
+            List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+        List<NamedDirectory> directories = getNamedDirectoriesForCodingSchemes(codingSchemes);
+        // TODO Auto-generated method stub
+        return new MultiBaseLuceneIndexTemplate(directories);
+    }
 
+	private List<NamedDirectory> getNamedDirectoriesForCodingSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+	    List<NamedDirectory> directories = new ArrayList<NamedDirectory>();
+		for(CodingSchemeMetaData csmd: concurrentMetaData.getCodingSchemeList()){
+		    for(AbsoluteCodingSchemeVersionReference ref : codingSchemes){
+		    if(csmd.getCodingSchemeUri().equals(ref.getCodingSchemeURN()) && 
+		            csmd.getCodingSchemeVersion().equals(ref.getCodingSchemeVersion())){
+		    directories.add(csmd.getDirectory());}
+		    }
+		}
+		return directories;
+	
+	}
 
 }

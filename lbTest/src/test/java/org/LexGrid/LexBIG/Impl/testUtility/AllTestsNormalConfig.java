@@ -202,16 +202,16 @@ public class AllTestsNormalConfig {
 
     public static Test suite() throws Exception {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
-//        ServiceHolder.configureForSingleConfig();
-//
-//        mainSuite.addTestSuite(ConfigureTest.class);
+        ServiceHolder.configureForSingleConfig();
+
+        mainSuite.addTestSuite(ConfigureTest.class);
 //        mainSuite.addTestSuite(LoadTestDataTest.class);
 //        mainSuite.addTestSuite(CodeToReturnTest.class);
 //        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
 //        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
 //        mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
 //        mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
-//        mainSuite.addTestSuite(CodedNodeSetImplTest.class);
+        mainSuite.addTestSuite(CodedNodeSetImplTest.class);
 //        mainSuite.addTestSuite(TestMetaDataSearch.class);
 //        mainSuite.addTestSuite(ServiceManagerTest.class);
 //        mainSuite.addTestSuite(RegistryTest.class);
@@ -312,21 +312,21 @@ public class AllTestsNormalConfig {
 //        comparatorSuite.addTestSuite(ResultComparatorTest.class);
 //        mainSuite.addTest(comparatorSuite);
 //      
-//        TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
-//        codedNodeSetSuite.addTestSuite(ResolveTest.class);
-//        codedNodeSetSuite.addTestSuite(ResolveToListTest.class);
-//        codedNodeSetSuite.addTestSuite(DifferenceTest.class);
-//        codedNodeSetSuite.addTestSuite(CodedNodeSetOperationsTest.class);
-//        codedNodeSetSuite.addTestSuite(DifferenceTest.class);
-//        codedNodeSetSuite.addTestSuite(IntersectionTest.class);
-//        codedNodeSetSuite.addTestSuite(UnionTest.class);
-//        codedNodeSetSuite.addTestSuite(RestrictToMatchingDesignationsTest.class);
-//        codedNodeSetSuite.addTestSuite(RestrictToMatchingPropertiesTest.class);
-//        codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
-//        codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
-//        codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
-//        codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
-//        mainSuite.addTest(codedNodeSetSuite);
+        TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
+        codedNodeSetSuite.addTestSuite(ResolveTest.class);
+        codedNodeSetSuite.addTestSuite(ResolveToListTest.class);
+        codedNodeSetSuite.addTestSuite(DifferenceTest.class);
+        codedNodeSetSuite.addTestSuite(CodedNodeSetOperationsTest.class);
+        codedNodeSetSuite.addTestSuite(DifferenceTest.class);
+        codedNodeSetSuite.addTestSuite(IntersectionTest.class);
+        codedNodeSetSuite.addTestSuite(UnionTest.class);
+        codedNodeSetSuite.addTestSuite(RestrictToMatchingDesignationsTest.class);
+        codedNodeSetSuite.addTestSuite(RestrictToMatchingPropertiesTest.class);
+        codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
+        codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
+        codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
+        codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
+        mainSuite.addTest(codedNodeSetSuite);
 //       
 //        TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
 //        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsTest.class);
@@ -347,10 +347,10 @@ public class AllTestsNormalConfig {
 //        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CodingSchemeExtensionResolveTest.class);
 //        mainSuite.addTest(codedNodeGraphSuite);
 //
-//        TestSuite functionalTests = new TestSuite("Functional Tests");
+        TestSuite functionalTests = new TestSuite("Functional Tests");
 //        functionalTests.addTestSuite(TestProductionTags.class);
-//        functionalTests.addTestSuite(TestApproximateStringMatch.class);
-//        functionalTests.addTestSuite(TestAttributePresenceMatch.class);
+        functionalTests.addTestSuite(TestApproximateStringMatch.class);
+        functionalTests.addTestSuite(TestAttributePresenceMatch.class);
 //        functionalTests.addTestSuite(TestAttributeValueMatch.class);
 //        functionalTests.addTestSuite(TestContentExtraction.class);
 //        functionalTests.addTestSuite(TestDAGWalking.class);
@@ -391,7 +391,7 @@ public class AllTestsNormalConfig {
 //        functionalTests.addTestSuite(TestVersioningandAuthorityEnumeration.class);
 //        functionalTests.addTestSuite(TestCodingSchemesWithSupportedAssociation.class);
 //        functionalTests.addTestSuite(TestEnumerateAssociationNames.class);
-//        functionalTests.addTestSuite(TestChildIndicator.class);
+        functionalTests.addTestSuite(TestChildIndicator.class);
 //        functionalTests.addTestSuite(TestPreLoadManifest.class);
 //        functionalTests.addTestSuite(TestMRRANK.class);
 //        functionalTests.addTestSuite(TestLoaderPreferences.class);
@@ -399,7 +399,7 @@ public class AllTestsNormalConfig {
 //        functionalTests.addTestSuite(TestSameCodeDifferentNamespace.class);
 //        functionalTests.addTestSuite(TestPasswordEncryption.class);
 //
-//        mainSuite.addTest(functionalTests);
+        mainSuite.addTest(functionalTests);
 //       
 //        TestSuite treeTests = new TestSuite("tree extension tests");
 //        treeTests.addTestSuite(PagingChildNodeIteratorTest.class);

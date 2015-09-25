@@ -56,13 +56,17 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.custom.NonScoringTermQuery;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
 import org.lexevs.dao.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
 import org.lexevs.dao.indexer.lucene.hitcollector.HitCollectorMerger;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 
 /**
  * The Class LuceneEntityDao.
@@ -158,33 +162,18 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	}
 
 	public List<ScoreDoc> query(List<AbsoluteCodingSchemeVersionReference> codingSchemes, BooleanQuery query) {
-		
-		// TODO New Lucene will not support or be compatible with older versions.  This appears to be the entry point
-		// for the multi scheme/ all schemes implementation we'll have to update the template to work with a multireader.
-		
 		try {
-			//TODO this needs to return the MultiScheme template.  
-			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
-			
+			//Gets the MultScheme template instead of the single scheme template
+			LuceneIndexTemplate template = this.getLuceneIndexTemplate(codingSchemes);			
 			int maxDoc = template.getMaxDoc();
-
-//			Filter boundaryDocFilter = this.getBoundaryDocFilterForCodingScheme(codingSchemes);
-
-//			DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
-
-//			BestScoreOfEntityHitCollector hitCollector = new BestScoreOfEntityHitCollector(boundaryDocIds.iterator(), maxDoc);
-
-//			Filter codingSchemeFilter = getCodingSchemeFilterForCodingScheme(codingSchemes);
-			
-			//TODO create query that holds all coding schems as 
-			Query combinedQuery = template.getCombinedQueryFromSchemes(codingSchemes, query);
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
-			template.search(combinedQuery, null, hitCollector);
+			template.search(query, null, hitCollector);
 			return Arrays.asList(hitCollector.topDocs().scoreDocs);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Problems getting results from a potential multischeme query.", e);
 		}
 	}
+
 
 
 	/* (non-Javadoc)
@@ -444,5 +433,25 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		this.luceneIndexTemplate = luceneIndexTemplate;
 	}
 
+    private LuceneIndexTemplate getLuceneIndexTemplate(
+            List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+        List<NamedDirectory> directories = getNamedDirectoriesForCodingSchemes(codingSchemes);
+        // TODO Auto-generated method stub
+        return new MultiBaseLuceneIndexTemplate(directories);
+    }
+
+	private List<NamedDirectory> getNamedDirectoriesForCodingSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+	    List<NamedDirectory> directories = new ArrayList<NamedDirectory>();
+		ConcurrentMetaData metadata = ConcurrentMetaData.getInstance();
+		for(CodingSchemeMetaData csmd: metadata.getCodingSchemeList()){
+		    for(AbsoluteCodingSchemeVersionReference ref : codingSchemes){
+		    if(csmd.getCodingSchemeUri().equals(ref.getCodingSchemeURN()) && 
+		            csmd.getCodingSchemeVersion().equals(ref.getCodingSchemeVersion())){
+		    directories.add(csmd.getDirectory());}
+		    }
+		}
+		return directories;
+	}
 
 }

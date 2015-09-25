@@ -139,10 +139,22 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
     public CodeHolder buildCodeHolder(
             List<AbsoluteCodingSchemeVersionReference> references, 
             Query query) throws LBInvocationException, LBParameterException {
+        BitDocIdSetFilter parentFilter = null;
+        try {
+            parentFilter = new BitDocIdSetCachingWrapperFilter(
+                    new QueryWrapperFilter(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true")));
+        } catch (ParseException e) {
+          new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
+        }
         
+
+        ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+                query, 
+                parentFilter,
+                ScoreMode.Total);
         List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().
             getIndexServiceManager().
-                getEntityIndexService().queryCommonIndex(references, query);
+                getEntityIndexService().queryCommonIndex(references, termJoinQuery);
         
         AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
         
