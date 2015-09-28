@@ -151,7 +151,7 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
                 query, 
                 parentFilter,
-                ScoreMode.Total);
+                ScoreMode.Max);
         List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().
             getIndexServiceManager().
                 getEntityIndexService().queryCommonIndex(references, termJoinQuery);
