@@ -42,6 +42,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queries.TermsFilter;
 import org.apache.lucene.queries.TermsQuery;
 import org.apache.lucene.search.CachingWrapperFilter;
+import org.apache.lucene.search.CachingWrapperQuery;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
@@ -58,18 +59,18 @@ import org.lexevs.logging.LoggerFactory;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class MappingCodingSchemeFilterRegistry {
+public class MappingCodingSchemeQueryRegistry {
 
     /** The code list filter registry. */
-    private static MappingCodingSchemeFilterRegistry mappingCodeSystemFilterRegistry;
+    private static MappingCodingSchemeQueryRegistry mappingCodeSystemFilterRegistry;
     
     /** The filter map. */
-    private Map<Integer,Filter> filterMap = new HashMap<Integer,Filter>();
+    private Map<Integer,Query> queryMap = new HashMap<Integer,Query>();
     
     /**
      * Instantiates a new code list filter registry.
      */
-    private MappingCodingSchemeFilterRegistry(){
+    private MappingCodingSchemeQueryRegistry(){
         super();
     }
     
@@ -78,9 +79,9 @@ public class MappingCodingSchemeFilterRegistry {
      * 
      * @return the code list filter registry
      */
-    public static MappingCodingSchemeFilterRegistry defaultInstance() {
+    public static MappingCodingSchemeQueryRegistry defaultInstance() {
         if(mappingCodeSystemFilterRegistry == null){
-            mappingCodeSystemFilterRegistry = new MappingCodingSchemeFilterRegistry();
+            mappingCodeSystemFilterRegistry = new MappingCodingSchemeQueryRegistry();
         }
         return mappingCodeSystemFilterRegistry;
     }
@@ -94,7 +95,7 @@ public class MappingCodingSchemeFilterRegistry {
      * 
      * @return the concept reference list filter
      */
-    public Filter getMappingCodingSchemeFilter(
+    public Query getMappingCodingSchemeFilter(
             String uri, 
             String version,
             boolean proxy) {
@@ -106,15 +107,13 @@ public class MappingCodingSchemeFilterRegistry {
             }
             
             int key = this.getKey(uri, version);
-            if(!filterMap.containsKey(key)) {
-                filterMap.put(key, this.buildFilter(uri, version));
+            if(!queryMap.containsKey(key)) {
+                queryMap.put(key, this.buildQuery(uri, version));
             }
             
-            if(proxy) {
-                return new ProxyFilter(uri,version);
-            } else {
-                return filterMap.get(key);
-            }
+
+                return queryMap.get(key);
+        
         } catch (Exception e) {
             throw new RuntimeException(e);
         } 
@@ -152,7 +151,7 @@ public class MappingCodingSchemeFilterRegistry {
         return true;
     }
     
-    protected Filter buildFilter(
+    protected Query buildQuery(
             String uri, 
             String version) throws LBParameterException {
         LoggerFactory.getLogger().info("Building mapping filter for URI: " + uri + "Version: " + version);
@@ -169,14 +168,14 @@ public class MappingCodingSchemeFilterRegistry {
         }
         Query query = new TermsQuery(termList);
 //        TermsFilter filter = new TermsFilter(termList);
-        QueryWrapperFilter filter = new QueryWrapperFilter(query);
+//        QueryWrapperFilter filter = new QueryWrapperFilter(query);
         LoggerFactory.getLogger().info("Finished building mapping filter for URI: " + uri + "Version: " + version);
         
-        return decorateFilter(filter);
+        return decorateQuery(query);
     }
     
-    protected Filter decorateFilter(Filter filter) {
-        return new CachingWrapperFilter(filter);
+    protected Query decorateQuery(Query filter) {
+        return new CachingWrapperQuery(filter);
     }
     
     protected ConceptReferenceList buildConceptReferenceList(String uri, String version) {
@@ -200,50 +199,7 @@ public class MappingCodingSchemeFilterRegistry {
         return returnList;
     }
     
-    public static class ProxyFilter extends Filter {
 
-        private static final long serialVersionUID = -6871822509780400995L;
-
-        private String uri;
-        private String version;
-        
-        public ProxyFilter() {
-            super();
-        }
-        
-        public ProxyFilter(String uri, String version) {
-            this.uri = uri;
-            this.version = version;
-        }
-
-//        @SuppressWarnings("deprecation")
-//        public BitSet bits(IndexReader reader) throws IOException {
-//            return 
-//                MappingCodingSchemeFilterRegistry.defaultInstance().
-//                    getMappingCodingSchemeFilter(uri, version, false).bits(reader);
-//        }
-
-
-//        public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-//            return 
-//                MappingCodingSchemeFilterRegistry.defaultInstance().
-//                    getMappingCodingSchemeFilter(uri, version, false).getDocIdSet(reader);
-//        }
-
-        @Override
-        public DocIdSet getDocIdSet(LeafReaderContext arg0, Bits arg1) throws IOException {
-            return 
-                    MappingCodingSchemeFilterRegistry.defaultInstance().
-                        getMappingCodingSchemeFilter(uri, version, false).getDocIdSet(arg0, arg1);
-        }
-
-        @Override
-        public String toString(String arg0) {
-            // TODO Auto-generated method stub
-            return null;
-        } 
-    }
-    
     private ConceptReferenceList tripleToConceptReferenceList(Triple triple) {
         ConceptReferenceList returnList = new ConceptReferenceList();
         

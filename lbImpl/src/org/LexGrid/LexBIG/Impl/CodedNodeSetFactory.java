@@ -28,7 +28,7 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
 import org.LexGrid.LexBIG.Impl.codednodeset.SingleLuceneIndexCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.codednodeset.UnionSingleLuceneIndexCodedNodeSet;
-import org.LexGrid.LexBIG.Impl.helpers.MappingCodingSchemeFilterRegistry;
+import org.LexGrid.LexBIG.Impl.helpers.MappingCodingSchemeQueryRegistry;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
@@ -141,8 +141,8 @@ public class CodedNodeSetFactory {
                            UnionSingleLuceneIndexCodedNodeSet combinedSet =
                                new UnionSingleLuceneIndexCodedNodeSet(sourceCodingScheme, targetCodingScheme);
                                  
-                           combinedSet.getFilters().add(
-                                   MappingCodingSchemeFilterRegistry.
+                           combinedSet.getQueries().add(
+                                   MappingCodingSchemeQueryRegistry.
                                        defaultInstance().
                                            getMappingCodingSchemeFilter(uri, version, false));
                            
