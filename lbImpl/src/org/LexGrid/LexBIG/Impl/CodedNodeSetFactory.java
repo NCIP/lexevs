@@ -144,7 +144,7 @@ public class CodedNodeSetFactory {
                            combinedSet.getFilters().add(
                                    MappingCodingSchemeFilterRegistry.
                                        defaultInstance().
-                                           getMappingCodingSchemeFilter(uri, version, true));
+                                           getMappingCodingSchemeFilter(uri, version, false));
                            
                            codingSchemeToReturn = codingSchemeToReturn.union(combinedSet);
                        }

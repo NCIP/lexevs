@@ -111,13 +111,14 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
             combinedQuery.add(query, Occur.MUST);
         }
 
-        Query query;
-        if (CollectionUtils.isNotEmpty(filters)) {
-            query = new FilteredQuery(combinedQuery, null);
-        } else {
-            query = combinedQuery;
-        }
+//        Query query;
+//        if (CollectionUtils.isNotEmpty(filters)&& !filters.contains(null)) {
+//            query = new FilteredQuery(combinedQuery, filters);
+//        } 
+//        else {
+//            query = combinedQuery;
+//        }
 
-        return query;
+        return combinedQuery;
     }
 }

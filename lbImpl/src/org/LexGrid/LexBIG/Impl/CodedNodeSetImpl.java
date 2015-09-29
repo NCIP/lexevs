@@ -748,9 +748,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
   
                     if(areMultipleDesignationQueries) {
                         combinedQuery.add(query, Occur.SHOULD);
-                        org.apache.lucene.search.Filter
-                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
-                        this.filters.add(filter);
+//                        org.apache.lucene.search.Filter
+//                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
+//                        this.filters.add(filter);
                     } else {
                         this.queries.add(query);
                     }
@@ -762,9 +762,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                     this.queries.add(query);
                 } else  if(operation instanceof RestrictToProperties){
                     Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);
-                    org.apache.lucene.search.Filter
-                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
-                    this.filters.add(filter);
+//                    org.apache.lucene.search.Filter
+//                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
+//                    this.filters.add(filter);
+                    this.queries.add(query);
                  }
   
                 else if (operation instanceof Union) {
