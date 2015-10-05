@@ -747,7 +747,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                     Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
   
                     if(areMultipleDesignationQueries) {
-                        combinedQuery.add(query, Occur.SHOULD);
+                        combinedQuery.add(query, Occur.MUST);
 //                        org.apache.lucene.search.Filter
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                        this.filters.add(filter);
@@ -765,7 +765,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 //                    org.apache.lucene.search.Filter
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                    this.filters.add(filter);
-                    this.queries.add(query);
+                    if(areMultiplePropertyTypeQueries()) {
+                        combinedQuery.add(query, Occur.SHOULD);
+                    } else {
+                        this.queries.add(query);
+                    }
+
                  }
   
                 else if (operation instanceof Union) {
@@ -807,6 +812,16 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         for(Operation op : this.pendingOperations_) {
             if(op instanceof RestrictToMatchingDesignations
                     || op instanceof RestrictToMatchingProperties) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+    
+    private boolean areMultiplePropertyTypeQueries() {
+        int count = 0;
+        for(Operation op : this.pendingOperations_) {
+            if(op instanceof RestrictToProperties) {
                 count++;
             }
         }
