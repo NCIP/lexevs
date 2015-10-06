@@ -95,7 +95,7 @@ public class RestrictionImplementations {
     }
 
     public static Query getQuery(Restriction restriction,
-            String internalCodeSystemName, String internalVersionString) throws UnexpectedInternalError,
+            String internalCodeSystemName, String internalVersionString, boolean hasMultiplePropertyQueries) throws UnexpectedInternalError,
             MissingResourceException, LBParameterException {
         try {             
            
@@ -236,7 +236,8 @@ public class RestrictionImplementations {
                     nestedQuery.add(new BooleanClause(new TermQuery(new Term("propertyType",
                             mapPropertyType(propertyType[i]))), Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                if(hasMultiplePropertyQueries){masterQuery.add(nestedQuery, Occur.SHOULD);}else{
+                masterQuery.add(nestedQuery, Occur.MUST);}
             }
 
             // sources

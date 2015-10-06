@@ -744,7 +744,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
                 if(operation instanceof RestrictToMatchingDesignations ||
                         operation instanceof RestrictToMatchingProperties){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
+                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultipleDesignationQueries);   
   
                     if(areMultipleDesignationQueries) {
                         combinedQuery.add(query, Occur.MUST);
@@ -758,10 +758,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                         operation instanceof RestrictToAnonymous ||
                         operation instanceof RestrictToCodes ||
                         operation instanceof RestrictToEntityTypes){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
+                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, false);   
                     this.queries.add(query);
                 } else  if(operation instanceof RestrictToProperties){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);
+                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultiplePropertyTypeQueries());
 //                    org.apache.lucene.search.Filter
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                    this.filters.add(filter);
@@ -821,7 +821,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private boolean areMultiplePropertyTypeQueries() {
         int count = 0;
         for(Operation op : this.pendingOperations_) {
-            if(op instanceof RestrictToProperties) {
+            if(op instanceof RestrictToMatchingDesignations
+                    || op instanceof RestrictToMatchingProperties
+                    ||op instanceof RestrictToProperties) {
                 count++;
             }
         }
