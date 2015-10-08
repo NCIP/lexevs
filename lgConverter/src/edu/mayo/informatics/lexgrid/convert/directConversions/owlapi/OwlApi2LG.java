@@ -1318,6 +1318,10 @@ public class OwlApi2LG {
                 OWLLiteral literal = (OWLLiteral) value;
                 annotationValue = literal.getLiteral();
             }
+            if(value instanceof IRI){
+                IRI iri = (IRI)value;
+                annotationValue = annotationName + ":" + iri.getFragment();
+            }
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
                         lgSupportedMappings_));
