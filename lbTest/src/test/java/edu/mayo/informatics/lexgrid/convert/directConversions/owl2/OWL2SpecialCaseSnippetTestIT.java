@@ -10,7 +10,6 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +70,29 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	assertTrue(validateCodeInList("PersonRole", itr));
 	itr = rootNodes.iterateResolvedConceptReference();
 	assertTrue(validateCodeInList("DiseasesDisordersFindings", itr));
+	}
+	
+	@Test
+	public void testLoadofOBODefinedQualifiers() throws LBInvocationException, LBParameterException{
+
+		String[] stringList = {"BFO_0000182"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+				
+		assertTrue(rcr.getEntity().getPropertyCount() > 0);
+		org.LexGrid.commonTypes.Property prop = null;
+		for(org.LexGrid.commonTypes.Property p: rcr.getEntity().getPropertyAsReference()){
+			if(p.getValue().getContent().equals("A history is a process. (axiom label in BFO2 Reference: [138-001])")){
+				prop = p;
+				break;
+			}
+		}
+		assertTrue(prop.getValue().getContent().equals("A history is a process. (axiom label in BFO2 Reference: [138-001])"));
+		assertTrue(validatePropertyQualifierFromProperty(prop, "IAO_0010000:138-001"));
 	}
 
 }
