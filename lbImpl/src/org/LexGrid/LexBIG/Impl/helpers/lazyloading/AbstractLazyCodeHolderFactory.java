@@ -18,6 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,19 +34,24 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.join.BitDocIdSetCachingWrapperFilter;
 import org.apache.lucene.search.join.BitDocIdSetFilter;
 import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.search.join.ToChildBlockJoinQuery;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.CachingWrapperQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
@@ -117,11 +123,30 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
                 parentFilter,
                 ScoreMode.Total);
         
-        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);
-
+        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);;
+//        List<ScoreDoc> finalDocs = scoreDocs;
+//        for(ScoreDoc sd: scoreDocs){
+//            Document doc = entityService.getDocumentById(uri, internalVersionString, sd.doc);
+//            TermQuery query = new TermQuery(new Term("code", doc.get("code")));
+//            ToChildBlockJoinQuery childQuery = new ToChildBlockJoinQuery(query, parentFilter);
+//            BooleanQuery finalQuery = new BooleanQuery();
+//            finalQuery.add(new CachingWrapperQuery(childQuery), Occur.MUST);
+//            finalQuery.add(combinedQuery, Occur.MUST);
+//            finalDocs = entityService.query(uri, internalVersionString, finalQuery);
+//            
+//        }
+        
         return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
     }
     
+    private List<ScoreDoc> validateAndAdjustScoreDocsPerEntity(BooleanQuery combinedQuery, List<ScoreDoc> scoreDocs) {
+        List<ScoreDoc> temp = new ArrayList<ScoreDoc>();
+        for(ScoreDoc sd: scoreDocs){
+         
+        }
+        return temp;
+    }
+
     protected CodeHolder buildCodeHolder(
             String internalCodeSystemName, 
             String internalVersionString,

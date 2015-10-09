@@ -333,9 +333,9 @@ public abstract class LuceneLoaderCode {
             generator_.addTextField("language", language, false, true, false);
         } 
 
-//        if (conceptStatus != null && conceptStatus.length() > 0) {
-//            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
-//        }
+        if (conceptStatus != null && conceptStatus.length() > 0) {
+            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
+        }
 
         if (propertyId != null && propertyId.length() > 0) {
             generator_.addTextField("propertyId", propertyId, false, true, false);
@@ -430,6 +430,7 @@ public abstract class LuceneLoaderCode {
     	generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
     	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
     	generator_.addTextField("entityCode", entityCode, true, true, false);
+    	generator_.addTextField("code", entityCode, false, true, false);
     	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
     	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
     	
@@ -467,9 +468,9 @@ public abstract class LuceneLoaderCode {
         	}
         }
         
-        if (conceptStatus != null && conceptStatus.length() > 0) {
-            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
-        }
+//        if (conceptStatus != null && conceptStatus.length() > 0) {
+//            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
+//        }
         
         if(StringUtils.isNotBlank(entityUid)) {
         	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
