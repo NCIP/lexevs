@@ -327,26 +327,26 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
-//       
-//        TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToDirectionalNamesTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToSourceCodesTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToTargetCodesTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ResolveToListTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.SortGraphTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ToNodeListTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.IntersectionTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FilterTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RootsTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FocusTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.UnionTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CrossOntologyResolveTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAnonymousTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToEntityTypesTest.class);
-//        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CodingSchemeExtensionResolveTest.class);
-//        mainSuite.addTest(codedNodeGraphSuite);
-//
+       
+        TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToDirectionalNamesTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToSourceCodesTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToTargetCodesTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ResolveToListTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.SortGraphTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.ToNodeListTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.IntersectionTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FilterTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RootsTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.FocusTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.UnionTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CrossOntologyResolveTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAnonymousTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToEntityTypesTest.class);
+        codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.CodingSchemeExtensionResolveTest.class);
+        mainSuite.addTest(codedNodeGraphSuite);
+
         TestSuite functionalTests = new TestSuite("Functional Tests");
         functionalTests.addTestSuite(TestProductionTags.class);
         functionalTests.addTestSuite(TestApproximateStringMatch.class);
