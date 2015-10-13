@@ -20,7 +20,6 @@ package org.LexGrid.LexBIG.gui.load;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -34,6 +33,7 @@ import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
 import org.LexGrid.LexBIG.gui.LoadExportBaseShell;
 import org.LexGrid.LexBIG.gui.Utility;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -54,6 +54,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
+import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.springframework.util.StringUtils;
 
 /**
@@ -173,7 +175,15 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         uriChooseButton.setToolTipText(uriHelp);
-       
+        
+        // Get resolved value sets
+        LexEVSResolvedValueSetService resolvedValueSetService = new LexEVSResolvedValueSetServiceImpl();
+        java.util.List<CodingScheme> resolvedValueSets = null;
+        try {
+            resolvedValueSets = resolvedValueSetService.listAllResolvedValueSets();
+        } catch (LBException e) {
+            resolvedValueSets = null;
+        }
         
         for(final URIOption uriOption : optionHolder.getURIOptions()) {
             Composite group1 = new Composite(options, SWT.NONE);
@@ -252,7 +262,11 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	            comboDropDown.setToolTipText(stringOption.getHelpText());
                 
 	            for(String pickListItem : stringOption.getPickList()) {
-	                comboDropDown.add(pickListItem);
+	                	                
+	                // Add if it is not a resolved value set
+                    if (resolvedValueSets != null && !isResolvedValueSet(resolvedValueSets, pickListItem)){
+                        comboDropDown.add(pickListItem);
+                    }
                 }
 
 	            comboDropDown.addSelectionListener(new SelectionListener(){
@@ -311,7 +325,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                }  
 	            });
 	        }
-	    
+	    	       
 	       for(final MultiValueOption<String> stringArrayOption : optionHolder.getStringArrayOptions()){
 	            Composite group4 = new Composite(options, SWT.NONE);
 	
@@ -330,7 +344,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                multi.setToolTipText(stringArrayOption.getHelpText());
 	                
 	                for(String pickListItem : stringArrayOption.getPickList()) {
-                        multi.add(pickListItem);
+	                    multi.add(pickListItem);
                     }
 	                for(int i=0;i<stringArrayOption.getPickList().size();i++) {
 	                    if(stringArrayOption.getOptionValue().contains(    
@@ -648,4 +662,33 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         }
     
     }
+    
+    /**
+     * Compare the CodingSchemeRendering codingSchemeURI to all of the codingSchemeURI of the List<CodingScheme>.  
+     * If the codingSchemeURI is found, then true;
+     * @param resolvedValueSets List<CodingScheme>
+     * @param uri String
+     * @return true if the codingSchemeURI of the CodingSchemeRendering is found in the List<CodingScheme>.
+     */
+    private boolean isResolvedValueSet(java.util.List<CodingScheme> resolvedValueSets, String uri) {
+        String resolvedValueSetURI;
+        String resolvedValueSetVersion;
+        boolean isResolvedValueSet = false;
+        
+        // loop through resolved value sets
+        for(CodingScheme resolvedValueSet: resolvedValueSets){
+            resolvedValueSetURI = resolvedValueSet.getCodingSchemeURI();
+            resolvedValueSetVersion = resolvedValueSet.getRepresentsVersion();
+            
+            // search for a coding scheme that has the same uri as the resolved value set.
+            // if one is found, set to true;
+            if (uri.equals(resolvedValueSetURI + " - " + resolvedValueSetVersion)) {
+                isResolvedValueSet = true;
+                break;
+            }
+
+        } 
+        return isResolvedValueSet;
+    }
+
 }
