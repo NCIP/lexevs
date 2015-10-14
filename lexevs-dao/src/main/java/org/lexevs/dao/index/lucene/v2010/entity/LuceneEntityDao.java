@@ -59,7 +59,6 @@ import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
-import org.lexevs.dao.index.lucenesupport.custom.NonScoringTermQuery;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
 import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
@@ -131,7 +130,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 
 			int maxDoc = template.getMaxDoc();
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
-			template.blockJoinSearch(query, codingSchemeFilter, hitCollector);
+			template.search(query, codingSchemeFilter, hitCollector);
 			ScoreDoc[] arrayDocs = hitCollector.topDocs().scoreDocs;
 			List<ScoreDoc> docs = new ArrayList<ScoreDoc>(Arrays.asList(arrayDocs));
 			return docs;
@@ -366,18 +365,7 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fields);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.access.entity.EntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
-	 */
-	public Query getMatchAllDocsQuery(
-			String codingSchemeUri, String version) {
-		TermQuery query = new NonScoringTermQuery(
-						new Term(
-						LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, version)));
 
-		return query;
-	}
 
 	/**
 	 * And bit sets.

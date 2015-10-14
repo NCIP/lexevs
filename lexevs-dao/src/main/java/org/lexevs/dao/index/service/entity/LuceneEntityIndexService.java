@@ -197,16 +197,6 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		this.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
-	 */
-	@Override
-	public Query getMatchAllDocsQuery(
-			AbsoluteCodingSchemeVersionReference reference) {
-		return indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()).
-			getMatchAllDocsQuery(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#query(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.util.List, java.util.List)

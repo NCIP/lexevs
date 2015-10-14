@@ -41,6 +41,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.join.BitDocIdSetCachingWrapperFilter;
 import org.apache.lucene.search.join.BitDocIdSetFilter;
+import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.search.join.ToChildBlockJoinQuery;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
@@ -106,14 +107,13 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         
         SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
-        BitDocIdSetFilter parentFilter = null;
+       QueryBitSetProducer parentFilter = null;
         try {
-            parentFilter = new BitDocIdSetCachingWrapperFilter(
-                    new QueryWrapperFilter(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true")));
+            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
         } catch (ParseException e) {
           new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
         }
-        
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
         BooleanQuery combinedQuery = new BooleanQuery();
         for(Query query : queries) {
             combinedQuery.add(query, Occur.MUST);

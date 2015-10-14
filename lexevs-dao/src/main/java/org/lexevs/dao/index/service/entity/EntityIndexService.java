@@ -92,14 +92,6 @@ public interface EntityIndexService {
 	public List<ScoreDoc> query(String codingSchemeUri, String codingSchemeVersion, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query);
-	/**
-	 * Gets the match all docs query.
-	 * 
-	 * @param reference the reference
-	 * 
-	 * @return the match all docs query
-	 */
-	public Query getMatchAllDocsQuery(AbsoluteCodingSchemeVersionReference reference);
 	
 	public Filter getBoundaryDocsHitAsAWholeFilter(
 			String codingSchemeUri, 

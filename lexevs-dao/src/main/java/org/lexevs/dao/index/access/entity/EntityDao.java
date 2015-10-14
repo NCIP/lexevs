@@ -53,9 +53,6 @@ public interface EntityDao extends LexEvsIndexFormatVersionAwareDao {
 	
 	public Document getDocumentById(String codingSchemeUri, String version,
 			int id, Set<String> field);
-
-	public Query getMatchAllDocsQuery(
-			String codingSchemeUri, String version);
 	
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query);
 	

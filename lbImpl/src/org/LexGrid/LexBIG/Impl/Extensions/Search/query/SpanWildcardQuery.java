@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search.query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermContext;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
@@ -37,6 +39,7 @@ import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.apache.lucene.search.spans.SpanOrQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.search.spans.SpanWeight;
 import org.apache.lucene.search.spans.Spans;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.ToStringUtils;
@@ -75,10 +78,10 @@ public class SpanWildcardQuery extends SpanQuery {
         SpanOrQuery termQuery = null;
         if(rewritten instanceof BooleanQuery){
             BooleanQuery booleanQuery = (BooleanQuery)rewritten;
-            BooleanClause[] clauses = booleanQuery.getClauses();
-            spanQueries = new SpanQuery[clauses.length];
-            for (int i = 0; i < clauses.length; i++) {
-                BooleanClause clause = clauses[i];
+            List<BooleanClause> clauses = booleanQuery.clauses();
+            spanQueries = new SpanQuery[clauses.size()];
+            for (int i = 0; i < clauses.size(); i++) {
+                BooleanClause clause = clauses.get(i);
 
                 // Clauses from RegexQuery.rewrite are always TermQuery's
                 TermQuery tq = (TermQuery) clause.getQuery();
@@ -145,9 +148,10 @@ public class SpanWildcardQuery extends SpanQuery {
         return buffer.toString();
     }
 
-   
+ 
+
     @Override
-    public Spans getSpans(LeafReaderContext arg0, Bits arg1, Map<Term, TermContext> arg2) throws IOException {
+    public SpanWeight createWeight(IndexSearcher arg0, boolean arg1) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

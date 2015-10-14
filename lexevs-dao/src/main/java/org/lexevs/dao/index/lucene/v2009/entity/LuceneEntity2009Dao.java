@@ -40,14 +40,6 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 	/** The supported index version2009. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2009 = LexEvsIndexFormatVersion.parseStringToVersion("2009");
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
-	 */
-	@Override
-	public Query getMatchAllDocsQuery(
-			String uri, String version) {
-		return new MatchAllDocsQuery();
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao#doGetSupportedLexEvsIndexFormatVersions()

@@ -42,7 +42,6 @@ import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucene.AbstractFilteringLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
-import org.lexevs.dao.index.lucenesupport.custom.NonScoringTermQuery;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 
 /**
@@ -115,18 +114,6 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.access.entity.EntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
-	 */
-	public Query getMatchAllDocsQuery(
-			String codingSchemeUri, String version) {
-		TermQuery query = new NonScoringTermQuery(
-						new Term(
-						LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, version)));
-
-		return query;
-	}
 
 //	@Override
 //	public void optimizeIndex() {
