@@ -114,27 +114,15 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
           new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
         }
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
-        BooleanQuery combinedQuery = new BooleanQuery();
         for(Query query : queries) {
-            combinedQuery.add(query, Occur.MUST);
+            builder.add(query, Occur.MUST);
         }
         ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
-                combinedQuery, 
+                builder.build(), 
                 parentFilter,
                 ScoreMode.Total);
         
         List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);;
-//        List<ScoreDoc> finalDocs = scoreDocs;
-//        for(ScoreDoc sd: scoreDocs){
-//            Document doc = entityService.getDocumentById(uri, internalVersionString, sd.doc);
-//            TermQuery query = new TermQuery(new Term("code", doc.get("code")));
-//            ToChildBlockJoinQuery childQuery = new ToChildBlockJoinQuery(query, parentFilter);
-//            BooleanQuery finalQuery = new BooleanQuery();
-//            finalQuery.add(new CachingWrapperQuery(childQuery), Occur.MUST);
-//            finalQuery.add(combinedQuery, Occur.MUST);
-//            finalDocs = entityService.query(uri, internalVersionString, finalQuery);
-//            
-//        }
         
         return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
     }

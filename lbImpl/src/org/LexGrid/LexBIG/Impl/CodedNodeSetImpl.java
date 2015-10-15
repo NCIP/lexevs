@@ -710,10 +710,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         
             boolean areMultipleDesignationQueries = areMultipleDesignationQueries();
             
-            BooleanQuery combinedQuery = new BooleanQuery();
+            BooleanQuery.Builder builder = new BooleanQuery.Builder();
+           // BooleanQuery combinedQuery = new BooleanQuery();
             
-            EntityIndexService entityIndexService = 
-                  LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
             
             optimizePendingOpsOrder();
             // will always be at least size 1...
@@ -747,7 +746,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                     Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultipleDesignationQueries);   
   
                     if(areMultipleDesignationQueries) {
-                        combinedQuery.add(query, Occur.MUST);
+                        builder.add(query, Occur.MUST);
 //                        org.apache.lucene.search.Filter
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                        this.filters.add(filter);
@@ -766,7 +765,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                    this.filters.add(filter);
                     if(areMultiplePropertyTypeQueries()) {
-                        combinedQuery.add(query, Occur.SHOULD);
+                        builder.add(query, Occur.SHOULD);
                     } else {
                         this.queries.add(query);
                     }
@@ -790,8 +789,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 } 
             }
             
-            if(combinedQuery.getClauses().length > 0) {
-                queries.add(combinedQuery);
+            if(builder.build().clauses().size() > 0) {
+                queries.add(builder.build());
             }
 
             // remove the completed pending ops.
