@@ -94,12 +94,12 @@ public class RestrictionImplementations {
         return LoggerFactory.getLogger();
     }
 
-    public static Query getQuery(Restriction restriction,
+    public static BooleanQuery getQuery(Restriction restriction,
             String internalCodeSystemName, String internalVersionString, boolean hasMultiplePropertyQueries) throws UnexpectedInternalError,
             MissingResourceException, LBParameterException {
         try {             
            
-            String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
+            String codeField = "code";
             String propertyNameField = SQLTableConstants.TBLCOL_PROPERTYNAME;
             String language = null;
             Query textQueryPart = null;
@@ -163,7 +163,7 @@ public class RestrictionImplementations {
             }
             
             BooleanQuery.Builder masterQuery = new BooleanQuery.Builder();
-            masterQuery.add(new MatchAllDocsQuery(), Occur.MUST);
+          // masterQuery.add(new MatchAllDocsQuery(), Occur.MUST);
 
             if (textQueryPart != null) {
                 masterQuery.add(new BooleanClause(textQueryPart, Occur.MUST));

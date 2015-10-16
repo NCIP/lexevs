@@ -20,7 +20,10 @@ package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -46,6 +49,8 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.search.join.ToChildBlockJoinQuery;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.CachingWrapperQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -122,18 +127,11 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
                 parentFilter,
                 ScoreMode.Total);
         
-        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);;
+        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, termJoinQuery);
         
         return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
     }
     
-    private List<ScoreDoc> validateAndAdjustScoreDocsPerEntity(BooleanQuery combinedQuery, List<ScoreDoc> scoreDocs) {
-        List<ScoreDoc> temp = new ArrayList<ScoreDoc>();
-        for(ScoreDoc sd: scoreDocs){
-         
-        }
-        return temp;
-    }
 
     protected CodeHolder buildCodeHolder(
             String internalCodeSystemName, 
@@ -152,10 +150,9 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
     public CodeHolder buildCodeHolder(
             List<AbsoluteCodingSchemeVersionReference> references, 
             Query query) throws LBInvocationException, LBParameterException {
-        BitDocIdSetFilter parentFilter = null;
+        QueryBitSetProducer parentFilter = null;
         try {
-            parentFilter = new BitDocIdSetCachingWrapperFilter(
-                    new QueryWrapperFilter(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true")));
+            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
         } catch (ParseException e) {
           new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
         }
@@ -176,6 +173,36 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         }
 
         return codeHolder;
+    }
+    
+    @Override
+    public CodeHolder buildCodeHolderWithBooleanClauses(String internalCodeSystemName, String internalVersionString,
+            Map<BooleanQuery, BooleanClause.Occur> queriesToOps) throws LBInvocationException, LBParameterException {
+        IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
+        EntityIndexService entityService = indexServiceManager.getEntityIndexService();
+        
+        SystemResourceService resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+        String uri = resourceService.getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
+       QueryBitSetProducer parentFilter = null;
+        try {
+            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+        } catch (ParseException e) {
+          new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
+        }
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        Iterator<Entry<BooleanQuery, Occur>> it = queriesToOps.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<BooleanQuery, Occur> pair = (Map.Entry<BooleanQuery, Occur>)it.next();
+            ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+                    pair.getKey(), 
+                    parentFilter,
+                    ScoreMode.Total);
+            builder.add(termJoinQuery, pair.getValue());
+        }
+        
+        List<ScoreDoc> scoreDocs = entityService.query(uri, internalVersionString, builder.build());
+        
+        return buildCodeHolder(internalCodeSystemName, internalVersionString, scoreDocs);
     }
 
     /**

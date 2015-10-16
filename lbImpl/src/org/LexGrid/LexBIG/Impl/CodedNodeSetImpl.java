@@ -21,8 +21,10 @@ package org.LexGrid.LexBIG.Impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -69,6 +71,7 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
@@ -92,6 +95,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected ArrayList<Operation> pendingOperations_ = new ArrayList<Operation>();
     protected CodeHolder codesToInclude_ = null;
     private List<Query> queries = new ArrayList<Query>();
+    private Map<BooleanQuery, BooleanClause.Occur> queryToOpsMap = new HashMap<BooleanQuery, BooleanClause.Occur>();
     private List<org.apache.lucene.search.Filter> filters = new ArrayList<org.apache.lucene.search.Filter>();
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
@@ -743,32 +747,35 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
                 if(operation instanceof RestrictToMatchingDesignations ||
                         operation instanceof RestrictToMatchingProperties){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultipleDesignationQueries);   
+                    BooleanQuery query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultipleDesignationQueries);   
   
-                    if(areMultipleDesignationQueries) {
-                        builder.add(query, Occur.MUST);
+//                    if(areMultipleDesignationQueries) {
+//                        builder.add(query, Occur.MUST);
 //                        org.apache.lucene.search.Filter
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                        this.filters.add(filter);
-                    } else {
+//                    } else {
                         this.queries.add(query);
-                    }
+                        this.queryToOpsMap.put(query, Occur.MUST);
+//                    }
                 } else if(operation instanceof RestrictToStatus ||
                         operation instanceof RestrictToAnonymous ||
                         operation instanceof RestrictToCodes ||
                         operation instanceof RestrictToEntityTypes){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, false);   
+                    BooleanQuery query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, false);   
                     this.queries.add(query);
+                    this.queryToOpsMap.put(query, Occur.MUST);
                 } else  if(operation instanceof RestrictToProperties){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultiplePropertyTypeQueries());
+                    BooleanQuery query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString, areMultiplePropertyTypeQueries());
 //                    org.apache.lucene.search.Filter
 //                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
 //                    this.filters.add(filter);
-                    if(areMultiplePropertyTypeQueries()) {
-                        builder.add(query, Occur.SHOULD);
-                    } else {
+//                    if(areMultiplePropertyTypeQueries()) {
+//                        builder.add(query, Occur.SHOULD);
+//                    } else {
                         this.queries.add(query);
-                    }
+                        this.queryToOpsMap.put(query, Occur.MUST);
+//                    }
 
                  }
   
@@ -887,11 +894,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
         if(codesToInclude_ == null ){
             codesToInclude_ = 
-                codeHolderFactory.buildCodeHolderWithFilters(
+                codeHolderFactory.buildCodeHolderWithBooleanClauses(
                         internalCodeSystemName, 
                         internalVersionString, 
-                        queries, 
-                        filters
+                       queryToOpsMap
                         );
         }
     }

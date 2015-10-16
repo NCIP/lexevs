@@ -215,7 +215,7 @@ public abstract class LuceneLoaderCode {
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers) throws Exception {
 
-        String idFieldName = SQLTableConstants.TBLCOL_ENTITYCODE;
+        String idFieldName = "code";
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
@@ -314,6 +314,11 @@ public abstract class LuceneLoaderCode {
         	generator_.addTextField("isAnonymous", "F", false, true, false);
         }
         
+        if(entityTypes != null) {
+        	for(String entityType : entityTypes) {
+        		generator_.addTextField("entityType", entityType, true, true, false);
+        	}
+        }
         if (isPreferred != null) {
             if (isPreferred.booleanValue()) {
                 generator_.addTextField("isPreferred", "T", false, true, false);
@@ -430,7 +435,7 @@ public abstract class LuceneLoaderCode {
     	generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
     	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
     	generator_.addTextField("entityCode", entityCode, true, true, false);
-    	generator_.addTextField("code", entityCode, false, true, false);
+//    	generator_.addTextField("code", entityCode, false, true, false);
     	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
     	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
     	
@@ -462,11 +467,11 @@ public abstract class LuceneLoaderCode {
             }
         }
         
-        if(entityTypes != null) {
-        	for(String entityType : entityTypes) {
-        		generator_.addTextField("entityType", entityType, true, true, false);
-        	}
-        }
+//        if(entityTypes != null) {
+//        	for(String entityType : entityTypes) {
+//        		generator_.addTextField("entityType", entityType, true, true, false);
+//        	}
+//        }
         
 //        if (conceptStatus != null && conceptStatus.length() > 0) {
 //            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);

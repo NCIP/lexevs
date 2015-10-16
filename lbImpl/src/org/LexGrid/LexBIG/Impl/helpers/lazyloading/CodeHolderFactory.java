@@ -20,14 +20,18 @@ package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
+
+
 
 /**
  * A factory for creating CodeHolder objects.
@@ -59,4 +63,8 @@ public interface CodeHolderFactory extends Serializable {
     public CodeHolder buildCodeHolder(
             List<AbsoluteCodingSchemeVersionReference> references,
             Query query) throws LBInvocationException, LBParameterException;
+    
+
+    CodeHolder buildCodeHolderWithBooleanClauses(String internalCodeSystemName, String internalVersionString,
+            Map<BooleanQuery, BooleanClause.Occur> queriesToOps) throws LBInvocationException, LBParameterException;
 }

@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
@@ -35,7 +38,9 @@ import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.DocIdSetIterator;
@@ -49,6 +54,7 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.join.BitDocIdSetCachingWrapperFilter;
 import org.apache.lucene.search.join.BitDocIdSetFilter;
+import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.util.Bits;
@@ -195,6 +201,29 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 //			throw new RuntimeException(e);
 //		}
 		return null;
+	}
+	public BooleanQuery getParentDocsAsScopedEntityQuery(String codingSchemeUri, 
+	String version,  Map<BooleanQuery, Occur> queriesToOps) {
+		
+		
+	       QueryBitSetProducer parentFilter = null;
+	        try {
+	            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+	        } catch (ParseException e) {
+	          new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
+	        }
+	        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+	        Iterator<Entry<BooleanQuery, Occur>> it = queriesToOps.entrySet().iterator();
+	        while(it.hasNext()){
+	            Map.Entry<BooleanQuery, Occur> pair = (Map.Entry<BooleanQuery, Occur>)it.next();
+	            ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+	                    pair.getKey(), 
+	                    parentFilter,
+	                    ScoreMode.Total);
+	            builder.add(termJoinQuery, pair.getValue());
+	        }
+		
+		return builder.build();
 	}
 	
 	public Filter getBoundaryDocsHitAsAWholeFilter(
