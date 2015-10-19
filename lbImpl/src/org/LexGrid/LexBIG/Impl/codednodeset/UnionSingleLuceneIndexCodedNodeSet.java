@@ -104,21 +104,14 @@ public class UnionSingleLuceneIndexCodedNodeSet extends AbstractMultiSingleLucen
         List<Filter> filters = cns.getFilters();
         List<Query> queries = cns.getQueries();
 
-//        Filter chainedFilter = new ChainedFilter(filters.toArray(new Filter[filters.size()]), ChainedFilter.AND);
 
-        BooleanQuery combinedQuery = new BooleanQuery();
+        BooleanQuery.Builder combinedQuery = new BooleanQuery.Builder();
         for (Query query : queries) {
             combinedQuery.add(query, Occur.MUST);
         }
 
-//        Query query;
-//        if (CollectionUtils.isNotEmpty(filters)&& !filters.contains(null)) {
-//            query = new FilteredQuery(combinedQuery, filters);
-//        } 
-//        else {
-//            query = combinedQuery;
-//        }
 
-        return combinedQuery;
+
+        return combinedQuery.build();
     }
 }

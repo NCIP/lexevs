@@ -101,7 +101,7 @@ public class CodedNodeSetFactory {
                
                if(mappingExtension.isMappingCodingScheme(codingScheme, versionOrTag)) {
                    SingleLuceneIndexCodedNodeSet originalCs = (SingleLuceneIndexCodedNodeSet)codingSchemeToReturn;
-                   originalCs.getQueries().add(this.createTermQuery(uri, version));
+//                   originalCs.getQueries().add(this.createTermQuery(uri, version));
                    
                    codingSchemeToReturn = originalCs;
                    
