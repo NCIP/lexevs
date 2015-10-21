@@ -167,8 +167,7 @@ public class MappingCodingSchemeQueryRegistry {
             termList.add(new Term(codeField, ref.getCode()));
         }
         Query query = new TermsQuery(termList);
-//        TermsFilter filter = new TermsFilter(termList);
-//        QueryWrapperFilter filter = new QueryWrapperFilter(query);
+
         LoggerFactory.getLogger().info("Finished building mapping filter for URI: " + uri + "Version: " + version);
         
         return decorateQuery(query);
@@ -178,7 +177,7 @@ public class MappingCodingSchemeQueryRegistry {
         return new CachingWrapperQuery(filter);
     }
     
-    protected ConceptReferenceList buildConceptReferenceList(String uri, String version) {
+    public ConceptReferenceList buildConceptReferenceList(String uri, String version) {
         ConceptReferenceList returnList = new ConceptReferenceList();
         
         DatabaseServiceManager databaseServiceManager = 
@@ -192,6 +191,7 @@ public class MappingCodingSchemeQueryRegistry {
             ConceptReferenceList list = this.tripleToConceptReferenceList(triple);
             
             for(ConceptReference ref : list.getConceptReference()) {
+                ref.setCodeNamespace(null); //TODO:
                 returnList.addConceptReference(ref);
             }
         }

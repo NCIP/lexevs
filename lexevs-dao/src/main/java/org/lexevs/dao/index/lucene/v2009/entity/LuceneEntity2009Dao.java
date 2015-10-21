@@ -18,17 +18,13 @@
  */
 package org.lexevs.dao.index.lucene.v2009.entity;
 
-import java.util.List;
-
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+
+import java.util.List;
 
 /**
  * The Class LuceneEntity2009Dao.
@@ -48,20 +44,11 @@ public class LuceneEntity2009Dao extends LuceneEntityDao implements EntityDao {
 	public List<LexEvsIndexFormatVersion> doGetSupportedLexEvsIndexFormatVersions() {
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2009);
 	}
-	
-	//@Override
-	protected Filter getCodingSchemeFilterForCodingScheme(
-			String codingSchemeUri, String codingSchemeVersion) {
-		return new QueryWrapperFilter(new MatchAllDocsQuery());
-	}
 
 	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		
-		// TODO New Lucene will not support or be compatible with older versions.
-		
-		//return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
-		return null;
+		throw new UnsupportedOperationException("Lucene version 2009 no longer supported.");
 	}
+
 }

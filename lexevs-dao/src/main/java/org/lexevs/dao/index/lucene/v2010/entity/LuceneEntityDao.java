@@ -18,60 +18,29 @@
  */
 package org.lexevs.dao.index.lucene.v2010.entity;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.LeafReaderContext;
-import org.apache.lucene.index.StoredFieldVisitor;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.join.BitDocIdSetCachingWrapperFilter;
-import org.apache.lucene.search.join.BitDocIdSetFilter;
-import org.apache.lucene.search.join.QueryBitSetProducer;
-import org.apache.lucene.search.join.ScoreMode;
-import org.apache.lucene.search.join.ToParentBlockJoinQuery;
-import org.apache.lucene.util.Bits;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.entity.EntityDao;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
-import org.lexevs.dao.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollector;
-import org.lexevs.dao.indexer.lucene.hitcollector.BitSetFilteringBestScoreOfEntityHitCollector;
-import org.lexevs.dao.indexer.lucene.hitcollector.HitCollectorMerger;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Class LuceneEntityDao.
@@ -103,13 +72,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	}
 
 	@Override
-	public Filter getCodingSchemeFilter(String uri, String version) {
-		// TODO New Lucene will not support or be compatible with older versions.
-		//return this.getCodingSchemeFilterForCodingScheme(uri, version);
-		return null;
-	}
-
-	@Override
 	public void deleteDocuments(String codingSchemeUri, String version,
 			Term term) {
 		getLuceneIndexTemplate(codingSchemeUri, version).removeDocuments(term);
@@ -121,14 +83,8 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		return getLuceneIndexTemplate(codingSchemeUri, version).getIndexName();
 	}
 
-//	@Override
-//	public void optimizeIndex(String codingSchemeUri, String version) {
-//		getLuceneIndexTemplate(codingSchemeUri, version).optimize();
-//	}
-
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query) {
-		
-		
+
 		try {
 			LuceneIndexTemplate template = getLuceneIndexTemplate(codingSchemeUri, version);
 
@@ -140,27 +96,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			ScoreDoc[] arrayDocs = hitCollector.topDocs().scoreDocs;
 			List<ScoreDoc> docs = new ArrayList<ScoreDoc>(Arrays.asList(arrayDocs));
 			return docs;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public List<ScoreDoc> query(Query query) {
-		try {
-			
-			//Gets a multi index template for this query
-			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
-			
-			int maxDoc = template.getMaxDoc();
-
-			DocIdSet boundaryDocIds = template.getDocIdSet(this.createBoundaryDocFilter());
-
-			BestScoreOfEntityHitCollector hitCollector = new BestScoreOfEntityHitCollector(boundaryDocIds.iterator(), maxDoc);
-	
-			template.search(query, null, hitCollector);
-
-			return hitCollector.getResult();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -178,208 +113,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			throw new RuntimeException("Problems getting results from a potential multischeme query.", e);
 		}
 	}
-
-
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.access.entity.EntityDao#query(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.util.List, java.util.List)
-	 */
-	public List<ScoreDoc> query(String codingSchemeUri, String version, List<? extends Query> combinedQuery, 
-            List<? extends Query> bitSetQueries) {
-		
-		// TODO New Lucene will not support or be compatible with older versions.
-		
-//		try {
-//			
-//			Filter codingSchemeFilter = getCodingSchemeFilterForCodingScheme(codingSchemeUri, version);
-//			Filter boundaryDocSchemeFilter = getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
-//			
-//			return this.buildScoreDocs(
-//					getLuceneIndexTemplate(codingSchemeUri, version),
-//					boundaryDocSchemeFilter, codingSchemeFilter, combinedQuery, bitSetQueries);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-		return null;
-	}
-	public BooleanQuery getParentDocsAsScopedEntityQuery(String codingSchemeUri, 
-	String version,  Map<BooleanQuery, Occur> queriesToOps) {
-		
-		
-	       QueryBitSetProducer parentFilter = null;
-	        try {
-	            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
-	        } catch (ParseException e) {
-	          new RuntimeException("Unparsable Query generated.  Unexpected error on parent filter", e);
-	        }
-	        BooleanQuery.Builder builder = new BooleanQuery.Builder();
-	        Iterator<Entry<BooleanQuery, Occur>> it = queriesToOps.entrySet().iterator();
-	        while(it.hasNext()){
-	            Map.Entry<BooleanQuery, Occur> pair = (Map.Entry<BooleanQuery, Occur>)it.next();
-	            ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
-	                    pair.getKey(), 
-	                    parentFilter,
-	                    ScoreMode.Total);
-	            builder.add(termJoinQuery, pair.getValue());
-	        }
-		
-		return builder.build();
-	}
-	
-	public Filter getBoundaryDocsHitAsAWholeFilter(
-			String codingSchemeUri, 
-			String version, 
-			Query query) {
-		
-		
-		// TODO New Lucene will not support or be compatible with older versions.
-		
-//		Filter boundaryDocFilter = 
-//			this.getBoundaryDocFilterForCodingScheme(codingSchemeUri, version);
-//		
-//		Filter codingSchemeFilter = 
-//			this.getCodingSchemeFilter(codingSchemeUri, version);
-//
-//		LuceneIndexTemplate template = getLuceneIndexTemplate(codingSchemeUri, version);
-//
-//		DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
-//		DocIdSetIterator boundaryItr = boundaryDocIds.iterator();
-//
-//		DocIdSet queryDocIds = template.getDocIdSet(
-//				new QueryWrapperFilter(new FilteredQuery(query, codingSchemeFilter)));
-//		
-//		DocIdSetIterator queryItr = queryDocIds.iterator();
-//
-//		BitSet bitSet = new BitSet();
-//		
-//		
-//		try {
-//			while(boundaryItr.next()) {
-//				bitSet.set(boundaryItr.doc());
-//			}
-//
-//			while(queryItr.next()) {
-//				int docId = queryItr.doc();
-//				int startDoc = getPreviousSetBit(bitSet,docId);
-//				int endDoc = bitSet.nextSetBit(docId);      
-//				
-//				if(endDoc == -1) {
-//					endDoc = template.getMaxDoc();
-//				}
-//
-//				bitSet.set(startDoc, endDoc);
-//			}
-//
-//			return new BitSetFilter(bitSet);
-//		} catch (IOException e) {
-//			throw new RuntimeException(e);
-//		}
-		return null;
-	}
-	
-	private static class BitSetFilter extends Filter {
-
-		private static final long serialVersionUID = 100126269349636772L;
-		private BitSet bitSet;
-		
-		private BitSetFilter(BitSet bitSet){
-			this.bitSet = bitSet;
-		}
-		
-		public BitSet bits(IndexReader reader) throws IOException {
-			return this.bitSet;
-		}
-
-		@Override
-		public DocIdSet getDocIdSet(LeafReaderContext arg0, Bits arg1)
-				throws IOException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String toString(String arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-	
-//	private int getPreviousSetBit(BitSet bitSet, int index) {
-//		for(int i=index;i>=0;i--) {
-//			if(bitSet.get(i)) {
-//				return i;
-//			}
-//		}
-//		return 0;
-//	}
-//		
-
-	/**
-	 * Builds the score docs.
-	 * 
-	 * @param internalCodeSystemName the internal code system name
-	 * @param internalVersionString the internal version string
-	 * @param combinedQuery the combined query
-	 * @param bitSetQueries the bit set queries
-	 * 
-	 * @return the list< score doc>
-	 * 
-	 * @throws Exception the exception
-	 */
-	protected List<ScoreDoc> buildScoreDocs(
-			LuceneIndexTemplate template,
-			Filter boundaryDocFilter,
-			Filter codingSchemeFilter,
-			List<? extends Query> combinedQuery, 
-            List<? extends Query> bitSetQueries) throws Exception {
-
-        int maxDoc = template.getMaxDoc();
-
-        List<ScoreDoc> scoreDocs = null;
-        
-        DocIdSet boundaryDocIds = template.getDocIdSet(boundaryDocFilter);
-
-        List<BitSet> bitSets = new ArrayList<BitSet>();
-        
-        if(bitSetQueries != null){
-            for(Query query : bitSetQueries){
-                BitSetBestScoreOfEntityHitCollector bitSetCollector =
-                    new BitSetBestScoreOfEntityHitCollector(
-                    		boundaryDocIds.iterator(), 
-                                    maxDoc);
-                template.search(query, codingSchemeFilter, bitSetCollector);
-                bitSets.add(bitSetCollector.getResult());
-            }
-        }
-        
-        if(combinedQuery.size() == 1){
-            BitSetFilteringBestScoreOfEntityHitCollector collector =
-                new BitSetFilteringBestScoreOfEntityHitCollector(
-                        this.getBitSet(bitSets, BitSetOp.AND),
-                        boundaryDocIds.iterator(), 
-                                maxDoc);
-            
-            template.search(combinedQuery.get(0), codingSchemeFilter, collector);
-            scoreDocs = collector.getResult();
-        } else {
-            HitCollectorMerger merger = new HitCollectorMerger(
-            		boundaryDocIds.iterator(), 
-            		maxDoc);
-            for(Query query : combinedQuery){
-                BestScoreOfEntityHitCollector collector =
-                    new BitSetFilteringBestScoreOfEntityHitCollector(
-                            this.getBitSet(bitSets, BitSetOp.AND),
-                            boundaryDocIds.iterator(), 
-                                    maxDoc); 
-
-                template.search(query, codingSchemeFilter, collector);
-                merger.addHitCollector(collector);
-            }
-            scoreDocs = merger.getMergedScoreDocs();
-        }
-        
-        return scoreDocs;
-	}
 	
 	@Override
 	public Document getDocumentById(String codingSchemeUri, String version,
@@ -394,35 +127,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 		return getLuceneIndexTemplate(codingSchemeUri, version).getDocumentById(id, fields);
 	}
 
-
-
-	/**
-	 * And bit sets.
-	 * 
-	 * @param bitSets the bit sets
-	 * 
-	 * @return the bit set
-	 */
-	private BitSet getBitSet(List<BitSet> bitSets, BitSetOp op){
-		BitSet totalBitSet = null;
-		for(BitSet bitSet : bitSets){
-			if(totalBitSet == null){
-				totalBitSet = bitSet;
-			} else {
-				switch (op) {
-					case AND: {
-						totalBitSet.and(bitSet);
-						continue;
-					}
-					case OR: {
-						totalBitSet.or(bitSet);
-						continue;
-					}
-				}
-			}
-		}
-		return totalBitSet;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.AbstractBaseIndexDao#doGetSupportedLexEvsIndexFormatVersions()
@@ -453,7 +157,6 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
     private LuceneIndexTemplate getLuceneIndexTemplate(
             List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
         List<NamedDirectory> directories = getNamedDirectoriesForCodingSchemes(codingSchemes);
-        // TODO Auto-generated method stub
         return new MultiBaseLuceneIndexTemplate(directories);
     }
 
