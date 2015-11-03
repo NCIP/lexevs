@@ -21,6 +21,7 @@ package org.lexevs.dao.index.operation;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 
 /**
  * The Interface LexEvsIndexOperations.
@@ -39,4 +40,9 @@ public interface LexEvsIndexOperations {
 	public void registerCodingSchemeEntityIndex(String codingSchemeUri, String version);
 	
 	public void cleanUp(List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes, boolean reindexMissing);
+
+	public String getLexEVSIndexLocation();
+	
+	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException;
+	
 }
