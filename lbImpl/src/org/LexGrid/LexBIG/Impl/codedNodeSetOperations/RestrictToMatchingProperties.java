@@ -18,20 +18,15 @@
  */
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.dataAccess.IndexQueryParserFactory;
+import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedLanguage;
@@ -39,12 +34,18 @@ import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQuery;
+import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Holder for the RestrictToMatchingProperties operation.
@@ -56,7 +57,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
  * @author <A HREF="mailto:kevin.peterson@mayo.edu">Kevin Peterson</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class RestrictToMatchingProperties extends RestrictToProperties implements Restriction, Operation {
+public class RestrictToMatchingProperties extends RestrictToProperties {
 
     private static final long serialVersionUID = -6595704213491369563L;
     private BooleanQuery textQuery_;
@@ -192,5 +193,11 @@ public class RestrictToMatchingProperties extends RestrictToProperties implement
         } catch (LBParameterException e) {
             throw e;
         }
+    }
+
+
+    @Override
+    public Query doGetQuery() throws LBException, InternalException {
+        return RestrictionImplementations.getQuery(this);
     }
 }

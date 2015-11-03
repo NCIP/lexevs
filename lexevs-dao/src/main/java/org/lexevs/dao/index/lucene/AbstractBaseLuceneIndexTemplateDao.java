@@ -18,66 +18,8 @@
  */
 package org.lexevs.dao.index.lucene;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queries.TermsFilter;
-import org.apache.lucene.search.Filter;
-///import org.compass.core.lucene.support.ChainedFilter;
-
 public abstract class AbstractBaseLuceneIndexTemplateDao extends AbstractFilteringLuceneIndexTemplateDao {
 
-	protected Filter getBoundaryDocFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-//		if(CollectionUtils.isEmpty(codingSchemes)) {
-//			return null;
-//		}
-//		
-//		String key = getFilterMapKey(codingSchemes);
-//		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
-//			Filter[] filters = new Filter[codingSchemes.size()];
-//			for(int i=0;i<codingSchemes.size();i++) {
-//				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
-//				
-//				filters[i] = this.getBoundaryDocFilterForCodingScheme(
-//						ref.getCodingSchemeURN(), 
-//						ref.getCodingSchemeVersion());
-//			}
-//			
-//			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
-//			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, chainedFilter);
-//		}
-//		return this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
-		return null;
-	}
-	
-	protected Filter getBoundaryDocFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
-		
-//		String key = getFilterMapKey(codingSchemeUri, codingSchemeUri);
-//		if(!this.getIndexRegistry().getBoundaryDocFilterMap().containsKey(key)) {
-//			Filter filter1 = createBoundaryDocFilter();
-//			
-//			this.getIndexRegistry().getBoundaryDocFilterMap().put(key, new CachingWrapperFilter(filter1));
-//		}
-//		
-//		Filter returnFilter = this.getIndexRegistry().getBoundaryDocFilterMap().get(key);
-//		
-//		Assert.notNull(returnFilter);
-//
-//		return returnFilter;
-		return null;
-		
-	}
-	
-	protected Filter createBoundaryDocFilter() {
-		Term term = new Term("codeBoundry", "T");
-		List<Term> termList = new ArrayList<Term>();
-		termList.add(term);
-		
-		TermsFilter filter = new TermsFilter(termList);
+	//
 
-		return filter;
-	}
-	
 }

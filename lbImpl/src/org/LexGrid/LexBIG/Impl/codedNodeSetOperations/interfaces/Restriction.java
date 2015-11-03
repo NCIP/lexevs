@@ -18,6 +18,10 @@
  */
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.apache.lucene.search.Query;
+import org.lexevs.exceptions.InternalException;
+
 import java.io.Serializable;
 
 /**
@@ -28,5 +32,7 @@ import java.io.Serializable;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public interface Restriction extends Serializable {
+
+    public Query getQuery() throws LBException, InternalException;
 
 }

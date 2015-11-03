@@ -18,17 +18,19 @@
  */
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.AbstractJoinQueryRestriction;
+import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedLanguage;
 import org.apache.lucene.search.Query;
+import org.lexevs.exceptions.InternalException;
 
 /**
  * Holder for the RestrictToMatchingDesignations operation.
@@ -38,7 +40,7 @@ import org.apache.lucene.search.Query;
  * @author <A HREF="mailto:kevin.peterson@mayo.edu">Kevin Peterson</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class RestrictToMatchingDesignations implements Restriction, Operation {
+public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction {
 
     private static final long serialVersionUID = 202284486636220340L;
     private Query textQuery_;
@@ -73,6 +75,11 @@ public class RestrictToMatchingDesignations implements Restriction, Operation {
         } catch (LBParameterException e) {
             throw new LBInvocationException("There was an unexpected error while validating the language.", e.getLocalizedMessage());
         }
+    }
+
+    @Override
+    protected Query doGetQuery() throws LBException, InternalException {
+        return RestrictionImplementations.getQuery(this);
     }
 
     @LgClientSideSafe
