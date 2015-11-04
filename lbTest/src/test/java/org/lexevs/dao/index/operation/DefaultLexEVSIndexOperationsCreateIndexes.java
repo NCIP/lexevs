@@ -5,35 +5,26 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
-import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
-public class DefaultLexEVSIndexOperationsRemoveTest {
-	
-	String uri = "urn:oid:11.11.0.1";
-	String ver = "1.0";
-	
+public class DefaultLexEVSIndexOperationsCreateIndexes {
+	static AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
 				.getServiceManager(null);
 
@@ -51,44 +42,33 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
 		List<RegistryEntry> entries = registry
 				.getEntriesForUri("urn:oid:11.11.0.1");
-		LexEvsServiceLocator.getInstance().getRegistry().removeEntry(entries.get(0));
+		reference.setCodingSchemeURN(entries.get(0).getResourceUri());
+		reference.setCodingSchemeVersion( entries.get(0).getResourceVersion());
+		LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService().dropIndex(reference);
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
+				.getServiceManager(null);
+		lbsm.removeCodingSchemeVersion(reference);
 	}
 
 	@Before
 	public void setUp() throws Exception {
-
 	}
 
 	@Test
-	public void testGetMap() {
+	public void testIndexCreationAndRegistration() throws LBParameterException {
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-		list.add(Constructors.createAbsoluteCodingSchemeVersionReference(uri, ver));
+		list.add(reference);
 		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
-		Map<String, AbsoluteCodingSchemeVersionReference> dbNames = ops.getExpectedMap(list);
-		assertTrue(dbNames.size() > 0);
+		assertFalse(ops.doesIndexExist(reference));
+		assertFalse(ops.getConcurrentMetaData().getCodingSchemeList().size() > 0);
+		LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().
+		registerCodingSchemeEntityIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		assertNotNull(ops.getConcurrentMetaData().getCodingSchemeList().get(0));
+		assertTrue(ops.doesIndexExist(reference));
 	}
-	
-	@Test
-	public void testGetIndexLocation(){
-		String location = LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().getLexEVSIndexLocation();
-		assertTrue(location.length() > 0);
-	}
-	
-	
-	@Test
-	public void testDropIndex() throws LBParameterException{
-		 DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
-		 AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(uri, ver);
-		String codingScheme = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(uri, ver);
-		ops.dropIndex(codingScheme, ref);
-		assertFalse(ops.doesIndexExist(ref));	
-	}
-	
-	@AfterClass
-	public void removeBrokenScheme() throws LBInvocationException, LBParameterException{
-		CleanUpUtility.removeAllUnusedDatabases();
-		assertTrue(CleanUpUtility.listUnusedDatabases().length == 0);
-	}
-	
 
 }
