@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -72,6 +73,23 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 	public void testGetIndexLocation(){
 		String location = LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().getLexEVSIndexLocation();
 		assertTrue(location.length() > 0);
+	}
+	
+	@Test
+	public void testDoesIndexHaveMatchingRegistryEntry(){
+		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		list.add(Constructors.createAbsoluteCodingSchemeVersionReference(uri, ver));
+		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
+		File file = new File("Automobiles-1_0");
+		AbsoluteCodingSchemeVersionReference cs = ops.doesIndexHaveMatchingRegistryEntry(file, list);
+		assertNotNull(cs);
+	}
+	
+	@Test
+	public void testiIsIndexNameRegisteredWithTheSystem(){
+		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
+		CodingSchemeMetaData cs = ops.isIndexNameRegisteredWithTheSystem("Automobiles-1_0");
+		assertNotNull(cs);
 	}
 	
 	
