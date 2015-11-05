@@ -63,13 +63,6 @@ You may obtain a copy of the License at
 			<classpath refid="test.classpath"/>
 			<formatter type="brief" usefile="false"/>
 			<formatter type="brief" usefile="true"/>
-			<test todir="${output.dir}" outfile="cts2-bvt"
-				name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
-		</junit>
-		<junit printsummary="true" haltonfailure="false">
-			<classpath refid="test.classpath"/>
-			<formatter type="brief" usefile="false"/>
-			<formatter type="brief" usefile="true"/>
 			<test todir="${output.dir}" outfile="bvt"
 				name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 		</junit>
@@ -82,13 +75,6 @@ You may obtain a copy of the License at
 					<classpath refid="test.classpath"/>
 					<formatter type="brief" usefile="false"/>
 					<formatter type="plain" usefile="true"/>
-					<test todir="${output.dir}" outfile="cts2-bvt"
-						name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
-		</junit>
-		<junit printsummary="true" haltonfailure="false">
-					<classpath refid="test.classpath"/>
-					<formatter type="brief" usefile="false"/>
-					<formatter type="plain" usefile="true"/>
 					<test todir="${output.dir}" outfile="bvt"
 						name="org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig"/>
 		</junit>
@@ -97,13 +83,7 @@ You may obtain a copy of the License at
 			
 	<!-- XML format -->
 	<target name="bvt-xml" depends="clean" description="task to run the LexBIG test suite and produce a report with extensive information for each test case in xml format">
-		<junit printsummary="true" haltonfailure="false">
-					<classpath refid="test.classpath"/>
-					<formatter type="brief" usefile="false"/>
-					<formatter type="xml" usefile="true"/>
-					<test todir="${output.dir}" outfile="cts2-bvt"
-						name="org.lexevs.cts2.test.Cts2IntegrationTestRunner"/>
-				</junit>
+
 		<junit printsummary="true" haltonfailure="false">
 					<classpath refid="test.classpath"/>
 					<formatter type="brief" usefile="false"/>
