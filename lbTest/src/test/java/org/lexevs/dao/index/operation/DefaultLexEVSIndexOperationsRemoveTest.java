@@ -85,7 +85,7 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 	}
 	
 	@AfterClass
-	public void removeBrokenScheme() throws LBInvocationException, LBParameterException{
+	public  static void removeBrokenScheme() throws LBInvocationException, LBParameterException{
 		CleanUpUtility.removeAllUnusedDatabases();
 		assertTrue(CleanUpUtility.listUnusedDatabases().length == 0);
 	}

@@ -20,7 +20,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
-public class DefaultLexEVSIndexOperationsCreateIndexes {
+public class DefaultLexEVSIndexOperationsCreateIndexTest {
 	static AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 
 	@BeforeClass
@@ -60,8 +60,6 @@ public class DefaultLexEVSIndexOperationsCreateIndexes {
 
 	@Test
 	public void testIndexCreationAndRegistration() throws LBParameterException {
-		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-		list.add(reference);
 		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
 		assertFalse(ops.doesIndexExist(reference));
 		assertFalse(ops.getConcurrentMetaData().getCodingSchemeList().size() > 0);

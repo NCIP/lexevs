@@ -41,6 +41,7 @@ import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -89,11 +90,18 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 			}
 		}
 		for (File index : indexes) {
+			//TODO get the file name instead of the reference.  the reference will always be null.
 			AbsoluteCodingSchemeVersionReference reference = doesIndexHaveMatchingRegistryEntry(
 					index, expectedCodingSchemes);
 
-			if (reference != null) {
-				this.dropIndex(index.getName(), reference);
+			if (reference == null) {
+				//MetaData Index is a special case.  Not registered with the system in the same way.
+				if(index.getName().equals("MetaDataIndex")){return;}
+				CodingSchemeMetaData metaData = this.isIndexNameRegisteredWithTheSystem(index.getName());
+				AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+				ref.setCodingSchemeURN(metaData.getCodingSchemeUri());
+				ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
+				this.dropIndex(metaData.getCodingSchemeName(), ref);
 			}
 		}
 	}
@@ -118,21 +126,31 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	
 	
 	
-	protected void dropIndex(String codingSchemeName, AbsoluteCodingSchemeVersionReference reference) {
-		
-		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-		
-		String key = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion()).getKey();
-		try {
-			concurrentMetaData.removeIndexMetaDataValue(key);
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e);
+	protected void dropIndex(String codingSchemeName,
+			AbsoluteCodingSchemeVersionReference reference) {
+
+		// If it's registered with the system then unregister it before deletion
+		if (reference != null) {
+			this.indexRegistry.unRegisterCodingSchemeIndex(
+					reference.getCodingSchemeURN(),
+					reference.getCodingSchemeVersion());
+
+			String key = LocalCodingScheme.getLocalCodingScheme(
+					codingSchemeName, reference.getCodingSchemeVersion())
+					.getKey();
+			try {
+				concurrentMetaData.removeIndexMetaDataValue(key);
+			} catch (RuntimeException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		try {
-			this.indexRegistry.destroyIndex(Utility.getIndexName(reference));
+			// If the reference is still null then delete this anyway
+			this.indexRegistry.destroyIndex(reference != null ? Utility
+					.getIndexName(reference) : codingSchemeName);
 		} catch (LBParameterException e) {
 			throw new RuntimeException("Problem deleting index from disk", e);
-		}
+	}
 	}
 
 	public IndexDaoManager getIndexDaoManager() {
@@ -185,16 +203,24 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
         return indexParentFolder.listFiles();
 	}
 	
-	public AbsoluteCodingSchemeVersionReference doesIndexHaveMatchingRegistryEntry(File file, List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes){
-		
+	public AbsoluteCodingSchemeVersionReference doesIndexHaveMatchingRegistryEntry(File file, List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes){		
 		for(AbsoluteCodingSchemeVersionReference ref: expectedCodingSchemes){
 			try {
 				if(file.getName().equals(Utility.getIndexName(ref))){
 					return ref;
 				}
 			} catch (LBParameterException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException("Problem matching registry file entry", e);
+			}
+		}
+		return null;
+	}
+	
+	public CodingSchemeMetaData isIndexNameRegisteredWithTheSystem(String indexName){
+
+		for(CodingSchemeMetaData csmd: concurrentMetaData.getCodingSchemeList()){
+			if(csmd.getDirectory().getIndexName().equals(indexName)){
+				return csmd;
 			}
 		}
 		return null;
