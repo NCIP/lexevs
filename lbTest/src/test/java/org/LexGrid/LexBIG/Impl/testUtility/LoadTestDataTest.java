@@ -68,6 +68,7 @@ import org.LexGrid.relations.AssociationTarget;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
+ * @author <A HREF="mailto:bauer.scott@mayo.edu">Scott Bauer</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class LoadTestDataTest extends LexBIGServiceTestCase {
@@ -129,6 +130,26 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         // load non-async - this should block
         loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, false);
+
+    	while (loader.getStatus().getEndTime() == null) {
+    		Thread.sleep(1000);
+    	}
+        assertTrue(loader.getStatus().getEndTime() != null);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+    
+    public void testLoadBoostScheme() throws LBException, InterruptedException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+        // load non-async - this should block
+        loader.load(new File("resources/testData/BoostedQuery.xml").toURI(), true, false);
 
     	while (loader.getStatus().getEndTime() == null) {
     		Thread.sleep(1000);

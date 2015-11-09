@@ -36,6 +36,9 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String AUTO_EXPORT_SCHEME = "AutosEXPORT";
     protected final static String AUTO_EXPORT_URI = "AutosEXPORTURI";
     protected final static String AUTO_EXPORT_VERSION = "AutosEXPORTVersion";
+    public final static String BOOST_SCHEME = "BoostedQueryScheme";
+    public final static String BOOST_SCHEME_URL = "urn:oid:77.77.77.77";
+    public final static String BOOST_SCHEME_VERSION = "1.0";
     protected final static String HL7_SCHEME = "RIM_0219";
     protected final static String HL7_VERSION = "V 02-19";
     protected final static String PARTS_SCHEME = "GermanMadeParts";

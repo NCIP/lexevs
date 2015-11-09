@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.junit.Test;
 
 /**
  * The Class TestWeightedDoubleMetaphone.
@@ -228,5 +230,43 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
         assertTrue("Length: " + rcrl.length, rcrl.length == 0);
-    }  
+    } 
+    
+    /**
+     * Additional boost centered testing
+     * @throws LBException
+     */
+    @Test
+    public void testBoostOne() throws LBException{
+    	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
+    	cns.restrictToMatchingDesignations("maintenance", SearchDesignationOption.ALL, algorithm, null);
+    	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+    	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
+    	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("111"));
+    }
+    @Test
+    public void testBoostTwo() throws LBException{
+    	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
+    	cns.restrictToMatchingDesignations("mayntenance", SearchDesignationOption.ALL, algorithm, null);
+    	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+    	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
+    	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("22"));
+    }
+    @Test
+    public void testBoostThree() throws LBException{
+    	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
+    	cns.restrictToMatchingDesignations("maintinance", SearchDesignationOption.ALL, algorithm, null);
+    	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+    	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
+    	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("33"));
+    }
+    @Test
+    public void testBoostFive() throws LBException{
+    	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
+    	cns.restrictToMatchingDesignations("maintenanse", SearchDesignationOption.ALL, algorithm, null);
+    	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+    	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
+    	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("55"));
+    }
+    
 }
