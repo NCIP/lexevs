@@ -21,4 +21,4 @@
  # 
  # Example: TestRunner -h
  #
-java -Xmx1600m -XX:MaxPermSize=256m -cp ./lbTest.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar:./extlib/ant/ant-1.7.0.jar:./extlib/ant/ant-junit-1.7.0.jar:./extlib/ant/ant-trax-1.7.0.jar:./extlib/ant/ant-launcher-1.7.0.jar:./extlib/junit/junit-4.4.jar bvt.TestRunner $@
+java -Xmx1600m -XX:MaxPermSize=256m -cp ./lbTest.jar:../runtime-components/lexbig.jar:../runtime-components/extLib/*:./extlib/ant/ant-1.7.0.jar:./extlib/ant/ant-junit-1.7.0.jar:./extlib/ant/ant-trax-1.7.0.jar:./extlib/ant/ant-launcher-1.7.0.jar:./extlib/junit/junit-4.4.jar bvt.TestRunner $@
