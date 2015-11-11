@@ -181,6 +181,10 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsRemoveTest;
 import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
@@ -480,8 +484,19 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
         //Broken Load Clean Up Function tests
+
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
 
+
+//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsRemoveTest.class));
+        //CTS2 tests
+        //Run this outside of this scope.
+        //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
+        // $JUnit-END$
 
         return mainSuite;
     }

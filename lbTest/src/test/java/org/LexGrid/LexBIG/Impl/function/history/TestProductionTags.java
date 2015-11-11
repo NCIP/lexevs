@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.Utility.LBConstants.KnownTags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Before;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class TestProductionTags extends LexBIGServiceTestCase {
@@ -64,6 +65,7 @@ public class TestProductionTags extends LexBIGServiceTestCase {
      * @throws LBException
      * 
      */
+@Before
 public void testProductionTags01() throws InterruptedException, LBException {
         // info("01 Load/Activate version 1.1 of Automobiles vocabulary (see
         // TestUtil.loadLgXML() as

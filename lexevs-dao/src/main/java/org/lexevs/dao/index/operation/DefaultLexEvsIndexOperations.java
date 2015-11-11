@@ -20,39 +20,27 @@ package org.lexevs.dao.index.operation;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
-import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
-import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
-//import org.apache.lucene.index.TermEnum;
 
 public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements LexEvsIndexOperations {
 	
 	private IndexCreator indexCreator;
 	private IndexRegistry indexRegistry;
 	private IndexDaoManager indexDaoManager;
-	//private MetaData metaData;
 	private ConcurrentMetaData concurrentMetaData;
 	
 	@Override
@@ -67,118 +55,47 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	
 	@Override
 	public void cleanUp(
-			final List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes, boolean reindexMissing) {
+			final List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes,
+			boolean reindexMissing) {
 		getLogger().warn("Starting Cleanup of Entity Lucene Index.");
-	
-//		indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Void>() {
-//
-//			@Override
-//			public Void doInIndexReader(IndexReader indexReader)
-//					throws Exception {
-//				
-//				final Map<String, AbsoluteCodingSchemeVersionReference> expectedMap = 
-//					getExpectedMap(expectedCodingSchemes);
-//				
-//				Set<String> indexSet = new HashSet<String>();
-//				
-//				Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, "");
-////				TermsEnum termEnum = indexReader.
-//				
-//				boolean hasNext = true;
-////				while(hasNext && 
-////						termEnum.term() != null && 
-////						termEnum.term().field().equals(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD)) {
-////					String key = termEnum.term().text();
-////					indexSet.add(key);
-////					
-////					hasNext = termEnum.next();
-////				}
-//				
-//				Set<String> foundIndexSet = new HashSet<String>(indexSet);
-//				foundIndexSet.removeAll(expectedMap.keySet());
-//	
-//				if(foundIndexSet.size() == 0) {
-//					getLogger().warn("No extra Lucene artifacts found.");
-//				} else {
-//					getLogger().warn(foundIndexSet.size() + " extra Lucene artifacts found.");
-//				}
-//				
-//				for(String additional : foundIndexSet) {
-//				
-//					BooleanQuery query = new BooleanQuery();
-//					query.add(new TermQuery(
-//										new Term(
-//												LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD, additional)), Occur.MUST);
-//					query.add(new TermQuery(
-//							new Term(
-//									"codeBoundry", "T")), Occur.MUST_NOT);
-//					
-//					List<ScoreDoc> scoreDocs = 
-//						indexRegistry.getCommonLuceneIndexTemplate().search(
-//								query, 
-//								null);
-//					
-//					if(scoreDocs.size() == 0) {
-//						getLogger().warn("No Documents to remove for for: " + additional);
-//						continue;
-//					}
-//					
-//					ScoreDoc scoreDoc = scoreDocs.get(0);
-//					
-//					Document document = indexReader.document(scoreDoc.doc);
-//					
-//					String uri = document.getField(LuceneLoaderCode.CODING_SCHEME_ID_FIELD).stringValue();
-//					String version = document.getField(LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD).stringValue();
-//					String codingSchemeName = document.getField(LuceneLoaderCode.CODING_SCHEME_NAME_FIELD).stringValue();
-//					
-//					getLogger().warn("Found an extra Lucene Index for URI: " + uri + " Version: " + version + 
-//						". Attempting to remove...");
-//					
-//					AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-//					ref.setCodingSchemeURN(uri);
-//					ref.setCodingSchemeVersion(version);
-//					
-//					dropIndex(codingSchemeName, ref);
-//					
-//					getLogger().warn("Extra Lucene Index for URI: " + uri + " Version: " + version + 
-//						" Successfully removed.");
-//				}
-//				
-//				expectedMap.keySet().removeAll(indexSet);
-//				
-//				if(expectedMap.size() == 0) {
-//					getLogger().warn("No missing Lucene artifacts found.");
-//				} else {
-//					getLogger().warn(expectedMap.size() + " missing Lucene artifacts found.");
-//				}
-//				
-//				for(String key : expectedMap.keySet()) {
-//					AbsoluteCodingSchemeVersionReference ref = 
-//						expectedMap.get(key);
-//					getLogger().warn("Re-creating missing Lucene index for URI: " +
-//							ref.getCodingSchemeURN() +
-//							" Version: " + ref.getCodingSchemeVersion());
-//					
-//					LexEvsServiceLocator.getInstance().
-//						getIndexServiceManager().
-//							getEntityIndexService().
-//								createIndex(ref);
-//				}
-//				
-//				
-//				return null;
-//			}
-//			
-//		});
-		
-//		this.cleanupSearchIndex(expectedCodingSchemes);
+		File[] indexes = getIndexes();
+		if (reindexMissing) {
+			for (AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
+				try {
+					if (!doesIndexExist(ref)) {
+						this.registerCodingSchemeEntityIndex(
+								ref.getCodingSchemeURN(),
+								ref.getCodingSchemeVersion());
+					}
+
+				} catch (LBParameterException e) {
+					throw new RuntimeException(
+							"Removal or Re-Indexing of coding scheme "
+									+ ref.getCodingSchemeURN() + " version "
+									+ ref.getCodingSchemeVersion() + " failed",e);
+				}
+			}
+		}
+		for (File index : indexes) {
+			AbsoluteCodingSchemeVersionReference reference = doesIndexHaveMatchingRegistryEntry(
+					index, expectedCodingSchemes);
+
+			if (reference == null) {
+				//MetaData Index is a special case.  Not registered with the system in the same way.
+				if(index.getName().equals("MetaDataIndex")){return;}
+				CodingSchemeMetaData metaData = this.isIndexNameRegisteredWithTheSystem(index.getName());
+				AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+				ref.setCodingSchemeURN(metaData.getCodingSchemeUri());
+				ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
+				this.dropIndex(metaData.getCodingSchemeName(), ref);
+			}
+		}
 	}
 
 	protected Map<String, AbsoluteCodingSchemeVersionReference> getExpectedMap(
 			List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes) {
 		final Map<String,AbsoluteCodingSchemeVersionReference> expectedMap = 
 			new HashMap<String,AbsoluteCodingSchemeVersionReference>();
-		
 		for(AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
 			String key = LuceneLoaderCode.createCodingSchemeUriVersionKey(
 					ref.getCodingSchemeURN(), 
@@ -195,21 +112,31 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	
 	
 	
-	protected void dropIndex(String codingSchemeName, AbsoluteCodingSchemeVersionReference reference) {
-		
-		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-		
-		String key = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, reference.getCodingSchemeVersion()).getKey();
-		try {
-			concurrentMetaData.removeIndexMetaDataValue(key);
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e);
+	protected void dropIndex(String codingSchemeName,
+			AbsoluteCodingSchemeVersionReference reference) {
+
+		// If it's registered with the system then unregister it before deletion
+		if (reference != null) {
+			this.indexRegistry.unRegisterCodingSchemeIndex(
+					reference.getCodingSchemeURN(),
+					reference.getCodingSchemeVersion());
+
+			String key = LocalCodingScheme.getLocalCodingScheme(
+					codingSchemeName, reference.getCodingSchemeVersion())
+					.getKey();
+			try {
+				concurrentMetaData.removeIndexMetaDataValue(key);
+			} catch (RuntimeException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		try {
-			this.indexRegistry.destroyIndex(Utility.getIndexName(reference));
+			// If the reference is still null then delete this anyway
+			this.indexRegistry.destroyIndex(reference != null ? Utility
+					.getIndexName(reference) : codingSchemeName);
 		} catch (LBParameterException e) {
 			throw new RuntimeException("Problem deleting index from disk", e);
-		}
+	}
 	}
 
 	public IndexDaoManager getIndexDaoManager() {
@@ -244,15 +171,50 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	}
 
 	@Override
-	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
+	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference ref)
+			throws LBParameterException {
 		String indexLocation = getLexEVSIndexLocation();
-        File indexParentFolder = new File(indexLocation);
-        File[] indexes = indexParentFolder.listFiles();
-        for(File index: indexes){
-        	if(index.getName().equals(Utility.getIndexName(ref))){
-        		return true;
-        	}
-        }
+		File indexParentFolder = new File(indexLocation);
+		File[] indexes = indexParentFolder.listFiles();
+		for (File index : indexes) {
+			if (index.getName().equals(Utility.getIndexName(ref))) {
+				return true;
+			}
+		}
 		return false;
+	}
+
+	public File[] getIndexes() {
+		String indexLocation = getLexEVSIndexLocation();
+		File indexParentFolder = new File(indexLocation);
+		return indexParentFolder.listFiles();
+	}
+
+	public AbsoluteCodingSchemeVersionReference doesIndexHaveMatchingRegistryEntry(
+			File file,
+			List<AbsoluteCodingSchemeVersionReference> expectedCodingSchemes) {
+		for (AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
+			try {
+				if (file.getName().equals(Utility.getIndexName(ref))) {
+					return ref;
+				}
+			} catch (LBParameterException e) {
+				throw new RuntimeException(
+						"Problem matching registry file entry", e);
+			}
+		}
+		return null;
+	}
+
+	public CodingSchemeMetaData isIndexNameRegisteredWithTheSystem(
+			String indexName) {
+
+		for (CodingSchemeMetaData csmd : concurrentMetaData
+				.getCodingSchemeList()) {
+			if (csmd.getDirectory().getIndexName().equals(indexName)) {
+				return csmd;
+			}
+		}
+		return null;
 	}
 }

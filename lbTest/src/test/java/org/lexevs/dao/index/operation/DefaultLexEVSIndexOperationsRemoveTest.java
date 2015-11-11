@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
@@ -16,10 +17,12 @@ import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.index.operation.DefaultLexEvsIndexOperations;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -72,6 +75,23 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 		assertTrue(location.length() > 0);
 	}
 	
+	@Test
+	public void testDoesIndexHaveMatchingRegistryEntry(){
+		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		list.add(Constructors.createAbsoluteCodingSchemeVersionReference(uri, ver));
+		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
+		File file = new File("Automobiles-1_0");
+		AbsoluteCodingSchemeVersionReference cs = ops.doesIndexHaveMatchingRegistryEntry(file, list);
+		assertNotNull(cs);
+	}
+	
+	@Test
+	public void testiIsIndexNameRegisteredWithTheSystem(){
+		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
+		CodingSchemeMetaData cs = ops.isIndexNameRegisteredWithTheSystem("Automobiles-1_0");
+		assertNotNull(cs);
+	}
+	
 	
 	@Test
 	public void testDropIndex() throws LBParameterException{
@@ -79,8 +99,13 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 		 AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(uri, ver);
 		String codingScheme = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(uri, ver);
 		ops.dropIndex(codingScheme, ref);
-		assertFalse(ops.doesIndexExist(ref));
+		assertFalse(ops.doesIndexExist(ref));	
+	}
 	
+	@AfterClass
+	public  static void removeBrokenScheme() throws LBInvocationException, LBParameterException{
+		CleanUpUtility.removeAllUnusedDatabases();
+		assertTrue(CleanUpUtility.listUnusedDatabases().length == 0);
 	}
 	
 
