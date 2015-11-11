@@ -84,10 +84,15 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 				//MetaData Index is a special case.  Not registered with the system in the same way.
 				if(index.getName().equals("MetaDataIndex")){return;}
 				CodingSchemeMetaData metaData = this.isIndexNameRegisteredWithTheSystem(index.getName());
-				AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-				ref.setCodingSchemeURN(metaData.getCodingSchemeUri());
-				ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
+				if(metaData == null){
+					indexRegistry.destroyIndex(index.getName());
+				}
+				else{
+					AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+					ref.setCodingSchemeURN(metaData.getCodingSchemeUri());
+					ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
 				this.dropIndex(metaData.getCodingSchemeName(), ref);
+				}
 			}
 		}
 	}
