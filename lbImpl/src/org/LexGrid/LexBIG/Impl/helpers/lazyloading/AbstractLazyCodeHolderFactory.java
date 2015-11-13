@@ -70,6 +70,27 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
         return returnList;
     }
 
+    @Override
+    public CodeHolder buildCodeHolder(CodeHolder additiveCodeHolder,
+            Set<? extends AbsoluteCodingSchemeVersionReference> references,
+            Query query) throws LBInvocationException, LBParameterException {
+
+        List<ScoreDoc> scoreDocs = LexEvsServiceLocator.getInstance().
+            getIndexServiceManager().
+                getEntityIndexService().queryCommonIndex(this.toRefs(references), query);
+        
+        AdditiveCodeHolder codeHolder = new DefaultCodeHolder();
+        
+        for(ScoreDoc doc : scoreDocs){
+            codeHolder.add(this.buildCodeToReturn(doc, this.toRefs(references)));
+        }
+        
+         for(CodeToReturn ctr: additiveCodeHolder.getAllCodes()){
+        	 codeHolder.add(ctr);
+         }
+
+        return codeHolder;
+    }
     /**
      * Builds the code to return.
      * 

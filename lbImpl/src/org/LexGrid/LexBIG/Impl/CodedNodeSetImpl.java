@@ -44,6 +44,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToStatus;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
 import org.LexGrid.LexBIG.Impl.helpers.ToNodeListResolvedConceptReferencesIteratorDecorator;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
@@ -60,6 +61,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
@@ -67,6 +69,7 @@ import org.lexevs.system.utility.CodingSchemeReference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -97,6 +100,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private ActiveOption currentActiveOption;
     
     private boolean shouldCodingSchemeSpecificRestriction = true;
+
+    private transient DefaultCodeHolder nonEntityConceptReferenceList;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -360,6 +365,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     public CodedNodeSet restrictToCodes(ConceptReferenceList codeList) throws LBInvocationException,
             LBParameterException {
         try {
+            codeList = getCleanedCodeList(codeList);
             this.builder.add(new RestrictToCodes(codeList).getQuery(), Occur.MUST);
 
             return this;
@@ -369,6 +375,46 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
+    }
+
+    private ConceptReferenceList getCleanedCodeList(ConceptReferenceList codeList) {
+        Iterator<? extends ConceptReference> itr = codeList.iterateConceptReference();
+        ConceptReferenceList cleanedList = new ConceptReferenceList();
+        nonEntityConceptReferenceList = new DefaultCodeHolder();
+        while (itr.hasNext()) {
+            ConceptReference cr = itr.next();
+            if (cr instanceof EntityReferencingAssociatedConcept
+                    && (((EntityReferencingAssociatedConcept) cr).getEntityGuid() == null)
+                    || (cr instanceof ResolvedConceptReference && ((ResolvedConceptReference) cr)
+                            .getEntityDescription() == null)) {
+                CodeToReturn ch = convertConceptReferenceToCodeHolder(cr);
+                if (!nonEntityConceptReferenceList.contains(ch)) {
+                    nonEntityConceptReferenceList.add(ch);
+                }
+            } else {
+                cleanedList.addConceptReference(cr);
+            }
+        }
+
+        // Can't send an empty list to the builder. If the focus node was an
+        // unreferenced
+        // entity from a relationship then it will return nothing from the
+        // indexes. Should be a no-op.
+        if (cleanedList.getConceptReferenceCount() == 0) {
+            ConceptReferenceList newList = new ConceptReferenceList();
+            newList.addConceptReference(codeList.getConceptReference(0));
+            return newList;
+        }
+        return cleanedList;
+    }
+
+    private CodeToReturn convertConceptReferenceToCodeHolder(ConceptReference cr) {
+        CodeToReturn ctr = new CodeToReturn();;
+        ctr.setCode(cr.getCode());
+        ctr.setEntityTypes(ctr.getEntityTypes());
+        ctr.setNamespace(cr.getCodeNamespace());
+        ctr.setEntityTypes(new String[]{"concept"});
+        return ctr;
     }
 
     protected CodedNodeSet restrictToEntityTypes(LocalNameList typeList) throws LBInvocationException, LBParameterException {
@@ -707,7 +753,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodeHolder toBruteForceMode()
     throws LBInvocationException, LBParameterException {
 
-        return codeHolderFactory.buildCodeHolder(
+        return codeHolderFactory.buildCodeHolder(nonEntityConceptReferenceList,
                         this.getCodingSchemeReferences(),
                         this.getQuery());
 

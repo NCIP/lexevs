@@ -81,17 +81,7 @@ public class NonProxyLazyCodeToReturn extends AbstractNonProxyLazyCodeToReturn {
     }
     
     protected StoredFieldVisitor doGetFieldSelector() {
-        //TODO find a replacement as necessary for this.  Short term research did not turn up a replacement in 5.2.1
-        //TODO return this as a Set<String>
-//        return new MapFieldSelector(
-//                new String[] {
-//                        SQLTableConstants.TBLCOL_ENTITYCODE,
-//                        LuceneLoaderCode.ENTITY_UID_FIELD,
-//                        SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,
-//                        LuceneLoaderCode.CODING_SCHEME_ID_FIELD,
-//                        LuceneLoaderCode.CODING_SCHEME_VERSION_FIELD,
-//                        SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,
-//                        "entityType"});
+
         return new DocumentStoredFieldVisitor(SQLTableConstants.TBLCOL_ENTITYCODE,
               LuceneLoaderCode.ENTITY_UID_FIELD,
               SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,

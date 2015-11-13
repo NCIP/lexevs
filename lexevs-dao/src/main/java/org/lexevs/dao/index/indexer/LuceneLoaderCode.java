@@ -158,18 +158,8 @@ public abstract class LuceneLoaderCode {
 			throw new RuntimeException(e);
 		}
     }
-
-    // by default, the index stores a copy of most of the information. Switching
-    // this to
-    // true will cause the indexer to only store the values that are required by
-    // the LexBIG
-    // implementation at runtime.
-
-    // TODO add a GUI option for the codeBoundry stuff.
     
     /** The literal analyzer. */
-//    public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-//            new char[]{}, new char[]{}); 
     public static Analyzer literalAnalyzer = new Analyzer() {
     	
         @Override
@@ -399,11 +389,7 @@ public abstract class LuceneLoaderCode {
         return generator_.getDocument();
     }
 
-    /*
-     * caGrid used these "boundry" documents to speed up multiple successive
-     * queries. A boundry document should be added whenever a new entity id is
-     * started.
-     */
+
     /**
      * Adds the entity boundry document.
      * 
@@ -435,29 +421,9 @@ public abstract class LuceneLoaderCode {
     	generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
     	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
     	generator_.addTextField("entityCode", entityCode, true, true, false);
-//    	generator_.addTextField("code", entityCode, false, true, false);
     	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
     	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
-    	
-//    	if (isActive != null) {
-//            if (isActive.booleanValue()) {
-//                generator_.addTextField("isActive", "T", false, true, false);
-//            } else {
-//                generator_.addTextField("isActive", "F", false, true, false);
-//            }
-//        }else{
-//        	 generator_.addTextField("isActive", "T", false, true, false);
-//        }
-//        
-//        if (isAnonymous != null) {
-//            if (isAnonymous.booleanValue()) {
-//                generator_.addTextField("isAnonymous", "T", true, true, false);
-//            } else {
-//                generator_.addTextField("isAnonymous", "F", true, true, false);
-//            }
-//        }else{
-//        	generator_.addTextField("isAnonymous", "F", true, true, false);
-//        }
+    
     	
         if (isDefined != null) {
             if (isDefined.booleanValue()) {
@@ -466,16 +432,6 @@ public abstract class LuceneLoaderCode {
                 generator_.addTextField("isDefined", "F", false, true, false);
             }
         }
-        
-//        if(entityTypes != null) {
-//        	for(String entityType : entityTypes) {
-//        		generator_.addTextField("entityType", entityType, true, true, false);
-//        	}
-//        }
-        
-//        if (conceptStatus != null && conceptStatus.length() > 0) {
-//            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
-//        }
         
         if(StringUtils.isNotBlank(entityUid)) {
         	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
