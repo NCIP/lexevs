@@ -112,17 +112,14 @@ public class ToNodeListTest extends BaseCodedNodeGraphTest {
     }
     
     public void testToNodeListSomeNotStoredEntities() throws Exception {
- 
-        CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("Tires", "ExpendableParts"), true, false, -1, -1);
-        
 
+        CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("Tires", "ExpendableParts"), true, false, -1, -1);
         ResolvedConceptReference[] refs = cns2.resolveToList(
                 null,
                 null, 
                 null, 
                 -1).getResolvedConceptReference();
         assertEquals(1,refs.length);
-        
         for(ConceptReference ref : refs) {
         	System.out.println(ref.getCode());
         }
