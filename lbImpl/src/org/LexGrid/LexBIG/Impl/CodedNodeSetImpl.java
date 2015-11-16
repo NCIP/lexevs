@@ -66,6 +66,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -185,7 +186,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             this.builder = newBuilder;
 
             this.references.addAll(((CodedNodeSetImpl) codes).references);
-
+            if(((CodedNodeSetImpl) codes).nonEntityConceptReferenceList != null && this.nonEntityConceptReferenceList != null){
+            this.nonEntityConceptReferenceList.intersect(((CodedNodeSetImpl) codes).nonEntityConceptReferenceList);
+            }
             return this;
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
@@ -237,7 +240,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             this.builder = newBuilder;
 
             this.references.addAll(((CodedNodeSetImpl) codesToRemove).references);
-
+            if(((CodedNodeSetImpl) codesToRemove).nonEntityConceptReferenceList != null && this.nonEntityConceptReferenceList != null){
+            this.nonEntityConceptReferenceList.difference(((CodedNodeSetImpl) codesToRemove).nonEntityConceptReferenceList);
+            }
             return this;
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
@@ -307,7 +312,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             newBuilder.add(op.getQuery(), Occur.MUST);
 
             this.builder = newBuilder;
-
+            //clear the shadow entity list, this is a restriction on an index based entity.
+            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -329,7 +335,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToProperties(propertyList, propertyTypes, sourceList, contextList,
                     qualifierList, null, null).getQuery(), Occur.MUST);
-
+            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -350,6 +356,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToProperties(propertyList, propertyTypes, null, null, null,
                     null, null).getQuery(), Occur.MUST);
+            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -447,6 +454,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, sourceList,
                     contextList, qualifierList, matchText, matchAlgorithm, language, null, null).getQuery(), Occur.MUST);
+            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -469,6 +477,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, null, null, null,
                     matchText, matchAlgorithm, language, null, null).getQuery(), Occur.MUST);
+            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
             return this;
         } catch (LBInvocationException e) {
             throw e;
