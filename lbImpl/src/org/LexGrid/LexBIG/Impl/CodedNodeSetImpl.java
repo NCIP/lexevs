@@ -209,11 +209,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             this.references.addAll(((CodedNodeSetImpl) codes).references);
             
-            
+            if(((CodedNodeSetImpl) codes).nonEntityConceptReferenceList != null){
             List<CodeToReturn> unrootedCodes = ((CodedNodeSetImpl) codes).nonEntityConceptReferenceList.getAllCodes();
             for(CodeToReturn ctr :unrootedCodes){
             if(!this.nonEntityConceptReferenceList.getAllCodes().contains(ctr))
                 this.nonEntityConceptReferenceList.add(ctr);
+            }
             }
             return this;
         } catch (Exception e) {
@@ -383,7 +384,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
 
-    private ConceptReferenceList getCleanedCodeList(ConceptReferenceList codeList) {
+    protected ConceptReferenceList getCleanedCodeList(ConceptReferenceList codeList) {
         Iterator<? extends ConceptReference> itr = codeList.iterateConceptReference();
         ConceptReferenceList cleanedList = new ConceptReferenceList();
         nonEntityConceptReferenceList = new DefaultCodeHolder();
@@ -414,7 +415,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         return cleanedList;
     }
 
-    private CodeToReturn convertConceptReferenceToCodeHolder(ConceptReference cr) {
+    protected CodeToReturn convertConceptReferenceToCodeHolder(ConceptReference cr) {
         CodeToReturn ctr = new CodeToReturn();;
         ctr.setCode(cr.getCode());
         ctr.setEntityTypes(ctr.getEntityTypes());

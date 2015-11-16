@@ -19,6 +19,9 @@
 package org.LexGrid.LexBIG.Impl;
 
 import junit.framework.TestCase;
+
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -31,7 +34,9 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 
 /**
  * JUnit Tests for the CodedNodeSetImpl
@@ -284,7 +289,64 @@ public class CodedNodeSetImplTest extends TestCase {
         assertTrue(node.getPresentationCount() == 0);
 
     }
-
+    public void testNodeListCleaning(){
+    	ConceptReferenceList list = new ConceptReferenceList();
+    	ResolvedConceptReference goodNode = new ResolvedConceptReference();
+    	goodNode.setCode("goodRCR");
+    	goodNode.setCodeNamespace("Automobiles");
+    	goodNode.setCodingSchemeName("Automobiles");
+    	goodNode.setCodingSchemeURI("urn:oid:11.11.0.1");
+    	goodNode.setCodingSchemeVersion("1.0");
+    	EntityDescription ed = new EntityDescription();
+    	ed.setContent("Some Entity Description");
+    	goodNode.addEntityType("concept");
+    	goodNode.setEntityDescription(ed);
+    	goodNode.setSourceOf(new AssociationList());
+    	
+    	list.addConceptReference(goodNode);
+    	
+    	EntityReferencingAssociatedConcept eracGoodNode = new EntityReferencingAssociatedConcept();
+    	
+    	eracGoodNode.setCode("goodCRAC");
+    	eracGoodNode.setCodeNamespace("Automobiles");
+    	eracGoodNode.setCodingSchemeName("Automobiles");
+    	eracGoodNode.setCodingSchemeURI("urn:oid:11.11.0.1");
+    	eracGoodNode.setCodingSchemeVersion("1.0");
+    	EntityDescription ed1 = new EntityDescription();
+    	ed1.setContent("Some Entity Description");
+    	eracGoodNode.setEntityDescription(ed1);
+    	eracGoodNode.setEntityType(new String[]{});
+    	eracGoodNode.setEntityGuid("555");
+    	
+    	list.addConceptReference(eracGoodNode);
+    	
+    	ResolvedConceptReference badRCRNode = new ResolvedConceptReference();
+    	badRCRNode.setCode("badRCR");
+    	badRCRNode.setCodeNamespace("Automobiles");
+    	badRCRNode.setCodingSchemeName("Automobiles");
+    	badRCRNode.setEntityType(new String[]{});
+    	badRCRNode.setSourceOf(new AssociationList());
+    	
+    	list.addConceptReference(badRCRNode);
+    	
+    	
+   	EntityReferencingAssociatedConcept eracBadNode = new EntityReferencingAssociatedConcept();
+    	
+    	eracBadNode.setCode("badCRAC");
+    	eracBadNode.setCodeNamespace("Automobiles");
+    	eracBadNode.setCodingSchemeName("Automobiles");
+    	eracBadNode.setCodingSchemeURI("urn:oid:11.11.0.1");
+    	eracBadNode.setCodingSchemeVersion("1.0");;
+    	eracBadNode.setEntityType(new String[]{});
+    	
+    	list.addConceptReference(eracBadNode);
+    	
+    	CodedNodeSetImpl cns = new CodedNodeSetImpl();
+    	ConceptReferenceList cleanedList = cns.getCleanedCodeList(list);
+    	assertTrue(cleanedList.getConceptReferenceCount() == 2);
+    	
+    }
+    
     private boolean contains(ResolvedConceptReference[] rcr, String code, String codeSystem) {
         boolean contains = false;
         for (int i = 0; i < rcr.length; i++) {

@@ -85,9 +85,11 @@ public abstract class AbstractLazyCodeHolderFactory implements CodeHolderFactory
             codeHolder.add(this.buildCodeToReturn(doc, this.toRefs(references)));
         }
         
+        if(additiveCodeHolder != null){
          for(CodeToReturn ctr: additiveCodeHolder.getAllCodes()){
         	 codeHolder.add(ctr);
          }
+        }
 
         return codeHolder;
     }
