@@ -213,12 +213,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             this.references.addAll(((CodedNodeSetImpl) codes).references);
             
-            if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null){
-            List<CodeToReturn> unrootedCodes = ((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList().getAllCodes();
-            for(CodeToReturn ctr :unrootedCodes){
-            if(!this.getNonEntityConceptReferenceList().getAllCodes().contains(ctr))
-                this.getNonEntityConceptReferenceList().add(ctr);
-            }
+            if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null  && this.getNonEntityConceptReferenceList() != null){
+                this.getNonEntityConceptReferenceList().union(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList());
             }
             return this;
         } catch (Exception e) {
