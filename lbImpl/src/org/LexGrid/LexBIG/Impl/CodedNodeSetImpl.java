@@ -81,6 +81,7 @@ import java.util.Set;
  * @author <A HREF="mailto:rokickik@mail.nih.gov">Konrad Rokicki</A>
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ * @author <A HREF="mailto:bauer.scott@mayo.edu">Scott Bauer</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
@@ -186,8 +187,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             this.builder = newBuilder;
 
             this.references.addAll(((CodedNodeSetImpl) codes).references);
-            if(((CodedNodeSetImpl) codes).nonEntityConceptReferenceList != null && this.nonEntityConceptReferenceList != null){
-            this.nonEntityConceptReferenceList.intersect(((CodedNodeSetImpl) codes).nonEntityConceptReferenceList);
+            if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null && this.getNonEntityConceptReferenceList() != null){
+            this.getNonEntityConceptReferenceList().intersect(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList());
             }
             return this;
         } catch (Exception e) {
@@ -212,11 +213,11 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             this.references.addAll(((CodedNodeSetImpl) codes).references);
             
-            if(((CodedNodeSetImpl) codes).nonEntityConceptReferenceList != null){
-            List<CodeToReturn> unrootedCodes = ((CodedNodeSetImpl) codes).nonEntityConceptReferenceList.getAllCodes();
+            if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null){
+            List<CodeToReturn> unrootedCodes = ((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList().getAllCodes();
             for(CodeToReturn ctr :unrootedCodes){
-            if(!this.nonEntityConceptReferenceList.getAllCodes().contains(ctr))
-                this.nonEntityConceptReferenceList.add(ctr);
+            if(!this.getNonEntityConceptReferenceList().getAllCodes().contains(ctr))
+                this.getNonEntityConceptReferenceList().add(ctr);
             }
             }
             return this;
@@ -240,8 +241,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             this.builder = newBuilder;
 
             this.references.addAll(((CodedNodeSetImpl) codesToRemove).references);
-            if(((CodedNodeSetImpl) codesToRemove).nonEntityConceptReferenceList != null && this.nonEntityConceptReferenceList != null){
-            this.nonEntityConceptReferenceList.difference(((CodedNodeSetImpl) codesToRemove).nonEntityConceptReferenceList);
+            if(((CodedNodeSetImpl) codesToRemove).getNonEntityConceptReferenceList() != null && this.getNonEntityConceptReferenceList() != null){
+            this.getNonEntityConceptReferenceList().difference(((CodedNodeSetImpl) codesToRemove).getNonEntityConceptReferenceList());
             }
             return this;
         } catch (Exception e) {
@@ -313,7 +314,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
             this.builder = newBuilder;
             //clear the shadow entity list, this is a restriction on an index based entity.
-            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -335,7 +336,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToProperties(propertyList, propertyTypes, sourceList, contextList,
                     qualifierList, null, null).getQuery(), Occur.MUST);
-            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -356,7 +357,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToProperties(propertyList, propertyTypes, null, null, null,
                     null, null).getQuery(), Occur.MUST);
-            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -390,11 +391,25 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
     }
+    
+    @LgClientSideSafe
+    public CodedNodeSet restrictToMappingCodes(ConceptReferenceList codeList) throws LBParameterException, LBInvocationException {
+        try {
+            this.builder.add(new RestrictToCodes(codeList).getQuery(), Occur.MUST);
+
+            return this;
+        } catch (LBParameterException e) {
+            throw e;
+        } catch (Exception e) {
+            String logId = getLogger().error("Unexpected Error", e);
+            throw new LBInvocationException("Unexpected Internal Error", logId);
+        }
+    }
 
     protected ConceptReferenceList getCleanedCodeList(ConceptReferenceList codeList) {
         Iterator<? extends ConceptReference> itr = codeList.iterateConceptReference();
         ConceptReferenceList cleanedList = new ConceptReferenceList();
-        nonEntityConceptReferenceList = new DefaultCodeHolder();
+        setNonEntityConceptReferenceList(new DefaultCodeHolder());
         while (itr.hasNext()) {
             ConceptReference cr = itr.next();
             if (cr instanceof EntityReferencingAssociatedConcept
@@ -402,8 +417,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                     || (cr instanceof ResolvedConceptReference && ((ResolvedConceptReference) cr)
                             .getEntityDescription() == null)) {
                 CodeToReturn ch = convertConceptReferenceToCodeHolder(cr);
-                if (!nonEntityConceptReferenceList.contains(ch)) {
-                    nonEntityConceptReferenceList.add(ch);
+                if (!getNonEntityConceptReferenceList().contains(ch)) {
+                    getNonEntityConceptReferenceList().add(ch);
                 }
             } else {
                 cleanedList.addConceptReference(cr);
@@ -454,7 +469,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, sourceList,
                     contextList, qualifierList, matchText, matchAlgorithm, language, null, null).getQuery(), Occur.MUST);
-            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -477,7 +492,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, null, null, null,
                     matchText, matchAlgorithm, language, null, null).getQuery(), Occur.MUST);
-            this.nonEntityConceptReferenceList = new DefaultCodeHolder();
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -769,7 +784,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodeHolder toBruteForceMode()
     throws LBInvocationException, LBParameterException {
 
-        return codeHolderFactory.buildCodeHolder(nonEntityConceptReferenceList,
+        return codeHolderFactory.buildCodeHolder(getNonEntityConceptReferenceList(),
                         this.getCodingSchemeReferences(),
                         this.getQuery());
 
@@ -816,6 +831,14 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     public Query getQuery() {
         return this.builder.build();
+    }
+
+    public DefaultCodeHolder getNonEntityConceptReferenceList() {
+        return nonEntityConceptReferenceList;
+    }
+
+    public void setNonEntityConceptReferenceList(DefaultCodeHolder nonEntityConceptReferenceList) {
+        this.nonEntityConceptReferenceList = nonEntityConceptReferenceList;
     }
 
 }

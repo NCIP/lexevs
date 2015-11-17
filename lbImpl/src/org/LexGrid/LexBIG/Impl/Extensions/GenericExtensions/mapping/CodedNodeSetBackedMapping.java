@@ -19,6 +19,8 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.IteratorBackedResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -176,7 +178,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
             crl.setConceptReference(requiredSourceCodes.toArray(new ConceptReference[requiredSourceCodes.size()]));
             
             this.sourceCodesCodedNodeSet =
-                this.getCodedNodeSet(SearchContext.SOURCE_CODES).restrictToCodes(crl);
+                this.getCodedNodeSet(SearchContext.SOURCE_CODES).restrictToMappingCodes(crl);
         }
     }
 
