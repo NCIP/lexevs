@@ -68,7 +68,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
+//	private MetaData metaData;
 	
 	private Map<String,Filter> cachedFilters = new HashMap<String,Filter>();
 
@@ -155,12 +155,15 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-		String key = this.getCodingSchemeKey(reference);
-		try {
-			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e);
-		}
+//		String key = this.getCodingSchemeKey(reference);
+//		try {
+//			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
+//		} catch (RuntimeException e) {
+//			throw new RuntimeException(e);
+//		}
+		
+		//TODO implement with concurrent metadata
+		return false;
 	}
 
 //	@Override
@@ -178,8 +181,12 @@ public class LuceneSearchIndexService implements SearchIndexService {
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToExclude, 
 			final Query query) {
+		//TODO When the query get's here it needs to be as completely block join 
+		// massaged.  We won't do it here.
 		
-		BooleanFilter booleanFilter = new BooleanFilter();
+		//TODO intersect the lists and remove any systems in the include list 
+		//from the intersection.  No other need to maintain an exclusion list. 
+//		BooleanFilter booleanFilter = new BooleanFilter();
 		
 		boolean hasIncludes = CollectionUtils.isNotEmpty(codeSystemsToInclude);
 		boolean hasExcludes = CollectionUtils.isNotEmpty(codeSystemsToExclude);
@@ -208,14 +215,16 @@ public class LuceneSearchIndexService implements SearchIndexService {
 //					BooleanClause.Occur.MUST_NOT));
 		}
 		
-		Query queryToUse;
-		if(hasIncludes || hasExcludes){
-			queryToUse = new FilteredQuery(query, booleanFilter);
-		} else {
-			queryToUse = query;
-		}
+//		Query queryToUse;
+//		if(hasIncludes || hasExcludes){
+//			queryToUse = new FilteredQuery(query, booleanFilter);
+//		} else {
+//			queryToUse = query;
+//		}
 		
-		return this.indexDaoManager.getSearchDao().query(queryToUse);
+		//TODO update the query or SearchDao implementation to add code system list to query
+		//or initialize on that list.
+		return this.indexDaoManager.getSearchDao().query(query);
 	}
 	
 	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {
@@ -285,13 +294,13 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		this.systemResourceService = systemResourceService;
 	}
 
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
-
-	public MetaData getMetaData() {
-		return metaData;
-	}
+//	public void setMetaData(MetaData metaData) {
+//		this.metaData = metaData;
+//	}
+//
+//	public MetaData getMetaData() {
+//		return metaData;
+//	}
 
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;

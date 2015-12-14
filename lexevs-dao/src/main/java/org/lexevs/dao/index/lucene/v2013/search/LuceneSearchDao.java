@@ -24,7 +24,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReaderContext;
@@ -60,9 +62,8 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		@Override
 		public int compare(ScoreDoc o1, ScoreDoc o2) {
 			// TODO New Lucene will not support or be compatible with older versions.
-			
-			//return FieldComparator.RELEVANCE.compare(o1, o2);
 			return 0;
+		
 		}
 	};
 
@@ -100,18 +101,29 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	@Override
 	public List<ScoreDoc> query(Query query) {
 		try {
+			//TODO Somehow need a template that creates a multi reader inside which is
+			//initialized to query a set of coding schemes via a reader on each index
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 	
 			TopScoreDocCollector collector = TopScoreDocCollector.create(template.getMaxDoc());
 			
 			template.search(query, null, collector);
 			final List<ScoreDoc> docs  = Arrays.asList(collector.topDocs().scoreDocs);
+			//TODO this isn't going to work in the multi index realm but we should understand how it
+			//is being used in this context so that we can replicate if possible.
 			Collections.sort(docs, SCORE_DOC_COMPARATOR);
 			
 			return docs;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public List<ScoreDoc> query(Query query,
+			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
@@ -141,6 +153,8 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
 		return luceneIndexTemplate;
 	}
+
+
 
 
 }

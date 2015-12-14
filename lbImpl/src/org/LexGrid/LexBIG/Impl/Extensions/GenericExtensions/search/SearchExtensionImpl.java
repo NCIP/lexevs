@@ -224,7 +224,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
 //        catch(IOException e) {
 //            throw new IllegalStateException(e);
 //        }
-
+        
         return result;
     }  
 
