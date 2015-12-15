@@ -177,7 +177,9 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		codeSystemsToInclude.removeAll(codeSystemsToExclude);
 		}
 
-		return this.indexDaoManager.getSearchDao().query(query, hasIncludes?codeSystemsToInclude:null);
+		List<AbsoluteCodingSchemeVersionReference> codingSchemes = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		codingSchemes.addAll(codeSystemsToInclude);
+		return this.indexDaoManager.getCommonEntityDao(codingSchemes).query(query);
 	}
 	
 	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {
