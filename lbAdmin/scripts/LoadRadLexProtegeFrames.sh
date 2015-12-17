@@ -21,4 +21,4 @@
 # -or-
 #  org.LexGrid.LexBIG.admin.LoadRadLexProtegeFrames -in "file:///path/to/RadLex.pprj" -v 0
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadRadLexProtegeFrames $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadRadLexProtegeFrames $@

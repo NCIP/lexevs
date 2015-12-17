@@ -10,4 +10,4 @@
 # Example: RemoveValueSetDefinition
 # Example: RemoveValueSetDefinition -u http://evs.nci.nih.gov/Valueset/C100110
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.valuesets.admin.RemoveValueSetDefinition $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.valuesets.admin.RemoveValueSetDefinition $@

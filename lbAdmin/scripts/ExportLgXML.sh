@@ -19,4 +19,4 @@
 # Example: ExportLgXML -out "file:///path/to/dir" -f
 # Example: ExportLgXML -out "file:///path/to/dir" -u "NCI_Thesaurus" -v "PRODUCTION" -f
 #
-java -Xmx2000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.ExportLgXML $@
+java -Xmx2000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.ExportLgXML $@

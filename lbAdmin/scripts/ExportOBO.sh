@@ -18,4 +18,4 @@
 # Example: ExportOBO -out "file:///path/to/dir" -f
 # Example: ExportOBO -out "file:///path/to/dir" -u "FBbt" -v "PRODUCTION" -f
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.ExportOBO $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.ExportOBO $@

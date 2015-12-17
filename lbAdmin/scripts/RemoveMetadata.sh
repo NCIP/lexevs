@@ -12,4 +12,4 @@
 #  Example: RemoveMetadata
 #  Example: RemoveMetadata -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.RemoveMetadata $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.RemoveMetadata $@

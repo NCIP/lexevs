@@ -15,4 +15,4 @@
 # 
 #  Example: SupplementScheme -u -parentUri "urn:oid:2.16.840.1.113883.3.26.1.1" -parentVersion "05.09e" -supplementUri "http://supplement.ontology.org" -supplementVersion "1.0.1" 
 # 
-java -Xmx500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.SupplementScheme $@
+java -Xmx500m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.SupplementScheme $@

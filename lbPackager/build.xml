@@ -756,13 +756,13 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 			includes="META-INF/*"
 			update="true"/>
 
-		<jar jarfile="${pkg-runtime}/lbRuntime.jar" filesetmanifest="merge" duplicate="preserve">
+		<!--jar jarfile="${pkg-runtime}/lbRuntime.jar" filesetmanifest="merge" duplicate="preserve">
 			<manifest>
 				  <attribute name="Sealed" value="false"/>
 			</manifest>
         	<zipgroupfileset file="${pkg-components}/lexbig.jar" />
 			<zipgroupfileset file="${dist.dir}/LexEVS_localRuntime_dependencies.jar" />
-		</jar>
+		</jar-->
 		
 		<mkdir dir="${pkg-runtime}/sqlDrivers"/>
 		<copy todir="${pkg-runtime}/sqlDrivers">
