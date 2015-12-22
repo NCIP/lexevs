@@ -10,4 +10,4 @@ REM         0 = Verify document is well-formed
 REM         1 = Verify document is valid
 REM Example: LoadValueSetDefinition -in "file:///path/to/file.xml"
 REM
-java -Xmx1300m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.lexgrid.valuesets.admin.LoadValueSetDefinition %*
+java -Xmx1300m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.valuesets.admin.LoadValueSetDefinition %*

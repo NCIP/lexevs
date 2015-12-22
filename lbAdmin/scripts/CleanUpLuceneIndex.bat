@@ -13,4 +13,4 @@ REM
 REM Example:
 REM
 REM CleanUPLuceneIndex -r 
-java -Xmx800m -XX:PermSize=256m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.lexevs.dao.index.operation.tools.CleanUpLuceneIndexLauncher %*
+java -Xmx800m -XX:PermSize=256m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexevs.dao.index.operation.tools.CleanUpLuceneIndexLauncher %*

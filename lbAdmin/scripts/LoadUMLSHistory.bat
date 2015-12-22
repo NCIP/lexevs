@@ -1,17 +1,18 @@
-# Loads UMLS History
-#
-# Options:
-#   -in,--input <uri> URI or path specifying location of the source file
-#   -v, --validate <int> Perform validation of the candidate
-#         resource without loading data.  If specified, the '-a' and '-t'
-#         options are ignored.  Supported levels of validation include:
-#         0 = Verify document is valid
-#   -a, --activate ActivateScheme on successful load; if unspecified the
-#         vocabulary is loaded but not activated.
-#   -r, --replace Replace exisiting file. 
-#   -t, --tag <id> An optional tag ID (e.g. 'PRODUCTION' or 'TEST') to assign.
-#
-# Example: LoadUMLSHistory -in "file:///path/to/META.folder" -r
-#          LoadUMLSHistory -in "file:///path/to/META.folder" -v 0
-#
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadUMLSHistory $@
+@echo off
+REM Loads UMLS History
+REM
+REM Options:
+REM   -in,--input <uri> URI or path specifying location of the source file
+REM   -v, --validate <int> Perform validation of the candidate
+REM         resource without loading data.  If specified, the '-a' and '-t'
+REM         options are ignored.  Supported levels of validation include:
+REM         0 = Verify document is valid
+REM   -a, --activate ActivateScheme on successful load; if unspecified the
+REM         vocabulary is loaded but not activated.
+REM   -r, --replace Replace exisiting file. 
+REM   -t, --tag <id> An optional tag ID (e.g. 'PRODUCTION' or 'TEST') to assign.
+REM
+REM Example: LoadUMLSHistory -in "file:///path/to/META.folder" -r
+REM          LoadUMLSHistory -in "file:///path/to/META.folder" -v 0
+REM
+java -Xmx1000m -cp "..\runtime\lbPatch.jar:..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadUMLSHistory %*
