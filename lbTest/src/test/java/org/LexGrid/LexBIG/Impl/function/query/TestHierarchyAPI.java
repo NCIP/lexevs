@@ -226,13 +226,15 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
             if (hierarchy.equalsIgnoreCase("is_a"))
                 hierarchyId = hierarchy;
         }
-        String  code= "NPO_1607";
+        String  code= "NPO_1623";
         
-        AssociationList associations = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        AssociationList associations = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, "GO", false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associations.getAssociation().length > 0);
-        associations = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, "npo", false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
-        assertTrue(associations.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0).getCode().equals("Process"));
-        assertTrue(associations.getAssociation().length > 0);
+        assertTrue(associations.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0).getCode().equals("GO_0048518"));
+        AssociationList associationsNPO = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, "npo", false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
+        assertTrue(associationsNPO.getAssociation().length > 0);
+        assertTrue(associationsNPO.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0).getCode().equals("GO_0008156"));
+
     } 
     /**
      * Test getting the next level count for a concept
