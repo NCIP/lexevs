@@ -47,9 +47,6 @@ You may obtain a copy of the License at
 			<fileset dir="${basedir}">
 				<include name="lbTest.jar"/>
 			</fileset>
-			<!--fileset dir="${basedir}/../runtime">
-				<include name="lbRuntime.jar"/>
-			</fileset-->
 			<fileset dir="${basedir}/../runtime-components/extLib">
 				<include name="*"/>
 			</fileset>
