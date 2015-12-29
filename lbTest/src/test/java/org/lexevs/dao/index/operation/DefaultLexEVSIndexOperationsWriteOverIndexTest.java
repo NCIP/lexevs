@@ -41,12 +41,16 @@ public class DefaultLexEVSIndexOperationsWriteOverIndexTest {
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(1000);
 		}
+		
+		reference.setCodingSchemeURN("urn:oid:11.11.0.1");
+		reference.setCodingSchemeVersion("1.0");
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
-		prefix = registry
-				.getEntriesForUri("urn:oid:11.11.0.1").get(0).getPrefix();
-		CleanUpUtility.removeUnusedDatabase(prefix);
+		RegistryEntry entry = registry.getEntriesForUri("urn:oid:11.11.0.1").get(0);
+		prefix = entry.getPrefix();
+		LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropCodingSchemeTablesByPrefix("lb" + prefix);
+		LexEvsServiceLocator.getInstance().getRegistry().removeEntry(entry);
 		
 	}
 
@@ -77,14 +81,11 @@ public class DefaultLexEVSIndexOperationsWriteOverIndexTest {
 			while (loader.getStatus().getEndTime() == null) {
 				Thread.sleep(1000);
 			}
-			fail("Should fail on index creation");
+
 		} catch (LBException e) {
 			//success.  make it fail first then ask user for input at index time
 			System.out.println("success");
 		} 
-		finally{
-			CleanUpUtility.removeUnusedIndex("Automobiles-1_0");
-		}
 
 	}
 
