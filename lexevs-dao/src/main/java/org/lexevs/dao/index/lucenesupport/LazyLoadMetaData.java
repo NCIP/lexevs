@@ -3,7 +3,9 @@ package org.lexevs.dao.index.lucenesupport;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -12,6 +14,8 @@ import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.dao.index.service.entity.LuceneEntityIndexService;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
@@ -44,28 +48,39 @@ public class LazyLoadMetaData implements
 		List<RegistryEntry> registeredSchemes = locator.getRegistry()
 				.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
 		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();
+		Map<String, File> orphanedIndexCache = new HashMap<String, File>();
 		File indexDir = new File(systemVariables.getAutoLoadIndexLocation());
 		for (File f : indexDir.listFiles()) {
 			if (f.exists() && f.isDirectory()) {
-
+				orphanedIndexCache.put(f.getName(), f);
 				for (RegistryEntry re : registeredSchemes) {
-					if (fileMatch(re, f)) {
+					if (fileMatch(re, f, orphanedIndexCache)) {
 						concurrentMetaData.add(reconciliateDbToIndex(re, f,
 								namedDirectories, directoryCreator));
+						break;
 					}
 				}
 			}
 		}
+		for (String key : orphanedIndexCache.keySet()) {
 
+			if (!key.equals("MetaDataIndex")) {
+				LoggerFactory.getLogger().warn(
+						"Deleting orphaned Index: " + key);
+				((LuceneEntityIndexService) locator.getIndexServiceManager()
+						.getEntityIndexService()).getIndexRegistry()
+						.destroyIndex(key);
+			}
+		}
 	}
 
 	private CodingSchemeMetaData reconciliateDbToIndex(RegistryEntry re,
 			File f, List<NamedDirectory> namedDirectories,
 			LuceneDirectoryCreator directoryCreator)
 			throws LBParameterException, IOException {
-		//TODO do not build indexes if not there, but flag in the metadat object.
-		CodingSchemeMetaData csMetaData = null;
-		csMetaData = new CodingSchemeMetaData(re.getResourceUri(),
+		//Only gets a directory if it exists.   We don't get here unless there is 
+		//a matching index.
+		CodingSchemeMetaData csMetaData = new CodingSchemeMetaData(re.getResourceUri(),
 				re.getResourceVersion(), locator.getSystemResourceService()
 						.getInternalCodingSchemeNameForUserCodingSchemeName(
 								re.getResourceUri(), re.getResourceVersion()),
@@ -83,11 +98,12 @@ public class LazyLoadMetaData implements
 				.getIndexName(reference));
 	}
 
-	private boolean fileMatch(RegistryEntry re, File f) throws LBParameterException {
+	private boolean fileMatch(RegistryEntry re, File f, Map<String, File> orphanedIndexCache) throws LBParameterException {
 		AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
 		reference.setCodingSchemeURN(re.getResourceUri());
 		reference.setCodingSchemeVersion(re.getResourceVersion());
 		if (Utility.getIndexName(reference).equals(f.getName())) {
+			orphanedIndexCache.remove(f.getName());
 			return true;
 		}
 		return false;
