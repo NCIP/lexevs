@@ -3,9 +3,11 @@ package org.lexevs.dao.index.operation;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -14,7 +16,12 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.admin.LoadLgXML;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +44,7 @@ public class DefaultLexEVSIndexOperationsWriteOverIndexTest {
 
 		loader.load(new File("resources/testData/Automobiles.xml").toURI(),
 				true, true);
-
+		System.out.println("Original Load started");
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(1000);
 		}
@@ -51,6 +58,7 @@ public class DefaultLexEVSIndexOperationsWriteOverIndexTest {
 		prefix = entry.getPrefix();
 		LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropCodingSchemeTablesByPrefix("lb" + prefix);
 		LexEvsServiceLocator.getInstance().getRegistry().removeEntry(entry);
+		System.out.println("Automobiles removed from db");
 		
 	}
 
@@ -66,27 +74,24 @@ public class DefaultLexEVSIndexOperationsWriteOverIndexTest {
 	}
 
 	@Test
-	public void testIndexDeletionAndOverwrite() throws LBParameterException, LBInvocationException, InterruptedException {
+	public void testIndexDeletionAndOverwrite() throws InterruptedException, IOException, LBException {
 		
-		LexBIGServiceManager lbsm;
-		try {
-			lbsm = ServiceHolder.instance().getLexBIGService()
-					.getServiceManager(null);
-			LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
-					.getLoader("LexGrid_Loader");
-
-			loader.load(new File("resources/testData/Automobiles.xml").toURI(),
-					true, true);
-
-			while (loader.getStatus().getEndTime() == null) {
-				Thread.sleep(1000);
-			}
-
-		} catch (LBException e) {
-			//success.  make it fail first then ask user for input at index time
-			System.out.println("success");
-		} 
-
+			String separator = System.getProperty("file.separator");
+			String classpath = System.getProperty("java.class.path");
+			String path = System.getProperty("java.home")
+		                + separator + "bin" + separator + "java";
+			ProcessBuilder processBuilder = 
+		                new ProcessBuilder(path, "-cp", 
+		                classpath, 
+		                LoadLgXML.class.getName(), "-in", "resources/testData/Automobiles.xml" ).inheritIO();
+			System.out.println("New Automobiles load started");
+			Process process = processBuilder.start();
+			process.waitFor();
+			System.out.println("Attempted load complete");
+			assertFalse(CleanUpUtility.listUnusedIndexes().length > 0);
+			//Give the db time to release the table lock before tear down
+			Thread.sleep(5000);
+			
 	}
 
 }
