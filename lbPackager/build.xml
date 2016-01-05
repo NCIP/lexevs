@@ -617,75 +617,78 @@ You may obtain a copy of the License at
 			</fileset>
   		</copy>
 		
+		<!-- copy and rename the versioned gui jar to lexbig-gui.jar -->
+		<copy toFile="${pkg-gui}/lbGUI.jar" file="${lbGui.dir}/target/lexbig-gui-${vBuild}.jar" overwrite="true"/>
+		
 		<!--create the start scripts-->
 		<echo file="${pkg-gui}/Windows-lbGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 pause
 		</echo>	
 		<echo file="${pkg-gui}/Windows_64-lbGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 pause
 		</echo>	
 		<echo file="${pkg-gui}/Linux-lbGUI.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/OSX-lbGUI.sh">
-java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<!--create the start scripts-->
 		<echo file="${pkg-gui}/Windows-lbGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 pause
 		</echo>	
 		<echo file="${pkg-gui}/Windows_64-lbGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 pause
 		</echo>	
 		<echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/OSX-lbGUI-browser.sh">
-			java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+			java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-browser-lbGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		
 		<!-- Start Value Sets GUI scripts-->
 		<echo file="${pkg-gui}/Windows-lbVSGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 				<echo file="${pkg-gui}/OSX-lbVSGUI.sh">
-java  -Xmx3000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java  -Xmx3000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 		<echo file="${pkg-gui}/Windows_64-lbVSGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 pause
 		</echo>
 		<echo file="${pkg-gui}/Windows_64-lbVSGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 pause
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbVSGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 				<!--create the start scripts-->
 				<echo file="${pkg-gui}/Windows-lbVSGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI-browser.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 				<echo file="${pkg-gui}/Linux_64-browser-lbVSGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 		<!-- End Value Sets GUI scripts -->
 		<fixcrlf srcdir="${pkg-gui}/" eol="lf" includes="*.command" />
