@@ -21,4 +21,4 @@ REM	    and basic systems are functioning.
 REM
 REM Example: TestRunner -h
 REM
-java -Xmx1600m -XX:MaxPermSize=256m -cp .\lbTest.jar;..\runtime\lbPatch.jar;..\runtime-components\lexbig.jar;.\runtime-components\* bvt.TestRunner %*
+java -Xmx1600m -XX:MaxPermSize=256m -cp .\lbTest.jar;..\runtime\lbPatch.jar;..\runtime-components\lexbig.jar;..\runtime-components\lexbig.jar;.\extlib\ant\*;.\extlib\junit\*;..\runtime-components\extLib\* bvt.TestRunner %*
