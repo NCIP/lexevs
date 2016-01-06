@@ -268,16 +268,6 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
 	}
-
-//	public void setMetaData(MetaData metaData) {
-//		this.metaData = metaData;
-//	}
-//
-//	public MetaData getMetaData() {
-//		return metaData;
-//	}
-
-	
 	
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;
