@@ -51,99 +51,99 @@ public abstract class AbstractFilteringLuceneIndexTemplateDao extends AbstractBa
 		this.indexRegistry = indexRegistry;
 	}
 
-	protected abstract class CachingChainedFilter extends FilteredDocIdSet {
-//TODO see if we can drop this class entirely
-		private static final long serialVersionUID = 5154482258370999758L;
-		
-		private Map<Integer,DocIdSet> bitSetCache = new HashMap<Integer,DocIdSet>();
-
-		private IndexRegistry indexRegistry;
-		
-		public CachingChainedFilter(DocIdSet idset, int logic) {
-			super(idset);
-		}
-
-		public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-			int key = reader.hashCode();
-//			if(! bitSetCache.containsKey(key)){
-//				bitSetCache.clear();
+//	protected abstract class CachingChainedFilter extends FilteredDocIdSet {
+////TODO see if we can drop this class entirely
+//		private static final long serialVersionUID = 5154482258370999758L;
+//		
+//		private Map<Integer,DocIdSet> bitSetCache = new HashMap<Integer,DocIdSet>();
 //
-//				DocIdSet superIdSet = super.getDocIdSet(reader);
+//		private IndexRegistry indexRegistry;
+//		
+//		public CachingChainedFilter(DocIdSet idset, int logic) {
+//			super(idset);
+//		}
 //
-//				BitSet bitSet = new BitSet();
+//		public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
+//			int key = reader.hashCode();
+////			if(! bitSetCache.containsKey(key)){
+////				bitSetCache.clear();
+////
+////				DocIdSet superIdSet = super.getDocIdSet(reader);
+////
+////				BitSet bitSet = new BitSet();
+////				
+////				DocIdSetIterator itr = superIdSet.iterator();
+////				bitSet = docIdSetIteratorToBitSet(itr);
+////				
+////				bitSetCache.put(key, new DocIdBitSet(bitSet));
+////			}
+////			
+////			return bitSetCache.get(key);
+////		}
+//			
+//			return null;
+//	}
+//	
+//	private BitSet docIdSetIteratorToBitSet(DocIdSetIterator itr) throws IOException {
+//		BitSet bitSet = new BitSet();
+//
+//		while(itr.nextDoc() != itr.NO_MORE_DOCS){
+//			bitSet.set(itr.docID());
+//		}
+//		
+//		return bitSet;
+//	}
+//	
+//	protected Filter getCodingSchemeFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+//		String key = getFilterMapKey(codingSchemes);
+//		if(!indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
+//			Filter[] filters = new Filter[codingSchemes.size()];
+//			for(int i=0;i<codingSchemes.size();i++) {
+//				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
 //				
-//				DocIdSetIterator itr = superIdSet.iterator();
-//				bitSet = docIdSetIteratorToBitSet(itr);
-//				
-//				bitSetCache.put(key, new DocIdBitSet(bitSet));
+//				filters[i] = this.getCodingSchemeFilterForCodingScheme(
+//						ref.getCodingSchemeURN(), 
+//						ref.getCodingSchemeVersion());
 //			}
 //			
-//			return bitSetCache.get(key);
+////			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
+//			
+//			Filter chainedFilter = null;
+//			indexRegistry.getCodingSchemeFilterMap().put(key, chainedFilter);
 //		}
-			
-			return null;
-	}
-	
-	private BitSet docIdSetIteratorToBitSet(DocIdSetIterator itr) throws IOException {
-		BitSet bitSet = new BitSet();
-
-		while(itr.nextDoc() != itr.NO_MORE_DOCS){
-			bitSet.set(itr.docID());
-		}
-		
-		return bitSet;
-	}
-	
-	protected Filter getCodingSchemeFilterForCodingScheme(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
-		String key = getFilterMapKey(codingSchemes);
-		if(!indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
-			Filter[] filters = new Filter[codingSchemes.size()];
-			for(int i=0;i<codingSchemes.size();i++) {
-				AbsoluteCodingSchemeVersionReference ref = codingSchemes.get(i);
-				
-				filters[i] = this.getCodingSchemeFilterForCodingScheme(
-						ref.getCodingSchemeURN(), 
-						ref.getCodingSchemeVersion());
-			}
-			
-//			Filter chainedFilter = new CachingChainedFilter(filters, ChainedFilter.OR);
-			
-			Filter chainedFilter = null;
-			indexRegistry.getCodingSchemeFilterMap().put(key, chainedFilter);
-		}
-		return indexRegistry.getCodingSchemeFilterMap().get(key);
-	}
-	
-	protected Filter getCodingSchemeFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
-		String key = getFilterMapKey(codingSchemeUri, codingSchemeVersion);
-//		if(!this.indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
-//			Term term = new Term(
-//					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-//					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-//							codingSchemeUri, codingSchemeVersion));
-//			TermsFilter filter = new TermsFilter();
-//			filter.addTerm(term);
-//			indexRegistry.getCodingSchemeFilterMap().put(key, new CachingWrapperFilter(filter));
-//		}
-		return indexRegistry.getCodingSchemeFilterMap().get(key);
-	}
-	
-	protected String getFilterMapKey(List<AbsoluteCodingSchemeVersionReference> refs) {
-		return DaoUtility.createKey(refs);
-	}
-	
-	protected String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
-		return DaoUtility.createKey(codingSchemeUri, codingSchemeVersion);
-	}
-
-	protected abstract LuceneIndexTemplate getLuceneIndexTemplate(String codingSchemeUri, String version);
-
-	public void setIndexRegistry(IndexRegistry indexRegistry) {
-		this.indexRegistry = indexRegistry;
-	}
-
-	public IndexRegistry getIndexRegistry() {
-		return indexRegistry;
-	}
-}
+//		return indexRegistry.getCodingSchemeFilterMap().get(key);
+//	}
+//	
+//	protected Filter getCodingSchemeFilterForCodingScheme(String codingSchemeUri, String codingSchemeVersion) {
+//		String key = getFilterMapKey(codingSchemeUri, codingSchemeVersion);
+////		if(!this.indexRegistry.getCodingSchemeFilterMap().containsKey(key)) {
+////			Term term = new Term(
+////					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
+////					LuceneLoaderCode.createCodingSchemeUriVersionKey(
+////							codingSchemeUri, codingSchemeVersion));
+////			TermsFilter filter = new TermsFilter();
+////			filter.addTerm(term);
+////			indexRegistry.getCodingSchemeFilterMap().put(key, new CachingWrapperFilter(filter));
+////		}
+//		return indexRegistry.getCodingSchemeFilterMap().get(key);
+//	}
+//	
+//	protected String getFilterMapKey(List<AbsoluteCodingSchemeVersionReference> refs) {
+//		return DaoUtility.createKey(refs);
+//	}
+//	
+//	protected String getFilterMapKey(String codingSchemeUri, String codingSchemeVersion) {
+//		return DaoUtility.createKey(codingSchemeUri, codingSchemeVersion);
+//	}
+//
+//	protected abstract LuceneIndexTemplate getLuceneIndexTemplate(String codingSchemeUri, String version);
+//
+//	public void setIndexRegistry(IndexRegistry indexRegistry) {
+//		this.indexRegistry = indexRegistry;
+//	}
+//
+//	public IndexRegistry getIndexRegistry() {
+//		return indexRegistry;
+//	}
+//}
 }

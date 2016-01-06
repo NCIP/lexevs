@@ -292,7 +292,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
     private LuceneIndexTemplate getLuceneIndexTemplate(
             List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
         List<NamedDirectory> directories = getNamedDirectoriesForCodingSchemes(codingSchemes);
-        // TODO Auto-generated method stub
         return new MultiBaseLuceneIndexTemplate(directories);
     }
 
@@ -307,7 +306,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		    }
 		}
 		return directories;
-	
 	}
 
 }

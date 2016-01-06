@@ -24,7 +24,11 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.join.QueryBitSetProducer;
+import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
@@ -33,6 +37,7 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
@@ -42,6 +47,8 @@ import org.springframework.util.CollectionUtils;
 public class SearchExtensionImpl extends AbstractExtendable implements SearchExtension {
 
     private static final long serialVersionUID = 8704782086137708226L;
+    private static final Term baseQuery = new Term("propertyType", "presentation");
+    private static final Term preferred = new Term("isPreferred","T");
 
     @Override
     public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
@@ -112,28 +119,34 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         
         Analyzer analyzer = service.getAnalyzer();
 
-        Query query = this.parseQuery(this.decorateQueryString(text, analyzer, matchAlgorithm), analyzer);
-        
+        Query query = this.buildOnMatchAlgorithm(text, analyzer, matchAlgorithm);
+        BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
+
         if(! includeAnonymous || ! includeInactive){
-            BooleanQuery booleanQuery = new BooleanQuery();
-            booleanQuery.add(query, Occur.MUST);
+
+            newBuilder.add(query, Occur.MUST);
             
             if(! includeAnonymous){
-                booleanQuery.add(new TermQuery(new Term("anonymous", "true")), Occur.MUST_NOT);
+                newBuilder.add(new TermQuery(new Term("isAnonymous", "T")), Occur.MUST_NOT);
             }
             if(! includeInactive){
-                booleanQuery.add(new TermQuery(new Term("active", "false")), Occur.MUST_NOT);
+                newBuilder.add(new TermQuery(new Term("isActive", "T")), Occur.MUST_NOT);
             }
             
-            query = booleanQuery; 
+            query = newBuilder.build(); 
         }
+        
+        TermQuery termQuery = new TermQuery(new Term("isParentDoc", "true"));
 
+        ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(
+                query, new QueryBitSetProducer(termQuery), ScoreMode.Total);
+        
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
                 query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
                         this.resolveCodeSystemReferences(codeSystemsToExclude),
-                        query);
+                        blockJoinQuery);
 
         return new SearchScoreDocIterator(scoreDocs);
     }
@@ -145,7 +158,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
-            return "exactDescription:\"" + QueryParser.escape(text) + "\"";
+            return LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD + ":" + QueryParser.escape(text);
         case CODE_EXACT:
             return "code:" + QueryParser.escape(text);
         case PRESENTATION_CONTAINS:
@@ -169,6 +182,47 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
         }
     }
+    
+    protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        if(StringUtils.isBlank(text))
+        {return builder.build();}
+        
+        switch(matchAlgorithm){
+        case PRESENTATION_EXACT:
+            builder.add(new TermQuery(baseQuery), Occur.MUST);
+            builder.add(new TermQuery(preferred), Occur.MUST);
+            builder.add(new TermQuery(new Term(
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text) )), Occur.MUST);
+            return  builder.build();
+        case CODE_EXACT:
+            builder.add(new TermQuery(new Term("code",QueryParser.escape(text))),Occur.MUST);
+            return builder.build();
+        case PRESENTATION_CONTAINS:
+            builder.add(new TermQuery(baseQuery), Occur.MUST);
+            builder.add(new TermQuery(preferred), Occur.MUST);
+            text = QueryParser.escape(text);
+
+            List<String> tokens;
+            try {
+                tokens = tokenize(analyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
+            } catch (IOException e) {
+               throw new RuntimeException("Tokenizing query text failed", e);
+            }
+
+            for(String token : tokens){
+               builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, token + "*")), Occur.MUST);
+            }
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text))), Occur.SHOULD);
+            return builder.build();
+        case LUCENE:
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, text)), Occur.MUST);
+            return builder.build();
+        default:
+            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
+        }
+    }
 
     protected Query parseQuery(String text, Analyzer analyzer) {
         if (StringUtils.isBlank(text)) {
@@ -185,7 +239,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     }
     
     protected QueryParser createQueryParser(Analyzer analyzer){
-        QueryParser parser = new QueryParser("description", analyzer);
+        QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, analyzer);
         parser.setDefaultOperator(Operator.AND);
         
         return parser;
@@ -210,21 +264,19 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return returnSet;
     }
     
-    public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException {
+    public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException  {
         List<String> result = new ArrayList<String>();
         TokenStream stream  = analyzer.tokenStream(field, new StringReader(keywords));
-
-//        Token token = new Token();
-//        try {
-//            Token t;
-//            while((t = stream.next(token)) != null) {
-//                result.add(t.term());
-//            }
-//        }
-//        catch(IOException e) {
-//            throw new IllegalStateException(e);
-//        }
-
+        CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
+        try{
+            stream.reset();
+            while(stream.incrementToken()){
+                result.add(termAtt.toString());
+            }
+            stream.close();
+        }finally{
+            stream.close();
+        }   
         return result;
     }  
 

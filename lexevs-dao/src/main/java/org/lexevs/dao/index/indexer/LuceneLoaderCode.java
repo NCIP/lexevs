@@ -220,20 +220,11 @@ public abstract class LuceneLoaderCode {
         	}
         }
         
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityCode, entityNamespace), false, true, false);
-       
-//        if(StringUtils.isNotBlank(entityUid)) {
-//        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
-//        }
-        
-        //If the EntityDescription is an empty String, replace it with a single space.
-        //Lucene will not index an empty String but it will index a space.
-//        if(StringUtils.isBlank(entityDescription)){
-//            entityDescription = " ";
-//        }
-//        generator_.addTextField("entityDescription", entityDescription, true, true, false);
-      
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
+        		createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+        		createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, 
+        				entityCode, entityNamespace), false, true, false);
         generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, true, true, false);
 
         String tempPropertyType;
