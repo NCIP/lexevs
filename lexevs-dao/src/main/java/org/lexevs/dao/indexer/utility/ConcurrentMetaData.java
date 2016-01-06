@@ -58,6 +58,26 @@ public class ConcurrentMetaData {
 		}
 		return null;
 	}
+	
+	public CodingSchemeMetaData getIndexMetaData(String key){
+		for(CodingSchemeMetaData csmd: list){
+			if(csmd.getNameVersionKey().equals(key)){
+				if(csmd.getDirectory() != null){
+				return csmd;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public CodingSchemeMetaData getIndexMetaDataForFileName(String fileName){
+		for(CodingSchemeMetaData csmd: list){
+			if(csmd.getDirectory().getIndexName().equals(fileName)){
+				return csmd;
+			}
+		}
+		return null;
+	}
 
 	public String[] getIndexMetaDataKeys() {
 		String[] keys = new String[list.size()];

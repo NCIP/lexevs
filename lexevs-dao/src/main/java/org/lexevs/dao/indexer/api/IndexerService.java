@@ -27,7 +27,9 @@ import java.util.Hashtable;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.Directory;
 import org.lexevs.dao.indexer.lucene.Index;
 import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
 import org.lexevs.dao.indexer.lucene.LuceneIndexSearcher;
@@ -35,6 +37,7 @@ import org.lexevs.dao.indexer.lucene.LuceneMultiIndexSearcher;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.dao.indexer.utility.Utility;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * This class will sit on top of multiple indexes, and manage them for you.
@@ -95,7 +98,7 @@ public class IndexerService {
 
     public void refreshAvailableIndexes() throws RuntimeException {
         File[] files = rootLocation_.listFiles();
-        HashSet fileNames = new HashSet();
+        HashSet<String> fileNames = new HashSet<String>();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 fileNames.add(files[i].getName());
@@ -116,12 +119,21 @@ public class IndexerService {
                 indexes_.remove(indexName);
             }
         }
-    //    metadata_.rereadFile(true);
-        //This doesn't really do anything.
+        //Reopen readers after load
+        refreshIndexReadersInConcurrentMetaDataList(fileNames);        
         concurrentMetaData.refreshIterator();
     }
 
-    /**
+	private void refreshIndexReadersInConcurrentMetaDataList(
+			HashSet<String> fileNames) {
+		for (String s : fileNames) {
+			concurrentMetaData.getIndexMetaDataForFileName(s).getDirectory()
+					.refresh();
+			LoggerFactory.getLogger().warn("Refreshing index: " + s);
+		}
+	}
+
+	/**
      * Create a new index, using the default analyzer, and your supplied
      * stopwords.
      * 
