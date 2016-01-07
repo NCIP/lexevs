@@ -98,19 +98,24 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         List<RegistryEntry> entries = 
                 lexEvsServiceLocator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
         
+        //We'll want any and all systems if this contains none.
+        if(codeSystemsToInclude == null){
+            codeSystemsToInclude = new HashSet<CodingSchemeReference>();
+        }
+        
         for(RegistryEntry entry : entries){
+            CodingSchemeReference ref = new CodingSchemeReference();
+            ref.setCodingScheme(entry.getResourceUri());
+            ref.setVersionOrTag(
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
             if(! entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())){
-                CodingSchemeReference ref = new CodingSchemeReference();
-                ref.setCodingScheme(entry.getResourceUri());
-                ref.setVersionOrTag(
-                        Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
-                
+                //We'll only initialize it if we need it
                 if(codeSystemsToExclude == null){
-                    codeSystemsToExclude = new HashSet<CodingSchemeReference>();
+                    codeSystemsToExclude  = new HashSet<CodingSchemeReference>();
                 }
-                
                 codeSystemsToExclude.add(ref);
             }
+            codeSystemsToInclude.add(ref);
         }
         
         SearchIndexService service = LexEvsServiceLocator.getInstance().

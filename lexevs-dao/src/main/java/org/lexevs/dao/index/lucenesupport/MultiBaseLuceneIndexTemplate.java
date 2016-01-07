@@ -56,7 +56,7 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 	private List<NamedDirectory> namedDirectories;
 	private IndexReader indexReader;
 	
-	private ToParentBlockJoinIndexSearcher indexSearcher;
+	private IndexSearcher indexSearcher;
 
 	
 	public MultiBaseLuceneIndexTemplate(){
@@ -247,11 +247,11 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		
 	}
 
-	public ToParentBlockJoinIndexSearcher getIndexSearcher() {
+	public IndexSearcher getIndexSearcher() {
 		return indexSearcher;
 	}
 
-	public void setIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) {
+	public void setIndexSearcher(IndexSearcher indexSearcher) {
 		this.indexSearcher = indexSearcher;
 	}
 
