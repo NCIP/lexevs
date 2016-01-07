@@ -34,6 +34,7 @@ import org.lexevs.dao.indexer.lucene.Index;
 import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
 import org.lexevs.dao.indexer.lucene.LuceneIndexSearcher;
 import org.lexevs.dao.indexer.lucene.LuceneMultiIndexSearcher;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.dao.indexer.utility.Utility;
@@ -127,9 +128,12 @@ public class IndexerService {
 	private void refreshIndexReadersInConcurrentMetaDataList(
 			HashSet<String> fileNames) {
 		for (String s : fileNames) {
-			concurrentMetaData.getIndexMetaDataForFileName(s).getDirectory()
+			CodingSchemeMetaData metadata = concurrentMetaData.getIndexMetaDataForFileName(s);
+			if(metadata != null){
+			metadata.getDirectory()
 					.refresh();
 			LoggerFactory.getLogger().warn("Refreshing index: " + s);
+			}
 		}
 	}
 
