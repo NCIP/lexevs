@@ -43,8 +43,11 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucene.AbstractFilteringLuceneIndexTemplateDao;
+import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 
 /**
  * The Class LuceneEntityDao.
@@ -143,7 +146,8 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	// @Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return this.luceneIndexTemplate;
+// TODO provide support for following	    return new MultiBaseLuceneIndexTemplate(MultiBaseLuceneIndexTemplate.getNamedDirectories(ConcurrentMetaData.getInstance()));
+return luceneIndexTemplate;
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
