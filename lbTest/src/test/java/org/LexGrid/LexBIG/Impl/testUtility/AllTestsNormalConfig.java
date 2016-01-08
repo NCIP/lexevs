@@ -209,7 +209,7 @@ public class AllTestsNormalConfig {
         ServiceHolder.configureForSingleConfig();
 
         mainSuite.addTestSuite(ConfigureTest.class);
-        mainSuite.addTestSuite(LoadTestDataTest.class);
+//        mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
         mainSuite.addTestSuite(UMLSHistoryServiceTest.class);

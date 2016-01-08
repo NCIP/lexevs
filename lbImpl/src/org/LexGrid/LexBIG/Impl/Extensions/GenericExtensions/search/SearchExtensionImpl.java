@@ -24,7 +24,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ScoreMode;
@@ -141,10 +143,16 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             query = newBuilder.build(); 
         }
         
-        TermQuery termQuery = new TermQuery(new Term("isParentDoc", "true"));
-
+ //       TermQuery termQuery = new TermQuery(new Term("isParentDoc", "true"));
+        QueryBitSetProducer parentFilter = null;
+        try {
+            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", 
+                    new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+        } catch (ParseException e) {
+            throw new RuntimeException("Query Parser Failed against parent query: ", e);
+        }
         ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(
-                query, new QueryBitSetProducer(termQuery), ScoreMode.Total);
+                query, parentFilter, ScoreMode.Total);
         
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
@@ -201,7 +209,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                     LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text) )), Occur.MUST);
             return  builder.build();
         case CODE_EXACT:
-            builder.add(new TermQuery(new Term("code",QueryParser.escape(text))),Occur.MUST);
+            builder.add(new TermQuery(new Term("code",text)),Occur.MUST);
             return builder.build();
         case PRESENTATION_CONTAINS:
             builder.add(new TermQuery(baseQuery), Occur.MUST);

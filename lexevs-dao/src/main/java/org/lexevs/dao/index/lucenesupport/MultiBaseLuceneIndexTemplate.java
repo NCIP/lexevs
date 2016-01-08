@@ -56,7 +56,7 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 	private List<NamedDirectory> namedDirectories;
 	private IndexReader indexReader;
 	
-	private IndexSearcher indexSearcher;
+	private ToParentBlockJoinIndexSearcher indexSearcher;
 
 	
 	public MultiBaseLuceneIndexTemplate(){
@@ -74,7 +74,7 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		}
 	}
 
-	private List<NamedDirectory> getNamedDirectories(
+	public static List<NamedDirectory> getNamedDirectories(
 			ConcurrentMetaData metaDirectories) {
 		List<NamedDirectory> directories = new ArrayList<NamedDirectory>();
 		for(CodingSchemeMetaData csmd : metaDirectories.getCodingSchemeList()){
@@ -247,11 +247,11 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		
 	}
 
-	public IndexSearcher getIndexSearcher() {
+	public ToParentBlockJoinIndexSearcher getIndexSearcher() {
 		return indexSearcher;
 	}
 
-	public void setIndexSearcher(IndexSearcher indexSearcher) {
+	public void setIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) {
 		this.indexSearcher = indexSearcher;
 	}
 
