@@ -200,7 +200,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         if(StringUtils.isBlank(text))
         {return builder.build();}
-        
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
@@ -214,7 +213,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         case PRESENTATION_CONTAINS:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
             builder.add(new TermQuery(preferred), Occur.MUST);
-            text = QueryParser.escape(text);
+            text = QueryParser.escape(text.toLowerCase());
 
             List<String> tokens;
             try {
@@ -230,7 +229,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text))), Occur.SHOULD);
             return builder.build();
         case LUCENE:
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, text)), Occur.MUST);
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, text.toLowerCase())), Occur.MUST);
             return builder.build();
         default:
             throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
