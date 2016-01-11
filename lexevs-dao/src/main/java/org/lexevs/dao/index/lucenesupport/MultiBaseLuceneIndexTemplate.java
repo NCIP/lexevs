@@ -174,6 +174,8 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 
 	@Override
 	public <T> T executeInIndexReader(IndexReaderCallback<T> callback) {

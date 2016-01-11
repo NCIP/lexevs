@@ -36,6 +36,7 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexSearcherCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexWriterCallback;
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 
 public interface LuceneIndexTemplate {
 
