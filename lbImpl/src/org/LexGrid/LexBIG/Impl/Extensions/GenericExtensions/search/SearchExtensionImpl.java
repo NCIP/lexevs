@@ -164,37 +164,37 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return new SearchScoreDocIterator(scoreDocs);
     }
     
-    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) throws IOException {
-        if(StringUtils.isBlank(text)) {
-          return text;  
-        }
-        
-        switch(matchAlgorithm){
-        case PRESENTATION_EXACT:
-            return LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD + ":" + QueryParser.escape(text);
-        case CODE_EXACT:
-            return "code:" + QueryParser.escape(text);
-        case PRESENTATION_CONTAINS:
-            text = QueryParser.escape(text);
-            List<String> tokens = tokenize(analyzer, "description", text);
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append("(");
-            for(String token : tokens){
-               sb.append("description:");
-               sb.append(token);
-               sb.append("* ");
-            }
-            sb.append(")");
-            sb.append(" OR description:\""+text+"\"");
-            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
-            return sb.toString().trim();
-        case LUCENE:
-            return text;
-        default:
-            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
-        }
-    }
+//    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) throws IOException {
+//        if(StringUtils.isBlank(text)) {
+//          return text;  
+//        }
+//        
+//        switch(matchAlgorithm){
+//        case PRESENTATION_EXACT:
+//            return LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD + ":" + QueryParser.escape(text);
+//        case CODE_EXACT:
+//            return "code:" + QueryParser.escape(text);
+//        case PRESENTATION_CONTAINS:
+//            text = QueryParser.escape(text);
+//            List<String> tokens = tokenize(analyzer, "description", text);
+//            
+//            StringBuilder sb = new StringBuilder();
+//            sb.append("(");
+//            for(String token : tokens){
+//               sb.append("description:");
+//               sb.append(token);
+//               sb.append("* ");
+//            }
+//            sb.append(")");
+//            sb.append(" OR description:\""+text+"\"");
+//            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
+//            return sb.toString().trim();
+//        case LUCENE:
+//            return text;
+//        default:
+//            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
+//        }
+//    }
     
     protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
@@ -204,9 +204,9 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            builder.add(new TermQuery(preferred), Occur.MUST);
+            //builder.add(new TermQuery(preferred), Occur.MUST);
             builder.add(new TermQuery(new Term(
-                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.MUST);
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text.toLowerCase())), Occur.MUST);
             return  builder.build();
         case CODE_EXACT:
             builder.add(new TermQuery(new Term("code",text)),Occur.MUST);
