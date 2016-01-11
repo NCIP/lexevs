@@ -206,7 +206,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             builder.add(new TermQuery(baseQuery), Occur.MUST);
             builder.add(new TermQuery(preferred), Occur.MUST);
             builder.add(new TermQuery(new Term(
-                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text) )), Occur.MUST);
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.MUST);
             return  builder.build();
         case CODE_EXACT:
             builder.add(new TermQuery(new Term("code",text)),Occur.MUST);

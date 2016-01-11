@@ -50,8 +50,6 @@ public interface LuceneIndexTemplate {
 	public void search(Query query, Filter filter,
 			Collector Collector);
 	
-//	public void optimize();
-	
 	public int getMaxDoc();
 	
 	public Document getDocumentById(int id, StoredFieldVisitor fieldSelector);
