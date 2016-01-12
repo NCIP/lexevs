@@ -433,7 +433,9 @@ public abstract class LuceneLoaderCode {
         }else {
         	throw new RuntimeException("isParentDoc is not defined.");
         }
-    	
+    	for(String entityType: entityTypes){
+    		generator_.addTextField("type", entityType, true, true, false);
+    	}
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
     			createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 

@@ -200,7 +200,11 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         if(StringUtils.isBlank(text))
-        {return builder.build();}
+        {
+            builder.add(new MatchAllDocsQuery(), Occur.MUST);
+            builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+            return builder.build();
+        }
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
             builder.add(new TermQuery(baseQuery), Occur.MUST);

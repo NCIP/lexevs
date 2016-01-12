@@ -77,7 +77,7 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
                     getById(item.doc);
             
             String code = doc.get("entityCode");
-            String namespace = doc.get("namespace");
+            String namespace = doc.get("entityCodeNamespace");
             String[] types = doc.getValues("type");
             String description = doc.get("entityDescription");
             String codingSchemeUri = doc.get("codingSchemeUri");
