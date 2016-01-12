@@ -180,6 +180,62 @@ public class MultiIndexTemplateTest extends LexBIGServiceTestCase {
 		assertTrue(doc.get("entityCode").equals("A0001"));
 	}
 	
+	@Test
+	public void testTwoSchemeQueryForPresentationBlockJoin() throws ParseException{
+		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();		
+		NamedDirectory directory = new DefaultLuceneDirectoryCreator().getDirectory("Automobiles-1_0", 
+				new File(LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getAutoLoadIndexLocation()));	
+		NamedDirectory directory2 = new DefaultLuceneDirectoryCreator().getDirectory("GermanMadeParts-2_0", 
+				new File(LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getAutoLoadIndexLocation()));
+		namedDirectories.add(directory);
+		namedDirectories.add(directory2);
+		multiTemplate = new MultiBaseLuceneIndexTemplate(namedDirectories );
+		assertTrue(multiTemplate.getMaxDoc() == 77);
+		TopScoreDocCollector collector = TopScoreDocCollector.create(multiTemplate.getMaxDoc());
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		QueryBitSetProducer parentFilter = 
+				new QueryBitSetProducer(new QueryParser("isParentDoc", 
+						new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+		TermQuery termQuery = new TermQuery(new Term("propertyType","presentation"));
+		TermQuery anonTermNo = new TermQuery(new Term("isAnonymous", "T"));
+		builder.add(termQuery, Occur.MUST);
+		builder.add(anonTermNo, Occur.MUST_NOT);
+        ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+                builder.build(),
+                parentFilter,
+                ScoreMode.Total);
+
+		builder.add(termJoinQuery, Occur.MUST);
+		multiTemplate.search(termJoinQuery , null, collector);
+		assertTrue(collector.getTotalHits() > 0);
+	}
+	
+	@Test
+	public void testQueryForContainsBlockJoin() throws ParseException{
+		List<NamedDirectory> namedDirectories = new ArrayList<NamedDirectory>();		
+		NamedDirectory directory = new DefaultLuceneDirectoryCreator().getDirectory("Automobiles-1_0", 
+				new File(LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getAutoLoadIndexLocation()));	
+		namedDirectories.add(directory);
+		multiTemplate = new MultiBaseLuceneIndexTemplate(namedDirectories );
+		assertTrue(multiTemplate.getMaxDoc() == 63);
+		TopScoreDocCollector collector = TopScoreDocCollector.create(multiTemplate.getMaxDoc());
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		QueryBitSetProducer parentFilter = 
+				new QueryBitSetProducer(new QueryParser("isParentDoc", 
+						new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+		QueryParser parser = new QueryParser("propertyValue", LuceneLoaderCode.getAnaylzer());
+		Query query = parser.parse("jag*");
+		builder.add(query, Occur.MUST);
+        ToParentBlockJoinQuery termJoinQuery = new ToParentBlockJoinQuery(
+                builder.build(),
+                parentFilter,
+                ScoreMode.Total);
+
+		builder.add(termJoinQuery, Occur.MUST);
+		multiTemplate.search(termJoinQuery , null, collector);
+		assertTrue(collector.getTotalHits() > 0);
+	}
+	
 	@Override
 	protected String getTestID() {
 		return testID;

@@ -38,10 +38,6 @@ public abstract class AbstractContainsSearch extends AbstractExactMatchBoostingS
      */
     public Query doBuildQuery(String searchText) {
         QueryParser queryParser = super.getQueryParser();
-        
-//        if(getLuceneSearchField() == LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD){
-//            queryParser.setLowercaseExpandedTerms(false);
-//        }
 
         searchText = super.addTrailingWildcardToAllTokens(searchText);
         try {

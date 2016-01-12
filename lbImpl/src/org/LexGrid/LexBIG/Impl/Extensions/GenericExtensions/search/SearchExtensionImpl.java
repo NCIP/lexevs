@@ -24,6 +24,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -41,6 +42,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.search.SearchIndexService;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -142,8 +144,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             
             query = newBuilder.build(); 
         }
-        
- //       TermQuery termQuery = new TermQuery(new Term("isParentDoc", "true"));
+
         QueryBitSetProducer parentFilter = null;
         try {
             parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", 
@@ -203,7 +204,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            //builder.add(new TermQuery(preferred), Occur.MUST);
             builder.add(new TermQuery(new Term(
                     LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text.toLowerCase())), Occur.MUST);
             return  builder.build();
@@ -212,21 +212,27 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             return builder.build();
         case PRESENTATION_CONTAINS:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            builder.add(new TermQuery(preferred), Occur.MUST);
-            text = QueryParser.escape(text.toLowerCase());
+//            builder.add(new TermQuery(preferred), Occur.MUST);
+           text = text.toLowerCase();
 
             List<String> tokens;
+            Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
             try {
-                tokens = tokenize(analyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
+                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
 
+            QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             for(String token : tokens){
-               builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, token + "*")), Occur.MUST);
+               try {
+                builder.add(parser.parse(token + "*"), Occur.MUST);
+            } catch (ParseException e) {
+                throw new RuntimeException("Parser failed parsing token: " + token);
             }
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text))), Occur.SHOULD);
+            }
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD,text )), Occur.SHOULD);
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
             return builder.build();
         case LUCENE:
             builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, text.toLowerCase())), Occur.MUST);
@@ -278,7 +284,8 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     
     public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException  {
         List<String> result = new ArrayList<String>();
-        TokenStream stream  = analyzer.tokenStream(field, new StringReader(keywords));
+        StringReader reader = new StringReader(keywords);
+        TokenStream stream  = analyzer.tokenStream(field, reader);
         CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
         try{
             stream.reset();
