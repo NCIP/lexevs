@@ -32,6 +32,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
  * A reference to a LexGrid {@link CodingScheme}.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer </a>
  */
 public class CodingSchemeReference implements Serializable {
 
@@ -55,6 +56,25 @@ public class CodingSchemeReference implements Serializable {
 
 	public void setVersionOrTag(CodingSchemeVersionOrTag versionOrTag) {
 		this.versionOrTag = versionOrTag;
+	}
+	
+	public boolean equals(Object o){
+		
+		if(o == null){return false;}
+		if(! (o instanceof CodingSchemeReference)){ return false;}
+		CodingSchemeReference ref = (CodingSchemeReference)o;
+		if(!this.versionOrTag.getChoiceValue().equals(ref.getVersionOrTag().getChoiceValue())){return false;}
+		if(!this.getCodingScheme().equals(ref.getCodingScheme())){return false;}
+		return true;
+	}
+	
+	public int hashCode(){
+		int prime = 402653189;
+		int hash = prime + 
+				(this.versionOrTag == null? 0 : this.versionOrTag.getChoiceValue().hashCode()) +
+				(this.codingScheme == null? 0 : this.codingScheme.hashCode());
+		return hash;
+		
 	}
 
 }
