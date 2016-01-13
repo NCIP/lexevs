@@ -249,7 +249,14 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
             return builder.build();
         case LUCENE:
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, text.toLowerCase())), Occur.MUST);
+            QueryParser luceneParser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
+            Query query = null;
+            try {
+             query = luceneParser.parse(text);
+            } catch (ParseException e) {
+                throw new RuntimeException("Parser failed parsing text: " + text);
+            }
+            builder.add(query, Occur.MUST);
             return builder.build();
         default:
             throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
