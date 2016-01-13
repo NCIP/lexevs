@@ -52,7 +52,6 @@ public interface SearchIndexService {
 	
 	public List<ScoreDoc> query(
 		Set<AbsoluteCodingSchemeVersionReference> codeSystemToInclude, 
-		Set<AbsoluteCodingSchemeVersionReference> codeSystemToExclude,
 		Query query);
 	
 	public Document getById(int id);

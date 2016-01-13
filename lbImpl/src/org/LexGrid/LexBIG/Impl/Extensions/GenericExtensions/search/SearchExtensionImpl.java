@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -102,7 +103,8 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         List<RegistryEntry> entries = 
                 lexEvsServiceLocator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
         
-
+        codeSystemsToInclude = sanitizeReferences(codeSystemsToInclude);
+        codeSystemsToExclude = sanitizeReferences(codeSystemsToExclude);
         
         Set<CodingSchemeReference> tempSystemsToInclude = new HashSet<CodingSchemeReference>();
         for(RegistryEntry entry : entries){
@@ -111,7 +113,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             ref.setVersionOrTag(
                     Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
             if(! entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())){
-                //We'll only initialize it if we need it
+
                 if(codeSystemsToExclude == null){
                     codeSystemsToExclude  = new HashSet<CodingSchemeReference>();
                 }
@@ -158,13 +160,18 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(
                 query, parentFilter, ScoreMode.Total);
         
+
+        if(codeSystemsToExclude != null &&
+                codeSystemsToInclude.size() > 0 && 
+                codeSystemsToExclude.size() > 0){
+        codeSystemsToInclude.removeAll(codeSystemsToExclude);
+        }
+        
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
                 query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
-                        this.resolveCodeSystemReferences(codeSystemsToExclude),
                         blockJoinQuery);
-
         return new SearchScoreDocIterator(scoreDocs);
     }
     
@@ -287,6 +294,30 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         }
         
         return returnSet;
+    }
+    
+    private Set<CodingSchemeReference> sanitizeReferences(Set<CodingSchemeReference> references) throws LBParameterException{
+        if(CollectionUtils.isEmpty(references)){
+            return null;
+        }
+        Set<CodingSchemeReference> tempReferences = new HashSet<CodingSchemeReference>();
+        for(CodingSchemeReference ref: references){
+            AbsoluteCodingSchemeVersionReference abc = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
+                    ref.getCodingScheme(),
+                    ref.getVersionOrTag(), 
+                    true);
+                    if(!ref.equals(abc.getCodingSchemeURN())){
+                        ref.setCodingScheme(abc.getCodingSchemeURN());
+                    }
+                    if(ref.getVersionOrTag() == null) {
+                        ref.setVersionOrTag(new CodingSchemeVersionOrTag());
+                    }
+                    if(  ref.getVersionOrTag().getVersion() == null){
+                        ref.getVersionOrTag().setVersion(abc.getCodingSchemeVersion());
+                    }
+                    tempReferences.add(ref);
+        }
+        return tempReferences;
     }
     
     public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException  {
