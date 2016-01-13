@@ -63,18 +63,28 @@ public class CodingSchemeReference implements Serializable {
 		if(o == null){return false;}
 		if(! (o instanceof CodingSchemeReference)){ return false;}
 		CodingSchemeReference ref = (CodingSchemeReference)o;
-		if(!this.versionOrTag.getChoiceValue().equals(ref.getVersionOrTag().getChoiceValue())){return false;}
 		if(!this.getCodingScheme().equals(ref.getCodingScheme())){return false;}
+		if(this.versionOrTag.getTag() == null && ref.getVersionOrTag().getTag() != null){return false;}
+		if(this.versionOrTag.getTag() != null && ref.getVersionOrTag().getTag() == null){return false;}
+		if(this.versionOrTag.getTag() != null && ref.getVersionOrTag().getTag() != null){
+		if(!this.versionOrTag.getTag().equals(ref.getVersionOrTag().getTag())){return false;};
+		}
+		if(this.versionOrTag.getVersion() == null && ref.getVersionOrTag().getVersion() != null){return false;}
+		if(this.versionOrTag.getVersion() != null && ref.getVersionOrTag().getVersion() == null){return false;}
+		if(this.versionOrTag.getVersion() != null && ref.getVersionOrTag().getVersion() != null){
+		if(!this.versionOrTag.getVersion().equals(ref.getVersionOrTag().getVersion())){return false;}
+		}
+
 		return true;
 	}
 	
 	public int hashCode(){
 		int prime = 402653189;
 		int hash = prime + 
-				(this.versionOrTag == null? 0 : this.versionOrTag.getChoiceValue().hashCode()) +
+				(this.versionOrTag == null? 0 : this.versionOrTag.getTag() == null? 0 : this.versionOrTag.getTag().hashCode() + 
+						this.versionOrTag.getVersion() == null? 0 : this.versionOrTag.getVersion().hashCode()) +
 				(this.codingScheme == null? 0 : this.codingScheme.hashCode());
 		return hash;
-		
 	}
 
 }

@@ -144,7 +144,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 newBuilder.add(new TermQuery(new Term("isAnonymous", "T")), Occur.MUST_NOT);
             }
             if(! includeInactive){
-                newBuilder.add(new TermQuery(new Term("isActive", "T")), Occur.MUST_NOT);
+                newBuilder.add(new TermQuery(new Term("isActive", "F")), Occur.MUST_NOT);
             }
             
             query = newBuilder.build(); 

@@ -1,7 +1,5 @@
 package org.LexGrid.LexBIG.Utility;
 
-import static org.junit.Assert.*;
-
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.junit.Test;
