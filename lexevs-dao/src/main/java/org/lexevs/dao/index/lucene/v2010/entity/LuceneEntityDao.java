@@ -19,6 +19,7 @@
 package org.lexevs.dao.index.lucene.v2010.entity;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
@@ -58,6 +59,8 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 	// created in this class are run through single index templates pulled from the 
 	// metadata structure that tracks templates associated with index directories
 	private LuceneIndexTemplate luceneIndexTemplate;
+	
+	private static Logger logger = Logger.getLogger("LEXEVS_DAO_LOGGER");
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
@@ -91,6 +94,12 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			Filter codingSchemeFilter = null;
 
 			int maxDoc = template.getMaxDoc();
+			
+			if (maxDoc == 0) {
+			    logger.error("Index does not exist.");
+			    throw new RuntimeException("Index does not exist.");
+			}
+			
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
 			template.search(query, codingSchemeFilter, hitCollector);
 			ScoreDoc[] arrayDocs = hitCollector.topDocs().scoreDocs;
@@ -106,6 +115,12 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			//Gets the MultScheme template instead of the single scheme template
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate(codingSchemes);			
 			int maxDoc = template.getMaxDoc();
+			
+			if (maxDoc == 0) {
+			    logger.error("Index does not exist.");
+			    throw new RuntimeException("Index does not exist.");
+			}
+			
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
 			template.search(query, null, hitCollector);
 			return Arrays.asList(hitCollector.topDocs().scoreDocs);

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
@@ -42,7 +44,9 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseLuceneIndexTemplateDao implements CommonEntityDao {
-	
+    
+    private static Logger logger = Logger.getLogger("LEXEVS_DAO_LOGGER");
+    
 	private LuceneIndexTemplate template;
 	
 	private List<AbsoluteCodingSchemeVersionReference> references;
@@ -71,6 +75,11 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 	public List<ScoreDoc> query(Query query) {
 		
 		int maxDoc = template.getMaxDoc();
+		
+		if (maxDoc == 0) {
+		    logger.error("Index does not exist.");
+		    throw new RuntimeException("Index does not exist.");
+		}
 
 		TopScoreDocCollector hitCollector = 
 				TopScoreDocCollector.create(maxDoc);

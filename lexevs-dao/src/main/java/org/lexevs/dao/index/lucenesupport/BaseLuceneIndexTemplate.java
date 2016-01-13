@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -46,6 +47,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate {
 
+	private static Logger logger = Logger.getLogger("LEXEVS_DAO_LOGGER");
+	
 	private NamedDirectory namedDirectory;
 	private ToParentBlockJoinIndexSearcher blockJoinSearcher;
 	private IndexSearcher indexSearcher;
@@ -153,7 +156,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 					throws Exception {
 				
 				List<ScoreDoc> docs = null;
-				final TopScoreDocCollector collector = TopScoreDocCollector.create(getMaxDoc());
+				
+				int maxDoc = getMaxDoc();
+				
+				if (maxDoc == 0) {
+				    logger.error("Index does not exist.");
+				    throw new RuntimeException("Index does not exist.");
+				}
+				
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
 				indexSearcher.search(query, collector
 				);
 				docs = Arrays.asList(collector.topDocs().scoreDocs);
@@ -188,7 +199,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 					throws Exception {
 				
 				List<ScoreDoc> docs = null;
-				final TopScoreDocCollector collector = TopScoreDocCollector.create(getMaxDoc());
+				
+				int maxDoc = getMaxDoc();
+				
+				if (maxDoc == 0) {
+				    logger.error("Index does not exist.");
+				    throw new RuntimeException("Index does not exist.");
+				}
+				
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
 				blockJoinSearcher.search(query, collector
 				);
 				docs = Arrays.asList(collector.topDocs().scoreDocs);

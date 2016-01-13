@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReaderContext;
@@ -55,6 +56,8 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	
 	/** The supported index version2013. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion.parseStringToVersion("2013");
+	
+	private static Logger logger = Logger.getLogger("LEXEVS_DAO_LOGGER");
 	
 	private LuceneIndexTemplate luceneIndexTemplate;
 	
@@ -105,8 +108,15 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 			//initialized to query a set of coding schemes via a reader on each index
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 	
-			TopScoreDocCollector collector = TopScoreDocCollector.create(template.getMaxDoc());
+			int maxDoc = template.getMaxDoc();
 			
+			if (maxDoc == 0) {
+			    logger.error("Index does not exist.");
+			    throw new RuntimeException("Index does not exist.");
+			}
+			
+			TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
+						
 			template.search(query, null, collector);
 			final List<ScoreDoc> docs  = Arrays.asList(collector.topDocs().scoreDocs);
 			//TODO this isn't going to work in the multi index realm but we should understand how it
