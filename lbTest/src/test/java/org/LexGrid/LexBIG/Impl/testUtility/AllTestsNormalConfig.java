@@ -208,8 +208,8 @@ public class AllTestsNormalConfig {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
         ServiceHolder.configureForSingleConfig();
 
-        //mainSuite.addTestSuite(ConfigureTest.class);
-        //mainSuite.addTestSuite(LoadTestDataTest.class);
+        mainSuite.addTestSuite(ConfigureTest.class);
+        mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
         mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
@@ -331,7 +331,6 @@ public class AllTestsNormalConfig {
         
         
         
-        // ******* TEST FOR MAX DOC *******
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
@@ -476,27 +475,27 @@ public class AllTestsNormalConfig {
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
 //        
-//        mainSuite.addTestSuite(CleanUpTest.class);
+        mainSuite.addTestSuite(CleanUpTest.class);
 //       
 //        //ValueSets tests
         mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
 //        
 //        //LexGrid XML Exporter tests
-//        mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
-////        
-////        //MRMAP RRF load tests
-//        mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
+        mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
 //        
-//        //Broken Load Clean Up Function tests
-//
+//        //MRMAP RRF load tests
+        mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
+        
+        //Broken Load Clean Up Function tests
+
+        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+
+
 //        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-//
-//
-////        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsRemoveTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsRemoveTest.class));
         //CTS2 tests
         //Run this outside of this scope.
         //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
