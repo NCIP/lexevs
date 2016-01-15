@@ -14,7 +14,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-public class testEqualsCodingSchemeReference {
+public class TestEqualsCodingSchemeReference {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {

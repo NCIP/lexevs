@@ -38,9 +38,12 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
+import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
+import org.apache.lucene.queryparser.ext.ExtendableQueryParser;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
@@ -236,7 +239,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
-
             QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             for(String token : tokens){
                try {
@@ -249,8 +251,28 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
             return builder.build();
         case LUCENE:
-            QueryParser luceneParser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
-            Query query = null;
+            String[] fields = {"code","entityCodeNamespace", LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD}; 
+            MultiFieldQueryParser luceneParser = new MultiFieldQueryParser(fields, LuceneLoaderCode.getAnaylzer());
+           Query query = null;
+            
+//            List<String> queryTokens = null;
+//            Analyzer queryTokenAnalyzer = new WhitespaceAnalyzer();
+//            try {
+//                tokens = tokenize(queryTokenAnalyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
+//            } catch (IOException e) {
+//               throw new RuntimeException("Tokenizing query text failed", e);
+//            }
+            
+//            for(String candidate: queryTokens){
+//                if(candidate.contains(":")){
+//                    //This is a potential field query parse the piece before the colon
+//                    int colonIndex = candidate.indexOf(':');
+//                    String field =
+//                    candidate.substring(0,colonIndex);
+//                    ComplexQueryParser queryParser = new QueryParser(field, LuceneLoaderCode.getAnaylzer());
+//                    queryParser.parse(candidate.substring(candidate.indexOf(':')));
+//                }
+//            }
             try {
              query = luceneParser.parse(text);
             } catch (ParseException e) {
