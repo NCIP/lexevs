@@ -130,7 +130,9 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
                             queryTerms_.add(new Term(conceptCodeLCField, new StringBuffer().append("\\b*").append(
                                     Pattern.quote(matchText.toLowerCase())).append(".*").toString()));
                         } else if (matchAlgorithm.equalsIgnoreCase("LuceneQuery")) {
-                            temp = IndexQueryParserFactory.getInstance().parseQueryForField(
+                            IndexQueryParserFactory queryParserFactory = new IndexQueryParserFactory();
+                            
+                            temp = queryParserFactory.parseQueryForField(
                                     conceptCodeTokenizedField, matchText);
                         } else if (matchAlgorithm.equalsIgnoreCase("RegExp")) {
                             queryTerms_.add(new Term(conceptCodeLCField, matchText.toLowerCase()));

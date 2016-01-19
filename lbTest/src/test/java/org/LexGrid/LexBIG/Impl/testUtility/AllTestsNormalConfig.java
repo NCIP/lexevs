@@ -474,16 +474,16 @@ public class AllTestsNormalConfig {
         
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
-//        
+        
         mainSuite.addTestSuite(CleanUpTest.class);
-//       
-//        //ValueSets tests
+       
+        //ValueSets tests
         mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
-//        
-//        //LexGrid XML Exporter tests
+        
+        //LexGrid XML Exporter tests
         mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
-//        
-//        //MRMAP RRF load tests
+        
+        //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
         //Broken Load Clean Up Function tests
@@ -491,7 +491,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
 
 
-//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
