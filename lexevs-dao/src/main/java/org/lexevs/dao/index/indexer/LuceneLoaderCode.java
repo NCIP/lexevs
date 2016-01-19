@@ -94,6 +94,9 @@ public abstract class LuceneLoaderCode {
     /** The Constant LITERAL_AND_REVERSE_PREFIX. */
     public static final String LITERAL_AND_REVERSE_PREFIX = LITERAL_PREFIX + REVERSE_PREFIX;
     
+    /** The entity code. */
+    protected static String UNIQUE_ID = "code";
+    
     /** The PROPERT y_ valu e_ field. */
     public static String PROPERTY_VALUE_FIELD = "propertyValue";
     
@@ -146,6 +149,8 @@ public abstract class LuceneLoaderCode {
     
     /** The Constant QUALIFIER_NAME_VALUE_SPLIT_TOKEN. */
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
+
+	private static final String ENTITY_TYPE = "entityType";
  
     private LuceneEntityDao luceneEntityDao;
 
@@ -205,18 +210,17 @@ public abstract class LuceneLoaderCode {
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers) throws Exception {
 
-        String idFieldName = "code";
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
-        generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
-        generator_.addTextField(idFieldName, entityCode, true, true, false);
-        generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
+        generator_.addTextField(UNIQUE_ID + "Tokenized", entityCode, false, true, true);
+        generator_.addTextField(UNIQUE_ID, entityCode, false, true, false);// must be anyalyzed with KeywordAnalyzer
+        generator_.addTextField(UNIQUE_ID + "LC", entityCode.toLowerCase(), false, true, false);
         
         if(entityTypes != null) {
         	for(String entityType : entityTypes) {
-        		generator_.addTextField("entityType", entityType, true, true, false);
+        		generator_.addTextField(ENTITY_TYPE, entityType, false, true, false);// must be analyzed with KeywordAnalyzer
         	}
         }
         
@@ -225,7 +229,8 @@ public abstract class LuceneLoaderCode {
         generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
         		createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, 
         				entityCode, entityNamespace), false, true, false);
-        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, true, true, false);
+     // must be analyzed with KeywordAnalyzer
+        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, false, true, false);
 
         String tempPropertyType;
         if (propertyType == null || propertyType.length() == 0) {
@@ -433,7 +438,9 @@ public abstract class LuceneLoaderCode {
         }else {
         	throw new RuntimeException("isParentDoc is not defined.");
         }
-    	
+    	for(String entityType: entityTypes){
+    		generator_.addTextField("type", entityType, true, true, false);
+    	}
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
     			createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
@@ -463,6 +470,11 @@ public abstract class LuceneLoaderCode {
         //add a literal analyzer -- keep all special characters
     	analyzerPerField.put(LITERAL_PROPERTY_VALUE_FIELD, literalAnalyzer);
     	analyzerPerField.put(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer); 
+    	
+    	//treat as string field by analyzing with the KeywordAnalyzer
+    	analyzerPerField.put(UNIQUE_ID, new KeywordAnalyzer());
+    	analyzerPerField.put(ENTITY_TYPE, new KeywordAnalyzer());
+    	analyzerPerField.put(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, new KeywordAnalyzer());
 
         if (doubleMetaphoneEnabled_) {
             Analyzer temp = new Analyzer() {

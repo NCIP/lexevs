@@ -380,7 +380,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:Automobiles", MatchAlgorithm.LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND entityCodeNamespace:Automobiles", MatchAlgorithm.LUCENE);
 		assertTrue(itr.hasNext());
 		assertEquals("C0001", itr.next().getCode());
 		assertFalse(itr.hasNext());
@@ -390,7 +390,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND namespace:AutomobilesINVALID", MatchAlgorithm.LUCENE);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("code:C0001 AND entityCodeNamespace:AutomobilesINVALID", MatchAlgorithm.LUCENE);
 		assertFalse(itr.hasNext());
 	}
 	

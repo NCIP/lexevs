@@ -47,11 +47,7 @@ public abstract class AbstractLiteralSearch extends AbstractSearch {
      * @see org.LexGrid.LexBIG.Extensions.Query.Search#buildQuery(java.lang.String)
      */
     public Query buildQuery(String searchText) {
-        return doBuildQuery(
-         //       excapeSpecialCharacters(
-                        searchText
-         //               )
-                        );
+        return doBuildQuery(searchText);
     } 
     
     /**

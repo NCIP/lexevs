@@ -167,15 +167,7 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	@Override
 	public List<ScoreDoc> query(
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
-			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToExclude, 
 			final Query query) {
-		//TODO When the query get's here it needs to be as completely block join 
-		// massaged.  We won't do it here.
-		boolean hasIncludes = CollectionUtils.isNotEmpty(codeSystemsToInclude);
-		boolean hasExcludes = CollectionUtils.isNotEmpty(codeSystemsToExclude);
-		if(hasIncludes && hasExcludes){
-		codeSystemsToInclude.removeAll(codeSystemsToExclude);
-		}
 
 		List<AbsoluteCodingSchemeVersionReference> codingSchemes = new ArrayList<AbsoluteCodingSchemeVersionReference>();
 		codingSchemes.addAll(codeSystemsToInclude);
@@ -248,14 +240,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
 	}
-
-//	public void setMetaData(MetaData metaData) {
-//		this.metaData = metaData;
-//	}
-//
-//	public MetaData getMetaData() {
-//		return metaData;
-//	}
 
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;

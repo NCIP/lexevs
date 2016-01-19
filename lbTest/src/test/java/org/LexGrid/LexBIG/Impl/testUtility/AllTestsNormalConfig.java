@@ -457,8 +457,6 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(AddNamespaceToIndex.class);
         featureRequestTests.addTestSuite(ChangeConfigFileName.class);  
         featureRequestTests.addTestSuite(GForge17019.class);
-        //No longer supporting the MSAccess Load
-        //featureRequestTests.addTestSuite(GForge24191.class);
         mainSuite.addTest(featureRequestTests);
         
         //Mapping tests
@@ -469,7 +467,7 @@ public class AllTestsNormalConfig {
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
         
-        //Search Extesion tests
+        //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);
         
         //Association Authoring Mapping tests
@@ -489,16 +487,10 @@ public class AllTestsNormalConfig {
         //Broken Load Clean Up Function tests
 
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-
-
-        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsRemoveTest.class));
-        //CTS2 tests
-        //Run this outside of this scope.
-        //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
         // $JUnit-END$
 
         return mainSuite;

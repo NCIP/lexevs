@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -24,7 +25,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ScoreMode;
@@ -34,11 +38,15 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
+import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
+import org.apache.lucene.queryparser.ext.ExtendableQueryParser;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.search.SearchIndexService;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -98,19 +106,28 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         List<RegistryEntry> entries = 
                 lexEvsServiceLocator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
         
+        codeSystemsToInclude = sanitizeReferences(codeSystemsToInclude);
+        codeSystemsToExclude = sanitizeReferences(codeSystemsToExclude);
+        
+        Set<CodingSchemeReference> tempSystemsToInclude = new HashSet<CodingSchemeReference>();
         for(RegistryEntry entry : entries){
+            CodingSchemeReference ref = new CodingSchemeReference();
+            ref.setCodingScheme(entry.getResourceUri());
+            ref.setVersionOrTag(
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
             if(! entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())){
-                CodingSchemeReference ref = new CodingSchemeReference();
-                ref.setCodingScheme(entry.getResourceUri());
-                ref.setVersionOrTag(
-                        Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
-                
+
                 if(codeSystemsToExclude == null){
-                    codeSystemsToExclude = new HashSet<CodingSchemeReference>();
+                    codeSystemsToExclude  = new HashSet<CodingSchemeReference>();
                 }
-                
                 codeSystemsToExclude.add(ref);
             }
+            tempSystemsToInclude.add(ref);
+        }
+        
+        //We'll want any and all systems if this contains none.
+        if(codeSystemsToInclude == null){
+            codeSystemsToInclude = tempSystemsToInclude;
         }
         
         SearchIndexService service = LexEvsServiceLocator.getInstance().
@@ -130,94 +147,86 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 newBuilder.add(new TermQuery(new Term("isAnonymous", "T")), Occur.MUST_NOT);
             }
             if(! includeInactive){
-                newBuilder.add(new TermQuery(new Term("isActive", "T")), Occur.MUST_NOT);
+                newBuilder.add(new TermQuery(new Term("isActive", "F")), Occur.MUST_NOT);
             }
             
             query = newBuilder.build(); 
         }
-        
-        TermQuery termQuery = new TermQuery(new Term("isParentDoc", "true"));
 
+        QueryBitSetProducer parentFilter = null;
+        try {
+            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", 
+                    new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+        } catch (ParseException e) {
+            throw new RuntimeException("Query Parser Failed against parent query: ", e);
+        }
         ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(
-                query, new QueryBitSetProducer(termQuery), ScoreMode.Total);
+                query, parentFilter, ScoreMode.Total);
+        
+
+        if(codeSystemsToExclude != null &&
+                codeSystemsToInclude.size() > 0 && 
+                codeSystemsToExclude.size() > 0){
+        codeSystemsToInclude.removeAll(codeSystemsToExclude);
+        }
         
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
                 query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
-                        this.resolveCodeSystemReferences(codeSystemsToExclude),
                         blockJoinQuery);
-
         return new SearchScoreDocIterator(scoreDocs);
-    }
-    
-    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) throws IOException {
-        if(StringUtils.isBlank(text)) {
-          return text;  
-        }
-        
-        switch(matchAlgorithm){
-        case PRESENTATION_EXACT:
-            return LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD + ":" + QueryParser.escape(text);
-        case CODE_EXACT:
-            return "code:" + QueryParser.escape(text);
-        case PRESENTATION_CONTAINS:
-            text = QueryParser.escape(text);
-            List<String> tokens = tokenize(analyzer, "description", text);
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append("(");
-            for(String token : tokens){
-               sb.append("description:");
-               sb.append(token);
-               sb.append("* ");
-            }
-            sb.append(")");
-            sb.append(" OR description:\""+text+"\"");
-            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
-            return sb.toString().trim();
-        case LUCENE:
-            return text;
-        default:
-            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
-        }
     }
     
     protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         if(StringUtils.isBlank(text))
-        {return builder.build();}
-        
+        {
+            builder.add(new MatchAllDocsQuery(), Occur.MUST);
+            builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+            return builder.build();
+        }
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            builder.add(new TermQuery(preferred), Occur.MUST);
             builder.add(new TermQuery(new Term(
-                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text) )), Occur.MUST);
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text.toLowerCase())), Occur.MUST);
             return  builder.build();
         case CODE_EXACT:
-            builder.add(new TermQuery(new Term("code",QueryParser.escape(text))),Occur.MUST);
+            builder.add(new TermQuery(new Term("code",text)),Occur.MUST);
             return builder.build();
         case PRESENTATION_CONTAINS:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            builder.add(new TermQuery(preferred), Occur.MUST);
-            text = QueryParser.escape(text);
+           text = text.toLowerCase();
 
             List<String> tokens;
+            Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
             try {
-                tokens = tokenize(analyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
+                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
-
+            QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             for(String token : tokens){
-               builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, token + "*")), Occur.MUST);
+               try {
+                builder.add(parser.parse(token + "*"), Occur.MUST);
+            } catch (ParseException e) {
+                throw new RuntimeException("Parser failed parsing token: " + token);
             }
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,QueryParser.escape(text))), Occur.SHOULD);
+            }
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD,text )), Occur.SHOULD);
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
             return builder.build();
         case LUCENE:
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD, text)), Occur.MUST);
+            String[] fields = {"code","entityCodeNamespace", LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD}; 
+            MultiFieldQueryParser luceneParser = new MultiFieldQueryParser(fields, LuceneLoaderCode.getAnaylzer());
+           Query query = null;
+            try {
+             query = luceneParser.parse(text);
+            } catch (ParseException e) {
+                throw new RuntimeException("Parser failed parsing text: " + text);
+            }
+            builder.add(query, Occur.MUST);
             return builder.build();
         default:
             throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
@@ -264,9 +273,34 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return returnSet;
     }
     
+    private Set<CodingSchemeReference> sanitizeReferences(Set<CodingSchemeReference> references) throws LBParameterException{
+        if(CollectionUtils.isEmpty(references)){
+            return null;
+        }
+        Set<CodingSchemeReference> tempReferences = new HashSet<CodingSchemeReference>();
+        for(CodingSchemeReference ref: references){
+            AbsoluteCodingSchemeVersionReference abc = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
+                    ref.getCodingScheme(),
+                    ref.getVersionOrTag(), 
+                    true);
+                    if(!ref.equals(abc.getCodingSchemeURN())){
+                        ref.setCodingScheme(abc.getCodingSchemeURN());
+                    }
+                    if(ref.getVersionOrTag() == null) {
+                        ref.setVersionOrTag(new CodingSchemeVersionOrTag());
+                    }
+                    if(  ref.getVersionOrTag().getVersion() == null){
+                        ref.getVersionOrTag().setVersion(abc.getCodingSchemeVersion());
+                    }
+                    tempReferences.add(ref);
+        }
+        return tempReferences;
+    }
+    
     public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException  {
         List<String> result = new ArrayList<String>();
-        TokenStream stream  = analyzer.tokenStream(field, new StringReader(keywords));
+        StringReader reader = new StringReader(keywords);
+        TokenStream stream  = analyzer.tokenStream(field, reader);
         CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
         try{
             stream.reset();

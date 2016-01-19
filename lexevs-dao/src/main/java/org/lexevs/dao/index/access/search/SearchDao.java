@@ -36,7 +36,6 @@ import org.lexevs.dao.index.access.LexEvsIndexFormatVersionAwareDao;
  */
 public interface SearchDao extends LexEvsIndexFormatVersionAwareDao {
 		
-//	public void optimizeIndex();
 	
 	public String getIndexName(String codingSchemeUri, String version);
 
