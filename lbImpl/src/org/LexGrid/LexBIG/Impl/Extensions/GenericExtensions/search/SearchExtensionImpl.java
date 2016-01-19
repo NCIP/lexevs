@@ -178,38 +178,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return new SearchScoreDocIterator(scoreDocs);
     }
     
-//    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) throws IOException {
-//        if(StringUtils.isBlank(text)) {
-//          return text;  
-//        }
-//        
-//        switch(matchAlgorithm){
-//        case PRESENTATION_EXACT:
-//            return LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD + ":" + QueryParser.escape(text);
-//        case CODE_EXACT:
-//            return "code:" + QueryParser.escape(text);
-//        case PRESENTATION_CONTAINS:
-//            text = QueryParser.escape(text);
-//            List<String> tokens = tokenize(analyzer, "description", text);
-//            
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("(");
-//            for(String token : tokens){
-//               sb.append("description:");
-//               sb.append(token);
-//               sb.append("* ");
-//            }
-//            sb.append(")");
-//            sb.append(" OR description:\""+text+"\"");
-//            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
-//            return sb.toString().trim();
-//        case LUCENE:
-//            return text;
-//        default:
-//            throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
-//        }
-//    }
-    
     protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         if(StringUtils.isBlank(text))
@@ -229,7 +197,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             return builder.build();
         case PRESENTATION_CONTAINS:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-//            builder.add(new TermQuery(preferred), Occur.MUST);
            text = text.toLowerCase();
 
             List<String> tokens;
@@ -254,25 +221,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             String[] fields = {"code","entityCodeNamespace", LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD}; 
             MultiFieldQueryParser luceneParser = new MultiFieldQueryParser(fields, LuceneLoaderCode.getAnaylzer());
            Query query = null;
-            
-//            List<String> queryTokens = null;
-//            Analyzer queryTokenAnalyzer = new WhitespaceAnalyzer();
-//            try {
-//                tokens = tokenize(queryTokenAnalyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
-//            } catch (IOException e) {
-//               throw new RuntimeException("Tokenizing query text failed", e);
-//            }
-            
-//            for(String candidate: queryTokens){
-//                if(candidate.contains(":")){
-//                    //This is a potential field query parse the piece before the colon
-//                    int colonIndex = candidate.indexOf(':');
-//                    String field =
-//                    candidate.substring(0,colonIndex);
-//                    ComplexQueryParser queryParser = new QueryParser(field, LuceneLoaderCode.getAnaylzer());
-//                    queryParser.parse(candidate.substring(candidate.indexOf(':')));
-//                }
-//            }
             try {
              query = luceneParser.parse(text);
             } catch (ParseException e) {
