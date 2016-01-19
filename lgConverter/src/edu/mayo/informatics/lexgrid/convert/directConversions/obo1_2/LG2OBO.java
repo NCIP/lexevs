@@ -84,7 +84,7 @@ public class LG2OBO {
             output = new BufferedWriter(new FileWriter(outputFile));
             output.write(toString());
         } catch (Exception e) {
-            messages.fatalAndThrowException("Failed to save the Lexgrid content into OBO format", e);
+            messages.fatalAndThrowException("Failed to save the Lexgrid content into OBO format. " + e.getMessage(), e);
         } finally {
             // flush and close both "output" and its underlying FileWriter
             if (output != null)
