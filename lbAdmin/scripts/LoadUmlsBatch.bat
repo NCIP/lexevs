@@ -6,7 +6,7 @@ REM source vocabularies is available online at
 REM http://www.nlm.nih.gov/research/umls/metaa1.html.
 REM
 REM Options:
-REM   -in,--input <uri> URI or path of the directory containing the NLM files
+REM   -in,--input <uri> URI or path of the directory containing the NLM files. Path string must be preceded by "file:",
 REM   -s,--source vocabularies to load.
 REM
 REM Example: LoadUMLSFiles -in "file:///path/to/directory/" -s "PSY"
