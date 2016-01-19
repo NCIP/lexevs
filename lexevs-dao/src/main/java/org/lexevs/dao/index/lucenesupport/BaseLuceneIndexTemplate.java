@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.apache.log4j.Logger;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -42,12 +42,13 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate {
 
-	private static Logger logger = Logger.getLogger("LEXEVS_DAO_LOGGER");
+	private static LgLoggerIF logger = LoggerFactory.getLogger();
 	
 	private NamedDirectory namedDirectory;
 	private ToParentBlockJoinIndexSearcher blockJoinSearcher;

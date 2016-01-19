@@ -23,10 +23,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
@@ -35,8 +32,7 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractBaseLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-import org.lexevs.dao.indexer.lucene.hitcollector.AbstractBestScoreOfEntityHitCollector;
-import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class LuceneEntityDao.
@@ -45,7 +41,7 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
  */
 public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseLuceneIndexTemplateDao implements CommonEntityDao {
     
-    private static Logger logger = Logger.getLogger("LEXEVS_DAO_LOGGER");
+	private static LgLoggerIF logger = LoggerFactory.getLogger();
     
 	private LuceneIndexTemplate template;
 	
