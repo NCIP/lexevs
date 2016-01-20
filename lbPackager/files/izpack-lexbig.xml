@@ -121,7 +121,6 @@ You may obtain a copy of the License at
             <executable targetfile="$INSTALL_PATH/admin/LoadOBO.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadOWL.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadPickListDefinition.sh" stage="never" keep="true"></executable>
-			<executable targetfile="$INSTALL_PATH/admin/LoadRadLexProtegeFrames.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadUmlsBatch.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSSemnet.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadValueSetDefinition.sh" stage="never" keep="true"></executable>

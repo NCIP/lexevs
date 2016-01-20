@@ -91,7 +91,6 @@ import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
@@ -559,7 +558,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new OWL2LoaderImpl().register();
         new OBOLoaderImpl().register();
         new MetaDataLoaderImpl().register();
-        new RadLexProtegeFramesLoaderImpl().register();
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
         new NCIHistoryLoaderImpl().register();

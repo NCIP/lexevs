@@ -2,10 +2,10 @@
 Overview
 ===============================================================================
 Provides materials created by Mayo Clinic Division of Biomedical Informatics
-in fulfillment of the LexGrid Vocabulary Services for NCBO™ (LexBIO) project.
+in fulfillment of the LexGrid Vocabulary Services for NCBOï¿½ (LexBIO) project.
 
 This product incorporates code and other materials developed for the LexGrid
-Vocabulary Services for caBIG™ (LexBIG) project.  The LexBIG service layer, as
+Vocabulary Services for caBIGï¿½ (LexBIG) project.  The LexBIG service layer, as
 referenced below, provides core application programming interfaces (APIs) and
 tools used to access and maintain vocabulary content based on the LexGrid
 model.  The LexBIG architecture is enhanced and extended as required to meet
@@ -110,6 +110,9 @@ Known issues
 ===============================================================================
 Notes & Status
 ===============================================================================
+-6.4 (1/19/2016)
+	Removed Radlex Loader and its components. No longer needed.
+	
 -2.0Beta6 (4/20/2007)
     ---------------------------------------------------------------------------
     Items of special interest
@@ -339,8 +342,8 @@ Notes & Status
   - Several changes to regular expression processing were introduced to resolve
     case sensitivity issues in support of BioPortal functions.
   - Introduced support to load the FMA (integrated into API and GUI).  This is
-    provided though the Protégé Frames Loader extension, which will be enhanced
-    to include other Protégé conversions (e.g. RadLex) in future releases.
+    provided though the Protï¿½gï¿½ Frames Loader extension, which will be enhanced
+    to include other Protï¿½gï¿½ conversions (e.g. RadLex) in future releases.
     NOTE: To load FMA, download the fma.pprj file and the sql dump file
     following the setup instructions found at
     http://sig.biostr.washington.edu/cgi-bin/fma_register.cgi.
@@ -447,8 +450,8 @@ Notes & Status
     Load and Export
     ---------------------------------------------------------------------------
   - Introduced support to load the FMA (integrated into API and GUI).  This is
-    provided though the Protégé Frames Loader extension, which will be enhanced
-    to include other Protégé conversions (e.g. RadLex) in future releases.
+    provided though the Protï¿½gï¿½ Frames Loader extension, which will be enhanced
+    to include other Protï¿½gï¿½ conversions (e.g. RadLex) in future releases.
     NOTE: To load FMA, download the fma.pprj file and the sql dump file
     following the setup instructions found at
     http://sig.biostr.washington.edu/cgi-bin/fma_register.cgi.
@@ -984,7 +987,7 @@ Notes & Status
     -----------------------------------
   - An initial implementation was delivered for import of OBO terminologies
     (1.0 format) to LexGrid repositories and index the resulting content for
-    later queries.  Basic validation is carried out through the Protégé APIs.
+    later queries.  Basic validation is carried out through the Protï¿½gï¿½ APIs.
     Both load and query capabilities are externalized through the LexBIG/BIO
     Java API.  Load and validation APIs return a load status to the caller.
     Load and validation functions are also available as command-line scripts.
