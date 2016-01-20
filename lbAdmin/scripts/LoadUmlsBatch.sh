@@ -5,7 +5,7 @@
 # http://www.nlm.nih.gov/research/umls/metaa1.html.
 #
 # Options:
-#   -in,--input <uri> URI or path of the directory containing the NLM files
+#   -in,--input <uri> URI or path of the directory containing the NLM files. Path string must be preceded by "file:",
 #   -s,--source vocabularies to load.
 #
 # Example: LoadUMLSBatch -in "file:///path/to/directory/" -s "PSY"
