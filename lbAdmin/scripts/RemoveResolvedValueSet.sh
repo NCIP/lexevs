@@ -7,4 +7,4 @@
 #
 # Example: RemoveResolvedValueSet  -l \"codingschemeUri1::version1, codingschemeUri2::version2\" -f
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.valuesets.admin.RemoveResolvedValueSet $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.valuesets.admin.RemoveResolvedValueSet $@

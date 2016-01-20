@@ -328,6 +328,9 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(RestrictToMatchingPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
+        
+        
+        
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
@@ -454,8 +457,6 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(AddNamespaceToIndex.class);
         featureRequestTests.addTestSuite(ChangeConfigFileName.class);  
         featureRequestTests.addTestSuite(GForge17019.class);
-        //No longer supporting the MSAccess Load
-        //featureRequestTests.addTestSuite(GForge24191.class);
         mainSuite.addTest(featureRequestTests);
         
         //Mapping tests
@@ -466,36 +467,30 @@ public class AllTestsNormalConfig {
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
         
-        //Search Extesion tests
+        //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);
         
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
-//        
+        
         mainSuite.addTestSuite(CleanUpTest.class);
-//       
-//        //ValueSets tests
+       
+        //ValueSets tests
         mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
-//        
-//        //LexGrid XML Exporter tests
+        
+        //LexGrid XML Exporter tests
         mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
-//        
-//        //MRMAP RRF load tests
+        
+        //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
         //Broken Load Clean Up Function tests
 
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-
-
-//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsRemoveTest.class));
-        //CTS2 tests
-        //Run this outside of this scope.
-        //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
         // $JUnit-END$
 
         return mainSuite;

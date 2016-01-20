@@ -74,7 +74,7 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		}
 	}
 
-	private List<NamedDirectory> getNamedDirectories(
+	public static List<NamedDirectory> getNamedDirectories(
 			ConcurrentMetaData metaDirectories) {
 		List<NamedDirectory> directories = new ArrayList<NamedDirectory>();
 		for(CodingSchemeMetaData csmd : metaDirectories.getCodingSchemeList()){
@@ -99,14 +99,6 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		}
 		return new MultiReader(readers.toArray(new IndexReader[readers.size()]));
 	}
-
-//	@Override
-//	@Deprecated
-//	public void optimize() {
-//		
-//	System.out.println("Optimizing is no longer recommended or supported");
-//	
-//	}
 
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
 		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
@@ -182,6 +174,8 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 
 	@Override
 	public <T> T executeInIndexReader(IndexReaderCallback<T> callback) {

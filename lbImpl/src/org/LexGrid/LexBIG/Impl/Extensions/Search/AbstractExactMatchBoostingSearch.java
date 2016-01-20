@@ -38,12 +38,12 @@ public abstract class AbstractExactMatchBoostingSearch extends AbstractSearch {
         Query standardLuceneQuery = new LiteralSearch().buildQuery(searchText);
         standardLuceneQuery.setBoost(50.0f);
 
-        BooleanQuery booleanQuery = new BooleanQuery();
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
         
-        booleanQuery.add(specificAlgorithmQuery, Occur.MUST);
-        booleanQuery.add(standardLuceneQuery, Occur.SHOULD);
+        builder.add(specificAlgorithmQuery, Occur.MUST);
+        builder.add(standardLuceneQuery, Occur.SHOULD);
         
-        return booleanQuery;
+        return builder.build();
     } 
     
     public abstract Query doBuildQuery(String searchText);

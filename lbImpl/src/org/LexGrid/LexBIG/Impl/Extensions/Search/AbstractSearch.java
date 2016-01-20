@@ -40,7 +40,7 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8821994690004828366L;
     
-    /** The extra whitespace charaters. */
+    /** The extra whitespace characters. */
     private Set extraWhitespaceCharaters;
 
     /**
@@ -48,7 +48,7 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
      */
     protected AbstractSearch(){
         super();
-        IndexQueryParserFactory queryParserFactory = IndexQueryParserFactory.getInstance();
+        IndexQueryParserFactory queryParserFactory = new IndexQueryParserFactory();
         this.extraWhitespaceCharaters = queryParserFactory.getExtraWhitespaceCharaters();
     }
 
@@ -144,6 +144,8 @@ public abstract class AbstractSearch extends AbstractExtendable implements Searc
      * @return the query parser
      */
     public QueryParser getQueryParser() {
-        return IndexQueryParserFactory.getQueryThreadSafeQueryParser();
+        IndexQueryParserFactory queryParserFactory = new IndexQueryParserFactory();
+        
+        return queryParserFactory.getQueryProcessor();
     }
 }

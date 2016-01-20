@@ -861,7 +861,7 @@
 	</bean>
 	
 	<bean id="luceneSearch2013Dao" class="org.lexevs.dao.index.lucene.v2013.search.LuceneSearchDao">
-		<property name="luceneIndexTemplate" ref="luceneMultiIndexTemplate"/>
+		<property name="indexRegistry" ref="multiIndexRegistry"/>
 	</bean>
 	
 	<bean id="commonIndexLoaderCodeIndexer" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">

@@ -18,10 +18,15 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 
 /**
  * The Class ToNodeListTest.
@@ -110,4 +115,20 @@ public class ToNodeListTest extends BaseCodedNodeGraphTest {
         	System.out.println(ref.getCode());
         }
     }
+    
+    public void testToNodeListSomeNotStoredEntities() throws Exception {
+
+        CodedNodeSet cns2 = cng.toNodeList(Constructors.createConceptReference("Tires", "ExpendableParts"), true, false, -1, -1);
+        ResolvedConceptReference[] refs = cns2.resolveToList(
+                null,
+                null, 
+                null, 
+                -1).getResolvedConceptReference();
+        assertEquals(1,refs.length);
+        for(ConceptReference ref : refs) {
+        	System.out.println(ref.getCode());
+        }
+    }
+    
+
 }

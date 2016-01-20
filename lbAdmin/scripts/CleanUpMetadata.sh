@@ -11,4 +11,4 @@
 # Example:
 #
 # CleanUpMetadata -r 
-java -Xmx800m -XX:PermSize=256m -cp "..\runtime\lbPatch.jar:..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.CleanUpMetadata %*
+java -Xmx800m -XX:PermSize=256m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.CleanUpMetadata %*

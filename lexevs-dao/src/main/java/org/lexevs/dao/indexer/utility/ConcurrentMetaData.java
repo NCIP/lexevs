@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.system.model.LocalCodingScheme;
 
 public class ConcurrentMetaData {
@@ -88,6 +89,6 @@ public class ConcurrentMetaData {
 		return keys;
 		
 	}
-	
+
 
 }

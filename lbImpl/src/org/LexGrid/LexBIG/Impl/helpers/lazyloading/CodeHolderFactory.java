@@ -36,5 +36,9 @@ public interface CodeHolderFactory extends Serializable {
     public CodeHolder buildCodeHolder(
             Set<? extends AbsoluteCodingSchemeVersionReference> references,
             Query query) throws LBInvocationException, LBParameterException;
+    
+    public CodeHolder buildCodeHolder(CodeHolder additiveHolder,
+            Set<? extends AbsoluteCodingSchemeVersionReference> references,
+            Query query) throws LBInvocationException, LBParameterException;
 
 }

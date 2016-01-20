@@ -25,7 +25,6 @@ public enum OntologyFormat {
     HL7,
     UMLS,
     TEXT,
-    RADLEX,
     NICHISTORY,
     UMLSHISTORY,
     MRMAP,

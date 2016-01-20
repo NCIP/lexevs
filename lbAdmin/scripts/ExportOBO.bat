@@ -17,6 +17,6 @@ REM a list of available coding schemes will be presented for
 REM user selection.
 REM
 REM Example: ExportOBO -out "file:///path/to/dir" -f
-REM Example: ExportOBO -out "file:///path/to/dir" -u "FBbt" -v "PRODUCTION" -f
+REM Example: ExportOBO -out "file:///path/to/dir" -u "urn:lsid:bioontology.org:fungal_anatomy" -v "UNASSIGNED" -f
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.ExportOBO %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.ExportOBO %*

@@ -18,31 +18,27 @@
  */
 package org.lexevs.dao.index.lucene.v2013.search;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.LeafReaderContext;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.Collector;
-import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.FieldComparator;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractFilteringLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
+import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.logging.LoggerFactory;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 
 /**
  * The Class LuceneEntityDao.
@@ -54,17 +50,10 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	/** The supported index version2013. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion.parseStringToVersion("2013");
 	
-	private LuceneIndexTemplate luceneIndexTemplate;
+	private static LgLoggerIF logger = LoggerFactory.getLogger();
+
+	IndexRegistry registry;
 	
-	private static final Comparator<ScoreDoc> SCORE_DOC_COMPARATOR = new Comparator<ScoreDoc>(){
-		@Override
-		public int compare(ScoreDoc o1, ScoreDoc o2) {
-			// TODO New Lucene will not support or be compatible with older versions.
-			
-			//return FieldComparator.RELEVANCE.compare(o1, o2);
-			return 0;
-		}
-	};
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
@@ -85,10 +74,6 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 
 	@Override
 	public Filter getCodingSchemeFilter(String uri, String version) {
-		
-		// TODO New Lucene will not support or be compatible with older versions.
-		
-		//return this.getCodingSchemeFilterForCodingScheme(uri, version);
 		return null;
 	}
 
@@ -102,23 +87,32 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		try {
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 	
-			TopScoreDocCollector collector = TopScoreDocCollector.create(template.getMaxDoc());
+			int maxDoc = template.getMaxDoc();
 			
+			if (maxDoc == 0) {
+			    logger.error("Index does not exist.");
+			    throw new RuntimeException("Index does not exist.");
+			}
+			
+			TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
+						
 			template.search(query, null, collector);
 			final List<ScoreDoc> docs  = Arrays.asList(collector.topDocs().scoreDocs);
-			Collections.sort(docs, SCORE_DOC_COMPARATOR);
 			
 			return docs;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public List<ScoreDoc> query(Query query,
+			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude) {
+		List<AbsoluteCodingSchemeVersionReference> list = Arrays.asList(codeSystemsToInclude.
+				toArray(new AbsoluteCodingSchemeVersionReference[codeSystemsToInclude.size()]));
+		return registry.getCommonLuceneIndexTemplate(list).search(query, null);
+	}
 
-
-//	@Override
-//	public void optimizeIndex() {
-//		this.luceneIndexTemplate.optimize();
-//	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.AbstractBaseIndexDao#doGetSupportedLexEvsIndexFormatVersions()
@@ -128,19 +122,24 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2013);
 	}
 	
-	// @Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return this.luceneIndexTemplate;
-	}
-
-	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
-		this.luceneIndexTemplate = luceneIndexTemplate;
+		return registry.getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
-		return luceneIndexTemplate;
+		return new MultiBaseLuceneIndexTemplate(MultiBaseLuceneIndexTemplate.getNamedDirectories(ConcurrentMetaData.getInstance()));
 	}
+
+	public IndexRegistry getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(IndexRegistry registry) {
+		this.registry = registry;
+	}
+
+
 
 
 }

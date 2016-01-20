@@ -12,4 +12,4 @@ REM user selection.
 REM
 REM Example: RebuildTransitivityTable -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e"
 REM
-java -Xmx1500m -XX:PermSize=256m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.RebuildTransitivityTable %*
+java -Xmx1500m -XX:PermSize=256m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.RebuildTransitivityTable %*

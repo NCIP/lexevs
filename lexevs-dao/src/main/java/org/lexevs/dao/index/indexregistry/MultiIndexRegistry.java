@@ -29,7 +29,6 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
-	//TODO make any needed adjustments for a multi-Index implementation
 	private SystemVariables systemVariables;
 	
 	//Wired to DelegatingSystemResourceService
@@ -54,7 +53,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	private Map<String,Filter> codingSchemeFilterMap = new HashMap<String,Filter>();
 
-//	private String singleIndexName;
 	
 	public void setCodingSchemeFilterMap(Map<String, Filter> codingSchemeFilterMap) {
 		this.codingSchemeFilterMap = codingSchemeFilterMap;
@@ -292,7 +290,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
     private LuceneIndexTemplate getLuceneIndexTemplate(
             List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
         List<NamedDirectory> directories = getNamedDirectoriesForCodingSchemes(codingSchemes);
-        // TODO Auto-generated method stub
         return new MultiBaseLuceneIndexTemplate(directories);
     }
 
@@ -307,7 +304,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		    }
 		}
 		return directories;
-	
 	}
 
 }

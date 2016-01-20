@@ -207,6 +207,15 @@ public class ServiceUtility {
 
         return version;
     }
+    
+    /**
+     * @param codingSchemeName name or uri gets URI
+     * @return Uri for this coding scheme name
+     * @throws LBParameterException
+     */
+    public static String getUriForCodingSchemeName(String codingSchemeName) throws LBParameterException{
+        return LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(codingSchemeName, null);
+    }
 
     /**
      * Gets the coding scheme name.

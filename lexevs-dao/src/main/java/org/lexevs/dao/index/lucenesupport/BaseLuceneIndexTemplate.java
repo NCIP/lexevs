@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -41,11 +42,14 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate {
 
+	private static LgLoggerIF logger = LoggerFactory.getLogger();
+	
 	private NamedDirectory namedDirectory;
 	private ToParentBlockJoinIndexSearcher blockJoinSearcher;
 	private IndexSearcher indexSearcher;
@@ -153,7 +157,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 					throws Exception {
 				
 				List<ScoreDoc> docs = null;
-				final TopScoreDocCollector collector = TopScoreDocCollector.create(getMaxDoc());
+				
+				int maxDoc = getMaxDoc();
+				
+				if (maxDoc == 0) {
+				    logger.error("Index does not exist.");
+				    throw new RuntimeException("Index does not exist.");
+				}
+				
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
 				indexSearcher.search(query, collector
 				);
 				docs = Arrays.asList(collector.topDocs().scoreDocs);
@@ -188,7 +200,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 					throws Exception {
 				
 				List<ScoreDoc> docs = null;
-				final TopScoreDocCollector collector = TopScoreDocCollector.create(getMaxDoc());
+				
+				int maxDoc = getMaxDoc();
+				
+				if (maxDoc == 0) {
+				    logger.error("Index does not exist.");
+				    throw new RuntimeException("Index does not exist.");
+				}
+				
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
 				blockJoinSearcher.search(query, collector
 				);
 				docs = Arrays.asList(collector.topDocs().scoreDocs);

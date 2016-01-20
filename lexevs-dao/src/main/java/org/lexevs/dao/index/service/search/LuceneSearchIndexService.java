@@ -68,8 +68,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
-	
 	private Map<String,Filter> cachedFilters = new HashMap<String,Filter>();
 
 	public void deleteEntityFromIndex(
@@ -155,18 +153,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-		String key = this.getCodingSchemeKey(reference);
-		try {
-			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e);
-		}
+		
+		//TODO implement with concurrent metadata
+		return false;
 	}
 
-//	@Override
-//	public void optimize() {
-//		indexDaoManager.getSearchDao().optimizeIndex();
-//	}
 
 	@Override
 	public Analyzer getAnalyzer() {
@@ -176,46 +167,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	@Override
 	public List<ScoreDoc> query(
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
-			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToExclude, 
 			final Query query) {
-		
-		BooleanFilter booleanFilter = new BooleanFilter();
-		
-		boolean hasIncludes = CollectionUtils.isNotEmpty(codeSystemsToInclude);
-		boolean hasExcludes = CollectionUtils.isNotEmpty(codeSystemsToExclude);
 
-		if(hasIncludes){
-			List<Filter> filters = new ArrayList<Filter>();
-			
-			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToInclude){
-				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
-			}
-//			booleanFilter.add(
-//				new FilterClause(new ChainedFilter(
-//					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
-//					BooleanClause.Occur.MUST));
-		}
-		
-		if(hasExcludes){
-			List<Filter> filters = new ArrayList<Filter>();
-			
-			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToExclude){
-				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
-			}
-//			booleanFilter.add(
-//				new FilterClause(new ChainedFilter(
-//					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
-//					BooleanClause.Occur.MUST_NOT));
-		}
-		
-		Query queryToUse;
-		if(hasIncludes || hasExcludes){
-			queryToUse = new FilteredQuery(query, booleanFilter);
-		} else {
-			queryToUse = query;
-		}
-		
-		return this.indexDaoManager.getSearchDao().query(queryToUse);
+		List<AbsoluteCodingSchemeVersionReference> codingSchemes = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		codingSchemes.addAll(codeSystemsToInclude);
+		return this.indexDaoManager.getCommonEntityDao(codingSchemes).query(query);
 	}
 	
 	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {
@@ -283,14 +239,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
-	}
-
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
-
-	public MetaData getMetaData() {
-		return metaData;
 	}
 
 	public void setEntityIndexer(EntityIndexer entityIndexer) {

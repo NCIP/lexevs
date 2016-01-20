@@ -10,4 +10,4 @@
 #
 # Example: LoadText -in "file:///path/to/file.txt" -a
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.Load $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.Load $@

@@ -7,4 +7,4 @@
 #        
 # Example: LoadRevolvedValueSetDefinition LoadResolvedValueSetDefinition -u \"Automobiles:valuesetDefinitionURI\" -l \"Automobiles::version1, GM::version2\" -csVersionTag \"production\" ""
 #
-java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar"  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition $@
+java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*"  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition $@

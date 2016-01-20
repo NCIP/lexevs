@@ -18,4 +18,4 @@ REM Note: If the coding scheme and version values are unspecified,
 REM a list of available coding schemes will be presented for
 REM user selection.
 REM
-java -Xmx1500m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.ExportLgXML %*
+java -Xmx1500m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.ExportLgXML %*

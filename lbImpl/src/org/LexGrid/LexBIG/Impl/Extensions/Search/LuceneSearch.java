@@ -57,9 +57,7 @@ public class LuceneSearch extends AbstractSearch {
         
         try {
             return queryParser.parse(LuceneLoaderCode.PROPERTY_VALUE_FIELD + ":(" + 
-                   // super.handleWhiteSpaceCharacters(
                             searchText
-                    //        )
                             + ")");
         } catch (ParseException e) {
             throw new RuntimeException(e);

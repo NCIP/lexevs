@@ -55,6 +55,16 @@ import org.lexevs.logging.LoggerFactory;
 import java.util.ArrayList;
 
 /**
+ * 
+ * Legacy documentation below:  Currently we are using Lucene 5.3.1 which allows 
+ * us to use the toParentBlockJoint mechanism to group related entity properties.
+ * 
+ * this was finessed to some extent by creating a boolean query over to parent block
+ * join queries for each term insuring that parent docs returned contained both 
+ * terms when the restrictions are "anded"
+ * 
+ * ***legacy docuementation of the bitset implementation*******
+ * 
  * Class which implements all of the restriction operations using Lucene
  * searches.
  * 

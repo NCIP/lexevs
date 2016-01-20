@@ -94,6 +94,9 @@ public abstract class LuceneLoaderCode {
     /** The Constant LITERAL_AND_REVERSE_PREFIX. */
     public static final String LITERAL_AND_REVERSE_PREFIX = LITERAL_PREFIX + REVERSE_PREFIX;
     
+    /** The entity code. */
+    protected static String UNIQUE_ID = "code";
+    
     /** The PROPERT y_ valu e_ field. */
     public static String PROPERTY_VALUE_FIELD = "propertyValue";
     
@@ -146,6 +149,8 @@ public abstract class LuceneLoaderCode {
     
     /** The Constant QUALIFIER_NAME_VALUE_SPLIT_TOKEN. */
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
+
+	private static final String ENTITY_TYPE = "entityType";
  
     private LuceneEntityDao luceneEntityDao;
 
@@ -158,18 +163,8 @@ public abstract class LuceneLoaderCode {
 			throw new RuntimeException(e);
 		}
     }
-
-    // by default, the index stores a copy of most of the information. Switching
-    // this to
-    // true will cause the indexer to only store the values that are required by
-    // the LexBIG
-    // implementation at runtime.
-
-    // TODO add a GUI option for the codeBoundry stuff.
     
     /** The literal analyzer. */
-//    public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-//            new char[]{}, new char[]{}); 
     public static Analyzer literalAnalyzer = new Analyzer() {
     	
         @Override
@@ -215,36 +210,27 @@ public abstract class LuceneLoaderCode {
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers) throws Exception {
 
-        String idFieldName = "code";
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
-        generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
-        generator_.addTextField(idFieldName, entityCode, true, true, false);
-        generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
+        generator_.addTextField(UNIQUE_ID + "Tokenized", entityCode, false, true, true);
+        generator_.addTextField(UNIQUE_ID, entityCode, false, true, false);// must be anyalyzed with KeywordAnalyzer
+        generator_.addTextField(UNIQUE_ID + "LC", entityCode.toLowerCase(), false, true, false);
         
         if(entityTypes != null) {
         	for(String entityType : entityTypes) {
-        		generator_.addTextField("entityType", entityType, true, true, false);
+        		generator_.addTextField(ENTITY_TYPE, entityType, false, true, false);// must be analyzed with KeywordAnalyzer
         	}
         }
         
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityCode, entityNamespace), false, true, false);
-       
-//        if(StringUtils.isNotBlank(entityUid)) {
-//        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
-//        }
-        
-        //If the EntityDescription is an empty String, replace it with a single space.
-        //Lucene will not index an empty String but it will index a space.
-//        if(StringUtils.isBlank(entityDescription)){
-//            entityDescription = " ";
-//        }
-//        generator_.addTextField("entityDescription", entityDescription, true, true, false);
-      
-        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, true, true, false);
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
+        		createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+        		createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, 
+        				entityCode, entityNamespace), false, true, false);
+     // must be analyzed with KeywordAnalyzer
+        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, false, true, false);
 
         String tempPropertyType;
         if (propertyType == null || propertyType.length() == 0) {
@@ -399,11 +385,7 @@ public abstract class LuceneLoaderCode {
         return generator_.getDocument();
     }
 
-    /*
-     * caGrid used these "boundry" documents to speed up multiple successive
-     * queries. A boundry document should be added whenever a new entity id is
-     * started.
-     */
+
     /**
      * Adds the entity boundry document.
      * 
@@ -435,29 +417,9 @@ public abstract class LuceneLoaderCode {
     	generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
     	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
     	generator_.addTextField("entityCode", entityCode, true, true, false);
-//    	generator_.addTextField("code", entityCode, false, true, false);
     	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
     	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
-    	
-//    	if (isActive != null) {
-//            if (isActive.booleanValue()) {
-//                generator_.addTextField("isActive", "T", false, true, false);
-//            } else {
-//                generator_.addTextField("isActive", "F", false, true, false);
-//            }
-//        }else{
-//        	 generator_.addTextField("isActive", "T", false, true, false);
-//        }
-//        
-//        if (isAnonymous != null) {
-//            if (isAnonymous.booleanValue()) {
-//                generator_.addTextField("isAnonymous", "T", true, true, false);
-//            } else {
-//                generator_.addTextField("isAnonymous", "F", true, true, false);
-//            }
-//        }else{
-//        	generator_.addTextField("isAnonymous", "F", true, true, false);
-//        }
+    
     	
         if (isDefined != null) {
             if (isDefined.booleanValue()) {
@@ -466,16 +428,6 @@ public abstract class LuceneLoaderCode {
                 generator_.addTextField("isDefined", "F", false, true, false);
             }
         }
-        
-//        if(entityTypes != null) {
-//        	for(String entityType : entityTypes) {
-//        		generator_.addTextField("entityType", entityType, true, true, false);
-//        	}
-//        }
-        
-//        if (conceptStatus != null && conceptStatus.length() > 0) {
-//            generator_.addTextField(SQLTableConstants.TBLCOL_CONCEPTSTATUS, conceptStatus, false, true, false);
-//        }
         
         if(StringUtils.isNotBlank(entityUid)) {
         	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
@@ -486,7 +438,9 @@ public abstract class LuceneLoaderCode {
         }else {
         	throw new RuntimeException("isParentDoc is not defined.");
         }
-    	
+    	for(String entityType: entityTypes){
+    		generator_.addTextField("type", entityType, true, true, false);
+    	}
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
     			createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
     	generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
@@ -516,6 +470,11 @@ public abstract class LuceneLoaderCode {
         //add a literal analyzer -- keep all special characters
     	analyzerPerField.put(LITERAL_PROPERTY_VALUE_FIELD, literalAnalyzer);
     	analyzerPerField.put(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer); 
+    	
+    	//treat as string field by analyzing with the KeywordAnalyzer
+    	analyzerPerField.put(UNIQUE_ID, new KeywordAnalyzer());
+    	analyzerPerField.put(ENTITY_TYPE, new KeywordAnalyzer());
+    	analyzerPerField.put(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, new KeywordAnalyzer());
 
         if (doubleMetaphoneEnabled_) {
             Analyzer temp = new Analyzer() {

@@ -17,4 +17,4 @@ REM
 REM Example: LoadOWL -in "file:///path/to/somefile.owl" -a
 REM          LoadOWL -in "file:///path/to/somefile.owl" -v 0
 REM
-java -Xmx1000m -XX:MaxPermSize=256M -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadOWL %*
+java -Xmx1000m -XX:MaxPermSize=256M -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadOWL %*
