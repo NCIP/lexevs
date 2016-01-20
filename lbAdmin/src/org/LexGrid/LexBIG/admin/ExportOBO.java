@@ -101,7 +101,18 @@ public class ExportOBO {
             }
 
             // Interpret provided values ...
-            URI destination = Util.string2FileURI(cl.getOptionValue("out"));
+            URI destination = null;
+            try
+            {
+                destination = Util.string2FileURI(cl.getOptionValue("out"));
+            }
+            catch(Exception e)
+            {
+                Util.displayMessage(e.getMessage());
+                Util.displayMessage("Please make sure the destination is an existing directory.");
+                return;
+            }
+            
             String urn = cl.getOptionValue("u");
             String ver = cl.getOptionValue("v");
             boolean overwrite = cl.hasOption("f");
@@ -125,6 +136,9 @@ public class ExportOBO {
                 }
             }
 
+            String csuri = urn;
+            String csver = ver;
+            
             // Found it? If not, prompt...
             if (css == null) {
                 if (urn != null || ver != null) {
@@ -134,13 +148,16 @@ public class ExportOBO {
                 css = Util.promptForCodeSystem();
                 if (css == null)
                     return;
+                
+                csuri = css.getCodingSchemeURI();
+                csver = css.getRepresentsVersion();
             }
 
             // Find the registered extension handling this type of export ...
             OBO_Exporter exporter = (OBO_Exporter) lbsm.getExporter(OBOExport.name);
 
             // Perform the requested action ...
-            exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(urn, ver), destination, overwrite,
+            exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(csuri, csver), destination, overwrite,
                     false, true);
             Util.displayExporterStatus(exporter);
         }

@@ -16,6 +16,6 @@
 # user selection.
 #
 # Example: ExportOBO -out "file:///path/to/dir" -f
-# Example: ExportOBO -out "file:///path/to/dir" -u "FBbt" -v "PRODUCTION" -f
+# Example: ExportOBO -out "file:///path/to/dir" -u "urn:lsid:bioontology.org:fungal_anatomy" -v "UNASSIGNED" -f
 #
 java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.ExportOBO $@
