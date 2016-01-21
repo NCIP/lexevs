@@ -300,7 +300,7 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		    for(AbsoluteCodingSchemeVersionReference ref : codingSchemes){
 		    if(csmd.getCodingSchemeUri().equals(ref.getCodingSchemeURN()) && 
 		            csmd.getCodingSchemeVersion().equals(ref.getCodingSchemeVersion())){
-		    directories.add(csmd.getDirectory());}
+		    directories.add(csmd.getDirectory().getIndexReader().maxDoc() > 0 ? csmd.getDirectory(): csmd.getDirectory().refresh());}
 		    }
 		}
 		return directories;

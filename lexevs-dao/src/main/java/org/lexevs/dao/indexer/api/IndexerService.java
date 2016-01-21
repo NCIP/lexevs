@@ -129,7 +129,8 @@ public class IndexerService {
 			HashSet<String> fileNames) {
 		for (String s : fileNames) {
 			CodingSchemeMetaData metadata = concurrentMetaData.getIndexMetaDataForFileName(s);
-			if(metadata != null){
+			if(metadata != null && metadata.getDirectory().getIndexReader().maxDoc() == 0)
+			{
 			metadata.getDirectory()
 					.refresh();
 			LoggerFactory.getLogger().warn("Refreshing index: " + s);

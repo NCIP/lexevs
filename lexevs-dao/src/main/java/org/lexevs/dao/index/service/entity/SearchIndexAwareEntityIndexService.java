@@ -8,17 +8,6 @@ public class SearchIndexAwareEntityIndexService extends LuceneEntityIndexService
 
 	private SearchIndexService searchIndexService;
 	
-//	@Override
-//	public void optimizeAll() {
-//		super.optimizeAll();
-//		this.searchIndexService.optimize();
-//	}
-//
-//	@Override
-//	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion) {
-//		super.optimizeIndex(codingSchemeUri, codingSchemeVersion);
-//		this.searchIndexService.optimize();
-//	}
 
 	@Override
 	public void updateIndexForEntity(String codingSchemeUri,

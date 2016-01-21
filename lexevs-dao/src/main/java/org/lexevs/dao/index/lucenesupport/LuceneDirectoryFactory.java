@@ -169,7 +169,7 @@ public class LuceneDirectoryFactory implements FactoryBean {
 				writer.close();
 		}
 		
-		public void refresh() {
+		public NamedDirectory refresh() {
 			try {
 				IndexReader reopenedReader = DirectoryReader.open(this.directory);
 				
@@ -181,6 +181,8 @@ public class LuceneDirectoryFactory implements FactoryBean {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+			
+			return this;
 		}
 
 		public void remove() {

@@ -181,27 +181,27 @@ public class ResolveTest extends BaseCodedNodeSetTest {
        assertEquals("T0001", itr.next().getCode());   
      }
     
-    /**
-     * Test multiple code system sort more resuts.
-     * 
-     * @throws Exception the exception
-     */
-    public void testMultipleCodeSystemSortMoreResuts() throws Exception{
-        
-        CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
-        
-        CodedNodeSet union = cns2.union(cns);
-        
-        union.restrictToMatchingDesignations("(  an OR tires OR car OR automobile^4 OR truck^2 OR piston^3 OR rims^5 OR general )", SearchDesignationOption.ALL, "LuceneQuery", null);
-
-        ResolvedConceptReferencesIterator itr = union.resolve(
-                Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null);
-
-       assertEquals("R0001", itr.next().getCode());
-       assertEquals("A0001", itr.next().getCode());  
-       assertEquals("P0001", itr.next().getCode()); 
-       assertEquals("T0001",itr.next().getCode());   
-     }
+//    /**
+//     * Test multiple code system sort more resuts.
+//     * 
+//     * @throws Exception the exception
+//     */
+//    public void testMultipleCodeSystemSortMoreResuts() throws Exception{
+//        
+//        CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
+//        
+//        CodedNodeSet union = cns2.union(cns);
+//        
+//        union.restrictToMatchingDesignations("(  an OR tires OR car OR automobile^4 OR truck^2 OR piston^3 OR rims^5 OR general )", SearchDesignationOption.ALL, "LuceneQuery", null);
+//
+//        ResolvedConceptReferencesIterator itr = union.resolve(
+//                Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null);
+//
+//       assertEquals("R0001", itr.next().getCode());
+//       assertEquals("A0001", itr.next().getCode());  
+//       assertEquals("P0001", itr.next().getCode()); 
+//       assertEquals("T0001",itr.next().getCode());   
+//     }
     
     /**
      * Test filter options.

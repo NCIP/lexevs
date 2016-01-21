@@ -172,22 +172,22 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
         assertTrue(refs[1].getCode().equals("T0001"));   
       }
      
-     public void testMultipleCodeSystemSortMoreResuts() throws Exception{
-         
-         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
-         
-         CodedNodeSet union = cns2.union(cns);
-         
-         union.restrictToMatchingDesignations("( an OR tires OR car OR automobile^4 OR truck^2 OR piston^3 OR rims^5 OR general )", SearchDesignationOption.ALL, "LuceneQuery", null);
-
-         ResolvedConceptReference[] refs = union.resolveToList(
-                 Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null, -1).getResolvedConceptReference();
-
-         assertEquals("R0001", refs[0].getCode());
-         assertEquals("A0001", refs[1].getCode());  
-         assertEquals("P0001", refs[2].getCode()); 
-         assertEquals("T0001", refs[3].getCode());   
-      }
+//     public void testMultipleCodeSystemSortMoreResuts() throws Exception{
+//         
+//         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
+//         
+//         CodedNodeSet union = cns2.union(cns);
+//         
+//         union.restrictToMatchingDesignations("( an OR tires OR car OR automobile^4 OR truck^2 OR piston^3 OR rims^5 OR general )", SearchDesignationOption.ALL, "LuceneQuery", null);
+//
+//         ResolvedConceptReference[] refs = union.resolveToList(
+//                 Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null, -1).getResolvedConceptReference();
+//
+//         assertEquals("R0001", refs[0].getCode());
+//         assertEquals("A0001", refs[1].getCode());  
+//         assertEquals("P0001", refs[2].getCode()); 
+//         assertEquals("T0001", refs[3].getCode());   
+//      }
     
     /**
      * Test filter options.
