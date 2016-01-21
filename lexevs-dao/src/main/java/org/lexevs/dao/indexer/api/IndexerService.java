@@ -133,7 +133,6 @@ public class IndexerService {
 			{
 			metadata.getDirectory()
 					.refresh();
-			LoggerFactory.getLogger().warn("Refreshing index: " + s);
 			}
 		}
 	}

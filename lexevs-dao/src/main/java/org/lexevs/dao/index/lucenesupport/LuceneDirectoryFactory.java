@@ -36,6 +36,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.MMapDirectory;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.indexer.utility.Utility;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 
@@ -178,6 +179,7 @@ public class LuceneDirectoryFactory implements FactoryBean {
 					this.indexReader = this.createIndexReader(this.directory);
 				}
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
+				LoggerFactory.getLogger().warn("Refreshing index: " + this.indexName);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
