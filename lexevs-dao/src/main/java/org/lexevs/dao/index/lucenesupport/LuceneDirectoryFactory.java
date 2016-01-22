@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -35,13 +34,12 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.MMapDirectory;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 
 public class LuceneDirectoryFactory implements FactoryBean {
-//TODO adjust or rewrite for multi directory concurrency.
+
 	private String indexName;
 	
 	private Resource indexDirectory;

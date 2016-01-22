@@ -218,11 +218,12 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
 	@Override
 	public void destroyIndex(String indexName) {
-		//TODO Coordinate with ConcurrentMetaData List? Not sure we should even allow this here.   
+ 
 		String location = systemVariables.getAutoLoadIndexLocation();
 		try {
 			Path path = Paths.get(location,indexName);
 			FileUtils.deleteDirectory(new File(path.toString()));
+			concurrentMetaData.removeIndexMetaDataValue(indexName);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
