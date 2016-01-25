@@ -528,9 +528,7 @@ public abstract class LuceneLoaderCode {
 			protected TokenStreamComponents createComponents(String arg0) {
                 final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
                 source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
-                //TokenStream filter = new StandardFilter(source);
                 TokenStream filter = new LowerCaseFilter( source);
-//                filter = new StopFilter(filter, dividerList);
                 Pattern pattern = Pattern.compile("\\-|\\;|\\(|\\)|\\{|\\}|\\[|\\]|\\<|\\>|\\||(\\<\\:\\>)");
 				filter = new PatternReplaceFilter(filter, pattern, " ", true);
                 return new TokenStreamComponents(source, filter);
