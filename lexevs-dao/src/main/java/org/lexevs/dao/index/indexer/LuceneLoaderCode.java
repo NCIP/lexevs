@@ -18,10 +18,9 @@
  */
 package org.lexevs.dao.index.indexer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -32,9 +31,9 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.StopFilter;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
 import org.apache.lucene.analysis.phonetic.DoubleMetaphoneFilter;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -52,6 +51,7 @@ import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ * @author <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer</A>
  */
 public abstract class LuceneLoaderCode {
 	
@@ -519,12 +519,27 @@ public abstract class LuceneLoaderCode {
             analyzerPerField.put(STEMMING_PROPERTY_VALUE_FIELD, temp);
         }
         
-        List<String> dividerList = new ArrayList<String>();
+        final CharArraySet dividerList = new CharArraySet(10, true);
         dividerList.add(STRING_TOKENIZER_TOKEN);
         Analyzer sa = new StandardAnalyzer(new CharArraySet(dividerList, true));
+        Analyzer qualifierAnalyzer = new Analyzer(){
+
+			@Override
+			protected TokenStreamComponents createComponents(String arg0) {
+                final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                //TokenStream filter = new StandardFilter(source);
+                TokenStream filter = new LowerCaseFilter( source);
+//                filter = new StopFilter(filter, dividerList);
+                Pattern pattern = Pattern.compile("\\-|\\;|\\(|\\)|\\{|\\}|\\[|\\]|\\<|\\>|\\||(\\<\\:\\>)");
+				filter = new PatternReplaceFilter(filter, pattern, " ", true);
+                return new TokenStreamComponents(source, filter);
+			}
+        	
+        };
         analyzerPerField.put("sources", sa);
         analyzerPerField.put("usageContexts", sa);
-        analyzerPerField.put("qualifiers", sa);
+        analyzerPerField.put("qualifiers", qualifierAnalyzer);
         
         // no stop words, default character removal set.
     	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET), analyzerPerField);

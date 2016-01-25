@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
+import java.util.ArrayList;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -41,18 +43,16 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
-
-import java.util.ArrayList;
 
 /**
  * 
@@ -293,15 +293,16 @@ public class RestrictionImplementations {
                     NameAndValue qualNameAndValue = propertyQualifiers.getNameAndValue(i);
                     String name = qualNameAndValue.getName();
                     String value = qualNameAndValue.getContent();
-
+                    QueryParser parser = new QueryParser("qualifiers",LuceneLoaderCode.getAnaylzer());
+                    Query queryNameAndValue = parser.parse("\"" +name
+                                + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
+                                + value + "\"");
+                    Query nameOnly = parser.parse(name
+                            + "*");
                     if(StringUtils.isNotBlank(value)){
-                        nestedQuery.add(new BooleanClause(new TermQuery(new Term("qualifiers", name
-                                + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
-                                + value)), Occur.SHOULD));
+                        nestedQuery.add(new BooleanClause(queryNameAndValue, Occur.SHOULD));
                     } else {
-                        nestedQuery.add(new BooleanClause(new WildcardQuery(new Term("qualifiers", name
-                                + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
-                                + "*")), Occur.SHOULD));
+                        nestedQuery.add(new BooleanClause(nameOnly, Occur.SHOULD));
                     }
                 }
                 masterQuery.add(nestedQuery.build(), Occur.MUST);
