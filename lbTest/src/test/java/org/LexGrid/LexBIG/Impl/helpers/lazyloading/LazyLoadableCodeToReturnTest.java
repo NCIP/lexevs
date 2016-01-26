@@ -203,7 +203,7 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
         protected Document buildDocument(){
             Document doc = new Document();
             doc.add(new TextField(SQLTableConstants.TBLCOL_ENTITYCODE, "id", null));  
-            doc.add(new TextField("codingSchemeId","cs", null));  
+            doc.add(new TextField("codingSchemeUri","cs", null));  
             doc.add(new TextField(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,"description", null));  
             doc.add(new TextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,"namespace", null));  
             doc.add(new TextField("entityType","type1", null));
