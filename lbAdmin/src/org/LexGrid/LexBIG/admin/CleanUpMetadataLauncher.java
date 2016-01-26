@@ -106,6 +106,7 @@ public class CleanUpMetadataLauncher {
 			    }
 			}
 			
+			Util.displayTaggedMessage("CleanUpMetadata routine ended without error!");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
