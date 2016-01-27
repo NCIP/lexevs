@@ -73,8 +73,15 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 		int maxDoc = template.getMaxDoc();
 		
 		if (maxDoc == 0) {
-		    logger.error("Index does not exist.");
-		    throw new RuntimeException("Index does not exist.");
+			StringBuffer errorMsg = new StringBuffer("Index does not exist");
+			
+			if (!references.isEmpty()){
+				errorMsg.append(": coding scheme: " + references.get(0).getCodingSchemeURN() + 
+						" version: " +  references.get(0).getCodingSchemeVersion());
+			}
+			
+		    logger.error(errorMsg.toString());
+		    throw new RuntimeException(errorMsg.toString());
 		}
 
 		TopScoreDocCollector hitCollector = 

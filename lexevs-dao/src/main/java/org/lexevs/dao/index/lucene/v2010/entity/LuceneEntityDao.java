@@ -97,8 +97,9 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			int maxDoc = template.getMaxDoc();
 			
 			if (maxDoc == 0) {
-			    logger.error("Index does not exist.");
-			    throw new RuntimeException("Index does not exist.");
+				String errorMsg = "Index does not exist for coding scheme URI " + codingSchemeUri + " and version " + version;
+			    logger.error(errorMsg);
+			    throw new RuntimeException(errorMsg);
 			}
 			
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);
@@ -118,8 +119,9 @@ public class LuceneEntityDao extends AbstractBaseLuceneIndexTemplateDao implemen
 			int maxDoc = template.getMaxDoc();
 			
 			if (maxDoc == 0) {
-			    logger.error("Index does not exist.");
-			    throw new RuntimeException("Index does not exist.");
+				String errorMsg = "Index does not exist: " + template.getIndexName();
+			    logger.error(errorMsg);
+			    throw new RuntimeException(errorMsg);
 			}
 			
 			TopScoreDocCollector hitCollector = TopScoreDocCollector.create(maxDoc);

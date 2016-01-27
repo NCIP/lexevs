@@ -90,8 +90,9 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 			int maxDoc = template.getMaxDoc();
 			
 			if (maxDoc == 0) {
-			    logger.error("Index does not exist.");
-			    throw new RuntimeException("Index does not exist.");
+				String errorMsg = "Index does not exist: " + template.getIndexName();
+			    logger.error(errorMsg);
+			    throw new RuntimeException(errorMsg);
 			}
 			
 			TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
