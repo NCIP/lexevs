@@ -141,13 +141,16 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             ref.setCodingSchemeURN(uri);
             ref.setCodingSchemeVersion(version);
 
-            builder.add(new GetAllConcepts(uri, version).getQuery(), Occur.MUST);
+            builder.add(new GetAllConcepts(codingScheme, tagOrVersion).getQuery(), Occur.MUST);
             
             this.references.add(ref);
             this.primaryReference = ref;
         } catch (LBParameterException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (LBResourceUnavailableException e) {
+            throw e;
+        }
+        catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }

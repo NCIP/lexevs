@@ -49,6 +49,7 @@ public class GetAllConcepts implements Restriction {
 
     public GetAllConcepts(String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException,
             LBResourceUnavailableException {
+        
         String version = null;
         SystemResourceService rm = LexEvsServiceLocator.getInstance().getSystemResourceService();
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
@@ -62,8 +63,11 @@ public class GetAllConcepts implements Restriction {
         }
 
         // this throws the necessary exceptions if it can't be mapped / found
-        internalCodingSchemeName_ = rm.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
+        rm.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
 
+        // Assign the URI passed in as the coding scheme
+        internalCodingSchemeName_ = codingScheme;
+        
         // make sure that it is active.
         String urn = rm.getUriForUserCodingSchemeName(internalCodingSchemeName_, version);
         if (!registry.getCodingSchemeEntry(
@@ -73,6 +77,7 @@ public class GetAllConcepts implements Restriction {
         }
 
         internalVersion_ = version;
+
     }
 
     public GetAllConcepts(String internalCodingSchemeName, String internalVersionString) {
