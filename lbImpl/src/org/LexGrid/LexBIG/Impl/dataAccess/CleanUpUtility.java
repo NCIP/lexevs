@@ -305,7 +305,7 @@ public class CleanUpUtility {
         List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
 
         List<AbsoluteCodingSchemeVersionReference> registeredMD = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-        boolean notFound = false;
+        boolean notFound = true;
         for (AbsoluteCodingSchemeVersionReference ref : indexRefs.getAbsoluteCodingSchemeVersionReference()) {
 
             for (RegistryEntry reg : regEntries) {
