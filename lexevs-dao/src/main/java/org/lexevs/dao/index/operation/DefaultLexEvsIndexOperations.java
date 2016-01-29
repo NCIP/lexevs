@@ -19,6 +19,7 @@
 package org.lexevs.dao.index.operation;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,13 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	private IndexRegistry indexRegistry;
 	private IndexDaoManager indexDaoManager;
 	private ConcurrentMetaData concurrentMetaData;
+	
+	// File filter to only accept files if they are a directory
+	private FileFilter directoryFilter = new FileFilter() {
+		public boolean accept(File file) {
+			return file.isDirectory();
+		}
+	};
 	
 	@Override
 	public void registerCodingSchemeEntityIndex(String codingSchemeUri,
@@ -183,7 +191,7 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 			throws LBParameterException {
 		String indexLocation = getLexEVSIndexLocation();
 		File indexParentFolder = new File(indexLocation);
-		File[] indexes = indexParentFolder.listFiles();
+		File[] indexes = indexParentFolder.listFiles(directoryFilter);
 		for (File index : indexes) {
 			if (index.getName().equals(Utility.getIndexName(ref))) {
 				return true;
@@ -195,7 +203,7 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 	public File[] getIndexes() {
 		String indexLocation = getLexEVSIndexLocation();
 		File indexParentFolder = new File(indexLocation);
-		return indexParentFolder.listFiles();
+		return indexParentFolder.listFiles(directoryFilter);
 	}
 
 	public AbsoluteCodingSchemeVersionReference doesIndexHaveMatchingRegistryEntry(
