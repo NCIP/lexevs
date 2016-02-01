@@ -103,7 +103,7 @@ public class LuceneMetadataDao implements MetadataDao {
 //        	   }
 // TODO see Multifield for a better implementation of this.
 			  BytesRef text = null;
-			   while ((text = te.next()) != null) {
+			   while ((te != null) && (text = te.next()) != null) {
 			       Query temp = new TermQuery(new Term("codingSchemeNameVersion", text.utf8ToString()));
 
 			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);
