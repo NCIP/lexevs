@@ -89,8 +89,9 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     		foundCodes.add(itr.next().getCode());
     	}
      
-    	assertEquals(2,foundCodes.size());
+    	assertEquals(3,foundCodes.size());
     	
+    	assertTrue(foundCodes.contains("R0001"));
     	assertTrue(foundCodes.contains("E0001"));
     	assertTrue(foundCodes.contains("P0001"));
     } 

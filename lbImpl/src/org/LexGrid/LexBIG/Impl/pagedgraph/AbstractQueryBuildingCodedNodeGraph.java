@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -47,12 +48,16 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedContainerName;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -359,10 +364,10 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             (MappingExtension) LexBIGServiceImpl.defaultInstance().getGenericExtension("MappingExtension");
         
         ConceptReferenceList codeList;
-        
+        String altSchemeName = null;
+        String altUri = null;
+        String altVersion = null;
         if( graphFocus == null 
-                &&
-                this.isNotRestricted()
                 &&
                 mappingExtension.isMappingCodingScheme(
                 codingSchemeUri, 
@@ -377,6 +382,19 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                             getCodedNodeGraphService().
                                 getRelationNamesForCodingScheme(codingSchemeUri, version);
             }
+            CodingSchemeVersionOrTag mappingVersion = new CodingSchemeVersionOrTag();
+            mappingVersion.setVersion(version);
+            CodingScheme mappingScheme = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingSchemeUri, mappingVersion);
+           
+            if(!this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodeSystem().isEmpty()){
+                altSchemeName =  mappingScheme.getRelations()[0].getSourceCodingScheme();
+                
+            }
+            else if(!this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodeSystem().isEmpty()){
+                altSchemeName = mappingScheme.getRelations()[0].getTargetCodingScheme();;
+            }
+            
+            
             
             codeList = new ConceptReferenceList();
             
@@ -390,16 +408,23 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                     while(itr.hasNext()) {
                         ResolvedConceptReference ref = itr.next();
                         if(resolveForward || (resolveBackward && resolveAssociationDepth > 0)) {
+                            ref.setCodeNamespace(correctNamepsaceForEquivalentCodingScheme(ref.getCodeNamespace(), mappingScheme));
                             codeList.addConceptReference(ref);
                         }
                         for(Association assoc : ref.getSourceOf().getAssociation()) {
                             for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
                                 if(resolveBackward || (resolveForward && resolveAssociationDepth > 0)) {
+                                	ac.setCodeNamespace(correctNamepsaceForEquivalentCodingScheme(ref.getCodeNamespace(), mappingScheme));
                                     codeList.addConceptReference(ac);
                                 }
                             }
                         }
                     }
+                    
+                    altUri = ServiceUtility.getUriForCodingSchemeName(altSchemeName);
+                    CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
+                    csvt.setTag("PRODUCTION");
+                    altVersion = ServiceUtility.getVersion(altUri, csvt);
                 } catch (LBResourceUnavailableException e) {
                     throw new RuntimeException(e);
                 } 
@@ -422,9 +447,14 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                         new ReferenceReturningCycleDetectingCallback());
             
             codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
+
         }
    
         try {
+            if(altUri != null){
+                this.setCodingSchemeUri(altUri);
+                this.setVersion(altVersion);
+            }
             CodedNodeSetImpl cns = new CodedNodeSetImpl(
                     this.getCodingSchemeUri(),
                     Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), null, null);
@@ -433,6 +463,27 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         } catch (Exception e) {
            throw new RuntimeException(e);
         }
+    }
+
+    private String correctNamepsaceForEquivalentCodingScheme(final String codeNamespace, final CodingScheme mapping) {
+       List<SupportedNamespace> namespaces = mapping.getMappings().getSupportedNamespaceAsReference();
+       for(SupportedNamespace sn : namespaces){
+           if(sn.getLocalId().equals(codeNamespace)){
+               return getEquivalentCodingSchemeForNamespace(codeNamespace, mapping, sn);
+           }
+       }
+        return codeNamespace;
+    }
+
+    private String getEquivalentCodingSchemeForNamespace(final String codeNamespace, final CodingScheme mapping, final SupportedNamespace sn) {
+        List<SupportedCodingScheme> schemes = mapping.getMappings().getSupportedCodingSchemeAsReference();
+        for(SupportedCodingScheme scheme : schemes){
+            if(scheme.getLocalId().equals(sn.getEquivalentCodingScheme())){
+                //we don't define the namespace for the target coding scheme, so it will be satisfied by the entity code.
+                return null;
+            }
+        }
+        return codeNamespace;
     }
 
     private boolean isNotRestricted() {
