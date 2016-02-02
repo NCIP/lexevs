@@ -79,29 +79,12 @@ public class LuceneMetadataDao implements MetadataDao {
 							termsEnum = terms.iterator();
 						}
 					}
-					// TODO - Predetermine the number of hits - remove the 1000
-//					TopScoreDocCollector collector = TopScoreDocCollector.create(1000);
-//					
-//					IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-//					Query temp = new TermQuery(new Term("codingSchemeNameVersion","*"));
-//					indexSearcher.search(temp, collector);					
-//					TopDocs topDocs = collector.topDocs();
 
 					return termsEnum;
 				}  
         	   });
         	   
-//        	   ScoreDoc[] scoreDocs = td.scoreDocs;
-//        	   
-//        	   for (ScoreDoc scoreDoc : scoreDocs) {
-//        		   AbsoluteCodingSchemeVersionReference acsvr = new AbsoluteCodingSchemeVersionReference();
-//        		   Document document = luceneIndexTemplate.getDocumentById(scoreDoc.doc);
-//        		   acsvr.setCodingSchemeURN(document.get("codingSchemeRegisteredName"));
-//		           acsvr.setCodingSchemeVersion(document.get("codingSchemeVersion"));
-//
-//		           result.addAbsoluteCodingSchemeVersionReference(acsvr);
-//        	   }
-// TODO see Multifield for a better implementation of this.
+        	  // TODO see Multifield for a better implementation of this.
 			  BytesRef text = null;
 			   while ((te != null) && (text = te.next()) != null) {
 			       Query temp = new TermQuery(new Term("codingSchemeNameVersion", text.utf8ToString()));
