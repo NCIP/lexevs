@@ -55,6 +55,7 @@ import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
@@ -404,9 +405,13 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                         Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
                         relationContainerName, 
                         null);
+                //We don't want to modify a cached result.  
+                //So we need to clone it and reassign it before modification.
+               ResolvedConceptReference[] rcrl = null;
                 try {
-                    while(itr.hasNext()) {
-                        ResolvedConceptReference ref = itr.next();
+                    rcrl = itr.next(itr.numberRemaining()).getResolvedConceptReference();
+                    ResolvedConceptReference[] deepCopy = DaoUtility.deepClone(rcrl);
+                    for( ResolvedConceptReference ref: deepCopy){
                         if(resolveForward || (resolveBackward && resolveAssociationDepth > 0)) {
                             ref.setCodeNamespace(correctNamepsaceForEquivalentCodingScheme(ref.getCodeNamespace(), mappingScheme));
                             codeList.addConceptReference(ref);
@@ -465,7 +470,7 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         }
     }
 
-    private String correctNamepsaceForEquivalentCodingScheme(final String codeNamespace, final CodingScheme mapping) {
+    private String correctNamepsaceForEquivalentCodingScheme(String codeNamespace, CodingScheme mapping) {
        List<SupportedNamespace> namespaces = mapping.getMappings().getSupportedNamespaceAsReference();
        for(SupportedNamespace sn : namespaces){
            if(sn.getLocalId().equals(codeNamespace)){
@@ -475,15 +480,21 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         return codeNamespace;
     }
 
-    private String getEquivalentCodingSchemeForNamespace(final String codeNamespace, final CodingScheme mapping, final SupportedNamespace sn) {
+    private String getEquivalentCodingSchemeForNamespace(String codeNamespace, CodingScheme mapping, SupportedNamespace sn) {
         List<SupportedCodingScheme> schemes = mapping.getMappings().getSupportedCodingSchemeAsReference();
         for(SupportedCodingScheme scheme : schemes){
             if(scheme.getLocalId().equals(sn.getEquivalentCodingScheme())){
-                //we don't define the namespace for the target coding scheme, so it will be satisfied by the entity code.
-                return null;
+               return null;
             }
         }
         return codeNamespace;
+    }
+    
+    
+    private ResolvedConceptReference[] arrayCopy(ResolvedConceptReference[] ref){
+        ResolvedConceptReference[] newRef = new ResolvedConceptReference[ref.length];
+        
+        return newRef;
     }
 
     private boolean isNotRestricted() {
