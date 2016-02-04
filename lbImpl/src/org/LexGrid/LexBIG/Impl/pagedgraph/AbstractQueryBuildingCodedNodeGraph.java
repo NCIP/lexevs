@@ -490,38 +490,32 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
         return codeNamespace;
     }
     
-    
-    private ResolvedConceptReference[] arrayCopy(ResolvedConceptReference[] ref){
-        ResolvedConceptReference[] newRef = new ResolvedConceptReference[ref.length];
-        
-        return newRef;
-    }
 
-    private boolean isNotRestricted() {
-        GraphQuery query = 
-            this.getGraphQueryBuilder().getQuery();
-
-        return CollectionUtils.isEmpty(
-                query.getRestrictToAssociations())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToAssociationsQualifiers())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToEntityTypes())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToSourceCodes()) 
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToSourceCodeSystem())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToTargetCodes())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToTargetCodeSystem());
-    }
+//    private boolean isNotRestricted() {
+//        GraphQuery query = 
+//            this.getGraphQueryBuilder().getQuery();
+//
+//        return CollectionUtils.isEmpty(
+//                query.getRestrictToAssociations())
+//                &&
+//                CollectionUtils.isEmpty(
+//                query.getRestrictToAssociationsQualifiers())
+//                &&
+//                CollectionUtils.isEmpty(
+//                query.getRestrictToEntityTypes())
+//                &&
+//                CollectionUtils.isEmpty(
+//                query.getRestrictToSourceCodes()) 
+//                &&
+//                CollectionUtils.isEmpty(
+//                query.getRestrictToSourceCodeSystem())
+//                &&
+//                CollectionUtils.isEmpty(
+//                query.getRestrictToTargetCodes())
+//                &&
+//                CollectionUtils.isEmpty(
+//                query.getRestrictToTargetCodeSystem());
+//    }
 
     private ConceptReferenceList traverseGraph(
             ResolvedConceptReferenceList list, 
