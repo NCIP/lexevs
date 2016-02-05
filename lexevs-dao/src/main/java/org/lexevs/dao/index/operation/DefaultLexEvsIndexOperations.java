@@ -58,7 +58,7 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 		ref.setCodingSchemeURN(codingSchemeUri);
 		ref.setCodingSchemeVersion(version);
 		
-		indexCreator.index(ref, null, true);
+		indexCreator.index(ref, null, false);
 	}
 	
 	@Override
