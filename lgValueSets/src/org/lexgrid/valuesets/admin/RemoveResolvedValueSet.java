@@ -123,15 +123,14 @@ public class RemoveResolvedValueSet {
 				    //        ServiceUtility.getAbsoluteCodingSchemeVersionReference(codingSchemeName, tagOrVersion, true);
 					ref = Constructors
 							.createAbsoluteCodingSchemeVersionReference(
-									pair[0], pair[1]);
+									pair[0].trim(), pair[1].trim());
 				} else {
 					ref = Constructors
 							.createAbsoluteCodingSchemeVersionReference(
-									codingSchemeWithVersion, null);
+									codingSchemeWithVersion.trim(), null);
 				}
 				acsvl.addAbsoluteCodingSchemeVersionReference(ref);
 			}
-
 		}
 		return acsvl;
 	}
@@ -141,8 +140,11 @@ public class RemoveResolvedValueSet {
 			boolean force) throws Exception {
 		// ResolvedValueSetDefinitionLoader loader =
 		// (ResolvedValueSetDefinitionLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoader.NAME);
+		boolean foundToRemove = false;
 		LexEVSResolvedValueSetService resolved_vs_service = new LexEVSResolvedValueSetServiceImpl();
 		for (CodingScheme cs : resolved_vs_service.listAllResolvedValueSets()) {
+			if (!matchesWithResolvedVS(csVersionList, cs))
+				continue;
 			AbsoluteCodingSchemeVersionReferenceList acsvl = resolved_vs_service
 					.getListOfCodingSchemeVersionsUsedInResolution(cs);
 			if (matches(csVersionList, acsvl)) {
@@ -150,18 +152,34 @@ public class RemoveResolvedValueSet {
 						.createAbsoluteCodingSchemeVersionReference(
 								cs.getCodingSchemeURI(),
 								cs.getRepresentsVersion());
+				foundToRemove = true;
 				remove(remove_acst, force);
 			}
 		}
-
+		
+		if (!foundToRemove)
+			Util.displayTaggedMessage("Could not find Resolved valueset coding scheme to remove.");
 	}
 
-	boolean matches(AbsoluteCodingSchemeVersionReferenceList containedList,
-			AbsoluteCodingSchemeVersionReferenceList sourceList) {
-		boolean matched = true;
+	boolean matchesWithResolvedVS(AbsoluteCodingSchemeVersionReferenceList containedList,
+			CodingScheme cs) {
 		for (AbsoluteCodingSchemeVersionReference contained_acsr : containedList
 				.getAbsoluteCodingSchemeVersionReference()) {
-			boolean found = false;
+				if (contained_acsr.getCodingSchemeURN().equalsIgnoreCase(
+						cs.getCodingSchemeURI())
+						&& contained_acsr.getCodingSchemeVersion()
+								.equalsIgnoreCase(
+										cs.getRepresentsVersion())) {
+					return true;
+				}
+		}
+		return false;
+	}
+	
+	boolean matches(AbsoluteCodingSchemeVersionReferenceList containedList,
+			AbsoluteCodingSchemeVersionReferenceList sourceList) {
+		for (AbsoluteCodingSchemeVersionReference contained_acsr : containedList
+				.getAbsoluteCodingSchemeVersionReference()) {
 			for (AbsoluteCodingSchemeVersionReference source_acsr : sourceList
 					.getAbsoluteCodingSchemeVersionReference()) {
 				if (contained_acsr.getCodingSchemeURN().equalsIgnoreCase(
@@ -169,14 +187,11 @@ public class RemoveResolvedValueSet {
 						&& contained_acsr.getCodingSchemeVersion()
 								.equalsIgnoreCase(
 										source_acsr.getCodingSchemeVersion())) {
-					found = true;
+					return true;
 				}
 			}
-			if (found == false) {
-				matched = false;
-			}
 		}
-		return matched;
+		return false;
 	}
 
 	boolean getCodingSchemeStatus(String urn, String ver)
