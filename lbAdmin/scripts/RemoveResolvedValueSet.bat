@@ -7,6 +7,6 @@ REM       The format is codingschemeUri::version. Values separated by a comma.
 REM   -f,--force Force de-activation and removal without confirmation.
 REM 
 REM
-REM Example: RemoveResolvedValueSet  -l \"codingschemeUri1::version1, codingschemeUri2::version2\" -f
+REM Example: RemoveResolvedValueSet  -l \"resolved-valuesetUri::version1, codingschemeUri1::version1\" -f
 REM
 java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.valuesets.admin.RemoveResolvedValueSet %*
