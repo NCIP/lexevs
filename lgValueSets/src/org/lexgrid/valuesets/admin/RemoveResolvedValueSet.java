@@ -50,7 +50,7 @@ import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
  * <pre>
  * Example: java org.lexgrid.valuesets.admin.RemoveResolvedValueSet
  *   -l, &lt;id&gt; List of coding scheme versions to match when removing the ResolvedValueSet. The
- *       format is "csuri1::version1, csuri2::version2"
+ *       format is "vsuri1::version1, vsuri2::version2"
  *   -f Force remove of active schemes    
  * 
  * Note: If the URN and version values are unspecified, a
@@ -95,7 +95,7 @@ public class RemoveResolvedValueSet {
 			Util.displayCommandOptions(
 					"RemoveResolvedValueSet",
 					options,
-					"RemoveResolvedValueSet  -l \"CodingSchemeURI1::version1, CodingSchemeURI2::version2\" -f ",
+					"RemoveResolvedValueSet  -l \"resolved-value-set1::version1, resolved-value-set2::version2\" -f ",
 					e);
 			Util.displayMessage(Util.getPromptForSchemeHelp());
 			return;
@@ -137,28 +137,26 @@ public class RemoveResolvedValueSet {
 
 	public void remove(
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
-			boolean force) throws Exception {
-		// ResolvedValueSetDefinitionLoader loader =
-		// (ResolvedValueSetDefinitionLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoader.NAME);
+			boolean force) throws Exception {		
 		boolean foundToRemove = false;
 		LexEVSResolvedValueSetService resolved_vs_service = new LexEVSResolvedValueSetServiceImpl();
 		for (CodingScheme cs : resolved_vs_service.listAllResolvedValueSets()) {
 			if (!matchesWithResolvedVS(csVersionList, cs))
 				continue;
-			AbsoluteCodingSchemeVersionReferenceList acsvl = resolved_vs_service
-					.getListOfCodingSchemeVersionsUsedInResolution(cs);
-			if (matches(csVersionList, acsvl)) {
+			//AbsoluteCodingSchemeVersionReferenceList acsvl = resolved_vs_service
+			//		.getListOfCodingSchemeVersionsUsedInResolution(cs);
+			//if (matches(csVersionList, acsvl)) {
 				AbsoluteCodingSchemeVersionReference remove_acst = Constructors
 						.createAbsoluteCodingSchemeVersionReference(
 								cs.getCodingSchemeURI(),
 								cs.getRepresentsVersion());
 				foundToRemove = true;
 				remove(remove_acst, force);
-			}
+			//}
 		}
 		
 		if (!foundToRemove)
-			Util.displayTaggedMessage("Could not find Resolved valueset coding scheme to remove.");
+			Util.displayTaggedMessage("Could not find Resolved valueset(s) coding scheme to remove.");
 	}
 
 	boolean matchesWithResolvedVS(AbsoluteCodingSchemeVersionReferenceList containedList,
@@ -249,7 +247,7 @@ public class RemoveResolvedValueSet {
 
 		if (confirmed) {
 			lbsm.removeCodingSchemeVersion(acsvr);
-			Util.displayTaggedMessage("Resolved valueset coding scheme was removed.");
+			Util.displayTaggedMessage("Resolved valueset [URN=" + acsvr.getCodingSchemeURN() + ", Version=" + acsvr.getCodingSchemeVersion() + "] was removed.");
 		} else {
 			Util.displayTaggedMessage("Action cancelled by user");
 		}
