@@ -52,7 +52,7 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	
 	private static LgLoggerIF logger = LoggerFactory.getLogger();
 
-	IndexRegistry registry;
+	//IndexRegistry registry;
 	
 
 	@Override
@@ -111,7 +111,7 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude) {
 		List<AbsoluteCodingSchemeVersionReference> list = Arrays.asList(codeSystemsToInclude.
 				toArray(new AbsoluteCodingSchemeVersionReference[codeSystemsToInclude.size()]));
-		return registry.getCommonLuceneIndexTemplate(list).search(query, null);
+		return getIndexRegistry().getCommonLuceneIndexTemplate(list).search(query, null);
 	}
 
 	
@@ -125,22 +125,19 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return registry.getLuceneIndexTemplate(codingSchemeUri, version);
+		return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
 		return new MultiBaseLuceneIndexTemplate(MultiBaseLuceneIndexTemplate.getNamedDirectories(ConcurrentMetaData.getInstance()));
 	}
 
-	public IndexRegistry getRegistry() {
-		return registry;
-	}
-
-	public void setRegistry(IndexRegistry registry) {
-		this.registry = registry;
-	}
-
-
-
+//	public IndexRegistry getRegistry() {
+//		return registry;
+//	}
+//
+//	public void setRegistry(IndexRegistry registry) {
+//		this.registry = registry;
+//	}
 
 }
