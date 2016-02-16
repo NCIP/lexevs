@@ -222,9 +222,26 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		String location = systemVariables.getAutoLoadIndexLocation();
 		try {
 			Path path = Paths.get(location,indexName);
-			FileUtils.deleteDirectory(new File(path.toString()));
+			
+			File indexDir2Delete = new File(path.toString());
+			
+			if (indexDir2Delete.exists())
+			{
+				try
+				{
+					if (indexDir2Delete.isDirectory())
+						FileUtils.cleanDirectory(indexDir2Delete);
+					
+					indexDir2Delete.delete();					
+				}
+				catch (Exception e)
+				{
+					FileUtils.deleteQuietly(indexDir2Delete);
+				}					
+			}
+			//FileUtils.deleteDirectory(new File(path.toString()));
 			concurrentMetaData.removeIndexMetaDataValue(indexName);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
