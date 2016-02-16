@@ -146,7 +146,7 @@ public class RemoveIndex {
                 confirmed = choice == 'Y' || choice == 'y';
             }
             if (confirmed) {
-                Util.displayTaggedMessage("Request complete");
+                Util.displayTaggedMessage("Requested Index Removal Complete for Coding Scheme URI \"" + css.getCodingSchemeURI() + "\", Version \"" + css.getRepresentsVersion() + "\".");
             } else {
                 Util.displayTaggedMessage("Action cancelled by user");
             }
