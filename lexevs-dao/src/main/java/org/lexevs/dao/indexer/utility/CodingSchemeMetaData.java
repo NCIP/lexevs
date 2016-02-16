@@ -1,5 +1,6 @@
 package org.lexevs.dao.indexer.utility;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.system.model.LocalCodingScheme;
 
@@ -13,7 +14,9 @@ public class CodingSchemeMetaData {
 	String codingSchemeVersion;
 	String codingSchemeName;
 	String nameVersionKey;
+	AbsoluteCodingSchemeVersionReference ref;
 	
+
 	private boolean hasIndex = false;
 
 
@@ -28,6 +31,9 @@ public class CodingSchemeMetaData {
 				codingSchemeName, codingSchemeVersion).getKey();
 		this.directory = directory;
 		if(directory != null){hasIndex = true;}
+		this.ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(codingSchemeUri);
+		ref.setCodingSchemeVersion(codingSchemeVersion);
 	}
 
 
@@ -94,6 +100,21 @@ public class CodingSchemeMetaData {
 
 	public boolean isHasIndex() {
 		return hasIndex;
+	}
+
+	/**
+	 * @return the ref
+	 */
+	public AbsoluteCodingSchemeVersionReference getRef() {
+		return ref;
+	}
+
+
+	/**
+	 * @param ref the ref to set
+	 */
+	public void setRef(AbsoluteCodingSchemeVersionReference ref) {
+		this.ref = ref;
 	}
 
 

@@ -1,9 +1,12 @@
 package org.lexevs.dao.indexer.utility;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.system.model.LocalCodingScheme;
 
@@ -88,6 +91,35 @@ public class ConcurrentMetaData {
 		}
 		return keys;
 		
+	}
+	
+	public Set<AbsoluteCodingSchemeVersionReference> getReferenceSet(){
+		Set<AbsoluteCodingSchemeVersionReference> refToReturn = new HashSet<AbsoluteCodingSchemeVersionReference>();
+		
+		for(CodingSchemeMetaData csm: getCodingSchemeList()){
+			refToReturn.add(csm.getRef());
+		}
+		
+		return refToReturn;
+	}
+	
+	public CodingSchemeMetaData getCodingSchemeMetaDataForNameAndVersion(String name, String version){
+		for(CodingSchemeMetaData csm:  getCodingSchemeList()){
+			if(csm.getCodingSchemeName().equals(name) && csm.getCodingSchemeVersion().equals(version)){
+				return csm;
+			}
+		}
+		
+		return null;
+	}
+	
+	public CodingSchemeMetaData getCodingSchemeMetaDataForUriAndVersion(String uri, String version){
+		for(CodingSchemeMetaData csm:  getCodingSchemeList()){
+			if(csm.getCodingSchemeUri().equals(uri) && csm.getCodingSchemeVersion().equals(version)){
+				return csm;
+			}
+		}		
+		return null;
 	}
 
 

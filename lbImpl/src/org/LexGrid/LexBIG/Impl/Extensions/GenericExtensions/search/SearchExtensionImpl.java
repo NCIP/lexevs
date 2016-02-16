@@ -47,6 +47,8 @@ import org.apache.lucene.queryparser.ext.ExtendableQueryParser;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.service.search.SearchIndexService;
 import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -261,15 +263,16 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         }
         
         Set<AbsoluteCodingSchemeVersionReference> returnSet = new HashSet<AbsoluteCodingSchemeVersionReference>();
-        
+        ConcurrentMetaData metadata = ConcurrentMetaData.getInstance();
         for(CodingSchemeReference ref : references){
-            returnSet.add(
-                    ServiceUtility.getAbsoluteCodingSchemeVersionReference(
-                            ref.getCodingScheme(),
-                            ref.getVersionOrTag(), 
-                            true));
+        	CodingSchemeMetaData csm = metadata.getCodingSchemeMetaDataForNameAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());
+        	if(csm == null){csm = metadata.getCodingSchemeMetaDataForUriAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());}
+        	if(csm == null) return null;
+        	if((ref.getCodingScheme().equals(csm.getCodingSchemeName()) || ref.getCodingScheme().equals(csm.getCodingSchemeUri()) 
+        			&& ref.getVersionOrTag().getVersion().equals(csm.getCodingSchemeVersion()))){
+            returnSet.add(csm.getRef());
+        	}
         }
-        
         return returnSet;
     }
     
