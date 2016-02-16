@@ -59,8 +59,6 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 			IndexRegistry indexRegistry,
 			LuceneIndexTemplate template,
 			List<AbsoluteCodingSchemeVersionReference> references){
-		// TODO New Lucene will not support or be compatible with older versions.
-//		this.setIndexRegistry(indexRegistry);
 		this.template = template;
 		this.references = references;
 	}
@@ -92,14 +90,8 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 		    throw new RuntimeException(errorMsg.toString());
 		}
 
-//		TopScoreDocCollector hitCollector = 
-//				TopScoreDocCollector.create(maxDoc);
-//
-//			template.search(query, null, hitCollector);
-//			List<ScoreDoc> scoreDocs = Arrays.asList(hitCollector.topDocs().scoreDocs);
+
 		final List<ScoreDoc> scoreDocs = new ArrayList<ScoreDoc>();
-		
-		//TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
 					
 		template.search(query, null, new Collector() {
 
@@ -129,7 +121,6 @@ public class SingleTemplateDisposableLuceneCommonEntityDao extends AbstractBaseL
 			}
 		
 		});
-		//final List<ScoreDoc> docs  = Arrays.asList(collector.topDocs().scoreDocs);
 		
 		Collections.sort(scoreDocs, new Comparator<ScoreDoc>() {
 
