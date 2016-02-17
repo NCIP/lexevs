@@ -40,13 +40,12 @@ import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
-import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.AbstractFilteringLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
-import org.lexevs.logging.LoggerFactory;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class LuceneEntityDao.
@@ -59,9 +58,6 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion.parseStringToVersion("2013");
 	
 	private static LgLoggerIF logger = LoggerFactory.getLogger();
-
-	IndexRegistry registry;
-	
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
@@ -158,7 +154,7 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude) {
 		List<AbsoluteCodingSchemeVersionReference> list = Arrays.asList(codeSystemsToInclude.
 				toArray(new AbsoluteCodingSchemeVersionReference[codeSystemsToInclude.size()]));
-		return registry.getCommonLuceneIndexTemplate(list).search(query, null);
+		return getIndexRegistry().getCommonLuceneIndexTemplate(list).search(query, null);
 	}
 
 	
@@ -172,22 +168,11 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return registry.getLuceneIndexTemplate(codingSchemeUri, version);
+		return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
 		return new MultiBaseLuceneIndexTemplate(MultiBaseLuceneIndexTemplate.getNamedDirectories(ConcurrentMetaData.getInstance()));
 	}
-
-	public IndexRegistry getRegistry() {
-		return registry;
-	}
-
-	public void setRegistry(IndexRegistry registry) {
-		this.registry = registry;
-	}
-
-
-
 
 }
