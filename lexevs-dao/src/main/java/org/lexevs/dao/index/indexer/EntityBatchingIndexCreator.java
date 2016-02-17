@@ -117,12 +117,10 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 		
 		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
-//		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		if(!onlyRegister) {
 
 			EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-//			SearchDao searchIndexService = indexDaoManager.getSearchDao();
 
 			int totalIndexedEntities = 0;
 
@@ -144,12 +142,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 								reference.getCodingSchemeVersion(), entity));
 					}
 					
-//					if(option.equals(IndexOption.BOTH) || option.equals(IndexOption.SEARCH)){
-//						searchDocs.addAll(
-//							searchIndexer.indexEntity(
-//									reference.getCodingSchemeURN(), 
-//									reference.getCodingSchemeVersion(), entity));
-//					}
 					
 					totalIndexedEntities++;
 
@@ -168,11 +160,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 						reference.getCodingSchemeVersion(), 
 						fullEntityDocs, analyzer);
 				
-//				searchIndexService.addDocuments(
-//						reference.getCodingSchemeURN(), 
-//						reference.getCodingSchemeVersion(), 
-//						searchDocs, 
-//						this.searchIndexer.getAnalyzer());
 			}
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
