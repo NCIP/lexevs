@@ -109,7 +109,8 @@ public class LoadValueSetDefinition {
                 Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
             } else {
             	vds.loadValueSetDefinition(source.toString(), false);
-            }            
+            }
+            Util.displayMessage("Request to Load ValueSet Defintion Completed!");
         }
     }
 
