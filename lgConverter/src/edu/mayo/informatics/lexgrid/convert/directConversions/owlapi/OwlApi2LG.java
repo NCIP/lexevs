@@ -146,7 +146,10 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
+import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * This is the main class containing the logic for the conversion from OWL to
@@ -611,6 +614,10 @@ public class OwlApi2LG {
 
         if (owlClassName2Conceptcode_.containsKey(owlClass.getIRI().toString()))
             return null;
+        
+        if(isNoopTopOrBottomOWLEntity(owlClass)){
+            return null;
+        }
 
         String label = resolveLabel(owlClass);
 
@@ -645,6 +652,13 @@ public class OwlApi2LG {
         owlClassName2Conceptcode_.put(owlClass.getIRI().toString(), concept.getEntityCode());
 
         return concept;
+    }
+
+    private boolean isNoopTopOrBottomOWLEntity(OWLClass owlClass) {
+        if(owlClass.isTopEntity() || owlClass.isBottomEntity()){
+            return true;
+        }
+        else return false;
     }
 
     /**
@@ -688,9 +702,8 @@ public class OwlApi2LG {
     protected void resolveSubClassOfRelations(AssociationSource source, OWLClass owlClass) {
         // Process parent-child (rdfs:subClassOf) relationships
         // Does this concept represent the root of a concept branch that should
-        // be centrally linked to the top node for subclass traversal?
-        OWLClass thing = reasoner.getTopClassNode().getEntities().iterator().next();
-        if (owlClass.isTopEntity() || reasoner.getSuperClasses(owlClass, true).getFlattened().contains(thing)) {
+        // be centrally linked to the top node for subclass traversal?;
+        if (isRootNode(owlClass)) {
             // always give the root node the default namespace
             AssociationTarget target = CreateUtils.createAssociationTarget(OwlApi2LGConstants.ROOT_CODE,
                     getDefaultNameSpace());
@@ -1305,6 +1318,10 @@ public class OwlApi2LG {
                 OWLLiteral literal = (OWLLiteral) value;
                 annotationValue = literal.getLiteral();
             }
+            if(value instanceof IRI){
+                IRI iri = (IRI)value;
+                annotationValue = annotationName + ":" + iri.getFragment();
+            }
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
                         lgSupportedMappings_));
@@ -1461,7 +1478,7 @@ public class OwlApi2LG {
 
         if (owlClassExp instanceof OWLObjectComplementOf) {
             OWLObjectComplementOf complementClass = (OWLObjectComplementOf) owlClassExp;
-            String lgCode = resolveAnonymousClass((OWLClass) complementClass.getOperand(), assocSource);
+            String lgCode = resolveAnonymousClass((OWLClassExpression) complementClass.getOperand(), assocSource);
             String targetNameSpace = getDefaultNameSpace();
           
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
@@ -1522,7 +1539,7 @@ public class OwlApi2LG {
         }else if (operand instanceof OWLObjectComplementOf){
           OWLClassExpression innerOperand =  ((OWLObjectComplementOf) operand).getOperand();
                 if (innerOperand instanceof OWLRestriction) {
-                    OWLRestriction op = (OWLRestriction) operand;
+                    OWLRestriction op = (OWLRestriction) innerOperand;
                     processRestriction(op, assocSource, source);
                 } 
                 else if (innerOperand instanceof OWLNaryBooleanClassExpression) {
@@ -1724,7 +1741,7 @@ public class OwlApi2LG {
                   
                     Date date = null;
                     try {
-                        String textToParse = owl.getValue().toString();
+                        String textToParse = getAnnotationValue(owl);
                         textToParse = stripQuotes(textToParse);
                         date = parseEffectiveDate(textToParse);
                     } catch (ParseException e) {
@@ -1831,9 +1848,10 @@ public class OwlApi2LG {
     }
 
     protected Date parseEffectiveDate(String dateText) throws ParseException {
-        Date date;
-        SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
-        date = formatDate.parse(dateText);
+        Date date = DateUtils.parseDate(dateText, OwlApi2LGConstants.DATEFORMATS);
+//        SimpleDateFormat formatDate = new SimpleDateFormat("MMMM dd, yyyy");
+//        formatDate.setLenient(true);
+//        date = formatDate.parse(dateText);
         return date;
     }
 
@@ -2106,15 +2124,20 @@ public class OwlApi2LG {
      * @author
      * @param rdfsNamedClass
      * @return
-     * 
-     *         protected boolean isRootNode(RDFSNamedClass rdfsNamedClass) { if
-     *         (prefManager.getMatchRootName() != null) { String conceptName =
-     *         resolveConceptID(rdfsNamedClass); return
-     *         prefManager.getMatchRootName().matcher(conceptName).matches(); }
-     *         else { return
-     *         rdfsNamedClass.getSuperclasses(false).contains(owlModel_
-     *         .getOWLThingClass()); } }
      */
+    protected boolean isRootNode(OWLClass owlClass) {
+        OWLClass thing = reasoner.getTopClassNode().getEntities().iterator().next();
+        if (prefManager.getMatchRootName() != null) {
+            String conceptName = resolveConceptID(owlClass);
+            return prefManager.getMatchRootName().matcher(conceptName).matches();
+//        } else if (owlClass.isTopEntity()) {
+//            return true;
+        }else 
+        { 
+            return reasoner.getSuperClasses(owlClass, true).getFlattened().contains(thing); 
+            }      
+    }
+     
     /**
      * Constructs a new property id with the given integer suffix.
      * 

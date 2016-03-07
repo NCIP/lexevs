@@ -18,7 +18,12 @@
      xmlns:owl2lexevs="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:doap="http://usefulinc.com/ns/doap#" 
+     xmlns:foaf="http://xmlns.com/foaf/0.1/"
+     xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#"
+     xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#">
     <owl:Ontology rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">
         <source>nci evs</source>
         <dc:date>august 8, 2014</dc:date>
@@ -122,7 +127,14 @@
 
     <owl:AnnotationProperty rdf:about="&dc;date"/>
     
-
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0010000"><!-- has axiom label -->
+        <rdfs:label xml:lang="en">has axiom label</rdfs:label>
+        <obo:IAO_0000600 xml:lang="en">A URI that is intended to be unique label for an axiom used for tracking change to the ontology. For an axiom expressed in different languages, each expression is given the same URI</obo:IAO_0000600>
+        <obo:IAO_0000117 xml:lang="en">Person:Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000119 xml:lang="en">Person:Alan Ruttenberg</obo:IAO_0000119>
+        <obo:IAO_0000111 xml:lang="en">has axiom label</obo:IAO_0000111>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
+    </owl:AnnotationProperty>
 
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -1406,7 +1418,36 @@
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
     </owl:Class>
     
+        <!-- http://www.w3.org/2002/07/owl#Nothing -->
 
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Nothing">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+    
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000182 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000182"><!-- history -->
+        <rdfs:label xml:lang="en">history</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000015"/><!-- process -->
+        <obo:BFO_0000179>history</obo:BFO_0000179>
+        <obo:BFO_0000180>History</obo:BFO_0000180>
+        <obo:IAO_0000600 xml:lang="en">A history is a process that is the sum of the totality of processes taking place in the spatiotemporal region occupied by a material entity or site, including processes on the surface of the entity or within the cavities to which it serves as host. (axiom label in BFO2 Reference: [138-001])</obo:IAO_0000600>
+        <obo:IAO_0000111 xml:lang="en">history</obo:IAO_0000111>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/bfo.owl"/>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">A history is a process. (axiom label in BFO2 Reference: [138-001])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000182"/><!-- history -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000600"/><!-- elucidation -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/138-001"/>
+    </owl:Axiom>
 
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -1445,6 +1486,7 @@
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
         <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Axiom>
+    
     
 
 

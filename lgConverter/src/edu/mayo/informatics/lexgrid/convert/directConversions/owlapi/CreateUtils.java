@@ -33,6 +33,7 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.bridge.Message;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
@@ -52,6 +53,15 @@ public class CreateUtils {
  
 
     public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, SupportedMappings lgSupportedMappings_) {
+        if(descriptiveText.length() > 250)
+        {
+            descriptiveText = descriptiveText.substring(0, 238);
+            String truncated = "(TRUNCATED)";
+            descriptiveText = descriptiveText + truncated;
+            System.out.println("descriptive Text too long for "
+                    + "qualifier value truncating this text: " 
+                    + descriptiveText);
+        }
         AssociationQualification lgQual = new AssociationQualification();
         lgQual.setAssociationQualifier(name);
         lgQual.setQualifierText(createText(descriptiveText));

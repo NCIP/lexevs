@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 
 
 public class TestRemoveMrMap2Loads extends TestCase {
-	public void testRemoveMrMapOneMapping() throws LBException, LBInvocationException{
+	public void testRemoveMrMap2Mapping() throws LBException, LBInvocationException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();;
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" 
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins"
+        xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" 
+        xmlns:lgRESTCS="http://LexGrid.org/schema/2010/01/LexGrid/REST/codingSchemes" 
+        xmlns:lgRESTVD="http://LexGrid.org/schema/2010/01/LexGrid/REST/valueSets" 
+        xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+        xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/versions"
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/versions" elementFormDefault="qualified">
+        
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/codingSchemes" schemaLocation="codingSchemes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/valueSets" schemaLocation="valueSets.xsd"/>
+
+
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Revision and history package REST extension</h2>
+                </xs:documentation>
+                <xs:documentation>The LexGrid  REST model of revisions, history and releases.  Extension to the core LexGrid model</xs:documentation>
+        </xs:annotation>
+        
+        <!-- ========================================================================================== 
+                =  systemReleaseDirectory - a list of available system releases and their entry points                                                 =
+                ======================================================================================== -->
+        <xs:element name="systemReleaseDirectory" type="systemReleaseDirectory">
+                <xs:annotation>
+                        <xs:appinfo>path: /codingSchemeDirectory or systemRelease/(releaseId)/codingSchemeDirectory</xs:appinfo>
+                </xs:annotation>
+        </xs:element>
+        
+        <xs:complexType name="systemReleaseDirectory">
+                <xs:annotation>
+                        <xs:documentation>A directory of system releases that are known to the service.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="continuation" type="lgRESTCommon:continuation"/>
+                        <xs:element name="entry" type="systemReleaseDirectoryEntry" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+        </xs:complexType>
+        
+        <!-- ======================================================================================== 
+                =  systemReleaseDirectoryEntry - a description of an available system release                                                            =
+                ======================================================================================== --> 
+        <xs:group name="systemReleaseDirectoryEntryGroup">
+                <xs:sequence>                       
+                        <xs:element name="releaseURI" type="lgRESTCommon:URI" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The official URI of this release</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="releaseDate" type="lgBuiltin:tsTimestamp" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The official release data and time of this release.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="releaseId" type="lgBuiltin:tsCaseIgnoreIA5String">
+                                <xs:annotation>
+                                        <xs:documentation>The label assigned to this release by the release agency.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="releaseAgency" type="lgRESTCommon:URI">
+                                <xs:annotation>
+                                        <xs:documentation>The URI of the agency responsible for this release</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="basedOnRelease" type="lgRESTCommon:URI">
+                                <xs:annotation>
+                                        <xs:documentation>The URI of the release that logically preceeds this release</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:group>
+        
+        <xs:complexType name="systemReleaseDirectoryEntry">
+                <xs:annotation>
+                        <xs:documentation>A short description of a system release - what, when and enough information to know whether it will be useful.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:describable">
+                                <xs:group ref="systemReleaseDirectoryEntryGroup"/>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<EntryPoint>> systemRelease  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:element name="systemRelease" type="systemRelease"/>
+        <xs:complexType name="systemRelease">
+                <xs:annotation>
+                        <xs:documentation>A collection of coding schemes, value domains, pick lists and/or revision records that are distributed as a unit.</xs:documentation>
+                        <xs:appinfo>path: /systemRelease </xs:appinfo>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:describable">
+                                <xs:sequence>
+                                        <xs:group ref="systemReleaseDirectoryEntryGroup"/>
+                                        <xs:element name="codingSchemes" type="lgRESTCS:codingSchemeDirectory" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>A directory of coding schemes contained in this release</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="valueSets" type="lgRESTVD:valueDomainDirectory" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>A collection of value domain definitions that are included in this release. </xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="pickLists" type="lgRESTVD:pickListDirectory" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>A collection of pick list definitions that are included in this release. Each entry in this collection is a complete representation of a pick list definition at a given revision.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="editHistory" type="editHistory" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>An ordered collection of revisions that describe the transformations that were applied to create this release</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        
+       
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  revision  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="editHistory">
+                <xs:annotation>
+                        <xs:documentation>An ordered collection of revisions</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="continuation" type="lgRESTCommon:continuation"/>
+                        <xs:element name="revision" type="revision" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  revision  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="revision">
+                <xs:annotation>
+                        <xs:documentation>An ordered collection of state changes that define the transformation of a set of resources from one consistent state to another.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:describable">
+                                <xs:sequence>
+                                        <xs:element name="changeAgent" type="lgRESTCommon:source" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the source(s) that participated in this particular change. changeAgent must match a local id of a supportedSource in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="changeInstructions" type="lgCommon:text" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>A human or machine readable set of instructions on how to apply this change</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="revisionId" type="lgRESTCommon:revisionId" minOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>The unique identifier of this revision.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="revisionDate" type="lgBuiltin:tsTimestamp">
+                                                <xs:annotation>
+                                                        <xs:documentation>The end date for which this version is operative (considered commited).</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="editOrder" type="lgCommon:entryOrder">
+                                                <xs:annotation>
+                                                        <xs:documentation>The relative order that this revision is to be applied if in a systemRelease.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <!-- XML Schema won't handle the parent class abstraction, so we have to make the changedEntry types explicit -->
+                                        <xs:element name="changedEntry" type="changedEntry" minOccurs="1" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>An ordered list of top level versionable elements.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>                                    
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: entryState  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="entryState">
+                <xs:annotation>
+                        <xs:documentation>Represents a change that occurred between the current state of the versionable entry and an immediately preceeding state of the same entry.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="containingRevision" type="lgRESTCommon:revisionId" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The revision that contains this particular entry state change. </xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="relativeOrder" type="lgCommon:entryOrder" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The relative order that this state change should be applied within the context of the containing revision.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="changeType" type="lgVer:changeType" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The type of change that occurred between this state and the previous.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="prevRevision" type="lgRESTCommon:revisionId">
+                                <xs:annotation>
+                                        <xs:documentation>The prevision change to the state of this entity.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: changedEntry  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="changedEntry">
+                <xs:annotation>
+                        <xs:documentation>An entry that was changed in this revision</xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:extension base="lgRESTBuiltin:resource"/>
+                </xs:simpleContent>
+        </xs:complexType>
+</xs:schema>

@@ -137,6 +137,7 @@ public class OwlApi2LGConstants {
             "Preferred_Name", "Display_Name", "Search_Name", "FULL_SYN", "Synonym", "VA_Print_Name",
             "VA_National_Formulary_Name", "VA_Abbreviation", "VA_Dose_Form_Print_Name", "VA_Trade_Name", "MeSH_Name",
             "NDFRT_Name", "RxNorm_Name", "rdfs:label" });
+    public static final String[] DATEFORMATS = {"MMMM dd, yyyy", "yyyy-dd-mm"}; 
 
     // Regular expressions to enable generic processing of the OWL source.
     // Defaults defined here, changeable via preferences.

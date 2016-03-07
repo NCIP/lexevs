@@ -18,7 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -27,8 +34,15 @@ import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Text;
+import org.LexGrid.relations.Relations;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.MrmapToSQL;
+import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrSat;
+import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.RRFLineReader;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
@@ -43,9 +57,44 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     private static final long serialVersionUID = -689653003698478622L;
     
 
+    Map.Entry<String, Relations> rel;
     public final static String VALIDATE = "Validate";
       public final static String MRSAT_URI = "MRSAT file path";
       public final static String MANIFEST_URI = "add'l Manifest";
+      
+      //constants
+      public static final String ASSOC_NAME = "mapped_to";
+      public static final String APROX_ASSOC_NAME = "approximately_mapped_to";
+      public static final boolean ISMAP = true;
+      public static final String URIPREFIX = "urn:oid";
+      
+      //relations constants
+      public static final String TORSAB = "TORSAB";
+      public static final String TOVSAB = "TOVSAB";
+      public static final String FROMRSAB =  "FROMRSAB";
+      public static final String FROMVSAB = "FROMVSAB";
+      public static final String MAPSETVERSION =  "MAPSETVERSION";
+      public static final String SOS = "SOS";
+      public static final String MAPSETNAME = "MAPSETNAME";
+
+      //coding scheme constants
+      public static final String CODING_SCHEME_NAME = "MappingCodingScheme";
+      public static final String CODING_SCHEME_URI = "http://does.not.resolve";
+      public static final String REPRESENTS_VERSION = "1.0";
+      
+      CachingMessageDirectorIF messages = getMessageDirector();
+      
+      public static final List<String>   propertyNames = Arrays.asList(new String[]{
+              "MAPSETGRAMMER",
+              "MAPSETRSAB",
+              "MAPSETTYPE",
+              "MAPSETVSAB",
+              "MTH_MAPFROMEXHAUSTIVE",
+              "MTH_MAPSETCOMPLEXITY",
+              "MTH_MAPTOEXHAUSTIVE",
+              "MTH_MAPFROMCOMPLEXITY", 
+              "MTH_MAPTOCOMPLEXITY",
+              "MR","DA","ST"});
       
     @SuppressWarnings("unused")
     private static boolean validate = true;
@@ -65,7 +114,7 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
 
     @Override
     protected URNVersionPair[] doLoad() throws Exception {
-        CachingMessageDirectorIF messages = getMessageDirector();
+
       MrmapToSQL map = new MrmapToSQL();
     if(getCodingSchemeManifest() != null){
         messages.warn("Pre-load of manifests is not supported in the MrMap Loader.  " +
@@ -74,15 +123,98 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     if(getLoaderPreferences() != null){
         messages.warn("Loader Preferences are not supported in the MrMap Loader");
     }
+    
      CodingScheme[] schemes = map.load(getMessageDirector(), 
               this.getResourceUri(), 
               this.getOptions().getURIOption(MRSAT_URI).getOptionValue(),
-              null, null, null, null, null, null, null, null, null,
+              null, null, null, null, null, null, null, null,
+              this.getResourceUri().toString(), rel,
               this.getCodingSchemeManifest());
      setDoApplyPostLoadManifest(false);
      return this.constructVersionPairsFromCodingSchemes((Object[])schemes);
     }
 
+    
+//    protected HashMap<String, Relations> processRelationsContainers(String mapPath) throws IOException{
+//        HashMap<String, Relations> relations = new HashMap<String, Relations>();
+//        RRFLineReader mapReader = new RRFLineReader(mapPath);
+//        String[] mrMapRow;
+//            while((mrMapRow = mapReader.readRRFLine()) != null){
+//                if(!relations.containsKey(mrMapRow[0])){
+//                    Relations rel = new Relations();
+//                    rel.setContainerName(mrMapRow[0]);
+//                    relations.put(mrMapRow[0], rel);
+//                }
+//            }
+//        
+//        return relations;
+//    }
+    
+    protected MrSat processMrSatRow(String [] mapRow, int lineCount) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
+        MrSat mrSat = new MrSat();
+        Class<?> mapClass = mrSat.getClass();
+        Field[] columns = mapClass.getDeclaredFields();
+        try{
+        for(int i = 0; i < mapRow.length; i++){
+            columns[i].set(mrSat, mapRow[i]);
+        }
+        }
+        catch(IndexOutOfBoundsException e){
+            messages.warn("Error in row " + lineCount + " of MRSAT -- number of columns is larger than specified for UMLS MRSAT: " + e.getMessage()); 
+            messages.warn("This associated mapping data will not be processed: " );
+            for(String s : mapRow){
+                messages.warn(s);
+            }
+            
+        }
+        return mrSat;
+    }
+    
+ protected void processMrSatToRelation(MrSat metaData, Relations relation) {
+        
+        if(relation.getProperties() == null){
+            Properties properties = new Properties();
+            relation.setProperties(properties);
+        }
+        if(relation.getContainerName() == null){
+            relation.setContainerName(metaData.getCui());
+        }
+        if(relation.getOwner() == null){
+            relation.setOwner(metaData.getSab());
+        }
+        if(relation.getIsMapping() == null){
+        relation.setIsMapping(ISMAP);}
+        String atnValue = metaData.getAtn();
+        if(propertyNames.contains(atnValue)){
+            Property prop = new Property();
+            prop.setPropertyName(metaData.getAtn());
+            Text value = new Text();
+            value.setContent(metaData.getAtv());
+            prop.setValue(value);
+            relation.getProperties().addProperty(prop);
+        }
+        if(atnValue.equals(TORSAB)){
+            relation.setTargetCodingScheme(metaData.getAtv());
+        }
+        if(atnValue.equals(TOVSAB)){
+            relation.setTargetCodingSchemeVersion(metaData.getAtv());
+        }
+        if(atnValue.equals(FROMRSAB)){
+            relation.setSourceCodingScheme(metaData.getAtv());
+        }
+        if(atnValue.equals(FROMVSAB)){
+            relation.setSourceCodingSchemeVersion(metaData.getAtv());
+        }
+        if(atnValue.equals(MAPSETVERSION)){
+            relation.setRepresentsVersion(metaData.getAtv());
+        }
+        if(atnValue.equals(SOS) || atnValue.equals(MAPSETNAME)){
+            EntityDescription entityDescription = new EntityDescription();
+            entityDescription.setContent(metaData.getAtv());
+            relation.setEntityDescription(entityDescription);
+        }
+    }
+ 
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription temp = new ExtensionDescription();
@@ -94,26 +226,19 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
         return temp;
     }
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
-    }
 
     public void load(URI mrMapsource, URI mrSatSource, String nameForMappingScheme, String nameForMappingVersion,
-            String nameforMappingURI, boolean stopOnErrors, boolean async) throws LBException{
+            String nameforMappingURI, Map.Entry<String, Relations> relation, boolean stopOnErrors, boolean async) throws LBException{
         this.load(mrMapsource, mrSatSource, nameForMappingScheme, 
                 nameForMappingVersion, nameforMappingURI, null, null, 
-                null, null, null, null, stopOnErrors, async);
+                null, null, null, null, relation, stopOnErrors, async);
     }
     @Override
     public void load(URI mrMapsource, URI mrSatSource, String nameForMappingScheme, String nameForMappingVersion,
             String nameforMappingURI, String sourceScheme, String sourceVersion, String sourceURI, String targetScheme,
-            String targetVersion, String targetURI, boolean stopOnErrors, boolean async) throws LBException{
+            String targetVersion, String targetURI, Map.Entry<String, Relations> relation,  boolean stopOnErrors, boolean async) throws LBException{
         this.getOptions().getURIOption(MRSAT_URI).setOptionValue(mrSatSource);
-
+        rel = relation;
         this.load(mrMapsource);
     }
 

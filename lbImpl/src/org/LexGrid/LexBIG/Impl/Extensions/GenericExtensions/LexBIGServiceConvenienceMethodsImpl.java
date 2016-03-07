@@ -56,6 +56,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToSourceCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToTargetCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
+import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -1432,9 +1433,11 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         int rcDepth = resolveConcepts ? 1 : -1;
         ConceptReference ref = ConvenienceMethods.createConceptReference(conceptCode,
                 codingScheme);
-//        ref.setCodeNamespace(namespace);
+        ref.setCodeNamespace(namespace);
         ResolvedConceptReferenceList rcrl = cng.resolveAsList(ref, fwd, !fwd, rcDepth, 1, null, null, null, -1);
-
+        // We won't traverse to root depending on the namespace
+        // so we'll set the namespace to null after setting the focus code namespace
+        namespace = null;
         // Run through each neighbor, recursing as necessary to check if
         // there is eventually an embedded match with the stop code.
         if (rcrl.getResolvedConceptReferenceCount() > 0) {
