@@ -87,7 +87,7 @@ import java.util.Set;
 public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private static final long serialVersionUID = 6108466665548985484L;
 
-    private BooleanQuery.Builder builder = new BooleanQuery.Builder();
+    private transient BooleanQuery.Builder builder = new BooleanQuery.Builder();
 
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
