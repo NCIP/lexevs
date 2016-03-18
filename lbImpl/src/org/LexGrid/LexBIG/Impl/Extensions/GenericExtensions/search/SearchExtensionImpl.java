@@ -61,12 +61,12 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
     private static final Term preferred = new Term("isPreferred","T");
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
+    public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException {
         return this.search(text, null, matchAlgorithm);
     }
 
     @Override
-    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
+    public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> codeSystems, MatchAlgorithm matchAlgorithm) throws LBParameterException {
         return this.search(text, codeSystems, null, matchAlgorithm);
     }
     
@@ -75,7 +75,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             final String text, 
             Set<CodingSchemeReference> codeSystemsToInclude,
             Set<CodingSchemeReference> codeSystemsToExclude, 
-            MatchAlgorithm matchAlgorithm) throws LBParameterException, IOException {
+            MatchAlgorithm matchAlgorithm) throws LBParameterException {
         return this.search(text, codeSystemsToInclude, codeSystemsToExclude, matchAlgorithm, false);
     }
     
@@ -85,7 +85,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             Set<CodingSchemeReference> codeSystemsToInclude,
             Set<CodingSchemeReference> codeSystemsToExclude, 
             MatchAlgorithm matchAlgorithm,
-            boolean includeAnonymous) throws LBParameterException, IOException {      
+            boolean includeAnonymous) throws LBParameterException {      
         return this.search(
                 text, 
                 codeSystemsToInclude, 
@@ -102,7 +102,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             Set<CodingSchemeReference> codeSystemsToExclude, 
             MatchAlgorithm matchAlgorithm,
             boolean includeAnonymous,
-            boolean includeInactive) throws LBParameterException, IOException {
+            boolean includeInactive) throws LBParameterException {
         
         LexEvsServiceLocator lexEvsServiceLocator = LexEvsServiceLocator.getInstance();
         List<RegistryEntry> entries = 
