@@ -18,6 +18,18 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -52,27 +64,32 @@ import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.NonProxyCodeHolderFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.apache.lucene.index.Term;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.join.QueryBitSetProducer;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
+import de.javakaffee.kryoserializers.ArraysAsListSerializer;
+import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer;
+import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
+
+
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -839,5 +856,57 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     public void setNonEntityConceptReferenceList(DefaultCodeHolder nonEntityConceptReferenceList) {
         this.nonEntityConceptReferenceList = nonEntityConceptReferenceList;
     }
+    
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = new Output(baos);
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        kryo.register(BooleanClause.class);
+        kryo.register(Query.class);
+        kryo.register(Occur.class);
+        kryo.register(ToParentBlockJoinQuery.class);
+        kryo.register(QueryBitSetProducer.class);
+        SynchronizedCollectionsSerializer.registerSerializers(kryo);
+        kryo.writeClassAndObject(output, (List<BooleanClause>) builder.build().clauses());
+
+        output.close();
+        String outputString = Base64.encodeBase64String(baos.toByteArray());
+        out.writeObject(outputString);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+
+        in.defaultReadObject();
+
+        String inputString = (String) in.readObject();
+        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
+        Input input = new Input(bais);
+        Kryo kryo = new Kryo();
+        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        kryo.register(BooleanClause.class);
+        kryo.register(Query.class);
+        kryo.register(Occur.class);
+        kryo.register(ToParentBlockJoinQuery.class);
+        kryo.register(QueryBitSetProducer.class);
+        SynchronizedCollectionsSerializer.registerSerializers(kryo);
+        @SuppressWarnings("unchecked")
+        List<BooleanClause> queryObject = (List<BooleanClause>) kryo.readClassAndObject(input);
+        input.close();
+        builder = new BooleanQuery.Builder();
+        for (BooleanClause clause : queryObject) {
+            builder.add(clause);
+        }
+       
+   }
+    
 
 }
