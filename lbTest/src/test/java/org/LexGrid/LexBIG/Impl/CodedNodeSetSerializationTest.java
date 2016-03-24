@@ -25,12 +25,11 @@ public class CodedNodeSetSerializationTest extends TestCase {
 	LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
 	CodedNodeSet cns;
 	private CodedNodeSet cnsNoRest;
+	private CodedNodeSet cns3;
 	
 	@Before
 	public void setUp() throws LBException{
-		cns = lbs.getCodingSchemeConcepts("Automobiles", null);
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
-		cnsNoRest = lbs.getCodingSchemeConcepts("Automobiles", null);
+
 	}
 
 	@Test
@@ -40,21 +39,27 @@ public class CodedNodeSetSerializationTest extends TestCase {
 	}
 	
 	@Test
-	public void testIsDeserializedBuilderEqual() throws IOException, ClassNotFoundException{
+	public void testIsDeserializedBuilderEqual() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
 		byte[] ba = serialize(cns);
 		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
 		assertEquals(deSerializedCns.getQuery(), ((CodedNodeSetImpl)cns).getQuery());
 	}
 	
 	@Test 
-	public void testDoesQueryResultsAtTarget() throws IOException, ClassNotFoundException, LBInvocationException, LBParameterException{
+	public void testDoesQueryResultsAtTarget() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
 		byte[] ba = serialize(cns);
 		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
 		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
 		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
 	}
 	
-	public void testDoesQueryReturnSameNumberOfResults() throws IOException, ClassNotFoundException, LBInvocationException, LBParameterException{
+	public void testDoesQueryReturnSameNumberOfResults() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
 		byte[] ba = serialize(cns);
 		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
 		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
@@ -63,7 +68,9 @@ public class CodedNodeSetSerializationTest extends TestCase {
 		assertEquals(sourcelist.getResolvedConceptReferenceCount(), targetlist.getResolvedConceptReferenceCount());
 	}
 	
-	public void testDoesQueryReturnResult() throws IOException, ClassNotFoundException, LBInvocationException, LBParameterException{
+	public void testDoesQueryReturnResult() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
 		byte[] ba = serialize(cns);
 		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
 		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
@@ -73,13 +80,14 @@ public class CodedNodeSetSerializationTest extends TestCase {
 				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
 	}
 	
-	public void testDoesQueryReturnSpanQueryResult() throws IOException, ClassNotFoundException, LBInvocationException, LBParameterException{
-		cnsNoRest.restrictToMatchingDesignations("ncept for testing gr", SearchDesignationOption.ALL, "subString", null);
-		byte[] ba = serialize(cnsNoRest);
+	public void testDoesQueryReturnSpanQueryResult() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns.restrictToMatchingDesignations("ncept for testing gr", SearchDesignationOption.ALL, "subString", null);
+		byte[] ba = serialize(cns);
 		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
-		ResolvedConceptReferenceList sourcelist = cnsNoRest.resolveToList(null, null, null, -1);
+		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
 		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
-		String sourceQuery = ((CodedNodeSetImpl)cnsNoRest).getQuery().toString();
+		String sourceQuery = ((CodedNodeSetImpl)cns).getQuery().toString();
 		String targetQuery = ((CodedNodeSetImpl)deSerializedCns).getQuery().toString();
 		assertTrue(sourceQuery.equals(targetQuery));
 		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
@@ -88,6 +96,89 @@ public class CodedNodeSetSerializationTest extends TestCase {
 				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
 	}
 	
+	public void testDoesQueryReturnWildCardQueryResult() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns.restrictToMatchingDesignations("graph", SearchDesignationOption.ALL, "subString", null);
+		byte[] ba = serialize(cns);
+		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
+		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
+		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
+		String sourceQuery = ((CodedNodeSetImpl)cns).getQuery().toString();
+		String targetQuery = ((CodedNodeSetImpl)deSerializedCns).getQuery().toString();
+		assertTrue(sourceQuery.equals(targetQuery));
+		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
+		assertEquals(sourcelist.getResolvedConceptReference(0).getCode(), targetlist.getResolvedConceptReference(0).getCode());
+		assertEquals(sourcelist.getResolvedConceptReference(0).getEntityDescription().getContent(), 
+				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
+	}
+	
+	public void testDoesQueryReturnLeadingWildCardQueryResult() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns.restrictToMatchingDesignations("ncept for testing graph", SearchDesignationOption.ALL, "subString", null);
+		byte[] ba = serialize(cns);
+		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
+		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
+		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
+		String sourceQuery = ((CodedNodeSetImpl)cns).getQuery().toString();
+		String targetQuery = ((CodedNodeSetImpl)deSerializedCns).getQuery().toString();
+		assertTrue(sourceQuery.equals(targetQuery));
+		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
+		assertEquals(sourcelist.getResolvedConceptReference(0).getCode(), targetlist.getResolvedConceptReference(0).getCode());
+		assertEquals(sourcelist.getResolvedConceptReference(0).getEntityDescription().getContent(), 
+				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
+	}
+	
+	public void testDoesQueryReturnTrailingWildCardQueryResult() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns.restrictToMatchingDesignations("concept for testing gra", SearchDesignationOption.ALL, "subString", null);
+		byte[] ba = serialize(cns);
+		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
+		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
+		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
+		String sourceQuery = ((CodedNodeSetImpl)cns).getQuery().toString();
+		String targetQuery = ((CodedNodeSetImpl)deSerializedCns).getQuery().toString();
+		assertTrue(sourceQuery.equals(targetQuery));
+		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
+		assertEquals(sourcelist.getResolvedConceptReference(0).getCode(), targetlist.getResolvedConceptReference(0).getCode());
+		assertEquals(sourcelist.getResolvedConceptReference(0).getEntityDescription().getContent(), 
+				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
+	}
+	
+	public void testDoesQueryReturnPrefixQueryResult() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns.restrictToMatchingDesignations("Automob", SearchDesignationOption.ALL, "startsWith", null);
+		byte[] ba = serialize(cns);
+		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
+		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
+		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
+		String sourceQuery = ((CodedNodeSetImpl)cns).getQuery().toString();
+		String targetQuery = ((CodedNodeSetImpl)deSerializedCns).getQuery().toString();
+		assertTrue(sourceQuery.equals(targetQuery));
+		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
+		assertEquals(sourcelist.getResolvedConceptReference(0).getCode(), targetlist.getResolvedConceptReference(0).getCode());
+		assertEquals(sourcelist.getResolvedConceptReference(0).getEntityDescription().getContent(), 
+				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
+	}
+	
+	public void testDoesQueryReturnPhraseQueryResults() throws IOException, ClassNotFoundException, LBException{
+		CodedNodeSet cns = getCodedNodeSet();
+		cns.restrictToMatchingDesignations("kar", SearchDesignationOption.ALL, "SpellingErrorTolerantSubStringSearch", null);
+		byte[] ba = serialize(cns);
+		CodedNodeSetImpl deSerializedCns =  deSerialize(ba, CodedNodeSetImpl.class);
+		ResolvedConceptReferenceList sourcelist = cns.resolveToList(null, null, null, -1);
+		ResolvedConceptReferenceList targetlist = deSerializedCns.resolveToList(null, null, null, -1);
+		String sourceQuery = ((CodedNodeSetImpl)cns).getQuery().toString();
+		String targetQuery = ((CodedNodeSetImpl)deSerializedCns).getQuery().toString();
+		assertTrue(sourceQuery.equals(targetQuery));
+		assertTrue(targetlist.getResolvedConceptReferenceCount() > 0);
+		assertEquals(sourcelist.getResolvedConceptReference(0).getCode(), targetlist.getResolvedConceptReference(0).getCode());
+		assertEquals(sourcelist.getResolvedConceptReference(0).getEntityDescription().getContent(), 
+				targetlist.getResolvedConceptReference(0).getEntityDescription().getContent());
+	}
+	
+	private CodedNodeSet getCodedNodeSet() throws LBException{
+		return lbs.getCodingSchemeConcepts("Automobiles", null);
+	}
 	
 	private static <T extends Serializable> byte[] serialize(T obj) 
 		       throws IOException 
