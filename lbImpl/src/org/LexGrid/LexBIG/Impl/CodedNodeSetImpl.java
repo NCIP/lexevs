@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.query.SpanWildcardQuery;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.GetAllConcepts;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToAnonymous;
@@ -75,6 +76,9 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
+import org.apache.lucene.search.spans.FieldMaskingSpanQuery;
+import org.apache.lucene.search.spans.SpanNearQuery;
+import org.apache.lucene.search.spans.SpanTermQuery;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -872,6 +876,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(Occur.class);
         kryo.register(ToParentBlockJoinQuery.class);
         kryo.register(QueryBitSetProducer.class);
+        kryo.register(SpanNearQuery.class);
+        kryo.register(FieldMaskingSpanQuery.class);
+        kryo.register(SpanWildcardQuery.class);
+        kryo.register(SpanTermQuery.class);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
         kryo.writeClassAndObject(output, (List<BooleanClause>) builder.build().clauses());
 
@@ -897,6 +905,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(Occur.class);
         kryo.register(ToParentBlockJoinQuery.class);
         kryo.register(QueryBitSetProducer.class);
+        kryo.register(SpanNearQuery.class);
+        kryo.register(FieldMaskingSpanQuery.class);
+        kryo.register(SpanWildcardQuery.class);
+        kryo.register(SpanTermQuery.class);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
         @SuppressWarnings("unchecked")
         List<BooleanClause> queryObject = (List<BooleanClause>) kryo.readClassAndObject(input);
