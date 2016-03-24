@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -74,6 +75,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.search.spans.FieldMaskingSpanQuery;
@@ -880,8 +882,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(FieldMaskingSpanQuery.class);
         kryo.register(SpanWildcardQuery.class);
         kryo.register(SpanTermQuery.class);
+        kryo.register(ScoreDoc.class);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
-        kryo.writeClassAndObject(output, (List<BooleanClause>) builder.build().clauses());
+        ArrayList<BooleanClause> clauses = (ArrayList<BooleanClause>) builder.build().clauses();
+        kryo.writeClassAndObject(output, clauses);
 
         output.close();
         String outputString = Base64.encodeBase64String(baos.toByteArray());
@@ -909,6 +913,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(FieldMaskingSpanQuery.class);
         kryo.register(SpanWildcardQuery.class);
         kryo.register(SpanTermQuery.class);
+        kryo.register(ScoreDoc.class);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
         @SuppressWarnings("unchecked")
         List<BooleanClause> queryObject = (List<BooleanClause>) kryo.readClassAndObject(input);
