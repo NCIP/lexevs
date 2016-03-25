@@ -38,7 +38,7 @@ public abstract class AbstractListBackedResolvedConceptReferencesIterator<T> imp
     
     private TransformerExecutor<T> transformerExecutor = new TransformerExecutor<T>();
    
-    private List<T> list;
+    protected List<T> list;
     private Transformer<T> transformer;
 
     protected AbstractListBackedResolvedConceptReferencesIterator(List<T> list, Transformer<T> transformer){

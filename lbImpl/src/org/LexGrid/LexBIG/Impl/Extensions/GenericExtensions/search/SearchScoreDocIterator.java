@@ -23,17 +23,45 @@
 */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Impl.Extensions.Search.query.SpanWildcardQuery;
 import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.join.QueryBitSetProducer;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
+import org.apache.lucene.search.spans.FieldMaskingSpanQuery;
+import org.apache.lucene.search.spans.SpanNearQuery;
+import org.apache.lucene.search.spans.SpanTermQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.objenesis.strategy.StdInstantiatorStrategy;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
+
+import de.javakaffee.kryoserializers.ArraysAsListSerializer;
+import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer;
+import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
 
 /**
  * The Class SearchScoreDocIterator.
@@ -97,7 +125,74 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
             
             return ref;
         }
-        
     }
+    
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = new Output(baos);
+        Kryo kryo = new Kryo();
+ //       kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+        SynchronizedCollectionsSerializer.registerSerializers(kryo);
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        kryo.register(ScoreDoc.class);
+        kryo.writeClassAndObject(output, (List<ScoreDoc>)super.list);
+
+        output.close();
+        String outputString = Base64.encodeBase64String(baos.toByteArray());
+        out.writeObject(outputString);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+
+        in.defaultReadObject();
+
+        String inputString = (String) in.readObject();
+        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
+        Input input = new Input(bais);
+        Kryo kryo = new Kryo();
+//        kryo.setRegistrationRequired(false);
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+        SynchronizedCollectionsSerializer.registerSerializers(kryo);
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        kryo.register(ScoreDoc.class);
+        @SuppressWarnings("unchecked")
+        List<ScoreDoc> queryObject = (List<ScoreDoc>) kryo.readClassAndObject(input);
+        super.list = queryObject;
+        input.close();
+}
+//    
+//    
+//    private static class ScoreDocSerializer extends Serializer<ScoreDoc>{
+//
+//        @Override
+//        public ScoreDoc read(Kryo kryo, Input input, Class<ScoreDoc> sdType) {
+//            // TODO Auto-generated method stub
+//            return new ScoreDoc(input.readInt(), input.readInt(), input.readInt());
+//        }
+//
+//        @Override
+//        public void write(Kryo kryo, Output outPut, ScoreDoc scoreDoc) {
+//            outPut.writeInt(scoreDoc.doc);
+//            outPut.writeFloat(scoreDoc.score);
+//            outPut.writeInt(scoreDoc.shardIndex);
+//            
+//        }
+
+        
+       
+//private void writeObject(ObjectOutputStream out) throws IOException {
+//    System.out.println("Write out for this class:" + this.getClass().getName());
+//    out.defaultWriteObject();
+//}
+//
+//private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+//    System.out.println("Read in for this class:" + this.getClass().getName());
+//    in.defaultReadObject();
+//}
     
 }
