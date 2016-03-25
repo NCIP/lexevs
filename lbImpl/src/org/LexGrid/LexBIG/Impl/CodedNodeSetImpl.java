@@ -884,7 +884,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(SpanTermQuery.class);
         kryo.register(ScoreDoc.class);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
-        ArrayList<BooleanClause> clauses = (ArrayList<BooleanClause>) builder.build().clauses();
+        List<BooleanClause> clauses = (List<BooleanClause>) builder.build().clauses();
         kryo.writeClassAndObject(output, clauses);
 
         output.close();
