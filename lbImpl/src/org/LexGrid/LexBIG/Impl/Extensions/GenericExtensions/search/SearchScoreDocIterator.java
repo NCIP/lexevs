@@ -133,7 +133,6 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = new Output(baos);
         Kryo kryo = new Kryo();
- //       kryo.setRegistrationRequired(false);
         kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
         UnmodifiableCollectionsSerializer.registerSerializers(kryo);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
@@ -154,7 +153,6 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
         Input input = new Input(bais);
         Kryo kryo = new Kryo();
-//        kryo.setRegistrationRequired(false);
         kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
         UnmodifiableCollectionsSerializer.registerSerializers(kryo);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
@@ -165,34 +163,5 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         super.list = queryObject;
         input.close();
 }
-//    
-//    
-//    private static class ScoreDocSerializer extends Serializer<ScoreDoc>{
-//
-//        @Override
-//        public ScoreDoc read(Kryo kryo, Input input, Class<ScoreDoc> sdType) {
-//            // TODO Auto-generated method stub
-//            return new ScoreDoc(input.readInt(), input.readInt(), input.readInt());
-//        }
-//
-//        @Override
-//        public void write(Kryo kryo, Output outPut, ScoreDoc scoreDoc) {
-//            outPut.writeInt(scoreDoc.doc);
-//            outPut.writeFloat(scoreDoc.score);
-//            outPut.writeInt(scoreDoc.shardIndex);
-//            
-//        }
-
-        
-       
-//private void writeObject(ObjectOutputStream out) throws IOException {
-//    System.out.println("Write out for this class:" + this.getClass().getName());
-//    out.defaultWriteObject();
-//}
-//
-//private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-//    System.out.println("Read in for this class:" + this.getClass().getName());
-//    in.defaultReadObject();
-//}
     
 }
