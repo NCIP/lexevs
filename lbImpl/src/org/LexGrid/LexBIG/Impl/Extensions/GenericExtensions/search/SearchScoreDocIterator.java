@@ -139,7 +139,7 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(ScoreDoc.class);
         kryo.writeClassAndObject(output, (List<ScoreDoc>)super.list);
-
+        kryo.writeClassAndObject(output, (Transformer<ScoreDoc>)super.transformer);
         output.close();
         String outputString = Base64.encodeBase64String(baos.toByteArray());
         out.writeObject(outputString);
@@ -161,6 +161,8 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         @SuppressWarnings("unchecked")
         List<ScoreDoc> queryObject = (List<ScoreDoc>) kryo.readClassAndObject(input);
         super.list = queryObject;
+        ScoreDocTransformer transformer = (ScoreDocTransformer) kryo.readClassAndObject(input);
+        super.transformer = transformer;
         input.close();
 }
     

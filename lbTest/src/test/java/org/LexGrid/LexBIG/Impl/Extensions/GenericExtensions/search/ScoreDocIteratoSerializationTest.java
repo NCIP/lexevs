@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.lucene.search.ScoreDoc;
 import org.junit.Test;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -34,6 +35,20 @@ public class ScoreDocIteratoSerializationTest extends LexBIGServiceTestCase {
        
 		byte[] ba = serialize(searchExtension);
 		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);
+
+	}
+	
+	@Test
+	public void testSerializationNextCall() throws LBException, IOException, ClassNotFoundException {
+		ScoreDoc sd = new ScoreDoc(3, 1);
+		List<ScoreDoc> list = new ArrayList<ScoreDoc>();
+		list.add(sd);
+		SearchScoreDocIterator searchExtension = new SearchScoreDocIterator(list);
+       
+		byte[] ba = serialize(searchExtension);
+		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);
+		ResolvedConceptReference ref = searchTarget.next();
+		assertNotNull(ref.getCode());
 
 	}
 	
