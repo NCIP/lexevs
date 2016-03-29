@@ -27,6 +27,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
@@ -130,9 +131,9 @@ public class FileSystemCachingValueSetDefinitionCompilerDecorator extends Abstra
 			}
 			
 			ObjectInput in = new ObjectInputStream(new FileInputStream(cachedCnsFile)); 
-			CodedNodeSet cns;
+			CodedNodeSetImpl cns;
 			try {
-				cns = (CodedNodeSet)in.readObject();
+				cns = (CodedNodeSetImpl)in.readObject();
 			} catch (Exception e) {
 				LoggerFactory.getLogger().warn("Compiled Value Set Definition was found, but it is invalid or corrupted. Removing...", e);
 				if(! FileUtils.deleteQuietly(cachedCnsFile)){

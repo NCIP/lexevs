@@ -886,10 +886,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
         List<BooleanClause> clauses = (List<BooleanClause>) builder.build().clauses();
         kryo.writeClassAndObject(output, clauses);
-
         output.close();
         String outputString = Base64.encodeBase64String(baos.toByteArray());
         out.writeObject(outputString);
+        out.writeInt(builder.build().getMinimumNumberShouldMatch());
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
@@ -922,6 +922,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         for (BooleanClause clause : queryObject) {
             builder.add(clause);
         }
+        builder.setMinimumNumberShouldMatch(in.readInt());
        
    }
     

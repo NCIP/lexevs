@@ -39,16 +39,15 @@ public class ScoreDocIteratoSerializationTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	public void testSerializationNextCall() throws LBException, IOException, ClassNotFoundException {
+	public void testSerializationHasScoreDoc() throws LBException, IOException, ClassNotFoundException {
 		ScoreDoc sd = new ScoreDoc(3, 1);
 		List<ScoreDoc> list = new ArrayList<ScoreDoc>();
 		list.add(sd);
 		SearchScoreDocIterator searchExtension = new SearchScoreDocIterator(list);
        
 		byte[] ba = serialize(searchExtension);
-		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);
-		ResolvedConceptReference ref = searchTarget.next();
-		assertNotNull(ref.getCode());
+		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);		
+		assertTrue(searchTarget.numberRemaining() > 0);
 
 	}
 	
