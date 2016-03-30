@@ -48,6 +48,7 @@ public class ScoreDocIteratoSerializationTest extends LexBIGServiceTestCase {
 		byte[] ba = serialize(searchExtension);
 		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);		
 		assertTrue(searchTarget.numberRemaining() > 0);
+		searchTarget.next();
 
 	}
 	

@@ -140,11 +140,14 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         kryo.register(ScoreDoc.class);
         kryo.writeClassAndObject(output, (List<ScoreDoc>)super.list);
         kryo.writeClassAndObject(output, (Transformer<ScoreDoc>)super.transformer);
+        kryo.writeClassAndObject(output, (TransformerExecutor<ScoreDoc>)super.transformerExecutor);
         output.close();
         String outputString = Base64.encodeBase64String(baos.toByteArray());
         out.writeObject(outputString);
     }
 
+
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 
         in.defaultReadObject();
@@ -158,11 +161,11 @@ public class SearchScoreDocIterator extends AbstractListBackedResolvedConceptRef
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(ScoreDoc.class);
-        @SuppressWarnings("unchecked")
         List<ScoreDoc> queryObject = (List<ScoreDoc>) kryo.readClassAndObject(input);
         super.list = queryObject;
         ScoreDocTransformer transformer = (ScoreDocTransformer) kryo.readClassAndObject(input);
         super.transformer = transformer;
+        super.transformerExecutor = (TransformerExecutor<ScoreDoc>)kryo.readClassAndObject(input);
         input.close();
 }
     
