@@ -25,5 +25,8 @@
    		<dependency org="com.healthmarketscience.sqlbuilder" name="sqlbuilder" rev="2.0.11" conf="default"/>
    		<dependency org="com.healthmarketscience.common" name="common-util" rev="1.0.2" conf="default"/>
    		<dependency org="org.json" name="json" rev="20080701" conf="default"/>
+   		<dependency org="com.esotericsoftware.minlog" name="minlog" rev="1.2" conf="default"  />
+   		<dependency org="com.esotericsoftware.kryo" name="kryo" rev="2.21" conf="default" />
+   		<dependency org="de.javakaffee" name="kryo-serializers" rev="0.37" conf="default" />
    	 </dependencies>
 </ivy-module>

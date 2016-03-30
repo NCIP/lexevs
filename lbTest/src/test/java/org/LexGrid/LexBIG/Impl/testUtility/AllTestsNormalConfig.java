@@ -25,11 +25,13 @@ import junit.framework.TestSuite;
 import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 //import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImplTest;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetSerializationTest;
 import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 //import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.ScoreDocIteratoSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.AbstractSearchTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.AbstractSortTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
@@ -217,6 +219,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
         mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
         mainSuite.addTestSuite(CodedNodeSetImplTest.class);
+        mainSuite.addTestSuite(CodedNodeSetSerializationTest.class);
         mainSuite.addTestSuite(TestMetaDataSearch.class);
         mainSuite.addTestSuite(ServiceManagerTest.class);
         mainSuite.addTestSuite(RegistryTest.class);
@@ -470,6 +473,7 @@ public class AllTestsNormalConfig {
         
         //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);
+        mainSuite.addTestSuite(ScoreDocIteratoSerializationTest.class);
         
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
