@@ -1,7 +1,5 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
-import static org.junit.Assert.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,13 +9,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.search.ScoreDoc;
-import org.junit.Test;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.apache.lucene.search.ScoreDoc;
+import org.junit.Test;
 
 public class ScoreDocIteratoSerializationTest extends LexBIGServiceTestCase {
 
