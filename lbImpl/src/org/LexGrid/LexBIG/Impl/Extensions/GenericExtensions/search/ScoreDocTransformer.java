@@ -5,12 +5,13 @@ import java.io.Serializable;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-
+@LgClientSideSafe
 public class ScoreDocTransformer implements Serializable {
 
     private static final long serialVersionUID = 7176335324999288237L;

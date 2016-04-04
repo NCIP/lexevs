@@ -62,9 +62,9 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
     
     private int pos = 0;
     
-    transient protected ScoreDocTransformerExecutor transformerExecutor = new ScoreDocTransformerExecutor();
+    private ScoreDocTransformerExecutor transformerExecutor = new ScoreDocTransformerExecutor();
     transient protected List<ScoreDoc> list;
-    transient protected ScoreDocTransformer transformer;
+    protected ScoreDocTransformer transformer;
     
     protected SearchScoreDocIterator(List<ScoreDoc> list) {
         super();
@@ -90,8 +90,8 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(ScoreDoc.class);
         kryo.writeClassAndObject(output, (List<ScoreDoc>)list);
-        kryo.writeClassAndObject(output, (ScoreDocTransformer)transformer);
-        kryo.writeClassAndObject(output, (ScoreDocTransformerExecutor)transformerExecutor);
+//        kryo.writeClassAndObject(output, (ScoreDocTransformer)transformer);
+//        kryo.writeClassAndObject(output, (ScoreDocTransformerExecutor)transformerExecutor);
         output.close();
         String outputString = Base64.encodeBase64String(baos.toByteArray());
         out.writeObject(outputString);
@@ -113,10 +113,10 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(ScoreDoc.class);
         List<ScoreDoc> queryObject = (List<ScoreDoc>) kryo.readClassAndObject(input);
-        list = queryObject;
-        ScoreDocTransformer transformer = (ScoreDocTransformer) kryo.readClassAndObject(input);
-        this.transformer = transformer;
-        transformerExecutor = (ScoreDocTransformerExecutor)kryo.readClassAndObject(input);
+        this.list = queryObject;
+//        ScoreDocTransformer transformer = (ScoreDocTransformer) kryo.readClassAndObject(input);
+//        this.transformer = transformer;
+ //       transformerExecutor = (ScoreDocTransformerExecutor)kryo.readClassAndObject(input);
         input.close();
 }
 
