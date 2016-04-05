@@ -5,33 +5,24 @@ import java.io.Serializable;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.annotations.LgClientSideSafe;
+import org.LexGrid.annotations.LgProxyClass;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-@LgClientSideSafe
+@LgProxyClass
 public class ScoreDocTransformer implements Serializable {
 
     private static final long serialVersionUID = 7176335324999288237L;
-
-    public ResolvedConceptReferenceList transform(Iterable<ScoreDoc> items) {
-        ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
-        for(ScoreDoc item : items){
-            list.addResolvedConceptReference(this.doTransform(item));
-        }
-        
-        return list;
-    }
     
     
-    protected ResolvedConceptReference doTransform(ScoreDoc item) {
+    public ResolvedConceptReference doTransform(ProxyProtectedScoreDocWrapper item) {
         Document doc = 
             LexEvsServiceLocator.getInstance().
                 getIndexServiceManager().
                 getSearchIndexService().
-                getById(item.doc);
+                getById(item.getScoreDoc().doc);
         
         String code = doc.get("entityCode");
         String namespace = doc.get("entityCodeNamespace");
