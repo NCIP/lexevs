@@ -31,12 +31,15 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.commons.codec.binary.Base64;
@@ -66,11 +69,13 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
     private ScoreDocTransformerExecutor transformerExecutor = new ScoreDocTransformerExecutor();
     transient protected List<ScoreDoc> list;
     protected ScoreDocTransformer transformer;
+    protected Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude;
     
-    protected SearchScoreDocIterator(List<ScoreDoc> list) {
+    protected SearchScoreDocIterator(Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs, List<ScoreDoc> list) {
         super();
         this.list = list;
         this.transformer = new ScoreDocTransformer();
+        this.codeSystemsToInclude = codeSystemRefs;
     }
 
     private static final long serialVersionUID = -7112239106786189568L;
@@ -91,8 +96,6 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(ScoreDoc.class);
         kryo.writeClassAndObject(output, (List<ScoreDoc>)list);
-//        kryo.writeClassAndObject(output, (ScoreDocTransformer)transformer);
-//        kryo.writeClassAndObject(output, (ScoreDocTransformerExecutor)transformerExecutor);
         output.close();
         String outputString = Base64.encodeBase64String(baos.toByteArray());
         out.writeObject(outputString);
@@ -114,10 +117,7 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(ScoreDoc.class);
         List<ScoreDoc> queryObject = (List<ScoreDoc>) kryo.readClassAndObject(input);
-        this.list = queryObject;
-//        ScoreDocTransformer transformer = (ScoreDocTransformer) kryo.readClassAndObject(input);
-//        this.transformer = transformer;
- //       transformerExecutor = (ScoreDocTransformerExecutor)kryo.readClassAndObject(input);
+        this.list = queryObject;;
         input.close();
 }
 
@@ -161,7 +161,7 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
     public ResolvedConceptReferenceList next(int maxToReturn) throws LBResourceUnavailableException,
             LBInvocationException {
         ResolvedConceptReferenceList results = 
-                this.transformerExecutor.transform(
+                this.transformerExecutor.transform(codeSystemsToInclude,
                        this.transformer, 
                        new ArrayList<ScoreDoc>(this.list.subList(pos, this.adjustEndPos(pos + maxToReturn))));
          
@@ -175,8 +175,8 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
     public ResolvedConceptReferenceList get(int start, int end) throws LBResourceUnavailableException,
             LBInvocationException, LBParameterException {
         List<ScoreDoc> subList = this.list.subList(start, this.adjustEndPos(end));
-        
-        return this.transformerExecutor.transform(this.transformer, subList);
+        //TODO Adapt to multiple code systems.
+        return this.transformerExecutor.transform(null, this.transformer, subList);
     }
     
     private int adjustEndPos(int requestedEnd){

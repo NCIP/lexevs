@@ -171,13 +171,13 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 codeSystemsToExclude.size() > 0){
         codeSystemsToInclude.removeAll(codeSystemsToExclude);
         }
-        
+        Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs = this.resolveCodeSystemReferences(codeSystemsToInclude);
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
-                query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
+                query(codeSystemRefs, 
                         blockJoinQuery);
-        return new SearchScoreDocIterator(scoreDocs);
+        return new SearchScoreDocIterator( codeSystemRefs, scoreDocs);
     }
     
     protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){

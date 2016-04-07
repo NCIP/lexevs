@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Filter;
@@ -48,6 +49,8 @@ public interface SearchDao extends LexEvsIndexFormatVersionAwareDao {
 	public Filter getCodingSchemeFilter(String uri, String version);
 
 	public Document getById(int id);
+	
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude, int id);
 
 	public List<ScoreDoc> query(Query query,
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude);

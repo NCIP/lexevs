@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -59,5 +60,8 @@ public interface SearchIndexService {
 	public Analyzer getAnalyzer();
 
 	public void createIndex(AbsoluteCodingSchemeVersionReference ref);
+
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
+			int doc);
 
 }

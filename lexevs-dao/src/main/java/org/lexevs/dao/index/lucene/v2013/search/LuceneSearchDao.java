@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -85,6 +86,13 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	public Document getById(int id) {
 		return this.getLuceneIndexTemplate().getDocumentById(id);
 	}
+	
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude, int id) {
+		List<AbsoluteCodingSchemeVersionReference> list = Arrays.asList(codeSystemsToInclude.
+				toArray(new AbsoluteCodingSchemeVersionReference[codeSystemsToInclude.size()]));
+		return this.getLuceneIndexTemplate(list).getDocumentById(id);
+	}
+
 
 	@Override
 	public List<ScoreDoc> query(Query query) {
@@ -101,7 +109,6 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 			
 			final List<ScoreDoc> scoreDocs = new ArrayList<ScoreDoc>();
 			
-			//TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
 						
 			template.search(query, null, new Collector() {
 
@@ -169,6 +176,10 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
 		return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
+	}
+	
+	protected LuceneIndexTemplate getLuceneIndexTemplate( List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+		return getIndexRegistry().getCommonLuceneIndexTemplate(codingSchemes);
 	}
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {

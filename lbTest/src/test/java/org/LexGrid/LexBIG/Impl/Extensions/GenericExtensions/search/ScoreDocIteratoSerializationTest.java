@@ -7,10 +7,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.apache.lucene.search.ScoreDoc;
 import org.junit.Test;
 
@@ -26,7 +30,9 @@ public class ScoreDocIteratoSerializationTest extends LexBIGServiceTestCase {
 		ScoreDoc sd = new ScoreDoc(0, 0);
 		List<ScoreDoc> list = new ArrayList<ScoreDoc>();
 		list.add(sd);
-		SearchScoreDocIterator searchExtension = new SearchScoreDocIterator(list);
+		Set<AbsoluteCodingSchemeVersionReference> refs = new HashSet<AbsoluteCodingSchemeVersionReference>();
+		refs.add(Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION));
+		SearchScoreDocIterator searchExtension = new SearchScoreDocIterator(refs, list);
        
 		byte[] ba = serialize(searchExtension);
 		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);
@@ -38,12 +44,14 @@ public class ScoreDocIteratoSerializationTest extends LexBIGServiceTestCase {
 		ScoreDoc sd = new ScoreDoc(3, 1);
 		List<ScoreDoc> list = new ArrayList<ScoreDoc>();
 		list.add(sd);
-		SearchScoreDocIterator searchExtension = new SearchScoreDocIterator(list);
+		Set<AbsoluteCodingSchemeVersionReference> refs = new HashSet<AbsoluteCodingSchemeVersionReference>();
+		refs.add(Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION));
+		SearchScoreDocIterator searchExtension = new SearchScoreDocIterator(refs, list);
        
 		byte[] ba = serialize(searchExtension);
 		SearchScoreDocIterator searchTarget = deSerialize(ba, SearchScoreDocIterator.class);		
 		assertTrue(searchTarget.numberRemaining() > 0);
-		searchTarget.next();
+		assertNotNull(searchTarget.next());
 
 	}
 	

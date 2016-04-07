@@ -1,9 +1,12 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgProxyClass;
 import org.apache.commons.lang.StringUtils;
@@ -17,12 +20,12 @@ public class ScoreDocTransformer implements Serializable {
     private static final long serialVersionUID = 7176335324999288237L;
     
     
-    public ResolvedConceptReference doTransform(ProxyProtectedScoreDocWrapper item) {
+    public ResolvedConceptReference doTransform(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude, ProxyProtectedScoreDocWrapper item) {
         Document doc = 
             LexEvsServiceLocator.getInstance().
                 getIndexServiceManager().
                 getSearchIndexService().
-                getById(item.getScoreDoc().doc);
+                getById(codeSystemsToInclude,item.getScoreDoc().doc);
         
         String code = doc.get("entityCode");
         String namespace = doc.get("entityCodeNamespace");
