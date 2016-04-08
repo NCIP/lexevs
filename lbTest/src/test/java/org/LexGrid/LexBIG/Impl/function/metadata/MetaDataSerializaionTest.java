@@ -9,16 +9,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceMetadataImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Test;
 
 public class MetaDataSerializaionTest extends LexBIGServiceTestCase {
 
 	@Test
-	public void test() throws IOException, ClassNotFoundException {
+	public void testBooleanQueryInRestriction() throws IOException, ClassNotFoundException, LBParameterException {
 		LexBIGServiceMetadataImpl lbMetadata = new LexBIGServiceMetadataImpl();
+		lbMetadata.restrictToCodingScheme(Constructors.createAbsoluteCodingSchemeVersionReference("urn", "version"));
 	    byte[] b = serialize(lbMetadata);
 	    deSerialize(b, LexBIGServiceMetadataImpl.class);
 	}

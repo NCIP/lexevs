@@ -63,8 +63,8 @@ import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
  */
 public class LexBIGServiceMetadataImpl implements LexBIGServiceMetadata {
     private static final long serialVersionUID = 3382129429728528566L;
-    protected ArrayList<Query> queryClauses = new ArrayList<Query>();
-    protected ArrayList<Term> termClauses = new ArrayList<Term>();
+    transient protected ArrayList<Query> queryClauses = new ArrayList<Query>();
+    transient protected ArrayList<Term> termClauses = new ArrayList<Term>();
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -168,50 +168,50 @@ public class LexBIGServiceMetadataImpl implements LexBIGServiceMetadata {
         }
     }
     
-//    private void writeObject(ObjectOutputStream out) throws IOException {
-//        out.defaultWriteObject();
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        Output output = new Output(baos);
-//        Kryo kryo = new Kryo();
-//        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-//        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
-//        SynchronizedCollectionsSerializer.registerSerializers(kryo);
-//        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
-//        kryo.register(Query.class);
-//        kryo.register(Term.class);
-//        kryo.register(BooleanQuery.class);
-//        kryo.register(RegexQuery.class);
-//        kryo.writeClassAndObject(output, (ArrayList<Query>)queryClauses);
-//        kryo.writeClassAndObject(output, (ArrayList<Term>)termClauses);
-//        output.close();
-//        String outputString = Base64.encodeBase64String(baos.toByteArray());
-//        out.writeObject(outputString);
-//    }
-//
-//
-//    @SuppressWarnings("unchecked")
-//    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-//
-//        in.defaultReadObject();
-//
-//        String inputString = (String) in.readObject();
-//        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
-//        Input input = new Input(bais);
-//        Kryo kryo = new Kryo();
-//        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-//        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
-//        SynchronizedCollectionsSerializer.registerSerializers(kryo);
-//        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
-//        kryo.register(Query.class);
-//        kryo.register(Term.class);
-//        kryo.register(BooleanQuery.class);
-//        kryo.register(RegexQuery.class);
-//        ArrayList<Query> queryClauseObject = (ArrayList<Query>) kryo.readClassAndObject(input);
-//        ArrayList<Term> termClauseObject = (ArrayList<Term>) kryo.readClassAndObject(input);
-//        this.queryClauses = queryClauseObject;
-//        this.termClauses = termClauseObject;
-//        input.close();
-//}
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = new Output(baos);
+        Kryo kryo = new Kryo();
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+        SynchronizedCollectionsSerializer.registerSerializers(kryo);
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        kryo.register(Query.class);
+        kryo.register(Term.class);
+        kryo.register(BooleanQuery.class);
+        kryo.register(RegexQuery.class);
+        kryo.writeClassAndObject(output, (ArrayList<Query>)queryClauses);
+        kryo.writeClassAndObject(output, (ArrayList<Term>)termClauses);
+        output.close();
+        String outputString = Base64.encodeBase64String(baos.toByteArray());
+        out.writeObject(outputString);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+
+        in.defaultReadObject();
+
+        String inputString = (String) in.readObject();
+        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
+        Input input = new Input(bais);
+        Kryo kryo = new Kryo();
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
+        SynchronizedCollectionsSerializer.registerSerializers(kryo);
+        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+        kryo.register(Query.class);
+        kryo.register(Term.class);
+        kryo.register(BooleanQuery.class);
+        kryo.register(RegexQuery.class);
+        ArrayList<Query> queryClauseObject = (ArrayList<Query>) kryo.readClassAndObject(input);
+        ArrayList<Term> termClauseObject = (ArrayList<Term>) kryo.readClassAndObject(input);
+        this.queryClauses = queryClauseObject;
+        this.termClauses = termClauseObject;
+        input.close();
+}
 
 }
