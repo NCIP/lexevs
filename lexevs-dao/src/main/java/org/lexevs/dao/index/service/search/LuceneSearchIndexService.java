@@ -19,6 +19,7 @@
 package org.lexevs.dao.index.service.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -231,6 +233,12 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	public Document getById(int id){
 		return this.indexDaoManager.getSearchDao().getById(id);
+	}
+
+	@Override
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
+			int doc) {
+		return this.indexDaoManager.getSearchDao().getById(codeSystemsToInclude, doc);
 	}
 
 	public SystemResourceService getSystemResourceService() {

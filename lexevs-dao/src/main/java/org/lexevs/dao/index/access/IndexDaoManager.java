@@ -20,8 +20,10 @@ package org.lexevs.dao.index.access;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
@@ -76,6 +78,12 @@ public class IndexDaoManager {
 		return this.searchDaos.get(0);
 	}
 	
+	public SearchDao getSearchDao(
+			Set<CodingSchemeReference> codeSystemsToInclude) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public CommonEntityDao getCommonEntityDao(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
 
 		LuceneIndexTemplate template = 

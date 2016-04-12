@@ -171,13 +171,13 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
                 codeSystemsToExclude.size() > 0){
         codeSystemsToInclude.removeAll(codeSystemsToExclude);
         }
-        
+        Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs = this.resolveCodeSystemReferences(codeSystemsToInclude);
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
-                query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
+                query(codeSystemRefs, 
                         blockJoinQuery);
-        return new SearchScoreDocIterator(scoreDocs);
+        return new SearchScoreDocIterator( codeSystemRefs, scoreDocs);
     }
     
     protected BooleanQuery buildOnMatchAlgorithm(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm){
@@ -256,7 +256,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         return parser;
     }
     
-    private Set<AbsoluteCodingSchemeVersionReference> 
+    protected Set<AbsoluteCodingSchemeVersionReference> 
         resolveCodeSystemReferences(Set<CodingSchemeReference> references) throws LBParameterException{
         if(CollectionUtils.isEmpty(references)){
             return null;
@@ -267,7 +267,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         for(CodingSchemeReference ref : references){
         	CodingSchemeMetaData csm = metadata.getCodingSchemeMetaDataForNameAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());
         	if(csm == null){csm = metadata.getCodingSchemeMetaDataForUriAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());}
-        	if(csm == null) return null;
+        	if(csm == null){ continue;}
         	if((ref.getCodingScheme().equals(csm.getCodingSchemeName()) || ref.getCodingScheme().equals(csm.getCodingSchemeUri()) 
         			&& ref.getVersionOrTag().getVersion().equals(csm.getCodingSchemeVersion()))){
             returnSet.add(csm.getRef());
