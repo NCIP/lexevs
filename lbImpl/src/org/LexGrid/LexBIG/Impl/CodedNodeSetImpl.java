@@ -233,11 +233,11 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             newBuilder.setMinimumNumberShouldMatch(1);
 
             newBuilder.add(this.builder.build(), Occur.SHOULD);
-            newBuilder.add(((CodedNodeSetImpl) codes).getQuery(), Occur.SHOULD);
+            newBuilder.add(((CodedNodeSetImpl) codes).clone().getQuery(), Occur.SHOULD);
 
             this.builder = newBuilder;
 
-            this.references.addAll(((CodedNodeSetImpl) codes).references);
+            this.references.addAll(((CodedNodeSetImpl) codes).clone().references);
             
             if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null  && this.getNonEntityConceptReferenceList() != null){
                 this.getNonEntityConceptReferenceList().union(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList());
@@ -874,6 +874,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         UnmodifiableCollectionsSerializer.registerSerializers(kryo);
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(BooleanClause.class);
+        kryo.register(BooleanQuery.class);
         kryo.register(Query.class);
         kryo.register(Occur.class);
         kryo.register(ToParentBlockJoinQuery.class);
@@ -905,6 +906,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         UnmodifiableCollectionsSerializer.registerSerializers(kryo);
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(BooleanClause.class);
+        kryo.register(BooleanQuery.class);
         kryo.register(Query.class);
         kryo.register(Occur.class);
         kryo.register(ToParentBlockJoinQuery.class);
