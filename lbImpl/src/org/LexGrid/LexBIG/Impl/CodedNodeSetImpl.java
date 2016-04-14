@@ -233,11 +233,11 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             newBuilder.setMinimumNumberShouldMatch(1);
 
             newBuilder.add(this.builder.build(), Occur.SHOULD);
-            newBuilder.add(((CodedNodeSetImpl) codes).clone().getQuery(), Occur.SHOULD);
+            newBuilder.add(((CodedNodeSetImpl) codes).getQuery(), Occur.SHOULD);
 
             this.builder = newBuilder;
 
-            this.references.addAll(((CodedNodeSetImpl) codes).clone().references);
+            this.references.addAll(((CodedNodeSetImpl) codes).getCodingSchemeReferences());
             
             if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null  && this.getNonEntityConceptReferenceList() != null){
                 this.getNonEntityConceptReferenceList().union(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList());
@@ -827,6 +827,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         return cns;
     }
     
+    @LgClientSideSafe
     public Set<CodingSchemeReference> getCodingSchemeReferences(){
         return this.references;
     }
@@ -851,6 +852,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         return shouldCodingSchemeSpecificRestriction;
     }
 
+    @LgClientSideSafe
     public Query getQuery() {
         return this.builder.build();
     }
