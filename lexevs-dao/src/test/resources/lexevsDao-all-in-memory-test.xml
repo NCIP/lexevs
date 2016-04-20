@@ -17,7 +17,7 @@
 		
 	<bean name="abstractDirectoryFactory" class="org.lexevs.dao.test.InMemoryDirectoryFactory"/>
 	
-	<bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.test.InMemoryIndexMetaDataFactory"/>
+	<!-- bean id="luceneIndexMetadataFactory" class="org.lexevs.dao.test.InMemoryIndexMetaDataFactory"/-->
  
 	 <bean id="systemVariables" class="org.lexevs.system.constants.SystemVariables">
     	<constructor-arg ref="loggerFactory"/>
