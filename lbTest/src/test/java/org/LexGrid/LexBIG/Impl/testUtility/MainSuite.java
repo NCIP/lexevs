@@ -132,7 +132,6 @@ import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStr
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStringLiteralSubString;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStringNonLeadingWildcardLiteralSubString;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestWeightedDoubleMetaphone;
-import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIteratorTest;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturnTest;
 import org.LexGrid.LexBIG.Impl.helpers.ConfigureTest;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImplTest;
@@ -183,7 +182,6 @@ public class MainSuite {
 	        mainSuite.addTestSuite(ResourceManagerTest.class); 
 	        mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
 	        mainSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
-	        mainSuite.addTestSuite(AbstractListBackedResolvedConceptReferencesIteratorTest.class);
 	        
 	        mainSuite.addTestSuite(AbstractSortTest.class);
 	        mainSuite.addTestSuite(AbstractSearchTest.class);
