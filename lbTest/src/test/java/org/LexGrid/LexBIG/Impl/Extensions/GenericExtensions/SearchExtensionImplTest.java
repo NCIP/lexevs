@@ -393,6 +393,24 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
+	public void testSimpleSearchForNonParentDocWithoutAnonymous() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		
+		final CodingSchemeReference auto = new CodingSchemeReference();
+		auto.setCodingScheme(AUTO_SCHEME);
+		
+		final CodingSchemeReference parts = new CodingSchemeReference();
+		parts.setCodingScheme(PARTS_SCHEME);
+		
+		Set<CodingSchemeReference> includes = 
+			new HashSet<CodingSchemeReference>() {{ add(auto); add(parts); }};
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search(
+				"+(+(-active:false ((code:C0001 (+code:C0001 +namespace:Automobiles)) (code:A0001 (+code:A0001 +namespace:automobiles)) (code:T0001 (+code:T0001 +namespace:germanmadeparts)))))", includes, null, MatchAlgorithm.LUCENE, false);
+		assertTrue(itr.hasNext());
+	}
+	
 	public void testSimpleSearchFuzzyAndNegationWithGrouping() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");

@@ -176,7 +176,7 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
             LBInvocationException, LBParameterException {
         List<ScoreDoc> subList = this.list.subList(start, this.adjustEndPos(end));
         //TODO Adapt to multiple code systems.
-        return this.transformerExecutor.transform(null, this.transformer, subList);
+        return this.transformerExecutor.transform(this.codeSystemsToInclude, this.transformer, subList);
     }
     
     private int adjustEndPos(int requestedEnd){
