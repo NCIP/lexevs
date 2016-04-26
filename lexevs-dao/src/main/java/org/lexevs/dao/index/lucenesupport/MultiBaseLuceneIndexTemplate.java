@@ -104,9 +104,9 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 	}
 	
-	protected void doFinalize() throws Throwable {
-		throw new UnsupportedOperationException("Closing this Multi Index Reader would close all readers");
-	}
+//	protected void doFinalize() throws Throwable {
+//		throw new UnsupportedOperationException("Closing this Multi Index Reader would close all readers");
+//	}
 
 	public ConcurrentMetaData getMetaDirectories() {
 		return metaDirectories;
