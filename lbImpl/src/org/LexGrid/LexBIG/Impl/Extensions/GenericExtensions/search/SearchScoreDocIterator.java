@@ -39,7 +39,6 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.commons.codec.binary.Base64;
@@ -47,7 +46,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
@@ -62,27 +60,25 @@ import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
  */
 @LgClientSideSafe
 public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator {
-        
-    
     private int pos = 0;
-    
     private ScoreDocTransformerExecutor transformerExecutor = new ScoreDocTransformerExecutor();
     transient protected List<ScoreDoc> list;
     protected ScoreDocTransformer transformer;
     protected Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude;
     
-    protected SearchScoreDocIterator(Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs, List<ScoreDoc> list) {
+    protected SearchScoreDocIterator(Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs, List<ScoreDoc> list) {       
+       this(codeSystemRefs,list,new ScoreDocTransformer());
+    }
+    
+    protected SearchScoreDocIterator(Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs, List<ScoreDoc> list,
+          ScoreDocTransformer transformer) {
         super();
         this.list = list;
-        this.transformer = new ScoreDocTransformer();
+        this.transformer = transformer;
         this.codeSystemsToInclude = codeSystemRefs;
     }
 
     private static final long serialVersionUID = -7112239106786189568L;
-
-    
-  
-    
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
@@ -127,13 +123,10 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
         return this.pos < this.list.size();
     }
 
-
     @Override
     public void release() throws LBResourceUnavailableException {
         // no-op
-        
     }
-
 
     @Override
     public int numberRemaining() throws LBResourceUnavailableException {

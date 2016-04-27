@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConveni
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.ScoreDocIteratoSerializationTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchScoreDocIteratorTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.AbstractSearchTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.AbstractSortTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
@@ -124,7 +125,6 @@ import org.LexGrid.LexBIG.Impl.function.query.TestMembershipinVocabulary;
 import org.LexGrid.LexBIG.Impl.function.query.TestOWLLoaderPreferences;
 import org.LexGrid.LexBIG.Impl.function.query.TestOtherMatchingTechniques;
 import org.LexGrid.LexBIG.Impl.function.query.TestPagedReturns;
-import org.LexGrid.LexBIG.Impl.function.query.TestPreLoadManifest;
 import org.LexGrid.LexBIG.Impl.function.query.TestQuerybyRelationshipDomain;
 import org.LexGrid.LexBIG.Impl.function.query.TestRelationshipInquiry;
 import org.LexGrid.LexBIG.Impl.function.query.TestRestrictToDirectionalNames;
@@ -162,7 +162,6 @@ import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStr
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStringLiteralSubString;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStringNonLeadingWildcardLiteralSubString;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestWeightedDoubleMetaphone;
-import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIteratorTest;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturnTest;
 import org.LexGrid.LexBIG.Impl.helpers.ConfigureTest;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImplTest;
@@ -227,7 +226,6 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(ResourceManagerTest.class); 
         mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
         mainSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
-        mainSuite.addTestSuite(AbstractListBackedResolvedConceptReferencesIteratorTest.class);
         
         mainSuite.addTestSuite(AbstractSortTest.class);
         mainSuite.addTestSuite(AbstractSearchTest.class);
@@ -474,6 +472,7 @@ public class AllTestsNormalConfig {
         //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);
         mainSuite.addTestSuite(ScoreDocIteratoSerializationTest.class);
+        mainSuite.addTestSuite(SearchScoreDocIteratorTest.class);
         
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
