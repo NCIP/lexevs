@@ -22,7 +22,7 @@ public class MappingExtensionSerializationTest extends LexBIGServiceTestCase {
 
 	@Override
 	protected String getTestID() {
-		return "Cory says we have to do this";
+		return "Mapping Serialization";
 	}
 
 	
