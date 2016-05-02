@@ -88,7 +88,9 @@ public class MappingExtensionSerializationTest extends LexBIGServiceTestCase {
 				"GM", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
 		ResolvedConceptReferencesIterator iterator = mapping.resolveMapping();
 		byte[] bytes = serialize(iterator);
-		assertNotNull(deSerialize(bytes, ResolvedConceptReferencesIterator.class));
+		ResolvedConceptReferencesIterator itr = deSerialize(bytes, ResolvedConceptReferencesIterator.class);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
 	}
 	
 	
