@@ -27,11 +27,14 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -116,6 +119,10 @@ import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
  */
 public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private static final long serialVersionUID = 6108466665548985484L;
+    
+    private final String uuid = UUID.randomUUID().toString();
+    
+    private static final transient Map<String,BooleanQuery.Builder> MAP = new HashMap<String,BooleanQuery.Builder>();
 
     private transient BooleanQuery.Builder builder = new BooleanQuery.Builder();
 
@@ -209,7 +216,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * 
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#intersect(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
      */
-    @LgClientSideSafe
+    //@LgClientSideSafe
     public CodedNodeSet intersect(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         try {
             BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
@@ -233,7 +240,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     /**
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#union(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
      */
-    @LgClientSideSafe
+    //@LgClientSideSafe
     public CodedNodeSet union(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         try {
             BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
@@ -260,7 +267,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * 
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#difference(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet)
      */
-    @LgClientSideSafe
+    //@LgClientSideSafe
     public CodedNodeSet difference(CodedNodeSet codesToRemove) throws LBInvocationException, LBParameterException {
         try {
             BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
@@ -405,7 +412,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#restrictToCodes(org.LexGrid
      * .LexBIG.DataModel.Collections.ConceptReferenceList)
      */
-    @LgClientSideSafe
+    //@LgClientSideSafe
     public CodedNodeSet restrictToCodes(ConceptReferenceList codeList) throws LBInvocationException,
             LBParameterException {
         try {
@@ -421,7 +428,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
     
-    @LgClientSideSafe
+    //@LgClientSideSafe
     public CodedNodeSet restrictToMappingCodes(ConceptReferenceList codeList) throws LBParameterException, LBInvocationException {
         try {
             this.builder.add(new RestrictToCodes(codeList).getQuery(), Occur.MUST);
@@ -754,7 +761,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#restrictToStatus(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption,
      *      java.lang.String[])
      */
-    @LgClientSideSafe
+    //@LgClientSideSafe
     public CodedNodeSet restrictToStatus(ActiveOption activeOption, String[] conceptStatus)
             throws LBInvocationException, LBParameterException {
         try {
@@ -874,7 +881,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-
+        MAP.put(uuid, this.builder);
+        /*
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = new Output(baos);
         Kryo kryo = new Kryo();
@@ -884,16 +892,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         MapSerializer serializer = new MapSerializer();
         kryo.register(TreeMap.class, serializer);
-        serializer.setKeyClass(PerFieldPostingsFormat.class, kryo.getSerializer(PerFieldPostingsFormat.class));
-        serializer.setKeysCanBeNull(false);
-        serializer.setValueClass(String.class, kryo.getSerializer(String.class));
         kryo.register(BooleanClause.class);
         kryo.register(BooleanQuery.class);
         kryo.register(Query.class);
         kryo.register(Occur.class);
         kryo.register(ToParentBlockJoinQuery.class);
         kryo.register(QueryBitSetProducer.class);
- //       kryo.register(SegmentCoreReaders.class);
         kryo.register(FieldInfos.class);
         kryo.register(SpanNearQuery.class);
         kryo.register(FieldMaskingSpanQuery.class);
@@ -907,11 +911,15 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         String outputString = Base64.encodeBase64String(baos.toByteArray());
         out.writeObject(outputString);
         out.writeInt(builder.build().getMinimumNumberShouldMatch());
+        */
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 
         in.defaultReadObject();
+        
+        this.builder = MAP.get(uuid);
+        /*
 
         String inputString = (String) in.readObject();
         ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
@@ -923,9 +931,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         MapSerializer serializer = new MapSerializer();
         kryo.register(TreeMap.class, serializer);
-        serializer.setKeyClass(PerFieldPostingsFormat.class, kryo.getSerializer(PerFieldPostingsFormat.class));
-        serializer.setKeysCanBeNull(false);
-        serializer.setValueClass(String.class, kryo.getSerializer(String.class));
         kryo.register(BooleanClause.class);
         kryo.register(BooleanQuery.class);
         kryo.register(Query.class);
@@ -938,6 +943,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         kryo.register(SpanWildcardQuery.class);
         kryo.register(SpanTermQuery.class);
         kryo.register(ScoreDoc.class);
+        kryo.setReferences(true);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
         @SuppressWarnings("unchecked")
         List<BooleanClause> queryObject = (List<BooleanClause>) kryo.readClassAndObject(input);
@@ -947,6 +953,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             builder.add(clause);
         }
         builder.setMinimumNumberShouldMatch(in.readInt());
+        */
        
    }
     
