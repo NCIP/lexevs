@@ -19,6 +19,16 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
      * 
      */
     private static final long serialVersionUID = -698270712034240196L;
+    private boolean areAllCodedNodeSetsNull;
+    Iterator<ResolvedConceptReference> iterator;
+    String mappingUri;
+    String mappingVersion;
+    String relationsContainerName;
+    List<MappingSortOption> sortOptionList;
+    CodedNodeSet sourceCodesCodedNodeSet;
+    CodedNodeSet targetCodesCodedNodeSet;
+    CodedNodeSet sourceOrTargetCodesCodedNodeSet;
+    List<RelationshipRestriction> relationshipRestrictions;
     
    
     public MappingResolvedConceptReferenceIterator(){};
@@ -26,7 +36,8 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
             String mappingVersion, String relationsContainerName, List<MappingSortOption> sortOptionList,
             CodedNodeSet sourceCodesCodedNodeSet, CodedNodeSet targetCodesCodedNodeSet,
             CodedNodeSet sourceOrTargetCodesCodedNodeSet, List<RelationshipRestriction> relationshipRestrictions) {
-        super(iterator, count);
+        super(iterator, count);        
+        this.iterator = iterator;
         this.areAllCodedNodeSetsNull = areAllCodedNodeSetsNull;
         this.mappingUri = mappingUri;
         this.mappingVersion = mappingVersion;
@@ -38,15 +49,7 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
         this.relationshipRestrictions = relationshipRestrictions;
     }
 
-    private boolean areAllCodedNodeSetsNull;
-    String mappingUri;
-    String mappingVersion;
-    String relationsContainerName;
-    List<MappingSortOption> sortOptionList;
-    CodedNodeSet sourceCodesCodedNodeSet;
-    CodedNodeSet targetCodesCodedNodeSet;
-    CodedNodeSet sourceOrTargetCodesCodedNodeSet;
-    List<RelationshipRestriction> relationshipRestrictions;
+
 
     
     public ResolvedConceptReferenceList get(int start, int end)
@@ -54,20 +57,22 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
         Iterator<ResolvedConceptReference> iterator;
 
  
-        if (areAllCodedNodeSetsNull) {
-            iterator = new MappingTripleIterator(mappingUri, mappingVersion, relationsContainerName, sortOptionList);
-        } else {
-
-
-            iterator = new RestrictingMappingTripleIterator(mappingUri, mappingVersion, relationsContainerName,
-                    sourceCodesCodedNodeSet, targetCodesCodedNodeSet, sourceOrTargetCodesCodedNodeSet,
-                    relationshipRestrictions, sortOptionList);
-        }
+//        if (areAllCodedNodeSetsNull) {
+//            iterator = new MappingTripleIterator(mappingUri, mappingVersion, relationsContainerName, sortOptionList);
+//        } else {
+//
+//
+//            iterator = new RestrictingMappingTripleIterator(mappingUri, mappingVersion, relationsContainerName,
+//                    sourceCodesCodedNodeSet, targetCodesCodedNodeSet, sourceOrTargetCodesCodedNodeSet,
+//                    relationshipRestrictions, sortOptionList);
+//        }
+//        
+  
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
 
         int pos = 0;
-        while (iterator.hasNext() && pos < end) {
-            ResolvedConceptReference ref = iterator.next();
+        while (this.iterator.hasNext() && pos < end) {
+            ResolvedConceptReference ref = this.iterator.next();
             if (pos >= start) {
                 returnList.addResolvedConceptReference(ref);
             }
