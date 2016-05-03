@@ -881,7 +881,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
+        if(builder != null){
         MAP.put(uuid, this.builder);
+        }
         /*
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = new Output(baos);
@@ -919,6 +921,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         in.defaultReadObject();
         
         this.builder = MAP.get(uuid);
+        MAP.remove(uuid);
         /*
 
         String inputString = (String) in.readObject();
