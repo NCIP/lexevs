@@ -921,7 +921,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         in.defaultReadObject();
         
         this.builder = MAP.get(uuid);
-        MAP.remove(uuid);
+//        MAP.remove(uuid);
         /*
 
         String inputString = (String) in.readObject();
@@ -960,5 +960,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
        
    }
     
+    protected void finalize() throws Throwable{
+        MAP.remove(uuid);
+    }
 
 }
