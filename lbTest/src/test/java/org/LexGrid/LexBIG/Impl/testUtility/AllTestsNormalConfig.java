@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 //import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.ScoreDocIteratoSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchScoreDocIteratorTest;
@@ -468,6 +469,7 @@ public class AllTestsNormalConfig {
       
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
+		mainSuite.addTestSuite(MappingExtensionSerializationTest.class);
         
         //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);

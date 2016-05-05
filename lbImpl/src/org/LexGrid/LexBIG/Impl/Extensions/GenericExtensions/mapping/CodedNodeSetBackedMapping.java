@@ -263,47 +263,9 @@ public class CodedNodeSetBackedMapping implements Mapping {
         }
         
         return 
-            new IteratorBackedResolvedConceptReferencesIterator(iterator, count){
-           
-                private static final long serialVersionUID = -6420905230384238295L;
-
-            @Override
-            public ResolvedConceptReferenceList get(int start, int end) throws LBResourceUnavailableException,
-                    LBInvocationException, LBParameterException {
-                Iterator<ResolvedConceptReference> iterator;
-                
-                if(areAllCodedNodeSetsNull()){
-                    iterator = new MappingTripleIterator(
-                             mappingUri,
-                             mappingVersion,
-                             relationsContainerName,
-                             sortOptionList);
-                } else {
-                    iterator = 
-                        new RestrictingMappingTripleIterator(
-                                mappingUri,
-                                mappingVersion,
-                                relationsContainerName, 
-                                sourceCodesCodedNodeSet,
-                                targetCodesCodedNodeSet,
-                                sourceOrTargetCodesCodedNodeSet,
-                                relationshipRestrictions,
-                                sortOptionList);
-                }
-                ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
-                
-                int pos = 0;
-                while(iterator.hasNext() && pos < end){
-                    ResolvedConceptReference ref = iterator.next();
-                    if(pos >= start){
-                        returnList.addResolvedConceptReference(ref);
-                    }
-                    pos++;
-                }
-                
-                return returnList;
-            }
-        };
+            new MappingResolvedConceptReferenceIterator(iterator, count, areAllCodedNodeSetsNull(), mappingUri, 
+                    mappingUri, mappingUri, sortOptionList, sourceCodesCodedNodeSet, 
+                    sourceCodesCodedNodeSet, sourceCodesCodedNodeSet, relationshipRestrictions);
     }
 
     @Override
