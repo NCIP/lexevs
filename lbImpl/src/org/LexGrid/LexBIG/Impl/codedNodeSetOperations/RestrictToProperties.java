@@ -50,9 +50,9 @@ public class RestrictToProperties extends AbstractJoinQueryRestriction {
 
     private static final long serialVersionUID = 7762452729573553393L;
     protected LocalNameList propertyList_;
-    private LocalNameList sourceList_;
-    private LocalNameList contextList_;
-    private NameAndValueList qualifierList_;
+    protected LocalNameList sourceList_;
+    protected LocalNameList contextList_;
+    protected NameAndValueList qualifierList_;
     protected PropertyType[] propertyTypes_;
 
     @LgClientSideSafe

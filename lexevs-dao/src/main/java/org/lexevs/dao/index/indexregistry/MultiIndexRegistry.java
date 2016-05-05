@@ -1,14 +1,5 @@
 package org.lexevs.dao.index.indexregistry;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.io.FileUtils;
@@ -26,6 +17,14 @@ import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
@@ -218,7 +217,7 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 
 	@Override
 	public void destroyIndex(String indexName) {
- 
+
 		String location = systemVariables.getAutoLoadIndexLocation();
 		try {
 			Path path = Paths.get(location,indexName);
@@ -244,12 +243,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public String getCommonIndexName() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

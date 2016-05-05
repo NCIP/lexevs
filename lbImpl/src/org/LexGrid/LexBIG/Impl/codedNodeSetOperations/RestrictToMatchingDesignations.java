@@ -43,7 +43,8 @@ import org.lexevs.exceptions.InternalException;
 public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction {
 
     private static final long serialVersionUID = 202284486636220340L;
-    private Query textQuery_;
+    private String matchText_;
+    private Search search_;
     private SearchDesignationOption preferredOnly_;
     private String language_;
     
@@ -59,10 +60,10 @@ public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction
             // this validates the match text and match algorithm (throws
             // exceptions as necessary)
  
-            Search search = ExtensionRegistryImpl.instance().getSearchAlgorithm(matchAlgorithm);
-            textQuery_ = search.buildQuery(matchText);
+            search_ = ExtensionRegistryImpl.instance().getSearchAlgorithm(matchAlgorithm);
 
             preferredOnly_ = preferredOnly;
+            matchText_ = matchText;
             
             boolean canValidate = internalCodeSystemName != null && internalVersionString != null;
 
@@ -89,7 +90,7 @@ public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction
 
     @LgClientSideSafe
     public Query getTextQuery() {
-         return textQuery_;
+         return search_.buildQuery(matchText_);
     }
 
     @LgClientSideSafe
@@ -103,7 +104,7 @@ public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction
         int result = 1;
         result = prime * result + ((language_ == null) ? 0 : language_.hashCode());
         result = prime * result + ((preferredOnly_ == null) ? 0 : preferredOnly_.hashCode());
-        result = prime * result + ((textQuery_ == null) ? 0 : textQuery_.hashCode());
+        result = prime * result + ((matchText_ == null) ? 0 : matchText_.hashCode());
         return result;
     }
 
@@ -126,10 +127,10 @@ public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction
                 return false;
         } else if (!preferredOnly_.equals(other.preferredOnly_))
             return false;
-        if (textQuery_ == null) {
-            if (other.textQuery_ != null)
+        if (matchText_ == null) {
+            if (other.matchText_ != null)
                 return false;
-        } else if (!textQuery_.equals(other.textQuery_))
+        } else if (!matchText_.equals(other.matchText_))
             return false;
         return true;
     }
