@@ -9,7 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/umls-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgValueSets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/rxnorm-loader"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=lbGUI&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

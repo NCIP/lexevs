@@ -488,13 +488,6 @@ You may obtain a copy of the License at
 			<param name="module" value="umls-loader"/>
   		</antcall>
 	</target>
-			
-	<target name="rxnorm-loader"   description="packages Umls Loader classes">
-		<antcall target="common-project-build">
-   			<param name="project" value="rxnorm-loader"/>
-			<param name="module" value="rxnorm-loader"/>
-  		</antcall>
-	</target>
 	
 	<target name="lgConverter" depends="lgUtility, lgResourceReader"  description="packages LexGrid Converter classes">
 		<antcall target="common-project-build">
@@ -745,7 +738,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		lexevs-dao, lgConverter, lexrdf, lbImpl, lbAdmin, 
 		lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
-		umls-loader, meta-loader, rxnorm-loader, lbGUI, lbTest">
+		umls-loader, meta-loader, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
