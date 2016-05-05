@@ -43,7 +43,6 @@ import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,9 +59,12 @@ import java.util.regex.Pattern;
 public class RestrictToMatchingProperties extends RestrictToProperties {
 
     private static final long serialVersionUID = -6595704213491369563L;
-    private BooleanQuery textQuery_;
-    private List<Term> queryTerms_ = new ArrayList<Term>();
+    private String matchAlgorithm_;
+    private final String matchText_;
     private String language_;
+
+    private String internalCodeSystemName_;
+    private String internalVersionString_;
     
     @LgClientSideSafe
     public String getLanguage() {
@@ -70,22 +72,12 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
     }
 
     @LgClientSideSafe
-    public Query getTextQuery() {
-        // Until the RegexQuery is completely serializable this cannot be done
-        // until the code is on the client side
-        for (int i = 0; i < queryTerms_.size(); i++) {
-            textQuery_.add(new BooleanClause(new SerializableRegexQuery(queryTerms_.get(i)), Occur.MUST));
-        }
-        return textQuery_;
-    }
+    public Query getTextQuery() throws LBParameterException {
+        BooleanQuery textQuery_ = new BooleanQuery();
 
-    public RestrictToMatchingProperties(LocalNameList propertyList, PropertyType[] propertyTypes,
-            LocalNameList sourceList, LocalNameList contextList, NameAndValueList qualifierList, String matchText,
-            String matchAlgorithm, String language, String internalCodeSystemName, String internalVersionString)
-            throws LBInvocationException, LBParameterException {
-        super(sourceList, contextList, qualifierList, internalCodeSystemName, internalVersionString);
+        List<Term> queryTerms_ = new ArrayList<Term>();
+
         try {
-           
             String conceptCodeField = SQLTableConstants.TBLCOL_ENTITYCODE;
             String conceptCodeLCField = conceptCodeField + "LC";
             String conceptCodeTokenizedField = conceptCodeField + "Tokenized";
@@ -97,26 +89,22 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
             // make any sense to do that union anyway, since this code system
             // won't return any results
             // if the property is invalid here.
-            if ((propertyList == null || propertyList.getEntryCount() == 0)
-                    && (propertyTypes == null || propertyTypes.length == 0)) {
+            if ((propertyList_ == null || propertyList_.getEntryCount() == 0)
+                    && (propertyTypes_ == null || propertyTypes_.length == 0)) {
                 throw new LBParameterException(
                         "At least one propertyList or one propertyType parameter must be supplied.",
                         "propertyList or propertyType");
             }
 
-            propertyList_ = new LocalNameList();
-            textQuery_ = new BooleanQuery();
             boolean containsConceptClause = false;
 
-            if (propertyList != null) {
-                Enumeration<? extends String> items = propertyList.enumerateEntry();
-                while (items.hasMoreElements()) {
-                    String item = items.nextElement();
+            if (propertyList_ != null) {
+                for(String item : propertyList_.getEntry()) {
                     if (item.equalsIgnoreCase("conceptCode")) {
                         Query temp = null;
-                        if (matchAlgorithm.equalsIgnoreCase("exactMatch")) {
-                            temp = new TermQuery(new Term(conceptCodeField, matchText));
-                        } else if (matchAlgorithm.equalsIgnoreCase("contains")) {
+                        if (matchAlgorithm_.equalsIgnoreCase("exactMatch")) {
+                            temp = new TermQuery(new Term(conceptCodeField, matchText_));
+                        } else if (matchAlgorithm_.equalsIgnoreCase("contains")) {
                             // Emulate contains using a regular expression
                             // match.
                             // The 'contains' algorithm is defined as being
@@ -126,24 +114,24 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
                             // a term (but no leading wild card) and the term
                             // can
                             // appear at any position.
-                            matchAlgorithm = "RegExp";
+                            matchAlgorithm_ = "RegExp";
                             queryTerms_.add(new Term(conceptCodeLCField, new StringBuffer().append("\\b*").append(
-                                    Pattern.quote(matchText.toLowerCase())).append(".*").toString()));
-                        } else if (matchAlgorithm.equalsIgnoreCase("LuceneQuery")) {
+                                    Pattern.quote(matchText_.toLowerCase())).append(".*").toString()));
+                        } else if (matchAlgorithm_.equalsIgnoreCase("LuceneQuery")) {
                             IndexQueryParserFactory queryParserFactory = new IndexQueryParserFactory();
-                            
+
                             temp = queryParserFactory.parseQueryForField(
-                                    conceptCodeTokenizedField, matchText);
-                        } else if (matchAlgorithm.equalsIgnoreCase("RegExp")) {
-                            queryTerms_.add(new Term(conceptCodeLCField, matchText.toLowerCase()));
+                                    conceptCodeTokenizedField, matchText_);
+                        } else if (matchAlgorithm_.equalsIgnoreCase("RegExp")) {
+                            queryTerms_.add(new Term(conceptCodeLCField, matchText_.toLowerCase()));
                         } else {
-                            throw new LBParameterException("The match algorithm '" + matchAlgorithm
+                            throw new LBParameterException("The match algorithm '" + matchAlgorithm_
                                     + "' is not supported on a 'conceptCode' search.");
                         }
                         if (temp != null) {
                             // If mixed with other properties, do not make this
                             // check exclusive (GForge #15015).
-                            textQuery_.add(new BooleanClause(temp, propertyList.getEntryCount() > 1 ? Occur.SHOULD
+                            textQuery_.add(new BooleanClause(temp, propertyList_.getEntryCount() > 1 ? Occur.SHOULD
                                     : Occur.MUST));
                             containsConceptClause = true;
                         }
@@ -153,48 +141,68 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
                                         + SQLTableConstants.TBLCOL_CONCEPTSTATUS
                                         + "' is no longer supported in this restriction - please use 'RestrictToStatus' instead");
                     } else {
-                        
-                        if(internalCodeSystemName!= null && internalVersionString != null) {
-                            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
+
+                        if(internalCodeSystemName_ != null && internalVersionString_ != null) {
+                            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName_, internalVersionString_);
                             // this will throw the necessary exceptions
                             if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
-                                    validatedSupportedAttribute(uri, internalVersionString, item, SupportedProperty.class)) {
+                                    validatedSupportedAttribute(uri, internalVersionString_, item, SupportedProperty.class)) {
                                 throw new LBParameterException("Property: " + item + " is not a Supported Property.");
                             }
                         }
-                        
+
                         propertyList_.addEntry(item);
                     }
                 }
             }
 
-            propertyTypes_ = propertyTypes;
-
             // this may be empty, because the special cases above don't get
             // added to the local property
             // list.
-            if (propertyList_.getEntryCount() > 0 || (propertyTypes_ != null && propertyTypes_.length > 0)) {
+            if ((propertyList_ != null && propertyList_.getEntryCount() > 0) || (propertyTypes_ != null && propertyTypes_.length > 0)) {
                 // this validates the match text and match algorithm (throws
                 // exceptions as necessary)
 
-                Search search = ExtensionRegistryImpl.instance().getSearchAlgorithm(matchAlgorithm);
-                Query query = search.buildQuery(matchText);
+                Search search = ExtensionRegistryImpl.instance().getSearchAlgorithm(matchAlgorithm_);
+                Query query = search.buildQuery(matchText_);
 
                 textQuery_.add(new BooleanClause(query, containsConceptClause ? Occur.SHOULD : Occur.MUST));
             }
 
-            if (language != null && language.length() > 0) {
+            if (language_ != null && language_.length() > 0) {
                 // this validated that language (throws exceptions as necessary)
-                String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
+                String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName_, internalVersionString_);
                 if(!LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService().
-                        validatedSupportedAttribute(uri, internalVersionString, language, SupportedLanguage.class)) {
-                        throw new LBParameterException(language = " is not a Supported Language.");
-                    }
-                language_ = language;
+                        validatedSupportedAttribute(uri, internalVersionString_, language_, SupportedLanguage.class)) {
+                    throw new LBParameterException(language_ = " is not a Supported Language.");
+                }
             }
         } catch (LBParameterException e) {
             throw e;
         }
+
+        // Until the RegexQuery is completely serializable this cannot be done
+        // until the code is on the client side
+        for (int i = 0; i < queryTerms_.size(); i++) {
+            textQuery_.add(new BooleanClause(new SerializableRegexQuery(queryTerms_.get(i)), Occur.MUST));
+        }
+
+        return textQuery_;
+    }
+
+    public RestrictToMatchingProperties(LocalNameList propertyList, PropertyType[] propertyTypes,
+            LocalNameList sourceList, LocalNameList contextList, NameAndValueList qualifierList, String matchText,
+            String matchAlgorithm, String language, String internalCodeSystemName, String internalVersionString)
+            throws LBInvocationException, LBParameterException {
+        super(sourceList, contextList, qualifierList, internalCodeSystemName, internalVersionString);
+
+        matchAlgorithm_ = matchAlgorithm;
+        language_ = language;
+        matchText_ = matchText;
+        propertyList_ = propertyList;
+        propertyTypes_ = propertyTypes;
+        internalVersionString_ = internalVersionString;
+        internalCodeSystemName_ = internalCodeSystemName;
     }
 
 
