@@ -197,21 +197,9 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		String codingSchemeVersion = reference.getCodingSchemeVersion();
 		
 		String indexName = this.getIndexName(codingSchemeUri, codingSchemeVersion);
-		
-		if(indexName.equals(this.indexRegistry.getCommonIndexName())) {
-			Term term = new Term(
-					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-							codingSchemeUri, codingSchemeVersion));
-			
-			indexDaoManager.getEntityDao(
-					codingSchemeUri, 
-					codingSchemeVersion).deleteDocuments(codingSchemeUri, codingSchemeVersion, term);
-			
-			this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-		} else {
-			this.indexRegistry.destroyIndex(indexName);
-		}	
+
+		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		this.indexRegistry.destroyIndex(indexName);
 	}
 
 	@Override

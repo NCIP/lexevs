@@ -74,7 +74,7 @@ public class MappingExtensionSerializationTest extends LexBIGServiceTestCase {
 		Mapping mapping = mappingExtension.getMapping(MAPPING_SCHEME_URI, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
 		mapping = mapping.restrictToMatchingDesignations(
-				"GM", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
+				"car", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
 		byte[] bytes = serialize(mapping);
 		assertNotNull(deSerialize(bytes, Mapping.class));
 	}
@@ -85,10 +85,13 @@ public class MappingExtensionSerializationTest extends LexBIGServiceTestCase {
 		Mapping mapping = mappingExtension.getMapping(MAPPING_SCHEME_URI, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
 		mapping = mapping.restrictToMatchingDesignations(
-				"GM", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
+				"car", SearchDesignationOption.ALL, "LuceneQuery", null, SearchContext.SOURCE_OR_TARGET_CODES);
 		ResolvedConceptReferencesIterator iterator = mapping.resolveMapping();
 		byte[] bytes = serialize(iterator);
-		assertNotNull(deSerialize(bytes, ResolvedConceptReferencesIterator.class));
+		ResolvedConceptReferencesIterator itr = deSerialize(bytes, ResolvedConceptReferencesIterator.class);
+		assertNotNull(itr);
+		assertTrue(iterator.hasNext());
+		assertTrue(itr.hasNext());
 	}
 	
 	
