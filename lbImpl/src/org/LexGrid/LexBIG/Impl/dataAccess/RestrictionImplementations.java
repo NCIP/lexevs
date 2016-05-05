@@ -18,8 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
-import java.util.ArrayList;
-
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -53,6 +51,8 @@ import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
+
+import java.util.ArrayList;
 
 /**
  * 
@@ -346,6 +346,8 @@ public class RestrictionImplementations {
 
             return masterQuery.build();
 
+        } catch (LBParameterException e) {
+            throw e;
         } catch (UnexpectedInternalError e) {
             throw e;
         } catch (Exception e) {
