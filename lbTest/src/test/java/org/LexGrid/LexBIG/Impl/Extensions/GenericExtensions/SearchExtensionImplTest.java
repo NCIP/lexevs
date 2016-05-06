@@ -18,9 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -31,6 +28,9 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SearchExtensionImplTest extends LexBIGServiceTestCase {
     final static String testID = "SearchExtensionImplTest";
@@ -423,7 +423,16 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 			assertFalse("C0011(5564)".equals(itr.next().getCode()));
 		}
 	}
-	
+
+	public void testNegativeSearch() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+
+		ResolvedConceptReferencesIterator itr = searchExtension.search("*:* and -car", MatchAlgorithm.LUCENE);
+
+		assertTrue(itr.hasNext());
+	}
+
 	public void testExactPresentation() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
