@@ -207,6 +207,8 @@ import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
 
 public class AllTestsNormalConfig {
 
+    private static final java.lang.String TREE_TESTS_ENV = "TREE_TESTS";
+
     public static Test suite() throws Exception {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
         ServiceHolder.configureForSingleConfig();
@@ -410,16 +412,18 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestPasswordEncryption.class);
 //
         mainSuite.addTest(functionalTests);
-       
-        TestSuite treeTests = new TestSuite("tree extension tests");
-        treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
-        treeTests.addTestSuite(LexEvsTreeNodeTest.class);
-        treeTests.addTestSuite(LexEvsTreeTest.class);
-        treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
-        treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
-        treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
-        
-        mainSuite.addTest(treeTests);
+
+        if(System.getProperty(TREE_TESTS_ENV) != null) {
+            TestSuite treeTests = new TestSuite("tree extension tests");
+            treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
+            treeTests.addTestSuite(LexEvsTreeNodeTest.class);
+            treeTests.addTestSuite(LexEvsTreeTest.class);
+            treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
+            treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
+            treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
+
+            mainSuite.addTest(treeTests);
+        }
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);

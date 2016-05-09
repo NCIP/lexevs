@@ -474,6 +474,7 @@ public abstract class LuceneLoaderCode {
     	//treat as string field by analyzing with the KeywordAnalyzer
     	analyzerPerField.put(UNIQUE_ID, new KeywordAnalyzer());
     	analyzerPerField.put(ENTITY_TYPE, new KeywordAnalyzer());
+        analyzerPerField.put("isPreferred", new KeywordAnalyzer());
     	analyzerPerField.put(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, new KeywordAnalyzer());
 
         if (doubleMetaphoneEnabled_) {
