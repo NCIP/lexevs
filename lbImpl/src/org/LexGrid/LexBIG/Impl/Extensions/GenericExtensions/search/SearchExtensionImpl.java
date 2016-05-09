@@ -25,6 +25,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -35,6 +36,7 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -202,21 +204,16 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
            text = text.toLowerCase();
 
             List<String> tokens;
-            Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
+            Analyzer tokenAnalyzer = new KeywordAnalyzer();
             try {
-                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.PROPERTY_VALUE_FIELD, text);
+                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, text);
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
-            QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             for(String token : tokens){
-               try {
-                builder.add(parser.parse(token + "*"), Occur.MUST);
-            } catch (ParseException e) {
-                throw new RuntimeException("Parser failed parsing token: " + token);
+                builder.add(new PrefixQuery(new Term(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), Occur.MUST);
             }
-            }
-            builder.add(new TermQuery(new Term(LuceneLoaderCode.PROPERTY_VALUE_FIELD,text )), Occur.SHOULD);
+            text = QueryParser.escape(text);
             builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
             return builder.build();
         case LUCENE:
