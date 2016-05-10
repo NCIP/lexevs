@@ -192,7 +192,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             return builder.build();
         case PRESENTATION_CONTAINS:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            builder.add(new TermQuery(preferred), Occur.MUST);
+            builder.add(new TermQuery(preferred), Occur.SHOULD);
            text = text.toLowerCase();
 
             List<String> tokens;
@@ -215,7 +215,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
             return builder.build();
         case LUCENE:
             builder.add(new TermQuery(baseQuery), Occur.MUST);
-            builder.add(new TermQuery(preferred), Occur.MUST);
+            builder.add(new TermQuery(preferred), Occur.SHOULD);
             QueryParser luceneParser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             Query query;
             try {
