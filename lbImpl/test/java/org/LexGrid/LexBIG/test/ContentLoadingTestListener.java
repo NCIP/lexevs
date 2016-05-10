@@ -18,19 +18,6 @@
  */
 package org.LexGrid.LexBIG.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -41,12 +28,25 @@ import org.LexGrid.LexBIG.test.LexEvsTestRunner.LoadContent;
 import org.LexGrid.LexBIG.test.LexEvsTestRunner.LoadContents;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
+import org.lexevs.dao.test.InMemoryLuceneDirectoryCreator;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.util.CollectionUtils;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * The Class ContentLoadingTestListener.
@@ -173,6 +173,8 @@ public class ContentLoadingTestListener extends AbstractTestExecutionListener {
 
             dbOps.createAllTables();
 
+            InMemoryLuceneDirectoryCreator.clearAll();
+            
             LexEvsServiceLocator.getInstance().getSystemResourceService().refresh();
         } catch (Exception e) {
             //

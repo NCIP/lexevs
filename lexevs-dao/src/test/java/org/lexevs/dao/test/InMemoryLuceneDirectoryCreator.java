@@ -22,9 +22,12 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.system.constants.SystemVariables;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -36,7 +39,17 @@ public class InMemoryLuceneDirectoryCreator implements LuceneDirectoryCreator {
 
 	private static final Object MUTEX = new Object();
 
-	private Map<String,Directory> map = new HashMap<String,Directory>();
+	private static Map<String,Directory> map = new HashMap<String,Directory>();
+
+	public static void clearAll() {
+		String indexName = SystemVariables.getMetaDataIndexName();
+
+		for(Map.Entry<String, Directory> entry : new HashSet<Map.Entry<String, Directory>>(map.entrySet())) {
+			if(! entry.getKey().equals(indexName)) {
+				doRemove(entry.getKey());
+			}
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.lucenesupport.LuceneDirectoryCreator#getDirectory(java.lang.String, java.io.File)
@@ -56,12 +69,23 @@ public class InMemoryLuceneDirectoryCreator implements LuceneDirectoryCreator {
 		}
 
 		return new NamedDirectory(indexDirectory, indexName) {
+
 			public void remove() {
+				doRemove(indexName);
 				super.remove();
-				synchronized (MUTEX) {
-					map.remove(indexName);
-				}
 			}
 		};
+	}
+
+	private static void doRemove(String indexName) {
+		synchronized (MUTEX) {
+			try {
+				map.get(indexName).close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
+			map.remove(indexName);
+		}
 	}
 }

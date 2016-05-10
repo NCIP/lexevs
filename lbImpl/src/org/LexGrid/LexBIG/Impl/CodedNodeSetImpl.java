@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,11 +29,14 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -44,11 +49,11 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.SortOption;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
-import org.LexGrid.LexBIG.Impl.Extensions.Search.query.SpanWildcardQuery;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.GetAllConcepts;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToAnonymous;
@@ -58,6 +63,7 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingDesignat
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToStatus;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
@@ -68,41 +74,28 @@ import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.NonProxyCodeHolderFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.lucene.codecs.perfield.PerFieldPostingsFormat;
-import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.join.QueryBitSetProducer;
-import org.apache.lucene.search.join.ToParentBlockJoinQuery;
-import org.apache.lucene.search.spans.FieldMaskingSpanQuery;
-import org.apache.lucene.search.spans.SpanNearQuery;
-import org.apache.lucene.search.spans.SpanTermQuery;
-//import org.apache.lucene.index.SegmentCoreReaders;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
+import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
-import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
-import com.esotericsoftware.kryo.serializers.MapSerializer;
-
-import de.javakaffee.kryoserializers.ArraysAsListSerializer;
-import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer;
-import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
-
-
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -117,7 +110,71 @@ import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
 public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private static final long serialVersionUID = 6108466665548985484L;
 
-    private transient BooleanQuery.Builder builder = new BooleanQuery.Builder();
+    /**
+     * A combination of a {@link Restriction} and an {@link Occur} - enough
+     * information to construct a Lucene {@link BooleanClause}.
+     */
+    private static class RestrictionOccurTuple implements Serializable {
+
+        private Restriction restriction;
+        private Occur occur;
+
+        public RestrictionOccurTuple() {
+            //
+        }
+
+        public RestrictionOccurTuple(Restriction restriction, Occur occur) {
+            this.restriction = restriction;
+            this.occur = occur;
+        }
+    }
+
+    /**
+     * A holder for all {@link Restriction}s set on this {@link CodedNodeSetImpl} that
+     * can be converted into a Lucene {@link Query} on demand.
+     */
+    public static class QueryBuilder implements Restriction {
+
+        private Integer minimumNumberShouldMatch;
+        private List<RestrictionOccurTuple> restrictions = new ArrayList<RestrictionOccurTuple>();
+
+        public void add(Restriction restriction, Occur occur) {
+            this.restrictions.add(new RestrictionOccurTuple(restriction, occur));
+        }
+
+        @Override
+        public Query getQuery() throws LBException, InternalException {
+            BooleanQuery.Builder builder = new BooleanQuery.Builder();
+
+            if(this.minimumNumberShouldMatch != null) {
+                builder.setMinimumNumberShouldMatch(this.minimumNumberShouldMatch);
+            }
+
+            Query query;
+            for(RestrictionOccurTuple tuple : this.restrictions) {
+                query = tuple.restriction.getQuery();
+
+                builder = builder.add(query, tuple.occur);
+            }
+
+            return builder.build();
+        }
+
+        public void setMinimumNumberShouldMatch(int minimumNumberShouldMatch) {
+            this.minimumNumberShouldMatch = minimumNumberShouldMatch;
+        }
+
+        @Override
+        public String toString() {
+            try {
+                return this.getQuery().toString();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private QueryBuilder builder = new QueryBuilder();
 
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
@@ -171,7 +228,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             ref.setCodingSchemeURN(uri);
             ref.setCodingSchemeVersion(version);
 
-            builder.add(new GetAllConcepts(codingScheme, tagOrVersion).getQuery(), Occur.MUST);
+            builder.add(new GetAllConcepts(codingScheme, tagOrVersion), Occur.MUST);
             
             this.references.add(ref);
             this.primaryReference = ref;
@@ -198,7 +255,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(new Object[] { codes, internalCodingSchemeName, internalVersionString });
         try {
             this.toNodeListCodes = codes;
-            builder.add(new GetAllConcepts(internalCodingSchemeName, internalVersionString).getQuery(), Occur.MUST);
+            builder.add(new GetAllConcepts(internalCodingSchemeName, internalVersionString), Occur.MUST);
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
@@ -212,9 +269,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet intersect(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         try {
-            BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
+            QueryBuilder newBuilder = new QueryBuilder();
 
-            newBuilder.add(this.builder.build(), Occur.MUST);
+            newBuilder.add(this.builder, Occur.MUST);
             newBuilder.add(((CodedNodeSetImpl) codes).clone().getQuery(), Occur.MUST);
 
             this.builder = newBuilder;
@@ -236,10 +293,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet union(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         try {
-            BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
+            QueryBuilder newBuilder = new QueryBuilder();
             newBuilder.setMinimumNumberShouldMatch(1);
 
-            newBuilder.add(this.builder.build(), Occur.SHOULD);
+            newBuilder.add(this.builder, Occur.SHOULD);
             newBuilder.add(((CodedNodeSetImpl) codes).getQuery(), Occur.SHOULD);
 
             this.builder = newBuilder;
@@ -263,8 +320,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet difference(CodedNodeSet codesToRemove) throws LBInvocationException, LBParameterException {
         try {
-            BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
-            newBuilder.add(this.builder.build(), Occur.MUST);
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.add(this.builder, Occur.MUST);
             newBuilder.add((((CodedNodeSetImpl) codesToRemove).clone()).getQuery(), Occur.MUST_NOT);
 
             this.builder = newBuilder;
@@ -337,9 +394,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             RestrictToMatchingDesignations op = new RestrictToMatchingDesignations(matchText, option, matchAlgorithm, language,
                     this.primaryReference.getCodingSchemeURN(), this.primaryReference.getCodingSchemeVersion());
 
-            BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
-            newBuilder.add(this.builder.build(), Occur.MUST);
-            newBuilder.add(op.getQuery(), Occur.MUST);
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.add(this.builder, Occur.MUST);
+            newBuilder.add(op, Occur.MUST);
 
             this.builder = newBuilder;
             //clear the shadow entity list, this is a restriction on an index based entity.
@@ -364,7 +421,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes, sourceList, contextList, qualifierList });
         try {
             builder.add(new RestrictToProperties(propertyList, propertyTypes, sourceList, contextList,
-                    qualifierList, null, null).getQuery(), Occur.MUST);
+                    qualifierList, null, null), Occur.MUST);
             this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
@@ -385,7 +442,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes });
         try {
             builder.add(new RestrictToProperties(propertyList, propertyTypes, null, null, null,
-                    null, null).getQuery(), Occur.MUST);
+                    null, null), Occur.MUST);
             this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
@@ -410,7 +467,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             LBParameterException {
         try {
             codeList = getCleanedCodeList(codeList);
-            this.builder.add(new RestrictToCodes(codeList).getQuery(), Occur.MUST);
+            this.builder.add(new RestrictToCodes(codeList), Occur.MUST);
 
             return this;
         } catch (LBParameterException e) {
@@ -424,7 +481,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet restrictToMappingCodes(ConceptReferenceList codeList) throws LBParameterException, LBInvocationException {
         try {
-            this.builder.add(new RestrictToCodes(codeList).getQuery(), Occur.MUST);
+            this.builder.add(new RestrictToCodes(codeList), Occur.MUST);
 
             return this;
         } catch (LBParameterException e) {
@@ -478,7 +535,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     protected CodedNodeSet restrictToEntityTypes(LocalNameList typeList) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { typeList });
         try {
-            builder.add(new RestrictToEntityTypes(typeList).getQuery(), Occur.MUST);
+            builder.add(new RestrictToEntityTypes(typeList), Occur.MUST);
 
             return this;
         } catch (LBParameterException e) {
@@ -497,7 +554,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                         matchAlgorithm, language });
         try {
             builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, sourceList,
-                    contextList, qualifierList, matchText, matchAlgorithm, language, null, null).getQuery(), Occur.MUST);
+                    contextList, qualifierList, matchText, matchAlgorithm, language, null, null), Occur.MUST);
             this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
@@ -520,7 +577,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes, matchText, matchAlgorithm, language });
         try {
             builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, null, null, null,
-                    matchText, matchAlgorithm, language, null, null).getQuery(), Occur.MUST);
+                    matchText, matchAlgorithm, language, null, null), Occur.MUST);
             this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
@@ -677,7 +734,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     public ResolvedConceptReferencesIterator resolve(SortOptionList sortOptions, LocalNameList restrictToProperties,
             PropertyType[] restrictToPropertyTypes) throws LBInvocationException, LBParameterException {
-        getLogger().logMethod(new Object[] { sortOptions, restrictToProperties });
+        getLogger().logMethod(new Object[]{sortOptions, restrictToProperties});
         return resolve(sortOptions, null, restrictToProperties, restrictToPropertyTypes, true);
     }
 
@@ -759,7 +816,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         try {
             this.currentActiveOption = activeOption;
-            builder.add(new RestrictToStatus(activeOption, conceptStatus).getQuery(), Occur.MUST);
+            builder.add(new RestrictToStatus(activeOption, conceptStatus), Occur.MUST);
             return this;
         } catch (LBParameterException e) {
             throw e;
@@ -774,9 +831,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { anonymousOption });
         try {
-            BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
-            newBuilder.add(this.builder.build(), Occur.MUST);
-            newBuilder.add(new RestrictToAnonymous(anonymousOption).getQuery(), Occur.MUST);
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.add(this.builder, Occur.MUST);
+            newBuilder.add(new RestrictToAnonymous(anonymousOption), Occur.MUST);
 
             this.builder = newBuilder;
 
@@ -811,12 +868,11 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * Turn the bit set into a populated CodeHolder.
      */
     protected CodeHolder toBruteForceMode()
-    throws LBInvocationException, LBParameterException {
+            throws LBException, InternalException {
 
         return codeHolderFactory.buildCodeHolder(getNonEntityConceptReferenceList(),
                         this.getCodingSchemeReferences(),
-                        this.getQuery());
-
+                        this.builder.getQuery());
     }
 
     /*
@@ -860,8 +916,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     }
 
     @LgClientSideSafe
-    public Query getQuery() {
-        return this.builder.build();
+    public QueryBuilder getQuery() {
+        return this.builder;
     }
 
     public DefaultCodeHolder getNonEntityConceptReferenceList() {
@@ -871,84 +927,5 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     public void setNonEntityConceptReferenceList(DefaultCodeHolder nonEntityConceptReferenceList) {
         this.nonEntityConceptReferenceList = nonEntityConceptReferenceList;
     }
-    
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = new Output(baos);
-        Kryo kryo = new Kryo();
-        kryo.setRegistrationRequired(false);
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
-        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
-        MapSerializer serializer = new MapSerializer();
-        kryo.register(TreeMap.class, serializer);
-        serializer.setKeyClass(PerFieldPostingsFormat.class, kryo.getSerializer(PerFieldPostingsFormat.class));
-        serializer.setKeysCanBeNull(false);
-        serializer.setValueClass(String.class, kryo.getSerializer(String.class));
-        kryo.register(BooleanClause.class);
-        kryo.register(BooleanQuery.class);
-        kryo.register(Query.class);
-        kryo.register(Occur.class);
-        kryo.register(ToParentBlockJoinQuery.class);
-        kryo.register(QueryBitSetProducer.class);
- //       kryo.register(SegmentCoreReaders.class);
-        kryo.register(FieldInfos.class);
-        kryo.register(SpanNearQuery.class);
-        kryo.register(FieldMaskingSpanQuery.class);
-        kryo.register(SpanWildcardQuery.class);
-        kryo.register(SpanTermQuery.class);
-        kryo.register(ScoreDoc.class);
-        SynchronizedCollectionsSerializer.registerSerializers(kryo);
-        List<BooleanClause> clauses = (List<BooleanClause>) builder.build().clauses();
-        kryo.writeClassAndObject(output, clauses);
-        output.close();
-        String outputString = Base64.encodeBase64String(baos.toByteArray());
-        out.writeObject(outputString);
-        out.writeInt(builder.build().getMinimumNumberShouldMatch());
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-
-        in.defaultReadObject();
-
-        String inputString = (String) in.readObject();
-        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(inputString));
-        Input input = new Input(bais);
-        Kryo kryo = new Kryo();
-        kryo.setRegistrationRequired(false);
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-        UnmodifiableCollectionsSerializer.registerSerializers(kryo);
-        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
-        MapSerializer serializer = new MapSerializer();
-        kryo.register(TreeMap.class, serializer);
-        serializer.setKeyClass(PerFieldPostingsFormat.class, kryo.getSerializer(PerFieldPostingsFormat.class));
-        serializer.setKeysCanBeNull(false);
-        serializer.setValueClass(String.class, kryo.getSerializer(String.class));
-        kryo.register(BooleanClause.class);
-        kryo.register(BooleanQuery.class);
-        kryo.register(Query.class);
-        kryo.register(Occur.class);
-        kryo.register(ToParentBlockJoinQuery.class);
-        kryo.register(QueryBitSetProducer.class);
-        kryo.register(FieldInfos.class);
-        kryo.register(SpanNearQuery.class);
-        kryo.register(FieldMaskingSpanQuery.class);
-        kryo.register(SpanWildcardQuery.class);
-        kryo.register(SpanTermQuery.class);
-        kryo.register(ScoreDoc.class);
-        SynchronizedCollectionsSerializer.registerSerializers(kryo);
-        @SuppressWarnings("unchecked")
-        List<BooleanClause> queryObject = (List<BooleanClause>) kryo.readClassAndObject(input);
-        input.close();
-        builder = new BooleanQuery.Builder();
-        for (BooleanClause clause : queryObject) {
-            builder.add(clause);
-        }
-        builder.setMinimumNumberShouldMatch(in.readInt());
-       
-   }
-    
 
 }
