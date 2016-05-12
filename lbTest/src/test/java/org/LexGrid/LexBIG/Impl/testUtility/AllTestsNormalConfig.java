@@ -182,6 +182,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
@@ -214,6 +215,7 @@ public class AllTestsNormalConfig {
         ServiceHolder.configureForSingleConfig();
 
         mainSuite.addTestSuite(ConfigureTest.class);
+        mainSuite.addTestSuite(OrderingTestRunnerTest.class);
         mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
