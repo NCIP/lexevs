@@ -183,6 +183,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
+import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
@@ -216,7 +217,7 @@ public class AllTestsNormalConfig {
 
         mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(OrderingTestRunnerTest.class);
-        mainSuite.addTestSuite(LoadTestDataTest.class);
+        mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
         mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
@@ -507,5 +508,11 @@ public class AllTestsNormalConfig {
         // $JUnit-END$
 
         return mainSuite;
+    }
+
+    public static Test orderedSuite(Class<?> clazz) throws InitializationError {
+        JUnit4TestAdapter adapter = new JUnit4TestAdapter(clazz);
+
+        return adapter;
     }
 }
