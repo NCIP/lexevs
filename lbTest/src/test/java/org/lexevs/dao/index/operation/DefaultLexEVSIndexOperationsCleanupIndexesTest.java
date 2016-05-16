@@ -1,11 +1,5 @@
 package org.lexevs.dao.index.operation;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -18,18 +12,33 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
-	static List<AbsoluteCodingSchemeVersionReference> references = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+
+	private static List<AbsoluteCodingSchemeVersionReference> references = Arrays.asList(
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"), // Automobiles 1.0
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.2", "2.0"), // GMP
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1") // Automobiles 1.1
+	);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -68,17 +77,12 @@ public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
-		List<RegistryEntry> entries = registry.getAllRegistryEntries();
-		for(RegistryEntry re: entries){
-			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-			ref.setCodingSchemeURN(re.getResourceUri());
-			ref.setCodingSchemeVersion(re.getResourceVersion());
-			references.add(ref);
-			
+
+		for(AbsoluteCodingSchemeVersionReference reference : references) {
 			// activate
-			lbsm.activateCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-					ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+			lbsm.activateCodingSchemeVersion(reference);
 		}
+
 		RegistryEntry entry = registry.getCodingSchemeEntry(references.get(0));
 		registry.removeEntry(entry);
 		LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService().dropIndex(references.get(2));
@@ -99,12 +103,7 @@ public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
 		lbsm.removeCodingSchemeVersion(references.get(1));
 		lbsm.removeCodingSchemeVersion(references.get(2));
 		CleanUpUtility.removeAllUnusedDatabases();
-		assertTrue(CleanUpUtility.listUnusedDatabases().length == 0);
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		
+		assertEquals(0, CleanUpUtility.listUnusedDatabases().length);
 	}
 
 	@Test
@@ -116,7 +115,7 @@ public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
 		list.add(references.get(1));
 		list.add(references.get(2));
 		ops.cleanUp(list, true);
-		assertTrue(ops.getConcurrentMetaData().getCodingSchemeList().size() == 2);
+		assertEquals(2, ops.getConcurrentMetaData().getCodingSchemeList().size());
 		
 		// Test the index is populated and valid (GermanMadeParts, version 1.0)
 		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
