@@ -430,7 +430,7 @@ public class AllTestsNormalConfig {
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
-        bugTests.addTestSuite(GForge19650.class);
+        bugTests.addTest(orderedSuite(GForge19650.class));
         bugTests.addTestSuite(GForge19492.class);
         bugTests.addTestSuite(GForge19573.class);
         bugTests.addTestSuite(GForge19628.class);
