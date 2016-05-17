@@ -18,13 +18,6 @@
  */
 package org.LexGrid.valueset.test;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -35,11 +28,22 @@ import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+import org.springframework.core.annotation.Order;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This set of tests loads the necessary data for the value set and pick list definition test.
@@ -47,24 +51,28 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class LoadTestDataTest extends TestCase {
+@RunWith(OrderingTestRunner.class)
+public class LoadTestDataTest {
+
 	private LexEVSValueSetDefinitionServices vds_;
 	private LexEVSPickListDefinitionServices pls_;
-	
-	public LoadTestDataTest(String serverName) {
-		super(serverName);
-	}
 
+	@Test
+	@Order(0)
 	public void testLoadAutombilesV1() throws LBParameterException,
 			LBInvocationException, InterruptedException, LBException {
 	    loadXML("resources/testData/valueDomain/Automobiles.xml", "devel");
 	}
-	
+
+	@Test
+	@Order(1)
 	public void testLoadAutombilesV2() throws LBParameterException,
             LBInvocationException, InterruptedException, LBException {
 	     loadXML("resources/testData/valueDomain/AutomobilesV2.xml", LBConstants.KnownTags.PRODUCTION.toString());
 	}
 
+	@Test
+	@Order(2)
 	public void testLoadGermanMadeParts() throws LBParameterException,
             LBInvocationException, InterruptedException, LBException {
         loadXML("resources/testData/German_Made_Parts.xml", LBConstants.KnownTags.PRODUCTION.toString());
@@ -97,6 +105,8 @@ public class LoadTestDataTest extends TestCase {
 	 * @throws InterruptedException
 	 * @throws LBException
 	 */
+	@Test
+	@Order(3)
 	public void testLoadObo() throws InterruptedException, LBException {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -130,6 +140,7 @@ public class LoadTestDataTest extends TestCase {
 	 * @throws URISyntaxException
 	 */
 	@Test
+	@Order(4)
 	public void testCheckValueSetDef() throws LBException, URISyntaxException{
 		List<String> uris = getValueSetDefService().listValueSetDefinitions(null);
 		
@@ -142,19 +153,21 @@ public class LoadTestDataTest extends TestCase {
 				assertFalse("Not all test value domains were deleted.",true);
 		}
 	}
-	
+
 	@Test
+	@Order(5)
 	public void testLoadPickList() throws LBException {
 		getPickListService().loadPickList("resources/testData/valueDomain/pickListTestData.xml", true);
 	}
-	
+
 	@Test
+	@Order(6)
 	public void testLoadValueSetDef() throws Exception {
 		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/vdTestData.xml", true);
 	}
-	
-	
+
 	@Test
+	@Order(7)
 	public void testLoadValueSetDefinition() throws Exception {
 				
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -171,8 +184,9 @@ public class LoadTestDataTest extends TestCase {
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
 	}
-	
+
 	@Test
+	@Order(8)
 	public void testLoadValueSetDefinitionForLongName() throws Exception {
 				
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
