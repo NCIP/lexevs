@@ -18,7 +18,6 @@
  */
 package org.LexGrid.valueset.test;
 
-import junit.framework.TestCase;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -43,6 +42,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
  * This set of tests loads the necessary data for the value set and pick list definition test.
  * 
@@ -50,14 +52,10 @@ import java.util.List;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 @RunWith(OrderingTestRunner.class)
-public class LoadTestDataTest extends TestCase {
+public class LoadTestDataTest {
 
 	private LexEVSValueSetDefinitionServices vds_;
 	private LexEVSPickListDefinitionServices pls_;
-	
-	public LoadTestDataTest(String serverName) {
-		super(serverName);
-	}
 
 	@Test
 	@Order(0)
