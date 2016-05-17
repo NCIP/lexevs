@@ -1,13 +1,5 @@
 package org.lexevs.dao.index.operation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -19,18 +11,20 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.registry.service.Registry;
+
+import java.io.File;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SameSessionLoadandQueryTest {
-	static List<AbsoluteCodingSchemeVersionReference> references = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+
+	private static AbsoluteCodingSchemeVersionReference reference = Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"); // Automobiles 1.0
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -48,32 +42,17 @@ public class SameSessionLoadandQueryTest {
 		}
 		
 		// Activate the coding scheme
-		lbsm.activateCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));
+		lbsm.activateCodingSchemeVersion(reference);
 		
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
-		List<RegistryEntry> entries = registry.getAllRegistryEntries();
-		for(RegistryEntry re: entries){
-			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-			ref.setCodingSchemeURN(re.getResourceUri());
-			ref.setCodingSchemeVersion(re.getResourceVersion());
-			references.add(ref);
-		}
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
 				.getServiceManager(null);
-		for(AbsoluteCodingSchemeVersionReference acsv: references){
-			lbsm.removeCodingSchemeVersion(acsv);
-		}
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		
+		lbsm.removeCodingSchemeVersion(reference);
 	}
 
 	@Test
@@ -87,8 +66,7 @@ public class SameSessionLoadandQueryTest {
 		CodedNodeSet set = lbs.getCodingSchemeConcepts("Automobiles", csvt);
 	
 		// deactivate the coding scheme
-		AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
-		lbsm.deactivateCodingSchemeVersion(acsvr, null);
+		lbsm.deactivateCodingSchemeVersion(reference, null);
 		
 		ResolvedConceptReferencesIterator itr = set.resolve(null, null, null);
 		assertNotNull(itr.next());

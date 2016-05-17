@@ -363,7 +363,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
-        functionalTests.addTestSuite(TestProductionTags.class);
+        functionalTests.addTest(orderedSuite(TestProductionTags.class));
         functionalTests.addTestSuite(TestApproximateStringMatch.class);
         functionalTests.addTestSuite(TestAttributePresenceMatch.class);
         functionalTests.addTestSuite(TestAttributeValueMatch.class);
