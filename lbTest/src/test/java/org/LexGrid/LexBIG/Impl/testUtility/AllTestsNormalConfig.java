@@ -503,7 +503,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsRemoveTest.class));
+        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         // $JUnit-END$
 
