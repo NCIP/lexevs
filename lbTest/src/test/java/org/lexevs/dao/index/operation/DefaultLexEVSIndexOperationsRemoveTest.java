@@ -1,14 +1,5 @@
 package org.lexevs.dao.index.operation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -24,15 +15,27 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.springframework.core.annotation.Order;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+@RunWith(OrderingTestRunner.class)
 public class DefaultLexEVSIndexOperationsRemoveTest {
 	
 	String uri = "urn:oid:11.11.0.1";
@@ -61,11 +64,7 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 		LexEvsServiceLocator.getInstance().getRegistry().removeEntry(entries.get(0));
 	}
 
-	@Before
-	public void setUp() throws Exception {
-
-	}
-
+	@Order(0)
 	@Test
 	public void testGetMap() {
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
@@ -74,13 +73,15 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 		Map<String, AbsoluteCodingSchemeVersionReference> dbNames = ops.getExpectedMap(list);
 		assertTrue(dbNames.size() > 0);
 	}
-	
+
+	@Order(0)
 	@Test
 	public void testGetIndexLocation(){
 		String location = LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().getLexEVSIndexLocation();
 		assertTrue(location.length() > 0);
 	}
-	
+
+	@Order(0)
 	@Test
 	public void testDoesIndexHaveMatchingRegistryEntry(){
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
@@ -90,14 +91,16 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 		AbsoluteCodingSchemeVersionReference cs = ops.doesIndexHaveMatchingRegistryEntry(file, list);
 		assertNotNull(cs);
 	}
-	
+
+	@Order(0)
 	@Test
 	public void testiIsIndexNameRegisteredWithTheSystem(){
 		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
 		CodingSchemeMetaData cs = ops.isIndexNameRegisteredWithTheSystem("Automobiles-1_0");
 		assertNotNull(cs);
 	}
-	
+
+	@Order(1)
 	@Test
 	public void testDropIndex() throws LBParameterException, LBException {
 		DefaultLexEvsIndexOperations ops = (DefaultLexEvsIndexOperations) LexEvsServiceLocator.getInstance().getLexEvsIndexOperations();
