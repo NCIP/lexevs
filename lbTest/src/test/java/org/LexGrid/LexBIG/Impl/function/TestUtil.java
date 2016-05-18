@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.function;
 import java.util.Enumeration;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
@@ -30,6 +31,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 
 public class TestUtil {
@@ -135,5 +137,18 @@ public static synchronized boolean verifyScheme(String localName, String urn, St
         result = !verifyScheme(null, urn, version, null);
 
         return result;
+    }
+
+    public static void removeAll() throws Exception {
+        LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+        LexBIGServiceManager lbsm = lbs.getServiceManager(null);
+
+        for(CodingSchemeRendering csr : lbs.getSupportedCodingSchemes().getCodingSchemeRendering()) {
+            AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(csr.getCodingSchemeSummary());
+
+            lbsm.deactivateCodingSchemeVersion(ref, null);
+            lbsm.removeCodingSchemeVersion(ref);
+        }
+
     }
 }

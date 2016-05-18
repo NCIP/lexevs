@@ -7,13 +7,13 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
+import org.LexGrid.LexBIG.Impl.function.TestUtil;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,6 +42,8 @@ public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		TestUtil.removeAll();
+
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
 				.getServiceManager(null);
 
@@ -92,16 +94,13 @@ public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
 	public static void tearDownAfterClass() throws Exception {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
 				.getServiceManager(null);
-		
-		// deactivate
-		lbsm.deactivateCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-			references.get(1).getCodingSchemeURN(), references.get(1).getCodingSchemeVersion()),null);		
-		
-		lbsm.deactivateCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-			references.get(2).getCodingSchemeURN(), references.get(2).getCodingSchemeVersion()),null);		
-		
+
+		lbsm.deactivateCodingSchemeVersion(references.get(1), null);
 		lbsm.removeCodingSchemeVersion(references.get(1));
+
+		lbsm.deactivateCodingSchemeVersion(references.get(2), null);
 		lbsm.removeCodingSchemeVersion(references.get(2));
+
 		CleanUpUtility.removeAllUnusedDatabases();
 		assertEquals(0, CleanUpUtility.listUnusedDatabases().length);
 	}
@@ -117,7 +116,7 @@ public class DefaultLexEVSIndexOperationsCleanupIndexesTest {
 		ops.cleanUp(list, true);
 
 		// TODO: Check this
-		assertTrue(ops.getConcurrentMetaData().getCodingSchemeList().size() >= 2);
+		assertEquals(2, ops.getConcurrentMetaData().getCodingSchemeList().size());
 		
 		// Test the index is populated and valid (GermanMadeParts, version 1.0)
 		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();

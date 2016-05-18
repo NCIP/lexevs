@@ -30,9 +30,11 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.function.TestUtil;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
@@ -46,6 +48,7 @@ import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.annotation.Order;
 
+import java.io.File;
 import java.util.Arrays;
 
 @RunWith(OrderingTestRunner.class)
@@ -58,6 +61,34 @@ public class TestProductionTags extends LexBIGServiceTestCase {
     }
 
     String updatedVersion = "1.1";
+
+    @Test
+    @Order(2)
+    public void testProductionTags01() throws InterruptedException, LBException {
+        // info("01 Load/Activate version 1.1 of Automobiles vocabulary (see
+        // TestUtil.loadLgXML() as
+        // reference)");
+
+        // silence some extraneous warnings from a logger here:
+        Logger temp = Logger.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
+        temp.setLevel(Level.ERROR);
+
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+        loader.load(new File("resources/testData/Automobiles2.xml").toURI(), true, true);
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+
+        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE)) {
+            assertTrue(TestUtil.activateScheme(AUTO_URN, updatedVersion));
+        }
+
+        assertTrue(TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE));
+    }
 
     /**
      * 02 Assign 'PRODUCTION' tag to 1.0 version; verify tag assignment
