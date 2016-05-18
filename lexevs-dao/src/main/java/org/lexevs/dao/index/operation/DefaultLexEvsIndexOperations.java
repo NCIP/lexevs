@@ -18,12 +18,6 @@
  */
 package org.lexevs.dao.index.operation;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -36,6 +30,12 @@ import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
 import org.lexevs.system.model.LocalCodingScheme;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements LexEvsIndexOperations {
 	
@@ -104,6 +104,23 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 					ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
 				this.dropIndex(metaData.getCodingSchemeName(), ref);
 				}
+			}
+		}
+
+		// sync internal index list
+		for (CodingSchemeMetaData codingSchemeMetaData : this.concurrentMetaData.getCodingSchemeList()) {
+			boolean found = false;
+			for (AbsoluteCodingSchemeVersionReference ref : expectedCodingSchemes) {
+				if (codingSchemeMetaData.getCodingSchemeUri().equals(ref.getCodingSchemeURN())
+					&&
+						codingSchemeMetaData.getCodingSchemeVersion().equals(ref.getCodingSchemeVersion())) {
+					found = true;
+					break;
+				}
+			}
+
+			if(! found) {
+				this.concurrentMetaData.remove(codingSchemeMetaData);
 			}
 		}
 	}
