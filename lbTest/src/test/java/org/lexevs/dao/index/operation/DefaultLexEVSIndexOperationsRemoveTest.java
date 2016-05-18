@@ -8,6 +8,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
+import org.LexGrid.LexBIG.Impl.function.TestUtil;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -43,6 +44,7 @@ public class DefaultLexEVSIndexOperationsRemoveTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		TestUtil.removeAll();
 
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
 				.getServiceManager(null);

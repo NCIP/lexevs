@@ -1,22 +1,18 @@
 package org.lexevs.dao.index.operation;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.function.TestUtil;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.AfterClass;
@@ -24,14 +20,26 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.registry.service.Registry;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultLexEVSIndexOperationsCreateMultipleIndexesTest {
-	static List<AbsoluteCodingSchemeVersionReference> references = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+	private static List<AbsoluteCodingSchemeVersionReference> references = Arrays.asList(
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"), // Automobiles 1.0
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.2", "2.0"), // GMP
+			Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.1") // Automobiles 1.1
+	);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		TestUtil.removeAll();
+
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
 				.getServiceManager(null);
 
@@ -66,14 +74,8 @@ public class DefaultLexEVSIndexOperationsCreateMultipleIndexesTest {
 		}
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
-		List<RegistryEntry> entries = registry.getAllRegistryEntries();
-		for(RegistryEntry re: entries){
-			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-			ref.setCodingSchemeURN(re.getResourceUri());
-			ref.setCodingSchemeVersion(re.getResourceVersion());
-			references.add(ref);
-			
+
+		for(AbsoluteCodingSchemeVersionReference ref : references){
 			// activate
 			lbsm.activateCodingSchemeVersion(ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
 					ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
