@@ -29,6 +29,7 @@ import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.AbstractLoggingBean;
+import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 
 import java.io.File;
@@ -90,19 +91,19 @@ public class DefaultLexEvsIndexOperations extends AbstractLoggingBean implements
 
 			if (reference == null) {
 				//MetaData Index is a special case.  Not registered with the system in the same way.
-				if(index.getName().equals("MetaDataIndex")){return;}
-				CodingSchemeMetaData metaData = this.isIndexNameRegisteredWithTheSystem(index.getName());
-				if(metaData == null){
-					//Not registered with the system, safe to drop it now.
-					//This may occur when starting up the system against an unstable index/database
-					indexRegistry.destroyIndex(index.getName());
-				}
-				else{
-					//Unregister it with the system first, then drop it
-					AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-					ref.setCodingSchemeURN(metaData.getCodingSchemeUri());
-					ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
-				this.dropIndex(metaData.getCodingSchemeName(), ref);
+				if(! index.getName().equals(SystemVariables.getMetaDataIndexName())) {
+					CodingSchemeMetaData metaData = this.isIndexNameRegisteredWithTheSystem(index.getName());
+					if (metaData == null) {
+						//Not registered with the system, safe to drop it now.
+						//This may occur when starting up the system against an unstable index/database
+						indexRegistry.destroyIndex(index.getName());
+					} else {
+						//Unregister it with the system first, then drop it
+						AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+						ref.setCodingSchemeURN(metaData.getCodingSchemeUri());
+						ref.setCodingSchemeVersion(metaData.getCodingSchemeVersion());
+						this.dropIndex(metaData.getCodingSchemeName(), ref);
+					}
 				}
 			}
 		}
