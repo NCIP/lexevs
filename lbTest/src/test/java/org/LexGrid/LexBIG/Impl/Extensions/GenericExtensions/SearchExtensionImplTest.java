@@ -67,6 +67,15 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
+	public void testContainsPresentationSearchSpecialCharacters() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+	
+		ResolvedConceptReferencesIterator itr = searchExtension.search("x-ray", MatchAlgorithm.PRESENTATION_CONTAINS);
+		assertTrue(itr.hasNext());
+		assertEquals("C0034571", itr.next().getCode());
+	}
+	
 	public void testExactPresentationMissingSearchSpecialCharacters() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
