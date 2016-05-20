@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -197,7 +198,7 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
            text = text.toLowerCase();
 
             List<String> tokens;
-            Analyzer tokenAnalyzer = new KeywordAnalyzer();
+            Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
             try {
                 tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, text);
             } catch (IOException e) {
