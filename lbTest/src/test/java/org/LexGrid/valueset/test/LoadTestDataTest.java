@@ -239,7 +239,7 @@ public class LoadTestDataTest {
 	
 	@Test
 	@Order(11)
-	public void testLoadOWLResolvedValueSetDefinition() throws Exception {
+	public void testLoadOWL2ResolvedValueSetDefinition() throws Exception {
 				
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 

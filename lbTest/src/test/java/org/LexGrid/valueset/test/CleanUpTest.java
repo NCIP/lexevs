@@ -97,7 +97,7 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "PRODUCTION");
+                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.1");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
         lbsm.removeCodingSchemeVersion(a);
@@ -174,10 +174,14 @@ public class CleanUpTest extends TestCase {
     
     @Test 
     public void testRemoveResolvedValueSetOWL2() throws Exception {
-    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
-    	AbsoluteCodingSchemeVersionReferenceList acsvrl= 
-    			remove_rvs.getCodingSchemeVersions("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
-    	remove_rvs.remove(acsvrl, true);
+    	LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "OWL2LEXEVS:VerySickCancerPatient", null);
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+
     }
     
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
