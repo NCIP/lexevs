@@ -93,6 +93,17 @@ public class CleanUpTest extends TestCase {
 
     }
     
+    public void testRemoveOWL2() throws LBException {
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "PRODUCTION");
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+
+    }
+    
     @Test
 	public void testRemoveAllTestValueSetDefs() throws LBException, URISyntaxException {
 		List<String> uris = getValueSetDefService().listValueSetDefinitions(null);
@@ -100,7 +111,7 @@ public class CleanUpTest extends TestCase {
 		
 		for (String uri : uris)
 		{
-			if (uri.startsWith("SRITEST:"))
+			if (uri.startsWith("SRITEST:") || uri.startsWith("OWL2LEXEVS:"))
 				getValueSetDefService().removeValueSetDefinition(new URI(uri));
 		}
 		
@@ -109,7 +120,7 @@ public class CleanUpTest extends TestCase {
 		
 		for (String uri : uris)
 		{
-			if (uri.toString().startsWith("SRITEST:"))
+			if (uri.toString().startsWith("SRITEST:") || uri.toString().startsWith("OWL2LEXEVS:"))
 				assertFalse("Not all test value domains were deleted.",true);
 		}
 	}
@@ -161,6 +172,13 @@ public class CleanUpTest extends TestCase {
     	remove_rvs.remove(acsvrl, true);
     }
     
+    @Test 
+    public void testRemoveResolvedValueSetOWL2() throws Exception {
+    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	AbsoluteCodingSchemeVersionReferenceList acsvrl= 
+    			remove_rvs.getCodingSchemeVersions("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+    	remove_rvs.remove(acsvrl, true);
+    }
     
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
