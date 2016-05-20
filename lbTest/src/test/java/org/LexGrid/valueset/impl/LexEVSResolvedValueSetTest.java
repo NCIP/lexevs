@@ -24,16 +24,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -43,7 +38,6 @@ import org.junit.Test;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 
 /**
  * JUnit for Resolved Value Set Service.
@@ -53,8 +47,6 @@ import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 public class LexEVSResolvedValueSetTest extends TestCase {
 
 	LexEVSResolvedValueSetService service;
-
-	private LexEVSValueSetDefinitionServices vds_;
 
 	public void setUp() {
 		service = new LexEVSResolvedValueSetServiceImpl();
@@ -96,6 +88,16 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		ref.setCode("005");
 		ref.setCodeNamespace("Automobiles");
 		ref.setCodingSchemeName("Automobiles");
+		List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
+		assertTrue(schemes.size() > 0);
+	}
+	
+	@Test
+	public void testGetResolvedValueSetsforConceptReferenceOWL2() {
+		ConceptReference ref = new ConceptReference();
+		ref.setCode("VerySickCancerPatient");
+		ref.setCodeNamespace("owl2lexevs");
+		ref.setCodingSchemeName("owl2lexevs");
 		List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
 		assertTrue(schemes.size() > 0);
 	}
