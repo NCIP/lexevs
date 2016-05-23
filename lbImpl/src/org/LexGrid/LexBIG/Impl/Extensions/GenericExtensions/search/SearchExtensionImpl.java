@@ -16,7 +16,6 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -127,10 +126,6 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         if(codeSystemsToInclude == null){
             codeSystemsToInclude = tempSystemsToInclude;
         }
-        
-        SearchIndexService service = LexEvsServiceLocator.getInstance().
-                getIndexServiceManager().
-                getSearchIndexService();
 
         Query query = this.buildOnMatchAlgorithm(text, matchAlgorithm);
         BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
