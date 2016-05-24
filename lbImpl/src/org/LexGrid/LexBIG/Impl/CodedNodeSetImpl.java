@@ -746,25 +746,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 new Object[] { sortByProperty, filterOptions, restrictToProperties, restrictToPropertyTypes,
                         resolveObjects });
         
-        return resolve(sortByProperty, filterOptions, restrictToProperties, restrictToPropertyTypes, 
-                true, AnonymousOption.NON_ANONYMOUS_ONLY);
-    }
-    
-    @Override
-    public ResolvedConceptReferencesIterator resolve(SortOptionList sortByProperty, LocalNameList filterOptions,
-            LocalNameList restrictToProperties, PropertyType[] restrictToPropertyTypes, boolean resolveObjects,
-            AnonymousOption anonymousOption) throws LBInvocationException, LBParameterException {
-        
-        getLogger().logMethod(
-                new Object[] { sortByProperty, filterOptions, restrictToProperties, restrictToPropertyTypes,
-                        resolveObjects, anonymousOption });
-        
-        if (anonymousOption == null) {
-            anonymousOption = AnonymousOption.NON_ANONYMOUS_ONLY;
-        }
-        
-        restrictToAnonymous(anonymousOption);
-        
         // Currently, only 'presorted' sort types are allowed in the iterator.
         // That cuts the list to:
         // matchToQuery, code, codeSystem
@@ -807,7 +788,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throw new LBInvocationException("Unexpected Internal Error: " + e.getLocalizedMessage(), logId);
         }
     }
-
+    
+   
     /**
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#restrictToStatus(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption,
      *      java.lang.String[])

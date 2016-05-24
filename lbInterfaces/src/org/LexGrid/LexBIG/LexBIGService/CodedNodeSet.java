@@ -234,65 +234,6 @@ public interface CodedNodeSet extends Serializable {
 			throws LBInvocationException,LBParameterException;
 	
 	/**
-	 * Resolve an iterator over nodes matching the given criteria,
-	 * allowing for additional filters and optionally populating
-	 * full objects (e.g. concept or instance) for each returned
-	 * reference.
-	 * 
-	 * @param sortOptions
-	 *            List of sort options to apply during resolution. If supplied,
-	 *            the sort algorithms will be applied in the order provided. Any
-	 *            algorithms not valid to be applied in context of node set
-	 *            iteration, as specified in the sort extension description,
-	 *            will result in a parameter exception. Available algorithms can
-	 *            be retrieved through the LexBIGService getSortExtensions()
-	 *            method after being defined to the LexBIGServiceManager
-	 *            extension registry.
-	 * @param filterOptions
-	 *            List of Filter extensions to apply during resolution. If
-	 *            supplied, filters are applied in the order provided. Each name
-	 *            in the list must correspond to the name of a Filter
-	 *            description as registered to the associated service. Available
-	 *            Filter descriptions can be retrieved through the LexBIGService
-	 *            getFilterExtensions() method after being defined to the
-	 *            LexBIGServiceManager extension registry.
-	 * @param propertyNames
-	 *            Local names of properties to resolve.  If not empty and not
-	 *            null, only properties matching the given names are included
-	 *            for resolved nodes. 
-     * @param propertyTypes
-	 *            Indicates whether to resolve only specific property categories,
-	 *            regardless of the assigned name.  Any of the enumerated PropertyType
-	 *            values can be specified.  If not empty and not null, only
-	 *            properties matching the given types are included for resolved
-	 *            nodes.
-	 * @param resolveObjects
-	 *            True to build and embed a full object (e.g. concept) for each
-	 *            referenced node in the returned results; false to return only
-	 *            basic identifying information (e.g. code, coding scheme, 
-	 *            and description). If false, additional properties for referenced 
-	 *            entries can be resolved on an item-by-item basis as controlled 
-	 *            by the application.     
-	 * @param AnonymousOption
-	 *            Option to determine if anonymous classes should be returned.          
-	 * @return An iterator over matching entries.  Each entry will include
-	 *            basic information for the node, such as code and coding scheme.
-	 *            An embedded object (e.g. concept) will optionally be populated
-	 *            for each item, based on the resolveObjects setting.  
-	 *            <p>
-	 *            Note that while the class of the returned value appears
-	 *            to imply concepts only, each contained reference inherits
-	 *            from the more general CodedNodeReference and is capable
-	 *            of representing any type of node contained by the set.
-	 * @throws LBInvocationException,LBParameterException
-	 */
-	ResolvedConceptReferencesIterator resolve(
-			SortOptionList sortOptions, LocalNameList filterOptions,
-			LocalNameList propertyNames, PropertyType[] propertyTypes, 
-			boolean resolveObjects, AnonymousOption anonymousOption)
-			throws LBInvocationException,LBParameterException;
-	
-	/**
 	 * Resolve the set to a list of nodes sorted by the supplied parameters,
 	 * resolving all of the properties named in the list.
 	 * 
