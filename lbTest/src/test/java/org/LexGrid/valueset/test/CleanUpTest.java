@@ -171,19 +171,7 @@ public class CleanUpTest extends TestCase {
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
     	remove_rvs.remove(acsvrl, true);
     }
-    
-    @Test 
-    public void testRemoveResolvedValueSetOWL2() throws Exception {
-    	LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-
-        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "OWL2LEXEVS:VerySickCancerPatient", null);
-
-        lbsm.deactivateCodingSchemeVersion(a, null);
-        lbsm.removeCodingSchemeVersion(a);
-
-    }
-    
+        
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
 			vds_ = LexEVSValueSetDefinitionServicesImpl.defaultInstance();

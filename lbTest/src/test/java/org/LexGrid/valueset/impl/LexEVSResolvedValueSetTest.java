@@ -91,16 +91,6 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
 		assertTrue(schemes.size() > 0);
 	}
-	
-	@Test
-	public void testGetResolvedValueSetsforConceptReferenceOWL2() {
-		ConceptReference ref = new ConceptReference();
-		ref.setCode("VerySickCancerPatient");
-		ref.setCodeNamespace("owl2lexevs");
-		ref.setCodingSchemeName("owl2lexevs");
-		List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
-		assertTrue(schemes.size() > 0);
-	}
 
 	@Test
 	public void testGetCodingSchemeMetadataForResolvedValueSetURI() throws URISyntaxException {

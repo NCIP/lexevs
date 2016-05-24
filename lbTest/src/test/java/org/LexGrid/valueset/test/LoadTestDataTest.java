@@ -220,7 +220,6 @@ public class LoadTestDataTest {
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
 	}
 
 	@Test
@@ -235,25 +234,6 @@ public class LoadTestDataTest {
 	@Order(10)
 	public void testLoadOWLValueSetDef() throws Exception {
 		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VSD_OWL2Annotations.xml", true);
-	}
-	
-	@Test
-	@Order(11)
-	public void testLoadOWL2ResolvedValueSetDefinition() throws Exception {
-				
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-
-		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null);
-
-		while (loader.getStatus().getEndTime() == null) {
-			Thread.sleep(3000);
-		}
-		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
 	}
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

@@ -295,15 +295,14 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 				getValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null);
 		
 		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
-		//assertTrue(vdDef.getDefinitionEntry().length == 2);
-
 		assertTrue(vdDef.getStatus().equals("ACTIVE"));
 		assertTrue(vdDef.getIsActive());	
-		
 	}
 	
 	@Test
 	public void testResolveValueSetDefinitionFromOWL2NoAnonymousDefault() throws LBException, URISyntaxException {
+		
+		// Don't pass in an AnonymousOption. It will default to NON_ANONYMOUS_ONLY
 		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
 				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null);
 		
@@ -311,57 +310,57 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		
 		 if (resolvedVSDCNS != null) {
 			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
-			 
-			 // Don't pass in an AnonymousOption. It will default to NON_ANONYMOUS_ONLY
+			 			 
 			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
 			 
 		     while (iterator.hasNext()) {
 		    	 ResolvedConceptReference conRef = iterator.next();
 		         assertFalse(conRef.getEntity().isIsAnonymous()); 
 		     }
-			 
 		 }	
 	}
 	
 	@Test
 	public void testResolveValueSetDefinitionFromOWL2NoAnonymousExplicit() throws LBException, URISyntaxException {
+		
+		// Explicitly pass in an AnonymousOption.NON_ANONYMOUS_ONLY. 
 		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
-				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null);
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.NON_ANONYMOUS_ONLY);
 		
 		CodedNodeSet finalCNS = null;
 		
 		 if (resolvedVSDCNS != null) {
 			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
-			 
-			 // Explicitly pass in an AnonymousOption.NON_ANONYMOUS_ONLY. 
-			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true, AnonymousOption.NON_ANONYMOUS_ONLY);
+			 			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
 			 
 		     while (iterator.hasNext()) {
 	            ResolvedConceptReference conRef = iterator.next();
 	            assertFalse(conRef.getEntity().isIsAnonymous()); 
 		     }
-			 
 		 }	
 	}
 	
 	@Test
 	public void testResolveValueSetDefinitionFromOWL2OnlyAnonymous() throws LBException, URISyntaxException {
+		
+		// pass in option ANONYMOUS_ONLY
 		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
-				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null);
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.ANONYMOUS_ONLY);
 		
 		CodedNodeSet finalCNS = null;
 		
 		 if (resolvedVSDCNS != null) {
 			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
 			 
-			 // pass in option ANONYMOUS_ONLY
-			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true, AnonymousOption.ANONYMOUS_ONLY);
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
 			 
 		     while (iterator.hasNext()) {
 	            ResolvedConceptReference conRef = iterator.next();
 	            assertTrue(conRef.getEntity().isIsAnonymous()); 
 		     }
-			 
 		 }	
 	}
 	
