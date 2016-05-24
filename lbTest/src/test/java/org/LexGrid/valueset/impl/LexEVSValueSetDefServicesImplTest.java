@@ -365,6 +365,37 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	public void testResolveValueSetDefinitionFromOWL2AnonymousAll() throws LBException, URISyntaxException {
+		
+		// pass in option AnonymousOption ALL
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.ALL);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 boolean foundAnonymous = false;
+			 boolean foundNonAnonymous = false;
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            if (conRef.getEntity().isIsAnonymous()) { 
+	            	foundAnonymous = true;
+	            }
+	            else { 
+	            	foundNonAnonymous = true;
+	            }
+	            assertTrue(foundAnonymous); 
+	            assertTrue(foundNonAnonymous);
+		     }
+		 }	
+	}
+	
+	@Test
 	public void testGetValueSetEntitiesForTermFromOWL2() throws LBException, URISyntaxException {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().
