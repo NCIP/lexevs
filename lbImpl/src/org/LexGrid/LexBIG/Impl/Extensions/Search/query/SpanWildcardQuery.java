@@ -22,13 +22,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermContext;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -41,7 +38,6 @@ import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.search.spans.SpanWeight;
 import org.apache.lucene.search.spans.Spans;
-import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.ToStringUtils;
 
 /**
@@ -51,9 +47,6 @@ import org.apache.lucene.util.ToStringUtils;
  */
 public class SpanWildcardQuery extends SpanQuery {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 6117703255777699916L;
-    
     /** The term. */
     private Term term;
 
@@ -81,26 +74,18 @@ public class SpanWildcardQuery extends SpanQuery {
             List<BooleanClause> clauses = booleanQuery.clauses();
             spanQueries = new SpanQuery[clauses.size()];
             for (int i = 0; i < clauses.size(); i++) {
+                
                 BooleanClause clause = clauses.get(i);
-
                 // Clauses from RegexQuery.rewrite are always TermQuery's
                 TermQuery tq = (TermQuery) clause.getQuery();
-
                 spanQueries[i] = new SpanTermQuery(tq.getTerm());
                 spanQueries[i].setBoost(tq.getBoost());
-                return new SpanOrQuery(spanQueries);
+                
             }
-
+            return new SpanOrQuery(spanQueries);
         } else {
-            termQuery = (SpanOrQuery)rewritten;
-//            SpanTermQuery spanTermQuery = new SpanTermQuery(termQuery.getTerm());
-//            spanTermQuery.setBoost(termQuery.getBoost());
-
-//           spanQueries = new SpanQuery[]{
- //                   spanTermQuery };                         
-        }
-
- //       SpanOrQuery query = new SpanOrQuery(spanQueries);
+            termQuery = (SpanOrQuery)rewritten;                        
+        };
         termQuery.setBoost(orig.getBoost());       
 
         return termQuery;
@@ -123,8 +108,8 @@ public class SpanWildcardQuery extends SpanQuery {
     /* (non-Javadoc)
      * @see org.apache.lucene.search.spans.SpanQuery#getTerms()
      */
-    public Collection getTerms() {
-        Collection terms = new ArrayList();
+    public Collection<Term> getTerms() {
+        Collection<Term> terms = new ArrayList<Term>();
         terms.add(term);
         return terms;
     }
@@ -132,7 +117,7 @@ public class SpanWildcardQuery extends SpanQuery {
     /* (non-Javadoc)
      * @see org.apache.lucene.search.Query#extractTerms(java.util.Set)
      */
-    public void extractTerms(Set terms) {
+    public void extractTerms(Set<Term> terms) {
         terms.add(term);
     }
 

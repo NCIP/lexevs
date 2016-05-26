@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.apache.lucene.search.ScoreDoc;
 
 
