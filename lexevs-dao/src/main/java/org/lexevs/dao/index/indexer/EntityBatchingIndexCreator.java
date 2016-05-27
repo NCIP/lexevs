@@ -68,8 +68,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	
 	private EntityIndexer entityIndexer;
 	
-	private EntityIndexer searchIndexer;
-	
 	private LgLoggerIF logger;
 	
 	@Override
@@ -300,22 +298,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;
 	}
-
-	public EntityIndexer getSearchIndexer() {
-		return searchIndexer;
-	}
-
-	public void setSearchIndexer(EntityIndexer searchIndexer) {
-		this.searchIndexer = searchIndexer;
-	}
-
-//	public void setMetaData(MetaData metaData) {
-//		this.metaData = metaData;
-//	}
-//
-//	public MetaData getMetaData() {
-//		return metaData;
-//	}
 
 	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
 		this.indexDaoManager = indexDaoManager;

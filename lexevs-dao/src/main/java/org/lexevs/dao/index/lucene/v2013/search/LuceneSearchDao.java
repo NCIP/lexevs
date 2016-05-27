@@ -138,7 +138,6 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 				}
 			
 			});
-			//final List<ScoreDoc> docs  = Arrays.asList(collector.topDocs().scoreDocs);
 			
 			Collections.sort(scoreDocs, new Comparator<ScoreDoc>() {
 

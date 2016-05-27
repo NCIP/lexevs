@@ -43,8 +43,6 @@ public class MultiIndexRegistry implements IndexRegistry, InitializingBean {
 	
 	private Map<String,LuceneIndexTemplate> luceneIndexNameToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
 	
-	private Map<String,LuceneIndexTemplate> multiCodingSchemeKeyToTemplateMap = new HashMap<String,LuceneIndexTemplate>();
-	
 	private Map<String,NamedDirectory> luceneIndexNameToDirctoryMap = new HashMap<String,NamedDirectory>();
 	
 	private Map<CodingSchemeUriVersionPair,String> luceneCodingSchemeToIndexNameMap = 
