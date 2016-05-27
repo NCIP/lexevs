@@ -58,20 +58,20 @@ public class WeightedDoubleMetaphoneSearch extends AbstractSearch {
     public Query buildQuery(String searchText) {
         QueryParser queryParser = super.getQueryParser();
 
-        BooleanQuery masterQuery = new BooleanQuery();
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
 
         Query query;
         try {
             query = queryParser.parse("dm_propertyValue:(" + searchText + ")");
 
-            masterQuery.add(new BooleanClause(query, BooleanClause.Occur.MUST));
+            builder.add(new BooleanClause(query, BooleanClause.Occur.MUST));
 
             Query realTextQuery = queryParser.parse("propertyValue:(" + searchText + ")");
-            masterQuery.add(new BooleanClause(realTextQuery, BooleanClause.Occur.SHOULD));
+            builder.add(new BooleanClause(realTextQuery, BooleanClause.Occur.SHOULD));
 
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        return masterQuery;
+        return builder.build();
     } 
 }

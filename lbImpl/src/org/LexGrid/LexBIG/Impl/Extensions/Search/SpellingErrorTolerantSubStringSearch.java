@@ -67,26 +67,26 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
 //        searchText = searchText.toLowerCase();
         String[] tokens = searchText.split(" ");
      
-        BooleanQuery booleanQuery = new BooleanQuery();
+        BooleanQuery.Builder booleanBuilder = new BooleanQuery.Builder();
         
         String[] tokensWithoutSpecialChars = super.getTokensWithoutSpecialCharacters(tokens); 
         Query doubleMetaphoneQuery = buildSpanNearQuery(tokensWithoutSpecialChars, 
                 LuceneLoaderCode.DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, 
                 tokens.length - tokensWithoutSpecialChars.length, false);
-        booleanQuery.add(new BooleanClause(doubleMetaphoneQuery, Occur.SHOULD));
+        booleanBuilder.add(new BooleanClause(doubleMetaphoneQuery, Occur.SHOULD));
         
         Query literalQuery = buildSpanNearQuery(tokens, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, 0, true);
   
-        booleanQuery.add(new BooleanClause(literalQuery, Occur.SHOULD));
+        booleanBuilder.add(new BooleanClause(literalQuery, Occur.SHOULD));
         
         String[] specialCharacterTokens = getTokensWithSpecialCharacters(tokens);
         
         if(specialCharacterTokens != null && specialCharacterTokens.length > 0){
             Query literalRequiredQuery = buildSpanNearQuery(specialCharacterTokens, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, tokens.length, true);
-            booleanQuery.add(new BooleanClause(literalRequiredQuery, Occur.MUST));
+            booleanBuilder.add(new BooleanClause(literalRequiredQuery, Occur.MUST));
         }
 
-        return booleanQuery;
+        return booleanBuilder.build();
     } 
     
     /**
@@ -99,53 +99,41 @@ public class SpellingErrorTolerantSubStringSearch extends AbstractLiteralSearch 
      * 
      * @return the query
      */
-    protected Query buildSpanNearQuery(String[] tokens, String luceneSearchField, int slop, boolean boostLiteral){
-//        SpanQuery[] spanQuery = new SpanQuery[tokens.length];
-        PhraseQuery query = new PhraseQuery();
+    protected Query buildSpanNearQuery(String[] tokens, String luceneSearchField, int slop, boolean boostLiteral) {
 
-        for(int i=0;i<tokens.length;i++){
+        PhraseQuery.Builder builder = new PhraseQuery.Builder();
+
+        for (int i = 0; i < tokens.length; i++) {
             Query parsedQuery = null;
             try {
-//                super.getQueryParser().setAutoGeneratePhraseQueries(true);
                 parsedQuery = super.getQueryParser().parse(luceneSearchField + ":( " + tokens[i] + ")");
                 parsedQuery.toString();
             } catch (ParseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            if(parsedQuery instanceof BooleanQuery){
-                BooleanQuery booleanQuery = (BooleanQuery) parsedQuery;
+            if (parsedQuery instanceof BooleanQuery) {
+                BooleanQuery booleanQuery = (BooleanQuery) parsedQuery;                
                 TermQuery tq = null;
-                for(BooleanClause clause: booleanQuery.getClauses()){
-                    
-                   if(clause.getQuery() instanceof BooleanQuery){
-                    tq = (TermQuery)clause.getQuery();
-                  }
-                  else{
-                      tq = (TermQuery) clause.getQuery();   
-                  }
-                  query.add(tq.getTerm());
-                }
+                for (BooleanClause clause : booleanQuery.clauses()) {
 
-                
-            
-            	
-//            }
+                    if (clause.getQuery() instanceof BooleanQuery) {
+                        tq = (TermQuery) clause.getQuery();
+                    } else {
+                        tq = (TermQuery) clause.getQuery();
+                    }
+                    builder.add(tq.getTerm());
                 }
-            	else{
-            	    TermQuery tq = (TermQuery) parsedQuery;
-            	    query.add(tq.getTerm());
-            	}
-
- //               spanQuery[i] = new SpanTermQuery(termQuery.getTerm());
+            } else {
+                TermQuery tq = (TermQuery) parsedQuery;
+                builder.add(tq.getTerm());
+            }
 
         }
-query.setSlop(slop);
-if(boostLiteral){
-query.setBoost(0.5f);
-}
-//        SpanNearQuery spanNearQuery = new SpanNearQuery(spanQuery, slop, inOrder);
-//        return spanNearQuery;
-        return query;
+        builder.setSlop(slop);
+        PhraseQuery returnQuery = builder.build();
+        if (boostLiteral) {
+            returnQuery.setBoost(0.5f);
+        }
+        return returnQuery;
     }
 }
