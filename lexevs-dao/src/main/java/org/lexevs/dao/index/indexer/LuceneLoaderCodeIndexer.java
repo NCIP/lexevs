@@ -97,11 +97,6 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 					entityUid,
 					isParent);
 			
-			// TODO ensure entityCodeLowerCase is created in the child doc
-			// TODO format was in the original index not present here.
-			
-			//returnList.add(parentDoc);
-			
 			if(entity.getAllProperties().length == 0) {
 				entity.addPresentation(
 						getDefaultPresentation(entity));

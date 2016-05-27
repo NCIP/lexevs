@@ -24,7 +24,6 @@ import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
 
 public class MetadataIndexLocationFactory implements FactoryBean {
 	
@@ -38,7 +37,7 @@ public class MetadataIndexLocationFactory implements FactoryBean {
 	}
 
 	@Override
-	public Class getObjectType() {
+	public Class<Resource> getObjectType() {
 		return Resource.class;
 	}
 

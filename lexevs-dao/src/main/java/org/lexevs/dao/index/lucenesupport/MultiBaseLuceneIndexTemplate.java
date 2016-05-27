@@ -31,8 +31,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.DocIdSet;
@@ -40,10 +38,8 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
@@ -103,10 +99,6 @@ public class MultiBaseLuceneIndexTemplate extends BaseLuceneIndexTemplate implem
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
 		throw new UnsupportedOperationException("Cannot use a Multi-template for write operations.");
 	}
-	
-//	protected void doFinalize() throws Throwable {
-//		throw new UnsupportedOperationException("Closing this Multi Index Reader would close all readers");
-//	}
 
 	public ConcurrentMetaData getMetaDirectories() {
 		return metaDirectories;

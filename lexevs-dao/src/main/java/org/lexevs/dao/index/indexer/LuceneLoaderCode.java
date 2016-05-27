@@ -165,13 +165,13 @@ public abstract class LuceneLoaderCode {
     /** The literal analyzer. */
     public static Analyzer literalAnalyzer = new Analyzer() {
     	
-        @Override
-        protected TokenStreamComponents createComponents(String fieldName) {
-            final WhitespaceTokenizer source = new WhitespaceTokenizer();
-            TokenStream filter = new LowerCaseFilter(source);
-            return new TokenStreamComponents(source, filter);
-        }
-    };
+		@Override
+		protected TokenStreamComponents createComponents(String fieldName) {
+			final WhitespaceTokenizer source = new WhitespaceTokenizer();
+			TokenStream filter = new LowerCaseFilter(source);
+			return new TokenStreamComponents(source, filter);
+		}
+	};
     /**
      * Adds the entity.
      * 

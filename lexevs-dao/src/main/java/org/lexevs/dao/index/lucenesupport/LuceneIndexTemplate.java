@@ -27,16 +27,15 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexSearcherCallback;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexWriterCallback;
-import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 
 public interface LuceneIndexTemplate {
 

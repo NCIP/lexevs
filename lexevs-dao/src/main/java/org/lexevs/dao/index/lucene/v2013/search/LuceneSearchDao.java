@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -38,7 +37,6 @@ import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Scorer;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.lucene.AbstractFilteringLuceneIndexTemplateDao;

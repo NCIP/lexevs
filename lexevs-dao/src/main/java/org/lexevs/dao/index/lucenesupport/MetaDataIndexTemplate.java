@@ -140,7 +140,7 @@ public class MetaDataIndexTemplate implements LuceneIndexTemplate {
 				
 				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
 				
-				indexSearcher.search(query, filter, new Collector() {
+				indexSearcher.search(query, new Collector() {
 
 					@Override
 					public LeafCollector getLeafCollector(LeafReaderContext arg0)
