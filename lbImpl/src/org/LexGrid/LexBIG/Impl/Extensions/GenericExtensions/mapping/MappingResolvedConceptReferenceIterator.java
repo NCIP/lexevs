@@ -52,22 +52,9 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
 
 
     
-    public ResolvedConceptReferenceList get(int start, int end)
-            throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
-        Iterator<ResolvedConceptReference> iterator;
+    public ResolvedConceptReferenceList get(int start, int end) throws LBResourceUnavailableException,
+            LBInvocationException, LBParameterException {
 
- 
-//        if (areAllCodedNodeSetsNull) {
-//            iterator = new MappingTripleIterator(mappingUri, mappingVersion, relationsContainerName, sortOptionList);
-//        } else {
-//
-//
-//            iterator = new RestrictingMappingTripleIterator(mappingUri, mappingVersion, relationsContainerName,
-//                    sourceCodesCodedNodeSet, targetCodesCodedNodeSet, sourceOrTargetCodesCodedNodeSet,
-//                    relationshipRestrictions, sortOptionList);
-//        }
-//        
-  
         ResolvedConceptReferenceList returnList = new ResolvedConceptReferenceList();
 
         int pos = 0;

@@ -11,6 +11,11 @@ import org.lexevs.exceptions.InternalException;
 
 public abstract class AbstractJoinQueryRestriction implements Restriction {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9067083083894835005L;
+
     @Override
     public final Query getQuery() throws LBException, InternalException {
         TermQuery termQuery = new TermQuery(new Term("isParentDoc", "true"));

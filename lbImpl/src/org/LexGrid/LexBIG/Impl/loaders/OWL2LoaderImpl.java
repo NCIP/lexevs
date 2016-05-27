@@ -38,7 +38,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OwlApi2LGConstants;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OwlApi2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.ProtegeOwl2LGConstants;
-import edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl.ProtegeOwl2LGMain;
 import edu.mayo.informatics.lexgrid.convert.formats.Option;
 import edu.mayo.informatics.lexgrid.convert.options.IntegerOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
