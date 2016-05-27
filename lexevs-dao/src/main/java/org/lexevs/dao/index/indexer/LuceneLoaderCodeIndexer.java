@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;

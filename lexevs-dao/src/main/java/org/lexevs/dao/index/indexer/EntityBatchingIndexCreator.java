@@ -61,13 +61,10 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	private IndexDaoManager indexDaoManager;
 	
 	private LuceneMultiDirectoryFactory indexDirectoryFactory;
-	
-//	private MetaData metaData;
 
 	private ConcurrentMetaData codingSchemes;
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
-//	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	private EntityIndexer entityIndexer;
 	
@@ -165,8 +162,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
 			
 			if(! indexName.equals(IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME)) {
-				EntityDao entityIndexDao = 
-					this.indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 				
 				this.getLogger().info("In multi-directory index mode");
 
@@ -189,8 +184,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			CodingSchemeMetaData metaData = null;
 			
 		try {	  
-//			String codingSchemeName = 
-//				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+
 			metaData = indexDirectoryFactory.getCodingSchemeMetaData(indexName,
 					reference);
 			
@@ -200,17 +194,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			throw new RuntimeException(e);
 		}
 	}
-	
-//	protected void addSearchIndexMetadata(
-//			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
-//		try {	  
-//			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-//
-//			metaData.rereadFile(true);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
 		return Utility.getIndexName(reference);

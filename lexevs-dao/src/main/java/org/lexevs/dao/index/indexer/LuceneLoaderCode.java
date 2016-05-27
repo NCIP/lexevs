@@ -153,8 +153,6 @@ public abstract class LuceneLoaderCode {
 	private static final String ENTITY_TYPE = "entityType";
  
     private LuceneEntityDao luceneEntityDao;
-
-    private AttributeFactory reader;
     
     protected LuceneLoaderCode(){
     	try {
