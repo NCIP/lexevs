@@ -18,19 +18,20 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.UUID;
-
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.test.BaseInMemoryLexEvsTest;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.utility.PropertiesUtility;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * Singleton class for getting a LexBIGService for the JUnit test cases.
@@ -47,7 +48,7 @@ public class ServiceHolder {
     public static File testConfigFolder_;
     private boolean singleConfigMode_;
 
-    private LexBIGServiceImpl lbsi_;
+    private LexBIGService lbsi_;
 
     /**
      * Use this to get an instance of the ServiceHolder. If
@@ -131,8 +132,12 @@ public class ServiceHolder {
                 if(inMemory){
                 	BaseInMemoryLexEvsTest.initInMemory();
                 }
-                
-                lbsi_ = LexBIGServiceImpl.defaultInstance();
+
+                if(StringUtils.isNotBlank(System.getProperty(LexBIGServiceTestFactory.LBS_TEST_FACTORY_ENV))) {
+                    lbsi_ = ((LexBIGServiceTestFactory) Class.forName(System.getProperty(LexBIGServiceTestFactory.LBS_TEST_FACTORY_ENV)).newInstance()).getLbs();
+                } else {
+                    lbsi_ = LexBIGServiceImpl.defaultInstance();
+                }
             }
 
         } catch (Exception e) {

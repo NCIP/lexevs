@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.codednodeset;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class CodedNodeSetOperationsTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
     
     /** The unioned coded node set. */
