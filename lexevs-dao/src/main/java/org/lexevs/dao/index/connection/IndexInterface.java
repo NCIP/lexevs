@@ -72,9 +72,6 @@ public class IndexInterface {
     /** The boundry doc id set map. */
     private HashMap<String, DocIdSet> boundryDocIdSetMap;
 
-    /** The code boundry filter_. */
-    private Filter codeBoundryFilter_;
-
     /**
      * Gets the logger.
      * 
@@ -125,12 +122,6 @@ public class IndexInterface {
         indexSearchers_ = new Hashtable<String, SearchServiceInterface>();
         indexReaders_ = new Hashtable<String, LuceneIndexReader>();
         boundryDocIdSetMap = new HashMap<String, DocIdSet>();
-
-        // See the top of the class for a description of what the codeBoundry
-        // stuff is used for.
-        BooleanQuery includesFilterQuery = new BooleanQuery();
-        includesFilterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST));
-        codeBoundryFilter_ = new QueryWrapperFilter(includesFilterQuery);
        
         initCodingSchemes();
     }
@@ -160,48 +151,13 @@ public class IndexInterface {
             // coding system / version combination
             // strings to the index that contains them. I want to find all of
             // the unique index locations.
-            //HashSet<String> uniqueIndexLocations = new HashSet<String>();
             for (int i = 0; i < codingSchemeVersionPairs.length; i++) {
             	temp.put(codingSchemeVersionPairs[i], service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
-                
-            	//Don't bother with this...
-            	//uniqueIndexLocations.add(service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
             }
-
-            // TODO: This index metadata file is.... weird.
-            // We don't need the code below if we are consistent about key creation.
-            // It would be nice to do this differently -- Castor/XStream marshalling... etc...
-            // This should simplify things and keep backward compatiblity.
-            // TODO:
-            
-            // now, for each index location, read the coding scheme name and
-            // version information, and
-            // add that to the hashtable.
-            /*
-            Iterator<String> indexLocations = uniqueIndexLocations.iterator();
-            while (indexLocations.hasNext()) {
-                String currentLocation = indexLocations.next();
-
-                LocalCodingScheme lcs = new LocalCodingScheme();
-                lcs.codingSchemeName = service_.getMetaData().getIndexMetaDataValue(currentLocation, "codingScheme");
-                lcs.version = service_.getMetaData().getIndexMetaDataValue(currentLocation, "version");
-
-                temp.put(lcs.getKey(), currentLocation);
-            } 
-            */
             codeSystemToIndexMap_ = temp;
         } catch (RuntimeException e) {
             throw new RuntimeException("There was a problem reading the index metadata.", e);
         }
-    }
-
-    /**
-     * Gets the code boundry filter.
-     * 
-     * @return the code boundry filter
-     */
-    public Filter getCodeBoundryFilter() {
-        return codeBoundryFilter_;
     }
 
     /**
