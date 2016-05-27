@@ -19,11 +19,9 @@
 package org.lexevs.dao.indexer.api;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Explanation;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
-//import org.apache.lucene.search.Similarity;
 
 /**
  * This is the interface that you use to search an index.
@@ -51,20 +49,6 @@ public interface SearchServiceInterface {
      */
     public void search(Query query, Filter filter, Collector collector) throws RuntimeException;
 
-    /**
-     * Search.
-     * 
-     * @param query the query
-     * @param filter the filter
-     * @param skipLowScoring the skip low scoring
-     * @param maxToReturn the max to return
-     * 
-     * @return the document[]
-     * 
-     * @throws RuntimeException
-     */
-//    public Document[] search(Query query, Filter filter, boolean skipLowScoring, int maxToReturn)
-//            throws RuntimeException;
 
     /**
      * Gets the next search results.
@@ -99,34 +83,6 @@ public interface SearchServiceInterface {
      * @return the hit total
      */
     public int getHitTotal();
-
-    /**
-     * Explain.
-     * 
-     * @param query the query
-     * @param doc the doc
-     * 
-     * @return the explanation
-     * 
-     * @throws RuntimeException
-     */
-//    public Explanation explain(Query query, int doc) throws RuntimeException;
-
-    /**
-     * Sets the similarity.
-     * 
-     * @param similarity the new similarity
-     * 
-     * @throws RuntimeException
-     */
-//    public void setSimilarity(Similarity similarity) throws RuntimeException;
-
-    /**
-     * Gets the similarity.
-     * 
-     * @return the similarity
-     */
-//    public Similarity getSimilarity();
 
     /**
      * Close.

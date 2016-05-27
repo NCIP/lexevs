@@ -19,7 +19,6 @@
 package org.lexevs.dao.indexer.api;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -27,18 +26,15 @@ import java.util.Hashtable;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.store.Directory;
 import org.lexevs.dao.indexer.lucene.Index;
 import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
 import org.lexevs.dao.indexer.lucene.LuceneIndexSearcher;
 import org.lexevs.dao.indexer.lucene.LuceneMultiIndexSearcher;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
-import org.lexevs.dao.indexer.utility.MetaData;
 import org.lexevs.dao.indexer.utility.Utility;
-import org.lexevs.logging.LoggerFactory;
 
 /**
  * This class will sit on top of multiple indexes, and manage them for you.
@@ -47,8 +43,8 @@ import org.lexevs.logging.LoggerFactory;
  */
 public class IndexerService {
     private File rootLocation_; // The root directory of the indexes
-    private Hashtable indexes_; // will hold all of the current indexes
-//    private MetaData metadata_;
+    private Hashtable<String, Index> indexes_; // will hold all of the current indexes
+
     private ConcurrentMetaData concurrentMetaData;
 
     /**
@@ -84,7 +80,7 @@ public class IndexerService {
             org.apache.log4j.BasicConfigurator.configure();
         }
 
-        indexes_ = new Hashtable();
+        indexes_ = new Hashtable<String, Index>();
         File root = new File(rootLocation);
         this.rootLocation_ = root;
         if (root.exists()) {
@@ -113,7 +109,7 @@ public class IndexerService {
         }
 
         // remove ones that no longer exist
-        Enumeration indexes = indexes_.keys();
+        Enumeration<String> indexes = indexes_.keys();
         while (indexes.hasMoreElements()) {
             String indexName = (String) indexes.nextElement();
             if (!fileNames.contains(indexName)) {
@@ -415,7 +411,7 @@ public class IndexerService {
      */
     public String[] listIndexes() {
         String[] results = new String[indexes_.size()];
-        Enumeration enumer = indexes_.keys();
+        Enumeration<String> enumer = indexes_.keys();
         int i = 0;
         while (enumer.hasMoreElements()) {
             results[i++] = (String) enumer.nextElement();

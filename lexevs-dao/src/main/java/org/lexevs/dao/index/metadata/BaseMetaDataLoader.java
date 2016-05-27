@@ -25,10 +25,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
@@ -40,13 +38,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.util.AttributeFactory;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
-import org.lexevs.dao.indexer.lucene.analyzers.EncoderAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.NormAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
-import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
 import org.lexevs.logging.LoggerFactory;
 
 /**

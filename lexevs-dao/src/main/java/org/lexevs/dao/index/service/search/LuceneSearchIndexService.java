@@ -199,23 +199,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 							codingSchemeUri, codingSchemeVersion)));
 	}
 	
-	protected Filter getCodingSchemeFilterForCodingScheme(AbsoluteCodingSchemeVersionReference codingScheme) {
-		String codingSchemeUri = codingScheme.getCodingSchemeURN();
-		String codingSchemeVersion = codingScheme.getCodingSchemeVersion();
-		
-		String key = this.getFilterMapKey(codingSchemeUri, codingSchemeVersion);
-		if(!this.cachedFilters.containsKey(key)) {
-			Term term = new Term(
-					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-							codingSchemeUri, codingSchemeVersion));
-			TermsFilter filter = new TermsFilter();
-//			filter..addTerm(term);
-			this.cachedFilters.put(key, new CachingWrapperFilter(filter));
-		}
-		return this.cachedFilters.get(key);
-	}
-	
 	@Override
 	public void createIndex(AbsoluteCodingSchemeVersionReference ref) {
 		indexCreator.index(ref, IndexOption.SEARCH);
