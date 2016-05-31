@@ -26,9 +26,7 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
-@RemoteApiSafeTest
 public class TestLimitReturnedValues extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_43";
 
