@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.LogEntry;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
@@ -144,6 +145,25 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
             URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
             AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String csVersionTag) throws LBException;
+	
+	/**
+	 * Returns unresolved CodedNodeSet populated using definition entries in the value set definition.
+	 *   
+	 * @param valueSetDefinitionURI - the URI of the value set definition
+	 * @param valueSetDefintionRevisionId - the version of the value set definition
+	 * @param csVersionList - a list of coding scheme URI's and versions to be used.  These will be used only if they are present in
+	 *                               the service.  If absent, the most recent version will be used instead.
+	 * @param csVersionTag - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present.
+     *                               Note that non-tagged versions will be used if the tagged version is missing.
+     * @param AnonymousOption - Option to determine if anonymous classes should be returned.                                     
+	 * @return 
+	 * @throws LBException
+	 */
+	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
+            URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
+            AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String csVersionTag, AnonymousOption anonymousOption) throws LBException;
+	
 	/**
 	 * Resolve a value set definition using the supplied set of coding scheme versions.
 	 * 

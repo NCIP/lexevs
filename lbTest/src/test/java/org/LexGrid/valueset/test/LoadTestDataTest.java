@@ -18,6 +18,14 @@
  */
 package org.LexGrid.valueset.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -25,6 +33,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
@@ -36,14 +45,6 @@ import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.springframework.core.annotation.Order;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * This set of tests loads the necessary data for the value set and pick list definition test.
@@ -100,6 +101,24 @@ public class LoadTestDataTest {
         
         Thread.sleep(1000);
 	}
+	
+	private void loadOWL2(String fileName, String tag) throws LBException, InterruptedException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
+        
+        //loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+        loader.load(new File(fileName).toURI(),null,  1, false, true);
+        
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(1000);
+        }
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
 
 	/**
 	 * @throws InterruptedException
@@ -165,7 +184,7 @@ public class LoadTestDataTest {
 	public void testLoadValueSetDef() throws Exception {
 		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/vdTestData.xml", true);
 	}
-
+	
 	@Test
 	@Order(7)
 	public void testLoadValueSetDefinition() throws Exception {
@@ -201,7 +220,20 @@ public class LoadTestDataTest {
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+	}
 
+	@Test
+	@Order(9)
+	public void testLoadOWL2() throws LBParameterException,
+            LBInvocationException, InterruptedException, LBException {
+		loadOWL2("resources/testData/owl2/owl2-test-cases-Primitive-Annotated.owl", 
+				LBConstants.KnownTags.PRODUCTION.toString());
+	}
+	
+	@Test
+	@Order(10)
+	public void testLoadOWLValueSetDef() throws Exception {
+		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VSD_OWL2Annotations.xml", true);
 	}
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

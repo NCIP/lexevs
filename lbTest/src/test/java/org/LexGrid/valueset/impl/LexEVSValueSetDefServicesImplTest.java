@@ -43,6 +43,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
@@ -287,7 +288,142 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 //		assertTrue(propES.getPrevRevision().equals("PR00A"));
 //		assertTrue(propES.getChangeType().name().equals(ChangeType.NEW.value()));
 	}
-
+	
+	@Test
+	public void testGetValueSetDefinitionFromOWL2() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null);
+		
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2NoAnonymousDefault() throws LBException, URISyntaxException {
+		
+		// Don't pass in an AnonymousOption. It will default to NON_ANONYMOUS_ONLY
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 
+		     while (iterator.hasNext()) {
+		    	 ResolvedConceptReference conRef = iterator.next();
+		         assertFalse(conRef.getEntity().isIsAnonymous()); 
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2NoAnonymousExplicit() throws LBException, URISyntaxException {
+		
+		// Explicitly pass in an AnonymousOption.NON_ANONYMOUS_ONLY. 
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.NON_ANONYMOUS_ONLY);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            assertFalse(conRef.getEntity().isIsAnonymous()); 
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2OnlyAnonymous() throws LBException, URISyntaxException {
+		
+		// pass in option ANONYMOUS_ONLY
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.ANONYMOUS_ONLY);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            assertTrue(conRef.getEntity().isIsAnonymous()); 
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2AnonymousAll() throws LBException, URISyntaxException {
+		
+		// pass in option AnonymousOption ALL
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.ALL);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 boolean foundAnonymous = false;
+			 boolean foundNonAnonymous = false;
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            if (conRef.getEntity().isIsAnonymous()) { 
+	            	foundAnonymous = true;
+	            }
+	            else { 
+	            	foundNonAnonymous = true;
+	            }
+	            assertTrue(foundAnonymous); 
+	            assertTrue(foundNonAnonymous);
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testGetValueSetEntitiesForTermFromOWL2() throws LBException, URISyntaxException {
+		
+		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().
+				getValueSetDefinitionEntitiesForTerm("VerySickCancerPatient", 
+						MatchAlgorithms.exactMatch.name(), new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null);
+		
+		CodedNodeSet cns = null;
+		@SuppressWarnings("unused")
+		AbsoluteCodingSchemeVersionReferenceList csvrList = null;
+		ResolvedConceptReferenceList rcrList = null;
+		
+		if (vdcns != null)
+		{
+			cns = vdcns.getCodedNodeSet();
+			csvrList = vdcns.getCodingSchemeVersionRefList();
+			
+			rcrList = cns.resolveToList(null, null, null, null, false, 1024);
+			
+			assertTrue(rcrList.getResolvedConceptReferenceCount() == 1);
+			
+			for (int i = 0; i < rcrList.getResolvedConceptReferenceCount(); i++)
+			{
+				ResolvedConceptReference rcr =  rcrList.getResolvedConceptReference(i);
+				assertTrue(rcr.getCode().equalsIgnoreCase("VerySickCancerPatient"));
+			}
+		}
+	}
+	
 	@Test
 	public void testGetValueSetEntitiesForTerm() throws LBException, URISyntaxException {
 		
@@ -375,6 +511,9 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 			}
 		}		
 	}
+	
+	
+	
 
 	@Test
 	public void testIsEntityInVSResolution() throws LBException, URISyntaxException {
@@ -489,6 +628,16 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	    			uri.equals("SRITEST:AUTO:EveryThing") ||
 	    			uri.equals("SRITEST:AUTO:Ford"));
 	    }
+	}
+	
+	@Test
+	public void testListValueSetsWithEntityCodeForOWL2() throws LBException, URISyntaxException {
+		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
+	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.1"));	    
+		
+	    List<String> uris = getValueSetDefinitionService().
+	    		listValueSetsWithEntityCode("Person", new URI("OWL2LEXEVS:VerySickCancerPatient"), incsvrl, null);
+	    assertTrue(uris.size() == 0);
 	}
 	
 	@Test

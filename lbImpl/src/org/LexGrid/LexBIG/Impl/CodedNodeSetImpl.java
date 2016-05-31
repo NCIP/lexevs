@@ -18,25 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.security.CodeSource;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -74,8 +63,8 @@ import org.LexGrid.LexBIG.Impl.helpers.lazyloading.CodeHolderFactory;
 import org.LexGrid.LexBIG.Impl.helpers.lazyloading.NonProxyCodeHolderFactory;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.lucene.search.BooleanClause;
@@ -87,15 +76,6 @@ import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Implementation of the CodedNodeSet Interface.
@@ -716,6 +696,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
     
+    
+    
     protected <T> ResultComparator<T> getResultComparator(SortOptionList sortOptionList, SortContext sortContext, Class<T> clazz) throws LBParameterException{ 
 
         ResultComparator<T> comparator = new ResultComparator<T>();
@@ -771,6 +753,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(
                 new Object[] { sortByProperty, filterOptions, restrictToProperties, restrictToPropertyTypes,
                         resolveObjects });
+        
         // Currently, only 'presorted' sort types are allowed in the iterator.
         // That cuts the list to:
         // matchToQuery, code, codeSystem
@@ -814,7 +797,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
     
-
+   
     /**
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#restrictToStatus(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption,
      *      java.lang.String[])
