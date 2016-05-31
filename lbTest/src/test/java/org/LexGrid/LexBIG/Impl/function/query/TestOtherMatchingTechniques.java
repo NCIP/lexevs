@@ -39,7 +39,7 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
 
-        cns.restrictToMatchingDesignations("base heart", null, "LuceneQuery", null);
+        cns = cns.restrictToMatchingDesignations("base heart", null, "LuceneQuery", null);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
@@ -61,7 +61,7 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
         // present.
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts("AI/RHEUM, 1993", null);
 
-        cns.restrictToMatchingDesignations("ecchymosis", null, "LuceneQuery", null);
+        cns = cns.restrictToMatchingDesignations("ecchymosis", null, "LuceneQuery", null);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
@@ -79,7 +79,7 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
     public void testRegExp() throws LBException {
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
 
-        cns.restrictToMatchingDesignations(".*lds", null, "RegExp", null);
+        cns = cns.restrictToMatchingDesignations(".*lds", null, "RegExp", null);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
@@ -94,7 +94,7 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
         // non preferred should have 1 hit.
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
 
-        cns.restrictToMatchingDesignations("\"American Car\"", SearchDesignationOption.NON_PREFERRED_ONLY,
+        cns = cns.restrictToMatchingDesignations("\"American Car\"", SearchDesignationOption.NON_PREFERRED_ONLY,
                 "LuceneQuery", null);
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
@@ -103,21 +103,21 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
 
         // preferred should have 0 hits.
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"American Car\"", SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery",
+        cns = cns.restrictToMatchingDesignations("\"American Car\"", SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery",
                 null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 0);
 
         // Any should have 1 hit.
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"American Car\"", SearchDesignationOption.ALL, "LuceneQuery", null);
+        cns = cns.restrictToMatchingDesignations("\"American Car\"", SearchDesignationOption.ALL, "LuceneQuery", null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
         assertTrue(rcr[0].getConceptCode().equals("005"));
 
         // null should have 1 hit.
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"American Car\"", null, "LuceneQuery", null);
+        cns = cns.restrictToMatchingDesignations("\"American Car\"", null, "LuceneQuery", null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
         assertTrue(rcr[0].getConceptCode().equals("005"));
@@ -126,27 +126,27 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
         // should not.
         // preferred should have 1 hits.
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"General Motors\"", SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery",
+        cns = cns.restrictToMatchingDesignations("\"General Motors\"", SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery",
                 null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
 
         // non-preferred should have 0 hits.
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"General Motors\"", SearchDesignationOption.NON_PREFERRED_ONLY,
+        cns = cns.restrictToMatchingDesignations("\"General Motors\"", SearchDesignationOption.NON_PREFERRED_ONLY,
                 "LuceneQuery", null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 0);
 
         // all should have 1 hits.
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"General Motors\"", SearchDesignationOption.ALL, "LuceneQuery", null);
+        cns = cns.restrictToMatchingDesignations("\"General Motors\"", SearchDesignationOption.ALL, "LuceneQuery", null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
 
         // and so should null
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("\"General Motors\"", null, "LuceneQuery", null);
+        cns = cns.restrictToMatchingDesignations("\"General Motors\"", null, "LuceneQuery", null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
 

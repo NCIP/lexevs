@@ -20,12 +20,14 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class ResolveToListTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class ResolveToListTest extends BaseCodedNodeGraphTest {
 
     /**

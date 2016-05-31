@@ -24,8 +24,10 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.LexGrid.codingSchemes.CodingScheme;
 
+@RemoteApiSafeTest
 public class TestVersioningandAuthorityEnumeration extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_33";
 

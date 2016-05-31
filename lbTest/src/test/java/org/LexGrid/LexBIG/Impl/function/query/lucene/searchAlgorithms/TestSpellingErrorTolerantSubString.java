@@ -18,20 +18,22 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class TestWeightedDoubleMetaphone.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -55,7 +57,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubString() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -72,7 +74,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringFirstResult() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -88,7 +90,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringDifferentMetaphoneValue() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -105,7 +107,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringDifferentMetaphoneValueFirstResult() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -121,7 +123,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringTwoTokens() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -137,7 +139,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringThreeTokensCorrectSpelling() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Ford Motor Company", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Ford Motor Company", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -153,7 +155,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringThreeTokensDifferentOrder() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Motor Ford Company", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Motor Ford Company", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -167,7 +169,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringThreeTokensTooMuchDistance() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Ford Company", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Ford Company", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -181,7 +183,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringThreeTokensSpellingErrorTolerant() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("testyng sam kode", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("testyng sam kode", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -206,7 +208,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Kar (with special) charaters!", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Kar (with special) charaters!", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -225,7 +227,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      */
     public void testSpellingErrorTolerantSubStringWrongSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Kar (with special) charaters^", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Kar (with special) charaters^", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -239,7 +241,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
     @Test
     public void testBoostOne() throws LBException{
     	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
-    	cns.restrictToMatchingDesignations("maintenance", SearchDesignationOption.ALL, algorithm, null);
+    	cns = cns.restrictToMatchingDesignations("maintenance", SearchDesignationOption.ALL, algorithm, null);
     	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
     	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
     	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("111"));
@@ -247,7 +249,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
     @Test
     public void testBoostTwo() throws LBException{
     	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
-    	cns.restrictToMatchingDesignations("mayntenance", SearchDesignationOption.ALL, algorithm, null);
+    	cns = cns.restrictToMatchingDesignations("mayntenance", SearchDesignationOption.ALL, algorithm, null);
     	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
     	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
     	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("22"));
@@ -255,7 +257,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
     @Test
     public void testBoostThree() throws LBException{
     	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
-    	cns.restrictToMatchingDesignations("maintinance", SearchDesignationOption.ALL, algorithm, null);
+    	cns = cns.restrictToMatchingDesignations("maintinance", SearchDesignationOption.ALL, algorithm, null);
     	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
     	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
     	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("33"));
@@ -263,7 +265,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
     @Test
     public void testBoostFive() throws LBException{
     	CodedNodeSet cns = lbs.getCodingSchemeConcepts(BOOST_SCHEME, null);
-    	cns.restrictToMatchingDesignations("maintenanse", SearchDesignationOption.ALL, algorithm, null);
+    	cns = cns.restrictToMatchingDesignations("maintenanse", SearchDesignationOption.ALL, algorithm, null);
     	 ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
     	 assertTrue("Length: " + rcrl.length, rcrl.length > 0);
     	 assertTrue(rcrl[0].getEntity().getEntityCode().equals("55"));

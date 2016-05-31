@@ -18,20 +18,22 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The Class IntersectionTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class IntersectionTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -44,18 +46,18 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns1.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001", "Chevy"}));
+        cns1 = cns1.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001", "Chevy"}));
  
         //005,GM,Ford,A,C0001,T0001,Batteries,Brakes,Tires
-        cngIntersect1.restrictToSourceCodes(cns1);
+        cngIntersect1 = cngIntersect1.restrictToSourceCodes(cns1);
 
         CodedNodeGraph cngIntersect2 = 
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"GM","Ford","005"}));
-            
-        cngIntersect2.restrictToSourceCodes(cns2);
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"GM","Ford","005"}));
+
+        cngIntersect2 = cngIntersect2.restrictToSourceCodes(cns2);
  
         CodedNodeGraph cngIntersect = cngIntersect2.intersect(cngIntersect1);
         
@@ -84,17 +86,17 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns1.restrictToCodes(Constructors.createConceptReferenceList("Jaguar", AUTO_SCHEME));
- 
-        cngIntersect1.restrictToCodes(cns1);
+        cns1 = cns1.restrictToCodes(Constructors.createConceptReferenceList("Jaguar", AUTO_SCHEME));
+
+        cngIntersect1 = cngIntersect1.restrictToCodes(cns1);
         
         CodedNodeGraph cngIntersect2 = 
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
         
         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns2.restrictToCodes(Constructors.createConceptReferenceList("Ford", AUTO_SCHEME));
-            
-        cngIntersect2.restrictToCodes(cns2);
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList("Ford", AUTO_SCHEME));
+
+        cngIntersect2 = cngIntersect2.restrictToCodes(cns2);
         
         CodedNodeGraph cngIntersect = cngIntersect1.intersect(cngIntersect2);
         

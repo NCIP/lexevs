@@ -47,8 +47,8 @@ public class TestQuerybyRelationshipDomain extends LexBIGServiceTestCase {
         ConvenienceMethods cm = new ConvenienceMethods(ServiceHolder.instance().getLexBIGService());
 
         CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, null);
-        cng.restrictToAssociations(Constructors.createNameAndValueList("domain"), null);
-        cng.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { domainCode }, THES_SCHEME, null));
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("domain"), null);
+        cng = cng.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { domainCode }, THES_SCHEME, null));
 
         assertTrue(cng.isCodeInGraph(Constructors.createConceptReference(domainCode, THES_SCHEME)).booleanValue());
 

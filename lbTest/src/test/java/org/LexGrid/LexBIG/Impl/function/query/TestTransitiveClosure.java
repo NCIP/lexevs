@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * This testcase checks that the transitive api works as desired.
@@ -33,6 +34,7 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
  * @author Pradip Kanjamala
  * 
  */
+@RemoteApiSafeTest
 public class TestTransitiveClosure extends LexBIGServiceTestCase {
 
     final static String testID = "T1_FNC_150";

@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestLiteral.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestLiteral extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,7 +55,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      */
     public void testLiteral() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("a^s", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("a^s", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -69,7 +71,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      */
     public void testLiteralTwoTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("a^s co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("a^s co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -85,7 +87,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      */
     public void testLiteralCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("sp*cial", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("sp*cial", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -101,7 +103,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("NO_MATCH_FOR_TESTING", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("NO_MATCH_FOR_TESTING", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

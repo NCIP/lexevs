@@ -18,21 +18,23 @@
  */
 package org.LexGrid.LexBIG.Impl.function.mapping;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The Class MappingTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class MappingToNodeListTest extends LexBIGServiceTestCase {
 
 	@Override

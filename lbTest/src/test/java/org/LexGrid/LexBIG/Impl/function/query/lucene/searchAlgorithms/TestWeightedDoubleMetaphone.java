@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestWeightedDoubleMetaphone.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -50,7 +52,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphone() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -67,7 +69,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphoneDifferentMetaphoneValue() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -84,7 +86,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphoneCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("CaR", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("CaR", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -101,7 +103,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphoneDifferentMetaphoneValueCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("KaR", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("KaR", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -118,7 +120,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphoneReturnOrder() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -134,7 +136,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphoneReturnOrderDifferentMetaphoneValue() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -150,7 +152,7 @@ public class TestWeightedDoubleMetaphone extends BaseSearchAlgorithmTest {
      */
     public void testDoubleMetaphoneANDTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("kar truk", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("kar truk", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

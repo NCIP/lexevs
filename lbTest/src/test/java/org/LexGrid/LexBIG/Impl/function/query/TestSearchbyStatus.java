@@ -25,7 +25,9 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class TestSearchbyStatus extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_16";
 
@@ -38,7 +40,7 @@ public class TestSearchbyStatus extends LexBIGServiceTestCase {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
 
-        cns.restrictToStatus(null, new String[] { "Retired" });
+        cns = cns.restrictToStatus(null, new String[] { "Retired" });
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         assertTrue(rcr.length == 1);

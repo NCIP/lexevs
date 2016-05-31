@@ -22,12 +22,14 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestLeadingAndTrailingWildcard.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -54,7 +56,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("chevy", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("chevy", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -70,7 +72,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardLeading() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("hevy", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("hevy", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -86,7 +88,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardTrailing() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("chev", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("chev", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -102,7 +104,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardBoth() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("hev", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("hev", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -118,7 +120,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("NO_MATCH_FOR_TESTING", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("NO_MATCH_FOR_TESTING", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -132,7 +134,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("HEV", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("HEV", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -148,7 +150,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardManyTokens() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("onc o esti aph uild n onc w o elatio", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("onc o esti aph uild n onc w o elatio", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -164,7 +166,7 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
      */
     public void testLeadingAndTrailingWildcardManyTokensCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("oNc O eStI APH uild n OnC w O eLAtiO", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("oNc O eStI APH uild n OnC w O eLAtiO", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -175,8 +177,8 @@ public class TestLeadingAndTrailingWildcard extends BaseSearchAlgorithmTest {
     
     public void testLeadingAndTrailingWildcardScoring() throws Exception {
    	 CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("auto", SearchDesignationOption.ALL, algorithm, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001"}));
+        cns = cns.restrictToMatchingDesignations("auto", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] {"005", "A0001"}));
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

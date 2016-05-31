@@ -18,11 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+
 /**
  * The Class TestSubStringLiteralSubString.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestSubStringLiteralSubString extends TestSubString {
 
     /** The algorithm. */

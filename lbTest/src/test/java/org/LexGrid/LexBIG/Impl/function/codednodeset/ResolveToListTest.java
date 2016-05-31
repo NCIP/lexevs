@@ -28,12 +28,14 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class ResolveToListTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class ResolveToListTest extends BaseCodedNodeSetTest {
     
     /**
@@ -147,8 +149,8 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
         CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
         
         CodedNodeSet union = cns.union(cns2);
-        
-        union.restrictToMatchingDesignations("(rims^5 OR automobile OR truck^4 OR piston )", SearchDesignationOption.ALL, "LuceneQuery", null);
+
+        union = union.restrictToMatchingDesignations("(rims^5 OR automobile OR truck^4 OR piston )", SearchDesignationOption.ALL, "LuceneQuery", null);
 
         ResolvedConceptReference[] refs = union.resolveToList(
                 Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null, -1).getResolvedConceptReference();
@@ -162,8 +164,8 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
          CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
          
          CodedNodeSet union = cns2.union(cns);
-         
-         union.restrictToMatchingDesignations("( automobile OR truck^4 OR piston OR rims^5 )", SearchDesignationOption.ALL, "LuceneQuery", null);
+
+         union = union.restrictToMatchingDesignations("( automobile OR truck^4 OR piston OR rims^5 )", SearchDesignationOption.ALL, "LuceneQuery", null);
 
          ResolvedConceptReference[] refs = union.resolveToList(
                  Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null, -1).getResolvedConceptReference();
@@ -212,7 +214,7 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyNamesPresentation() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, Constructors.createLocalNameList("textualPresentation"), null, -1);
        
         assertTrue(rcrl.getResolvedConceptReference().length == 1);  
@@ -232,7 +234,7 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyNamesDefinition() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, Constructors.createLocalNameList("definition"), null, -1);
 
         assertTrue(rcrl.getResolvedConceptReference().length == 1);  
@@ -252,7 +254,7 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyTypesPresentation() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, new PropertyType[]{PropertyType.PRESENTATION}, -1);
 
         assertTrue(rcrl.getResolvedConceptReference().length == 1);  
@@ -272,7 +274,7 @@ public class ResolveToListTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyTypesDefinition() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, new PropertyType[]{PropertyType.DEFINITION}, -1);
 
         assertTrue(rcrl.getResolvedConceptReference().length == 1);  

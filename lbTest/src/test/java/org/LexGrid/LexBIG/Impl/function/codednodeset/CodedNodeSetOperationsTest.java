@@ -56,26 +56,26 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
         super.setUp();
         try {
             CodedNodeSet unionedCodedNodeSetPart1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-            unionedCodedNodeSetPart1.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+            unionedCodedNodeSetPart1 = unionedCodedNodeSetPart1.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
             
             CodedNodeSet unionedCodedNodeSetPart2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-            unionedCodedNodeSetPart2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "GM" }, "Automobiles"));
+            unionedCodedNodeSetPart2 = unionedCodedNodeSetPart2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "GM" }, "Automobiles"));
             
             unionedCodedNodeSet = unionedCodedNodeSetPart1.union(unionedCodedNodeSetPart2);
             
             CodedNodeSet intersectedCodedNodeSetPart1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-            intersectedCodedNodeSetPart1.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+            intersectedCodedNodeSetPart1 = intersectedCodedNodeSetPart1.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
             
             CodedNodeSet intersectedCodedNodeSetPart2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-            intersectedCodedNodeSetPart2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Chevy", "GM" }, "Automobiles"));
+            intersectedCodedNodeSetPart2 = intersectedCodedNodeSetPart2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Chevy", "GM" }, "Automobiles"));
             
             intersectedCodedNodeSet = intersectedCodedNodeSetPart1.intersect(intersectedCodedNodeSetPart2);
             
             CodedNodeSet differencedCodedNodeSetPart1 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-            differencedCodedNodeSetPart1.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+            differencedCodedNodeSetPart1 = differencedCodedNodeSetPart1.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
             
             CodedNodeSet differencedCodedNodeSetPart2 = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-            differencedCodedNodeSetPart2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Chevy", "GM" }, "Automobiles"));
+            differencedCodedNodeSetPart2 = differencedCodedNodeSetPart2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Chevy", "GM" }, "Automobiles"));
             
             differencedCodedNodeSet = differencedCodedNodeSetPart1.difference(differencedCodedNodeSetPart2);
         } catch (Exception e) {
@@ -90,8 +90,8 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
    * @throws Exception the exception
    */
   public void testIntersectAUnion() throws Exception {
-        
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "GM" }, "Automobiles"));
+
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "GM" }, "Automobiles"));
 
         CodedNodeSet result = cns.intersect(unionedCodedNodeSet);
 
@@ -108,8 +108,8 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
      * @throws Exception the exception
      */
     public void testUnionAnIntersection() throws Exception {
-        
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
 
         CodedNodeSet result = cns.union(intersectedCodedNodeSet);
 
@@ -127,7 +127,7 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
   */
  public void testIntersectADifference() throws Exception {
         
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
 
         CodedNodeSet result = cns.intersect(differencedCodedNodeSet);
 

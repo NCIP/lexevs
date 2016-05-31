@@ -19,12 +19,14 @@
 package org.LexGrid.LexBIG.Impl.function.codednodeset;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class ExtensionCodedNodeSetTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class ExtensionCodedNodeSetTest extends BaseCodedNodeSetTest {
     
     

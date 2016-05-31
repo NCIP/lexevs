@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.LexGrid.util.PrintUtility;
 
 /**
@@ -28,6 +29,7 @@ import org.LexGrid.util.PrintUtility;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class RestrictToAnonymousTest extends BaseCodedNodeGraphTest {
 
     public void testRestrictToNonAnonymousForMappingScheme() throws Exception {

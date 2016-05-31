@@ -18,19 +18,20 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
-import java.util.Arrays;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.util.PrintUtility;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+
+import java.util.Arrays;
 
 /**
  * The Class SearchByRelationshipTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class SearchByRelationshipTest extends BaseCodedNodeGraphTest {
 
 	//get all sub codes of codes that contain 'car'

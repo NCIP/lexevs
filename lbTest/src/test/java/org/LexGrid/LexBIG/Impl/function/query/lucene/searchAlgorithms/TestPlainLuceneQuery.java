@@ -7,6 +7,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +15,7 @@ import org.junit.Test;
  * @author m029206
  *
  */
+@RemoteApiSafeTest
 public class TestPlainLuceneQuery extends BaseSearchAlgorithmTest {
 	
 	String algorithm = "LuceneQuery";
@@ -29,7 +31,7 @@ public class TestPlainLuceneQuery extends BaseSearchAlgorithmTest {
 	@Test
 	public void testMinimalParams() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-		cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
+		cns = cns.restrictToAnonymous(AnonymousOption.NON_ANONYMOUS_ONLY);
         ResolvedConceptReference[] rcrl = null;
         try{
         rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
@@ -45,7 +47,7 @@ public class TestPlainLuceneQuery extends BaseSearchAlgorithmTest {
 	@Test
 	public void testLuceneQuery() throws Exception{
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-		cns.restrictToMatchingDesignations("Car", SearchDesignationOption.ALL, this.getAlgorithm(), null);
+		cns = cns.restrictToMatchingDesignations("Car", SearchDesignationOption.ALL, this.getAlgorithm(), null);
         ResolvedConceptReference[] rcrl = null;
         try{
         rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();

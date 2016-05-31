@@ -41,7 +41,7 @@ public class TestRetrieveMostRecentVersionofConcept extends LexBIGServiceTestCas
         // good version)
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "External_Lip" }, THES_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "External_Lip" }, THES_SCHEME));
 
         assertTrue(cns.resolveToList(null, null, null, 0).getResolvedConceptReference().length == 1);
 

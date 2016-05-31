@@ -24,9 +24,11 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 //LexBIG Test ID: TEST_FNQRY_CSRNDR_FOR_SUPPASSOC TestCodingSchemesWithSupportedAssociation
 
+@RemoteApiSafeTest
 public class TestCodingSchemesWithSupportedAssociation extends LexBIGServiceTestCase {
     final static String testID = "TEST_FNQRY_CSRNDR_FOR_SUPPASSOC";
 
