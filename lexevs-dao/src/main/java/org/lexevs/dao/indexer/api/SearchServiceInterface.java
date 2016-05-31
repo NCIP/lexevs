@@ -36,7 +36,7 @@ public interface SearchServiceInterface {
      * 
      * @return the string[]
      */
-    public String[] searchableFields();
+//    public String[] searchableFields();
     
     /**
      * Search.
@@ -47,7 +47,7 @@ public interface SearchServiceInterface {
      * 
      * @throws RuntimeException
      */
-    public void search(Query query, Filter filter, Collector collector) throws RuntimeException;
+//    public void search(Query query, Filter filter, Collector collector) throws RuntimeException;
 
 
     /**
@@ -59,14 +59,14 @@ public interface SearchServiceInterface {
      * 
      * @throws RuntimeException
      */
-    public Document[] getNextSearchResults(int howMany) throws RuntimeException;
+ //   public Document[] getNextSearchResults(int howMany) throws RuntimeException;
 
     /**
      * Checks for more hits.
      * 
      * @return true, if successful
      */
-    public boolean hasMoreHits();
+//    public boolean hasMoreHits();
 
     /**
      * Gets the scores.
@@ -75,19 +75,19 @@ public interface SearchServiceInterface {
      * 
      * @throws RuntimeException
      */
-    public float[] getScores() throws RuntimeException;
+//    public float[] getScores() throws RuntimeException;
 
     /**
      * Gets the hit total.
      * 
      * @return the hit total
      */
-    public int getHitTotal();
+//    public int getHitTotal();
 
     /**
      * Close.
      * 
      * @throws RuntimeException
      */
-    public void close() throws RuntimeException;
+ //   public void close() throws RuntimeException;
 }

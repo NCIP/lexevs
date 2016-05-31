@@ -37,14 +37,6 @@ import org.apache.lucene.store.MMapDirectory;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust </A>
  */
 public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
-    private int maxFieldLength_ = Integer.MAX_VALUE; // Lucene's default will
-    // silently truncate docs.
-    // Unsafe. Rather have it
-    // run out of memory.
-    private int maxMergeDocs_ = -1; // Leave at lucene default
-    private int mergeFactor_ = 5; // Good for making documents available sooner.
-    private int maxBufferedDocs_ = -1; // lucene default
-    private boolean useCompoundFile_ = false; // lucene defaults to true - bad
     // for performance.
     private final File location_;
     private Analyzer analyzer_;
@@ -86,7 +78,6 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
      * @param i
      */
     public void setMaxFieldLength(int i) {
-        maxFieldLength_ = i;
         updateLuceneVars();
     }
 
@@ -94,12 +85,10 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
      * @param i
      */
     public void setMaxMergeDocs(int i) {
-        maxMergeDocs_ = i;
         updateLuceneVars();
     }
 
     public void setMaxBufferedDocs(int i) {
-        maxBufferedDocs_ = i;
         updateLuceneVars();
     }
 
@@ -107,12 +96,10 @@ public class LuceneFSIndexWriter implements LuceneIndexWriterInterface {
      * @param i
      */
     public void setMergeFactor(int i) {
-        mergeFactor_ = i;
         updateLuceneVars();
     }
 
     public void setUseCompoundFile(boolean bool) {
-        useCompoundFile_ = bool;
         updateLuceneVars();
     }
 

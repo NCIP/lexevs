@@ -309,24 +309,6 @@ public class IndexerService {
     }
 
     /**
-     * Run the low level lucene optimize command on an index. This is usually
-     * only necessary after a large amount of deletes from an index.
-     * 
-     * @param indexName
-     * @throws IndexNotFoundException
-     * @throws RuntimeException
-     */
-//    public void optimizeIndex(String indexName) throws RuntimeException {
-//        Index currentIndex = (Index) indexes_.get(indexName);
-//
-//        if (currentIndex == null) {
-//            throw new RuntimeException("The index " + indexName + " does not exist.");
-//        }
-//
-//        currentIndex.optimizeIndex();
-//    }
-
-    /**
      * Add a document to the index. Note: If you construct your own document
      * (rather than using a provided document generator, you must add a field to
      * your document of Index.UNIQUE_DOCUMENT_IDENTIFIER_FIELD and a unique
@@ -420,26 +402,6 @@ public class IndexerService {
 
     }
 
-    public SearchServiceInterface getIndexSearcher(String[] indexNames, boolean parallelSearch)
-            throws RuntimeException {
-        return getIndexSearcher(indexNames, false, parallelSearch);
-    }
-
-    public SearchServiceInterface getIndexSearcher(String[] indexNames, boolean useInMemoryIndex, boolean parallelSearch)
-            throws RuntimeException {
-        LuceneIndexReader[] temp = new LuceneIndexReader[indexNames.length];
-
-        for (int i = 0; i < temp.length; i++) {
-            Index currentIndex = (Index) indexes_.get(indexNames[i]);
-
-            if (currentIndex == null) {
-                throw new RuntimeException("The index " + indexNames[i] + " does not exist.");
-            }
-            temp[i] = currentIndex.getIndexReader(useInMemoryIndex);
-        }
-
-        return new LuceneMultiIndexSearcher(temp, parallelSearch);
-    }
 
     public LuceneIndexReader getLuceneIndexReader(String indexName) throws RuntimeException {
         return getLuceneIndexReader(indexName, false);
@@ -453,15 +415,6 @@ public class IndexerService {
             throw new RuntimeException("The index " + indexName + " does not exist.");
         }
         return currentIndex.getIndexReader(useInMemoryIndex);
-    }
-
-    public SearchServiceInterface getIndexSearcher(String indexName) throws RuntimeException {
-        return getIndexSearcher(indexName, false);
-    }
-
-    public SearchServiceInterface getIndexSearcher(String indexName, boolean useInMemoryIndex)
-            throws RuntimeException {
-        return new LuceneIndexSearcher(getLuceneIndexReader(indexName, useInMemoryIndex));
     }
 
     private void loadIndexes() {
@@ -480,18 +433,6 @@ public class IndexerService {
 
     public String getRootLocation() {
         return rootLocation_.getAbsolutePath();
-    }
-
-    public void forceUnlockIndex(String indexName) throws RuntimeException {
-        try {
-            IndexReader reader = getLuceneIndexReader(indexName).getBaseIndexReader();
-  //          IndexReader.unlock(reader.directory());
-        } catch (RuntimeException e) {
-            throw e;
-           //TODO fix unlock functionality
-//        } catch (IOException e) {
-//            throw new RuntimeException("There was an error while trying to unlock the index " + e);
-        }
     }
 
     public ConcurrentMetaData getMetaData() {

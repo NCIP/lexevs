@@ -82,15 +82,6 @@ public class Index {
      */
     public void openFSIndexWriter(boolean clearContents) throws RuntimeException {
         if (indexWriter_ == null) {
-            // If they didn't say clear contents, and the index doesn't exist,
-            // it will cause an error.
-            // so change clear contents to true, so it makes a new index.
-        	//Shouldn't need this anymore, but we don't have a way of handling problems when 
-        	//LuceneFSIndexWriter is opened on a non existant path
-        	//TODO fix the above
-//            if (!clearContents && !IndexReader.indexExists(location_)) {
-//                clearContents = true;
-//            }
             logger.info("Opening a FS Index Writer on " + location_.getAbsolutePath());
             indexWriter_ = new LuceneFSIndexWriter(location_, clearContents, analyzer_);
         } else {
@@ -264,23 +255,6 @@ public class Index {
         }
       
     }
-//TODO disable and deprecate in the upper level API.
-//    public void optimizeIndex() throws RuntimeException {
-//        boolean iOpened = false;
-//        if (indexWriter_ == null) {
-//            iOpened = true;
-//            try {
-//                this.openFSIndexWriter(false);
-//            } catch (RuntimeException e) {
-//                // can't happen
-//            }
-//        }
-//        indexWriter_.optimize();
-//
-//        if (iOpened) {
-//            this.closeIndexWriter();
-//        }
-//    }
 
     /**
      * How many documents to write out per temporary index. Used for

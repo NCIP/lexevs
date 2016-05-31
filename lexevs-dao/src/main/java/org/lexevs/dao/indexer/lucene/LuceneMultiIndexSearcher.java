@@ -60,28 +60,24 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
     private int readSoFar = 0;
     private int lastStartPoint = 0;
 
-    public LuceneMultiIndexSearcher(LuceneIndexReader[] indexes, boolean parallel) throws RuntimeException {
-        this.indexes_ = indexes;
-        searchers = new IndexReader[indexes.length];
+//    public LuceneMultiIndexSearcher(LuceneIndexReader[] indexes, boolean parallel) throws RuntimeException {
+//        this.indexes_ = indexes;
+//        searchers = new IndexReader[indexes.length];
+//
+//        for (int i = 0; i < indexes.length; i++) {
+//            searchers[i] = indexes[i].getBaseIndexReader();
+//        }
+//
+//        try {
+//                multiReader = new MultiReader(searchers);
+//        } catch (IOException e) {
+//            logger.error(e);
+//            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
+//        }
+//
+//    }
 
-        for (int i = 0; i < indexes.length; i++) {
-            searchers[i] = indexes[i].getBaseIndexReader();
-        }
-
-        try {
-//            if (parallel) {
-//                multiSearcher = new MultiReader(searchers, new ThreadPoolExecutor());
-//            } else {
-                multiReader = new MultiReader(searchers);
-//            }
-        } catch (IOException e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
-        }
-
-    }
-
-    public void reloadSearchers() throws RuntimeException {
+//    public void reloadSearchers() throws RuntimeException {
 //        searchers = new IndexReader[indexes_.length];
 //        try {
 //            for (int i = 0; i < indexes_.length; i++) {
@@ -94,173 +90,66 @@ public class LuceneMultiIndexSearcher implements SearchServiceInterface {
 //            logger.error(e);
 //            throw new RuntimeException("There was an error opening the multi-index searcher " + e);
 //        }
-    }
+//    }
 
-    public void search(Query query, Filter filter, Collector hitCollector) throws RuntimeException {
-        throw new UnsupportedOperationException("Not implemented for MultiIndexReader.");    
-    }
 
-    private Document[] searchSkipLowScoreing(Query query, Filter filter, int maxToReturn)
-            throws RuntimeException {
-//        for (int i = 0; i < indexes_.length; i++) {
-//            if (!indexes_[i].upToDate()) {
-//                reloadSearchers();
-//                break; // This will keep me from getting hung if someone is
-//                // writing rapidly to the index
-//            }
-//        }
-//
-//        readSoFar = 0;
-//
-//        try {
-//            hits = multiSearcher.search(query, filter);
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new RuntimeException("There was an error searching the indexes " + e);
-//        }
-//
-//        int stop = hits.length() >= maxToReturn ? maxToReturn : hits.length();
-        Document[] temp;
-//        readSoFar = stop;
-//        lastStartPoint = 0;
-//        try {
-//            for (int i = 0; i < stop; i++) {
-//                temp[i] = hits.doc(i);
-//            }
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new RuntimeException("There was an error collecting the results to return " + e);
-//        }
-//        return temp;
-        return null;
-    }
-
-    public Document[] getNextSearchResults(int howMany) throws RuntimeException {
-//        int hitLength = 0;
-//        if (luceneHits != null) {
-//            hitLength = luceneHits.length;
-//        } else {
-//            hitLength = hits.length();
-//        }
-//
-//        int stop = hitLength >= readSoFar + howMany ? readSoFar + howMany : hitLength;
-        Document[] temp;
-//        lastStartPoint = readSoFar;
-//
-//        try {
-//            int j = 0;
-//            if (luceneHits != null) {
-//                for (int i = readSoFar; i < stop; i++) {
-//                    temp[j++] = multiSearcher.doc(luceneHits[i].doc_);
-//                }
-//            } else {
-//                for (int i = readSoFar; i < stop; i++) {
-//                    temp[j++] = hits.doc(i);
-//                }
-//            }
-//        } catch (IOException e) {
-//            logger.error(e);
-//            throw new RuntimeException("There was an error collecting the results to return " + e);
-//        }
-//
-//        readSoFar += stop - readSoFar;
-//        return temp;
-        return null;
-    }
-
-    public boolean hasMoreHits() {
+//    public boolean hasMoreHits() {
 //        if (this.luceneHits != null) {
 //            return readSoFar < luceneHits.length;
 //        } else {
 //            return readSoFar < this.hits.length();
 //        }
-    return false;
-    }
+//    return false;
+//    }
 
-    public int getHitTotal() {
+//    public int getHitTotal() {
 //        if (this.luceneHits != null) {
 //            return luceneHits.length;
 //        } else {
 //            return hits.length();
 //        }
-    	return -1;
+//    	return -1;
+//
+//    }
 
-    }
+//    public String[] searchableFields() {
+//        HashSet temp = new HashSet();
+//
+//        for (int i = 0; i < indexes_.length; i++) {
+//            temp.addAll(indexes_[i].searchableFields());
+//        }
+//
+//        return (String[]) temp.toArray(new String[temp.size()]);
+//    }
 
-    public String[] searchableFields() {
-        HashSet temp = new HashSet();
-
-        for (int i = 0; i < indexes_.length; i++) {
-            temp.addAll(indexes_[i].searchableFields());
-        }
-
-        return (String[]) temp.toArray(new String[temp.size()]);
-    }
-
-    /**
-     * Returned the scores for that last retrieved set of results.
-     * 
-     * @return An array of scores that match the hits.
-     * @throws RuntimeException
-     */
-    public float[] getScores() throws RuntimeException {
-        float[] temp = new float[readSoFar - lastStartPoint];
-        try {
-            int j = 0;
-            if (luceneHits != null) {
-                for (int i = lastStartPoint; i < readSoFar; i++) {
-                    temp[j++] = luceneHits[i].score_;
-                }
-            } else {
-                for (int i = lastStartPoint; i < readSoFar; i++) {
-                    temp[j++] = hits.scoreDocs[i].score;
-                }
-            }
-
-        } catch (Exception e) {
-            logger.error(e);
-            throw new RuntimeException("There was an error collecting the results to return " + e);
-        }
-        return temp;
-    }
-
-//    public Explanation explain(Query query, int doc) throws RuntimeException {
+//    /**
+//     * Returned the scores for that last retrieved set of results.
+//     * 
+//     * @return An array of scores that match the hits.
+//     * @throws RuntimeException
+//     */
+//    public float[] getScores() throws RuntimeException {
+//        float[] temp = new float[readSoFar - lastStartPoint];
 //        try {
-//            for (int i = 0; i < indexes_.length; i++) {
-//                if (!indexes_[i].upToDate()) {
-//                    reloadSearchers();
-//                    break; // This will keep me from getting hung if someone is
-//                    // writing rapidly to the index
+//            int j = 0;
+//            if (luceneHits != null) {
+//                for (int i = lastStartPoint; i < readSoFar; i++) {
+//                    temp[j++] = luceneHits[i].score_;
+//                }
+//            } else {
+//                for (int i = lastStartPoint; i < readSoFar; i++) {
+//                    temp[j++] = hits.scoreDocs[i].score;
 //                }
 //            }
 //
-//            return multiSearcher.explain(query, doc);
-//        } catch (RuntimeException e) {
-//            throw e;
 //        } catch (Exception e) {
-//            throw new RuntimeException("There was a problem generating the explanation" + e);
+//            logger.error(e);
+//            throw new RuntimeException("There was an error collecting the results to return " + e);
 //        }
+//        return temp;
 //    }
 
-//    public void setSimilarity(Similarity similarity) throws RuntimeException {
-//        try {
-//            multiSearcher.setSimilarity(similarity);
-//        } catch (Exception e) {
-//            throw new RuntimeException("There was a problem setting the similarity" + e);
-//        }
-//    }
 
-//    public Similarity getSimilarity() {
-//        return multiSearcher.getSimilarity();
-//    }
-
-    private int maxDocs() {
-        int maxSize = 0;
-        for (int i = 0; i < indexes_.length; i++) {
-            maxSize += indexes_[i].maxDoc();
-        }
-        return maxSize;
-    }
 
     public void close() throws RuntimeException {
 //        try {

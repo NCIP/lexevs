@@ -49,15 +49,11 @@ public class LuceneIndexReader {
 
     private IndexReader indexReader_;
     private IndexWriter indexWriter_;
-    private long indexReaderLastModifiedDate;
     private boolean useInMemoryIndex_ = false;
 
     private final Logger logger = Logger.getLogger("Indexer.Index");
 
     public LuceneIndexReader(File location) throws RuntimeException, IOException {
-    	Directory dir = new MMapDirectory(location.toPath());
-		IndexWriterConfig iwc= new IndexWriterConfig(LuceneLoaderCode.getAnaylzer());
-		IndexWriter writer = new IndexWriter(dir, iwc);
         this.location_ = location;
         useInMemoryIndex_ = false;
         openIndex();
@@ -82,7 +78,6 @@ public class LuceneIndexReader {
             	Directory directory = new MMapDirectory(path);
                 indexReader_ = DirectoryReader.open(directory);
             }
-//            this.indexReaderLastModifiedDate = DirectoryReader.;  We aren't going to support earlier versions.
         } catch (IOException e) {
             logger.error(e);
             throw new RuntimeException("There was an error opening the index reader. " + e.getMessage());

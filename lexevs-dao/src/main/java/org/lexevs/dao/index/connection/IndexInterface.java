@@ -209,13 +209,6 @@ public class IndexInterface {
         
         boundryDocIdSetMap.remove(indexName);
 
-        try {
-            if (ssi != null) {
-                ssi.close();
-            }
-        } catch (RuntimeException e) {
-            // ignore these errors. These interfaces won't be used again anyway.
-        }
     }
 
     /**
@@ -236,11 +229,6 @@ public class IndexInterface {
 
             String indexName = codeSystemToIndexMap_.get(lcs.getKey());
             codeSystemToIndexMap_.remove(lcs.getKey());
-
-            SearchServiceInterface ssi = indexSearchers_.get(indexName);
-            if (ssi != null) {
-                ssi.close();
-            }
 
             indexSearchers_.remove(indexName);
 
@@ -286,19 +274,6 @@ public class IndexInterface {
     }
 
     /**
-     * Gets the meta location.
-     * 
-     * @return the meta location
-     */
-//    public String getMetaLocation() {
-//        try {
-//            return service_.getMetaData().getMetaLocation();
-//        } catch (IOException e) {
-//            throw new RuntimeException("Unexpected Error", e);
-//        }
-//    }
-
-    /**
      * Gets the base indexer service.
      * 
      * @return the base indexer service
@@ -324,26 +299,4 @@ public class IndexInterface {
         }
     }
 
-    /**
-     * Close.
-     */
-    public void close() {
-        Enumeration<SearchServiceInterface> ssi = indexSearchers_.elements();
-        while (ssi.hasMoreElements()) {
-            try {
-                ssi.nextElement().close();
-            } catch (RuntimeException e) {
-                // do nothing
-            }
-        }
-
-        Enumeration<LuceneIndexReader> lir = indexReaders_.elements();
-        while (lir.hasMoreElements()) {
-            try {
-                lir.nextElement().close();
-            } catch (RuntimeException e) {
-                // do nothing
-            }
-        }
-    }
 }
