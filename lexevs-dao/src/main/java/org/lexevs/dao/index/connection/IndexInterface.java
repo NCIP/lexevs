@@ -19,30 +19,16 @@
 package org.lexevs.dao.index.connection;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.QueryWrapperFilter;
-import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.indexer.api.IndexerService;
-import org.lexevs.dao.indexer.api.SearchServiceInterface;
-import org.lexevs.dao.indexer.lucene.LuceneIndexReader;
-import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
 
 /**
@@ -58,19 +44,8 @@ public class IndexInterface {
     /** The service_. */
     private IndexerService service_;
     
-    private ConcurrentMetaData  metadataService_;
-
-    /** The index searchers_. */
-    private Hashtable<String, SearchServiceInterface> indexSearchers_;
-    
-    /** The index readers_. */
-    private Hashtable<String, LuceneIndexReader> indexReaders_;
-    
     /** The code system to index map_. */
     private Hashtable<String, String> codeSystemToIndexMap_;
-    
-    /** The boundry doc id set map. */
-    private HashMap<String, DocIdSet> boundryDocIdSetMap;
 
     /**
      * Gets the logger.
@@ -109,9 +84,6 @@ public class IndexInterface {
         }
     }
 
-    /*
-     * Initialize all of the lucene index reading/searching parts.
-     */
     /**
      * Inits the.
      * 
@@ -119,9 +91,6 @@ public class IndexInterface {
      * @throws UnexpectedInternalError the unexpected internal error
      */
     private void init() throws LBInvocationException, UnexpectedInternalError {
-        indexSearchers_ = new Hashtable<String, SearchServiceInterface>();
-        indexReaders_ = new Hashtable<String, LuceneIndexReader>();
-        boundryDocIdSetMap = new HashMap<String, DocIdSet>();
        
         initCodingSchemes();
     }
@@ -133,7 +102,6 @@ public class IndexInterface {
      */
     public void initCodingSchemes() throws LBInvocationException {
         Hashtable<String, String> temp = new Hashtable<String, String>();
-
         try {
             service_.refreshAvailableIndexes();
         } catch (RuntimeException e) {
@@ -143,14 +111,8 @@ public class IndexInterface {
                                     + service_.getRootLocation(), e);
             throw new LBInvocationException("There was an unexpected internal error", logId);
         }
-
         try {
             String[] codingSchemeVersionPairs = service_.getMetaData().getIndexMetaDataKeys();
-
-            // The index metadata file has notes that at the top level map
-            // coding system / version combination
-            // strings to the index that contains them. I want to find all of
-            // the unique index locations.
             for (int i = 0; i < codingSchemeVersionPairs.length; i++) {
             	temp.put(codingSchemeVersionPairs[i], service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
             }
@@ -174,42 +136,6 @@ public class IndexInterface {
         return keys;
     }
 
-    /**
-     * Reopen meta data index reader.
-     */
-    public void reopenMetaDataIndexReader() {
-        // clear out the current reader, it will be reopened when necessary.
-        String indexName = SystemVariables.getMetaDataIndexName();
-        indexReaders_.remove(indexName);
-        indexSearchers_.remove(indexName);
-    }
-
-    /**
-     * Reopen index.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @throws LBInvocationException the LB invocation exception
-     */
-    public void reopenIndex(String internalCodeSystemName, String internalVersionString) throws LBInvocationException {
-        // remove the index searcher, so a new one gets constructed.
-        String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-        SearchServiceInterface ssi = indexSearchers_.remove(indexName);
-        // tell the lucene index to reopen its internal readers.
-        try {
-            LuceneIndexReader lir = indexReaders_.get(indexName);
-            if (lir != null) {
-                lir.reopen();
-            }
-        } catch (Exception e1) {
-            String id = getLogger().error("Problem reopening index", e1);
-            throw new LBInvocationException("Unexpected problem reopening index", id);
-        }
-        
-        boundryDocIdSetMap.remove(indexName);
-
-    }
 
     /**
      * Delete index.
@@ -229,19 +155,6 @@ public class IndexInterface {
 
             String indexName = codeSystemToIndexMap_.get(lcs.getKey());
             codeSystemToIndexMap_.remove(lcs.getKey());
-
-            indexSearchers_.remove(indexName);
-
-            LuceneIndexReader lir = indexReaders_.get(indexName);
-            if (lir != null) {
-                lir.close();
-            }
-
-            indexReaders_.remove(indexName);
-
-            // clean up the index metadata file.
-
-            //service_.getMetaData().removeAllIndexMetaDataValue(indexName);
             service_.getMetaData().removeIndexMetaDataValue(lcs.getKey());
 
             // delete the index
