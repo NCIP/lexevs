@@ -18,18 +18,14 @@
  */
 package org.lexevs.dao.indexer.lucene.analyzers;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
-import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
-import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzer;
 
 /**
  * Test cases for the NormAnalyzer.
