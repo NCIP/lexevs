@@ -70,24 +70,23 @@ public abstract class AbstractCachingValueSetDefinitionCompilerDecorator impleme
 	public CodedNodeSet compileValueSetDefinition(
 			final ValueSetDefinition vdd, HashMap<String, String> refVersions, 
 			String versionTag, HashMap<String, ValueSetDefinition> referencedVSDs) {
-		try {
-		ValueSetResolutionMD5Generator vsrg= new ValueSetResolutionMD5Generator( vdd,
-				 refVersions,  versionTag, referencedVSDs);
-		String md5= vsrg.generateMD5();
 		
+	    try {
+		    
+		    populateRefVersions(vdd, refVersions, versionTag);
+		    
+    		ValueSetResolutionMD5Generator vsrg= new ValueSetResolutionMD5Generator( vdd,
+    				 refVersions,  versionTag, referencedVSDs);
+    		String md5= vsrg.generateMD5();
 		
 			CodedNodeSet cns = this.retrieveCodedNodeSet(md5);
 			
 			if(cns != null) {
-				
-				populateRefVersions(vdd, refVersions, versionTag);
-				
 				return cns;
-			} else {
+			} 
+			else {
 				cns = this.delegate.compileValueSetDefinition(vdd, refVersions, versionTag, referencedVSDs);
-				
-				this.persistCodedNodeSet(md5, cns);
-				
+				this.persistCodedNodeSet(md5, cns);		
 				return cns;
 			}
 		} catch (Exception e) {
