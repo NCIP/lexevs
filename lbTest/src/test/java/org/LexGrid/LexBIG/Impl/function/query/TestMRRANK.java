@@ -56,7 +56,7 @@ public class TestMRRANK extends LexBIGServiceTestCase {
         cr.setCodingSchemeName(META_SCHEME);
         cr.setConceptCode("C0000005");
         crl.addConceptReference(cr);
-        cns.restrictToCodes(crl);
+        cns = cns.restrictToCodes(crl);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 

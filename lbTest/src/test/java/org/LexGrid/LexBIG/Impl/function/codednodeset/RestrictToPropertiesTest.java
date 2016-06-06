@@ -22,7 +22,9 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class RestrictToPropertiesTest extends BaseCodedNodeSetTest {
 
     @Override
@@ -31,8 +33,8 @@ public class RestrictToPropertiesTest extends BaseCodedNodeSetTest {
     }
 
     public void testRestrictToProperty() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
-        cns.restrictToProperties(Constructors.createLocalNameList("textualPresentation"), null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToProperties(Constructors.createLocalNameList("textualPresentation"), null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -44,8 +46,8 @@ public class RestrictToPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToPropertyDefinition() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
-        cns.restrictToProperties(Constructors.createLocalNameList("definition"), null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToProperties(Constructors.createLocalNameList("definition"), null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -57,8 +59,8 @@ public class RestrictToPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToPropertyTwo() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
-        cns.restrictToProperties(Constructors.createLocalNameList(new String[]{"definition", "textualPresentation"}), null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToProperties(Constructors.createLocalNameList(new String[]{"definition", "textualPresentation"}), null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -70,9 +72,9 @@ public class RestrictToPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToPropertyTwoSeperate() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
-        cns.restrictToProperties(Constructors.createLocalNameList(new String[]{"definition"}), null);
-        cns.restrictToProperties(Constructors.createLocalNameList(new String[]{"textualPresentation"}), null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToProperties(Constructors.createLocalNameList(new String[]{"definition"}), null);
+        cns = cns.restrictToProperties(Constructors.createLocalNameList(new String[]{"textualPresentation"}), null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -84,8 +86,8 @@ public class RestrictToPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToWrongProperty() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("73"));
-        cns.restrictToProperties(Constructors.createLocalNameList("definition"), null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("73"));
+        cns = cns.restrictToProperties(Constructors.createLocalNameList("definition"), null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 

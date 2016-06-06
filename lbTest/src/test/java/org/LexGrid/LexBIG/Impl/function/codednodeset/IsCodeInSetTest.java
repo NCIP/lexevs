@@ -22,12 +22,14 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class IsCodeInSetTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     
     /* (non-Javadoc)
@@ -69,7 +71,7 @@ public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     * @throws LBParameterException the LB parameter exception
     */
    public void testIsCodeInSetWithRestriction() throws LBInvocationException, LBParameterException{
-       cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+       cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
        assertTrue(
                cns.isCodeInSet(
                        Constructors.createConceptReference("A0001", LexBIGServiceTestCase.AUTO_SCHEME )));
@@ -82,7 +84,7 @@ public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     * @throws LBParameterException the LB parameter exception
     */
    public void testIsCodeNotInSetWithRestriction() throws LBInvocationException, LBParameterException{
-       cns.restrictToCodes(Constructors.createConceptReferenceList("T0001"));
+       cns = cns.restrictToCodes(Constructors.createConceptReferenceList("T0001"));
        assertFalse(
                cns.isCodeInSet(
                        Constructors.createConceptReference("A0001", LexBIGServiceTestCase.AUTO_SCHEME )));

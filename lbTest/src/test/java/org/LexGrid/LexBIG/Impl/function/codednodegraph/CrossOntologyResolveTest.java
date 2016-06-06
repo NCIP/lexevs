@@ -23,12 +23,14 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class SortGraphTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
 
     /**

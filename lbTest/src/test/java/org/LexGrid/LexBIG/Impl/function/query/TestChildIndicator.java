@@ -26,7 +26,9 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class TestChildIndicator extends LexBIGServiceTestCase {
     final static String testID = "T1_CHILD_INDICATOR";
 

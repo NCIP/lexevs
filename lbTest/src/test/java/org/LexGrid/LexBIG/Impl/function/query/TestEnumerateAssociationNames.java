@@ -20,14 +20,16 @@ package org.LexGrid.LexBIG.Impl.function.query;
 
 // LexBIG Test ID: T1_FNC_31	TestEnumerateRelationships
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+import java.util.Arrays;
+import java.util.List;
+
+@RemoteApiSafeTest
 public class TestEnumerateAssociationNames extends LexBIGServiceTestCase {
     final static String testID = "TEST_FNQRY_ASSOCIATIONNAME_FOR_CODINGSCHEME";
 

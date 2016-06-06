@@ -25,7 +25,9 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
 
     @Override
@@ -36,7 +38,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     public void testRestrictToMatchingPropertiesError() throws LBInvocationException {
 
         try {
-            cns.restrictToMatchingProperties(null, null, "Domestic", "contains", null);
+            cns = cns.restrictToMatchingProperties(null, null, "Domestic", "contains", null);
             ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
         } catch (LBParameterException e) {
             //this is good - pass the test.
@@ -48,7 +50,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingPropertiesPropertyNameMatch() throws LBException{
-        cns.restrictToMatchingProperties(Constructors.createLocalNameList("definition"), null, "an automobile", "contains", null);
+        cns = cns.restrictToMatchingProperties(Constructors.createLocalNameList("definition"), null, "an automobile", "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -60,7 +62,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingPropertiesPropertyNameNoMatch() throws LBException{
-        cns.restrictToMatchingProperties(Constructors.createLocalNameList("textualPresentation"), null, "An", "startsWith", null);
+        cns = cns.restrictToMatchingProperties(Constructors.createLocalNameList("textualPresentation"), null, "An", "startsWith", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -68,7 +70,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingPropertiesPropertyTypeMatch() throws LBException{
-        cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.DEFINITION}, "An", "startsWith", null);
+        cns = cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.DEFINITION}, "An", "startsWith", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -80,7 +82,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingPropertiesPropertyTypeNoMatch() throws LBException{
-        cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, "An", "startsWith", null);
+        cns = cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, "An", "startsWith", null);
           
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -88,7 +90,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingPropertiesPropertyGenericProperty() throws LBException{
-        cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.GENERIC}, "A Generic Property", "exactMatch", null);
+        cns = cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.GENERIC}, "A Generic Property", "exactMatch", null);
           
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -102,7 +104,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
     public void testRestrictToMatchingPropertiesPropertySearchAllProperties() throws LBException{
     	PropertyType[] types = new PropertyType[]{PropertyType.GENERIC, PropertyType.COMMENT, PropertyType.DEFINITION, PropertyType.PRESENTATION};
     	
-        cns.restrictToMatchingProperties(null, types, "A Generic Property", "exactMatch", null);
+        cns = cns.restrictToMatchingProperties(null, types, "A Generic Property", "exactMatch", null);
           
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 

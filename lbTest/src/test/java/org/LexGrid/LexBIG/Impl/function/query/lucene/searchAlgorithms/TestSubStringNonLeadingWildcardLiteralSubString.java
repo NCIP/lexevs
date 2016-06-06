@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestSubStringLiteralSubString.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubString {
 
     /** The algorithm. */
@@ -42,7 +44,7 @@ public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubStri
     
     public void testOneTermLeadingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("grap", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("grap", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -53,7 +55,7 @@ public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubStri
     
     public void testOneTermTrailingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("raph", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("raph", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -64,7 +66,7 @@ public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubStri
     
     public void testOneTermLeadingAndTrailingWildcardNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("rap", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("rap", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

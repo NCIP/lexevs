@@ -23,7 +23,9 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
 
     @Override
@@ -33,7 +35,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
 
     public void testRestrictToMatchingDesignationsNodeSet() throws LBException{
     	CodedNodeSet cns = lbs.getNodeSet(AUTO_SCHEME, null, null);
-        cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.ALL, "contains", null);
+        cns = cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.ALL, "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -45,7 +47,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
     }
      
     public void testRestrictToMatchingDesignationsALL() throws LBException{
-        cns.restrictToMatchingDesignations("Domestic", SearchDesignationOption.ALL, "contains", null);
+        cns = cns.restrictToMatchingDesignations("Domestic", SearchDesignationOption.ALL, "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -57,7 +59,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingDesignationsPreferredOnlyMatch() throws LBException{
-        cns.restrictToMatchingDesignations("Domestic", SearchDesignationOption.PREFERRED_ONLY, "contains", null);
+        cns = cns.restrictToMatchingDesignations("Domestic", SearchDesignationOption.PREFERRED_ONLY, "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -69,7 +71,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingDesignationsPreferredOnlyNoMatch() throws LBException{
-        cns.restrictToMatchingDesignations("American", SearchDesignationOption.PREFERRED_ONLY, "contains", null);
+        cns = cns.restrictToMatchingDesignations("American", SearchDesignationOption.PREFERRED_ONLY, "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -77,7 +79,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingDesignationsNonPreferredOnlyMatch() throws LBException{
-        cns.restrictToMatchingDesignations("American", SearchDesignationOption.NON_PREFERRED_ONLY, "contains", null);
+        cns = cns.restrictToMatchingDesignations("American", SearchDesignationOption.NON_PREFERRED_ONLY, "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -89,7 +91,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingDesignationsNonPreferredOnlyNoMatch() throws LBException{
-        cns.restrictToMatchingDesignations("Domestic", SearchDesignationOption.NON_PREFERRED_ONLY, "contains", null);
+        cns = cns.restrictToMatchingDesignations("Domestic", SearchDesignationOption.NON_PREFERRED_ONLY, "contains", null);
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 
@@ -97,7 +99,7 @@ public class RestrictToMatchingDesignationsTest extends BaseCodedNodeSetTest {
     }
     
     public void testRestrictToMatchingDesignationsLanguage() throws LBException{
-        cns.restrictToMatchingDesignations("Truck", SearchDesignationOption.ALL, "contains", "en");
+        cns = cns.restrictToMatchingDesignations("Truck", SearchDesignationOption.ALL, "contains", "en");
         
         ResolvedConceptReferenceList rcrl = cns.resolveToList(null, null, null, -1);
 

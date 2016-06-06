@@ -45,7 +45,7 @@ public class TestEnumerateSourceConceptsforRelationandTarget extends LexBIGServi
 
         ConvenienceMethods cm = new ConvenienceMethods(ServiceHolder.instance().getLexBIGService());
 
-        cng.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Membranous_Labyrinth" }, THES_SCHEME, null));
+        cng = cng.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Membranous_Labyrinth" }, THES_SCHEME, null));
 
         ResolvedConceptReference[] rcr = cng.resolveAsList(Constructors.createConceptReference("Membranous_Labyrinth", THES_SCHEME),
                 false, true, 1, 1, null, null, null, 0).getResolvedConceptReference();

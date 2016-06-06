@@ -23,6 +23,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.BaseCodedNodeSetTest;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
@@ -32,6 +33,7 @@ import org.LexGrid.concepts.Presentation;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
 
     /**
@@ -53,7 +55,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesNoNamespaceSize() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
         
@@ -67,7 +69,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesNoNamespaceIfNamespaceIsCorrect() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
         
@@ -82,7 +84,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesNoNamespaceIfPropertiesCountAreCorrect() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
         
@@ -113,7 +115,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesNoNamespaceIfPropertiesTypesAreCorrect() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
         
@@ -148,7 +150,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesNoNamespaceIfPropertiesValuesAreCorrect() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept"));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
         
@@ -183,7 +185,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesWithNamespace1() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept", 
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept",
                 AUTO_SCHEME, AUTO_SCHEME));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
@@ -200,7 +202,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
      * @throws LBParameterException the LB parameter exception
      */
     public void testRestrictToCodesWithNamespace2() throws LBInvocationException, LBParameterException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept", 
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("DifferentNamespaceConcept",
                 "TestForSameCodeNamespace", AUTO_SCHEME));
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();

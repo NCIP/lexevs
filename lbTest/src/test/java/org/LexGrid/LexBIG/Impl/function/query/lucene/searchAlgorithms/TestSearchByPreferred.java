@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestSearchByPreferred.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,7 +55,7 @@ public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
      */
     public void testSearchByPreferredMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.PREFERRED_ONLY, algorithm,
+        cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.PREFERRED_ONLY, algorithm,
                 null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
@@ -70,7 +72,7 @@ public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
      */
     public void testSearchByPreferredNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("American Car Companies", SearchDesignationOption.PREFERRED_ONLY, algorithm,
+        cns = cns.restrictToMatchingDesignations("American Car Companies", SearchDesignationOption.PREFERRED_ONLY, algorithm,
                 null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
@@ -85,7 +87,7 @@ public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
      */
     public void testSearchByNonPreferredMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("American Car Companies", SearchDesignationOption.NON_PREFERRED_ONLY,
+        cns = cns.restrictToMatchingDesignations("American Car Companies", SearchDesignationOption.NON_PREFERRED_ONLY,
                 algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
@@ -102,7 +104,7 @@ public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
      */
     public void testSearchByNonPreferredNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.NON_PREFERRED_ONLY,
+        cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.NON_PREFERRED_ONLY,
                 algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
@@ -117,7 +119,7 @@ public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
      */
     public void testSearchByAllWithPreferred() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -133,7 +135,7 @@ public class TestSearchByPreferred extends BaseSearchAlgorithmTest {
      */
     public void testSearchByAllWithNonPreferred() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("American Car Companies", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("American Car Companies", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

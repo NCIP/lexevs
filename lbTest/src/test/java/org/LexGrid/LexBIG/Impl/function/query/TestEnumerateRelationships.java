@@ -20,8 +20,6 @@ package org.LexGrid.LexBIG.Impl.function.query;
 
 // LexBIG Test ID: T1_FNC_31	TestEnumerateRelationships
 
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
@@ -29,7 +27,11 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+import java.util.List;
+
+@RemoteApiSafeTest
 public class TestEnumerateRelationships extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_31";
 

@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestStartsWith.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestStartsWith extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,7 +55,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWith() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Automob", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("Automob", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -69,7 +71,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithANDTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("car truck", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("car truck", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -83,7 +85,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Makers", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("Makers", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -97,7 +99,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("automob", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("automob", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -114,7 +116,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Car (with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("Car (with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -130,7 +132,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithOneSpecialCharacter() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Car (", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("Car (", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -147,7 +149,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithOneSpecialCharacterDoesntStartWith() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("(with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("(with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -161,7 +163,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithNoMatchSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Car {", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("Car {", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -175,7 +177,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      */
     public void testStartsWithCaseInsensitiveSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("CaR (wiTh SpecIal) cHaraters!", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("CaR (wiTh SpecIal) cHaraters!", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

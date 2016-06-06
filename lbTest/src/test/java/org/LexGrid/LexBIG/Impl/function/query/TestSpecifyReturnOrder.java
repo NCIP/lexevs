@@ -27,7 +27,9 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class TestSpecifyReturnOrder extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_22";
 

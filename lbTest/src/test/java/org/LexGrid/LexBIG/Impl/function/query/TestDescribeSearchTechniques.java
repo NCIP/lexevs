@@ -23,7 +23,9 @@ package org.LexGrid.LexBIG.Impl.function.query;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ModuleDescription;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
+@RemoteApiSafeTest
 public class TestDescribeSearchTechniques extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_26";
 

@@ -18,23 +18,25 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodeset;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.junit.Ignore;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The Class DifferenceTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class DifferenceTest extends BaseCodedNodeSetTest {
     
     /** The cns2. */
@@ -71,10 +73,10 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
     @Ignore
     public void testDifference() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford", "A0001" },
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford", "A0001" },
                 "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
         CodedNodeSet difference = cns.difference(cns2);
 
@@ -92,10 +94,10 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      */
     public void testDifferenceCorrectSetTheoryExample() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" },
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" },
                 "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "A0001" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "A0001" }, "Automobiles"));
 
         CodedNodeSet difference = cns.difference(cns2);
 
@@ -112,10 +114,10 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      */
     public void testDifferenceCorrectSetTheoryExampleOtherWay() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" },
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" },
                 "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "A0001" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "A0001" }, "Automobiles"));
 
         CodedNodeSet difference =  cns2.difference(cns);
 
@@ -132,10 +134,10 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      */
     public void testDifferenceWithAddedRestriction() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford", "A0001" },
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford", "A0001" },
                 "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
         CodedNodeSet cns3 = cns.difference(cns2);
         

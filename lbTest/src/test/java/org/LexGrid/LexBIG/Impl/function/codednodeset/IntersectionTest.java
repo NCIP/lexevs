@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.LexGrid.util.PrintUtility;
 
 /**
@@ -31,6 +32,7 @@ import org.LexGrid.util.PrintUtility;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class IntersectionTest extends BaseCodedNodeSetTest {
     
     /** The cns2. */
@@ -68,9 +70,9 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
      */
     public void testIntersection() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
         CodedNodeSet intersect = cns.intersect(cns2);
 
@@ -195,9 +197,9 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
      */
     public void testIntersectionWithAddedRestriction() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford" }, "Automobiles"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford" }, "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
         CodedNodeSet cns3 = cns.intersect(cns2);
         

@@ -23,9 +23,11 @@ package org.LexGrid.LexBIG.Impl.function.query;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.SupportedProperty;
 
+@RemoteApiSafeTest
 public class TestMapAttributestoTypes extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_32";
 

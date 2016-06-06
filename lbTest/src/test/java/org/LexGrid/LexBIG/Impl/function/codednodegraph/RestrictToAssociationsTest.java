@@ -26,12 +26,14 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class RestrictToAssociationsTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -41,7 +43,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBParameterException the LB parameter exception
      */
     public void testOneAssociationNameNullQualifiers() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), 
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), 
                 null);
         
         ResolvedConceptReference[] rcr = 
@@ -76,7 +78,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      */
     public void testOneAssociationNameNullQualifiersNoMatch() throws Exception{
 
-    	cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
+    	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
     			null);
     	ResolvedConceptReference[] rcr = 
     		cng.resolveAsList(Constructors.createConceptReference("A0001", LexBIGServiceTestCase.AUTO_SCHEME), 
@@ -101,7 +103,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBParameterException the LB parameter exception
      */
     public void testTwoAssociationNamesNullQualifiers() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList(new String[]{"uses", "hasSubtype"}),
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList(new String[]{"uses", "hasSubtype"}),
                 null);
         
         ResolvedConceptReference[] rcr = 
@@ -152,7 +154,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBParameterException the LB parameter exception
      */
     public void testOneAssociationNameOneQualifierWithoutValue() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("hasEngine"));
         
         ResolvedConceptReference[] rcr = 
@@ -190,7 +192,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBParameterException the LB parameter exception
      */
     public void testOneAssociationNameOneQualifierWithValue() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("hasEngine", "true"));
         
         ResolvedConceptReference[] rcr = 
@@ -228,7 +230,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBParameterException the LB parameter exception
      */
     public void testOneAssociationNameOneQualifierWithWrongValue() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("hasEngine", "false"));
 
         ResolvedConceptReference[] rcr = 
@@ -248,7 +250,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
     }
     
     public void testOneAssociationNameOneQualifierWithValueResolveAllQuals() throws LBInvocationException, LBParameterException{
-        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("since", "1998"));
         
         ResolvedConceptReference[] rcr = 

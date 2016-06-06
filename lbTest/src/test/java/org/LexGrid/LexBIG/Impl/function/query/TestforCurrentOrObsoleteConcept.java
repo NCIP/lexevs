@@ -41,21 +41,21 @@ public class TestforCurrentOrObsoleteConcept extends LexBIGServiceTestCase {
     public void testT1_FNC_23() throws LBException {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null, true);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         // 73 is inactive - so this should be 0.
         assertTrue(rcr.length == 0);
 
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null, false);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         // 73 is inactive - so this should be 1.
         assertTrue(rcr.length == 1);
 
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null, false);
-        cns.restrictToMatchingDesignations("olds", SearchDesignationOption.ALL, "startsWith", null);
+        cns = cns.restrictToMatchingDesignations("olds", SearchDesignationOption.ALL, "startsWith", null);
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         assertTrue(rcr.length == 1);
@@ -69,16 +69,16 @@ public class TestforCurrentOrObsoleteConcept extends LexBIGServiceTestCase {
         // same as above, but this time, using the new methods (that aren't
         // deprecated)
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToStatus(ActiveOption.ACTIVE_ONLY, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
+        cns = cns.restrictToStatus(ActiveOption.ACTIVE_ONLY, null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         // 73 is inactive - so this should be 0.
         assertTrue(rcr.length == 0);
 
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToStatus(ActiveOption.ALL, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
+        cns = cns.restrictToStatus(ActiveOption.ALL, null);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         // 73 is inactive - so this should be 1.
@@ -86,7 +86,7 @@ public class TestforCurrentOrObsoleteConcept extends LexBIGServiceTestCase {
 
         // same test again - no status restriction
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "73" }, AUTO_SCHEME));
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
         // 73 is inactive - so this should be 1.
@@ -94,8 +94,8 @@ public class TestforCurrentOrObsoleteConcept extends LexBIGServiceTestCase {
 
         // add a status restriction
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToMatchingDesignations("olds", SearchDesignationOption.ALL, "startsWith", null);
-        cns.restrictToStatus(ActiveOption.INACTIVE_ONLY, new String[] { "Retired" });
+        cns = cns.restrictToMatchingDesignations("olds", SearchDesignationOption.ALL, "startsWith", null);
+        cns = cns.restrictToStatus(ActiveOption.INACTIVE_ONLY, new String[] { "Retired" });
         rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         assertTrue(rcr.length == 1);
 

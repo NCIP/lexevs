@@ -39,7 +39,7 @@ public class TestMapSynonymtoPreferredNames extends LexBIGServiceTestCase {
     public void testT1_FNC_38() throws LBException {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToMatchingDesignations("skeleton", SearchDesignationOption.ALL, "exactMatch", null);
+        cns = cns.restrictToMatchingDesignations("skeleton", SearchDesignationOption.ALL, "exactMatch", null);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, Constructors.createLocalNameList("Display_Name"),
                 null, 0).getResolvedConceptReference();

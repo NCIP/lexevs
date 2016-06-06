@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestRegExp.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestRegExp extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,7 +55,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
      */
     public void testRegExp() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("automobi.*", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("automobi.*", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -69,7 +71,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
      */
     public void testRegExpLeadingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations(".*utomobile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations(".*utomobile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -85,7 +87,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
      */
     public void testRegExpMiddleWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("aut.*ile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("aut.*ile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -101,7 +103,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
       */
      public void testRegExpBrackets() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("au[s-u]omobile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("au[s-u]omobile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -117,7 +119,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
       */
      public void testRegExpBracketsNoMatch() throws Exception {
          CodedNodeSet cns = super.getAutosCodedNodeSet();
-         cns.restrictToMatchingDesignations("au[c-f]omobile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+         cns = cns.restrictToMatchingDesignations("au[c-f]omobile", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
          ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -131,7 +133,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
       */
      public void testRegExpComplex() throws Exception {
          CodedNodeSet cns = super.getAutosCodedNodeSet();
-         cns.restrictToMatchingDesignations("a[^z]t*o(m|o)*bi.*e$", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+         cns = cns.restrictToMatchingDesignations("a[^z]t*o(m|o)*bi.*e$", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
          ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -147,7 +149,7 @@ public class TestRegExp extends BaseSearchAlgorithmTest {
       */
      public void testRegExpComplexNoMatch() throws Exception {
          CodedNodeSet cns = super.getAutosCodedNodeSet();
-         cns.restrictToMatchingDesignations("a[s]o(o|l)*bi.*e$", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+         cns = cns.restrictToMatchingDesignations("a[s]o(o|l)*bi.*e$", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
          ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

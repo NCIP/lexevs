@@ -21,12 +21,14 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 
 /**
  * The Class TestSubString.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
 public class TestPhrase extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,7 +55,7 @@ public class TestPhrase extends BaseSearchAlgorithmTest {
      */
     public void testPhrase() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("for testing Graph Building", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("for testing Graph Building", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -69,7 +71,7 @@ public class TestPhrase extends BaseSearchAlgorithmTest {
      */
     public void testPhraseNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Graph Concepts", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Graph Concepts", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -83,7 +85,7 @@ public class TestPhrase extends BaseSearchAlgorithmTest {
      */
     public void testPhraseCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("graph building on concepts", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("graph building on concepts", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
