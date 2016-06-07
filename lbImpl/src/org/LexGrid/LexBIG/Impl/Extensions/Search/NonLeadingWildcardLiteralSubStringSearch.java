@@ -59,19 +59,19 @@ public class NonLeadingWildcardLiteralSubStringSearch extends LiteralSubStringSe
 
     @Override
     protected Query handleSingleTermQuery(String term) {
-        BooleanQuery query = new BooleanQuery();
-        query.add(             
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        builder.add(             
                 new WildcardQuery(
                         new Term(
                                 LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD,
                                 term + "*")), Occur.SHOULD);
 
-        query.add(
+        builder.add(
                 new WildcardQuery(
                         new Term(
                                 LuceneLoaderCode.LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD,
                                 StringUtils.reverse(term) + "*")), Occur.SHOULD);
        
-        return query;
+        return builder.build();
     }
 }

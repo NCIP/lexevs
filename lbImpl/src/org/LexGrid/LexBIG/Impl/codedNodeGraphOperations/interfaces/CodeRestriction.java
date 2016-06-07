@@ -33,6 +33,10 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public abstract class CodeRestriction implements Operation, Restriction {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -487846892517093703L;
     protected CodedNodeSet codedNodeSetCodes_;
     protected ConceptReference[] conceptRefCodes_ = null;
 

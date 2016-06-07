@@ -32,9 +32,6 @@ import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.Properties;
-import org.LexGrid.commonTypes.Property;
-import org.LexGrid.commonTypes.Text;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.xml.sax.helpers.DefaultHandler;
 

@@ -4,7 +4,6 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;

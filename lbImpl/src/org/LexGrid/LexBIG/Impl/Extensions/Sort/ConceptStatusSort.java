@@ -64,7 +64,6 @@ public class ConceptStatusSort extends AbstractSort {
         providerSource.setContent(provider_); // 2006 model change
         providerSource.setRole(role_); // 2006 model change
         sd.setExtensionProvider(providerSource); // 2006 model change
-        // sd.setExtensionProvider(provider_); // 2006 model change
         sd.setRestrictToContext(new SortContext[] { SortContext.SET });
 
        return sd;

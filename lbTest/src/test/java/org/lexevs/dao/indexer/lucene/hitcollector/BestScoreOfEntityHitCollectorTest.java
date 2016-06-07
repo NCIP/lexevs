@@ -18,13 +18,7 @@
  */
 package org.lexevs.dao.indexer.lucene.hitcollector;
 
-import java.util.List;
-
 import junit.framework.TestCase;
-
-import org.apache.lucene.search.ScoreDoc;
-import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollector;
-import org.lexevs.dao.indexer.lucene.hitcollector.AbstractBestScoreOfEntityHitCollector.ScoreComparator;
 
 /**
  * The Class BestScoreOfEntityHitCollectorTest.

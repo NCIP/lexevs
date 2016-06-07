@@ -43,7 +43,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.QualifierNameValuePair;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
