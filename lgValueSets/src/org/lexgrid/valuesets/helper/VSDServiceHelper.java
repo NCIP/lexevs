@@ -561,7 +561,7 @@ public class VSDServiceHelper {
 	                                tagVersion);
 				}
             }
-			catch (Exception e) {
+			catch (LBParameterException e) {
 				// continue on
 			} 
 			// Take whatever is most appropriate from the service
