@@ -57,6 +57,7 @@ import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
  * The Class SearchScoreDocIterator.
  *
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
  */
 @LgClientSideSafe
 public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator {

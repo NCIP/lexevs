@@ -18,19 +18,16 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DocumentStoredFieldVisitor;
 import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import aj.org.objectweb.asm.FieldVisitor;
 
 /**
  * The Class NonProxyLazyCodeToReturn.

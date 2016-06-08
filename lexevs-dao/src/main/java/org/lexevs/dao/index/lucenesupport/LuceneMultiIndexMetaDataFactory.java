@@ -12,7 +12,7 @@ public class LuceneMultiIndexMetaDataFactory implements FactoryBean<ConcurrentMe
 	}
 
 	@Override
-	public Class getObjectType() {
+	public Class<CodingSchemeMetaData> getObjectType() {
 		return CodingSchemeMetaData.class;
 	}
 

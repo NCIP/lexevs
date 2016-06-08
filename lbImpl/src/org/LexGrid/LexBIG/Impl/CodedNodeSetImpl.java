@@ -96,11 +96,15 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     private static class RestrictionOccurTuple implements Serializable {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -8987073647529962542L;
         private Restriction restriction;
         private Occur occur;
 
         public RestrictionOccurTuple() {
-            //
+            //Used for serialization 
         }
 
         public RestrictionOccurTuple(Restriction restriction, Occur occur) {
@@ -115,6 +119,10 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      */
     public static class QueryBuilder implements Restriction {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 6994520702499111932L;
         private Integer minimumNumberShouldMatch;
         private List<RestrictionOccurTuple> restrictions = new ArrayList<RestrictionOccurTuple>();
 
@@ -865,7 +873,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    @SuppressWarnings("unchecked")
     @LgClientSideSafe
     public CodedNodeSetImpl clone() throws CloneNotSupportedException {
         CodedNodeSetImpl cns = (CodedNodeSetImpl) super.clone();

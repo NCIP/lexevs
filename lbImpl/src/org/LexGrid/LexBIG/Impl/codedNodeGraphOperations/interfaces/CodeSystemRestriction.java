@@ -29,6 +29,10 @@ import org.LexGrid.annotations.LgClientSideSafe;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public abstract class CodeSystemRestriction implements Restriction, Operation {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 686440611568951158L;
     private String supportedCodeSystemOrURN_;
 
     public CodeSystemRestriction(String codeSystem) throws LBParameterException {

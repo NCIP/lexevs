@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -97,11 +96,6 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 					entity.getStatus(),
 					entityUid,
 					isParent);
-			
-			// TODO ensure entityCodeLowerCase is created in the child doc
-			// TODO format was in the original index not present here.
-			
-			//returnList.add(parentDoc);
 			
 			if(entity.getAllProperties().length == 0) {
 				entity.addPresentation(

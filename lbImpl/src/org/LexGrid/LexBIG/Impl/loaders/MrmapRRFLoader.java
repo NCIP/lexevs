@@ -18,12 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.loaders;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +39,6 @@ import org.LexGrid.relations.Relations;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.MrmapToSQL;
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrSat;
-import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.RRFLineReader;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 

@@ -38,7 +38,9 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -425,6 +427,47 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	public void testResolveValueSetDefinitionNoVersion() throws LBException, URISyntaxException {
+
+		CodedNodeSet finalCNS = null;
+		AbsoluteCodingSchemeVersionReferenceList csVersionList =  null;
+		
+		String valueSetDefintionRevisionId = null;
+		String csVersionTag = null;
+		
+		ResolvedValueSetCodedNodeSet rvs_cns = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("SRITEST:AUTO:PropertyRefTest1"), 
+						valueSetDefintionRevisionId, csVersionList, csVersionTag);
+			
+		 if (rvs_cns != null) {
+			 finalCNS = rvs_cns.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator	= null;			     
+			 CodedNodeSet.SearchDesignationOption option = null;
+			 String language = null;
+			 String matchText = "GM";
+			 String matchAlgorithm = MatchAlgorithms.exactMatch.name();
+			 
+			 finalCNS = finalCNS.restrictToAnonymous(CodedNodeSet.AnonymousOption.NON_ANONYMOUS_ONLY);
+			 finalCNS = finalCNS.restrictToMatchingDesignations(matchText, option, matchAlgorithm, language);
+             SortOptionList sortOptions = null;
+             LocalNameList filterOptions = null;
+             LocalNameList propertyNames = null;
+             CodedNodeSet.PropertyType[] propertyTypes = null;
+             boolean resolveObjects = false;
+             
+             iterator = finalCNS.resolve(sortOptions, filterOptions, propertyNames, propertyTypes, resolveObjects);
+             while (iterator.hasNext()) {
+            	 ResolvedConceptReference conRef = iterator.next();
+            	 System.out.println("Coding Scheme Name: " + conRef.getCodingSchemeName());
+		    	 System.out.println("Coding Scheme Reference Version: " + conRef.getCodingSchemeVersion());
+		    	 System.out.println("Name Space: " + conRef.getCodeNamespace());
+		    	 assertEquals("1.1", conRef.getCodingSchemeVersion());
+             }
+		 }	
+	}
+	
+	@Test
 	public void testGetValueSetEntitiesForTerm() throws LBException, URISyntaxException {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().getValueSetDefinitionEntitiesForTerm("General Motors", MatchAlgorithms.exactMatch.name(), new URI("SRITEST:AUTO:AllDomesticANDGM"), null, null);
@@ -763,6 +806,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		assertTrue(codes.contains("GMC"));
 		codes.clear();
 		
+		// no versionTag specified.  This will attempt to retrieve the PRODUCTION version.
         rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null, null, null);
         
         codes = new HashSet<String>();
@@ -771,9 +815,10 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
             ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
             codes.add(rcr.getCode());
         }
-        assertTrue("Size: " + codes.size(), codes.size() == 2);
+        assertTrue("Size: " + codes.size(), codes.size() == 3);
         assertTrue(codes.contains("GM"));
         assertTrue(codes.contains("Chevy"));
+        assertTrue(codes.contains("GMC"));
         codes.clear();
 	}
 	

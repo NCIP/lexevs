@@ -66,6 +66,7 @@ import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.service.Registry.KnownTags;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
@@ -539,12 +540,30 @@ public class VSDServiceHelper {
 			if (!StringUtils.isEmpty(versionTag)) {
 				String tagVersion = rm_.getInternalVersionStringForTag(csURI,
 						versionTag);
-				if (!StringUtils.isEmpty(tagVersion))
+				if (!StringUtils.isEmpty(tagVersion)){
 					return Constructors
 							.createAbsoluteCodingSchemeVersionReference(csURI,
 									tagVersion);
+				}
 			}
 
+			// Default to the named version - KnownTags.PRODUCTION, if it exists
+			String tagVersion = null;
+            try{
+				tagVersion = rm_.getInternalVersionStringForTag(csURI,
+            		KnownTags.PRODUCTION.toString());
+				if (!StringUtils.isEmpty(tagVersion)){
+	            	// Add the constructed AbsoluteCodingSchemeVersionReference to the refVersions
+	            	refVersions.put(csURI, tagVersion);
+	            	
+	                return Constructors
+	                        .createAbsoluteCodingSchemeVersionReference(csURI,
+	                                tagVersion);
+				}
+            }
+			catch (LBParameterException e) {
+				// continue on
+			} 
 			// Take whatever is most appropriate from the service
 			AbsoluteCodingSchemeVersionReferenceList serviceCsVersions = getAbsoluteCodingSchemeVersionReference(csURI);
 

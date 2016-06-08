@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.AbstractJoinQueryRestriction;
 import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
@@ -60,7 +61,7 @@ public class RestrictToMatchingDesignations extends AbstractJoinQueryRestriction
             // this validates the match text and match algorithm (throws
             // exceptions as necessary)
  
-            search_ = ExtensionRegistryImpl.instance().getSearchAlgorithm(matchAlgorithm);
+        	search_ = ((ExtensionRegistryImpl)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getExtensionRegistry()).getSearchAlgorithm(matchAlgorithm);
 
             preferredOnly_ = preferredOnly;
             matchText_ = matchText;
