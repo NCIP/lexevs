@@ -128,6 +128,11 @@ public abstract class AbstractIsActiveSettingPostProcessor extends AbstractExten
      */
     private class EntityIterator extends AbstractPageableIterator<Entity> {
         
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 5064022428583560362L;
+
         /** The uri. */
         private String uri;
         

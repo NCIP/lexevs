@@ -21,7 +21,7 @@ import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 public class ProxyProtectedScoreDocWrapper implements Serializable{
     
     /**
-     * 
+     * @author <a href="mailto:scott.bauer@mayo.edu">Scott Bauer</a>
      */
     private static final long serialVersionUID = 2945119591207458772L;
     private transient ScoreDoc scoreDoc;

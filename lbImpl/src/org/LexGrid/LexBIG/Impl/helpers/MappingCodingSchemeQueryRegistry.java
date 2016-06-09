@@ -18,9 +18,7 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,18 +34,10 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queries.TermsFilter;
 import org.apache.lucene.queries.TermsQuery;
-import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.CachingWrapperQuery;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
-import org.apache.lucene.util.Bits;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.operation.transitivity.DefaultTransitivityBuilder.TripleIterator;
 import org.lexevs.dao.database.service.DatabaseServiceManager;

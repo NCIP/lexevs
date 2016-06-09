@@ -102,7 +102,6 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	@Deprecated
 	public void optimize() {
-//		throw new UnsupportedOperationException("Optimizing is an outdated indexing operation and is no longer supported");
 		System.out.println("Optimizing is an outdated indexing operation and is no longer supported");
 	}
 	
@@ -306,11 +305,6 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		IndexWriter writer = 
 			new IndexWriter(namedDirectory.getDirectory(), config);
-					//, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-		
-//		writer.setMergeFactor(20);
-//		writer.setRAMBufferSizeMB(500);
-		
 		return writer;
 	}
 	
@@ -354,9 +348,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	@Override
 	public void destroy() throws Exception {
-//		this.indexSearcher.close();
 		this.indexReader.close();
-//		IndexWriter.unlock(this.namedDirectory.getDirectory());
 	}
 
 	public NamedDirectory getNamedDirectory() {

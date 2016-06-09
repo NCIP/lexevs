@@ -26,7 +26,6 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -61,17 +60,12 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	private IndexDaoManager indexDaoManager;
 	
 	private LuceneMultiDirectoryFactory indexDirectoryFactory;
-	
-//	private MetaData metaData;
 
 	private ConcurrentMetaData codingSchemes;
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
-//	private Analyzer analyzer = Utility.getAnalyzer();
 	
 	private EntityIndexer entityIndexer;
-	
-	private EntityIndexer searchIndexer;
 	
 	private LgLoggerIF logger;
 	
@@ -165,8 +159,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
 			
 			if(! indexName.equals(IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME)) {
-				EntityDao entityIndexDao = 
-					this.indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 				
 				this.getLogger().info("In multi-directory index mode");
 
@@ -189,8 +181,7 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			CodingSchemeMetaData metaData = null;
 			
 		try {	  
-//			String codingSchemeName = 
-//				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+
 			metaData = indexDirectoryFactory.getCodingSchemeMetaData(indexName,
 					reference);
 			
@@ -200,17 +191,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 			throw new RuntimeException(e);
 		}
 	}
-	
-//	protected void addSearchIndexMetadata(
-//			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
-//		try {	  
-//			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-//
-//			metaData.rereadFile(true);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
 	
 	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
 		return Utility.getIndexName(reference);
@@ -317,22 +297,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;
 	}
-
-	public EntityIndexer getSearchIndexer() {
-		return searchIndexer;
-	}
-
-	public void setSearchIndexer(EntityIndexer searchIndexer) {
-		this.searchIndexer = searchIndexer;
-	}
-
-//	public void setMetaData(MetaData metaData) {
-//		this.metaData = metaData;
-//	}
-//
-//	public MetaData getMetaData() {
-//		return metaData;
-//	}
 
 	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
 		this.indexDaoManager = indexDaoManager;

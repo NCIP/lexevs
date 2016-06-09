@@ -731,6 +731,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 			    <include name="lib/**/*.jar"/>
 			</fileset>
 		</copy>
+		
 	</target>
 	
 	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
@@ -769,6 +770,10 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 					<include name="*.html"/>
 			</fileset>
 		</copy>
+		
+		<!-- copy the lexbig.jar to the dist dir and rename it to the versioned name. --> 
+		<copy toFile="${dist.dir}/lexbig-${vBuild}.jar" file="${pkg-components}/lexbig.jar" overwrite="true"/>
+				
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
@@ -915,6 +920,9 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<!-- The guide is imbedded, but they may want to reference the guide -->
 		<!-- to learn about the API before installation. -->
 		<copy file="${file.dir}/LexBIG_Programmer_Guide.pdf" tofile="${dist.dir}/LexBIG-programmer-guide-${vBuild}.pdf"/>
+		
+		<!-- copy the extLib dir to the dist dir, zip and add a versioned name. --> 
+		<zip destfile="${dist.dir}/extLib-${vBuild}.zip" basedir="${pkg-components}/extLib"/> 	
 	</target>
 
 	 <!-- depends="lexbig.jar, javadoc" -->

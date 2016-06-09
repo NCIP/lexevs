@@ -73,7 +73,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
 
     @LgClientSideSafe
     public Query getTextQuery() throws LBParameterException {
-        BooleanQuery textQuery_ = new BooleanQuery();
+        BooleanQuery.Builder buildQuery = new BooleanQuery.Builder();
 
         List<Term> queryTerms_ = new ArrayList<Term>();
 
@@ -131,7 +131,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
                         if (temp != null) {
                             // If mixed with other properties, do not make this
                             // check exclusive (GForge #15015).
-                            textQuery_.add(new BooleanClause(temp, propertyList_.getEntryCount() > 1 ? Occur.SHOULD
+                            buildQuery.add(new BooleanClause(temp, propertyList_.getEntryCount() > 1 ? Occur.SHOULD
                                     : Occur.MUST));
                             containsConceptClause = true;
                         }
@@ -166,7 +166,7 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
                 Search search = ExtensionRegistryImpl.instance().getSearchAlgorithm(matchAlgorithm_);
                 Query query = search.buildQuery(matchText_);
 
-                textQuery_.add(new BooleanClause(query, containsConceptClause ? Occur.SHOULD : Occur.MUST));
+                buildQuery.add(new BooleanClause(query, containsConceptClause ? Occur.SHOULD : Occur.MUST));
             }
 
             if (language_ != null && language_.length() > 0) {
@@ -184,10 +184,10 @@ public class RestrictToMatchingProperties extends RestrictToProperties {
         // Until the RegexQuery is completely serializable this cannot be done
         // until the code is on the client side
         for (int i = 0; i < queryTerms_.size(); i++) {
-            textQuery_.add(new BooleanClause(new SerializableRegexQuery(queryTerms_.get(i)), Occur.MUST));
+            buildQuery.add(new BooleanClause(new SerializableRegexQuery(queryTerms_.get(i)), Occur.MUST));
         }
 
-        return textQuery_;
+        return buildQuery.build();
     }
 
     public RestrictToMatchingProperties(LocalNameList propertyList, PropertyType[] propertyTypes,
