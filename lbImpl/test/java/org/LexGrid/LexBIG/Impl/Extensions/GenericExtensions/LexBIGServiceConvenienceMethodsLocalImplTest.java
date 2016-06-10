@@ -17,10 +17,10 @@ import org.LexGrid.relations.AssociationEntity;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-public class LexBIGServiceConvenienceMethodsImplTest {
+public class LexBIGServiceConvenienceMethodsLocalImplTest {
 
     @Test
-    public void getAssociationForwardNameTest() throws LBException {
+    public void getAssociationForwardNameLocalTest() throws LBException {
         LexBIGService lbs = 
             EasyMock.createMock(LexBIGService.class);
     
