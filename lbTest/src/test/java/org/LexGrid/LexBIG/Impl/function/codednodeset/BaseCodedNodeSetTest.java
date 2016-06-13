@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.junit.Before;
 
 /**
  * The Class BaseCodedNodeSetTest.
@@ -50,6 +51,7 @@ public class BaseCodedNodeSetTest extends LexBIGServiceTestCase {
      * @see junit.framework.TestCase#setUp()
      */
     @Override
+    @Before
     public void setUp(){
         try {
             lbs = ServiceHolder.instance().getLexBIGService();
