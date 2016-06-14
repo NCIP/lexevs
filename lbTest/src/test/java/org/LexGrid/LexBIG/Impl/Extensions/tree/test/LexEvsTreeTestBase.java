@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.LexEvsTreeDao;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.LexEvsTreeDao.Direction;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.ChildTreeNodeIteratorFactory;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIterator;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.sqlbuilder.GetChildrenSqlBuilder;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNode;
@@ -18,11 +17,8 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImpl
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 public class LexEvsTreeTestBase extends TestCase{
 	

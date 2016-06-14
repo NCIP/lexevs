@@ -4,11 +4,15 @@ import static org.junit.Assert.*;
 
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTree;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestBase;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestFramework;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.utility.PrintUtility;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
-public class MultipleNamspaceErrorLEXEVS_598_Test extends LexEvsTreeTestBase {
+@RunWith(BlockJUnit4ClassRunner.class)
+public class MultipleNamspaceErrorLEXEVS_598_Test extends LexEvsTreeTestFramework {
 
 
 	@Test
