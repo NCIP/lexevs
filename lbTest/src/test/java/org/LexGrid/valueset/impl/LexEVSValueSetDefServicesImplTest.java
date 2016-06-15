@@ -48,6 +48,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.commonTypes.Property;
@@ -68,6 +69,10 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
+import org.junit.experimental.categories.Categories.ExcludeCategory;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
@@ -79,6 +84,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
+@RunWith(BlockJUnit4ClassRunner.class)
 public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	private LexEVSValueSetDefinitionServices vds_;
 	
@@ -427,6 +433,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveValueSetDefinitionNoVersion() throws LBException, URISyntaxException {
 
 		CodedNodeSet finalCNS = null;
@@ -607,6 +614,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testIsEntityInValueSetResolution() throws LBException, URISyntaxException {
 	    AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
@@ -625,6 +633,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testListValueSetsWithEntityCode() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
@@ -705,6 +714,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	@Category(RemoveFromDistributedTests.class)
 	public void testCompilerDecoratorCacheSize(){
 		assertEquals(FileSystemCachingValueSetDefinitionCompilerDecorator.MAX_IN_CACHE, 1000);
 	}
@@ -728,6 +738,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
@@ -859,6 +870,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws URISyntaxException
 	 */
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveNodeAndImmediateChildrenOnlyValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
@@ -884,6 +896,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testIsDomain() throws LBException {
 		assertTrue(getValueSetDefinitionService().isValueSetDefinition("VD005", "Automobiles", Constructors.createCodingSchemeVersionOrTag(null, "1.1")));
 	}
@@ -1526,6 +1539,14 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		}
 		return vds_;
 	}
+	
+	public LexEVSValueSetDefinitionServices setValueSetDefinitionService(LexEVSValueSetDefinitionServices svcs){
+		if (vds_ == null) {
+			vds_ = svcs;
+		}
+		return vds_;
+	}
+	
 	
 	protected void dumpValueSetDefinitionResolution(URI vdURI, AbsoluteCodingSchemeVersionReferenceList csvs) {
 	    try {     
