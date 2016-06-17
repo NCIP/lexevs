@@ -120,6 +120,7 @@
   <owl:AnnotationProperty rdf:about="#P170"/>
   <owl:AnnotationProperty rdf:about="#P98"/>
   <owl:AnnotationProperty rdf:about="#P106"/>
+  <owl:AnnotationProperty rdf:about="#Maps_To"/>
   
   
   <owl:Class rdf:about="#C55944">
@@ -148,6 +149,23 @@
     <P208>CL324685</P208>
     <P108>CTCAE Grade 2 Bone Marrow Cellularity</P108>
     <P106>Finding</P106>
+  </owl:Class>
+  
+  
+  <owl:Class rdf:about="#C10000">
+    <rdfs:label >NEW LABEL</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#C11111"/>
+
+	<Maps_To rdf:parseType="Literal">
+	  	<ncicp:MapsToComplex xmlns:ncicp="http://ncicb.nci.nih.gov/xml/owl/EVS/ComplexProperties.xsd#">
+		  	<ncicp:Target_Term>Dermatitis diaper</ncicp:Target_Term>
+		  	<ncicp:Relationship_to_Target>Has Synonym</ncicp:Relationship_to_Target>
+		  	<ncicp:Target_Term_Type>LLT</ncicp:Target_Term_Type>
+		  	<ncicp:Target_Code>10012444</ncicp:Target_Code>
+		  	<ncicp:Target_Terminology>MedDRA</ncicp:Target_Terminology>
+	  	</ncicp:MapsToComplex>
+	</Maps_To>
+	  
   </owl:Class>
   
 </rdf:RDF>

@@ -149,7 +149,7 @@ public class ProtegeOwl2LGConstants {
     public static final String MATCH_XMLREPFORM_VALUES = "([A-Z0-9]{1,3})";
     public static final String MATCH_XMLSOURCE_NAMES = "(term-source|def-source)";
     public static final String MATCH_XMLSOURCE_VALUES = "([A-Z]*[^ISBN]:[a-z0-9_\\-\\.]*)";
-    public static final String MATCH_XMLTEXT_NAMES = "(term-name|def-definition|go-term)";
+    public static final String MATCH_XMLTEXT_NAMES = "(term-name|def-definition|go-term|Target_Term)";
 
     //Complex Properties Tags and upper level elements
     //Tags that may prompt further processing as qualifiers, source or definition.
@@ -167,10 +167,17 @@ public class ProtegeOwl2LGConstants {
     public static final String COMP_PROP_TAG_GO_SOURCE_DATE = "source-date";
    // public static final String COMP_PROP_TAG_GO_SOURCE_CODE = "source-code";
     
+    public static final String COMP_PROP_TAG_RELATIONSHIP_TO_TARGET = "Relationship_To_Target";
+    public static final String COMP_PROP_TAG_TARGET_TERM_TYPE = "Target_Term_Type";
+    public static final String COMP_PROP_TAG_TARGET_CODE = "Target_Code";
+    public static final String COMP_PROP_TAG_TARGET_TERMINOLOGY = "Target_Terminology";
+    
     //Complex properties top level tags -- ignore
     public static final String COMP_PROP_TAG_COMPLEXDEFINITION = "ComplexDefinition";
     public static final String COMP_PROP_TAG_COMPLEXANNOTATION = "ComplexGOAnnotation";
     public static final String COMP_PROP_TAG_COMPLEXTERM = "ComplexTerm";
+    public static final String COMP_PROP_TAG_MAPSTO = "Maps_To";
+    public static final String COMP_PROP_TAG_MAPSTOCOMPLEX = "MapsToComplex";
     
     //Complex properties namespace
     public static final String COMP_PROP_NAMESPACE = "ncicp";
