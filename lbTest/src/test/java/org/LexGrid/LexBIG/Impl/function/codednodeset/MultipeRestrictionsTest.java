@@ -25,16 +25,18 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
 
     @Override
     protected String getTestID() {
         return "MultipeRestrictionsTest Tests";
     }
-
+    @Test
     public void testRestrictDesignationAndHasPropertyType() throws LBException{
         cns = cns.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToProperties(
@@ -54,6 +56,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("A0001"));
     }
     
+    @Test
     public void testRestrictDesignationAndDefinition() throws LBException{
         cns = cns.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "exactMatch", null);
         cns = cns.restrictToMatchingProperties(null, 
@@ -72,6 +75,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("A0001"));
     }
     
+    @Test
     public void testRestrictDesignationAndWrongDefinition() throws LBException{
         cns = cns.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToMatchingProperties(null, 
@@ -86,6 +90,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         		rcrl.getResolvedConceptReferenceCount() == 0); 
     }
     
+    @Test
     public void testRestrictDesignationAndSource() throws LBException{
         cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToProperties(
@@ -105,6 +110,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("005"));
     }
      
+    @Test
     public void testRestrictDesignationAndSourceAndActive() throws LBException{
         cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToProperties(
@@ -125,6 +131,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("005"));
     }
     
+    @Test
     public void testRestrictDesignationAndSourceAndActiveAndWrongPresentation() throws LBException{
         cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToProperties(
@@ -143,6 +150,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         		rcrl.getResolvedConceptReferenceCount() == 0);      
     }
     
+    @Test
     public void testRestrictDesignationAndSourceAndActiveAndCode() throws LBException{
         cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToProperties(
@@ -165,6 +173,7 @@ public class MultipeRestrictionsTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("005"));
     }
     
+    @Test
     public void testRestrictDesignationAndSourceAndActiveAndWrongCode() throws LBException{
         cns = cns.restrictToMatchingDesignations("Domestic Auto Makers", SearchDesignationOption.ALL, "contains", null);
         cns = cns.restrictToProperties(

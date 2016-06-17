@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestLiteralContains.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestLiteralContains extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,6 +55,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContains() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s sp*cial co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -69,6 +72,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContainsFirstTerm() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -85,6 +89,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContainsLastTerm() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -101,6 +106,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContainsMiddleTerm() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("sp*cial", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -117,6 +123,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContainsPartialTerm() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("sp*cia", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -133,6 +140,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContainsPartialTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^ sp*cia", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -149,6 +157,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralContainsANDTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s truck", SearchDesignationOption.ALL, getAlgorithm(), null);

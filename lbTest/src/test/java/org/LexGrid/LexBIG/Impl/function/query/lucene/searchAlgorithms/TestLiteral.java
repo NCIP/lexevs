@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestLiteral.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestLiteral extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,6 +55,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteral() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -69,6 +72,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralTwoTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -85,6 +89,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("sp*cial", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -101,6 +106,7 @@ public class TestLiteral extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("NO_MATCH_FOR_TESTING", SearchDesignationOption.ALL, getAlgorithm(), null);

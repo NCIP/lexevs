@@ -25,14 +25,17 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RestrictToDirectionalNamesTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -41,6 +44,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneDirectionalNameNullQualifiers() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToDirectionalNames(Constructors.createNameAndValueList("uses"), 
                 null);
@@ -81,6 +85,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneDirectionalNameNullQualifiersNoMatch() {
         try {
             cng = cng.restrictToDirectionalNames(Constructors.createNameAndValueList("NOT_A_MATCH"),
@@ -100,6 +105,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testTwoDirectionalNamesNullQualifiers() throws LBInvocationException, LBParameterException{
         cng.restrictToDirectionalNames(Constructors.createNameAndValueList(new String[]{"uses", "hasSubtype"}),
                 null);
@@ -151,6 +157,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneDirectionalNameOneQualifierWithoutValue() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToDirectionalNames(Constructors.createNameAndValueList("hasSubtype"),
                 Constructors.createNameAndValueList("hasEngine"));
@@ -189,6 +196,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneDirectionalNameOneQualifierWithValue() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToDirectionalNames(Constructors.createNameAndValueList("hasSubtype"),
                 Constructors.createNameAndValueList("hasEngine", "true"));
@@ -227,6 +235,7 @@ public class RestrictToDirectionalNamesTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneDirectionalNameOneQualifierWithWrongValue() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToDirectionalNames(Constructors.createNameAndValueList("hasSubtype"),
                 Constructors.createNameAndValueList("hasEngine", "false"));

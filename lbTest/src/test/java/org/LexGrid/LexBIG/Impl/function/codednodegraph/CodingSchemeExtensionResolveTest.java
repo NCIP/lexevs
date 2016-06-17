@@ -22,7 +22,10 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class CodingSchemeExtensionResolveTest.
@@ -30,9 +33,10 @@ import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class CodingSchemeExtensionResolveTest extends BaseCodedNodeGraphTest {
 
-   
+   @Test
     public void testResolveWithinExtension() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(AUTO_EXTENSION_URN, null, null);
 
@@ -61,6 +65,7 @@ public class CodingSchemeExtensionResolveTest extends BaseCodedNodeGraphTest {
         assertTrue(assocCons[0].getCode().equals("DeVille"));
     }
     
+   @Test
     public void testResolveFromExtensionBackToParent() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(AUTO_EXTENSION_URN, null, null);
 
@@ -89,6 +94,7 @@ public class CodingSchemeExtensionResolveTest extends BaseCodedNodeGraphTest {
         assertTrue(assocCons[0].getCode().equals("GM"));
     }
     
+   @Test
     public void testResolveFromParentToExtension() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(AUTO_EXTENSION_URN, null, null);
 

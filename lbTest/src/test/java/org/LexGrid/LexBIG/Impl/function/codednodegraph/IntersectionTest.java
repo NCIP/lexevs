@@ -23,7 +23,10 @@ import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +37,7 @@ import java.util.List;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 @RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class IntersectionTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -41,6 +45,7 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testIntersect() throws Exception {
         CodedNodeGraph cngIntersect1 = 
             lbs.getNodeGraph(AUTO_SCHEME, null, null);
@@ -81,6 +86,7 @@ public class IntersectionTest extends BaseCodedNodeGraphTest {
      * @throws Exception the exception
      */
     
+	@Test
     public void testIntersectNoMatch() throws Exception {
         CodedNodeGraph cngIntersect1 = 
             lbs.getNodeGraph(AUTO_SCHEME, null, null);

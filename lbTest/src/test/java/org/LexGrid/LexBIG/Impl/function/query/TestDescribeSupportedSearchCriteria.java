@@ -26,9 +26,11 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestDescribeSupportedSearchCriteria extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_27";
 
@@ -38,6 +40,7 @@ public class TestDescribeSupportedSearchCriteria extends LexBIGServiceTestCase {
     }
 
 //    @SuppressWarnings("null")
+    @Test
     public void codingSchemeSummary() throws LBException {
         CodingSchemeRenderingList schemeList = ServiceHolder.instance().getLexBIGService().getSupportedCodingSchemes();
 

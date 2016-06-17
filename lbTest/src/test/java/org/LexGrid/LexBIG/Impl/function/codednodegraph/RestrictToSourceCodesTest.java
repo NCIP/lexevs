@@ -22,15 +22,16 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RestrictToSourceCodesTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -38,6 +39,7 @@ public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToSourceCodes() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
@@ -100,6 +102,7 @@ public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testRestrictToSourceCodesCheckAssociatedConcepts() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
@@ -134,6 +137,7 @@ public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testRestrictToSourceCodesTwoCodes() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
@@ -163,6 +167,7 @@ public class RestrictToSourceCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testRestrictToSourceCodesNoMatch() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);

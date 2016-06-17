@@ -18,14 +18,15 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestWeightedDoubleMetaphone.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestLiteralSpellingErrorTolerantSubString extends TestLiteral {
 
     /** The algorithm. */

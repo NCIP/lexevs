@@ -26,9 +26,11 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestChildIndicator extends LexBIGServiceTestCase {
     final static String testID = "T1_CHILD_INDICATOR";
 
@@ -37,6 +39,7 @@ public class TestChildIndicator extends LexBIGServiceTestCase {
         return testID;
     }
 
+    @Test
     public void testT1_CHILD_INDICATOR() throws LBException {
         CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(CELL_SCHEME, null, null);
 

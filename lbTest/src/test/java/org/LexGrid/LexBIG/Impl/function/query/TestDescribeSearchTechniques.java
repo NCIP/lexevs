@@ -23,9 +23,11 @@ package org.LexGrid.LexBIG.Impl.function.query;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ModuleDescription;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestDescribeSearchTechniques extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_26";
 
@@ -33,7 +35,8 @@ public class TestDescribeSearchTechniques extends LexBIGServiceTestCase {
     protected String getTestID() {
         return testID;
     }
-
+    
+    @Test
     public void testT1_FNC_26() {
 
         ModuleDescription[] ed = ServiceHolder.instance().getLexBIGService().getMatchAlgorithms()

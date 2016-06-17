@@ -18,22 +18,23 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestWeightedDoubleMetaphone.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -55,6 +56,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubString() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
@@ -72,6 +74,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringFirstResult() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("car", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
@@ -88,6 +91,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringDifferentMetaphoneValue() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
@@ -105,6 +109,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringDifferentMetaphoneValueFirstResult() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("kar", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
@@ -121,6 +126,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringTwoTokens() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
@@ -137,6 +143,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringThreeTokensCorrectSpelling() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Ford Motor Company", SearchDesignationOption.ALL, algorithm, null);
@@ -153,6 +160,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringThreeTokensDifferentOrder() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Motor Ford Company", SearchDesignationOption.ALL, algorithm, null);
@@ -167,6 +175,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringThreeTokensTooMuchDistance() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Ford Company", SearchDesignationOption.ALL, algorithm, null);
@@ -181,6 +190,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringThreeTokensSpellingErrorTolerant() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("testyng sam kode", SearchDesignationOption.ALL, algorithm, null);
@@ -206,6 +216,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Kar (with special) charaters!", SearchDesignationOption.ALL, algorithm, null);
@@ -225,6 +236,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testSpellingErrorTolerantSubStringWrongSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Kar (with special) charaters^", SearchDesignationOption.ALL, algorithm, null);

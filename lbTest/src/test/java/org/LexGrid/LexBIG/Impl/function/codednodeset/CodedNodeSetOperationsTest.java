@@ -21,14 +21,17 @@ package org.LexGrid.LexBIG.Impl.function.codednodeset;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class CodedNodeSetOperationsTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
     
     /** The unioned coded node set. */
@@ -52,6 +55,7 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
      * @see org.LexGrid.LexBIG.Impl.function.codednodeset.BaseCodedNodeSetTest#setUp()
      */
     @Override
+    @Before
     public void setUp(){
         super.setUp();
         try {
@@ -89,6 +93,7 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
    * 
    * @throws Exception the exception
    */
+  @Test
   public void testIntersectAUnion() throws Exception {
 
         cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "GM" }, "Automobiles"));
@@ -107,6 +112,7 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
      * 
      * @throws Exception the exception
      */
+  @Test
     public void testUnionAnIntersection() throws Exception {
 
         cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
@@ -125,6 +131,7 @@ public class CodedNodeSetOperationsTest extends BaseCodedNodeSetTest {
   * 
   * @throws Exception the exception
   */
+  @Test
  public void testIntersectADifference() throws Exception {
         
         cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));

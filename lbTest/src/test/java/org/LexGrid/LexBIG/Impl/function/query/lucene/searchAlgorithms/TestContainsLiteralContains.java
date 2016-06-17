@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestContainsLiteralContains.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
 
     /** The algorithm. */
@@ -42,6 +44,7 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testContains() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("automob", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -58,6 +61,7 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testContainsWithNonNormalizedSearch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Automob", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -74,6 +78,7 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testContainsTwoTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -90,6 +95,7 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testContainsTwoTermsIncompleteTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Gener Moto", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -106,6 +112,7 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testContainsANDTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("car truck", SearchDesignationOption.ALL, getAlgorithm(), null);

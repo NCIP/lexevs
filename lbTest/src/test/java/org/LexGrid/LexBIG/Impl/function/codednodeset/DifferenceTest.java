@@ -23,9 +23,12 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,7 +39,7 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class DifferenceTest extends BaseCodedNodeSetTest {
     
     /** The cns2. */
@@ -55,6 +58,7 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      * @see org.LexGrid.LexBIG.Impl.function.codednodeset.BaseCodedNodeSetTest#setUp()
      */
     @Override
+    @Before
     public void setUp(){
         super.setUp();
         try {
@@ -92,6 +96,7 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testDifferenceCorrectSetTheoryExample() throws LBException {
 
         cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" },
@@ -112,6 +117,7 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testDifferenceCorrectSetTheoryExampleOtherWay() throws LBException {
 
         cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" },
@@ -132,6 +138,7 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testDifferenceWithAddedRestriction() throws LBException {
 
         cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford", "A0001" },
@@ -167,6 +174,7 @@ public class DifferenceTest extends BaseCodedNodeSetTest {
     Code: P0001, Description: Piston Hash: 1700624210
     Code: E0001, Description: Engine Hash: 1531239547
     */ 
+    @Test
     public void testDifferenceCrossCodingSchemes() throws LBException {
 
     	CodedNodeSet difference = cns.difference(testMapping);

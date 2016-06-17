@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RestrictToTargetCodesTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -36,6 +38,7 @@ public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToTargetCodes() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
@@ -66,6 +69,7 @@ public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToTargetCodesTwoCodes() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
@@ -95,6 +99,7 @@ public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToTargetCodesNoMatch() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);

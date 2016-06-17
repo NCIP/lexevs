@@ -26,14 +26,17 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RestrictToAssociationsTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -42,6 +45,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneAssociationNameNullQualifiers() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), 
                 null);
@@ -76,6 +80,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneAssociationNameNullQualifiersNoMatch() throws Exception{
 
     	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("NOT_A_MATCH"), 
@@ -102,6 +107,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testTwoAssociationNamesNullQualifiers() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToAssociations(Constructors.createNameAndValueList(new String[]{"uses", "hasSubtype"}),
                 null);
@@ -153,6 +159,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneAssociationNameOneQualifierWithoutValue() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("hasEngine"));
@@ -191,6 +198,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneAssociationNameOneQualifierWithValue() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("hasEngine", "true"));
@@ -229,6 +237,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
      * @throws LBInvocationException the LB invocation exception
      * @throws LBParameterException the LB parameter exception
      */
+	@Test
     public void testOneAssociationNameOneQualifierWithWrongValue() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("hasEngine", "false"));
@@ -248,7 +257,7 @@ public class RestrictToAssociationsTest extends BaseCodedNodeGraphTest {
         assertNull(rcr[0].getSourceOf());
         assertNull(rcr[0].getTargetOf());
     }
-    
+	@Test
     public void testOneAssociationNameOneQualifierWithValueResolveAllQuals() throws LBInvocationException, LBParameterException{
         cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), 
                 Constructors.createNameAndValueList("since", "1998"));

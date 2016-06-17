@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestExactMatch.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestExactMatch extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,6 +55,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testExactMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Automobile", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -69,6 +72,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testExactMatchMultipleTokens() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("General Motors", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -85,6 +89,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testExactMatchWrongCase() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -101,6 +106,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralExactMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s sp*cial co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -117,6 +123,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralExactMatchDifferentCode() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Car (with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -133,6 +140,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralExactMatchWrongCase() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("A^s sp*cial Co{nce]Pt", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -149,6 +157,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralExactMatchNotExact() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s sp*cial", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -163,6 +172,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testLiteralExactMatchWrongSpecialCharacter() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("a^s sp^cial co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);

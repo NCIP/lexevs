@@ -18,23 +18,25 @@
  */
 package org.LexGrid.LexBIG.Impl.function.mapping;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class MappingTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class MappingToNodeListTest extends LexBIGServiceTestCase {
 
 	@Override
@@ -42,6 +44,7 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
 		return this.getClass().getName();
 	}
 	
+    @Test
     public void testGetSourceCodesToNodeList() throws Exception {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         
@@ -72,6 +75,7 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     	assertTrue(foundCodes.contains("C0002"));
     } 
     
+    @Test
     public void testGetTargetCodesToNodeList() throws Exception {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         

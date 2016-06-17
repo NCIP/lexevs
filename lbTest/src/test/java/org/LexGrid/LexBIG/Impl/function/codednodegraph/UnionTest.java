@@ -18,22 +18,24 @@
  */
 package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
+import java.util.Arrays;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.util.PrintUtility;
-
-import java.util.Arrays;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class UnionTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class UnionTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -41,6 +43,7 @@ public class UnionTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testMultipleToNodeListUnionsWithPropertyRestriction() throws Exception {
     	CodedNodeSet cns1 = 
 			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
@@ -81,6 +84,7 @@ public class UnionTest extends BaseCodedNodeGraphTest {
 		DataTestUtils.isConceptReferencePresent(Arrays.asList(list.getResolvedConceptReference()), "Ford");
     }
     
+	@Test
     public void testMultipleToNodeListUnionsWithOverallPropertyRestriction() throws Exception {
     	CodedNodeSet cns1 = 
 			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(

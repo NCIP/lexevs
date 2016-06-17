@@ -24,10 +24,12 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestVersioningandAuthorityEnumeration extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_33";
 
@@ -35,7 +37,7 @@ public class TestVersioningandAuthorityEnumeration extends LexBIGServiceTestCase
     protected String getTestID() {
         return testID;
     }
-
+    @Test
     public void testT1_FNC_33() throws LBException {
 
         CodingScheme cs = ServiceHolder.instance().getLexBIGService().resolveCodingScheme(AUTO_SCHEME, null);

@@ -141,7 +141,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("Mau", MatchAlgorithm.PRESENTATION_CONTAINS);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("Mauth", MatchAlgorithm.PRESENTATION_CONTAINS);
 		assertTrue(itr.hasNext());
 		assertEquals("CL:0000246", itr.next().getCode());
 		assertFalse(itr.hasNext());

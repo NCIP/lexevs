@@ -27,9 +27,12 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestSpecifyReturnOrder extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_22";
 
@@ -40,10 +43,12 @@ public class TestSpecifyReturnOrder extends LexBIGServiceTestCase {
         return testID;
     }
     
+    @Before
     public void setUp(){
         lbs = ServiceHolder.instance().getLexBIGService();
     }
 
+    @Test
     public void testT1_FNC_22() throws LBException {
 
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);

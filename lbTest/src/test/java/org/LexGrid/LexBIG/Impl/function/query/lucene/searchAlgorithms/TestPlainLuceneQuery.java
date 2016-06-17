@@ -7,15 +7,16 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author m029206
  *
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestPlainLuceneQuery extends BaseSearchAlgorithmTest {
 	
 	String algorithm = "LuceneQuery";

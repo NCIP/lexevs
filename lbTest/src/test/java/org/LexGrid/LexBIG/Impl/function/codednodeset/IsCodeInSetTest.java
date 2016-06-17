@@ -22,14 +22,16 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class IsCodeInSetTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     
     /* (non-Javadoc)
@@ -46,6 +48,7 @@ public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     * @throws LBInvocationException the LB invocation exception
     * @throws LBParameterException the LB parameter exception
     */
+    @Test
    public void testIsCodeInSet() throws LBInvocationException, LBParameterException{
        assertTrue(
                cns.isCodeInSet(
@@ -58,6 +61,7 @@ public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     * @throws LBInvocationException the LB invocation exception
     * @throws LBParameterException the LB parameter exception
     */
+    @Test
    public void testIsCodeNotInSet() throws LBInvocationException, LBParameterException{
        assertFalse(
                cns.isCodeInSet(
@@ -70,6 +74,7 @@ public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     * @throws LBInvocationException the LB invocation exception
     * @throws LBParameterException the LB parameter exception
     */
+    @Test
    public void testIsCodeInSetWithRestriction() throws LBInvocationException, LBParameterException{
        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
        assertTrue(
@@ -83,6 +88,7 @@ public class IsCodeInSetTest extends BaseCodedNodeSetTest {
     * @throws LBInvocationException the LB invocation exception
     * @throws LBParameterException the LB parameter exception
     */
+    @Test
    public void testIsCodeNotInSetWithRestriction() throws LBInvocationException, LBParameterException{
        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("T0001"));
        assertFalse(

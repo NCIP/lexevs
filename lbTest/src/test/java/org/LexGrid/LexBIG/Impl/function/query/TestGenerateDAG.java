@@ -29,9 +29,11 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestGenerateDAG extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_04";
 
@@ -40,6 +42,7 @@ public class TestGenerateDAG extends LexBIGServiceTestCase {
         return testID;
     }
 
+    @Test
     public void testT1_FNC_04() throws LBException {
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         CodedNodeGraph cng = lbs.getNodeGraph(AUTO_SCHEME, null, "relations");

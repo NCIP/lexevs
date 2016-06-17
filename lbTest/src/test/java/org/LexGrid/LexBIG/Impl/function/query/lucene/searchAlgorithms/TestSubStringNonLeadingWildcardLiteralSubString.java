@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestSubStringLiteralSubString.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubString {
 
     /** The algorithm. */
@@ -42,6 +44,7 @@ public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubStri
         return algorithm;
     }
     
+    @Test
     public void testOneTermLeadingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("grap", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -53,6 +56,7 @@ public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubStri
         assertTrue(checkForMatch(rcrl, "NoRelationsConcept"));
     }
     
+    @Test
     public void testOneTermTrailingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("raph", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -64,6 +68,7 @@ public class TestSubStringNonLeadingWildcardLiteralSubString extends TestSubStri
         assertTrue(checkForMatch(rcrl, "NoRelationsConcept"));
     }
     
+    @Test
     public void testOneTermLeadingAndTrailingWildcardNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("rap", SearchDesignationOption.ALL, getAlgorithm(), null);

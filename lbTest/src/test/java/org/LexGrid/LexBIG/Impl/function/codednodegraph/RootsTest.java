@@ -22,14 +22,16 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RootsTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class RootsTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -37,6 +39,7 @@ public class RootsTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testGetRoots() throws Exception {
     	ResolvedConceptReferenceList roots = 
     		this.cng.resolveAsList(null, true, false, 0, -1, null, null, null, -1);
@@ -49,6 +52,7 @@ public class RootsTest extends BaseCodedNodeGraphTest {
     	assertNotNull(ref2);
     }
     
+	@Test
     public void testGetRootsWithAssociationRestriction() throws Exception {
     	ResolvedConceptReferenceList roots = 
     		this.cng.restrictToAssociations(Constructors.createNameAndValueList("uses"), null).
@@ -62,6 +66,7 @@ public class RootsTest extends BaseCodedNodeGraphTest {
     	assertNotNull(ref2);
     }
     
+	@Test
     public void testGetRootsWithAssociationAndQualifierRestriction() throws Exception {
     	ResolvedConceptReferenceList roots = 
     		this.cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), Constructors.createNameAndValueList("hasEngine", "true")).
@@ -73,6 +78,7 @@ public class RootsTest extends BaseCodedNodeGraphTest {
     	assertNotNull(ref1);
     }
     
+	@Test
     public void testGetRootsWithAssociationAndWrongQualifierRestriction() throws Exception {
     	ResolvedConceptReferenceList roots = 
     		this.cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), Constructors.createNameAndValueList("hasEngine", "false")).

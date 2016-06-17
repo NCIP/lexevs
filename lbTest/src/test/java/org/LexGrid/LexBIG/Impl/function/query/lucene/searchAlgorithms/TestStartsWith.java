@@ -21,14 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestStartsWith.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class TestStartsWith extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -53,6 +55,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWith() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Automob", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -69,6 +72,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithANDTerms() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("car truck", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -83,6 +87,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithNoMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Makers", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -97,6 +102,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("automob", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -114,6 +120,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Car (with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -130,6 +137,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithOneSpecialCharacter() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Car (", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -147,6 +155,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithOneSpecialCharacterDoesntStartWith() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("(with special) charaters!", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -161,6 +170,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithNoMatchSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("Car {", SearchDesignationOption.ALL, getAlgorithm(), null);
@@ -175,6 +185,7 @@ public class TestStartsWith extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStartsWithCaseInsensitiveSpecialCharacters() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
         cns = cns.restrictToMatchingDesignations("CaR (wiTh SpecIal) cHaraters!", SearchDesignationOption.ALL, getAlgorithm(), null);

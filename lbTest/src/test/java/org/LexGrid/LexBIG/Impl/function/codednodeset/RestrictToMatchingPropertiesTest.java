@@ -25,9 +25,11 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
-@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
 
     @Override
@@ -35,6 +37,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
         return "RestrictToMatchingProperties Tests";
     }
 
+    @Test
     public void testRestrictToMatchingPropertiesError() throws LBInvocationException {
 
         try {
@@ -49,6 +52,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
       
     }
     
+    @Test
     public void testRestrictToMatchingPropertiesPropertyNameMatch() throws LBException{
         cns = cns.restrictToMatchingProperties(Constructors.createLocalNameList("definition"), null, "an automobile", "contains", null);
         
@@ -61,6 +65,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("A0001"));
     }
     
+    @Test
     public void testRestrictToMatchingPropertiesPropertyNameNoMatch() throws LBException{
         cns = cns.restrictToMatchingProperties(Constructors.createLocalNameList("textualPresentation"), null, "An", "startsWith", null);
         
@@ -69,6 +74,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
         assertTrue(rcrl.getResolvedConceptReferenceCount() == 0);
     }
     
+    @Test
     public void testRestrictToMatchingPropertiesPropertyTypeMatch() throws LBException{
         cns = cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.DEFINITION}, "An", "startsWith", null);
         
@@ -81,6 +87,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("A0001"));
     }
     
+    @Test
     public void testRestrictToMatchingPropertiesPropertyTypeNoMatch() throws LBException{
         cns = cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, "An", "startsWith", null);
           
@@ -89,6 +96,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
         assertTrue(rcrl.getResolvedConceptReferenceCount() == 0);
     }
     
+    @Test
     public void testRestrictToMatchingPropertiesPropertyGenericProperty() throws LBException{
         cns = cns.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.GENERIC}, "A Generic Property", "exactMatch", null);
           
@@ -101,6 +109,7 @@ public class RestrictToMatchingPropertiesTest extends BaseCodedNodeSetTest {
         assertTrue(ref.getCode().equals("A0001"));
     }
     
+    @Test
     public void testRestrictToMatchingPropertiesPropertySearchAllProperties() throws LBException{
     	PropertyType[] types = new PropertyType[]{PropertyType.GENERIC, PropertyType.COMMENT, PropertyType.DEFINITION, PropertyType.PRESENTATION};
     	
