@@ -840,6 +840,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws URISyntaxException
 	 */
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveNodeOnlyValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
@@ -902,6 +903,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testPropertyReference() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList acsvrList = new AbsoluteCodingSchemeVersionReferenceList();
 		AbsoluteCodingSchemeVersionReference autoVersion_10 = Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.0");
