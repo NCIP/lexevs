@@ -1005,6 +1005,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		assertTrue(vsdURIs.size() == 0);
 	}
 	
+	@Test
 	public void testGetVSDURIForConceptDomainAndUsageContext(){
 		List<String> usageContexts = new ArrayList<String>();
 		usageContexts.add("GM");
@@ -1055,6 +1056,8 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * 		This resolve method should use the passed VSD, not the one that is available in the service.
 	 * 		This should return 1 concept from SRITEST:AUTO:GM_AND_IMMI_NODE and a FORD concept using Automobiles 1.1	  
 	 */
+	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveVSDWithRefVSDObjects() throws LBException, URISyntaxException{
 		ValueSetDefinition vsd = new ValueSetDefinition();
 		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
@@ -1156,6 +1159,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws MarshalException
 	 * @throws ValidationException
 	 */
+	@Test
 	public void testExportValueSetDefinitionByURI() throws LBException, URISyntaxException, MarshalException, ValidationException{
 		StringBuffer sb = getValueSetDefinitionService().exportValueSetDefinition(new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
 		
@@ -1325,6 +1329,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws MarshalException
 	 * @throws ValidationException
 	 */
+	@Test
 	public void testExportValueSetDefinitionByObject() throws LBException, MarshalException, ValidationException{
 		ValueSetDefinition vsd = new ValueSetDefinition();
 		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
@@ -1394,6 +1399,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws IOException
 	 */
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testExportVSResolutionByVSDObject() throws LBException, URISyntaxException, IOException{
 		
 		File tempExportFile = new File(System.getProperty("java.io.tmpdir"));		
