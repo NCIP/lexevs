@@ -93,7 +93,9 @@ abstract public class LexBIGServiceTestCase extends TestCase {
 	public static final String OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION = "0.1.3";
 	public static final String OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION = "0.1.0";
 	public static final String OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION = "0.1.5";
-
+	
+	public static final String OWL_COMPLEX_PROP_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
+	public static final String OWL_COMPLEX_PROP_VERSION = "05.09.comp.prop.bvt";
 
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
 

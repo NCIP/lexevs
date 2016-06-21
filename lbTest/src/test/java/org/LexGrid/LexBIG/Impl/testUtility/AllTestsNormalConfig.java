@@ -204,6 +204,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2Primitive
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
 
 
@@ -253,6 +254,10 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
 
         mainSuite.addTest(metaLoaderSuite);
+        
+        TestSuite owlLoaderSuite = new TestSuite("OWL Tests");
+        owlLoaderSuite.addTestSuite(OWLUnitTests.class);
+        mainSuite.addTest(owlLoaderSuite);
         
         TestSuite owl2LoaderSuite = new TestSuite("OWL2 Tests");
         owl2LoaderSuite.addTestSuite(PresentationPropertyTestIT.class);
