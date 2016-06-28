@@ -2,8 +2,12 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
 import java.util.Iterator;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -61,9 +65,41 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
 					"http://purl.obolibrary.org/obo/obi.owl"), 
-			true, true, 10, 10, null, null, null, null, -1);
+			true, false, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateQualifier("CL_0000001", "only", itr));
+	assertTrue(validateQualifierName("CL_0000001", "only", itr));
+	
+	}
+	
+	@Test
+	public void testValidateHasGrainPropertyQualifierSome() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("2015-09-15");
+		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
+	ResolvedConceptReferenceList list = newCng.resolveAsList(
+			Constructors.createConceptReference("OBI_0100061", 
+					"http://purl.obolibrary.org/obo/obi.owl"), 
+			true, false, 10, 10, null, null, null, null, -1);
+	ResolvedConceptReference[] refs = list.getResolvedConceptReference();
+	for(ResolvedConceptReference ref : refs){
+		AssociationList assocs = ref.getSourceOf();
+		Association[] ans = assocs.getAssociation();
+		for(Association assoc: ans){
+			AssociatedConcept[] acs = assoc.getAssociatedConcepts().getAssociatedConcept();
+			for(AssociatedConcept ac : acs){
+				NameAndValue[] nvs = ac.getAssociationQualifiers().getNameAndValue();
+				for(NameAndValue nv: nvs){
+					String name = nv.getName();
+					String value = nv.getContent();
+					System.out.println("name: " + name + " value: " +value);
+				}
+			}
+		}
+	}
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateQualifierName("CL_0000001", "some", itr));
 	
 	}
 	
@@ -83,7 +119,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	}
 	
 	@Test
-	public void testValidateHasGrainPropertyQualifierSome() 
+	public void testValidateHasGrainPropertyQualifierNameExactly() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
 		versionOrTag.setVersion("2015-09-15");
@@ -94,7 +130,22 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 					"http://purl.obolibrary.org/obo/obi.owl"), 
 			true, true, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateQualifier("OBI_0600037", "exactly", itr));
+	assertTrue(validateQualifierName("OBI_0600037", "exactly", itr));
+	}
+	
+	@Test
+	public void testValidateHasGrainPropertyQualifierValueExactly() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("2015-09-15");
+		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
+	ResolvedConceptReferenceList list = newCng.resolveAsList(
+			Constructors.createConceptReference("OBI_0100061", 
+					"http://purl.obolibrary.org/obo/obi.owl"), 
+			true, true, 10, 10, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateQualifier("OBI_0600037", "0", itr));
 	}
 	
 	@Test

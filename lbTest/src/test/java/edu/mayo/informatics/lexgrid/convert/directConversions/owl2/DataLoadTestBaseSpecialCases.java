@@ -106,6 +106,32 @@ public class DataLoadTestBaseSpecialCases extends TestCase {
 		return validate;
 	}
 	
+	protected boolean validateQualifierName(String code, String name, 
+			Iterator<? extends ResolvedConceptReference> itr) throws LBResourceUnavailableException, LBInvocationException{
+		boolean validate = false;
+		while (itr.hasNext()) {
+			ResolvedConceptReference ref = itr.next();
+			AssociationList assoc1 = ref.getSourceOf();
+			Association[] assocs = assoc1.getAssociation();
+			for (Association as : assocs) {
+				AssociatedConceptList acl = as.getAssociatedConcepts();
+				AssociatedConcept[] acs = acl.getAssociatedConcept();
+				for (AssociatedConcept ac : acs) {
+					if (ac.getCode().equals(code)) {
+						if(ac.getAssociationQualifiers() != null){
+						for(NameAndValue nv: ac.getAssociationQualifiers().getNameAndValue()){
+						if(nv.getName().equals(name))
+						validate = true;
+						break;
+						}
+						}
+					}
+				}
+			}
+		}
+		return validate;
+	}
+	
 	protected boolean validatePropertyQualifierFromProperty(Property prop, String qual){
 		boolean validate = false;
 
