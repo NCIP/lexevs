@@ -3155,11 +3155,11 @@ public class OwlApi2LG {
 
           builder.append(qualifierTokens[i].trim()); 
 
-          if(i < qualifierTokens.length){
+ //         if(i < qualifierTokens.length - 1){
               builder.append(" ");
-          }
+//          }
       }
-      return builder.toString();
+      return builder.toString().trim();
     }
 
     private String parseQualifierNameFromManchesterRender(String rendered){
