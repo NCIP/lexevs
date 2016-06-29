@@ -49,7 +49,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	assertTrue(validateTarget("CL_0000001", itr));
@@ -64,7 +64,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, false, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	assertTrue(validateQualifierName("CL_0000001", "only", itr));
@@ -80,7 +80,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, false, 10, 10, null, null, null, null, -1);
 	ResolvedConceptReference[] refs = list.getResolvedConceptReference();
 	for(ResolvedConceptReference ref : refs){
@@ -112,7 +112,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, false, 10, 10, null, null, null, null, -1);
 
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
@@ -129,7 +129,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	assertTrue(validateTarget("OBI_0600037", itr));
@@ -144,7 +144,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	assertTrue(validateQualifierName("OBI_0600037", "exactly", itr));
@@ -159,7 +159,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
-					"http://purl.obolibrary.org/obo/obi.owl"), 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 			true, true, 10, 10, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	assertTrue(validateQualifier("OBI_0600037", "0", itr));
