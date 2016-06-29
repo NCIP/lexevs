@@ -1,5 +1,7 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
@@ -78,6 +80,14 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 		// The concept ADL:10651 is a target for the codeSystem entity and other code concepts
 		assertNotNull(graphFocus.getTargetOf());
 	}
-	
+		
+	@Test
+	public void testCorrectConceptIsPresent() throws Exception {
+		
+		graphFocus = cng.resolveAsList(Constructors.createConceptReference("10458:BRTH", 
+				LexBIGServiceTestCase.HL7_MIF_VOCABULARY_URN), true, true, 1, 1, null, null, null, -1).getResolvedConceptReference(0);
+		
+		assertTrue(graphFocus != null);
+	}
 
 }
