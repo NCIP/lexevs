@@ -24,7 +24,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		graphFocus = cng.resolveAsList(Constructors.createConceptReference("ADL:10651", 
+		graphFocus = cng.resolveAsList(Constructors.createConceptReference("10651:ADL", 
 				LexBIGServiceTestCase.HL7_MIF_VOCABULARY_URN), true, true, 1, 1, null, null, null, -1).getResolvedConceptReference(0);
 	}
 	
@@ -67,7 +67,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	public void testSourceAssociatedConceptCode() throws Exception {	
 		AssociatedConcept[] concepts = graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();	
 
-		assertTrue(DataTestUtils.isAssociatedConceptPresent(concepts, "AL:22619"));
+		assertTrue(DataTestUtils.isAssociatedConceptPresent(concepts, "22619:AL"));
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testTargetCount() throws Exception {	
-		// The concept ADL:10651 is a target for the codeSystem entity and other code concepts
+		// The concept 10651:ADL is a target for the codeSystem entity and other code concepts
 		assertNotNull(graphFocus.getTargetOf());
 	}
 		

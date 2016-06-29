@@ -261,7 +261,7 @@ public class MifVocabularyMapToLexGrid {
                     List<MifConceptCode> mifConceptCodes = mifConcept.getConceptCodes();
                     for (MifConceptCode mifConceptCode : mifConceptCodes) {
                         
-                        String conceptCode = mifConceptCode.getCode() + ":" + internalIdStr;
+                        String conceptCode = internalIdStr + ":" + mifConceptCode.getCode();
                         String status = mifConceptCode.getStatus();
                         Entity concept = new Entity();
                         concept.setEntityCode(conceptCode);
@@ -473,7 +473,7 @@ public class MifVocabularyMapToLexGrid {
                     String code = null;
                     for (MifConceptCode mifConceptCode : mifConceptCodes) {
                         code = mifConceptCode.getCode();
-                        topNodes.add(code + ":" + internalIdStr);
+                        topNodes.add(internalIdStr + ":" + code);
                     }                                    
                 }
                 
@@ -524,7 +524,7 @@ public class MifVocabularyMapToLexGrid {
                 List<MifConceptCode> mifConceptCodes = mifConcept.getConceptCodes();
                 for (MifConceptCode mifConceptCode : mifConceptCodes) {
 
-                    String sourceConceptCode = mifConceptCode.getCode() + ":" + internalIdStr;
+                    String sourceConceptCode = internalIdStr + ":" + mifConceptCode.getCode();
 
                     List<MifConceptRelationship> mifConceptRelationships = mifConcept.getConceptRelationships();
                     for (MifConceptRelationship mifConceptRelationship : mifConceptRelationships) {
@@ -589,7 +589,7 @@ public class MifVocabularyMapToLexGrid {
             for (MifConceptCode mifConceptCode : mifConceptCodes) {
                 // codes are case sensitive
                 if (mifConceptCode.getCode().equals(targetCode)) {
-                    returnValue = targetCode + ":" + internalIdStr;
+                    returnValue = internalIdStr + ":" + targetCode;
                     break outerloop;
                 }
             }            
