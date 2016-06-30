@@ -41,6 +41,21 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	}
 	
 	@Test
+	public void testRestrictOnHasRoleProperty() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("2015-09-15");
+		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has role"), null);
+	ResolvedConceptReferenceList list = newCng.resolveAsList(
+			Constructors.createConceptReference("CHEBI_15956", 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+			true, true, 10, 10, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateTarget("REO_0000171", itr));
+	}
+	
+	@Test
 	public void testRestrictOnHasGrainProperty() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
