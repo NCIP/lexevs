@@ -97,14 +97,22 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	@Test
 	public void testNamespace() throws Exception {
 
+		String code = "10458:BRTH";
+		String namespace = "HL7";
+		String codingScheme = "1189-20121121";
+		
 	    ConceptReference sourceConRef = new ConceptReference();
-	    sourceConRef.setCode("10458:BRTH");
-	    sourceConRef.setCodeNamespace("HL7");
-	    sourceConRef.setCodingSchemeName("1189-20121121");
+	    sourceConRef.setCode(code);
+	    sourceConRef.setCodeNamespace(namespace);
+	    sourceConRef.setCodingSchemeName(codingScheme);
 	    
 	    ResolvedConceptReferenceList resolvedConRefList = cng.resolveAsList(sourceConRef, true, false, 0, 1,
 	            null, null, null, -1);
 	    
 	    assertTrue(resolvedConRefList != null);
+	    
+	    assertEquals(code, resolvedConRefList.getResolvedConceptReference(0).getCode());
+	    assertEquals(namespace, resolvedConRefList.getResolvedConceptReference(0).getCodeNamespace());
+	    assertEquals(codingScheme, resolvedConRefList.getResolvedConceptReference(0).getCodingSchemeName());
 	}
 }

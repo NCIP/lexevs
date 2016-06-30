@@ -26,6 +26,7 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedContainerName;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedLanguage;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.naming.SupportedSource;
@@ -111,6 +112,14 @@ public class MifVocabularyMapToLexGrid {
             hierarchy.setRootCode(MifVocabulary2LGConstants.DEFAULT_ROOT_NODE);
             hierarchy.setIsForwardNavigable(true);
             csclass.getMappings().addSupportedHierarchy(hierarchy);
+            
+            // Add supported Namespace
+            SupportedNamespace sn = new SupportedNamespace();
+            sn.setContent(MifVocabulary2LGConstants.NAMESPACE);
+            sn.setEquivalentCodingScheme(name);
+            sn.setLocalId(MifVocabulary2LGConstants.NAMESPACE);
+            sn.setUri(csclass.getCodingSchemeURI());
+            csclass.getMappings().addSupportedNamespace(sn);
 
         } catch (Exception e) {
             messages_.error("Failed while preparing LexGrid CodingScheme class and its SupportedCodingScheme, " 
@@ -146,7 +155,7 @@ public class MifVocabularyMapToLexGrid {
             AssociationEntity parent_assocEntity = EntityFactory.createAssociation();
             parent_assocEntity.setEntityCode(MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE);
             parent_assocEntity.setForwardName(MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE);
-            parent_assocEntity.setEntityCodeNamespace(csclass.getCodingSchemeName());
+            parent_assocEntity.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
             parent_assocEntity.setIsTransitive(true);                    
 
             concepts.addEntity(parent_assocEntity);
@@ -158,7 +167,7 @@ public class MifVocabularyMapToLexGrid {
             parent_assocEntity = EntityFactory.createAssociation();
             parent_assocEntity.setEntityCode(MifVocabulary2LGConstants.ASSOCIATION_IS_A);
             parent_assocEntity.setForwardName(MifVocabulary2LGConstants.ASSOCIATION_IS_A);
-            parent_assocEntity.setEntityCodeNamespace(csclass.getCodingSchemeName());
+            parent_assocEntity.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
             parent_assocEntity.setIsTransitive(true);                    
 
             concepts.addEntity(parent_assocEntity);
@@ -175,7 +184,7 @@ public class MifVocabularyMapToLexGrid {
                 SupportedAssociation sa = new SupportedAssociation();
                 sa.setLocalId(association_name);
                 sa.setEntityCode(association_name);
-                sa.setEntityCodeNamespace(csclass.getCodingSchemeName());                
+                sa.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);                
                 csclass.getMappings().addSupportedAssociation(sa);
 
                 parent_assoc = new AssociationPredicate();
@@ -184,7 +193,7 @@ public class MifVocabularyMapToLexGrid {
                 parent_assocEntity = EntityFactory.createAssociation();
                 parent_assocEntity.setEntityCode(association_name);
                 parent_assocEntity.setForwardName(association_name);
-                parent_assocEntity.setEntityCodeNamespace(csclass.getCodingSchemeName());
+                parent_assocEntity.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                 if (scRelationship.getTransitivity() != null && scRelationship.getTransitivity().equalsIgnoreCase("transitive")) {
                     parent_assocEntity.setIsTransitive(true);                    
                 }
@@ -266,7 +275,7 @@ public class MifVocabularyMapToLexGrid {
                         Entity concept = new Entity();
                         concept.setEntityCode(conceptCode);
                         concept.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
-                        concept.setEntityCodeNamespace(csclass.getCodingSchemeName());
+                        concept.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                         concept.setStatus(status);                        
                         if (status.equalsIgnoreCase("active")) {
                             concept.setIsActive(Boolean.TRUE);
@@ -379,7 +388,7 @@ public class MifVocabularyMapToLexGrid {
             // Create and set the concept code for "@"
             String topNodeDesignation = MifVocabulary2LGConstants.DEFAULT_ROOT_NODE;
             rootNode.setEntityCode(topNodeDesignation);
-            rootNode.setEntityCodeNamespace(csclass.getCodingSchemeName());
+            rootNode.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
             rootNode.setIsAnonymous(Boolean.TRUE);
             EntityDescription enDesc = new EntityDescription();
             enDesc.setContent("Root node for HL7 MIF Vocabulary subclass relations.");
@@ -388,7 +397,7 @@ public class MifVocabularyMapToLexGrid {
 
             AssociationSource ai = new AssociationSource();
             ai.setSourceEntityCode(rootNode.getEntityCode());
-            ai.setSourceEntityCodeNamespace(csclass.getCodingSchemeName());
+            ai.setSourceEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
             AssociationPredicate parent_assoc = (AssociationPredicate) RelationsUtil
                     .resolveAssociationPredicates(csclass, MifVocabulary2LGConstants.ASSOCIATION_HAS_SUBTYPE).get(0);
             ai = RelationsUtil.subsume(parent_assoc, ai);
@@ -410,7 +419,7 @@ public class MifVocabularyMapToLexGrid {
                 }
                
                 topNode.setEntityCode(nodeName + ":" + oid);                   
-                topNode.setEntityCodeNamespace(csclass.getCodingSchemeName());
+                topNode.setEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
 
                 EntityDescription enD = new EntityDescription();
                 enD.setContent(entityDescription);
@@ -448,7 +457,7 @@ public class MifVocabularyMapToLexGrid {
                 // This coding scheme is attached to an artificial root.
                 AssociationTarget at = new AssociationTarget();
                 at.setTargetEntityCode(topNode.getEntityCode());
-                at.setTargetEntityCodeNamespace(csclass.getCodingSchemeName());
+                at.setTargetEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                 RelationsUtil.subsume(ai, at);
 
                 // Now find the concept of the codeSystem and subsume them to this
@@ -483,12 +492,12 @@ public class MifVocabularyMapToLexGrid {
                     try {
                         AssociationSource atn = new AssociationSource();
                         atn.setSourceEntityCode(topNode.getEntityCode());
-                        atn.setSourceEntityCodeNamespace(csclass.getCodingSchemeName());
+                        atn.setSourceEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                         atn = RelationsUtil.subsume(parent_assoc, atn);
 
                         AssociationTarget atopNode = new AssociationTarget();
                         atopNode.setTargetEntityCode((String) topNodes.get(j));
-                        atopNode.setTargetEntityCodeNamespace(csclass.getCodingSchemeName());
+                        atopNode.setTargetEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                         RelationsUtil.subsume(atn, atopNode);
                     } catch (Exception e) {
                         messages_.error("Failed while processing HL7 MIF Vocabulary psuedo top node hierarchy", e);
@@ -551,12 +560,12 @@ public class MifVocabularyMapToLexGrid {
                         if (sourceEntity != null && targetEntity != null) {
                             AssociationSource ai = new AssociationSource();
                             ai.setSourceEntityCode(sourceEntity.getEntityCode());
-                            ai.setSourceEntityCodeNamespace(csclass.getCodingSchemeName());
+                            ai.setSourceEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                             ai = RelationsUtil.subsume(parent_association, ai);
 
                             AssociationTarget at = new AssociationTarget();
                             at.setTargetEntityCode(targetEntity.getEntityCode());
-                            at.setTargetEntityCodeNamespace(csclass.getCodingSchemeName());
+                            at.setTargetEntityCodeNamespace(MifVocabulary2LGConstants.NAMESPACE);
                             at = RelationsUtil.subsume(ai, at);
                         }
                     } // end brace - for (MifConceptRelationship mifConceptRelationship : mifConceptRelationships)
