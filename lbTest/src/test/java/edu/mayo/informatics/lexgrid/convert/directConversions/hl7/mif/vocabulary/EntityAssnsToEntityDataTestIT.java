@@ -3,12 +3,16 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabular
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 
@@ -89,5 +93,18 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 		
 		assertTrue(graphFocus != null);
 	}
+	
+	@Test
+	public void testNamespace() throws Exception {
 
+	    ConceptReference sourceConRef = new ConceptReference();
+	    sourceConRef.setCode("10458:BRTH");
+	    sourceConRef.setCodeNamespace("HL7");
+	    sourceConRef.setCodingSchemeName("1189-20121121");
+	    
+	    ResolvedConceptReferenceList resolvedConRefList = cng.resolveAsList(sourceConRef, true, false, 0, 1,
+	            null, null, null, -1);
+	    
+	    assertTrue(resolvedConRefList != null);
+	}
 }
