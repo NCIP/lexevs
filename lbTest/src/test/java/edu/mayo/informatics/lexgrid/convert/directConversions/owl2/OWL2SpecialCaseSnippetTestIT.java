@@ -15,7 +15,9 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.commonTypes.Property;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,12 +42,31 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	assertTrue(validateTarget("Cold", itr));
 	}
 	
+	
+	@Test
+	public void testContinuantHasCorrectPropertyQualification() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("BFO_0000002"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	ResolvedConceptReference ref = itr.next();
+	for(Property prop : ref.getEntity().getAllProperties()){
+		if(validatePropertyQualifierFromProperty(prop, "009-002")){
+			return;
+		}
+	}
+	fail();
+	}
+	
 	@Test
 	public void testRestrictOnHasRoleProperty() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has role"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("CHEBI_15956", 
@@ -59,8 +80,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testRestrictOnHasGrainProperty() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -74,8 +95,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testValidateHasGrainPropertyQualifierNameOnly() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -90,8 +111,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testValidateHasGrainPropertyQualifierNameSome() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -122,8 +143,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testValidateHasGrainPropertyQualifierValueForSome() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has grain"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -139,8 +160,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testRestrictToSpecifiedOutput() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -154,8 +175,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testValidateHasGrainPropertyQualifierNameExactly() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -169,8 +190,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	public void testValidateHasGrainPropertyQualifierValueExactly() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-		versionOrTag.setVersion("2015-09-15");
-		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
 	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("is_specified_output_of"), null);
 	ResolvedConceptReferenceList list = newCng.resolveAsList(
 			Constructors.createConceptReference("OBI_0100061", 
@@ -237,7 +258,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 		}
 		assertTrue(prop.getValue().getContent().equals("A history is a process. (axiom label in BFO2 Reference: [138-001])"));
-		assertTrue(validatePropertyQualifierFromProperty(prop, "IAO_0010000:138-001"));
+		assertTrue(validatePropertyQualifierFromProperty(prop, "138-001"));
 	}
 
 }
