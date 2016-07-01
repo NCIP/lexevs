@@ -27,7 +27,7 @@ public class OWLUnitTests extends TestCase {
 	public void setUp() throws Exception {
 		lbs = ServiceHolder.instance().getLexBIGService();
 		cns = lbs.getNodeSet(LexBIGServiceTestCase.OWL_COMPLEX_PROP_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL_COMPLEX_PROP_VERSION), null);;
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL_COMPLEX_PROP_VERSION), null);
 	}
 	
 	@Test
