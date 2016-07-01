@@ -812,8 +812,6 @@ public class OwlApi2LG {
         // node...
         OWLEntity onProp = getEntity(restriction.getProperty());
         if (onProp != null) {
-            SimpleRenderer srenderer = new SimpleRenderer();
-            srenderer.render(onProp);
             String assocName = getLocalName(onProp);
             AssociationWrapper opAssoc = assocManager.getAssociation(assocName);
             if (opAssoc != null) {
