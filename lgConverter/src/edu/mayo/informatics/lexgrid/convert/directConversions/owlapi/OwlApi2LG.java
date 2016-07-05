@@ -91,8 +91,11 @@ import org.semanticweb.owlapi.model.OWLCardinalityRestriction;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataExactCardinality;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataHasValue;
+import org.semanticweb.owlapi.model.OWLDataMaxCardinality;
+import org.semanticweb.owlapi.model.OWLDataMinCardinality;
 import org.semanticweb.owlapi.model.OWLDataOneOf;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
@@ -112,8 +115,11 @@ import org.semanticweb.owlapi.model.OWLNamedObject;
 import org.semanticweb.owlapi.model.OWLNaryBooleanClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
+import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
 import org.semanticweb.owlapi.model.OWLObjectHasSelf;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
+import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
+import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
@@ -134,11 +140,13 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.util.OWLObjectVisitorExAdapter;
 import org.semanticweb.owlapi.util.ShortFormProvider;
+import org.semanticweb.owlapi.util.SimpleRenderer;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
+import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -148,6 +156,7 @@ import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
 
 import org.apache.commons.lang.time.DateUtils;
 
@@ -803,7 +812,6 @@ public class OwlApi2LG {
         // node...
         OWLEntity onProp = getEntity(restriction.getProperty());
         if (onProp != null) {
-            
             String assocName = getLocalName(onProp);
             AssociationWrapper opAssoc = assocManager.getAssociation(assocName);
             if (opAssoc != null) {
@@ -811,7 +819,7 @@ public class OwlApi2LG {
                 AssociationData opData = null;
                 String targetCode = null;
                 String targetNameSpace = null;
-
+                
                 if (restriction instanceof OWLQuantifiedObjectRestriction) {
                     OWLQuantifiedObjectRestriction rest = (OWLQuantifiedObjectRestriction) restriction;
                     OWLClassExpression fillerProp = rest.getFiller();
@@ -833,9 +841,22 @@ public class OwlApi2LG {
                 }
                 if (restriction instanceof OWLCardinalityRestriction) {
                     OWLCardinalityRestriction rest = (OWLCardinalityRestriction) restriction;
-                    OWLPropertyRange fillerProp = rest.getFiller();
+                    //OWLPropertyRange fillerProp = rest.getFiller();
                     opData = CreateUtils.createAssociationTextData("" + rest.getCardinality());
-
+                    targetNameSpace = getDefaultNameSpace();
+                    //Defining the use case OWL data or data min exact.  otherwise defaults to 
+                    //OWL object exact
+                    if(restriction instanceof OWLDataExactCardinality  || 
+                            restriction instanceof OWLDataMinCardinality  ||
+                            restriction instanceof OWLDataMaxCardinality  ||
+                            restriction instanceof OWLObjectMaxCardinality ||
+                            restriction instanceof OWLObjectMinCardinality){
+                       //TODO define the use case of this operation.  Doesn't fit well into the idea of a relationship
+                       //in LexEVS
+                        return;
+                    }
+                    targetCode =  buildCardinalityTypeEntity(restriction, targetNameSpace);
+                    if(targetCode == null || targetCode.equals("Thing")){return;}
                 }
                 if (restriction instanceof OWLHasValueRestriction) {
                     OWLHasValueRestriction rest = (OWLHasValueRestriction) restriction;
@@ -894,6 +915,24 @@ public class OwlApi2LG {
                         opTarget.addAssociationQualification(opQual);
                     }
                 }
+                
+                if(restriction instanceof OWLObjectExactCardinality){
+                    String label = null;
+                    
+                    label = parseQualifierNameFromManchesterRender(renderer.render(((OWLObjectExactCardinality) restriction)));
+                    if(label == null || label.length() < 1){
+                    label = ((OWLObjectExactCardinality) restriction).getClassExpressionType().getName();
+                    }
+                    String value = String.valueOf(((OWLObjectExactCardinality) restriction).getCardinality());
+                    AssociationQualification opQual = CreateUtils.createAssociationQualification(label, null, value != null? value:label,
+                            lgSupportedMappings_);
+                    if (opData != null) {
+                        opData.addAssociationQualification(opQual);
+                    }
+                    if (opTarget != null) {
+                        opTarget.addAssociationQualification(opQual);
+                    }
+                }
 
                 if (opData != null) {
                     relateAssociationSourceData(opAssoc, source, opData);
@@ -906,6 +945,49 @@ public class OwlApi2LG {
 
             }
         }
+    }
+
+    private String buildCardinalityTypeEntity(OWLRestriction restriction, String targetNameSpace) {
+        String code = null;
+        String nameSpace = null;
+        EntityDescription ed = null;
+
+        OWLClass node = restriction.getClassesInSignature().iterator().next();
+        if(node.isOWLThing()){
+            return resolveConceptID(node);
+        }
+        else{
+        code = restriction.getClassesInSignature().iterator().next().getIRI().getFragment();
+        }
+        nameSpace = targetNameSpace;
+        ed = new EntityDescription();
+        ed.setContent(resolveLabel(restriction.getClassesInSignature().iterator().next()));
+        
+        // Check if this concept has already been processed. 
+        if (isEntityCodeRegistered(nameSpace, code)) {
+            return code;
+        }
+
+        Entity lgClass = new Entity();
+        lgClass.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
+        lgClass.setEntityCode(code);
+        lgClass.setIsAnonymous(Boolean.FALSE);
+
+        lgClass.setEntityCodeNamespace(nameSpace);
+        lgClass.setEntityDescription(ed);
+
+        int lgPropNum = 0;
+
+        // Add entity description and matching preferred text presentation to
+        // the browser text we get from the Protege API.
+        // Note: text was derived from the browser text. Since it is unclear
+        // what property it was derived from, we document as 'label'.
+        Presentation pres = CreateUtils.createPresentation(generatePropertyID(++lgPropNum), "label", lgClass
+                .getEntityDescription().getContent(), Boolean.TRUE, lgSupportedMappings_, null, null);
+        lgClass.addPresentation(pres);
+        // Add to the concept container or write to db...
+        addEntity(lgClass);
+        return code;
     }
 
     private String buildLiteralEntity(String targetCode, String targetNameSpace) {
@@ -1320,7 +1402,7 @@ public class OwlApi2LG {
             }
             if(value instanceof IRI){
                 IRI iri = (IRI)value;
-                annotationValue = annotationName + ":" + iri.getFragment();
+                annotationValue = iri.getFragment();
             }
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
@@ -3050,14 +3132,48 @@ public class OwlApi2LG {
 
     AssociationQualification createAssociationQualification(OWLRestriction rdfProp,
             SupportedMappings lgSupportedMappings_) {
-
-        String label = rdfProp.getClassExpressionType().getName();
-        if (label.isEmpty()) {
-            label = renderer.render(rdfProp);
-        }
-        AssociationQualification lgQual = CreateUtils.createAssociationQualification(label, null, "",
+        String label;
+        label = parseQualifierNameFromManchesterRender(renderer.render(rdfProp));
+ //           label = rdfProp.getClassExpressionType().getName();
+            if (label.isEmpty()) {
+//                label = renderer.render(rdfProp);
+                label = rdfProp.getClassExpressionType().getName();
+            }
+         String value = parseQualifierValueFromManchesterRender(renderer.render(rdfProp)); 
+        AssociationQualification lgQual = CreateUtils.createAssociationQualification(label, null, value == null? "":value,
                 lgSupportedMappings_);
         return lgQual;
+    }
+    
+    private String parseQualifierValueFromManchesterRender(String rendered) {
+        String[] tokens = rendered.split(" ");
+        String[] qualifierTokens = Arrays.copyOfRange(tokens, 2, tokens.length);
+      StringBuilder builder = new StringBuilder();
+      for(int i = 0; i < qualifierTokens.length; i++){  
+
+          builder.append(qualifierTokens[i].trim()); 
+
+ //         if(i < qualifierTokens.length - 1){
+              builder.append(" ");
+//          }
+      }
+      return builder.toString().trim();
+    }
+
+    private String parseQualifierNameFromManchesterRender(String rendered){
+        String[] tokens = rendered.split(" ");
+//        String[] qualifierTokens = Arrays.copyOfRange(tokens, 0, tokens.length - 1);
+//        StringBuilder builder = new StringBuilder();
+//        for(int i = 0; i < qualifierTokens.length; i++){  
+//            if(i > 0){
+//            builder.append(qualifierTokens[i].trim()); 
+//            }
+//            if(i < qualifierTokens.length){
+//                builder.append(" ");
+//            }
+//        }
+//        return builder.toString();
+        return tokens[1];
     }
     
     /**
