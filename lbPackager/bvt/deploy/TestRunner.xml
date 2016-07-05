@@ -83,7 +83,6 @@ You may obtain a copy of the License at
 			
 	<!-- XML format -->
 	<target name="bvt-xml" depends="clean" description="task to run the LexBIG test suite and produce a report with extensive information for each test case in xml format">
-
 		<junit printsummary="true" haltonfailure="false">
 					<classpath refid="test.classpath"/>
 					<formatter type="brief" usefile="false"/>
