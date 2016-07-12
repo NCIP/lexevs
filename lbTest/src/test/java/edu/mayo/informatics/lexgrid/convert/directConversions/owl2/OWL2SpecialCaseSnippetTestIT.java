@@ -260,5 +260,20 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		assertTrue(prop.getValue().getContent().equals("A history is a process. (axiom label in BFO2 Reference: [138-001])"));
 		assertTrue(validatePropertyQualifierFromProperty(prop, "138-001"));
 	}
+	
+	@Test
+	public void testLoadAnnotationsAsQualifiers() throws LBException{
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("2015-09-15");
+		CodedNodeGraph newCng = lbs.getNodeGraph("http://purl.obolibrary.org/obo/obi.owl", versionOrTag , null);
+	 newCng= newCng.restrictToAssociations(Constructors.createNameAndValueList("has curation status"), null);
+	ResolvedConceptReferenceList list = newCng.resolveAsList(
+			Constructors.createConceptReference("IAO_0000033", 
+					"http://purl.obolibrary.org/obo/obi.owl"), 
+			true, true, 10, 10, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateTarget("IAO_0000122", itr));
+	}
 
 }

@@ -224,6 +224,22 @@ public class OwlApi2LG {
 
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
+    
+    private static enum NonTraversableNamespace{
+        DC("http://purl.org/dc/elements/1.1/"), 
+        RDFS("http://www.w3.org/2000/01/rdf-schema#"),
+        OWL("http://www.w3.org/2002/07/owl#");
+        
+        private final String namespace;
+        
+        NonTraversableNamespace(String namesp){
+            this.namespace = namesp;
+        }
+        
+        public String getNamespace(){
+           return namespace;
+        }
+    }
     /**
      * Create a new instance for conversion.
      * 
@@ -459,6 +475,39 @@ public class OwlApi2LG {
             for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
                 //TODO
             }
+            Iterator<OWLAnnotation> itr = owlClass.getAnnotations(ontology).iterator();
+            while (itr.hasNext()) {
+                OWLAnnotation annot = itr.next();
+                if (annot.getValue() instanceof IRI) {
+                    if (ontology.containsIndividualInSignature((IRI) annot.getValue())) {
+                        if (ontology.getEntitiesInSignature((IRI) annot.getValue()).iterator().next() instanceof OWLNamedIndividual) {
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+                            if (lgAssoc == null) {
+                                return;
+                            }
+                            OWLAnnotation anno = annotationAxiom.getAnnotation();
+                            String prefix = owlClass.getIRI().getStart();
+                            relateAssocSourceWithAnnotationTarget(EntityTypes.INSTANCE, lgAssoc, source, anno,
+                                    annotationAxiom, prefix);
+                        }
+                    }
+
+                    // No current use case for this, but it's there if needed.
+                    if (ontology.containsClassInSignature((IRI) annot.getValue())) {
+                        if (ontology.getEntitiesInSignature((IRI) annot.getValue()).iterator().next() instanceof OWLClass) {
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+                            if (lgAssoc == null) {
+                                return;
+                            }
+                            OWLAnnotation anno = annotationAxiom.getAnnotation();
+                            String prefix = owlClass.getIRI().getStart();
+                            relateAssocSourceWithAnnotationTarget(EntityTypes.INSTANCE, lgAssoc, source, anno,
+                                    annotationAxiom, prefix);
+                        }
+                    }
+            }
+            }
+
         }
 
     }
@@ -2059,8 +2108,16 @@ public class OwlApi2LG {
                 if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
                     addAnnotationPropertyAssociations(annotationProperty);
                 }
-                } 
-        }
+                }
+          //Filter out dc/owl/rdfs annotationPropertyTypes
+          //Some remaining may also never be actively defined as associations
+          if(isPossibleOBODefinedOrOtherAssociation(annotationProperty)){
+              addAnnotationPropertyAssociations(annotationProperty);
+          }
+
+      }
+        
+        
         
         /*
          * for (Iterator individuals = owlModel_.getOWLIndividuals().iterator();
@@ -2068,6 +2125,16 @@ public class OwlApi2LG {
          * individuals.next(); addAnnotationPropertyAssociations(individual); }
          */
 
+    }
+
+    private boolean isPossibleOBODefinedOrOtherAssociation(OWLAnnotationProperty annotationProperty) {
+        if(annotationProperty.getIRI().getStart().equals(NonTraversableNamespace.DC.getNamespace()))
+        {return false;}
+        if(annotationProperty.getIRI().getStart().equals(NonTraversableNamespace.RDFS.getNamespace()))
+        {return false;}
+        if(annotationProperty.getIRI().getStart().equals(NonTraversableNamespace.OWL.getNamespace()))
+        {return false;}
+        return true;
     }
 
     private void addAnnotationPropertyAssociations(OWLAnnotationProperty annotationProperty) {
@@ -2082,6 +2149,10 @@ public class OwlApi2LG {
         for(OWLAnnotationAssertionAxiom ax : assertions){
             Property prop = new Property();
             prop.setPropertyName(ax.getProperty().getIRI().getFragment());
+            //If not a literal -- don't try to add it as a property.
+            if(ax.getValue() instanceof IRI){
+                continue;
+            }
             OWLLiteral literal = (OWLLiteral) ax.getValue();
             prop.setValue(Constructors.createText(literal.getLiteral()));
             assocWrap.addProperty(prop);
@@ -2373,6 +2444,10 @@ public class OwlApi2LG {
     protected String resolveConceptIDfromIRI(IRI iri){
        return owlClassName2Conceptcode_.get(iri.toString());
     }
+    
+    protected String resolveInstanceIDfromIRI(IRI iri){
+        return owlInstanceName2code_.get(iri.toString());
+     }
     
     
     protected void processAllAnnotationProperties(Snapshot snap) {
@@ -2976,12 +3051,20 @@ public class OwlApi2LG {
     
     protected void relateAssocSourceWithAnnotationTarget(EntityTypes type, AssociationWrapper aw,
             AssociationSource source, OWLAnnotation tgtResource, OWLAxiom ax, String prefix) {
-        //OWLAnnotationValue val = tgtResource.getValue();
+        String targetID = null;
+        IRI targetIri = null;
+        if(tgtResource.getValue() instanceof OWLLiteral){
         OWLLiteral val = (OWLLiteral) tgtResource.getValue();
-        String targetID = val.getLiteral();
-        IRI targetIri = IRI.create(targetID);
-        if (type == EntityTypes.CONCEPT) {
+        targetID = val.getLiteral();
+        targetIri = IRI.create(targetID);
+        }else if (tgtResource.getValue() instanceof IRI){
+           targetIri = (IRI)tgtResource.getValue();
+        }
+        
+        if (type == EntityTypes.CONCEPT ) {
             targetID = resolveConceptIDfromIRI(targetIri);
+        }else if (type == EntityTypes.INSTANCE){
+            targetID = resolveInstanceIDfromIRI(targetIri);
         }
 
         if (StringUtils.isNotBlank(targetID)) {
@@ -3100,8 +3183,7 @@ public class OwlApi2LG {
         if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.setApproxNumConcepts(new Long(lgScheme_.getEntities().getEntity().length));
         } else {
-            CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
-                    .getCodingSchemeService();
+        	
             lgScheme_.setApproxNumConcepts(new Long(conceptCount_));
 
             String revisionId = UUID.randomUUID().toString();
@@ -3134,9 +3216,7 @@ public class OwlApi2LG {
             SupportedMappings lgSupportedMappings_) {
         String label;
         label = parseQualifierNameFromManchesterRender(renderer.render(rdfProp));
- //           label = rdfProp.getClassExpressionType().getName();
             if (label.isEmpty()) {
-//                label = renderer.render(rdfProp);
                 label = rdfProp.getClassExpressionType().getName();
             }
          String value = parseQualifierValueFromManchesterRender(renderer.render(rdfProp)); 
@@ -3153,26 +3233,13 @@ public class OwlApi2LG {
 
           builder.append(qualifierTokens[i].trim()); 
 
- //         if(i < qualifierTokens.length - 1){
               builder.append(" ");
-//          }
       }
       return builder.toString().trim();
     }
 
     private String parseQualifierNameFromManchesterRender(String rendered){
         String[] tokens = rendered.split(" ");
-//        String[] qualifierTokens = Arrays.copyOfRange(tokens, 0, tokens.length - 1);
-//        StringBuilder builder = new StringBuilder();
-//        for(int i = 0; i < qualifierTokens.length; i++){  
-//            if(i > 0){
-//            builder.append(qualifierTokens[i].trim()); 
-//            }
-//            if(i < qualifierTokens.length){
-//                builder.append(" ");
-//            }
-//        }
-//        return builder.toString();
         return tokens[1];
     }
     
