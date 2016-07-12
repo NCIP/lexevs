@@ -90,14 +90,6 @@ You may obtain a copy of the License at
                 <include name="windows/*"/>
             </fileset>
         </pack>
-        <pack name="Linux Runtime" preselected="yes" required="no">
-            <description>GUI Installation for the Linux platform</description>
-            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
-                <include name="Linux-lbGUI.sh"/>
-                <include name="linux/*"/>
-            </fileset>
-            <executable targetfile="$INSTALL_PATH/gui/Linux-lbGUI.sh" stage="never" keep="true"></executable>
-        </pack>
         <pack name="Linux x86_64 Runtime" preselected="yes" required="no">
             <description>GUI Installation for the Linux x86_64 bit platform</description>
             <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
