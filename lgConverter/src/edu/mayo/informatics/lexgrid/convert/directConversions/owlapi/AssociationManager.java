@@ -68,10 +68,12 @@ public class AssociationManager {
 
         if (OwlApi2LGConstants.DC_ASSOCIATIONS.equals(container)) {
             aw.setAssociationPrediate( RelationsUtil.subsume(lgRelationsContainer_Assoc, aw.getAssociationPredicate()));
-            owlRelName2lgAssoc_.put(aw.getAssociationEntity().getEntityCode(), aw);
+            if(!owlRelName2lgAssoc_.containsKey(aw.getAssociationEntity().getEntityCode()))
+            {owlRelName2lgAssoc_.put(aw.getAssociationEntity().getEntityCode(), aw);}
         } else if (OwlApi2LGConstants.DC_ROLES.equals(container)) {
             aw.setAssociationPrediate( RelationsUtil.subsume(lgRelationsContainer_Roles, aw.getAssociationPredicate()) );
-            owlRelName2lgRoles_.put(aw.getAssociationEntity().getEntityCode(), aw);
+            if(!owlRelName2lgRoles_.containsKey(aw.getAssociationEntity().getEntityCode())){
+            owlRelName2lgRoles_.put(aw.getAssociationEntity().getEntityCode(), aw);}
         }
         aw.setRelationsContainerName(relContainer.getContainerName());
 
