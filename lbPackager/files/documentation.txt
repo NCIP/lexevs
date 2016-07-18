@@ -15,7 +15,7 @@ https://wiki.nci.nih.gov/display/LexEVS/LexEVS+Documentation+and+Training
                                          
 ###########################################
 
-The default connection set up for LexEVS 6.2 is MySql 5.5.  If you have MySql 5.5 installed
+The default connection set up for LexEVS 6.4 is MySql 5.5.  If you have MySql 5.5 installed
 then you will still need to download and install the MySql JDBC connector and copy it to
 the runtime/sqlDrivers folder before starting up LexEVS. License restrictions prevent
 shipping of this driver, but it can be downloaded here:

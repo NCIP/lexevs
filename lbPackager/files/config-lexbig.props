@@ -172,7 +172,7 @@ DB_PARAM=
 # The database driver.
 # NOTE: This should typically not be changed after content has been loaded.
 # !!!IMPORTANT!!! 
-#  * Only PostgreSQL and HSQLDB drivers are packaged with LexEVS.
+#  * Only the HSQLDB driver is packaged with LexEVS.
 #    ALL other drivers must be downloaded and placed in the
 #    /runtime/sqlDrivers directory of the LexEVS installation.
 #    This INCLUDES MySQL drivers, which may be downloaded here: 
