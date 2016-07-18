@@ -400,9 +400,6 @@ You may obtain a copy of the License at
 
 	
 	<target name="predef" description="copy predefined content to the build directory">
-		<!-- Product docs -->
-		<copy toDir="${pkg-doc}" file="${file.dir}/LexBIG_Installation_Admin_Guide.pdf"/>
-		<copy toDir="${pkg-doc}" file="${file.dir}/LexBIG_Programmer_Guide.pdf"/>
         <!-- Config files -->
 		<copy toFile="${pkg-resources-config}/lbconfig.props" file="${file.dir}/config-lexbig.props"/>
 		<copy toDir="${pkg-resources}" file="${lbTest}/resources/testData/SystemReleaseHistory.txt"/>
@@ -911,16 +908,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<property name="cmdLineInstallFile" value="${prodID}-install-config-${vBuild}.xml"/>
 		<copy file="${file.dir}/izpack-lexbig-cmdline-install.xml" tofile="${dist.dir}/${cmdLineInstallFile}"/>
 		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_INSTALLPATH@@" value="/home/LexGrid/${prodID}/${vBuild}"/>
-		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_PRODID@@" value="${prodID}"/>
-		<!-- Copy the install/admin guide for separate upload -->
-		<!-- The guide is imbedded, but they also need the guide to -->
-		<!-- perform the initial installation. -->
-		<copy file="${file.dir}/LexBIG_Installation_Admin_Guide.pdf" tofile="${dist.dir}/LexBIG-install-admin-guide-${vBuild}.pdf"/>
-		<!-- Also copy the programmer guide for separate upload -->
-		<!-- The guide is imbedded, but they may want to reference the guide -->
-		<!-- to learn about the API before installation. -->
-		<copy file="${file.dir}/LexBIG_Programmer_Guide.pdf" tofile="${dist.dir}/LexBIG-programmer-guide-${vBuild}.pdf"/>
-		
+		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_PRODID@@" value="${prodID}"/>	
 		<!-- copy the extLib dir to the dist dir, zip and add a versioned name. --> 
 		<zip destfile="${dist.dir}/extLib-${vBuild}.zip" basedir="${pkg-components}/extLib"/> 	
 	</target>
