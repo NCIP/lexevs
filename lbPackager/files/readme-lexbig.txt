@@ -1,2 +1,2 @@
 Release notes are available here:
-https://wiki.nci.nih.gov/display/LexEVS/LexEVS+6.2+Release+Notes
+https://wiki.nci.nih.gov/display/LexEVS/LexEVS+6.4+Release+Notes
