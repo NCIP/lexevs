@@ -29,7 +29,7 @@ You may obtain a copy of the License at
         <appversion>@@REPLACED_BY_BUILD_APPVERSION@@</appversion>
         <authors>
             <author email=""
-                name="Mayo Clinic Division of Biomedical Statistics and Informatics"/>
+                name="Mayo Clinic for National Institutes of Health (NIH), National Cancer Institute (NCI) Enterprise Vocabulary Services (EVS)"/>
         </authors>
         <url>@@REPLACED_BY_BUILD_INFO_URL@@</url>
         <javaversion>1.7</javaversion>

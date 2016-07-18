@@ -1,8 +1,8 @@
 ===============================================================================
 Overview
 ===============================================================================
-Provides materials created by Mayo Clinic Division of Biomedical Informatics
-in fulfillment of the LexGrid Vocabulary Services for NCBO� (LexBIO) project.
+Provides materials created by Mayo Clinic in fulfillment of the LexGrid 
+Vocabulary Services for NCBO� (LexBIO) project.
 
 This product incorporates code and other materials developed for the LexGrid
 Vocabulary Services for caBIG� (LexBIG) project.  The LexBIG service layer, as
