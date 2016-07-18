@@ -1,5 +1,5 @@
 LexEVS
-Copyright 2004 Mayo Foundation for Medical Education and 
+Copyright 2016 Mayo Foundation for Medical Education and 
  Research (MFMER)
 
 This project is distributed under the Eclipse Public License.
