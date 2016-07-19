@@ -7,7 +7,7 @@
      
 Documentation for installation, administration and development of LexEVS can be found here:
 
-https://wiki.nci.nih.gov/display/LexEVS/LexEVS+Documentation+and+Training
+https://wiki.nci.nih.gov/display/LexEVS/LexEVS+6.x+Documentation
 
 ###########################################
                                          
@@ -20,5 +20,4 @@ then you will still need to download and install the MySql JDBC connector and co
 the runtime/sqlDrivers folder before starting up LexEVS. License restrictions prevent
 shipping of this driver, but it can be downloaded here:
 
-http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
-
+https://sourceforge.net/projects/webxcreator/files/lib/mysql-connector-java-5.1.6-bin.jar/download
