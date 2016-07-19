@@ -26,7 +26,7 @@ You may obtain a copy of the License at
 	<!-- *** TO BE CUSTOMIZED FOR EACH BUILD *** -->
 	<!-- *************************************** -->
 	<property name="prodID" value="LexEVS"/> <!-- Product ID -->
-	<property name="prodTitle" value = "LexGrid Enterprise Vocabulary Services for EVS, LexEVS"/><!-- Product Title -->
+	<property name="prodTitle" value = "LexEVS"/><!-- Product Title -->
 	
 	<target name="init-ivy">
 	
@@ -433,7 +433,7 @@ You may obtain a copy of the License at
 	
 	<target name="predef-cbio" depends="predef" description="copy predefined content specific to cBIO projects">
 		<copy toFile="${pkg-resources-config}/lbconfig.props" file="${file.dir}/config-lexbio.props" overwrite="true"/>
-		<copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbio.txt" overwrite="true"/>
+		<!--copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbio.txt" overwrite="true"/-->
 		<copy toFile="${basedir}/langsel-image.png" file="${file.dir}/langsel-image-lexbio.png" overwrite="true"/>
 	</target>	
 
