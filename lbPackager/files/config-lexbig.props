@@ -176,7 +176,7 @@ DB_PARAM=
 #    ALL other drivers must be downloaded and placed in the
 #    /runtime/sqlDrivers directory of the LexEVS installation.
 #    This INCLUDES MySQL drivers, which may be downloaded here: 
-#     - http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
+#     - https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
 #DB_DRIVER=com.mysql.jdbc.Driver
 #DB_DRIVER=org.postgresql.Driver
 DB_DRIVER=org.hsqldb.jdbcDriver

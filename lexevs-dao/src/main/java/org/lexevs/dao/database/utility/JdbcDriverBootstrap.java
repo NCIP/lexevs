@@ -29,7 +29,7 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class JdbcDriverBootstrap implements FactoryBean{
 	
-	private static String MYSQL_DRIVER_URL = "http://mirrors.ibiblio.org/pub/mirrors/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar";
+	private static String MYSQL_DRIVER_URL = "https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar";
 	private static String ORACLE_DRIVER_URL = "http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html";
 
 	/** The driver class. */
