@@ -20,4 +20,4 @@ then you will still need to download and install the MySql JDBC connector and co
 the runtime/sqlDrivers folder before starting up LexEVS. License restrictions prevent
 shipping of this driver, but it can be downloaded here:
 
-https://sourceforge.net/projects/webxcreator/files/lib/mysql-connector-java-5.1.6-bin.jar/download
+https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar
