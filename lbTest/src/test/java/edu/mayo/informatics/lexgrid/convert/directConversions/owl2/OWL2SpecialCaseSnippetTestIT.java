@@ -280,5 +280,25 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 				.iterateResolvedConceptReference();
 		assertTrue(validateTarget("IAO_0000122", itr));
 	}
+	
+	@Test
+	public void testLoadAppropriateAnnotationPredicatesInOrder() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(
+				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+				versionOrTag, null);
+		newCng = newCng.restrictToAssociations(
+				Constructors.createNameAndValueList("imported from"),
+				null);
+		ResolvedConceptReferenceList list = newCng.resolveAsList(Constructors
+				.createConceptReference("OBI_0500000",
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN),
+				true, true, 10, 10, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list
+				.iterateResolvedConceptReference();
+		assertTrue(validateTarget("obi.owl", itr));
+	}
 
 }

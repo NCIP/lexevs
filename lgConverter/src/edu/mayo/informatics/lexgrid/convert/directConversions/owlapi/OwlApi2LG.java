@@ -461,11 +461,9 @@ public class OwlApi2LG {
                         if (ontology.getEntitiesInSignature((IRI) annot.getValue()).iterator().next() instanceof OWLNamedIndividual) {
                             OWLAnnotation anno = annotationAxiom.getAnnotation();
                             String prefix = owlClass.getIRI().getStart();
-                            //TODO:  create
-
                             AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
                             if (lgAssoc == null) {
-                                lgAssoc = addAssociation(annot);
+                                lgAssoc = addAssociation(anno);
                                 AssociationPredicate pred = lgAssoc.getAssociationPredicate();
                                 storeAssociationPredicateIfNeeded(lgScheme_.getCodingSchemeURI(), lgScheme_.getRepresentsVersion(), 
                                         lgAssoc.getRelationsContainerName(), pred);
