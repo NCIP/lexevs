@@ -62,6 +62,42 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	}
 	
 	@Test
+	public void testEntityHasCorrectPropertyQualification() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("BFO_0000001"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	ResolvedConceptReference ref = itr.next();
+	for(Property prop : ref.getEntity().getAllProperties()){
+		if(validatePropertyQualifierFromProperty(prop, "http://purl.obolibrary.org/obo/bfo/axiom/0000004")){
+			return;
+		}
+	}
+	fail();
+	}
+	
+	@Test
+	public void testEntityHasCorrectPropertyQualifierName() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("BFO_0000001"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	ResolvedConceptReference ref = itr.next();
+	for(Property prop : ref.getEntity().getAllProperties()){
+		if(validatePropertyQualifierNameFromProperty(prop, "has axiom label")){
+			return;
+		}
+	}
+	fail();
+	}
+	
+	@Test
 	public void testRestrictOnHasRoleProperty() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();

@@ -1425,6 +1425,16 @@ public class OwlApi2LG {
     private void processAnnotationsOfAnnotationAssertionAxiom(OWLAnnotationAssertionAxiom prop, Property lgProp) {
         for (OWLAnnotation annotation : prop.getAnnotations()) {
             String annotationName = getLocalName(annotation.getProperty());
+            Iterator<OWLAnnotation> itr = annotation.getProperty().asOWLAnnotationProperty().getAnnotations(ontology).iterator();
+            if(itr.hasNext()){
+                while(itr.hasNext()){
+                    OWLAnnotation annot = itr.next();
+                    if(annot.getValue() instanceof OWLLiteral){
+                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
+                    break;
+                    }
+                }
+            }
             String annotationValue = "";
             OWLAnnotationValue value = annotation.getValue();
             if (value instanceof OWLLiteral) {
@@ -1433,7 +1443,13 @@ public class OwlApi2LG {
             }
             if(value instanceof IRI){
                 IRI iri = (IRI)value;
-                annotationValue = iri.getFragment();
+                if(!ontology.getEntitiesInSignature(iri).isEmpty()){
+                  OWLEntity entity = ontology.getEntitiesInSignature(iri).iterator().next();
+                  annotationValue =  entity.toString();
+                }
+                else{
+                annotationValue = iri.toString();
+                }
             }
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
