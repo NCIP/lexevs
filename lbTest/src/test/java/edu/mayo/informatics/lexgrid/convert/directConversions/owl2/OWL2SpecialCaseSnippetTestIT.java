@@ -54,7 +54,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	ResolvedConceptReference ref = itr.next();
 	for(Property prop : ref.getEntity().getAllProperties()){
-		if(validatePropertyQualifierFromProperty(prop, "009-002")){
+		if(validatePropertyQualifierFromProperty(prop, "http://purl.obolibrary.org/obo/bfo/axiom/009-002")){
 			return;
 		}
 	}
@@ -294,7 +294,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 		}
 		assertTrue(prop.getValue().getContent().equals("A history is a process. (axiom label in BFO2 Reference: [138-001])"));
-		assertTrue(validatePropertyQualifierFromProperty(prop, "138-001"));
+		assertTrue(validatePropertyQualifierFromProperty(prop, "http://purl.obolibrary.org/obo/bfo/axiom/138-001"));
 	}
 	
 	@Test
