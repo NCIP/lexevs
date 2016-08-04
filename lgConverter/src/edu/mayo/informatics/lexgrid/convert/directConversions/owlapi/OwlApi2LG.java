@@ -20,7 +20,6 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -57,6 +56,7 @@ import org.LexGrid.custom.relations.RelationsUtil;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
@@ -69,10 +69,11 @@ import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntax;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -129,7 +130,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLPropertyExpression;
-import org.semanticweb.owlapi.model.OWLPropertyRange;
 import org.semanticweb.owlapi.model.OWLQuantifiedDataRestriction;
 import org.semanticweb.owlapi.model.OWLQuantifiedObjectRestriction;
 import org.semanticweb.owlapi.model.OWLRestriction;
@@ -140,25 +140,18 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.util.OWLObjectVisitorExAdapter;
 import org.semanticweb.owlapi.util.ShortFormProvider;
-import org.semanticweb.owlapi.util.SimpleRenderer;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
-import edu.stanford.smi.protegex.owl.model.OWLComplementClass;
-import edu.stanford.smi.protegex.owl.model.RDFSNamedClass;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
-import uk.ac.manchester.cs.owl.owlapi.OWLClassImpl;
-
-import org.apache.commons.lang.time.DateUtils;
 
 /**
  * This is the main class containing the logic for the conversion from OWL to
@@ -224,6 +217,7 @@ public class OwlApi2LG {
 
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
+    
     /**
      * Create a new instance for conversion.
      * 
@@ -459,6 +453,43 @@ public class OwlApi2LG {
             for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
                 //TODO
             }
+            Iterator<OWLAnnotation> itr = owlClass.getAnnotations(ontology).iterator();
+            while (itr.hasNext()) {
+                OWLAnnotation annot = itr.next();
+                if (annot.getValue() instanceof IRI) {
+                    if (ontology.containsIndividualInSignature((IRI) annot.getValue())) {
+                        if (ontology.getEntitiesInSignature((IRI) annot.getValue()).iterator().next() instanceof OWLNamedIndividual) {
+                            OWLAnnotation anno = annotationAxiom.getAnnotation();
+                            String prefix = owlClass.getIRI().getStart();
+                            AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+                            if (lgAssoc == null) {
+                                lgAssoc = addAssociation(anno);
+                                AssociationPredicate pred = lgAssoc.getAssociationPredicate();
+                                storeAssociationPredicateIfNeeded(lgScheme_.getCodingSchemeURI(), lgScheme_.getRepresentsVersion(), 
+                                        lgAssoc.getRelationsContainerName(), pred);
+                                addAnnotationPropertyAssociations(anno.getProperty());
+                            }
+                            relateAssocSourceWithAnnotationTarget(EntityTypes.INSTANCE, lgAssoc, source, anno,
+                                    annotationAxiom, prefix);
+                        }
+                    }
+
+                    // No current use case for this, but it's there if needed.
+//                    if (ontology.containsClassInSignature((IRI) annot.getValue())) {
+//                        if (ontology.getEntitiesInSignature((IRI) annot.getValue()).iterator().next() instanceof OWLClass) {
+//                            AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
+//                            if (lgAssoc == null) {
+//                                return;
+//                            }
+//                            OWLAnnotation anno = annotationAxiom.getAnnotation();
+//                            String prefix = owlClass.getIRI().getStart();
+//                            relateAssocSourceWithAnnotationTarget(EntityTypes.INSTANCE, lgAssoc, source, anno,
+//                                    annotationAxiom, prefix);
+//                        }
+//                    }
+            }
+            }
+
         }
 
     }
@@ -1394,6 +1425,16 @@ public class OwlApi2LG {
     private void processAnnotationsOfAnnotationAssertionAxiom(OWLAnnotationAssertionAxiom prop, Property lgProp) {
         for (OWLAnnotation annotation : prop.getAnnotations()) {
             String annotationName = getLocalName(annotation.getProperty());
+            Iterator<OWLAnnotation> itr = annotation.getProperty().asOWLAnnotationProperty().getAnnotations(ontology).iterator();
+            if(itr.hasNext()){
+                while(itr.hasNext()){
+                    OWLAnnotation annot = itr.next();
+                    if(annot.getValue() instanceof OWLLiteral){
+                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
+                    break;
+                    }
+                }
+            }
             String annotationValue = "";
             OWLAnnotationValue value = annotation.getValue();
             if (value instanceof OWLLiteral) {
@@ -1402,7 +1443,13 @@ public class OwlApi2LG {
             }
             if(value instanceof IRI){
                 IRI iri = (IRI)value;
-                annotationValue = iri.getFragment();
+                if(!ontology.getEntitiesInSignature(iri).isEmpty()){
+                  OWLEntity entity = ontology.getEntitiesInSignature(iri).iterator().next();
+                  annotationValue =  entity.toString();
+                }
+                else{
+                annotationValue = iri.toString();
+                }
             }
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
@@ -2059,8 +2106,11 @@ public class OwlApi2LG {
                 if(OwlAx.getRange().getFragment().equals(OWL2Datatype.XSD_ANY_URI.getShortName())){
                     addAnnotationPropertyAssociations(annotationProperty);
                 }
-                } 
-        }
+                }
+
+      }
+        
+        
         
         /*
          * for (Iterator individuals = owlModel_.getOWLIndividuals().iterator();
@@ -2069,6 +2119,9 @@ public class OwlApi2LG {
          */
 
     }
+
+    
+    
 
     private void addAnnotationPropertyAssociations(OWLAnnotationProperty annotationProperty) {
        addAnnotationAsAssociation(annotationProperty);
@@ -2082,6 +2135,10 @@ public class OwlApi2LG {
         for(OWLAnnotationAssertionAxiom ax : assertions){
             Property prop = new Property();
             prop.setPropertyName(ax.getProperty().getIRI().getFragment());
+            //If not a literal -- don't try to add it as a property.
+            if(ax.getValue() instanceof IRI){
+                continue;
+            }
             OWLLiteral literal = (OWLLiteral) ax.getValue();
             prop.setValue(Constructors.createText(literal.getLiteral()));
             assocWrap.addProperty(prop);
@@ -2134,6 +2191,42 @@ public class OwlApi2LG {
         // Add to supported associations ...
 
         lgSupportedMappings_.registerSupportedAssociation(label, owlProp.getIRI().toString(), label, propertyName,
+                nameSpace, true);
+        return assocWrap;
+
+    }
+    
+    protected AssociationWrapper addAssociation(OWLAnnotation owlProp) {
+        AssociationWrapper assocWrap = new AssociationWrapper();
+        String propertyName = getLocalName(owlProp.getProperty());
+        assocWrap.setEntityCode(propertyName);
+        String label = resolveLabel(owlProp.getProperty());
+        assocWrap.setAssociationName(label);
+        assocWrap.setForwardName(getAssociationLabel(label, true));
+        String nameSpace = getNameSpace(owlProp.getProperty());
+        assocWrap.setEntityCodeNamespace(nameSpace);
+        
+
+            assocWrap = assocManager.addAssociation(lgRelationsContainer_Assoc, assocWrap);
+
+        if (owlProp instanceof OWLObjectProperty) {
+            OWLObjectProperty objectProp = (OWLObjectProperty) owlProp;
+            resolveAssociationProperty(assocWrap.getAssociationEntity(), objectProp);
+            assocWrap.setIsTransitive(objectProp.isTransitive(ontology));
+        } else if (owlProp instanceof OWLDataProperty) {
+            OWLDataProperty dataProp = (OWLDataProperty) owlProp;
+            resolveAssociationProperty(assocWrap.getAssociationEntity(), dataProp);
+            assocWrap.setIsTransitive(Boolean.FALSE);
+            if (prefManager.getDataTypePropertySwitch().equals("both")
+                    || prefManager.getDataTypePropertySwitch().equals("conceptProperty")) {
+                addToSupportedPropertyAndMap(label, propertyName, dataProp);
+            }
+
+            owlDatatypeName2label_.put(propertyName, label);
+        }
+        // Add to supported associations ...
+
+        lgSupportedMappings_.registerSupportedAssociation(label, owlProp.getProperty().getIRI().toString(), label, propertyName,
                 nameSpace, true);
         return assocWrap;
 
@@ -2373,6 +2466,10 @@ public class OwlApi2LG {
     protected String resolveConceptIDfromIRI(IRI iri){
        return owlClassName2Conceptcode_.get(iri.toString());
     }
+    
+    protected String resolveInstanceIDfromIRI(IRI iri){
+        return owlInstanceName2code_.get(iri.toString());
+     }
     
     
     protected void processAllAnnotationProperties(Snapshot snap) {
@@ -2976,12 +3073,48 @@ public class OwlApi2LG {
     
     protected void relateAssocSourceWithAnnotationTarget(EntityTypes type, AssociationWrapper aw,
             AssociationSource source, OWLAnnotation tgtResource, OWLAxiom ax, String prefix) {
-        //OWLAnnotationValue val = tgtResource.getValue();
+
+        String targetID = null;
+        IRI targetIri = null;
+        if(tgtResource.getValue() instanceof OWLLiteral){
         OWLLiteral val = (OWLLiteral) tgtResource.getValue();
-        String targetID = val.getLiteral();
-        IRI targetIri = IRI.create(targetID);
-        if (type == EntityTypes.CONCEPT) {
+        targetID = val.getLiteral();
+        targetIri = IRI.create(targetID);
+        }else if (tgtResource.getValue() instanceof IRI){
+           targetIri = (IRI)tgtResource.getValue();
+        }
+        
+        if (type == EntityTypes.CONCEPT ) {
             targetID = resolveConceptIDfromIRI(targetIri);
+        }else if (type == EntityTypes.INSTANCE){
+            targetID = resolveInstanceIDfromIRI(targetIri);
+        }
+
+        if (StringUtils.isNotBlank(targetID)) {
+            String nameSpace = getNameSpace(targetIri);
+            AssociationTarget target = CreateUtils.createAssociationTarget(targetID, nameSpace);
+            processAnnotationsOfOWLAxiom(ax, target);
+            relateAssociationSourceTarget(aw, source, target);
+           
+        }
+    }
+    
+    protected void relateAssocSourceWithAnnotationIRITarget(EntityTypes type, AssociationWrapper aw,
+            AssociationSource source, OWLAnnotation tgtResource, OWLAxiom ax, String prefix) {
+        String targetID = null;
+        IRI targetIri = null;
+        if(tgtResource.getValue() instanceof OWLLiteral){
+        OWLLiteral val = (OWLLiteral) tgtResource.getValue();
+        targetID = val.getLiteral();
+        targetIri = IRI.create(targetID);
+        }else if (tgtResource.getValue() instanceof IRI){
+           targetIri = (IRI)tgtResource.getValue();
+        }
+        
+        if (type == EntityTypes.CONCEPT ) {
+            targetID = resolveConceptIDfromIRI(targetIri);
+        }else if (type == EntityTypes.INSTANCE){
+            targetID = resolveInstanceIDfromIRI(targetIri);
         }
 
         if (StringUtils.isNotBlank(targetID)) {
@@ -3075,6 +3208,26 @@ public class OwlApi2LG {
         }
     }
 
+    public void storeAssociationPredicateIfNeeded(final String uri, final String version, final String relationsName,
+            final AssociationPredicate predicate) {
+        DaoCallbackService daoCallbackService = databaseServiceManager.getDaoCallbackService();
+        daoCallbackService.executeInDaoLayer(new DaoCallback<Object>() {
+
+            public Object execute(DaoManager daoManager) {
+                String codingSchemeId = daoManager.getCurrentCodingSchemeDao().getCodingSchemeUIdByUriAndVersion(uri,
+                        version);
+                String relationsId = daoManager.getCurrentAssociationDao()
+                        .getRelationUId(codingSchemeId, relationsName);
+                //Adding this step since predicates are not versionable and may be changed in revisions.
+               String predicateUId = daoManager.getCurrentAssociationDao().getAssociationPredicateUIdByContainerName(codingSchemeId, relationsName, predicate.getAssociationName());
+                if(predicateUId == null)
+               daoManager.getCurrentAssociationDao().insertAssociationPredicate(codingSchemeId, relationsId,
+                        predicate, true);
+                return null;
+            }
+        });
+    }
+    
     String getVersionInfo() {
         String version = "";
         for (OWLAnnotation annotation : ontology.getAnnotations()) {
@@ -3100,8 +3253,7 @@ public class OwlApi2LG {
         if (memoryProfile_ == OwlApi2LGConstants.MEMOPT_ALL_IN_MEMORY) {
             lgScheme_.setApproxNumConcepts(new Long(lgScheme_.getEntities().getEntity().length));
         } else {
-            CodingSchemeService service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
-                    .getCodingSchemeService();
+        	
             lgScheme_.setApproxNumConcepts(new Long(conceptCount_));
 
             String revisionId = UUID.randomUUID().toString();
@@ -3134,9 +3286,7 @@ public class OwlApi2LG {
             SupportedMappings lgSupportedMappings_) {
         String label;
         label = parseQualifierNameFromManchesterRender(renderer.render(rdfProp));
- //           label = rdfProp.getClassExpressionType().getName();
             if (label.isEmpty()) {
-//                label = renderer.render(rdfProp);
                 label = rdfProp.getClassExpressionType().getName();
             }
          String value = parseQualifierValueFromManchesterRender(renderer.render(rdfProp)); 
@@ -3153,26 +3303,13 @@ public class OwlApi2LG {
 
           builder.append(qualifierTokens[i].trim()); 
 
- //         if(i < qualifierTokens.length - 1){
               builder.append(" ");
-//          }
       }
       return builder.toString().trim();
     }
 
     private String parseQualifierNameFromManchesterRender(String rendered){
         String[] tokens = rendered.split(" ");
-//        String[] qualifierTokens = Arrays.copyOfRange(tokens, 0, tokens.length - 1);
-//        StringBuilder builder = new StringBuilder();
-//        for(int i = 0; i < qualifierTokens.length; i++){  
-//            if(i > 0){
-//            builder.append(qualifierTokens[i].trim()); 
-//            }
-//            if(i < qualifierTokens.length){
-//                builder.append(" ");
-//            }
-//        }
-//        return builder.toString();
         return tokens[1];
     }
     

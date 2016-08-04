@@ -145,6 +145,20 @@ public class DataLoadTestBaseSpecialCases extends TestCase {
 		return validate;
 	}
 	
+	protected boolean validatePropertyQualifierNameFromProperty(Property prop, String name){
+		boolean validate = false;
+
+					for(PropertyQualifier pq: prop.getPropertyQualifier()){
+					if(pq.getPropertyQualifierName().equals(name))
+					validate = true;
+					break;
+					}
+				
+			
+		
+		return validate;
+	}
+	
 	public boolean validateCodeInList(String target,
 			Iterator<? extends ResolvedConceptReference> itr){
 		boolean validate = false;

@@ -54,7 +54,43 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	ResolvedConceptReference ref = itr.next();
 	for(Property prop : ref.getEntity().getAllProperties()){
-		if(validatePropertyQualifierFromProperty(prop, "009-002")){
+		if(validatePropertyQualifierFromProperty(prop, "http://purl.obolibrary.org/obo/bfo/axiom/009-002")){
+			return;
+		}
+	}
+	fail();
+	}
+	
+	@Test
+	public void testEntityHasCorrectPropertyQualification() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("BFO_0000001"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	ResolvedConceptReference ref = itr.next();
+	for(Property prop : ref.getEntity().getAllProperties()){
+		if(validatePropertyQualifierFromProperty(prop, "http://purl.obolibrary.org/obo/bfo/axiom/0000004")){
+			return;
+		}
+	}
+	fail();
+	}
+	
+	@Test
+	public void testEntityHasCorrectPropertyQualifierName() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("BFO_0000001"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	ResolvedConceptReference ref = itr.next();
+	for(Property prop : ref.getEntity().getAllProperties()){
+		if(validatePropertyQualifierNameFromProperty(prop, "has axiom label")){
 			return;
 		}
 	}
@@ -258,7 +294,47 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 		}
 		assertTrue(prop.getValue().getContent().equals("A history is a process. (axiom label in BFO2 Reference: [138-001])"));
-		assertTrue(validatePropertyQualifierFromProperty(prop, "138-001"));
+		assertTrue(validatePropertyQualifierFromProperty(prop, "http://purl.obolibrary.org/obo/bfo/axiom/138-001"));
+	}
+	
+	@Test
+	public void testLoadAnnotationsAsQualifiers() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(
+				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+				versionOrTag, null);
+		newCng = newCng.restrictToAssociations(
+				Constructors.createNameAndValueList("has curation status"),
+				null);
+		ResolvedConceptReferenceList list = newCng.resolveAsList(Constructors
+				.createConceptReference("IAO_0000033",
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN),
+				true, true, 10, 10, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list
+				.iterateResolvedConceptReference();
+		assertTrue(validateTarget("IAO_0000122", itr));
+	}
+	
+	@Test
+	public void testLoadAppropriateAnnotationPredicatesInOrder() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(
+				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+				versionOrTag, null);
+		newCng = newCng.restrictToAssociations(
+				Constructors.createNameAndValueList("imported from"),
+				null);
+		ResolvedConceptReferenceList list = newCng.resolveAsList(Constructors
+				.createConceptReference("OBI_0500000",
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN),
+				true, true, 10, 10, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list
+				.iterateResolvedConceptReference();
+		assertTrue(validateTarget("obi.owl", itr));
 	}
 
 }
