@@ -263,7 +263,7 @@ public abstract class LuceneLoaderCode {
 
             // This copy of the content is required for making "startsWith" or
             // "exactMatch" types of queries
-            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.toLowerCase(), false, true, false);
+            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.getBytes().length > 32000? propertyValue.substring(0, 1000) : propertyValue.toLowerCase(), false, true, false);
 
             if (normEnabled_) {
                 generator_.addTextField(NORM_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
