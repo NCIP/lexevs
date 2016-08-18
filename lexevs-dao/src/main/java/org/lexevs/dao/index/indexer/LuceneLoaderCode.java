@@ -263,8 +263,10 @@ public abstract class LuceneLoaderCode {
 
             // This copy of the content is required for making "startsWith" or
             // "exactMatch" types of queries
-            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.toLowerCase(), false, true, false);
-
+            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.getBytes().length > 32000? propertyValue.substring(0, 1000) : propertyValue.toLowerCase(), false, true, false);
+            if(propertyValue.getBytes().length > 32000){
+            	logger.warn("Term is of a size exceeding 32k bytes.  Truncating term that starts with: \"" + propertyValue.substring(0, 100) + "\"");
+            }
             if (normEnabled_) {
                 generator_.addTextField(NORM_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
             }
