@@ -89,6 +89,8 @@ public class OwlApi2LGConstants {
     public static final String ASSOC_DIFFERENTFROM_URI = OWL_NAMESPACE + "differentFrom";
     public static final String ASSOC_DISJOINTWITH = "disjointWith";
     public static final String ASSOC_DISJOINTWITH_URI = OWL_NAMESPACE + "disjointWith";
+    public static final String ASSOC_DISJOINTUNION = "disjointUnion";
+    public static final String ASSOC_DISJOINTUNION_URI = "disjointUnion";
     public static final String ASSOC_DOMAIN = "domain";
     public static final String ASSOC_DOMAIN_FWD = "domain";
     public static final String ASSOC_DOMAIN_URI = RDFS_NAMESPACE + "domain";
@@ -119,6 +121,9 @@ public class OwlApi2LGConstants {
     public static final String SUPP_HIERARCHY_ISA_URI = URI_MISSING;
     public static final String[] SUPP_HIERARCHY_ISA_ASSOCIATION_LIST =
         new String[] { ASSOC_SUBCLASSOF };
+    
+    /* Individual designation */
+    public static final String INSTANCE_SUFFIX = "_OWL_IND";
 
     /*
      * Indicate property names to be treated as specific classes of
@@ -127,11 +132,12 @@ public class OwlApi2LGConstants {
     public static final List<String> PRIORITIZED_COMMENT_NAMES = Arrays.asList(new String[] { "DesignNote", "Editor_Note",
             "Citation", "VA_Workflow_Comment", "rdfs:comment" });
     public static final List<String> PRIORITIZED_DEFINITION_NAMES = Arrays.asList(new String[] { "DEFINITION", "dDEFINITION",
-            "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition" });
+            "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition","definition", "rdf:Description" });
     public static final List<String> PRIORITIZED_PRESENTATION_NAMES = Arrays.asList(new String[] { "NCI_Preferred_Term",
             "Preferred_Name", "Display_Name", "Search_Name", "FULL_SYN", "Synonym", "VA_Print_Name",
             "VA_National_Formulary_Name", "VA_Abbreviation", "VA_Dose_Form_Print_Name", "VA_Trade_Name", "MeSH_Name",
             "NDFRT_Name", "RxNorm_Name", "rdfs:label" });
+    public static final String[] DATEFORMATS = {"MMMM dd, yyyy", "yyyy-dd-mm"}; 
 
     // Regular expressions to enable generic processing of the OWL source.
     // Defaults defined here, changeable via preferences.
@@ -170,4 +176,7 @@ public class OwlApi2LGConstants {
     
     //Complex properties namespace
     public static final String COMP_PROP_NAMESPACE = "ncicp";
+    
+    //Entity type for datatype implementation
+    public static final String DATA_TYPE_ENTITY_TYPE = "datatype";
 }

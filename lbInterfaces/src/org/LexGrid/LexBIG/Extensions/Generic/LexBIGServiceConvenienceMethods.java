@@ -504,7 +504,7 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 			String codingSchemeName, CodingSchemeVersionOrTag versionOrTag,
 			String hierarchyID, ConceptReferenceList conceptCodes)
 			throws LBException;
-
+	
 	/**
 	 * Return a representation of associations between a concept and
 	 * hierarchical root node(s). The resolved association list represents the
@@ -546,12 +546,59 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	 *         represents a separate path to root for the given concept.
 	 * @throws LBException
 	 */
+	
 	AssociationList getHierarchyPathToRoot(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String hierarchyID,
 			String conceptCode, boolean resolveConcepts,
 			HierarchyPathResolveOption pathResolveOption,
 			NameAndValueList associationQualifiers) throws LBException;
-
+	/**
+	 * Return a representation of associations between a concept and
+	 * hierarchical root node(s). The resolved association list represents the
+	 * path within the hierarchy from traversed from bottom (leaf) to top
+	 * (root).
+	 * 
+	 * @param codingScheme
+	 *            The local name or URN of the coding scheme.
+	 * @param versionOrTag
+	 *            The assigned tag/label or absolute version identifier of the
+	 *            coding scheme.
+	 * @param hierarchyID
+	 *            Identifies the type of hierarchy being traversed. Supported
+	 *            values for the coding scheme are retrievable through the
+	 *            getHierarchyIDs() method. If null, associations for all
+	 *            registered hierarchies are navigated (less precise, but
+	 *            improves performance).
+	 * @param conceptCode
+	 *            The starting point for resolution; not null.
+	 * @param codeNamespace 
+	 * @param resolveConcepts
+	 *            True to fill in all information for concepts identified as
+	 *            part of the returned association; false to return only basic
+	 *            references (e.g. code, coding scheme, and description). If
+	 *            false, additional properties for referenced concepts can be
+	 *            resolved on an item-by-item basis as controlled by the
+	 *            application.
+	 * @param pathResolveOption
+	 *            It is possible that more than one path can exist between the
+	 *            conceptCode and hierarchy roots by navigating different
+	 *            intermediate nodes. This parameter allows the number of
+	 *            returned paths to be constrained.
+	 * @param associationQualifiers
+	 *            Restrict to associations with specific qualifiers (e.g.
+	 *            associations might be tagged with source-specific
+	 *            information); null or empty to ignore qualifications.
+	 * @return The list of associations and referenced concepts representing the
+	 *         path to root node(s) within the hierarchy; empty if no items are
+	 *         found. If not empty, each association in the initial list
+	 *         represents a separate path to root for the given concept.
+	 * @throws LBException
+	 */
+	AssociationList getHierarchyPathToRoot(String codingScheme,
+			CodingSchemeVersionOrTag versionOrTag, String hierarchyID,
+			String conceptCode, String codeNamespace, boolean resolveConcepts,
+			HierarchyPathResolveOption pathResolveOption,
+			NameAndValueList associationQualifiers) throws LBException;
 	/**
 	 * Return the path/transitive closure path between two nodes.
 	 * @param codingSchemeUri

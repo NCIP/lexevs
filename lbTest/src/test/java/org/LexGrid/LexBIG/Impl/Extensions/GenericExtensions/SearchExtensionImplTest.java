@@ -289,6 +289,28 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());
 	}
 	
+	public void testSimpleSearchDefault1() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		
+		// by default, we should get back active and inactive entities.
+		ResolvedConceptReferencesIterator itr = searchExtension.search("73", null, MatchAlgorithm.CODE_EXACT);
+		assertTrue(itr.hasNext());
+		assertEquals("73", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
+	public void testSimpleSearchDefault2() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		
+		// by default, we should get back active and inactive entities.
+		ResolvedConceptReferencesIterator itr = searchExtension.search("73", null, null, MatchAlgorithm.CODE_EXACT);
+		assertTrue(itr.hasNext());
+		assertEquals("73", itr.next().getCode());
+		assertFalse(itr.hasNext());
+	}
+	
 	public void testSimpleSearchWithInactiveInclude() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");

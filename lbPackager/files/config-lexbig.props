@@ -207,7 +207,7 @@ GRAPH_DB_PATH=
 # or Regular Expression queries. For very general queries on large ontologies,
 # this will need to be set high.
 
-LUCENE_MAX_CLAUSE_COUNT=40000
+LUCENE_MAX_CLAUSE_COUNT=800000
 
 ############# Logging Configuration
 
