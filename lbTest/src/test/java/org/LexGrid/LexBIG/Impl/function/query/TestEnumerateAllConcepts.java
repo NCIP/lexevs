@@ -41,7 +41,7 @@ public class TestEnumerateAllConcepts extends LexBIGServiceTestCase {
         // Process the result
         ResolvedConceptReferenceList matches = nodes.resolveToList(null, null, null, 0);
         int count = matches.getResolvedConceptReferenceCount();
-        assertTrue("Found: " + count, count == 19);
+        assertTrue("Found: " + count, count == 18);
         ConceptReference ref = (ConceptReference) matches.enumerateResolvedConceptReference().nextElement();
         assertNotNull(ref);
 

@@ -91,7 +91,6 @@ public class ListHierarchyPathToRoot {
                 String scheme = css.getCodingSchemeURI();
                 CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
                 csvt.setVersion(css.getRepresentsVersion());
-                String namespace = null;
                 String desc = null;
                 try {
                     desc = lbscm.createCodeNodeSet(new String[] { code }, scheme, csvt).resolveToList(null, null, null,
@@ -110,7 +109,7 @@ public class ListHierarchyPathToRoot {
                     Util.displayMessage("------------------------------------------------------------");
                     Util.displayMessage("Hierarchy ID: " + hierarchyID);
                     Util.displayMessage("------------------------------------------------------------");
-                    AssociationList associations = lbscm.getHierarchyPathToRoot(scheme, csvt, hierarchyID, code, namespace, false,
+                    AssociationList associations = lbscm.getHierarchyPathToRoot(scheme, csvt, hierarchyID, code, false,
                             LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
                     for (int j = 0; j < associations.getAssociationCount(); j++) {
                         Association association = associations.getAssociation(j);

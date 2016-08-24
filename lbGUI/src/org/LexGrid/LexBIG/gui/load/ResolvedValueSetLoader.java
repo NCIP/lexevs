@@ -33,7 +33,6 @@ import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
 import org.LexGrid.LexBIG.gui.LoadExportBaseShell;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -53,13 +52,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl;
-import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
-import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 
 public class ResolvedValueSetLoader extends LoadExportBaseShell {
 
-    private List<CodingScheme> resolvedValueSets = null;
-    
     public ResolvedValueSetLoader(LB_GUI lb_gui) {
         super(lb_gui);
 
@@ -71,9 +66,6 @@ public class ResolvedValueSetLoader extends LoadExportBaseShell {
 
             dialog_ = new DialogHandler(shell);
 
-            LexEVSResolvedValueSetService resolvedValueSetService = new LexEVSResolvedValueSetServiceImpl();
-            resolvedValueSets = resolvedValueSetService.listAllResolvedValueSets();
-              
             ResolvedValueSetDefinitionLoaderImpl loader = (ResolvedValueSetDefinitionLoaderImpl) lb_gui_.getLbs()
                     .getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoaderImpl.NAME);
 
@@ -86,8 +78,7 @@ public class ResolvedValueSetLoader extends LoadExportBaseShell {
             shell.addShellListener(shellListener);
         } catch (Exception e) {
             dialog_.showError("Unexpected Error", e.toString());
-        }    
-    }
+        }    }
 
     private void buildGUI(Shell shell, final ResolvedValueSetDefinitionLoaderImpl loader) throws LBInvocationException {
 
@@ -128,7 +119,7 @@ public class ResolvedValueSetLoader extends LoadExportBaseShell {
         textLabel.setToolTipText("Helps to insure the resolution " +
         		"takes place against a particular coding scheme version");
         CodingSchemeRenderingList schemes = LexBIGServiceImpl.defaultInstance().getSupportedCodingSchemes();
-        List<CodingSchemeRendering> renderings = Arrays.asList(schemes.getCodingSchemeRendering());       
+        List<CodingSchemeRendering> renderings = Arrays.asList(schemes.getCodingSchemeRendering());
 
         //Get a list ready to add to       
         Group group4 = new Group(options, SWT.NONE);
@@ -154,19 +145,16 @@ public class ResolvedValueSetLoader extends LoadExportBaseShell {
                     "takes place against a particular coding scheme version");
             
             for(CodingSchemeRendering pickListItem : renderings) {
-                
-                // don't add resolved value sets to the dropdown.
-                if (!isResolvedValueSet(resolvedValueSets, pickListItem)) {
-                    String schemeVersion = pickListItem.getCodingSchemeSummary().getFormalName() 
-                            + "-" +  pickListItem.getCodingSchemeSummary().getRepresentsVersion();
-                    AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
-                    ref.setCodingSchemeURN(pickListItem.getCodingSchemeSummary().getCodingSchemeURI());
-                    ref.setCodingSchemeVersion(pickListItem.getCodingSchemeSummary().getRepresentsVersion());
-                    map.put(schemeVersion, ref);
-                    comboDropDown.add(schemeVersion);
-                }
+                String schemeVersion = pickListItem.getCodingSchemeSummary().getFormalName() 
+                        + "-" +  pickListItem.getCodingSchemeSummary().getRepresentsVersion();
+                AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+                ref.setCodingSchemeURN(pickListItem.getCodingSchemeSummary().getCodingSchemeURI());
+                ref.setCodingSchemeVersion(pickListItem.getCodingSchemeSummary().getRepresentsVersion());
+                map.put(schemeVersion, ref);
+                comboDropDown.add(schemeVersion);
             }
             
+
             comboDropDown.addSelectionListener(new SelectionListener(){
 
                 @Override
@@ -191,12 +179,15 @@ public class ResolvedValueSetLoader extends LoadExportBaseShell {
                 "takes place against a particular coding scheme version in the service");
         
         text.addModifyListener(new ModifyListener(){
+
             public void modifyText(ModifyEvent event) {
               multi.add( text.getText());      
             }  
         });
         }
         
+
+
         final Button load = new Button(options, SWT.PUSH);
         load.setText("Load");
         gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END);
@@ -242,32 +233,7 @@ public class ResolvedValueSetLoader extends LoadExportBaseShell {
 
     public ResolvedValueSetLoader(LB_VSD_GUI lb_vd_gui) {
         super(lb_vd_gui);
-    }
-    
-    /**
-     * Compare the CodingSchemeRendering codingSchemeURI to all of the codingSchemeURI of the List<CodingScheme>.  
-     * If the codingSchemeURI is found, then true;
-     * @param resolvedValueSets List<CodingScheme>
-     * @param cs CodingSchemeRendering
-     * @return true if the codingSchemeURI of the CodingSchemeRendering is found in the List<CodingScheme>.
-     */
-    private boolean isResolvedValueSet(List<CodingScheme> resolvedValueSets, CodingSchemeRendering cs) {
-        String resolvedValueSetURI;
-        boolean isResolvedValueSet = false;
-        
-        // loop through resolved value sets
-        for(CodingScheme resolvedValueSet: resolvedValueSets){
-            resolvedValueSetURI = resolvedValueSet.getCodingSchemeURI();
-            
-            // search for a coding scheme that has the same uri as the resolved value set.
-            // if one is found, set to true;
-            if (cs.getCodingSchemeSummary().getCodingSchemeURI().equals(resolvedValueSetURI)) {
-                isResolvedValueSet = true;
-                break;
-            }
-
-        } 
-        return isResolvedValueSet;
+        // TODO Auto-generated constructor stub
     }
 
 }

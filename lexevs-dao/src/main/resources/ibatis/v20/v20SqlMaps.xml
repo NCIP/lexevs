@@ -8,8 +8,7 @@
  	<settings enhancementEnabled="true" maxSessions="100" maxTransactions="100" useStatementNamespaces="true"/>
  	<typeAlias alias="numericBooleanTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NumericBooleanTypeHandler"/>
  	<typeAlias alias="variablePrimaryKeyTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.VariablePrimaryKeyTypeHandler"/>
-	<typeAlias alias="dateTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.DateTypeHandler"/>
-	
+
 	<sqlMap resource="ibatis/v20/common.xml"/>
     <sqlMap resource="ibatis/v20/entity.xml"/>
     <sqlMap resource="ibatis/v20/codingScheme.xml"/>

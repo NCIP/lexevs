@@ -53,8 +53,9 @@ USE OF THE CONTENT.
 Included materials: 
 =========================================================================
 This product incorporates code and other materials created with NCI funding as
-part of the LexGrid Vocabulary Services for LexEVS project, as part of NCI
-EVS Project
+part of the LexGrid Vocabulary Services for caBIG (LexEVS) project, with
+additional funding provided by the National Center for Biomedical Ontology
+(NCBO) as part of the LexGrid Vocabulary Services for NCBO (LexBIO) project.
 
 The LexEVS service layer, as referenced below, provides application programming
 interfaces (APIs) and tools used to view, access, and maintain vocabulary
@@ -93,6 +94,12 @@ Provided under the Eclipse Public License (EPL), as stated above.
 arq
 ========================================
 ARQ is a query engine for Jena that supports the SPARQL RDF Query language.
+
+========================================
+caGrid
+========================================
+Grid infrastructure to support the caBIG community.  Contains tools for
+creating and deploying caBIG compliant grid services.
 
 ========================================
 castor

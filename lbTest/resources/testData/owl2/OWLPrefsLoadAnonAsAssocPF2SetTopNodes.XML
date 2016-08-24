@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<OWLLoaderPreferences xmlns="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences
-  http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
-    <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
- <ProcessComplexProps>true</ProcessComplexProps>
-  <StrictOWLImplementation>false</StrictOWLImplementation>
-</OWLLoaderPreferences>

@@ -94,10 +94,10 @@
            debug="true" 
            optimize="false" 
            deprecation="true" 
-           target="1.7" 
+           target="1.6" 
            verbose="false" 
            fork="false" 
-           source="1.7">
+           source="1.6">
       <src>
         <pathelement location="${build.srcDir}"/>
       </src>
@@ -122,10 +122,10 @@
            debug="true" 
            optimize="false" 
            deprecation="true" 
-           target="1.7" 
+           target="1.6" 
            verbose="false" 
            fork="false" 
-           source="1.7">
+           source="1.6">
       <src>
         <pathelement location="${build.testDir}"/>
       </src>

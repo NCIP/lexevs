@@ -19,9 +19,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -31,22 +28,19 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.LBConstants;
-import org.LexGrid.relations.Relations;
 
 import junit.framework.TestCase;
 
 public class TestLoadMrMap2Mappings extends TestCase {
-	public void testLoadOneMappingFromMRMAP() throws LBException, InterruptedException, SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException{
+	public void testLoadOneMappingFromMRMAP() throws LBException, InterruptedException{
 
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         MrmapRRFLoader loader = (MrmapRRFLoader) lbsm.getLoader("MrMap_Loader");
-        MappingRelationsUtil map = new  MappingRelationsUtil();
-   	 HashMap<String, Relations> relationsMap = map.processMrSatBean("resources/testData/mrmap_mapping/MRSAT.RRF", "resources/testData/mrmap_mapping/MRMAP.RRF");
-       for(Map.Entry<String, Relations> rel: relationsMap.entrySet()){
-       loader.load(new File(("resources/testData/mrmap_mapping/MRMAP.RRF")).toURI(), 
+
+        loader.load(new File(("resources/testData/mrmap_mapping/MRMAP.RRF")).toURI(), 
         		new File("resources/testData/mrmap_mapping/MRSAT.RRF").toURI(), 
-        		null, null, null, rel, true, true);
+        		null, null, null, true, true);
 
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
@@ -56,9 +50,9 @@ public class TestLoadMrMap2Mappings extends TestCase {
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[1]);
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-       }
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[1], LBConstants.KnownTags.PRODUCTION.toString());
 }
     private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
     	return LexBIGServiceImpl.defaultInstance().getServiceManager(null);

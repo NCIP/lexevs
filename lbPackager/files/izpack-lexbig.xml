@@ -28,11 +28,11 @@ You may obtain a copy of the License at
         <appsubpath>@@REPLACED_BY_BUILD_APPSUBPATH@@</appsubpath>
         <appversion>@@REPLACED_BY_BUILD_APPVERSION@@</appversion>
         <authors>
-            <author email=""
+            <author email="VocabKC@Mayo.edu"
                 name="Mayo Clinic Division of Biomedical Statistics and Informatics"/>
         </authors>
         <url>@@REPLACED_BY_BUILD_INFO_URL@@</url>
-        <javaversion>1.7</javaversion>
+        <javaversion>1.5</javaversion>
     </info>
     <guiprefs height="600" resizable="yes" width="800">
         <laf name="liquid">

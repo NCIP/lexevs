@@ -76,24 +76,13 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String PIZZA_SCHEME_NAME = "pizza.owl";
     public final static String NPO_SCHEME_URI = "http://purl.bioontology.org/ontology/npo";
     public final static String NPO_SCHEME_VERSION = "2012-01-25 (yyyy-mm-dd)";
-    public final static String NPO_SCHEME_MULTI_NAMESPACE = "npo";
-    public final static String NPO_SCHEME_MULTI_NAMESPACE_URL = "http://purl.bioontology.org/ontology/npo";
-    public final static String NPO_SCHEME_MULTI_NAMESPACE_VERSION = "TestForMultiNamespace";
     public final static String HL7_MIF_VOCABULARY_SCHEME = "1189-20121121";
     public final static String HL7_MIF_VOCABULARY_URN = "urn:hl7-org:v3/mif2";
     public final static String HL7_MIF_VOCABULARY_VERSION = "DEFN=UV=VO=1189-20121121";
     public final static String OWL2_SNIPPET_VOCABULARY_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2-snippet.owl";
     public final static String OWL2_SNIPPET_VOCABULARY_VERSION = "13.05d";
-	public static final String OWL2_SNIPPET_INDIVIDUAL_URN = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl";
-	public static final String OWL2_SNIPPET_INDIVIDUAL_VERSION = "0.1.2";
-	public static final String OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION = "0.1.1";
-	public static final String OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION = "0.1.3";
-	public static final String OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION = "0.1.0";
-	public static final String OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION = "0.1.5";
-
 
     public final static String SAMPLE_META_VERSION = "200902_For_Test";
-
     /**
      * To be implemented by each descendant testcase.
      * 

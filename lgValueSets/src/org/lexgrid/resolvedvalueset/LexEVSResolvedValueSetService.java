@@ -7,7 +7,6 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 public interface LexEVSResolvedValueSetService {
@@ -16,7 +15,6 @@ public interface LexEVSResolvedValueSetService {
 	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref);
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri);
 	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri);
-	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri);
 	
 	/**
 	 * Return a list of AbsoluteCodingSchemeVersionReference that was used for resolving the resolvedValueSet

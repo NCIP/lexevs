@@ -22,7 +22,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 
-import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.MultiValueOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.Option;
@@ -33,7 +32,6 @@ import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
 import org.LexGrid.LexBIG.gui.LoadExportBaseShell;
 import org.LexGrid.LexBIG.gui.Utility;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -48,14 +46,11 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
-import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.springframework.util.StringUtils;
 
 /**
@@ -73,7 +68,27 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	 */
 	public LoaderExtensionShell(LB_GUI lb_gui, Loader loader) {
 		super(lb_gui);
-		initializeLBGui(loader);
+		try {
+			Shell shell = new Shell(lb_gui_.getShell().getDisplay());
+			
+		
+			shell.setImage(new Image(shell.getDisplay(), this.getClass()
+					.getResourceAsStream("/icons/load.gif")));
+
+			dialog_ = new DialogHandler(shell);
+			
+			shell.setText(loader.getName());
+
+			buildGUI(shell, loader);
+			shell.pack();
+			
+			shell.open();
+	
+			shell.addShellListener(shellListener);
+		} catch (Exception e) {
+			dialog_.showError("Unexpected Error", e.toString());
+		}
+
 	}
 	
 	/**
@@ -84,34 +99,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
      */
     public LoaderExtensionShell(LB_VSD_GUI lb_vsd_gui, Loader loader, boolean loadingVS, boolean loadingPL) {
         super(lb_vsd_gui);
-        initializeLBVSDGui(loader, loadingVS, loadingPL);
-    }
-    
-    private void initializeLBGui(Loader loader) {
         try {
-            Shell shell = new Shell(lb_gui_.getShell().getDisplay());
-            
-            shell.setImage(new Image(shell.getDisplay(), this.getClass()
-                    .getResourceAsStream("/icons/load.gif")));
-
-            dialog_ = new DialogHandler(shell);
-            
-            shell.setText(loader.getName());
-
-            buildGUI(shell, loader);
-            shell.pack();
-            
-            shell.open();
-    
-            shell.addShellListener(shellListener);
-        } catch (Exception e) {
-            dialog_.showError("Unexpected Error", e.toString());
-        }
-    }
-    
-    private void initializeLBVSDGui(Loader loader, boolean loadingVS, boolean loadingPL) {
-        try {
-            Shell shell = new Shell(lb_vd_gui_.getShell().getDisplay());
+            Shell shell = new Shell(lb_vsd_gui.getShell().getDisplay());
             shell.setSize(500, 600);
         
             shell.setImage(new Image(shell.getDisplay(), this.getClass()
@@ -128,7 +117,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             shell.addShellListener(shellListener);
         } catch (Exception e) {
             dialog_.showError("Unexpected Error", e.toString());
-        } 
+        }
+
     }
 
 	/**
@@ -138,11 +128,10 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	 * @param loader the loader
 	 */
 	private void buildGUI(final Shell shell, final Loader loader) {
-
 	    Group options = new Group(shell, SWT.NONE);
 	    options.setText("Load Options");
 	    shell.setLayout(new GridLayout());
-        
+
 	    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 	    options.setLayoutData(gd);
 	    
@@ -175,15 +164,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         uriChooseButton.setToolTipText(uriHelp);
-        
-        // Get resolved value sets
-        LexEVSResolvedValueSetService resolvedValueSetService = new LexEVSResolvedValueSetServiceImpl();
-        java.util.List<CodingScheme> resolvedValueSets = null;
-        try {
-            resolvedValueSets = resolvedValueSetService.listAllResolvedValueSets();
-        } catch (LBException e) {
-            resolvedValueSets = null;
-        }
+       
         
         for(final URIOption uriOption : optionHolder.getURIOptions()) {
             Composite group1 = new Composite(options, SWT.NONE);
@@ -202,10 +183,11 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             Button uriOptionfileChooseButton = Utility.getFileChooseButton(group1, uriOptionFile,
                     uriOption.getAllowedFileExtensions().toArray(new String[0]), null);
             uriOptionfileChooseButton.setToolTipText(uriOption.getHelpText());
+            
             uriOptionfileChooseButton.addSelectionListener(new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent arg0) {
-                //
+                    //
                 }
 
                 public void widgetSelected(SelectionEvent arg0) {
@@ -262,11 +244,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	            comboDropDown.setToolTipText(stringOption.getHelpText());
                 
 	            for(String pickListItem : stringOption.getPickList()) {
-	                	                
-	                // Add if it is not a resolved value set
-                    if (resolvedValueSets != null && !isResolvedValueSet(resolvedValueSets, pickListItem)){
-                        comboDropDown.add(pickListItem);
-                    }
+	                comboDropDown.add(pickListItem);
                 }
 
 	            comboDropDown.addSelectionListener(new SelectionListener(){
@@ -325,7 +303,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                }  
 	            });
 	        }
-	    	       
+	    
 	       for(final MultiValueOption<String> stringArrayOption : optionHolder.getStringArrayOptions()){
 	            Composite group4 = new Composite(options, SWT.NONE);
 	
@@ -344,7 +322,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                multi.setToolTipText(stringArrayOption.getHelpText());
 	                
 	                for(String pickListItem : stringArrayOption.getPickList()) {
-	                    multi.add(pickListItem);
+                        multi.add(pickListItem);
                     }
 	                for(int i=0;i<stringArrayOption.getPickList().size();i++) {
 	                    if(stringArrayOption.getOptionValue().contains(    
@@ -384,18 +362,14 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                });
 	            }
 	        }
-
-	    Group groupControlButtons = new Group(options, SWT.NONE);
-        groupControlButtons.setLayout(new GridLayout(3, false));
-        groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	    
-        final Button load = new Button(groupControlButtons, SWT.PUSH);
-        final Button nextLoad = new Button(groupControlButtons, SWT.PUSH);
-        final Button close = new Button(groupControlButtons, SWT.PUSH);
-        close.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true, 1, 1));
-        
+	    final Button load = new Button(options, SWT.PUSH);
 	    load.setText("Load");
+	    gd = new GridData(GridData.CENTER);
+	    gd.widthHint = 60;
+	    load.setLayoutData(gd);
 	    load.setToolTipText("Start Load Process.");
+
 	    load.addSelectionListener(new SelectionListener() {
 
 	        public void widgetSelected(SelectionEvent arg0) {
@@ -419,68 +393,23 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 				}
 
 				setLoading(true);
-				load.setEnabled(false);
-				close.setEnabled(false);
 				loader.load(uri);
-				
-				// Create/start a new thread to update the buttons when the load completes.
-				ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
-				Thread t = new Thread(buttonUpdater);
-		        t.setDaemon(true);
-		        t.start();  
-	        }
+				setLoading(false);
+				uriChooseButton.setEnabled(false);
+				load.setEnabled(false);
+			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// 
 			}
 
 		});
-	    
-        nextLoad.setText("Next Load");
-        nextLoad.setToolTipText("Start a New Load Process.");
-        nextLoad.setEnabled(false);
-        nextLoad.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent arg0) {
-
-                Loader newLoader = null;
-                try {
-                    newLoader = lb_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
-                } catch (LBException e) {
-                    e.printStackTrace();
-                }
-	            if(!isLoading()){
-	                
-	                // close the current window and create/initialize it again with the same loader
-                    shell.dispose();
-                    setMonitorLoader(true);
-                    initializeLBGui(newLoader);
-	            }
-            }
-
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                // 
-            }
-
-        });
-        
-        close.setText("Close");
-        close.setToolTipText("Close this Loader Window.");
-        close.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent arg0) {
-                shell.dispose();
-            }
-
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                // 
-            }
-
-        });
 
 		Composite status = getStatusComposite(shell, loader);
 		gd = new GridData(GridData.FILL_BOTH);
 		status.setLayoutData(gd);
+		
+
 	}
 	
 	/**
@@ -489,7 +418,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
      * @param shell the shell
      * @param loader the loader
      */
-    private void buildVSGUI(final Shell shell, final Loader loader, final boolean loadingVS, final boolean loadingPL) {
+    private void buildVSGUI(Shell shell, final Loader loader, boolean loadingVS, boolean loadingPL) {
         Group options = new Group(shell, SWT.NONE);
         options.setText("Load Options");
         shell.setLayout(new GridLayout());
@@ -520,18 +449,12 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         
-        Group groupControlButtons = new Group(options, SWT.NONE);
-        groupControlButtons.setLayout(new GridLayout(3, false));
-        groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        final Button load = new Button(groupControlButtons, SWT.PUSH);
-        final Button nextLoad = new Button(groupControlButtons, SWT.PUSH);
-        final Button close = new Button(groupControlButtons, SWT.PUSH);
-        close.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true, 1, 1));
-        
+        final Button load = new Button(options, SWT.PUSH);
         load.setText("Load");
-        load.setToolTipText("Start Load Process.");
-        
+        gd = new GridData(GridData.CENTER);
+        gd.widthHint = 60;
+        load.setLayoutData(gd);
+
         load.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent arg0) {
@@ -554,16 +477,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     }
                 }
 
-                setLoading(true);
-                load.setEnabled(false);
-                close.setEnabled(false);
                 loader.load(uri);
-                
-                // Create/start a new thread to update the buttons when the load completes.
-                ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
-                Thread t = new Thread(buttonUpdater);
-                t.setDaemon(true);
-                t.start();  
+                load.setEnabled(false);
             }
 
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -571,49 +486,6 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             }
 
         });
-        
-        nextLoad.setText("Next Load");
-        nextLoad.setToolTipText("Start a New Load Process.");
-        nextLoad.setEnabled(false);
-        nextLoad.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent arg0) {
-
-                Loader newLoader = null;
-                try {
-                    newLoader = lb_vd_gui_.getLbs().getServiceManager(null).getLoader(loader.getName());
-                } catch (LBException e) {
-                    e.printStackTrace();
-                }
-                if(!isLoading()){
-                    
-                    // close the current window and create/initialize it again with the same loader
-                    shell.dispose();
-                    setMonitorLoader(true);
-                    initializeLBVSDGui(newLoader, loadingVS, loadingPL);
-                }
-            }
-
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                // 
-            }
-        });
-        
-        close.setText("Close");
-        close.setToolTipText("Close this Loader Window.");
-        close.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent arg0) {
-                shell.dispose();
-            }
-
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                // 
-            }
-
-        });
-
-        
         Composite status = null;
         
         if (loadingVS)
@@ -623,72 +495,6 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         
         gd = new GridData(GridData.FILL_BOTH);
         status.setLayoutData(gd);
-    }
-    
-    /**
-     * Runnable class to update the buttons when the load finishes.
-     */
-    protected class ButtonUpdater implements Runnable {
 
-        protected Button nextLoadBtn;
-        protected Button closeBtn;
-        protected Loader loader;
-        
-        ButtonUpdater(Button nextLoadButton, Button closeButton, Loader loader){
-            nextLoadBtn = nextLoadButton; 
-            closeBtn = closeButton;
-            this.loader = loader;
-        }
-        
-        @Override
-        public void run() {
-            while(loader.getStatus() != null && loader.getStatus().getEndTime() == null){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException("Error while waiting for load to complete.", e);
-                }
-            }
-            
-            // Needs to be called from the SWT Display thread.
-            Display.getDefault().syncExec(new Runnable() {
-                public void run() {
-                    nextLoadBtn.setEnabled(true);
-                    closeBtn.setEnabled(true);
-                    setLoading(false);
-                }
-            });
-            
-        }
-    
     }
-    
-    /**
-     * Compare the CodingSchemeRendering codingSchemeURI to all of the codingSchemeURI of the List<CodingScheme>.  
-     * If the codingSchemeURI is found, then true;
-     * @param resolvedValueSets List<CodingScheme>
-     * @param uri String
-     * @return true if the codingSchemeURI of the CodingSchemeRendering is found in the List<CodingScheme>.
-     */
-    private boolean isResolvedValueSet(java.util.List<CodingScheme> resolvedValueSets, String uri) {
-        String resolvedValueSetURI;
-        String resolvedValueSetVersion;
-        boolean isResolvedValueSet = false;
-        
-        // loop through resolved value sets
-        for(CodingScheme resolvedValueSet: resolvedValueSets){
-            resolvedValueSetURI = resolvedValueSet.getCodingSchemeURI();
-            resolvedValueSetVersion = resolvedValueSet.getRepresentsVersion();
-            
-            // search for a coding scheme that has the same uri as the resolved value set.
-            // if one is found, set to true;
-            if (uri.equals(resolvedValueSetURI + " - " + resolvedValueSetVersion)) {
-                isResolvedValueSet = true;
-                break;
-            }
-
-        } 
-        return isResolvedValueSet;
-    }
-
 }

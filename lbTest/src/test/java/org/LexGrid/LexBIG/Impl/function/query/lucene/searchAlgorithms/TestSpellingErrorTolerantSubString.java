@@ -183,7 +183,7 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
-        assertTrue("Length: " + rcrl.length, rcrl.length == 3);
+        assertTrue("Length: " + rcrl.length, rcrl.length == 2);
 
         assertTrue(checkForMatch(rcrl, "DifferentNamespaceConcept"));
 
@@ -191,7 +191,6 @@ public class TestSpellingErrorTolerantSubString extends BaseSearchAlgorithmTest 
         
         foundNamespaces.add(rcrl[0].getCodeNamespace());
         foundNamespaces.add(rcrl[1].getCodeNamespace());
-        foundNamespaces.add(rcrl[2].getCodeNamespace());
         
         assertTrue(foundNamespaces.contains("Automobiles"));
         assertTrue(foundNamespaces.contains("TestForSameCodeNamespace"));

@@ -64,7 +64,7 @@ public class LexGridConstants {
     /*========================================================================================
     Scheme Location
     ========================================================================================*/
-    public static final String lgSchemaLocation = "http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd";
+    public static final String lgSchemaLocation = "http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd";
 
     /*========================================================================================
     XSI package

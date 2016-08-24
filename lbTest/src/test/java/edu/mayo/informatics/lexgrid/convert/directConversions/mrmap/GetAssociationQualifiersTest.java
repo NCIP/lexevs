@@ -86,11 +86,13 @@ public class GetAssociationQualifiersTest extends TestCase {
 		map1.setFromtype("fjhf");
 		map1.setMapid("ruyty");
 		map1.setMaprank("dghd");
-		map1.setMapres("IF ALOPECIA AREATA CHOOSE L63.9 &#x7C; MAP OF SOURCE CONCEPT");
-		map1.setMaprule("IFA 68225006 &#x7C; Alopecia areata (disorder) &#x7C;");
+		map1.setMapres("xbv");
+		map1.setMaprule("vmnv");
 		map1.setMapsab("wrt");
 		map1.setMapsetcui("afa");
 		map1.setMapsid("q15r");
+		map1.setMaprank("u5i");
+		map1.setMapres("hjf");
 		map1.setMapsubsetid("qer");
 		map1.setMaptype("adf");
 		map1.setToexpr("afda");
@@ -104,7 +106,7 @@ public class GetAssociationQualifiersTest extends TestCase {
 		
 		MRMAP2LexGrid mapping1 = new MRMAP2LexGrid(null, null, null);
 		List<AssociationQualification> qualifiers1 = mapping1.getAssociationQualifiers(map1);
-		assertTrue(qualifiers1.size() == 22);
+		assertTrue(qualifiers1.size() == 20);
         for(AssociationQualification q : qualifiers1){
             assertTrue(q.getAssociationQualifier() != null);
             assertTrue(q.getQualifierText().getContent() != null);

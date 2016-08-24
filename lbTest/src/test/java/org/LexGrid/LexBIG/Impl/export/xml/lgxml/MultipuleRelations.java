@@ -47,7 +47,7 @@ public class MultipuleRelations extends TestCase {
     private final String[] block1 = {    
     		"<lgCon:entity",
     		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
     		"entityCode=\"1\" entityCodeNamespace=\"colors\"",
     		"isAnonymous=\"false\" isDefined=\"true\">",
     		"<lgCommon:entityDescription>Holder of colors</lgCommon:entityDescription>",
@@ -58,7 +58,7 @@ public class MultipuleRelations extends TestCase {
     private final String[] block2 = {
         "<lgRel:source",
             "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-            "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
+            "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
             "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
             "<lgRel:target targetEntityCode=\"3\" targetEntityCodeNamespace=\"colors\"/>",
         "</lgRel:source>"};
@@ -66,7 +66,7 @@ public class MultipuleRelations extends TestCase {
     private final String[] block3 = {
                 "<lgRel:source",
                     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                    "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
+                    "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
                     "sourceEntityCodeNamespace=\"colors\" sourceEntityCode=\"0\">",
                     "<lgRel:target targetEntityCode=\"5\" targetEntityCodeNamespace=\"colors\"/>",
                 "</lgRel:source>"};

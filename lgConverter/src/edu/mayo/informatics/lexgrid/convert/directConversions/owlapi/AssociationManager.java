@@ -35,7 +35,6 @@ public class AssociationManager {
     private AssociationWrapper subClassOf = null;
     private AssociationWrapper subPropertyOf = null;
     private AssociationWrapper disjointWith = null;
-    private AssociationWrapper disjointUnion = null;
     private AssociationWrapper complementOf = null;
     private AssociationWrapper inverseOf = null;
     private AssociationWrapper rdfType = null;
@@ -118,10 +117,6 @@ public class AssociationManager {
 
     public AssociationWrapper getDisjointWith() {
         return disjointWith;
-    }
-
-    public AssociationWrapper getDisjointUnion() {
-        return disjointUnion;
     }
 
     public AssociationWrapper getDomain() {
@@ -318,27 +313,6 @@ public class AssociationManager {
                 false);
         return aw;
     }
-    
-    private AssociationWrapper initDisjointUnionAssociation() {
-        // Build the association definition ...
-        AssociationWrapper aw = new AssociationWrapper();
-        String code = OwlApi2LGConstants.ASSOC_DISJOINTUNION;
-        aw.setAssociationName(code);
-        aw.setEntityCode(code);
-        aw.setEntityCodeNamespace(OWLNames.OWL_PREFIX);// owl:disjointUnion
-        aw.setForwardName(code);
-        aw.setIsTransitive(Boolean.FALSE);
-        aw.setIsNavigable(Boolean.TRUE);
-        aw = addAssociation(lgRelationsContainer_Assoc, aw);
-        lgSupportedMappings_.registerSupportedAssociation(
-                code, 
-                OwlApi2LGConstants.ASSOC_DISJOINTUNION_URI, 
-                code,
-                code,
-                OWLNames.OWL_PREFIX,
-                false);
-        return aw;
-    }
 
     /**
      * Intialize the rdfs:domain association.
@@ -478,7 +452,6 @@ public class AssociationManager {
         equivalentProperty = initEquivalentPropertyAssociation();
         subPropertyOf = initSubPropertyOfAssociation();
         disjointWith = initDisjointWithAssociation();
-        disjointUnion = initDisjointUnionAssociation();
         complementOf = initComplementOfAssociation();
         inverseOf = initInverseOfAssociation();
         rdfType = initRdfTypeAssociation();
@@ -486,8 +459,6 @@ public class AssociationManager {
         differentFrom = initDifferentFromAssociation();
         allDifferent = initAllDifferentAssociation();
     }
-
-
 
     /**
      * Initialize the rdfs:range association.

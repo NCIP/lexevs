@@ -217,7 +217,7 @@ public class CodedNodeSetImplTest extends TestCase {
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
         // no filters - length of 17
-        assertEquals(19,rcr.length);
+        assertEquals(18,rcr.length);
 
         try {
             TestFilter.register();

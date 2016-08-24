@@ -34,7 +34,7 @@ public class ProcessMrSatToRelationsTest extends TestCase {
 private LgMessageDirectorIF messages = LoggerFactory.getLogger();
 
 public void testProcessMrSatToRelations() throws SecurityException, IllegalArgumentException, FileNotFoundException, NoSuchFieldException, IllegalAccessException{
-	  MappingRelationsUtil map = new  MappingRelationsUtil();
+	  MRMAP2LexGrid map = new MRMAP2LexGrid(messages , null, null);
 	 HashMap<String, Relations> relationsMap = map.processMrSatBean("resources/testData/mrmap_mapping/MRSAT.RRF", "resources/testData/mrmap_mapping/MRMAP.RRF");
 	 Object[] relations = relationsMap.values().toArray();
 	  for(Object r: relations){

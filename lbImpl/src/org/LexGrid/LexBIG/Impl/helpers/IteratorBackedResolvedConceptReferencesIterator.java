@@ -38,12 +38,6 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
 
     private Iterator<ResolvedConceptReference> iterator;
     
-    @SuppressWarnings("unchecked")
-    public IteratorBackedResolvedConceptReferencesIterator(){
-        ResolvedConceptReferenceList ref = new ResolvedConceptReferenceList();
-        
-        iterator = (Iterator<ResolvedConceptReference>) ref.iterateResolvedConceptReference();
-    }
     public IteratorBackedResolvedConceptReferencesIterator(
             Iterator<ResolvedConceptReference> iterator) {
         this(iterator, UNKNOWN_NUMBER);

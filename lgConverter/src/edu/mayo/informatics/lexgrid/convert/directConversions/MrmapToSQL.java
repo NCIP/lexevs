@@ -22,15 +22,12 @@ package edu.mayo.informatics.lexgrid.convert.directConversions;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.relations.Relations;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MRMAP2LexGrid;
 
@@ -51,7 +48,6 @@ public class MrmapToSQL {
             String targetScheme,
             String targetVersion,
             String targetURI,
-            Map.Entry<String, Relations> relationsMap,
             CodingSchemeManifest manifest) throws LBException{
         CodingScheme[] schemes = null;
         if(mrSatFileLocation == null){
@@ -86,7 +82,7 @@ public class MrmapToSQL {
                 targetVersion,
                 targetURI);
         try {
-           schemes = map.loadToRevision(relationsMap);
+           schemes = map.loadToRevision();
         } catch (LBRevisionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -97,24 +93,24 @@ public class MrmapToSQL {
     /**
      * @param args
      */
-//    public static void main(String[] args) {
-//        URI map = null;
-//        URI sat = null;
-//        try {
-//
-//            try {
-//                map = new URI(args[0]);
-//                sat = new URI(args[1]);
-//            } catch (URISyntaxException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//
-//            CodingScheme[] load = new MrmapToSQL().load(null, map, sat, null, null, null, null, null, null, null, null, null, null);
-//        } catch (LBException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
+    public static void main(String[] args) {
+        URI map = null;
+        URI sat = null;
+        try {
+
+            try {
+                map = new URI(args[0]);
+                sat = new URI(args[1]);
+            } catch (URISyntaxException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            CodingScheme[] load = new MrmapToSQL().load(null, map, sat, null, null, null, null, null, null, null, null, null, null);
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 }

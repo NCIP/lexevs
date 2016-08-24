@@ -248,14 +248,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		PrefixedParameterTriple triple = 
 			new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace);
 		
-		List<ResolvedConceptReference> ref = 
-		this.getSqlMapClientTemplate().queryForList(GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL, triple);
-		if(!ref.isEmpty()){
+		
 		return
-			ref.get(0);}
-		else{
-			return null;
-		}
+			(ResolvedConceptReference) 
+				this.getSqlMapClientTemplate().queryForObject(GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL, triple);
 
 	}
 	
@@ -612,12 +608,10 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public String getEntityUId(String codingSchemeId, String entityCode,
 			String entityCodeNamespace) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		List<String> result = this.getSqlMapClientTemplate().queryForList(
+		
+		return (String) this.getSqlMapClientTemplate().queryForObject(
 				GET_ENTITY_UID_BY_CODE_AND_NAMESPACE, 
-				new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace));
-		if(!result.isEmpty()){
-		return result.get(0);}
-		else {return null;}
+					new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace));
 	}
 	
 	/**

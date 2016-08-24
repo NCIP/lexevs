@@ -22,10 +22,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
-//import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImplTest;
 import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
-//import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
@@ -174,10 +172,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
-import org.junit.runner.RunWith;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
 import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
@@ -188,22 +183,7 @@ import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityH
 import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMergerTest;
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQueryTest;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
-
-import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeJsonNameSpaceTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.service.MultipleNamspaceErrorLEXEVS_598_Test;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImplTest;
-
 
 public class AllTestsNormalConfig {
 
@@ -248,17 +228,6 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
 
         mainSuite.addTest(metaLoaderSuite);
-        
-        TestSuite owl2LoaderSuite = new TestSuite("OWL2 Tests");
-        owl2LoaderSuite.addTestSuite(PresentationPropertyTestIT.class);
-        owl2LoaderSuite.addTestSuite(OWL2LoaderLexGridTest.class);
-        owl2LoaderSuite.addTestSuite(NewOWL2SnippetTestIT.class);
-        owl2LoaderSuite.addTestSuite(NewOWL2UnannotatedSnippetTestIT.class);
-        owl2LoaderSuite.addTestSuite(OWL2PrimitivesSnippetTestIT.class);
-        owl2LoaderSuite.addTestSuite(OWL2PrimitivesUnannotatedSnippetTestIT.class);
-        owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
-        mainSuite.addTest(owl2LoaderSuite);
-        
         
         TestSuite umlsLoaderSuite = new TestSuite("UmlsLoader Tests");
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.EntityAssnsToEntityDataTestIT.class);
@@ -321,7 +290,7 @@ public class AllTestsNormalConfig {
         TestSuite comparatorSuite = new TestSuite("Comparator Tests");
         comparatorSuite.addTestSuite(ResultComparatorTest.class);
         mainSuite.addTest(comparatorSuite);
-      
+        
         TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
         codedNodeSetSuite.addTestSuite(ResolveTest.class);
         codedNodeSetSuite.addTestSuite(ResolveToListTest.class);
@@ -337,7 +306,7 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
-       
+        
         TestSuite codedNodeGraphSuite = new TestSuite("CodedNodeGraph Tests");
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToAssociationsTest.class);
         codedNodeGraphSuite.addTestSuite(org.LexGrid.LexBIG.Impl.function.codednodegraph.RestrictToDirectionalNamesTest.class);
@@ -410,17 +379,7 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestPasswordEncryption.class);
 
         mainSuite.addTest(functionalTests);
-       
-        TestSuite treeTests = new TestSuite("tree extension tests");
-        treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
-        treeTests.addTestSuite(LexEvsTreeNodeTest.class);
-        treeTests.addTestSuite(LexEvsTreeTest.class);
-        treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
-        treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
-        treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
-        
-        mainSuite.addTest(treeTests);
-        
+
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
         bugTests.addTestSuite(GForge19650.class);
@@ -441,6 +400,8 @@ public class AllTestsNormalConfig {
         bugTests.addTestSuite(GForge22826.class);
         bugTests.addTestSuite(GForge20875.class);
         bugTests.addTestSuite(GForge23103.class);
+        //No longer supporting the MSAccess load
+        //bugTests.addTestSuite(GForge25067.class);
         bugTests.addTestSuite(GForge26741.class);
         bugTests.addTestSuite(GForge29772.class);
         bugTests.addTestSuite(GForge29839.class);

@@ -474,18 +474,17 @@ public class DefaultTransitivityBuilder implements TransitivityBuilder {
 				this.registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, uri);
 
 			if(entries.size() == 0) {
-				logger.error("No registry entries for this scheme to build transitivity table from.  This should not happen and may cause other things to break");
 				return entries.get(0);
 			} else {
 				//try to find the production scheme
 				for(RegistryEntry entry : entries) {
-					if(StringUtils.isNotBlank(entry.getResourceVersion()) &&
-							entry.getResourceVersion().equals(version)) {
+					if(StringUtils.isNotBlank(entry.getTag()) &&
+							entry.getTag().equals(KnownTags.PRODUCTION.toString())) {
 						return entry;
 					}
 				}
+
 				//if there isn't one marked production, just pick the first one
-				logger.warn("Version of this coding scheme not found, picking the first registry entry to build transitivity table. This may cause the table build to break");
 				return entries.get(0);
 			}
 		} catch (LBParameterException e) {

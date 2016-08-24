@@ -45,7 +45,7 @@ public class ExportAutomobiles2 extends TestCase {
     
     private final String[] assoc1 = {"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"Automobiles\" sourceEntityCode=\"A0001\">",
                 "<lgRel:target targetEntityCode=\"Tires\" targetEntityCodeNamespace=\"ExpendableParts\"/>",
             "</lgRel:source>"};
@@ -53,7 +53,7 @@ public class ExportAutomobiles2 extends TestCase {
     private final String[] entity1 = {    
     		"<lgCon:entity",
     		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
     		"isActive=\"true\" status=\"asfd\" entityCode=\"A0001\"",
     		"entityCodeNamespace=\"Automobiles\" isDefined=\"false\">",
     		"<lgCommon:entityDescription>Automobile</lgCommon:entityDescription>",
@@ -75,7 +75,7 @@ public class ExportAutomobiles2 extends TestCase {
     private final String[] entity2 = {
     		"<lgCon:associationEntity", 
     		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
     		"isActive=\"true\" entityCode=\"uses\"",
     		"entityCodeNamespace=\"Automobiles\" isDefined=\"false\"",
     		"forwardName=\"uses\" isNavigable=\"true\">",

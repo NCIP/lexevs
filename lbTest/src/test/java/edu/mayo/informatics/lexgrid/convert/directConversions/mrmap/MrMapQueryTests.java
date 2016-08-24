@@ -27,11 +27,11 @@ public class MrMapQueryTests {
 			TestSuite suite = new TestSuite(
 			"MrMap Loader supporting methods Test");
 	//$JUnit-BEGIN$
-	suite.addTestSuite(TestLoadMrMap2Mappings.class);
+	suite.addTestSuite(TestLoadMrMapOneMapping.class);
 	suite.addTestSuite(TestMRMapResolveGraphOnly.class);
 	suite.addTestSuite(TestManifestSetup.class);
 	suite.addTestSuite(TestMrMapMappingResolution.class);
-	suite.addTestSuite(TestRemoveMrMap2Loads.class);
+	suite.addTestSuite(TestRemoveMrMapOneLoad .class);
 	suite.addTestSuite(TestManifestBreakDown.class);
 	//$JUnit-END$
 	return suite;

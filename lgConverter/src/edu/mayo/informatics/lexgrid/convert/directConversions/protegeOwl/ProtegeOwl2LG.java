@@ -2116,9 +2116,9 @@ public class ProtegeOwl2LG {
             if (StringUtils.isNotEmpty(prefix)) {
                 //lgSupportedMappings_.registerSupportedSource(prefix, nm.getNamespaceForPrefix(prefix), prefix, null, false);
                 //Create an equivalent Coding Scheme first
-                lgSupportedMappings_.registerSupportedCodingScheme(prefix, getCleanURIString(nm.getNamespaceForPrefix(prefix)), prefix, false, false);
+                lgSupportedMappings_.registerSupportedCodingScheme(prefix, nm.getNamespaceForPrefix(prefix), prefix, false, false);
                 //Then follow up by using the prefix as the equivalent coding scheme attribute for the namespace
-                lgSupportedMappings_.registerSupportedNamespace(prefix, getCleanURIString(nm.getNamespaceForPrefix(prefix)), prefix, prefix,
+                lgSupportedMappings_.registerSupportedNamespace(prefix, nm.getNamespaceForPrefix(prefix), prefix, prefix,
                         false);
             }
         }
@@ -2146,13 +2146,13 @@ public class ProtegeOwl2LG {
             String localName = owlModel_.getDefaultOWLOntology().getLocalName();
 
             // The URN w/ protocol and type removed is a second local name
-            String localProtocol = getCleanURIString(uri);
-//            if (uri.endsWith("#"))
-//                localProtocol = uri.substring(0, uri.length() - 1);
-//            else
-//                localProtocol = uri;
-//            if (localProtocol.endsWith("/"))
-//                localProtocol = localProtocol.substring(0, localProtocol.length() - 1);
+            String localProtocol;
+            if (uri.endsWith("#"))
+                localProtocol = uri.substring(0, uri.length() - 1);
+            else
+                localProtocol = uri;
+            if (localProtocol.endsWith("/"))
+                localProtocol = localProtocol.substring(0, localProtocol.length() - 1);
 
             if (localProtocol.toLowerCase().startsWith("http://"))
                 lgScheme_.addLocalName(localProtocol.substring("http://".length()));
@@ -2249,17 +2249,6 @@ public class ProtegeOwl2LG {
         lgScheme_.setDefaultLanguage(defaultLanguage);
         lgSupportedMappings_.registerSupportedLanguage(defaultLanguage, ProtegeOwl2LGConstants.LANG_URI + ':'
                 + defaultLanguage, defaultLanguage, false);
-    }
-
-    private String getCleanURIString(String uri) {
-        String localProtocol;
-        if (uri.endsWith("#"))
-            localProtocol = uri.substring(0, uri.length() - 1);
-        else
-            localProtocol = uri;
-        if (localProtocol.endsWith("/"))
-            localProtocol = localProtocol.substring(0, localProtocol.length() - 1);
-        return localProtocol;
     }
 
     /**

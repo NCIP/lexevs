@@ -57,7 +57,7 @@ public class TestSameCodeDifferentNamespace extends BaseCodedNodeSetTest{
         
         ResolvedConceptReference[] refs = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
         
-        assertTrue("Length: " + refs.length, refs.length == 3);
+        assertTrue("Length: " + refs.length, refs.length == 2);
     }
     
     /**

@@ -17,7 +17,6 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
@@ -157,20 +156,6 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		
 		return list;
 	}
-	
-	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri){
-		LexBIGService lbs = getLexBIGService();
-		ResolvedConceptReferencesIterator list;
-		try {
-			CodedNodeSet set = lbs.getCodingSchemeConcepts(uri, null);
-			list = set.resolve(null, null, null);
-		} catch (LBException e) {
-			throw new RuntimeException("There was problem retrieving the entities for resolved value set: " + uri);
-		}
-		
-		return list;
-	}
-		
 	
 	boolean isResolvedValueSetCodingScheme(CodingScheme cs) {
 		for (Property prop: cs.getProperties().getProperty()) {

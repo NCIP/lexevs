@@ -58,11 +58,11 @@ public class UmlsRootNodeResolver extends AbstractRrfRootNodeResolver {
 	
 	protected List<String> getRootCodes(){
 		List<String> returnList = new ArrayList<String>();
-//		returnList.add(ROOT_NODE_PREFIX + sab);
-		List<String> cuis = mrconsoStagingDao.getCuisFromCode(ROOT_NODE_PREFIX + sab);
-		for(String cui : cuis){
-			returnList.addAll(mrconsoStagingDao.getCodesFromCui(cui));
-		}
+		returnList.add(ROOT_NODE_PREFIX + sab);
+//		List<String> cuis = mrconsoStagingDao.getCuisFromCode(ROOT_NODE_PREFIX + sab);
+//		for(String cui : cuis){
+//			returnList.addAll(mrconsoStagingDao.getCodesFromCui(cui));
+//		}
 		return returnList;
 	}
 

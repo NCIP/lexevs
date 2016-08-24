@@ -6,9 +6,6 @@ classes/
 .metadata/
 .DS_Store
 .settings/
-lbTest/logs/protege.*
-lbTest/logs/protege_0.*
-lbTest/protege.properties
 abstract-rrf-loader/.settings/
 cts2-model/.settings/
 cts2Impl/.settings/
@@ -65,6 +62,3 @@ lgConverter/.settings/org.eclipse.jdt.core.prefs
 lgResourceReader/.settings/org.eclipse.jdt.core.prefs
 
 lgUtil/.settings/org.eclipse.jdt.core.prefs
-
-lbGUI/protege.properties
-

@@ -39,7 +39,17 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CleanUpTest extends TestCase {
+	
+	public void testRemoveAutombilesExtension() throws LBException {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
+		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+				"urn:oid:11.11.0.1.1-extension", "1.0-extension");
+
+		lbsm.deactivateCodingSchemeVersion(a, null);
+
+		lbsm.removeCodingSchemeVersion(a);
+	}
 	 
     public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -54,8 +64,7 @@ public class CleanUpTest extends TestCase {
         lbsm.unRegisterCodingSchemeAsSupplement(a, b);
 
         lbsm.removeCodingSchemeVersion(a);
-        lbsm.deactivateCodingSchemeVersion(b, null);
-    	lbsm.removeCodingSchemeVersion(b);
+        //TODO remove b as well?
     }
 
     public void testRemoveGermanMadeParts() throws LBException {
@@ -132,76 +141,8 @@ public class CleanUpTest extends TestCase {
 		lbsm.removeCodingSchemeVersion(a);
 
 	}
-	
-	public  void testRemoveOwl2SnippetIndividuals() throws LBException {
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
-				.getServiceManager(null);
 
-		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
-				.createAbsoluteCodingSchemeVersionReference(
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_VERSION);
 
-		lbsm.deactivateCodingSchemeVersion(a, null);
-		lbsm.removeCodingSchemeVersion(a);
-
-	}
-	
-	public  void testRemoveOwl2SnippetPrimitivess() throws LBException {
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
-				.getServiceManager(null);
-
-		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
-				.createAbsoluteCodingSchemeVersionReference(
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_VERSION);
-
-		lbsm.deactivateCodingSchemeVersion(a, null);
-		lbsm.removeCodingSchemeVersion(a);
-
-	}
-	
-	public  void testRemoveOwl2SnippetIndividualsUnannotated() throws LBException {
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
-				.getServiceManager(null);
-
-		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
-				.createAbsoluteCodingSchemeVersionReference(
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_UNANNOTATED_VERSION);
-
-		lbsm.deactivateCodingSchemeVersion(a, null);
-		lbsm.removeCodingSchemeVersion(a);
-
-	}
-	
-	public  void testRemoveOwl2SnippetPrimitivessUnannotated() throws LBException {
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
-				.getServiceManager(null);
-
-		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
-				.createAbsoluteCodingSchemeVersionReference(
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_PRIMITIVE_UNANNOTATED_VERSION);
-
-		lbsm.deactivateCodingSchemeVersion(a, null);
-		lbsm.removeCodingSchemeVersion(a);
-
-	}
-
-	public  void testRemoveOwl2SnippetSpecialCases() throws LBException {
-		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService()
-				.getServiceManager(null);
-
-		AbsoluteCodingSchemeVersionReference a = ConvenienceMethods
-				.createAbsoluteCodingSchemeVersionReference(
-						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
-						LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
-
-		lbsm.deactivateCodingSchemeVersion(a, null);
-		lbsm.removeCodingSchemeVersion(a);
-
-	}
     public void testRemoveOwl() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -281,7 +222,7 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://purl.bioontology.org/ontology/npo", "TestForMultiNamespace");
+                "http://purl.bioontology.org/ontology/npo", "2012-01-25 (yyyy-mm-dd)");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
         lbsm.removeCodingSchemeVersion(a);
@@ -350,6 +291,21 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 
+//    public void testRemoveHL7() throws LBException {
+//        if (!System.getProperties().getProperty("os.name").contains("Windows")) {
+//            // Connecting to ms access from Linux is beyond the scope of this
+//            // application.
+//            return;
+//        }
+//        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+//
+//        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+//                "http://www.hl7.org/Library/data-model/RIM", "V 02-19");
+//
+//        lbsm.deactivateCodingSchemeVersion(a, null);
+//        lbsm.removeCodingSchemeVersion(a);
+//
+//    }
     
     public void testRemoveManifiestPostLoad() throws Exception {
     	try{
