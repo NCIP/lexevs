@@ -19,17 +19,22 @@
 package org.LexGrid.LexBIG.admin;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.relations.Relations;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.lexevs.system.ResourceManager;
+
+import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
 
 
 public class LoadMrMap {
@@ -82,11 +87,18 @@ public void run(String[] args) throws Exception {
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
+            MappingRelationsUtil mapUtil = new MappingRelationsUtil();
+            HashMap<String, Relations> relations =  mapUtil.processMrSatBean(sourceSat.getPath(), source.getPath());
+            
+            for(Map.Entry<String, Relations> rel : relations.entrySet()){
+                Relations relation = rel.getValue();
+                System.out.println("relation : " + relation.getSourceCodingScheme());
             MrMap_Loader loader = (MrMap_Loader) lbsm
                     .getLoader(org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader.name);
 
-                loader.load(source, sourceSat, null, null, null, null, null, null, null, null, null, false, true);
+                loader.load(source, sourceSat, null, null, null, null, null, null, null, null, null, rel, false, true);
                 Util.displayLoaderStatus(loader);
+            }
 
         }
     }

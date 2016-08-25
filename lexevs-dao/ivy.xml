@@ -74,5 +74,6 @@
    	    <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="default" />
    	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>	
    	    <dependency org="javax.persistence" name="persistence-api" rev="1.0" conf="default->*"/>  
+   	    <dependency org="org.mockito" name="mockito-all" rev="1.10.8" conf="default"/>
    	 </dependencies>
 </ivy-module>

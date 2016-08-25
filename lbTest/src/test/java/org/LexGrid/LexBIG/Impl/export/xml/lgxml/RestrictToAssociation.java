@@ -46,7 +46,7 @@ public class RestrictToAssociation extends TestCase {
     // uses
     private final String[] assoc1 = {"<lgRel:source",
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+                "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
                 "sourceEntityCodeNamespace=\"Automobiles\" sourceEntityCode=\"A0001\">",
                 "<lgRel:target targetEntityCode=\"Tires\" targetEntityCodeNamespace=\"ExpendableParts\"/>",
             "</lgRel:source>"};
@@ -59,7 +59,7 @@ public class RestrictToAssociation extends TestCase {
     // hasSubType
     private final String[] assoc2 = {"<lgRel:source",
             "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-            "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+            "xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
             "sourceEntityCodeNamespace=\"Automobiles\" sourceEntityCode=\"005\">",
             "<lgRel:target targetEntityCode=\"Chrysler\" targetEntityCodeNamespace=\"ExpendableParts\"/>",
         "</lgRel:source>"};
@@ -71,7 +71,7 @@ public class RestrictToAssociation extends TestCase {
     private final String[] entity1 = {    
     		"<lgCon:entity",
     		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
-    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd\"",
+    		"xsi:schemaLocation=\"http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes  ../master/codingSchemes.xsd\"",
     		"isActive=\"true\" status=\"asfd\" entityCode=\"A0001\" entityCodeNamespace=\"Automobiles\">",
     		"<lgCommon:entityDescription>Automobile</lgCommon:entityDescription>",
     		"<lgCon:entityType>concept</lgCon:entityType>",

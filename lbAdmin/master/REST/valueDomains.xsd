@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://LexGrid.org/schema/2009/01/LexGrid/REST/valueDomains" 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" 
+        xmlns:lgCommon="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" 
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" 
+        xmlns:lgRESTCon="http://LexGrid.org/schema/2009/01/LexGrid/REST/concepts" 
+        xmlns:lgRESTCS="http://LexGrid.org/schema/2009/01/LexGrid/REST/codingSchemes" 
+        xmlns:lgRESTRel="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations" 
+        xmlns:lgRESTNaming="http://LexGrid.org/schema/2009/01/LexGrid/REST/naming" 
+        xmlns:lgVD="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains" 
+        xmlns:lbColl="http://LexGrid.org/schema/LexBIG/2009/01/Collections"
+        elementFormDefault="qualified" targetNamespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/valueDomains">
+
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/commonTypes" schemaLocation="../commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/naming" schemaLocation="naming.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/concepts" schemaLocation="concepts.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/codingSchemes" schemaLocation="codingSchemes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/REST/relations" schemaLocation="relations.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="../builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/valueDomains" schemaLocation="../valueDomains.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/LexBIG/2009/01/Collections" schemaLocation="../../../lbModel/master/Collections.xsd"/>
+
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Value domains and pick list extension package for LexGrid REST API</h2>
+                </xs:documentation>
+                <xs:documentation>The LexGrid model of value domains and associated pick lists.</xs:documentation>
+        </xs:annotation>
+             
+        <!-- ======================================================================================== 
+                =  Value domain directory  - an abbreviated list of all of the available value domains                                                    =
+                ======================================================================================== -->
+        <xs:element name="valueDomainDirectory" type="valueDomainDirectory"/>
+        <xs:complexType name="valueDomainDirectory">
+                <xs:annotation>
+                        <xs:documentation>A directory of value domains known to the service</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="continuation" type="lgRESTCommon:continuation"/>
+                        <xs:element name="entry" type="valueDomainDirectoryEntry" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+        </xs:complexType>
+
+        <xs:group name="valueDomainDirectoryEntryGroup">
+                <xs:annotation>
+                        <xs:documentation>Common information for the value domain directory entry and the value domain itself</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="valueDomainURI" type="lgRESTCommon:URI">
+                                <xs:annotation>
+                                        <xs:documentation>The URI of this value domain. The hyperlink takes you to the complete definition</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="valueDomainName" type="lgBuiltin:tsCaseIgnoreIA5String" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>The name of this domain, if any.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="valueDomainDescription" type="lgCommon:entityDescription" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>A short description of the value domain contents, if any.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="valueDomainContents" type="lgRESTCommon:collectionLink">
+                                <xs:annotation>
+                                        <xs:documentation>Produces the contents of the value domain</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:group>
+
+        <!-- ======================================================================================== 
+                =   A value domain directory entry                                                                                                                                              =
+                ======================================================================================== -->
+        <xs:complexType name="valueDomainDirectoryEntry">
+                <xs:annotation>
+                        <xs:documentation>Information about a value domain that is known to a given resource.</xs:documentation>
+                        <xs:appinfo>path: /valueDomainDirectory/entry </xs:appinfo>
+                </xs:annotation>
+                <xs:group ref="valueDomainDirectoryEntryGroup"/>
+        </xs:complexType>
+
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  valueDomainDefinition  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!--TODO : Issue - value domain URI's are not amenable to embedding in http path expressions.  What to do if the name is  missing? -->
+        <xs:element name="valueDomainDefinition" type="valueDomainDefinition"/>
+        <xs:complexType name="valueDomainDefinition">
+                <xs:annotation>
+                        <xs:documentation>A definition of a given value domain. A value domain can be a simple description with no associated value domain entries, or it can consist of one or more definitionEntries that resolve to an enumerated list of entityCodes when applied to one or more codingScheme versions.</xs:documentation>
+                        <xs:appinfo>path: /valueDomains/valueDomainDefinition</xs:appinfo>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgRESTCommon:versionable">
+                                <xs:sequence>
+                                        <xs:group ref="valueDomainDirectoryEntryGroup"/>
+                                        <xs:element name="mappings" type="lgRESTNaming:mappingsLink">
+                                                <xs:annotation>
+                                                        <xs:documentation>A hyperlink that goes to "./mappings" a page of type lgRESTNaming:mappings</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="properties" type="lgRESTCommon:propertiesLink">
+                                                <xs:annotation>
+                                                        <xs:documentation>A hyperlink that goes to a properties collection</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element> 
+                                        <xs:element name="source" type="lgRESTCommon:source" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the source(s) of this property. Must match a local id of a supportedSource in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="representsRealmOrContext" type="lgRESTCommon:context" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the context(s) in which this value domain applies. Must match a local id of a supportedContext in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>                            
+                                        <xs:element name="defaultCodingScheme" type="lgRESTCommon:codingSchemeName">
+                                                <xs:annotation>
+                                                        <xs:documentation>Local name of the primary coding scheme from which the domain is drawn. defaultCodingScheme must match a local id of a supportedCodingScheme in the mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="definitionEntry" type="definitionEntry" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>A portion of the value domain definition. Definition entries are ordered.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>                                      
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Choice>> definitionEntry  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="definitionEntry">
+                <xs:annotation>
+                        <xs:documentation>A reference to an entry code, a coding scheme or another value domain along with the instructions about how the reference is applied. Definition entrys are applied in entryOrder, with each successive entry either adding to or subtracting from the final set of entity codes.</xs:documentation>
+                </xs:annotation>
+                <xs:choice>
+                        <xs:element name="entityReference" type="entityReference" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="valueDomainReference" type="valueDomainReference" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="codingSchemeReference" type="codingSchemeReference" maxOccurs="1" minOccurs="1"/>
+                </xs:choice>
+                <xs:attribute name="ruleOrder" type="lgCommon:entryOrder" use="required">
+                        <xs:annotation>
+                                <xs:documentation>The unique identifier of the definition entry within the definition as well as the relative order in which this entry should be applied</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="operator" type="lgVD:definitionOperator" use="optional">
+                        <xs:annotation>
+                                <xs:documentation>How this entry is to be applied to the value domain</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: entityReference  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="entityReference">
+                <xs:annotation>
+                        <xs:documentation>A reference to an entityCode and/or one or more entityCodes that have a relationship to the specified entity code.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="referencedEntity" type="lgRESTCon:entityDirectoryEntry">
+                                <xs:annotation>
+                                        <xs:documentation>The base entity code.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="referenceAssociation" type="lgRESTCon:entityDirectoryEntry">
+                                <xs:annotation>
+                                        <xs:documentation>The local identifier of an association that appears in the native relations collection in the default coding scheme. This association is used to describe a set of entity codes. If absent, only the entityCode itself is included in this definition.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="transitiveClosure" type="lgBuiltin:tsBoolean">
+                                <xs:annotation>
+                                        <xs:documentation>If true and referenceAssociation is supplied and referenceAssociation is defined as transitive, include all entity codes that belong to transitive closure of referenceAssociation as applied to entity code. Default: false</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="leafOnly" type="lgBuiltin:tsBoolean">
+                                <xs:annotation>
+                                        <xs:documentation>If true and referenceAssociation is supplied and referenceAssociation is defined as transitive, include all entity codes that are "leaves" in transitive closure of referenceAssociation as applied to entity code. Default: false</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="targetToSource" type="lgBuiltin:tsBoolean">
+                                <xs:annotation>
+                                        <xs:documentation>If true and referenceAssociation is supplied, navigate from entityCode as the association target to the corresponding sources. If transitiveClosure is true and the referenceAssociation is transitive, include all the ancestors in the list rather than just the direct "parents" (sources).</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: valueDomainReference  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="valueDomainReference">
+                <xs:annotation>
+                        <xs:documentation>A reference to the set of codes defined in another value domain. </xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:restriction base="lgRESTCommon:URI"/>
+                </xs:simpleContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: codingSchemeReference  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="codingSchemeReference">
+                <xs:annotation>
+                        <xs:documentation>A reference to all of the entity codes in a given coding scheme. </xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:restriction base="lgRESTCommon:URI"/>
+                </xs:simpleContent>
+        </xs:complexType>
+
+        <!-- ======================================================================================== 
+                =  Pick List  directory  - an abbreviated list of all of the available pick lists                                                                        =
+                ======================================================================================== -->
+        <xs:complexType name="pickListDirectory">
+                <xs:annotation>
+                        <xs:documentation>A directory of pick lists known to the service</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="continuation" type="lgRESTCommon:continuation"/>
+                        <xs:element name="entry" type="pickListDirectoryEntry" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+        </xs:complexType>
+
+        <xs:group name="pickListDirectoryEntryGroup">
+                <xs:annotation>
+                        <xs:documentation>Common information for the pick list directory entry and the value domain itself</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="pickListId" type="lgRESTCommon:nodeId" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>An identifier that uniquely names this list within the context of the collection.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="representsValueDomain" type="lgRESTCommon:URI" minOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The URI of the value domain definition that is represented by this pick list</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="pickListDescription" type="lgCommon:entityDescription" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>A short description of the value domain contents.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:group>
+
+        <!-- ======================================================================================== 
+                =   A value domain directory entry                                                                                                                                              =
+                ======================================================================================== -->
+        <xs:complexType name="pickListDirectoryEntry">
+                <xs:annotation>
+                        <xs:documentation>Information about a value domain that is known to a given resource.</xs:documentation>
+                        <xs:appinfo>path: /valueDomainDirectory/entry[entry | localId]</xs:appinfo>
+                </xs:annotation>
+                <xs:group ref="pickListDirectoryEntryGroup"/>
+        </xs:complexType>
+        
+        <!--=========================================================================================
+                = A resolved value domain                                                                                                                                                           =
+                ======================================================================================== -->
+        <xs:element name="resolvedValueDomain" type="resolvedValueDomain"/>        
+        <xs:complexType name="resolvedValueDomain">
+                <xs:annotation>
+                        <xs:documentation>The resolution of a value domain against a set of coding schemes</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="codingSchemeVersionReferenceList" type="lgRESTCS:codingSchemeDirectory">
+                                <xs:annotation>
+                                        <xs:documentation>The coding schemes that were used in the resolution of this value domain</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="resolvedEntityReferences" type="lgRESTCon:entityDirectory"/>
+                </xs:sequence>
+        </xs:complexType>
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: pickLists  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="pickLists">
+                <xs:annotation>
+                        <xs:documentation>A collection of pick list definitions.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="pickListDefinition" minOccurs="1" maxOccurs="unbounded" type="pickListDefinition">
+                                <xs:annotation>
+                                        <xs:documentation>A pick list definition</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: pickListDefinition -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="pickListDefinition">
+                <xs:annotation>
+                        <xs:documentation>An ordered list of entity codes and corresponding presentations drawn from a value domain.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgRESTCommon:versionable">
+                                <xs:sequence>
+                                        <xs:group ref="pickListDirectoryEntryGroup"/>
+                                        <xs:element name="mappings" type="lgRESTNaming:mappings" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>The mappings that are specific to this pick list definition. This set of mappings must be supplied when a pick list definition is included in a changedEntry and must be empty when it is included in a pickLists collection, as the collection itself carries the mappings</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="pickListEntryNode" minOccurs="0" maxOccurs="unbounded" type="pickListEntryNode">
+                                                <xs:annotation>
+                                                        <xs:documentation>An entry in the list</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="source" minOccurs="0" maxOccurs="unbounded" type="lgRESTCommon:source">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the source(s) of this pick list definition. Must match a local id of a supportedSource in the corresponding mappings section. </xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="defaultPickContext" minOccurs="0" maxOccurs="unbounded" type="lgRESTCommon:context">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the context used in the definition of the pick list.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="properties" minOccurs="0" maxOccurs="1" type="lgRESTCommon:properties">
+                                                <xs:annotation>
+                                                        <xs:documentation>A list of propeties used in the description of this pick list.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+
+                                        <xs:element name="pickListId" type="lgRESTCommon:nodeId">
+                                                <xs:annotation>
+                                                        <xs:documentation>An identifier that uniquely names this list within the context of the collection.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="representsValueDomain" type="lgRESTCommon:URI">
+                                                <xs:annotation>
+                                                        <xs:documentation>The URI of the value domain definition that is represented by this pick list</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="defaultEntityCodeNamespace" type="lgRESTCommon:namespaceName" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>Local name of the namespace to which the entry codes in this list belong. defaultEntityCodeNamespace must match a local id of a supportedNamespace in the mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="defaultLanguage" type="lgRESTCommon:language" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifier of the language that is used to generate the text of this pick list if not otherwise specified. Note that this language does NOT necessarily have any coorelation with the language of a pickListEntry itself or the language of the target user. defaultLanguage must match a local id of a supportedLanguage in the mappings section. </xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="defaultSortOrder" type="lgRESTCommon:sortOrder" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifier of a sort order that is used as the default in the definition of the pick list</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="completeDomain" type="lgBuiltin:tsBoolean" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>True means that this pick list should represent all of the entries in the domain. Any active entity codes that aren't in the specific pick list entries are added to the end, using the designations identified by the defaultLanguage, defaultSortOrder and defaultPickContext. Default: false</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Choice>> pickListEntryNode  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="pickListEntryNode">
+                <xs:annotation>
+                        <xs:documentation>An inclusion (pickListEntry) or exclusion (pickListEntryExclusion) in a pick list definition</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:versionable">
+                                <xs:sequence>
+                                        <xs:choice>
+                                                <xs:element name="exclusionEntry" type="pickListEntryExclusion"/>
+                                                <xs:element name="inclusionEntry" type="pickListEntry"/>
+                                        </xs:choice>
+                                        <xs:element name="properties" type="lgRESTCommon:properties" minOccurs="0">
+                                                <xs:annotation>
+                                                        <xs:documentation>Additional properties associated with this particular entry node</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="pickListEntryId" type="lgRESTCommon:nodeId">
+                                                <xs:annotation>
+                                                        <xs:documentation>Unique identifier of this node within the list.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: pickListEntryExclusion  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="pickListEntryExclusion">
+                <xs:annotation>
+                        <xs:documentation>An entity code that is explicitly excluded from a pick list.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="entityCode" type="lgCommon:entityCode">
+                                <xs:annotation>
+                                        <xs:documentation>Entity code associated with this entry. </xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="entityCodeNamespace" type="lgCommon:namespaceName" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>Local identifier of the namespace of the entity code if different than the pickListDefinition defaultEntityCodeNamespace. entityCodeNamespace must match a local id of a supportedNamespace in the mappings section.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: pickListEntry  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="pickListEntry">
+                <xs:annotation>
+                        <xs:documentation>An entity code and corresponding textual representation. </xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="pickText" type="lgBuiltin:tsCaseSensitiveDirectoryString">
+                                <xs:annotation>
+                                        <xs:documentation>The text that represents this node in the pick list. Some business rules may require that this string match a presentation associated with the entityCode</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="pickContext" type="lgRESTCommon:context" minOccurs="0" maxOccurs="unbounded">
+                                <xs:annotation>
+                                        <xs:documentation>The local identifiers of the context(s) in which this entry applies. pickContext must match a local id of a supportedContext in the mappings section </xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+
+                        <xs:element name="entryOrder" type="lgCommon:entryOrder" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>Relative order of this entry in the list. pickListEntries without a supplied order follow the all entries with an order, and the order is not defined.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="entityCode" type="lgRESTCommon:entityCode">
+                                <xs:annotation>
+                                        <xs:documentation>Entity code associated with this entry. </xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="entityCodeNamespace" type="lgRESTCommon:namespaceName" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>Local identifier of the namespace of the entity code if different than the pickListDefinition defaultEntityCodeNamespace. entityCodeNamespace must match a local id of a supportedNamespace in the mappings section.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="propertyId" type="lgRESTCommon:propertyId" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>The property identifier associated with the entityCode and entityCodeNamespace that the pickText was derived from. If absent, the pick text can be anything. Some terminologies may have business rules requiring this attribute to be present.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="isDefault" type="lgBuiltin:tsBoolean" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>True means that this is the default entry for the supplied language and context.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="matchIfNoContext" type="lgBuiltin:tsBoolean" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>True means that this entry can be used if no contexts are supplied, even though pickContext ispresent.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="language" type="lgRESTCommon:language" minOccurs="0">
+                                <xs:annotation>
+                                        <xs:documentation>The local name of the language to be used when the application/user supplies a selection language matches. If absent, this matches all languages. language must match a local id od of a supportedLanguage in the mappings section.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+
+
+</xs:schema>

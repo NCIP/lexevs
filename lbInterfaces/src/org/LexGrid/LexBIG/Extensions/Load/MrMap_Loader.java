@@ -19,8 +19,11 @@
 package org.LexGrid.LexBIG.Extensions.Load;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.relations.Relations;
 
 /**
  * Loader class for MrMap and MrSat RRF files resulting in a 
@@ -103,6 +106,7 @@ public interface MrMap_Loader extends Loader {
 	        String targetScheme,
 	        String targetVersion,
 	        String targetURI,
+	       Map.Entry<String, Relations> relations,
 	        boolean stopOnErrors, boolean async) throws LBException;
 
 	/**
