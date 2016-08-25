@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<bean id="pathToRootTreeServiceImpl" 
+		class="org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImpl">
+		<property name="lexEvsTreeDao" ref="lexEvsTreeDaoImpl"/>
+		<property name="pathToRootResolver" ref="lexEvsPathToRootResolver"/>
+		<property name="hierarchyResolver" ref="cachingHierarchyResolver"/>
+	</bean>
+	
+	<bean id="lexEvsPathToRootResolver" class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.pathtoroot.LexEvsPathToRootResolver"/>
+
+	<bean id="childPagingJsonConverter" class="org.LexGrid.LexBIG.Impl.Extensions.tree.json.ChildPagingJsonConverter"/>
+	
+	<bean id="childPagingEvsTreeConverter" class="org.LexGrid.LexBIG.Impl.Extensions.tree.evstree.ChildPagingEvsTreeConverter"/>
+	
+
+   <bean id="lexEvsTreeDaoImpl"
+		class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.JdbcLexEvsTreeDao">
+		<qualifier value="impl" type="org.springframework.beans.factory.annotation.Qualifier"/>
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="getChildrenSqlBuilder" ref ="getChildrenSqlBuilder" />
+		<property name="getNodeSqlBuilder" ref ="getNodeSqlBuilder" />
+	</bean>
+	
+<!--	<bean id="lexEvsTreeDaoImpl"-->
+<!--		class="org.lexevs.tree.dao.GraphLexEvsTreeDao">-->
+<!--		<qualifier value="impl" type="org.springframework.beans.factory.annotation.Qualifier"/>-->
+<!--	</bean>-->
+	
+	<bean id="cachingHierarchyResolver" class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.hierarchy.CachingHierarchyResolver"/>
+	
+	<bean id="getChildrenSqlBuilder" class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.sqlbuilder.GetChildrenSqlBuilder">
+  		<property name="prefixResolver" ref="prefixResolver"/>
+	</bean>
+	
+	<bean id="getNodeSqlBuilder" class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.sqlbuilder.GetNodeSqlBuilder">
+  		<property name="prefixResolver" ref="prefixResolver"/>
+	</bean>
+	
+	<bean id="prefixResolver" class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.prefixresolver.DefaultLexEvsPrefixResolver"/>
+
+ 	<bean id="transactionManager" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
+   		 <property name="targetMethod" value="getTransactionManager"/>
+ 	</bean>
+ 	
+ 	<bean id="defaultLexEvsDatabaseOperations" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="serviceLocator"/>
+   		 <property name="targetMethod" value="getLexEvsDatabaseOperations"/>
+ 	</bean>
+
+ 	<bean id="serviceLocator" class="org.lexevs.locator.LexEvsServiceLocator" factory-method="getInstance"/>
+ 	
+ 	<bean id="dataSource" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  		 <property name="targetObject" ref="defaultLexEvsDatabaseOperations"/>
+   		 <property name="targetMethod" value="getDataSource"/>
+ 	</bean>
+
+	<bean id="lexEvsDao"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<qualifier value="proxy" type="org.springframework.beans.factory.annotation.Qualifier"/>
+		<property name="transactionManager">
+			<ref local="transactionManager" />
+		</property>
+		<property name="target">
+			<ref local="lexEvsTreeDaoImpl" />
+		</property>
+		<property name="transactionAttributeSource">
+    		<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+  		</property>
+  		
+	</bean>
+</beans>

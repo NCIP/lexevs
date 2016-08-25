@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="http://LexGrid.org/schema/2010/01/LexGrid/REST/naming" 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" 
+        xmlns:lgRESTBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" 
+        xmlns:lgRESTCommon="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes"
+        elementFormDefault="qualified" 
+        targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/naming">
+
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/REST/commonTypes" schemaLocation="commonTypes.xsd"/>
+        
+        <!-- ================================================= -->
+        <!-- Package: <<XSDschema>> naming  -->
+        <!-- ================================================= -->
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Local identifier to URI mapping resource definition</h2>
+                </xs:documentation>
+                <xs:documentation>This package supports the local id to URI mappings extensions needed for the REST API</xs:documentation>
+        </xs:annotation>
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: URIMap  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="URIMap">
+                <xs:annotation>
+                        <xs:documentation>A local identifier that is used in a specific context (e.g. language, property name, data type, etc) and an optional URI that can be used to find the exact definition and meaning of the local id. Note: the string portion of this entry can be used to provide additional documentation or information, especially when a URI is not supplied.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="localId" type="lgRESTBuiltin:tsLocalId">
+                                <xs:annotation>
+                                        <xs:documentation>An identifier that, in the context of the particular URIMap type, assigns a meaning to how that property is used.  As an example, "en" might be used to identify English in the context of language.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="uri" type="lgBuiltin:tsURI">
+                                <xs:annotation>
+                                        <xs:documentation>A URI that  identifies the intended meaning of the localId.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedAssociation  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedAssociation">
+                <xs:annotation>
+                        <xs:documentation>An associationName and the URI of the defining resource. </xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedAssociationQualifier  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedAssociationQualifier">
+                <xs:annotation>
+                        <xs:documentation>An associationQualifier and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedCodingScheme  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedCodingScheme">
+                <xs:annotation>
+                        <xs:documentation>A codingSchemeName and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap">
+                                <xs:attribute default="true" name="isImported" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means, one or more entities of this coding scheme is brought in when the ontology is loaded. 
+                                                        The containing coding scheme also has its import flag set to true if it has one or more entities brought in. 
+                                                        False means, loaded ontology has only references to this coding scheme. Default: true</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedContainerName  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedContainerName">
+                <xs:annotation>
+                        <xs:documentation>A containerName and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedContext  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedContext">
+                <xs:annotation>
+                        <xs:documentation>A context and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedDataType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedDataType">
+                <xs:annotation>
+                        <xs:documentation>A data type and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedDegreeOfFidelity  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedDegreeOfFidelity">
+                <xs:annotation>
+                        <xs:documentation>A degreeOfFidelity and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedEntryType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedEntityType">
+                <xs:annotation>
+                        <xs:documentation>An entityType and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedLanguage  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedLanguage">
+                <xs:annotation>
+                        <xs:documentation>A language and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  supportedNamespace  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedNamespace">
+                <xs:annotation>
+                        <xs:documentation>A namespaceName and the corresponding URI</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap">
+                                <xs:sequence>
+                                        <xs:element name="equivalentCodingScheme" type="lgRESTCommon:codingSchemeName">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifier of a supportedCodingScheme that correspondes with this namespace.   In many models, the namespace used to qualify a concept code has a direct correlation to the coding scheme itself. If codingSchemeName is present, it asserts that the defining information about entryCodes in this namespace can be found in the corresponding coding scheme.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  supportedProperty  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedProperty">
+                <xs:annotation>
+                        <xs:documentation>A propertyName and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedPropertyLink  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedPropertyLink">
+                <xs:annotation>
+                        <xs:documentation>A propertyLinkName and ththe URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  supportedPropertyQualifier  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedPropertyQualifier">
+                <xs:annotation>
+                        <xs:documentation>A propertyQualifierName the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedPropertyQualifierType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedPropertyQualifierType">
+                <xs:annotation>
+                        <xs:documentation>A propertyQualifierType the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedPropertyType  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedPropertyType">
+                <xs:annotation>
+                        <xs:documentation>A propertyType and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  supportedRepresentationalForm  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedRepresentationalForm">
+                <xs:annotation>
+                        <xs:documentation>A representationalForm and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  supportedSource  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedSource">
+                <xs:annotation>
+                        <xs:documentation>A source and the URI of the defining resource. Source references can also carry an additional compositional rule section that describes how to combine a subpart such as a page number, section name, etc. with the core URI in order to form a meaningful URL. An optional role can also be specified.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap">
+                                <xs:attribute name="assemblyRule" type="lgBuiltin:tsCaseIgnoreIA5String">
+                                        <xs:annotation>
+                                                <xs:documentation>Rule for combining source-specific information such as page numbers, sections and the like with the source URL. Syntax: [ID] - names the identifier. Everythinng else is literal. </xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedSourceRole  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedSourceRole">
+                <xs:annotation>
+                        <xs:documentation>A source role and athe URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedSortOrder  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedSortOrder">
+                <xs:annotation>
+                        <xs:documentation>The local identifier and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedEntryStatus  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedStatus">
+                <xs:annotation>
+                        <xs:documentation>An entryStatus and the URI of the defining resource</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap"/>
+                </xs:complexContent>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: supportedHierarchy  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="supportedHierarchy">
+                <xs:annotation>
+                        <xs:documentation>A list  of associations that can be browsed hierarchically.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="URIMap">
+                                <xs:sequence>
+                                        <xs:element name="associationName" type="lgRESTCommon:associationName" minOccurs="1" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>Identifiers for hierarchical relationships available for navigation within a coding scheme</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="rootCode" type="lgRESTCommon:entityCode">
+                                                <xs:annotation>
+                                                        <xs:documentation>"@" for coding scheme that are top-down (ROOT) in hierarchy; "@@" for coding scheme that are bottom-up (TAIL) hierarchy</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="isForwardNavigable" type="lgBuiltin:tsBoolean" use="required">
+                                        <xs:annotation>
+                                                <xs:documentation>"true" if coding scheme hierarchy is top-down; "false" for bottom-up</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: mappings  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="mappingsLink">
+                <xs:annotation>
+                        <xs:documentation>A hyperlink from the current node to mappings</xs:documentation>
+                </xs:annotation>
+                <xs:simpleContent>
+                        <xs:extension base="lgRESTCommon:collectionLink"/>
+                </xs:simpleContent>
+        </xs:complexType>
+        
+        <xs:element name="mappings" type="mappings">
+                <xs:annotation>
+                        <xs:appinfo>path: (from owning codingScheme, valueDomainDefinition, pickList or ...)/mappings</xs:appinfo>
+                </xs:annotation>
+        </xs:element>
+        <xs:complexType name="mappings">
+                <xs:annotation>
+                        <xs:documentation>A list of all of the local identifiers and defining URI's that are used in the associated resource</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedAssociation" type="supportedAssociation">
+                                <xs:annotation>
+                                        <xs:documentation>An association(relation) referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedAssociationQualifier" type="supportedAssociationQualifier">
+                                <xs:annotation>
+                                        <xs:documentation>An association qualifier referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedCodingScheme" type="supportedCodingScheme">
+                                <xs:annotation>
+                                        <xs:documentation>Any coding scheme that is referenced in the resource, inclulding the containing scheme itself. Rule: There must be a supportedCodingScheme entry for each local name in the codingScheme object, with the URN set to the coding scheme registered name. </xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedContainer" type="supportedContainerName">
+                                <xs:annotation>
+                                        <xs:documentation>A relations container that appears in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedContext" type="supportedContext">
+                                <xs:annotation>
+                                        <xs:documentation>A context referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedDataType" type="supportedDataType">
+                                <xs:annotation>
+                                        <xs:documentation>A data type referenced by a text element in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedDegreeOfFidelity" type="supportedDegreeOfFidelity">
+                                <xs:annotation>
+                                        <xs:documentation>A degree of fidelity referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedEntityType" type="supportedEntityType">
+                                <xs:annotation>
+                                        <xs:documentation>An entityType referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedHierarchy" type="supportedHierarchy">
+                                <xs:annotation>
+                                        <xs:documentation>Description of hierarchies used in the resource.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedLanguage" type="supportedLanguage">
+                                <xs:annotation>
+                                        <xs:documentation>A language that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedNamespace" type="supportedNamespace">
+                                <xs:annotation>
+                                        <xs:documentation>A namespace that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedProperty" type="supportedProperty">
+                                <xs:annotation>
+                                        <xs:documentation>A property that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedPropertyType" type="supportedPropertyType">
+                                <xs:annotation>
+                                        <xs:documentation>A property type that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedPropertyLink" type="supportedPropertyLink">
+                                <xs:annotation>
+                                        <xs:documentation>A property link that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedPropertyQualifier" type="supportedPropertyQualifier">
+                                <xs:annotation>
+                                        <xs:documentation>A property qualifier that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedPropertyQualifierType" type="supportedPropertyQualifierType">
+                                <xs:annotation>
+                                        <xs:documentation>A property qualifier type that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedRepresentationalForm" type="supportedRepresentationalForm">
+                                <xs:annotation>
+                                        <xs:documentation>A representational form that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedSortOrder" type="supportedSortOrder">
+                                <xs:annotation>
+                                        <xs:documentation>A sort order that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedSource" type="supportedSource">
+                                <xs:annotation>
+                                        <xs:documentation>A source that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedSourceRole" type="supportedSourceRole">
+                                <xs:annotation>
+                                        <xs:documentation>A source role that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="supportedStatus" type="supportedStatus">
+                                <xs:annotation>
+                                        <xs:documentation>A status that is referenced in the resource</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+</xs:schema>

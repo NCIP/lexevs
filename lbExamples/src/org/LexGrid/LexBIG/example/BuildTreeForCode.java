@@ -399,7 +399,7 @@ public class BuildTreeForCode {
         // one path is required, it would be possible to use
         // HierarchyPathResolveOption.ONE to reduce processing
         // and improve overall performance.
-        AssociationList pathToRoot = lbscm.getHierarchyPathToRoot(scheme, csvt, null, focusCode, false,
+        AssociationList pathToRoot = lbscm.getHierarchyPathToRoot(scheme, csvt, null, focusCode, null, false,
                 HierarchyPathResolveOption.ALL, null);
 
         // But for purposes of this example we need to display info

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations" targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" elementFormDefault="qualified">
+
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/concepts" schemaLocation="concepts.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/relations" schemaLocation="relations.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/naming" schemaLocation="naming.xsd"/>
+        <!-- ================================================= -->
+        <!-- Package: <<XSDschema>> codingSchemes  -->
+        <!-- ================================================= -->
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Coding Scheme Definitions</h2>
+                </xs:documentation>
+                <xs:documentation>The definition of the Coding Scheme resource.</xs:documentation>
+        </xs:annotation>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class:  <<EntryPoint>> codingSchemes  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:element name="codingSchemes" type="codingSchemes"/>
+        <xs:complexType name="codingSchemes">
+                <xs:annotation>
+                        <xs:documentation>A collection of one or more coding schemes.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="codingScheme" type="codingScheme" minOccurs="1" maxOccurs="unbounded">
+                                <xs:annotation>
+                                        <xs:documentation>An individual coding scheme in the collection.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<EntryPoint>> codingScheme  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:element name="codingScheme" type="codingScheme"/>
+        <xs:complexType name="codingScheme">
+                <xs:annotation>
+                        <xs:documentation>A resource that makes assertions about a collection of terminological entities.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:versionableAndDescribable">
+                                <xs:sequence>
+                                        <xs:element name="localName" type="lgBuiltin:tsCaseIgnoreIA5String" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>Name that can be used to reference the coding scheme within the context of a given service. </xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="source" type="lgCommon:source" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the source(s) of this coding scheme. Must match a local id of a supportedSource in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="copyright" type="lgCommon:text" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>Information about rights held in and over the resource. Typically, copyright information includes a statement about various property rights associated with the resource, including intellectual property rights.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="mappings" type="lgNaming:mappings" minOccurs="1" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>A list of the local identifiers used in this resource along with the corresponding URI's, if known.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="properties" type="lgCommon:properties" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>A list of propeties used in the description of this coding scheme.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="entities" type="lgCon:entities" minOccurs="0" maxOccurs="1">
+                                                <xs:annotation>
+                                                        <xs:documentation>The set of lexical assertions made by this coding scheme.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="relations" type="lgRel:relations" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The set of semantic assertions made by this coding scheme.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="codingSchemeName" type="lgCommon:codingSchemeName" use="required">
+                                        <xs:annotation>
+                                                <xs:documentation>The unique local identifier used to uniquely reference this coding scheme within the context of a message or container. codingSchemeName must match a local id of a supportedCodingScheme in the mappings section.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="codingSchemeURI" type="lgCommon:URI" use="required">
+                                        <xs:annotation>
+                                                <xs:documentation>The official URI for this coding scheme . This URI must also be present in the supportedCodingScheme entry that matches the codingSchemeName.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="formalName" type="lgBuiltin:tsCaseIgnoreIA5String">
+                                        <xs:annotation>
+                                                <xs:documentation>The official or common name by which this coding scheme is known. (optional)</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="defaultLanguage" type="lgCommon:language">
+                                        <xs:annotation>
+                                                <xs:documentation>The local identifier of the language that is used in all presentations, descriptions, etc. in this coding scheme if not otherwise specified. defaultLanguage must match a local id of a supportedLanguage in the mappings section.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="approxNumConcepts" type="lgBuiltin:tsInteger">
+                                        <xs:annotation>
+                                                <xs:documentation>The approximate number of entries in the lexical portion of this scheme. This is used as a hint for browsers and services.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="representsVersion" type="lgCommon:version" use="required">
+                                        <xs:annotation>
+                                                <xs:documentation>The specific version of the resource represented by this coding scheme.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+</xs:schema>

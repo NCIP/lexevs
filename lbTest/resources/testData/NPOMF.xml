@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest.xsd"
+	xmlns:owldef="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest"
+	xmlns="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest" id="http://purl.bioontology.org/ontology/npo">
+		<owldef:mappings  xmlns="http://LexGrid.org/schema/2010/01/LexGrid/naming">
+		<supportedNamespace localId="bfo" uri="http://www.ifomis.org/bfo/1.1" equivalentCodingScheme="npo">bfo</supportedNamespace>
+		<supportedNamespace localId="CHEBI" uri="http://purl.org/obo/owl/CHEBI" equivalentCodingScheme="npo">CHEBI</supportedNamespace>
+		<supportedNamespace localId="dc" uri="http://purl.org/dc/elements/1.1" equivalentCodingScheme="npo">dc</supportedNamespace>
+		<supportedNamespace localId="FIX" uri="http://purl.org/obo/owl/FIX" equivalentCodingScheme="npo">FIX</supportedNamespace>
+		<supportedNamespace localId="GO" uri="http://purl.org/obo/owl/GO" equivalentCodingScheme="npo">GO</supportedNamespace>
+		<supportedNamespace localId="ncicp" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/ComplexProperties.xsd" equivalentCodingScheme="npo">ncicp</supportedNamespace>
+		<supportedNamespace localId="owl" uri="http://www.w3.org/2002/07/owl" equivalentCodingScheme="npo">owl</supportedNamespace>
+		<supportedNamespace localId="owl2xml" uri="http://www.w3.org/2006/12/owl2-xml" equivalentCodingScheme="npo">owl2xml</supportedNamespace>
+		<supportedNamespace localId="PATO" uri="http://purl.org/obo/owl/PATO" equivalentCodingScheme="npo">PATO</supportedNamespace>
+		<supportedNamespace localId="protege" uri="http://protege.stanford.edu/plugins/owl/protege" equivalentCodingScheme="npo">protege</supportedNamespace>
+		<supportedNamespace localId="rdf" uri="http://www.w3.org/1999/02/22-rdf-syntax-ns" equivalentCodingScheme="npo">rdf</supportedNamespace>
+		<supportedNamespace localId="rdfs" uri="http://www.w3.org/2000/01/rdf-schema" equivalentCodingScheme="npo">rdfs</supportedNamespace>
+		<supportedNamespace localId="REX" uri="http://purl.org/obo/owl/REX" equivalentCodingScheme="npo">REX</supportedNamespace>
+		<supportedNamespace localId="snap" uri="http://www.ifomis.org/bfo/1.1/snap" equivalentCodingScheme="npo">snap</supportedNamespace>
+		<supportedNamespace localId="span" uri="http://www.ifomis.org/bfo/1.1/span" equivalentCodingScheme="npo">span</supportedNamespace>
+		<supportedNamespace localId="swrl" uri="http://www.w3.org/2003/11/swrl" equivalentCodingScheme="npo">swrl</supportedNamespace>
+		<supportedNamespace localId="swrlb" uri="http://www.w3.org/2003/11/swrlb" equivalentCodingScheme="npo">swrlb</supportedNamespace>
+		<supportedNamespace localId="UO" uri="http://purl.org/obo/owl/UO" equivalentCodingScheme="npo">UO</supportedNamespace>
+		<supportedNamespace localId="xsd" uri="http://www.w3.org/2001/XMLSchema" equivalentCodingScheme="npo">xsd</supportedNamespace>
+		<supportedNamespace localId="xsp" uri="http://www.owl-ontologies.com/2005/08/07/xsp.owl" equivalentCodingScheme="npo">xsp</supportedNamespace>
+		</owldef:mappings>
+</CodingSchemeManifest>

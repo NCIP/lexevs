@@ -26,7 +26,7 @@ You may obtain a copy of the License at
 	<!-- *** TO BE CUSTOMIZED FOR EACH BUILD *** -->
 	<!-- *************************************** -->
 	<property name="prodID" value="LexEVS"/> <!-- Product ID -->
-	<property name="prodTitle" value = "LexGrid Enterprise Vocabulary Services for caBIG(LexEVS)"/><!-- Product Title -->
+	<property name="prodTitle" value = "LexGrid Enterprise Vocabulary Services for EVS, LexEVS"/><!-- Product Title -->
 	
 	<target name="init-ivy">
 	
@@ -655,7 +655,7 @@ pause
 java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/OSX-lbGUI-browser.sh">
-java -d32 -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+			java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-browser-lbGUI.sh">
 java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
@@ -907,7 +907,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPSUBPATH@@" value="LexGrid/${prodID}/${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_APPVERSION@@" value="${vBuild}"/>
 		<replace file="${basedir}/izpack-install.xml" token="@@REPLACED_BY_BUILD_INFO_URL@@"
-			value="https://cabig-kc.nci.nih.gov/Vocab/KC/index.php/LexBig_and_LexEVS"/>
+			value="https://wiki.nci.nih.gov/display/LexEVS/LexEVS"/>
 		<!-- Create the izPack installer -->
 		<izPack input="${basedir}/izpack-install.xml"
 			output="${out.file}"
