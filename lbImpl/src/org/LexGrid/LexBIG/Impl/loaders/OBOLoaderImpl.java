@@ -42,7 +42,6 @@ import org.springframework.util.Assert;
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBO2LGMain;
 import edu.mayo.informatics.lexgrid.convert.directConversions.obo1_2.OBOFormatValidator;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
-import edu.mayo.informatics.lexgrid.convert.utility.ManifestUtil;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**

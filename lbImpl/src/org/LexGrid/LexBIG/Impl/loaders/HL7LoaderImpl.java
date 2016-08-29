@@ -20,17 +20,13 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -40,13 +36,10 @@ import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
 import org.lexevs.logging.LoggerFactory;
 
-import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.HL72LGConstants;
 import edu.mayo.informatics.lexgrid.convert.directConversions.hl7.HL72LGMain;
-import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 /**
@@ -64,7 +57,6 @@ public class HL7LoaderImpl extends BaseLoader implements HL7_Loader {
     private static final String HL7_DESIGNATION = "HL7 Reference Information Model";
     private static final String MSACCESS_SERVER = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=";
     private static final String MSACCESS_DRIVER = "sun.jdbc.odbc.JdbcOdbcDriver";
-    private ArrayList<URNVersionPair> hl7CodingSchemes = new ArrayList<URNVersionPair>();
     ArrayList<String> urns = new ArrayList<String>();
 
     public String metaDataFileLocation;

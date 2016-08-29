@@ -18,16 +18,15 @@
  */
 package org.lexevs.dao.index.service.entity;
 
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Interface EntityIndexService.
@@ -38,7 +37,7 @@ public interface EntityIndexService {
 
 	/**
 	 * Update index for entity.
-	 * 
+	 *
 	 * @param codingSchemeUri the coding scheme uri
 	 * @param codingSchemeVersion the coding scheme version
 	 * @param entity the entity
@@ -49,13 +48,9 @@ public interface EntityIndexService {
 	
 	public String getIndexName(String codingSchemeUri, String codingSchemeVersion);
 	
-	public void optimizeAll();
-	
-	public void optimizeIndex(String codingSchemeUri, String codingSchemeVersion);
-	
 	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id);
-	
-	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id, FieldSelector fieldSelector);
+	 
+	public Document getDocumentById(String codingSchemeUri, String codingSchemeVersion, int id,  Set<String> fields);
 	
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
@@ -78,39 +73,13 @@ public interface EntityIndexService {
 	public void dropIndex(AbsoluteCodingSchemeVersionReference reference);
 	
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference);
-	
-	/**
-	 * Query.
-	 * 
-	 * @param reference the reference
-	 * @param combinedQueries the combined queries
-	 * @param individualQueries the individual queries
-	 * 
-	 * @return the list< score doc>
-	 */
-	public List<ScoreDoc> query(String codingSchemeUri, String codingSchemeVersion, List<? extends Query> combinedQueries, List<? extends Query> individualQueries);
 
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query);
-	/**
-	 * Gets the match all docs query.
-	 * 
-	 * @param reference the reference
-	 * 
-	 * @return the match all docs query
-	 */
-	public Query getMatchAllDocsQuery(AbsoluteCodingSchemeVersionReference reference);
-	
-	public Filter getBoundaryDocsHitAsAWholeFilter(
-			String codingSchemeUri, 
-			String version, 
-			Query query);
 	
 	public Document getDocumentFromCommonIndexById(List<AbsoluteCodingSchemeVersionReference> references, int id);
 	
 	public List<ScoreDoc> queryCommonIndex(
 			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
 			Query query);
-
-	public Filter getCodingSchemeFilter(String uri, String internalVersionString);
 
 }

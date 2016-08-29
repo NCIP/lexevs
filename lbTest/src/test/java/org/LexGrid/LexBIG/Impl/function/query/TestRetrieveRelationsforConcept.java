@@ -39,7 +39,7 @@ public class TestRetrieveRelationsforConcept extends LexBIGServiceTestCase {
     public void testT1_FNC_40() throws LBException {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "External_Lip" }, THES_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "External_Lip" }, THES_SCHEME));
 
         CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, "roles");
 

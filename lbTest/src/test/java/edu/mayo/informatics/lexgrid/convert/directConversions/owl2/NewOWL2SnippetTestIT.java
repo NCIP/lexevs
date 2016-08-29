@@ -935,7 +935,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("CancerPatient", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("TumorMalignant", "", itr));
+		assertTrue(validateQualifier("TumorMalignant", "TumorMalignant", itr));
 	}
 	
 	@Test
@@ -946,7 +946,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 //		assertTrue(validateTarget("EpithelialCell", itr));
-		assertTrue(validateQualifier("EpithelialCell", "", itr));
+		assertTrue(validateQualifier("EpithelialCell", "EpithelialCell", itr));
 	}
 	
 	@Test
@@ -971,7 +971,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("EpithelialCell", "", itr));
+		assertTrue(validateQualifier("EpithelialCell", "EpithelialCell", itr));
 	}
 	
 	@Test

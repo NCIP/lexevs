@@ -20,9 +20,9 @@ package org.lexevs.dao.index.indexer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
@@ -30,12 +30,13 @@ import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
-import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.factory.IndexLocationFactory;
+import org.lexevs.dao.index.lucenesupport.LuceneMultiDirectoryFactory;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
+import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class EntityBatchingIndexCreator.
@@ -58,13 +59,13 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 
 	private IndexDaoManager indexDaoManager;
 	
-	private MetaData metaData;
+	private LuceneMultiDirectoryFactory indexDirectoryFactory;
+
+	private ConcurrentMetaData codingSchemes;
 
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
 	
 	private EntityIndexer entityIndexer;
-	
-	private EntityIndexer searchIndexer;
 	
 	private LgLoggerIF logger;
 	
@@ -99,15 +100,21 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 * @see org.lexevs.dao.index.indexer.IndexCreator#index(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
 	 */
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback, boolean onlyRegister, IndexOption option) {	
-		String indexName = this.getIndexName(reference);
+		
+		String indexName;
+		try {
+			indexName = this.getIndexName(reference);
+		} catch (LBParameterException e) {
+			throw new RuntimeException("Problems getting coding scheme name. uri = " + 
+					reference.getCodingSchemeURN()  + " version = " + reference.getCodingSchemeVersion(), e);
+		}
+
 		
 		addEntityIndexMetadata(reference, indexName, entityIndexer.getIndexerFormatVersion().getModelFormatVersion());
-		addSearchIndexMetadata(reference, this.getSearchIndexName(), searchIndexer.getIndexerFormatVersion().getModelFormatVersion());
 
 		if(!onlyRegister) {
 
 			EntityDao entityIndexService = indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-			SearchDao searchIndexService = indexDaoManager.getSearchDao();
 
 			int totalIndexedEntities = 0;
 
@@ -129,12 +136,6 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 								reference.getCodingSchemeVersion(), entity));
 					}
 					
-					if(option.equals(IndexOption.BOTH) || option.equals(IndexOption.SEARCH)){
-						searchDocs.addAll(
-							searchIndexer.indexEntity(
-									reference.getCodingSchemeURN(), 
-									reference.getCodingSchemeVersion(), entity));
-					}
 					
 					totalIndexedEntities++;
 
@@ -147,28 +148,20 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 					}
 				}
 
-				this.getLogger().info("Flusing " + fullEntityDocs.size() + searchDocs.size() + " Documents to the Index.");
+				this.getLogger().info("Flushing " + fullEntityDocs.size() + searchDocs.size() + " Documents to the Index.");
 				entityIndexService.addDocuments(
 						reference.getCodingSchemeURN(), 
 						reference.getCodingSchemeVersion(), 
 						fullEntityDocs, analyzer);
 				
-				searchIndexService.addDocuments(
-						reference.getCodingSchemeURN(), 
-						reference.getCodingSchemeVersion(), 
-						searchDocs, 
-						this.searchIndexer.getAnalyzer());
 			}
 
 			this.getLogger().info("Indexing Complete. Indexed: " + totalIndexedEntities + " Entities.");
 			
 			if(! indexName.equals(IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME)) {
-				EntityDao entityIndexDao = 
-					this.indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 				
-				this.getLogger().info("In multi-directory index mode, optimizing...");
-				entityIndexDao.optimizeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-				this.getLogger().info("Optimizing complete.");
+				this.getLogger().info("In multi-directory index mode");
+
 			}
 		}
 		
@@ -184,41 +177,23 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 	 */
 	protected void addEntityIndexMetadata(
 			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
+		
+			CodingSchemeMetaData metaData = null;
+			
 		try {	  
-			String codingSchemeName = 
-				systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 
-			metaData.setIndexMetaDataValue(codingSchemeName + "[:]" + reference.getCodingSchemeVersion(), indexName);
+			metaData = indexDirectoryFactory.getCodingSchemeMetaData(indexName,
+					reference);
+			
+			codingSchemes.add(metaData);
 
-			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-			metaData.setIndexMetaDataValue(indexName, "has 'Norm' fields", false + "");
-			metaData.setIndexMetaDataValue(indexName, "has 'Double Metaphone' fields", true + "");
-			metaData.setIndexMetaDataValue(indexName, "indexing started", "");
-			metaData.setIndexMetaDataValue(indexName, "indexing finished", "");
-
-			metaData.rereadFile(true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	protected void addSearchIndexMetadata(
-			AbsoluteCodingSchemeVersionReference reference, String indexName, String indexVersion) {
-		try {	  
-			metaData.setIndexMetaDataValue(indexName, "lgModel", indexVersion);
-
-			metaData.rereadFile(true);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) {
-		if(systemVariables.getIsSingleIndex()){
-			return IndexLocationFactory.DEFAULT_SINGLE_INDEX_NAME;
-		} else {
-			return UUID.randomUUID().toString();
-		}
+	protected String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
+		return Utility.getIndexName(reference);
 	}
 	
 	protected String getSearchIndexName() {
@@ -323,27 +298,28 @@ public class EntityBatchingIndexCreator implements IndexCreator {
 		this.entityIndexer = entityIndexer;
 	}
 
-	public EntityIndexer getSearchIndexer() {
-		return searchIndexer;
-	}
-
-	public void setSearchIndexer(EntityIndexer searchIndexer) {
-		this.searchIndexer = searchIndexer;
-	}
-
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
-
-	public MetaData getMetaData() {
-		return metaData;
-	}
-
 	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
 		this.indexDaoManager = indexDaoManager;
 	}
 
 	public IndexDaoManager getIndexDaoManager() {
 		return indexDaoManager;
+	}
+	
+	public LuceneMultiDirectoryFactory getIndexDirectoryFactory() {
+		return indexDirectoryFactory;
+	}
+
+	public void setIndexDirectoryFactory(
+			LuceneMultiDirectoryFactory indexDirectoryFactory) {
+		this.indexDirectoryFactory = indexDirectoryFactory;
+	}
+
+	public ConcurrentMetaData getCodingSchemes() {
+		return codingSchemes;
+	}
+
+	public void setCodingSchemes(ConcurrentMetaData codingSchemes) {
+		this.codingSchemes = codingSchemes;
 	}
 }

@@ -21,15 +21,21 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
 import org.LexGrid.util.PrintUtility;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RestrictToAnonymousTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class RestrictToAnonymousTest extends BaseCodedNodeGraphTest {
 
+	@Test
     public void testRestrictToNonAnonymousForMappingScheme() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
     	
@@ -52,6 +58,7 @@ public class RestrictToAnonymousTest extends BaseCodedNodeGraphTest {
         assertTrue(rcr[0].getSourceOf() != null);
     }
     
+	@Test
     public void testRestrictToAnonymous() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
     	
@@ -76,6 +83,7 @@ public class RestrictToAnonymousTest extends BaseCodedNodeGraphTest {
         assertTrue(rcr[0].getTargetOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept()[0].getCode().equals("@"));
     }
     
+	@Test
     public void testRestrictToNonAnonymous() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
     	

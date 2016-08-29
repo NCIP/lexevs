@@ -38,7 +38,7 @@ public class TestRetrieveConceptandAttributesbyCode extends LexBIGServiceTestCas
     public void testT1_FNC_34() throws LBException {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Vallecula" }, THES_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Vallecula" }, THES_SCHEME));
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, Constructors.createLocalNameList("Semantic_Type"),
                 null, 0).getResolvedConceptReference();
@@ -49,7 +49,7 @@ public class TestRetrieveConceptandAttributesbyCode extends LexBIGServiceTestCas
         assertTrue(rcr[0].getEntity().getProperty()[0].getPropertyName().equals("Semantic_Type"));
 
         cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "invalidCode" }, THES_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "invalidCode" }, THES_SCHEME));
 
         rcr = cns.resolveToList(null, Constructors.createLocalNameList("Semantic_Type"), null, 0)
                 .getResolvedConceptReference();

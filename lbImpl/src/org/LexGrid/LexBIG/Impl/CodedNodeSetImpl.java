@@ -18,10 +18,12 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +32,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -41,9 +44,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.MatchToQuerySort;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Difference;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.GetAllConcepts;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Intersect;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToAnonymous;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToEntityTypes;
@@ -51,13 +52,10 @@ import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingDesignat
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToMatchingProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToProperties;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.RestrictToStatus;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.Union;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.SetOperation;
-import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
+import org.LexGrid.LexBIG.Impl.helpers.DefaultCodeHolder;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImpl;
 import org.LexGrid.LexBIG.Impl.helpers.ToNodeListResolvedConceptReferencesIteratorDecorator;
 import org.LexGrid.LexBIG.Impl.helpers.comparator.ResultComparator;
@@ -69,11 +67,12 @@ import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
+import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.utility.CodingSchemeReference;
@@ -85,27 +84,101 @@ import org.lexevs.system.utility.CodingSchemeReference;
  * @author <A HREF="mailto:rokickik@mail.nih.gov">Konrad Rokicki</A>
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ * @author <A HREF="mailto:bauer.scott@mayo.edu">Scott Bauer</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     private static final long serialVersionUID = 6108466665548985484L;
-    protected ArrayList<Operation> pendingOperations_ = new ArrayList<Operation>();
-    protected CodeHolder codesToInclude_ = null;
-    private List<Query> queries = new ArrayList<Query>();
-    private List<org.apache.lucene.search.Filter> filters = new ArrayList<org.apache.lucene.search.Filter>();
+
+    /**
+     * A combination of a {@link Restriction} and an {@link Occur} - enough
+     * information to construct a Lucene {@link BooleanClause}.
+     */
+    private static class RestrictionOccurTuple implements Serializable {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -8987073647529962542L;
+        private Restriction restriction;
+        private Occur occur;
+
+        public RestrictionOccurTuple() {
+            //Used for serialization 
+        }
+
+        public RestrictionOccurTuple(Restriction restriction, Occur occur) {
+            this.restriction = restriction;
+            this.occur = occur;
+        }
+    }
+
+    /**
+     * A holder for all {@link Restriction}s set on this {@link CodedNodeSetImpl} that
+     * can be converted into a Lucene {@link Query} on demand.
+     */
+    public static class QueryBuilder implements Restriction {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 6994520702499111932L;
+        private Integer minimumNumberShouldMatch;
+        private List<RestrictionOccurTuple> restrictions = new ArrayList<RestrictionOccurTuple>();
+
+        public void add(Restriction restriction, Occur occur) {
+            this.restrictions.add(new RestrictionOccurTuple(restriction, occur));
+        }
+
+        @Override
+        public Query getQuery() throws LBException, InternalException {
+            BooleanQuery.Builder builder = new BooleanQuery.Builder();
+
+            if(this.minimumNumberShouldMatch != null) {
+                builder.setMinimumNumberShouldMatch(this.minimumNumberShouldMatch);
+            }
+
+            Query query;
+            for(RestrictionOccurTuple tuple : this.restrictions) {
+                query = tuple.restriction.getQuery();
+
+                builder = builder.add(query, tuple.occur);
+            }
+
+            return builder.build();
+        }
+
+        public void setMinimumNumberShouldMatch(int minimumNumberShouldMatch) {
+            this.minimumNumberShouldMatch = minimumNumberShouldMatch;
+        }
+
+        @Override
+        public String toString() {
+            try {
+                return this.getQuery().toString();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private QueryBuilder builder = new QueryBuilder();
+
     protected CodeHolderFactory codeHolderFactory = new NonProxyCodeHolderFactory();
     
     private Set<CodingSchemeReference> references = new HashSet<CodingSchemeReference>();
+
+    private AbsoluteCodingSchemeVersionReference primaryReference;
     
     //This can be very large an expensive to send remotely. Make this transient
     //for now and rely on Lucene matches to reconstruct the 'toNodeListCodes' matches.
     private transient CodeHolder toNodeListCodes = null;
-    
+
     private ActiveOption currentActiveOption;
     
     private boolean shouldCodingSchemeSpecificRestriction = true;
-    
-    private boolean hasMatchAllDocsQueryBeenAdded = false;
+
+    private transient DefaultCodeHolder nonEntityConceptReferenceList;
 
     protected LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -127,10 +200,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException, LBResourceUnavailableException {
         getLogger().logMethod(new Object[] { codingScheme, tagOrVersion, activeOnly });
         try {
-            pendingOperations_.add(new GetAllConcepts(codingScheme, tagOrVersion));
+
             if (activeOnly != null && activeOnly.booleanValue()) {
-                pendingOperations_.add(new RestrictToStatus(ActiveOption.ACTIVE_ONLY, null));
-                currentActiveOption = ActiveOption.ACTIVE_ONLY;
+                this.restrictToStatus(ActiveOption.ACTIVE_ONLY, null);
             }
             
             if(entityTypes != null && entityTypes.getEntryCount() > 0 ) {
@@ -143,13 +215,17 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             CodingSchemeReference ref = new CodingSchemeReference();
             ref.setCodingSchemeURN(uri);
             ref.setCodingSchemeVersion(version);
+
+            builder.add(new GetAllConcepts(codingScheme, tagOrVersion), Occur.MUST);
             
             this.references.add(ref);
+            this.primaryReference = ref;
         } catch (LBParameterException e) {
             throw e;
         } catch (LBResourceUnavailableException e) {
             throw e;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
@@ -159,7 +235,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * This is used when I converter a CodedNodeGraph to a CodedNodeSet.
      * 
      * @param codes
-     * @param tagOrVersion
      * @throws LBInvocationException
      * @throws LBParameterException
      */
@@ -167,17 +242,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException {
         getLogger().logMethod(new Object[] { codes, internalCodingSchemeName, internalVersionString });
         try {
-            codesToInclude_ = codes;
-            pendingOperations_.add(new GetAllConcepts(internalCodingSchemeName, internalVersionString));
+            this.toNodeListCodes = codes;
+            builder.add(new GetAllConcepts(internalCodingSchemeName, internalVersionString), Occur.MUST);
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
         }
-    }
-    
-    public CodedNodeSetImpl(CodeHolder codes)
-        throws LBInvocationException {
-        codesToInclude_ = codes;
     }
 
     /**
@@ -187,10 +257,18 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet intersect(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         try {
-            pendingOperations_.add(new Intersect(((CodedNodeSetImpl) codes).clone()));
+            QueryBuilder newBuilder = new QueryBuilder();
+
+            newBuilder.add(this.builder, Occur.MUST);
+            newBuilder.add(((CodedNodeSetImpl) codes).clone().getQuery(), Occur.MUST);
+
+            this.builder = newBuilder;
+
+            this.references.addAll(((CodedNodeSetImpl) codes).references);
+            if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null && this.getNonEntityConceptReferenceList() != null){
+            this.getNonEntityConceptReferenceList().intersect(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList());
+            }
             return this;
-        } catch (LBParameterException e) {
-            throw e;
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
@@ -203,10 +281,20 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet union(CodedNodeSet codes) throws LBInvocationException, LBParameterException {
         try {
-            pendingOperations_.add(new Union(((CodedNodeSetImpl) codes).clone()));
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.setMinimumNumberShouldMatch(1);
+
+            newBuilder.add(this.builder, Occur.SHOULD);
+            newBuilder.add(((CodedNodeSetImpl) codes).getQuery(), Occur.SHOULD);
+
+            this.builder = newBuilder;
+
+            this.references.addAll(((CodedNodeSetImpl) codes).getCodingSchemeReferences());
+            
+            if(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList() != null  && this.getNonEntityConceptReferenceList() != null){
+                this.getNonEntityConceptReferenceList().union(((CodedNodeSetImpl) codes).getNonEntityConceptReferenceList());
+            }
             return this;
-        } catch (LBParameterException e) {
-            throw e;
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
@@ -220,10 +308,17 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     @LgClientSideSafe
     public CodedNodeSet difference(CodedNodeSet codesToRemove) throws LBInvocationException, LBParameterException {
         try {
-            pendingOperations_.add(new Difference(((CodedNodeSetImpl) codesToRemove).clone()));
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.add(this.builder, Occur.MUST);
+            newBuilder.add((((CodedNodeSetImpl) codesToRemove).clone()).getQuery(), Occur.MUST_NOT);
+
+            this.builder = newBuilder;
+
+            this.references.addAll(((CodedNodeSetImpl) codesToRemove).references);
+            if(((CodedNodeSetImpl) codesToRemove).getNonEntityConceptReferenceList() != null && this.getNonEntityConceptReferenceList() != null){
+            this.getNonEntityConceptReferenceList().difference(((CodedNodeSetImpl) codesToRemove).getNonEntityConceptReferenceList());
+            }
             return this;
-        } catch (LBParameterException e) {
-            throw e;
         } catch (Exception e) {
             String logId = getLogger().error("Unexpected Error", e);
             throw new LBInvocationException("Unexpected Internal Error", logId);
@@ -236,8 +331,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     public Boolean isCodeInSet(ConceptReference code) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { code });
         try {
-            runPendingOps();
-            this.toBruteForceMode(this.getInternalCodeSystemName(), this.getInternalVersionString());
+            CodeHolder codesToInclude_ = this.toBruteForceMode();
 
             if (code == null) {
                 throw new LBParameterException("The parameter is required", "codeObject");
@@ -285,14 +379,16 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             String matchAlgorithm, String language) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { matchText, option, matchAlgorithm, language });
         try {
-            this.clearToNodeListCodes();
             RestrictToMatchingDesignations op = new RestrictToMatchingDesignations(matchText, option, matchAlgorithm, language,
-                    getInternalCodeSystemName(), getInternalVersionString());
-            
-           if(!this.pendingOperations_.contains(op)) {
-                this.pendingOperations_.add(op);
-           }
-                    
+                    this.primaryReference.getCodingSchemeURN(), this.primaryReference.getCodingSchemeVersion());
+
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.add(this.builder, Occur.MUST);
+            newBuilder.add(op, Occur.MUST);
+
+            this.builder = newBuilder;
+            //clear the shadow entity list, this is a restriction on an index based entity.
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -312,9 +408,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes, sourceList, contextList, qualifierList });
         try {
-            this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToProperties(propertyList, propertyTypes, sourceList, contextList,
-                    qualifierList, getInternalCodeSystemName(), getInternalVersionString()));
+            builder.add(new RestrictToProperties(propertyList, propertyTypes, sourceList, contextList,
+                    qualifierList, null, null), Occur.MUST);
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -333,9 +429,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes });
         try {
-            this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToProperties(propertyList, propertyTypes, null, null, null,
-                    getInternalCodeSystemName(), getInternalVersionString()));
+            builder.add(new RestrictToProperties(propertyList, propertyTypes, null, null, null,
+                    null, null), Occur.MUST);
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -358,8 +454,23 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     public CodedNodeSet restrictToCodes(ConceptReferenceList codeList) throws LBInvocationException,
             LBParameterException {
         try {
-            this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToCodes(codeList));
+            codeList = getCleanedCodeList(codeList);
+            this.builder.add(new RestrictToCodes(codeList), Occur.MUST);
+
+            return this;
+        } catch (LBParameterException e) {
+            throw e;
+        } catch (Exception e) {
+            String logId = getLogger().error("Unexpected Error", e);
+            throw new LBInvocationException("Unexpected Internal Error", logId);
+        }
+    }
+    
+    @LgClientSideSafe
+    public CodedNodeSet restrictToMappingCodes(ConceptReferenceList codeList) throws LBParameterException, LBInvocationException {
+        try {
+            this.builder.add(new RestrictToCodes(codeList), Occur.MUST);
+
             return this;
         } catch (LBParameterException e) {
             throw e;
@@ -369,11 +480,51 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
 
+    protected ConceptReferenceList getCleanedCodeList(ConceptReferenceList codeList) {
+        Iterator<? extends ConceptReference> itr = codeList.iterateConceptReference();
+        ConceptReferenceList cleanedList = new ConceptReferenceList();
+        setNonEntityConceptReferenceList(new DefaultCodeHolder());
+        while (itr.hasNext()) {
+            ConceptReference cr = itr.next();
+            if (cr instanceof EntityReferencingAssociatedConcept
+                    && (((EntityReferencingAssociatedConcept) cr).getEntityGuid() == null)
+                    || (cr instanceof ResolvedConceptReference && ((ResolvedConceptReference) cr)
+                            .getEntityDescription() == null)) {
+                CodeToReturn ch = convertConceptReferenceToCodeHolder(cr);
+                if (!getNonEntityConceptReferenceList().contains(ch)) {
+                    getNonEntityConceptReferenceList().add(ch);
+                }
+            } else {
+                cleanedList.addConceptReference(cr);
+            }
+        }
+
+        // Can't send an empty list to the builder. If the focus node was an
+        // unreferenced
+        // entity from a relationship then it will return nothing from the
+        // indexes. Should be a no-op.
+        if (cleanedList.getConceptReferenceCount() == 0) {
+            ConceptReferenceList newList = new ConceptReferenceList();
+            newList.addConceptReference(codeList.getConceptReference(0));
+            return newList;
+        }
+        return cleanedList;
+    }
+
+    protected CodeToReturn convertConceptReferenceToCodeHolder(ConceptReference cr) {
+        CodeToReturn ctr = new CodeToReturn();;
+        ctr.setCode(cr.getCode());
+        ctr.setEntityTypes(ctr.getEntityTypes());
+        ctr.setNamespace(cr.getCodeNamespace());
+        ctr.setEntityTypes(new String[]{"concept"});
+        return ctr;
+    }
+
     protected CodedNodeSet restrictToEntityTypes(LocalNameList typeList) throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { typeList });
         try {
-            this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToEntityTypes(typeList));
+            builder.add(new RestrictToEntityTypes(typeList), Occur.MUST);
+
             return this;
         } catch (LBParameterException e) {
             throw e;
@@ -390,10 +541,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 new Object[] { propertyList, propertyTypes, sourceList, contextList, qualifierList, matchText,
                         matchAlgorithm, language });
         try {
-            this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToMatchingProperties(propertyList, propertyTypes, sourceList,
-                    contextList, qualifierList, matchText, matchAlgorithm, language, getInternalCodeSystemName(),
-                    getInternalVersionString()));
+            builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, sourceList,
+                    contextList, qualifierList, matchText, matchAlgorithm, language, null, null), Occur.MUST);
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -414,9 +564,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             LBParameterException {
         getLogger().logMethod(new Object[] { propertyList, propertyTypes, matchText, matchAlgorithm, language });
         try {
-            this.clearToNodeListCodes();
-            pendingOperations_.add(new RestrictToMatchingProperties(propertyList, propertyTypes, null, null, null,
-                    matchText, matchAlgorithm, language, getInternalCodeSystemName(), getInternalVersionString()));
+            builder.add(new RestrictToMatchingProperties(propertyList, propertyTypes, null, null, null,
+                    matchText, matchAlgorithm, language, null, null), Occur.MUST);
+            this.setNonEntityConceptReferenceList(new DefaultCodeHolder());
             return this;
         } catch (LBInvocationException e) {
             throw e;
@@ -481,8 +631,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         try {
             Filter[] filters = ServiceUtility.validateFilters(filterOptions);
 
-           runPendingOps();
-           this.toBruteForceMode(this.getInternalCodeSystemName(), this.getInternalVersionString());
+            CodeHolder codesToInclude_ = this.toBruteForceMode();
            
             // now, all of the operations are complete, and the codesToInclude
             // set is populated.
@@ -547,6 +696,8 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
     
+    
+    
     protected <T> ResultComparator<T> getResultComparator(SortOptionList sortOptionList, SortContext sortContext, Class<T> clazz) throws LBParameterException{ 
 
         ResultComparator<T> comparator = new ResultComparator<T>();
@@ -567,21 +718,13 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         return comparator;
     }
 
-    protected String getInternalCodeSystemName() {
-        return ((GetAllConcepts) pendingOperations_.get(0)).getInternalCodingSchemeName();
-    }
-
-    protected String getInternalVersionString() {
-        return ((GetAllConcepts) pendingOperations_.get(0)).getInternalVersionString();
-    }
-
     /**
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#resolve(org.LexGrid.LexBIG.DataModel.Collections.LocalNameList,
      *      org.LexGrid.LexBIG.DataModel.Collections.LocalNameList)
      */
     public ResolvedConceptReferencesIterator resolve(SortOptionList sortOptions, LocalNameList restrictToProperties,
             PropertyType[] restrictToPropertyTypes) throws LBInvocationException, LBParameterException {
-        getLogger().logMethod(new Object[] { sortOptions, restrictToProperties });
+        getLogger().logMethod(new Object[]{sortOptions, restrictToProperties});
         return resolve(sortOptions, null, restrictToProperties, restrictToPropertyTypes, true);
     }
 
@@ -610,6 +753,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         getLogger().logMethod(
                 new Object[] { sortByProperty, filterOptions, restrictToProperties, restrictToPropertyTypes,
                         resolveObjects });
+        
         // Currently, only 'presorted' sort types are allowed in the iterator.
         // That cuts the list to:
         // matchToQuery, code, codeSystem
@@ -631,8 +775,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
                 }
             }
 
-            runPendingOps();
-            this.toBruteForceMode(this.getInternalCodeSystemName(), this.getInternalVersionString());
+            CodeHolder codesToInclude_ = this.toBruteForceMode();
 
             if(sortByProperty == null || sortByProperty.getEntryCount() == 0){
                 sortByProperty = Constructors.createSortOptionList(
@@ -641,7 +784,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             
             ResultComparator<CodeToReturn> comparator = getResultComparator(sortByProperty, SortContext.SETITERATION, CodeToReturn.class);
             Collections.sort(codesToInclude_.getAllCodes(), comparator);
-            
+
             return getResolvedConceptReferencesIterator(codesToInclude_, restrictToProperties, restrictToPropertyTypes,
                     filters, resolveObjects);
         } catch (LBInvocationException e) {
@@ -654,7 +797,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
     
-
+   
     /**
      * @see org.LexGrid.LexBIG.LexBIGService.CodedNodeSet#restrictToStatus(org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption,
      *      java.lang.String[])
@@ -664,7 +807,7 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             throws LBInvocationException, LBParameterException {
         try {
             this.currentActiveOption = activeOption;
-            pendingOperations_.add(new RestrictToStatus(activeOption, conceptStatus));
+            builder.add(new RestrictToStatus(activeOption, conceptStatus), Occur.MUST);
             return this;
         } catch (LBParameterException e) {
             throw e;
@@ -679,20 +822,12 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         throws LBInvocationException, LBParameterException {
         getLogger().logMethod(new Object[] { anonymousOption });
         try {
-            boolean foundPrevious = false;
-            int previousIndex = 0;
-            
-            for(int i=0;i<pendingOperations_.size();i++) {
-                Operation operation = pendingOperations_.get(i);
-                if(operation instanceof RestrictToAnonymous) {
-                    foundPrevious = true;
-                    previousIndex = i;
-                }
-            }
-            if(foundPrevious) {
-                pendingOperations_.remove(previousIndex);
-            }
-            pendingOperations_.add(new RestrictToAnonymous(anonymousOption));
+            QueryBuilder newBuilder = new QueryBuilder();
+            newBuilder.add(this.builder, Occur.MUST);
+            newBuilder.add(new RestrictToAnonymous(anonymousOption), Occur.MUST);
+
+            this.builder = newBuilder;
+
             return this;
         } catch (LBParameterException e) {
             throw e;
@@ -702,116 +837,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         }
     }
 
-    /*
-     * Run all of the stacked up operations.
-     */
-    public void runPendingOps() throws LBInvocationException, LBParameterException {
-        try {
-        
-            boolean areMultipleDesignationQueries = areMultipleDesignationQueries();
-            
-            BooleanQuery combinedQuery = new BooleanQuery();
-            
-            EntityIndexService entityIndexService = 
-                  LexEvsServiceLocator.getInstance().getIndexServiceManager().getEntityIndexService();
-            
-            optimizePendingOpsOrder();
-            // will always be at least size 1...
-
-            GetAllConcepts gac = (GetAllConcepts) pendingOperations_.get(0);
-            
-            String internalCodeSystemName = gac.getInternalCodingSchemeName();
-            String internalVersionString = gac.getInternalVersionString();
-            
-            String uri = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(internalCodeSystemName, internalVersionString);
-            
-            //TODO: Move this block of logic somewhere else so we don't have to rely on a flag
-            if(! hasMatchAllDocsQueryBeenAdded){
-                this.queries.add(new MatchAllDocsQuery());
-
-                if(this.isShouldCodingSchemeSpecificRestriction()) {
-                    Query codingSchemeQuery = 
-                        entityIndexService.getMatchAllDocsQuery(Constructors.createAbsoluteCodingSchemeVersionReference(uri, internalVersionString));
-
-                    this.queries.add(codingSchemeQuery);
-                }
-                
-                hasMatchAllDocsQueryBeenAdded = true;
-            } 
-            
-            for (int i = 1; i < pendingOperations_.size(); i++) {
-                Operation operation = pendingOperations_.get(i);
-
-                if(operation instanceof RestrictToMatchingDesignations ||
-                        operation instanceof RestrictToMatchingProperties){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
-  
-                    if(areMultipleDesignationQueries) {
-                        combinedQuery.add(query, Occur.SHOULD);
-                        org.apache.lucene.search.Filter
-                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
-                        this.filters.add(filter);
-                    } else {
-                        this.queries.add(query);
-                    }
-                } else if(operation instanceof RestrictToStatus ||
-                        operation instanceof RestrictToAnonymous ||
-                        operation instanceof RestrictToCodes ||
-                        operation instanceof RestrictToEntityTypes){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);   
-                    this.queries.add(query);
-                } else  if(operation instanceof RestrictToProperties){
-                    Query query = RestrictionImplementations.getQuery((Restriction) operation, internalCodeSystemName, internalVersionString);
-                    org.apache.lucene.search.Filter
-                        filter = entityIndexService.getBoundaryDocsHitAsAWholeFilter(uri, internalVersionString, query);
-                    this.filters.add(filter);
-                 }
-  
-                else if (operation instanceof Union) {
-                    
-                    Union union = (Union) operation;
-                    doUnion(internalCodeSystemName, internalVersionString, union);
-                } else if (operation instanceof Intersect) {
-                      
-                    Intersect intersect = (Intersect) operation;
-                    
-                    doIntersect(internalCodeSystemName, internalVersionString, intersect);
-                } else if (operation instanceof Difference) {
-                     
-                    Difference difference = (Difference) operation;
-                    
-                    doDifference(internalCodeSystemName, internalVersionString, difference);
-                } 
-            }
-            
-            if(combinedQuery.getClauses().length > 0) {
-                queries.add(combinedQuery);
-            }
-
-            // remove the completed pending ops.
-            for (int i = 1; i < pendingOperations_.size(); i++) {
-                pendingOperations_.remove(i);
-            }
-
-        } catch (LBParameterException e) {
-            throw e;
-        } catch (Exception e) {
-            String logId = getLogger().error("Unexpected Internal Error", e);
-            throw new LBInvocationException("Unexpected Internal Error", logId);
-        }
-    }
-    
-    private boolean areMultipleDesignationQueries() {
-        int count = 0;
-        for(Operation op : this.pendingOperations_) {
-            if(op instanceof RestrictToMatchingDesignations
-                    || op instanceof RestrictToMatchingProperties) {
-                count++;
-            }
-        }
-        return count > 1;
-    }
-    
     protected ResolvedConceptReferencesIterator getResolvedConceptReferencesIterator(
             CodeHolder codesToInclude, 
             LocalNameList restrictToProperties, 
@@ -829,91 +854,16 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
             return itr;
         }  
     }
-    
-    protected void doUnion(String internalCodeSystemName, String internalVersionString, Union union) throws LBException {
-        toBruteForceMode(internalCodeSystemName, internalVersionString);
-
-        codesToInclude_.union(union.getCodes().getCodeHolder());
-    }
-    
-    protected void doIntersect(String internalCodeSystemName, String internalVersionString, Intersect intersect) throws LBException {
-        toBruteForceMode(internalCodeSystemName, internalVersionString);
-
-        codesToInclude_.intersect(intersect.getCodes().getCodeHolder());
-    }
-    
-    protected void doDifference(String internalCodeSystemName, String internalVersionString, Difference difference) throws LBException {
-        toBruteForceMode(internalCodeSystemName, internalVersionString);
-
-        codesToInclude_.difference(difference.getCodes().getCodeHolder());
-    }
-
-    /*
-     * Get the populatedCodedHolder object for this CodedNodeSet.
-     */
-    public CodeHolder getCodeHolder() throws LBInvocationException, LBParameterException {
-        runPendingOps();
-        this.toBruteForceMode(this.getInternalCodeSystemName(), this.getInternalVersionString());
-        return codesToInclude_;
-    }
-    
-    protected void clearToNodeListCodes() {
-        this.setToNodeListCodes(null);
-    }
 
     /*
      * Turn the bit set into a populated CodeHolder.
      */
-    protected void toBruteForceMode(String internalCodeSystemName, String internalVersionString)
-    throws LBInvocationException, LBParameterException {
-        if(this.codesToInclude_ != null) {return;}
+    protected CodeHolder toBruteForceMode()
+            throws LBException, InternalException {
 
-        if(codesToInclude_ == null ){
-            codesToInclude_ = 
-                codeHolderFactory.buildCodeHolderWithFilters(
-                        internalCodeSystemName, 
-                        internalVersionString, 
-                        queries, 
-                        filters
-                        );
-        }
-    }
-
-    /*
-     * Rearrange the pending operations so that we can stay in bit-set mode as
-     * long as possible.
-     */
-    protected void optimizePendingOpsOrder() {
-        // TODO [Performance] can I also pull up intersections and difference?
-        // Want to pull all restrictions up above any unions.
-        // This lets me do cheap restrictions for a longer time - union forces a
-        // brute force approach
-        // that uses much more memory.
-        int firstSetOperationPos = -1;
-        for (int i = 0; i < pendingOperations_.size(); i++) {
-            Operation currentOperation = pendingOperations_.get(i);
-
-            if (currentOperation instanceof Restriction && firstSetOperationPos >= 0) {
-                // move this restriction above the firstUnionPos - shift
-                // everything else down.
-                for (int j = i; j > firstSetOperationPos; j--) {
-                    pendingOperations_.set(j, pendingOperations_.get(j - 1));
-                    // need to put this restriction into each union that should
-                    // occur before it.
-                    if (pendingOperations_.get(j) instanceof SetOperation) {
-                        ((CodedNodeSetImpl) ((SetOperation) pendingOperations_.get(j)).getCodes())
-                                .addPendingOperation(currentOperation);
-                    }
-                }
-
-                pendingOperations_.set(firstSetOperationPos, currentOperation);
-                firstSetOperationPos++;
-
-            }
-            if (firstSetOperationPos == -1 && currentOperation instanceof SetOperation) {
-                firstSetOperationPos = i;
-            }
-        }
+        return codeHolderFactory.buildCodeHolder(getNonEntityConceptReferenceList(),
+                        this.getCodingSchemeReferences(),
+                        this.builder.getQuery());
     }
 
     /*
@@ -923,40 +873,16 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    @SuppressWarnings("unchecked")
     @LgClientSideSafe
     public CodedNodeSetImpl clone() throws CloneNotSupportedException {
         CodedNodeSetImpl cns = (CodedNodeSetImpl) super.clone();
-        cns.pendingOperations_ = (ArrayList<Operation>) this.pendingOperations_.clone();
+
         return cns;
     }
     
+    @LgClientSideSafe
     public Set<CodingSchemeReference> getCodingSchemeReferences(){
         return this.references;
-    }
-
-    public List<Query> getQueries() {
-        return queries;
-    }
-
-    public void setQueries(List<Query> queries) {
-        this.queries = queries;
-    }
-
-    public List<org.apache.lucene.search.Filter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<org.apache.lucene.search.Filter> filters) {
-        this.filters = filters;
-    }
-
-    /*
-     * Add a new operation to the list to be executed, used by the optimize
-     * process.
-     */
-    private void addPendingOperation(Operation operation) {
-        pendingOperations_.add(operation);
     }
 
     public CodeHolderFactory getCodeHolderFactory() {
@@ -965,10 +891,6 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
 
     public void setCodeHolderFactory(CodeHolderFactory codeHolderFactory) {
         this.codeHolderFactory = codeHolderFactory;
-    }
-
-    public void setToNodeListCodes(CodeHolder toNodeListCodes) {
-        this.toNodeListCodes = toNodeListCodes;
     }
 
     public CodeHolder getToNodeListCodes() {
@@ -982,4 +904,18 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
     public boolean isShouldCodingSchemeSpecificRestriction() {
         return shouldCodingSchemeSpecificRestriction;
     }
+
+    @LgClientSideSafe
+    public QueryBuilder getQuery() {
+        return this.builder;
+    }
+
+    public DefaultCodeHolder getNonEntityConceptReferenceList() {
+        return nonEntityConceptReferenceList;
+    }
+
+    public void setNonEntityConceptReferenceList(DefaultCodeHolder nonEntityConceptReferenceList) {
+        this.nonEntityConceptReferenceList = nonEntityConceptReferenceList;
+    }
+
 }

@@ -42,7 +42,6 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
-import org.LexGrid.LexBIG.Extensions.Load.RxNormBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
@@ -91,7 +90,6 @@ import org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.RadLexProtegeFramesLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
@@ -559,7 +557,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new OWL2LoaderImpl().register();
         new OBOLoaderImpl().register();
         new MetaDataLoaderImpl().register();
-        new RadLexProtegeFramesLoaderImpl().register();
         new HL7LoaderImpl().register();
         new ClaMLLoaderImpl().register();
         new NCIHistoryLoaderImpl().register();
@@ -623,34 +620,8 @@ public class LexBIGServiceImpl implements LexBIGService {
         }
 
         
-        //Rxn Batch Loader Extension
-        ExtensionDescription rxn = new ExtensionDescription();
-        rxn.setExtensionBaseClass(RxNormBatchLoader.class.getName());
-        rxn.setExtensionClass("org.lexgrid.loader.rxn.RxnBatchLoaderImpl");
-        rxn.setDescription(RxNormBatchLoader.DESCRIPTION);
-        rxn.setName(RxNormBatchLoader.NAME);
-        rxn.setVersion(RxNormBatchLoader.VERSION);
-        try {
-            ExtensionRegistryImpl.instance().registerLoadExtension(rxn);
-            
-            LexEvsServiceLocator.getInstance().getSystemResourceService().addSystemEventListeners(new SystemEventListener() {
-                //register a listener to clean up all the batch stuff on delete
-                public void onRemoveCodingSchemeResourceFromSystemEvent(String uri,
-                        String version) {
-                    try {
-                        RxNormBatchLoader rxnLoader = (RxNormBatchLoader) getServiceManager(null).getLoader(RxNormBatchLoader.NAME);
-                        rxnLoader.removeLoad(uri, version);
-                    } catch (Exception e) {
-                        getLogger().info(e.getMessage());
-                    }
-                }
-            });
 
-        } catch (Exception e) {
-            getLogger().warn(rxn.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
-        }
-        
-        //Rxn Batch Loader Extension
+        //RVSDefinition Loader Extension
         ExtensionDescription rvsl = new ExtensionDescription();
         rvsl.setExtensionBaseClass(ResolvedValueSetDefinitionLoader.class.getName());
         rvsl.setExtensionClass("org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl");

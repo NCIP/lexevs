@@ -18,13 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -51,6 +44,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.LexGrid.LexBIG.mapping.MappingTestConstants;
 import org.LexGrid.LexBIG.mapping.MappingTestUtility;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
@@ -61,6 +55,13 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.core.annotation.Order;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This set of tests loads the necessary data for the full suite of JUnit tests.
@@ -68,8 +69,10 @@ import org.LexGrid.relations.AssociationTarget;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
+ * @author <A HREF="mailto:bauer.scott@mayo.edu">Scott Bauer</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+@RunWith(OrderingTestRunner.class)
 public class LoadTestDataTest extends LexBIGServiceTestCase {
     
     @Override
@@ -77,6 +80,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		return LoadTestDataTest.class.getName();
 	}
 
+    @Test
+    @Order(0)
     public void testLoadAutombiles() throws LBParameterException, LBInvocationException, InterruptedException,
             LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -96,7 +101,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-    
+
+    @Test
+    @Order(1)
     public void testLoadAutombilesExtension() throws LBParameterException, LBInvocationException, InterruptedException,
     LBException {
     	LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -122,6 +129,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     			
     }
 
+    @Test
+    @Order(2)
     public void testLoadGermanMadeParts() throws LBException, InterruptedException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -141,7 +150,31 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-    
+
+    @Test
+    @Order(3)
+    public void testLoadBoostScheme() throws LBException, InterruptedException {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+
+        // load non-async - this should block
+        loader.load(new File("resources/testData/BoostedQuery.xml").toURI(), true, false);
+
+    	while (loader.getStatus().getEndTime() == null) {
+    		Thread.sleep(1000);
+    	}
+        assertTrue(loader.getStatus().getEndTime() != null);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    }
+
+    @Test
+    @Order(4)
     public void testLoadNCIMeta() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -158,6 +191,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
     }
 
+    @Test
+    @Order(5)
     public void testLoadNCItHistory() throws InterruptedException, LBException {
  
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -170,7 +205,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
         assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
     }
-    
+
+    @Test
+    @Order(6)
     public void testLoadMetaHistory() throws LBException {
         ServiceHolder.configureForSingleConfig();
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -182,6 +219,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
 
+    @Test
+    @Order(7)
     public void testLoadObo() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -200,6 +239,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
+    @Test
+    @Order(8)
     public void testLoadLongSourceObo() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -220,6 +261,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.removeCodingSchemeVersion(a);
 
     }
+
+    @Test
+    @Order(9)
     public void testLoadOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -246,7 +290,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 
     }
-    
+
+    @Test
+    @Order(10)
     public void testLoadOwlThesaurus() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -274,7 +320,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
 
-
+    @Test
+    @Order(11)
     public void testLoadOwlLoaderPreferences() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -296,6 +343,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
 
+    @Test
+    @Order(12)
     public void testLoadGenericOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -315,6 +364,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
     }
 
+    @Test
+    @Order(13)
     public void testLoadGenericOwlWithInstanceData() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -348,7 +399,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 //        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 //
 //    }
-    
+
+    @Test
+    @Order(14)
     public void testLoadOWL2NPOwMultiNamespace() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -367,7 +420,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 
     }
-    
+
+    @Test
+    @Order(15)
     public void testLoadCompPropsOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -383,7 +438,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         loader.setCodingSchemeManifest(csm);
         
         loader.load(new File("resources/testData/sample.cp.2.owl").toURI(),
-        		null, 0, true, true);
+                null, 0, true, true);
         
         while (loader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
@@ -394,6 +449,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
     }
 
+    @Test
+    @Order(16)
     public void testLoadNCIMeta2() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -413,6 +470,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
+    @Test
+    @Order(17)
     public void testLoadMedDRA() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
     	File accessPath = new File("resources/testData/medDRA");
@@ -430,7 +489,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-    
+
+    @Test
+    @Order(18)
 	public void testloadOWL2Snippet() throws Exception {
 		
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -451,7 +512,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 				LBConstants.KnownTags.PRODUCTION.toString());
 
 	}
-	
+
+    @Test
+    @Order(19)
 	public void testloadOWL2SnippetWithIndividuals() throws Exception {
 		
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -478,7 +541,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 				LBConstants.KnownTags.PRODUCTION.toString());
 
 	}
-	
+
+    @Test
+    @Order(20)
 	public void testloadOWL2SnippetWithPrimitives() throws Exception {
 		
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -505,7 +570,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 //				LBConstants.KnownTags.PRODUCTION.toString());
 
 	}
-	
+
+    @Test
+    @Order(21)
 	public void testloadOWL2SnippetWithIndividualsUnannotated() throws Exception {
 		
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -531,7 +598,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 //		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
 //				LBConstants.KnownTags.PRODUCTION.toString());
 	}
-	
+
+    @Test
+    @Order(22)
 	public void testloadOWL2SnippetWithPrimitivesUnannotated() throws Exception {
 		
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -557,7 +626,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 //		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
 //				LBConstants.KnownTags.PRODUCTION.toString());
 	}
-	
+
+    @Test
+    @Order(23)
 	public void testloadOWL2SnippetSpecialCasesAnnotatedDefined() throws Exception {
 		
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -581,6 +652,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 	}
 
+    @Test
+    @Order(24)
 	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
 			InterruptedException {
 		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
@@ -602,6 +675,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 			}
 		}
 	}
+
+    @Test
+    @Order(25)
     public void testLoadHL7MifVocabulary() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
     	File accessPath = new File("resources/testData/hl7MifVocabulary/DEFN=UV=VO=1189-20121121.coremif");
@@ -620,6 +696,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
+    @Test
+    @Order(26)
     public void testLoadMeta1() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -637,15 +715,17 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
     }
 
+    @Test
+    @Order(27)
     public void testLoadMeta2() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
         MetaData_Loader metaLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
 
         metaLoader.loadAuxiliaryData(
-            new File("resources/testData/metadata2.xml").toURI(),
-            Constructors.createAbsoluteCodingSchemeVersionReference(PARTS_URN, PARTS_VERSION),
-            true, true, true);
+                new File("resources/testData/metadata2.xml").toURI(),
+                Constructors.createAbsoluteCodingSchemeVersionReference(PARTS_URN, PARTS_VERSION),
+                true, true, true);
 
         while (metaLoader.getStatus().getEndTime() == null) {
             Thread.sleep(500);
@@ -653,7 +733,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertTrue(metaLoader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
     }
-    
+
+    @Test
+    @Order(28)
     public void testLoadUMLS() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -671,7 +753,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-    
+
+    @Test
+    @Order(29)
     public void testLoadMappingWithDefaultSettings() throws LBException{
     	
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -703,7 +787,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		AssociationSource[] sources = new AssociationSource[] { source,
 				source1, source2 };
 		authoring.createMappingWithDefaultValues(sources, "GermanMadeParts",
-				"2.0", "Automobiles", "1.0", "SY", false);
+                "2.0", "Automobiles", "1.0", "SY", false);
 		AbsoluteCodingSchemeVersionReference codingSchemeVersion = new AbsoluteCodingSchemeVersionReference();
 		codingSchemeVersion
 				.setCodingSchemeURN("http://default.mapping.container");
@@ -711,8 +795,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
 	
     }
-    
-    
+
+    @Test
+    @Order(30)
     public void testLoadCodingSchemeWithMoreMetaData() throws LBException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
         LexEVSAuthoringServiceImpl authoring = new LexEVSAuthoringServiceImpl();
@@ -757,7 +842,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		codingSchemeVersion.setCodingSchemeVersion(mappingSchemeMetadata.getRepresentsVersion());
 		lbsm.activateCodingSchemeVersion(codingSchemeVersion);
     }
-    
+
+    @Test
+    @Order(31)
     public void testLoadAuthoringShellSystem() throws LBException, LBInvocationException, InterruptedException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -776,7 +863,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-    
+
+    @Test
+    @Order(32)
     public void testLoadMappinglSystem() throws LBException, LBInvocationException, InterruptedException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 

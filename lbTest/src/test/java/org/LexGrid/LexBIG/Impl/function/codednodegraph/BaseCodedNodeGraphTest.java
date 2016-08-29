@@ -26,12 +26,16 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Before;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class BaseCodedNodeGraphTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+
 public class BaseCodedNodeGraphTest extends LexBIGServiceTestCase {
 
     /** The cng. */
@@ -52,6 +56,7 @@ public class BaseCodedNodeGraphTest extends LexBIGServiceTestCase {
      * @see junit.framework.TestCase#setUp()
      */
     @Override
+    @Before
     public void setUp() throws Exception {
         try {
             lbs = ServiceHolder.instance().getLexBIGService();

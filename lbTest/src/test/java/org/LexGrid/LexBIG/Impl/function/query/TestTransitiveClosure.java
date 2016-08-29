@@ -26,6 +26,9 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * This testcase checks that the transitive api works as desired.
@@ -33,6 +36,7 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
  * @author Pradip Kanjamala
  * 
  */
+@Category(IncludeForDistributedTests.class)
 public class TestTransitiveClosure extends LexBIGServiceTestCase {
 
     final static String testID = "T1_FNC_150";
@@ -48,6 +52,7 @@ public class TestTransitiveClosure extends LexBIGServiceTestCase {
      * @throws InterruptedException
      * @throws LBException
      */
+    @Test
     public void testAreCodesRelatedInferredOBO() throws InterruptedException, LBException {
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
        
@@ -60,7 +65,7 @@ public class TestTransitiveClosure extends LexBIGServiceTestCase {
       
     }
     
-    
+    @Test
     public void testAreCodesRelatedAssertedOBO() throws InterruptedException, LBException {
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
        

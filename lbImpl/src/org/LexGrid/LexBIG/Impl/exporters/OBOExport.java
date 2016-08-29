@@ -95,6 +95,19 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
         
         File file = new File(this.getResourceUri());
         
+        if (file.isDirectory())
+        {
+            String fileName = this.getSource().getCodingSchemeURN();           
+            fileName = fileName.replaceAll("\\s+", "_");
+            
+            String version = this.getSource().getCodingSchemeVersion();
+            
+            if (version != null)
+                version = version.replaceAll("\\s+", "_"); 
+            
+            file = new File(file.getAbsolutePath() + file.separator + fileName + "_" + version + ".obo");
+        }
+        
         if(this.getOptions().getBooleanOption(OVERWRITE_OPTION).getOptionValue()
                 &&
                 file.exists()) {
@@ -102,6 +115,8 @@ public class OBOExport extends BaseExporter implements OBO_Exporter {
         }
         
         file.createNewFile();
+        
+        this.getStatus().setDestination(file.getAbsolutePath());
         
         lg2Obo.save(file);
     }

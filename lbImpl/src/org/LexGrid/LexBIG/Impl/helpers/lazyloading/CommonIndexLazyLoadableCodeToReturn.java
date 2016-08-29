@@ -59,7 +59,7 @@ public class CommonIndexLazyLoadableCodeToReturn extends AbstractNonProxyLazyCod
      */
     public CommonIndexLazyLoadableCodeToReturn(
             List<AbsoluteCodingSchemeVersionReference> references,
-            float score, 
+            float score,
             int documentId){
         super(score, documentId);
         this.references = references;

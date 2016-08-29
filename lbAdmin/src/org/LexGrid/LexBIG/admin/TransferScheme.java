@@ -216,8 +216,8 @@ public class TransferScheme {
         System.out.println();
         System.out.println("Step " + step++ + ")");
         System.out.println("You will need to copy the following file to the appropriate location on the new server:");
-        System.out.println(ResourceManager.instance().getIndexInterface(internalCSName, internalVersion)
-                .getMetaLocation());
+//        System.out.println(ResourceManager.instance().getIndexInterface(internalCSName, internalVersion)
+//                .getMetaLocation());
         System.out
                 .println("It is recommended that you rename the current file on the new server, in case you need to undo this change.");
 

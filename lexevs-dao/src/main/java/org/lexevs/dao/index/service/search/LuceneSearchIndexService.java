@@ -27,22 +27,14 @@ import java.util.Set;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanFilter;
-import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.FilterClause;
-import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TermsFilter;
-import org.compass.core.lucene.support.ChainedFilter;
+//import org.compass.core.lucene.support.ChainedFilter;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
@@ -51,9 +43,6 @@ import org.lexevs.dao.index.indexer.IndexCreator.IndexOption;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
-
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class LuceneEntityIndexService.
@@ -72,9 +61,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
-	
-	private Map<String,Filter> cachedFilters = new HashMap<String,Filter>();
 
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
@@ -159,18 +145,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-		String key = this.getCodingSchemeKey(reference);
-		try {
-			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
-		} catch (InternalErrorException e) {
-			throw new RuntimeException(e);
-		}
+		
+		//TODO implement with concurrent metadata
+		return false;
 	}
 
-	@Override
-	public void optimize() {
-		indexDaoManager.getSearchDao().optimizeIndex();
-	}
 
 	@Override
 	public Analyzer getAnalyzer() {
@@ -180,46 +159,11 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	@Override
 	public List<ScoreDoc> query(
 			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
-			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToExclude, 
 			final Query query) {
-		
-		BooleanFilter booleanFilter = new BooleanFilter();
-		
-		boolean hasIncludes = CollectionUtils.isNotEmpty(codeSystemsToInclude);
-		boolean hasExcludes = CollectionUtils.isNotEmpty(codeSystemsToExclude);
 
-		if(hasIncludes){
-			List<Filter> filters = new ArrayList<Filter>();
-			
-			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToInclude){
-				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
-			}
-			booleanFilter.add(
-				new FilterClause(new ChainedFilter(
-					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
-					BooleanClause.Occur.MUST));
-		}
-		
-		if(hasExcludes){
-			List<Filter> filters = new ArrayList<Filter>();
-			
-			for(AbsoluteCodingSchemeVersionReference ref : codeSystemsToExclude){
-				filters.add(this.getCodingSchemeFilterForCodingScheme(ref));
-			}
-			booleanFilter.add(
-				new FilterClause(new ChainedFilter(
-					filters.toArray(new Filter[filters.size()]), ChainedFilter.OR), 
-					BooleanClause.Occur.MUST_NOT));
-		}
-		
-		Query queryToUse;
-		if(hasIncludes || hasExcludes){
-			queryToUse = new FilteredQuery(query, booleanFilter);
-		} else {
-			queryToUse = query;
-		}
-		
-		return this.indexDaoManager.getSearchDao().query(queryToUse);
+		List<AbsoluteCodingSchemeVersionReference> codingSchemes = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		codingSchemes.addAll(codeSystemsToInclude);
+		return this.indexDaoManager.getCommonEntityDao(codingSchemes).query(query);
 	}
 	
 	protected String getCodingSchemeKey(AbsoluteCodingSchemeVersionReference reference) {
@@ -245,23 +189,6 @@ public class LuceneSearchIndexService implements SearchIndexService {
 							codingSchemeUri, codingSchemeVersion)));
 	}
 	
-	protected Filter getCodingSchemeFilterForCodingScheme(AbsoluteCodingSchemeVersionReference codingScheme) {
-		String codingSchemeUri = codingScheme.getCodingSchemeURN();
-		String codingSchemeVersion = codingScheme.getCodingSchemeVersion();
-		
-		String key = this.getFilterMapKey(codingSchemeUri, codingSchemeVersion);
-		if(!this.cachedFilters.containsKey(key)) {
-			Term term = new Term(
-					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-							codingSchemeUri, codingSchemeVersion));
-			TermsFilter filter = new TermsFilter();
-			filter.addTerm(term);
-			this.cachedFilters.put(key, new CachingWrapperFilter(filter));
-		}
-		return this.cachedFilters.get(key);
-	}
-	
 	@Override
 	public void createIndex(AbsoluteCodingSchemeVersionReference ref) {
 		indexCreator.index(ref, IndexOption.SEARCH);
@@ -281,20 +208,18 @@ public class LuceneSearchIndexService implements SearchIndexService {
 		return this.indexDaoManager.getSearchDao().getById(id);
 	}
 
+	@Override
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
+			int doc) {
+		return this.indexDaoManager.getSearchDao().getById(codeSystemsToInclude, doc);
+	}
+
 	public SystemResourceService getSystemResourceService() {
 		return systemResourceService;
 	}
 
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
-	}
-
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
-
-	public MetaData getMetaData() {
-		return metaData;
 	}
 
 	public void setEntityIndexer(EntityIndexer entityIndexer) {

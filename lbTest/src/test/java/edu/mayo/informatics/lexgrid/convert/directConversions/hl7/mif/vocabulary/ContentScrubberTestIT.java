@@ -15,7 +15,7 @@ public class ContentScrubberTestIT extends DataLoadTestBase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		cns.restrictToCodes(Constructors.createConceptReferenceList("TG:23106"));
+		cns.restrictToCodes(Constructors.createConceptReferenceList("23106:TG"));
 		ResolvedConceptReference rcr1 = cns.resolveToList(null, null, null, -1).getResolvedConceptReference()[0];
 	
 		testEntity = rcr1.getEntity();

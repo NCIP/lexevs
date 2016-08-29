@@ -54,6 +54,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException;
 	
@@ -70,6 +71,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
@@ -95,6 +97,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
@@ -126,6 +129,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
@@ -165,6 +169,7 @@ public interface SearchExtension extends GenericExtension {
 	 * 			A ResolvedConceptReferencesIterator
 	 * 
 	 * @throws LBParameterException
+	 * @throws IOException 
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 

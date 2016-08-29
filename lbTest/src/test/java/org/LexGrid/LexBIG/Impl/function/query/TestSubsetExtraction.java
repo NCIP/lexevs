@@ -37,7 +37,7 @@ public class TestSubsetExtraction extends LexBIGServiceTestCase {
     public void testT1_FNC_02() throws LBException {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Vallecula", "Palate", "Hard_Palate" },
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Vallecula", "Palate", "Hard_Palate" },
                 THES_SCHEME));
 
         // this test is really lacking... but here is how you subset. You can

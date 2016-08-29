@@ -18,31 +18,41 @@
  */
 package org.lexevs.dao.index.lucenesupport;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.StoredFieldVisitor;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean, LuceneIndexTemplate {
 
-	private NamedDirectory namedDirectory;
+	private static LgLoggerIF logger = LoggerFactory.getLogger();
 	
-	private Searcher indexSearcher;
+	private NamedDirectory namedDirectory;
+	private ToParentBlockJoinIndexSearcher blockJoinSearcher;
+	private IndexSearcher indexSearcher;
 	private IndexReader indexReader;
 	
 	private Analyzer analyzer = LuceneLoaderCode.getAnaylzer();
@@ -55,7 +65,8 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		super();
 		try {
 			indexReader = namedDirectory.getIndexReader();
-			indexSearcher = namedDirectory.getIndexSearcher();
+			indexSearcher = new IndexSearcher(indexReader);
+			blockJoinSearcher = new ToParentBlockJoinIndexSearcher(indexReader);
 			this.namedDirectory = namedDirectory;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -66,6 +77,8 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	public void afterPropertiesSet() throws Exception {
 		indexReader = namedDirectory.getIndexReader();
 		indexSearcher = namedDirectory.getIndexSearcher();
+		blockJoinSearcher = namedDirectory.getBlockJoinSearcher();
+		
 	}
 
 	@Override
@@ -81,23 +94,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 			@Override
 			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
-				for(Document doc : documents) {
-					indexWriter.addDocument(doc, analyzer);
-				}
+				indexWriter.addDocuments(documents);
 				return null;
 			}	
 		});
 	}
 	
+	@Deprecated
 	public void optimize() {
-		this.doInIndexWriter(new IndexWriterCallback<Void>() {
-
-			@Override
-			public Void doInIndexWriter(IndexWriter indexWriter) throws Exception {
-				indexWriter.optimize();
-				return null;
-			}	
-		});
+		System.out.println("Optimizing is an outdated indexing operation and is no longer supported");
 	}
 	
 	/* (non-Javadoc)
@@ -129,15 +134,15 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
+	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.Collector)
 	 */
-	public void search(final Query query, final Filter filter, final HitCollector hitCollector){
+	public void search(final Query query, final Filter filter, final Collector hitCollector){
 		this.doInIndexSearcher(new IndexSearcherCallback<Void>() {
 
 			@Override
-			public Void doInIndexSearcher(Searcher indexSearcher)
+			public Void doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
-				indexSearcher.search(query, filter, hitCollector);
+				indexSearcher.search(query, hitCollector);
 				return null;
 			}
 		});	
@@ -147,43 +152,83 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return this.doInIndexSearcher(new IndexSearcherCallback<List<ScoreDoc>>() {
 
 			@Override
-			public List<ScoreDoc> doInIndexSearcher(Searcher indexSearcher)
+			public List<ScoreDoc> doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
 				
-				final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
+				List<ScoreDoc> docs = null;
 				
-				indexSearcher.search(query, filter, new HitCollector() {
-					
-					public void collect(int doc, float score) {
-						ScoreDoc scoreDoc = new ScoreDoc(doc, score);
-						docs.add(scoreDoc);
-					}
-				});
+				int maxDoc = getMaxDoc();
 				
+				if (maxDoc == 0) {
+				    logger.error("Index does not exist.");
+				    throw new RuntimeException("Index does not exist.");
+				}
+				
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
+				indexSearcher.search(query, collector
+				);
+				docs = Arrays.asList(collector.topDocs().scoreDocs);
 				return docs;
 			}
-		});	
+		}
+		);	
+		
+	}
+	
+	@Override
+	public void blockJoinSearch(final Query query, final Filter codingSchemeFilter,
+			final TopScoreDocCollector collector) {
+		this.doInBlockJoinIndexSearcher(new ToParentBlockJoinIndexSearcherCallback<Void>() {
+
+			@Override
+			public Void doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher)
+					throws Exception {
+				indexSearcher.search(query, collector);
+				return null;
+			}
+		}
+		);	
+		
+	}
+	
+	public List<ScoreDoc> blockJoinSearch(final Query query, final Filter filter){
+		return this.doInBlockJoinIndexSearcher(new ToParentBlockJoinIndexSearcherCallback<List<ScoreDoc>>() {
+
+			@Override
+			public List<ScoreDoc> doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcher blockJoinSearcher)
+					throws Exception {
+				
+				List<ScoreDoc> docs = null;
+				
+				int maxDoc = getMaxDoc();
+				
+				if (maxDoc == 0) {
+				    logger.error("Index does not exist.");
+				    throw new RuntimeException("Index does not exist.");
+				}
+				
+				final TopScoreDocCollector collector = TopScoreDocCollector.create(maxDoc);
+				blockJoinSearcher.search(query, collector
+				);
+				docs = Arrays.asList(collector.topDocs().scoreDocs);
+				return docs;
+			}
+		}
+		);	
 		
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.HitCollector)
+	 * @see org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate#search(org.apache.lucene.search.Query, org.apache.lucene.search.Filter, org.apache.lucene.search.Collector)
 	 */
-	public Document getDocumentById(final int id){
-		return this.getDocumentById(id, null);
-	}
 	
-	public Document getDocumentById(final int id, final FieldSelector fieldSelector){
+	public Document getDocumentById(final int id){
 		return this.doInIndexSearcher(new IndexSearcherCallback<Document>() {
 
 			@Override
-			public Document doInIndexSearcher(Searcher indexSearcher)
+			public Document doInIndexSearcher(IndexSearcher indexSearcher)
 					throws Exception {
-				if(fieldSelector != null) {
-					return indexSearcher.doc(id, fieldSelector);
-				} else {
 					return indexSearcher.doc(id);
-				}
 			}
 		});	
 	}
@@ -195,18 +240,18 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 			@Override
 			public DocIdSet doInIndexReader(IndexReader indexReader)
 					throws Exception {
-				return filter.getDocIdSet(indexReader);
+				throw new UnsupportedOperationException("getting DocIdSet not supported");
 			}
 		});
 	}
 
 	public int getMaxDoc(){
-		return this.doInIndexSearcher(new IndexSearcherCallback<Integer>() {
+		return this.doInIndexReader(new IndexReaderCallback<Integer>() {
 
 			@Override
-			public Integer doInIndexSearcher(Searcher indexSearcher)
+			public Integer doInIndexReader(IndexReader indexReader)
 					throws Exception {
-				return indexSearcher.maxDoc();
+				return indexReader.maxDoc();
 			}
 		});	
 	}
@@ -226,6 +271,14 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 			throw new RuntimeException(e);
 		}
 	}
+	
+	protected <T> T doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcherCallback<T> toParentBlockJoinIndexSearcherCallback) {
+		try {
+			return toParentBlockJoinIndexSearcherCallback.doInBlockJoinIndexSearcher(blockJoinSearcher);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	protected <T> T doInIndexWriter(IndexWriterCallback<T> callback) {
 		try {
@@ -239,7 +292,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		namedDirectory.refresh();
 		
 		this.indexReader = namedDirectory.getIndexReader();
-		this.indexSearcher = namedDirectory.getIndexSearcher();
+		this.indexSearcher = new IndexSearcher(indexReader);
 		
 		return result;
 		
@@ -249,12 +302,9 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	}
 	
 	protected IndexWriter createIndexWriter(NamedDirectory namedDirectory) throws Exception {
+		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		IndexWriter writer = 
-			new IndexWriter(namedDirectory.getDirectory(), analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-		
-		writer.setMergeFactor(20);
-		writer.setRAMBufferSizeMB(500);
-		
+			new IndexWriter(namedDirectory.getDirectory(), config);
 		return writer;
 	}
 	
@@ -265,7 +315,11 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	
 	public interface IndexSearcherCallback<T> {
 		
-		public T doInIndexSearcher(Searcher indexSearcher) throws Exception;
+		public T doInIndexSearcher(IndexSearcher indexSearcher) throws Exception;
+	}
+	
+	public interface ToParentBlockJoinIndexSearcherCallback<T> {
+		public T doInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcher indexSearcher) throws Exception;
 	}
 	
 	public interface IndexWriterCallback<T> {
@@ -282,7 +336,11 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 	public <T> T executeInIndexSearcher(IndexSearcherCallback<T> callback) {
 		return this.doInIndexSearcher(callback);
 	}
-
+	
+	public <T> T executeInBlockJoinIndexSearcher(ToParentBlockJoinIndexSearcherCallback<T> callback) {
+		return this.doInBlockJoinIndexSearcher(callback);
+	}
+	
 	@Override
 	public <T> T executeInIndexWriter(IndexWriterCallback<T> callback) {
 		return this.doInIndexWriter(callback);
@@ -290,9 +348,7 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 
 	@Override
 	public void destroy() throws Exception {
-		this.indexSearcher.close();
 		this.indexReader.close();
-		IndexWriter.unlock(this.namedDirectory.getDirectory());
 	}
 
 	public NamedDirectory getNamedDirectory() {
@@ -311,11 +367,11 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		return analyzer;
 	}
 
-	protected Searcher getIndexSearcher() {
+	protected IndexSearcher getIndexSearcher() {
 		return indexSearcher;
 	}
 
-	protected void setIndexSearcher(Searcher indexSearcher) {
+	protected void setIndexSearcher(IndexSearcher indexSearcher) {
 		this.indexSearcher = indexSearcher;
 	}
 
@@ -336,8 +392,34 @@ public class BaseLuceneIndexTemplate implements InitializingBean, DisposableBean
 		if(this.indexReader != null) {
 			this.indexReader.close();
 		}
-		if(this.indexSearcher != null) {
-			this.indexSearcher.close();
-		}
 	}
+
+	@Override
+	public Document getDocumentById(final int id, final Set<String> fields) {
+		return this.doInIndexReader(new IndexReaderCallback<Document>() {
+
+			@Override
+			public Document doInIndexReader(IndexReader indexReader)
+					throws Exception {
+				return indexReader.document(id, fields);
+			}
+		});	
+	}
+
+
+	@Override
+	public Query getCombinedQueryFromSchemes(
+			List<AbsoluteCodingSchemeVersionReference> codingSchemes,
+			BooleanQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Document getDocumentById(int id, StoredFieldVisitor visitor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

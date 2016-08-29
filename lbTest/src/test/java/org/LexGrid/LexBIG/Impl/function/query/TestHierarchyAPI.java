@@ -18,8 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query;
 
-import java.util.Iterator;
-
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -35,6 +33,8 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
+
+import java.util.Iterator;
 
 /**
  * This testcase checks that the hierarchy api works as desired.

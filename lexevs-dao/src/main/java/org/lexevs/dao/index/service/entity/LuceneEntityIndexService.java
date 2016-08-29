@@ -18,35 +18,27 @@
  */
 package org.lexevs.dao.index.service.entity;
 
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.IndexCreator;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexer.IndexCreator.EntityIndexerProgressCallback;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
-import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
-import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.utility.MetaData;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Class LuceneEntityIndexService.
@@ -66,7 +58,7 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
+	private ConcurrentMetaData concurrentMetaData;
 	
 	private IndexRegistry indexRegistry;
 	
@@ -80,52 +72,6 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	}
 
 	@Override
-	public void optimizeAll() {
-		for(RegistryEntry entry :
-			registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
-			try {
-				this.optimizeIndex(entry.getResourceUri(), entry.getResourceVersion());
-			} catch (Exception e) {
-				LoggerFactory.getLogger().warn("Error Optimizing Index for Coding Scheme URI: " + entry.getResourceUri() + " Version: " + entry.getResourceVersion() + "." +
-						" Error reported was: " + e.getMessage() + ". Skipping...");
-			}
-		}
-		
-		boolean isCommonIndexOptimized = indexRegistry.getCommonLuceneIndexTemplate().executeInIndexReader(new IndexReaderCallback<Boolean>() {
-
-			@Override
-			public Boolean doInIndexReader(IndexReader indexReader)
-					throws Exception {
-				return indexReader.isOptimized();
-			}
-		});
-		
-		if(!isCommonIndexOptimized) {
-			indexRegistry.getCommonLuceneIndexTemplate().optimize();
-		}
-	}
-	
-	@Override
-	public void optimizeIndex(final String codingSchemeUri, final String codingSchemeVersion) {
-		boolean isOptimized = indexRegistry.getLuceneIndexTemplate(codingSchemeUri, codingSchemeVersion).executeInIndexReader(new IndexReaderCallback<Boolean>() {
-
-			@Override
-			public Boolean doInIndexReader(IndexReader indexReader)
-					throws Exception {
-				return indexReader.isOptimized();
-			}
-			
-		});
-		
-		if(isOptimized) {
-			LoggerFactory.getLogger().info("Index of URI: " + codingSchemeUri + " Version: " + codingSchemeVersion + " is already optimized.");
-		} else {
-			LoggerFactory.getLogger().info("Optimizing: " + codingSchemeUri + " Version: " + codingSchemeVersion + ".");
-			indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).optimizeIndex(codingSchemeUri, codingSchemeVersion);
-		}
-	}
-	
-	@Override
 	public Document getDocumentById(
 			String codingSchemeUri,
 			String codingSchemeVersion, int id) {
@@ -135,13 +81,13 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	@Override
 	public Document getDocumentById(
 			String codingSchemeUri,
-			String codingSchemeVersion, int id, FieldSelector fieldSelector) {
+			String codingSchemeVersion, int id, Set<String> fields) {
 		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).
 			getDocumentById(
 					codingSchemeUri,
 					codingSchemeVersion, 
 					id, 
-					fieldSelector);
+					fields);
 	}
 
 	@Override
@@ -203,46 +149,10 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		this.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
-	 */
-	@Override
-	public Query getMatchAllDocsQuery(
-			AbsoluteCodingSchemeVersionReference reference) {
-		return indexDaoManager.getEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion()).
-			getMatchAllDocsQuery(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.service.entity.EntityIndexService#query(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference, java.util.List, java.util.List)
-	 */
-	public List<ScoreDoc> query(
-			String codingSchemeUri,
-			String codingSchemeVersion, 
-			List<? extends Query> combinedQueries, List<? extends Query> individualQueries){
-		return indexDaoManager.getEntityDao(codingSchemeUri, codingSchemeVersion).
-			query(codingSchemeUri, codingSchemeVersion, combinedQueries, individualQueries);
-	}
-	
 	@Override
 	public List<ScoreDoc> query(String codingSchemeUri, String version, Query query){
 		return indexDaoManager.getEntityDao(codingSchemeUri, version).
 			query(codingSchemeUri, version, query);
-	}
-
-	@Override
-	public Filter getBoundaryDocsHitAsAWholeFilter(
-			String codingSchemeUri,
-			String version, 
-			Query query) {
-		return indexDaoManager.getEntityDao(codingSchemeUri, version).
-			getBoundaryDocsHitAsAWholeFilter(codingSchemeUri, version, query);
-	}
-	
-	@Override
-	public Filter getCodingSchemeFilter(String uri, String version) {
-		return indexDaoManager.getEntityDao(uri, version).getCodingSchemeFilter(uri, version);
 	}
 
 	@Override
@@ -276,8 +186,8 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		this.doDropIndex(reference);
 	
 		try {
-			metaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
-		} catch (InternalErrorException e) {
+			concurrentMetaData.removeIndexMetaDataValue(this.getCodingSchemeKey(reference));
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -287,29 +197,17 @@ public class LuceneEntityIndexService implements EntityIndexService {
 		String codingSchemeVersion = reference.getCodingSchemeVersion();
 		
 		String indexName = this.getIndexName(codingSchemeUri, codingSchemeVersion);
-		
-		if(indexName.equals(this.indexRegistry.getCommonIndexName())) {
-			Term term = new Term(
-					LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-					LuceneLoaderCode.createCodingSchemeUriVersionKey(
-							codingSchemeUri, codingSchemeVersion));
-			
-			indexDaoManager.getEntityDao(
-					codingSchemeUri, 
-					codingSchemeVersion).deleteDocuments(codingSchemeUri, codingSchemeVersion, term);
-			
-			this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-		} else {
-			this.indexRegistry.destroyIndex(indexName);
-		}	
+
+		this.indexRegistry.unRegisterCodingSchemeIndex(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		this.indexRegistry.destroyIndex(indexName);
 	}
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
 		String key = this.getCodingSchemeKey(reference);
 		try {
-			return StringUtils.isNotBlank(metaData.getIndexMetaDataValue(key));
-		} catch (InternalErrorException e) {
+			return StringUtils.isNotBlank(concurrentMetaData.getIndexMetaDataValue(key));
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -358,17 +256,17 @@ public class LuceneEntityIndexService implements EntityIndexService {
 	public void setSystemResourceService(SystemResourceService systemResourceService) {
 		this.systemResourceService = systemResourceService;
 	}
-
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
-	}
-
-	public MetaData getMetaData() {
-		return metaData;
-	}
-
+	
 	public void setEntityIndexer(EntityIndexer entityIndexer) {
 		this.entityIndexer = entityIndexer;
+	}
+
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
+	}
+
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
 	}
 
 	public EntityIndexer getEntityIndexer() {

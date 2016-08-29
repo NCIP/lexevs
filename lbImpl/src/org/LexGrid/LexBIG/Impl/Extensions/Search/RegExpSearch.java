@@ -23,8 +23,7 @@ import org.LexGrid.LexBIG.Extensions.Query.Search;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
-
-import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQuery;
+import org.lexevs.dao.indexer.lucene.query.SerializableRegexQuery;
 
 /**
  * The Class RegExpSearch.

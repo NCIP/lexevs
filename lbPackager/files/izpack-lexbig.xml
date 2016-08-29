@@ -29,7 +29,7 @@ You may obtain a copy of the License at
         <appversion>@@REPLACED_BY_BUILD_APPVERSION@@</appversion>
         <authors>
             <author email=""
-                name="Mayo Clinic Division of Biomedical Statistics and Informatics"/>
+                name="Mayo Clinic for National Institutes of Health (NIH), National Cancer Institute (NCI) Enterprise Vocabulary Services (EVS)"/>
         </authors>
         <url>@@REPLACED_BY_BUILD_INFO_URL@@</url>
         <javaversion>1.7</javaversion>
@@ -121,7 +121,6 @@ You may obtain a copy of the License at
             <executable targetfile="$INSTALL_PATH/admin/LoadOBO.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadOWL.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadPickListDefinition.sh" stage="never" keep="true"></executable>
-			<executable targetfile="$INSTALL_PATH/admin/LoadRadLexProtegeFrames.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadUmlsBatch.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadUMLSSemnet.sh" stage="never" keep="true"></executable>
 			<executable targetfile="$INSTALL_PATH/admin/LoadValueSetDefinition.sh" stage="never" keep="true"></executable>
@@ -198,14 +197,6 @@ You may obtain a copy of the License at
                 <include name="*.bat"/>
                 <include name="windows_64/*"/>
             </fileset>
-        </pack>
-        <pack name="Graphical Interface Platform Support - Linux" preselected="yes" required="no">
-            <description>Installs the graphical interface for Linux.</description>
-            <fileset dir="antbuild/gui/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
-                <include name="Linux-lbGUI.sh"/>
-                <include name="linux/*"/>
-            </fileset>
-            <executable targetfile="$INSTALL_PATH/gui/Linux-lbGUI.sh" stage="never" keep="true"></executable>
         </pack>
         <pack name="Graphical Interface Platform Support - Linux x86 64-bit" preselected="yes" required="no">
             <description>Installs the graphical interface for 64-bit Linux on x86 processors.</description>

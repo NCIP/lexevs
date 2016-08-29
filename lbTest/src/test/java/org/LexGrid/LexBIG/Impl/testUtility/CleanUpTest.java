@@ -40,7 +40,6 @@ import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
  */
 public class CleanUpTest extends TestCase {
 
-	 
     public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -51,11 +50,11 @@ public class CleanUpTest extends TestCase {
         		"urn:oid:11.11.0.1.1-extension", "1.0-extension");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.deactivateCodingSchemeVersion(b, null);
         lbsm.unRegisterCodingSchemeAsSupplement(a, b);
 
         lbsm.removeCodingSchemeVersion(a);
-        lbsm.deactivateCodingSchemeVersion(b, null);
-    	lbsm.removeCodingSchemeVersion(b);
+        lbsm.removeCodingSchemeVersion(b);
     }
 
     public void testRemoveGermanMadeParts() throws LBException {
@@ -98,6 +97,17 @@ public class CleanUpTest extends TestCase {
 		fail("Returned removed History Service.");
     }
 
+    public void testRemoveBoostScheme() throws LBException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "urn:oid:77.77.77.77", "1.0");
+
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+
+    }
+    
     public void testRemoveObo() throws LBException {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 

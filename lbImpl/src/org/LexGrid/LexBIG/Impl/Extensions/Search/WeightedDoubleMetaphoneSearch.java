@@ -20,8 +20,8 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -58,20 +58,20 @@ public class WeightedDoubleMetaphoneSearch extends AbstractSearch {
     public Query buildQuery(String searchText) {
         QueryParser queryParser = super.getQueryParser();
 
-        BooleanQuery masterQuery = new BooleanQuery();
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
 
         Query query;
         try {
             query = queryParser.parse("dm_propertyValue:(" + searchText + ")");
 
-            masterQuery.add(new BooleanClause(query, BooleanClause.Occur.MUST));
+            builder.add(new BooleanClause(query, BooleanClause.Occur.MUST));
 
             Query realTextQuery = queryParser.parse("propertyValue:(" + searchText + ")");
-            masterQuery.add(new BooleanClause(realTextQuery, BooleanClause.Occur.SHOULD));
+            builder.add(new BooleanClause(realTextQuery, BooleanClause.Occur.SHOULD));
 
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        return masterQuery;
+        return builder.build();
     } 
 }

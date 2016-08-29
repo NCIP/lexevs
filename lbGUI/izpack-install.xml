@@ -24,7 +24,7 @@ You may obtain a copy of the License at
         <appversion>.9 alpha</appversion>
         <authors>
             <author email="informatics@mayo.edu"
-                name="Mayo Clinic Division of Biomedical Informatics"/>
+                name="Mayo Clinic"/>
         </authors>
         <url>http://informatics.mayo.edu/LexGrid/index.php?page=</url>
         <javaversion>1.5</javaversion>
@@ -89,14 +89,6 @@ You may obtain a copy of the License at
                 <include name="*.bat"/>
                 <include name="windows/*"/>
             </fileset>
-        </pack>
-        <pack name="Linux Runtime" preselected="yes" required="no">
-            <description>GUI Installation for the Linux platform</description>
-            <fileset dir="antBuild/dist/" targetdir="$INSTALL_PATH/gui/" casesensitive="no">
-                <include name="Linux-lbGUI.sh"/>
-                <include name="linux/*"/>
-            </fileset>
-            <executable targetfile="$INSTALL_PATH/gui/Linux-lbGUI.sh" stage="never" keep="true"></executable>
         </pack>
         <pack name="Linux x86_64 Runtime" preselected="yes" required="no">
             <description>GUI Installation for the Linux x86_64 bit platform</description>

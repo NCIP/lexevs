@@ -22,9 +22,14 @@ import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.system.service.SystemResourceService;
@@ -36,7 +41,7 @@ import org.lexevs.system.service.SystemResourceService;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class GetAllConcepts implements Operation {
+public class GetAllConcepts implements Restriction {
 
     private static final long serialVersionUID = -1190549389939991576L;
     private String internalCodingSchemeName_;
@@ -44,6 +49,7 @@ public class GetAllConcepts implements Operation {
 
     public GetAllConcepts(String codingScheme, CodingSchemeVersionOrTag tagOrVersion) throws LBParameterException,
             LBResourceUnavailableException {
+        
         String version = null;
         SystemResourceService rm = LexEvsServiceLocator.getInstance().getSystemResourceService();
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
@@ -57,8 +63,11 @@ public class GetAllConcepts implements Operation {
         }
 
         // this throws the necessary exceptions if it can't be mapped / found
-        internalCodingSchemeName_ = rm.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
+        rm.getInternalCodingSchemeNameForUserCodingSchemeName(codingScheme, version);
 
+        // Assign the URI passed in as the coding scheme
+        internalCodingSchemeName_ = codingScheme;
+        
         // make sure that it is active.
         String urn = rm.getUriForUserCodingSchemeName(internalCodingSchemeName_, version);
         if (!registry.getCodingSchemeEntry(
@@ -68,6 +77,7 @@ public class GetAllConcepts implements Operation {
         }
 
         internalVersion_ = version;
+
     }
 
     public GetAllConcepts(String internalCodingSchemeName, String internalVersionString) {
@@ -75,6 +85,15 @@ public class GetAllConcepts implements Operation {
         internalCodingSchemeName_ = internalCodingSchemeName;
         internalVersion_ = internalVersionString;
 
+    }
+
+    @Override
+    public Query getQuery() {
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        builder.add(new TermQuery(new Term("codingSchemeUri", this.internalCodingSchemeName_)), BooleanClause.Occur.MUST);
+        builder.add(new TermQuery(new Term("codingSchemeVersion", this.internalVersion_)), BooleanClause.Occur.MUST);
+
+        return builder.build();
     }
 
     @LgClientSideSafe

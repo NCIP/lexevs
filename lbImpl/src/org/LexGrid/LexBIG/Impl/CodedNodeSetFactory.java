@@ -26,17 +26,12 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
-import org.LexGrid.LexBIG.Impl.codednodeset.SingleLuceneIndexCodedNodeSet;
-import org.LexGrid.LexBIG.Impl.codednodeset.UnionSingleLuceneIndexCodedNodeSet;
-import org.LexGrid.LexBIG.Impl.helpers.MappingCodingSchemeFilterRegistry;
+import org.LexGrid.LexBIG.Impl.helpers.MappingCodingSchemeQueryRegistry;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.TermQuery;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -73,9 +68,7 @@ public class CodedNodeSetFactory {
             registry.getCodingSchemeEntry(Constructors.createAbsoluteCodingSchemeVersionReference(uri, version));
 
         if(entry.getDbSchemaVersion().equals(VERSION_18) || entry.getDbSchemaVersion().equals(VERSION_17)){
-
             return new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
-
         }
 
         if(entry.getDbSchemaVersion().equals(VERSION_20)){
@@ -84,29 +77,24 @@ public class CodedNodeSetFactory {
                 String parentUri = entry.getSupplementsUri();
                 String parentVersion = entry.getSupplementsVersion();
                 
-                SingleLuceneIndexCodedNodeSet supplement = new SingleLuceneIndexCodedNodeSet(
+                CodedNodeSetImpl supplement = new CodedNodeSetImpl(
                         parentUri, 
                         Constructors.createCodingSchemeVersionOrTagFromVersion(parentVersion), 
                         activeOnly, 
                         types);
+
+                CodedNodeSetImpl parent = new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
                 
-                SingleLuceneIndexCodedNodeSet parent = new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
-                
-                return new UnionSingleLuceneIndexCodedNodeSet(parent, supplement);
+                return parent.union(supplement);
             } else {
-               CodedNodeSet codingSchemeToReturn = new SingleLuceneIndexCodedNodeSet(uri, versionOrTag, activeOnly, types);
+
+                CodedNodeSet codingSchemeToReturn = new CodedNodeSetImpl(uri, versionOrTag, activeOnly, types);
                 
                MappingExtension mappingExtension = 
                    (MappingExtension) LexBIGServiceImpl.defaultInstance().getGenericExtension("MappingExtension");
                
                if(mappingExtension.isMappingCodingScheme(codingScheme, versionOrTag)) {
-                   SingleLuceneIndexCodedNodeSet originalCs = (SingleLuceneIndexCodedNodeSet)codingSchemeToReturn;
-                   originalCs.getQueries().add(this.createTermQuery(uri, version));
-                   
-                   codingSchemeToReturn = originalCs;
-                   
                    CodingScheme cs = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(uri, Constructors.createCodingSchemeVersionOrTagFromVersion(version));
-                   
 
                    for(Relations relations : cs.getRelations()) {
                        AbsoluteCodingSchemeVersionReference sourceRef = 
@@ -124,28 +112,27 @@ public class CodedNodeSetFactory {
                                relations.getTargetCodingSchemeVersion());
                        
                        if(sourceRef != null && targetRef !=  null) {
-                           SingleLuceneIndexCodedNodeSet sourceCodingScheme = 
-                               new SingleLuceneIndexCodedNodeSet(
-                                       sourceRef.getCodingSchemeURN(), 
-                                       Constructors.createCodingSchemeVersionOrTagFromVersion(sourceRef.getCodingSchemeVersion()), 
-                                       activeOnly, 
-                                       types);
-        
-                           SingleLuceneIndexCodedNodeSet targetCodingScheme = 
-                               new SingleLuceneIndexCodedNodeSet(
-                                       targetRef.getCodingSchemeURN(), 
-                                       Constructors.createCodingSchemeVersionOrTagFromVersion(targetRef.getCodingSchemeVersion()), 
-                                       activeOnly, 
+                           CodedNodeSetImpl sourceCodingScheme =
+                               new CodedNodeSetImpl(
+                                       sourceRef.getCodingSchemeURN(),
+                                       Constructors.createCodingSchemeVersionOrTagFromVersion(sourceRef.getCodingSchemeVersion()),
+                                       activeOnly,
                                        types);
 
-                           UnionSingleLuceneIndexCodedNodeSet combinedSet =
-                               new UnionSingleLuceneIndexCodedNodeSet(sourceCodingScheme, targetCodingScheme);
-                                 
-                           combinedSet.getFilters().add(
-                                   MappingCodingSchemeFilterRegistry.
+                           CodedNodeSetImpl targetCodingScheme =
+                               new CodedNodeSetImpl(
+                                       targetRef.getCodingSchemeURN(),
+                                       Constructors.createCodingSchemeVersionOrTagFromVersion(targetRef.getCodingSchemeVersion()),
+                                       activeOnly,
+                                       types);
+
+                           CodedNodeSet combinedSet = sourceCodingScheme.union(targetCodingScheme);
+
+                           combinedSet = combinedSet.restrictToCodes(
+                                   MappingCodingSchemeQueryRegistry.
                                        defaultInstance().
-                                           getMappingCodingSchemeFilter(uri, version, true));
-                           
+                                           buildConceptReferenceList(uri, version));
+
                            codingSchemeToReturn = codingSchemeToReturn.union(combinedSet);
                        }
                    }
@@ -157,11 +144,5 @@ public class CodedNodeSetFactory {
 
         throw new LBParameterException("Could not create a CodedNodeSet for CodingScheme: " + codingScheme);
     }
-    
-    private TermQuery createTermQuery(String uri, String version){
-        return new TermQuery(
-                new Term(
-                LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-                LuceneLoaderCode.createCodingSchemeUriVersionKey(uri, version)));
-    }
+
 }

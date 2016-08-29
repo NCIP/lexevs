@@ -26,15 +26,19 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiFields;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.index.Terms;
+import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.util.BytesRef;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
-import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate.IndexReaderCallback;
+import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.metadata.BaseMetaDataLoader;
 
 public class LuceneMetadataDao implements MetadataDao {
@@ -46,28 +50,38 @@ public class LuceneMetadataDao implements MetadataDao {
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
 			List<Document> documents, Analyzer analyzer) {
-		this.luceneIndexTemplate.addDocuments(documents, analyzer);
-		
-		luceneIndexTemplate.optimize();
+		this.luceneIndexTemplate.addDocuments(documents, analyzer);		
 	}
 	
 	@Override
 	public AbsoluteCodingSchemeVersionReferenceList listCodingSchemes() {
-	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
 
+	       AbsoluteCodingSchemeVersionReferenceList result = new AbsoluteCodingSchemeVersionReferenceList();
+	       
            try {
-        	   TermEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermEnum>() {
+        	   final TermsEnum te = luceneIndexTemplate.executeInIndexReader(new IndexReaderCallback<TermsEnum>() {
 
 				@Override
-				public TermEnum doInIndexReader(IndexReader indexReader)
+				public TermsEnum doInIndexReader(IndexReader indexReader)
 						throws Exception {
-					return indexReader.terms(new Term("codingSchemeNameVersion", ""));
+					TermsEnum termsEnum = null;
+					Fields fields = MultiFields.getFields(indexReader);
+					if(fields != null){
+						Terms terms = fields.terms("codingSchemeNameVersion");
+						if(terms != null){
+				
+							termsEnum = terms.iterator();
+						}
+					}
+
+					return termsEnum;
 				}  
         	   });
-
-			   boolean hasNext = true;
-			   while (hasNext && te.term() != null && te.term().field().equals("codingSchemeNameVersion")) {
-			       Query temp = new TermQuery(new Term(te.term().field(), te.term().text()));
+        	   
+        	  // TODO see Multifield for a better implementation of this.
+			  BytesRef text = null;
+			   while ((te != null) && (text = te.next()) != null) {
+			       Query temp = new TermQuery(new Term("codingSchemeNameVersion", text.utf8ToString()));
 
 			       List<ScoreDoc> d = this.luceneIndexTemplate.search(temp, null);
 			       if (d.size() > 0) {
@@ -81,9 +95,9 @@ public class LuceneMetadataDao implements MetadataDao {
 
 			           result.addAbsoluteCodingSchemeVersionReference(acsvr);
 			       }
-			       hasNext = te.next();
+
 			   }
-			   te.close();
+
 			   
 			   return result;
 		} catch (Exception e) {
@@ -97,8 +111,6 @@ public class LuceneMetadataDao implements MetadataDao {
 				new Term("codingSchemeNameVersion",
 						codingSchemeUri
 						+ BaseMetaDataLoader.CONCATINATED_VALUE_SPLIT_TOKEN + version));
-		
-		luceneIndexTemplate.optimize();
 	}
 
 	@Override
@@ -119,7 +131,7 @@ public class LuceneMetadataDao implements MetadataDao {
              curr.setValue(d.get("propertyValue"));
 
              String temp = d.get("parentContainers");
-             curr.setContext(temp.split(BaseMetaDataLoader.STRING_TOKEINZER_TOKEN));
+             curr.setContext(temp.split(BaseMetaDataLoader.STRING_TOKENIZER_TOKEN));
 
              mdpl.addMetadataProperty(curr);
          }
@@ -128,12 +140,13 @@ public class LuceneMetadataDao implements MetadataDao {
 
 	}
 
-	public void setBaseMetaDataLoader(BaseMetaDataLoader baseMetaDataLoader) {
-		this.baseMetaDataLoader = baseMetaDataLoader;
-	}
 
 	public BaseMetaDataLoader getBaseMetaDataLoader() {
 		return baseMetaDataLoader;
+	}
+
+	public void setBaseMetaDataLoader(BaseMetaDataLoader baseMetaDataLoader) {
+		this.baseMetaDataLoader = baseMetaDataLoader;
 	}
 
 	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {

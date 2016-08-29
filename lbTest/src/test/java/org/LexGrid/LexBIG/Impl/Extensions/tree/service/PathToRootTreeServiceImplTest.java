@@ -8,9 +8,13 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNode;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestBase;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestFramework;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
-public class PathToRootTreeServiceImplTest extends LexEvsTreeTestBase {
+@RunWith(BlockJUnit4ClassRunner.class)
+public class PathToRootTreeServiceImplTest extends LexEvsTreeTestFramework{
 
 	@Test
 	public void testGetSubConcepts(){

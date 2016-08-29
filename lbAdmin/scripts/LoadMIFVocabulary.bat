@@ -10,4 +10,4 @@ REM   -t, --tag <id> An optional tag ID (e.g. 'PRODUCTION' or 'TEST') to assign.
 REM
 REM Example: LoadMIFVocabulary -in "file:///path/to/somefile.mif" -a
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadMIFVocabulary %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadMIFVocabulary %*

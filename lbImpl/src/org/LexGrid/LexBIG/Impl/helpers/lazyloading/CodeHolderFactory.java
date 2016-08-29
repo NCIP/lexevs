@@ -18,45 +18,27 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
-import java.io.Serializable;
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.helpers.CodeHolder;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Query;
+
+import java.io.Serializable;
+import java.util.Set;
+
 
 /**
  * A factory for creating CodeHolder objects.
  */
 public interface CodeHolderFactory extends Serializable {
 
-    /**
-     * Builds the code holder.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * @param query the query
-     * 
-     * @return the code holder
-     * 
-     * @throws Exception the exception
-     */
-
-    public CodeHolder buildCodeHolder(String internalCodeSystemName,
-            String internalVersionString, 
-            List<BooleanQuery> combinedQueries,
-            List<Query> individualQueries) throws LBInvocationException, LBParameterException;
-    
-    public CodeHolder buildCodeHolderWithFilters(String internalCodeSystemName,
-            String internalVersionString, 
-            List<Query> queries,
-            List<Filter> filters) throws LBInvocationException, LBParameterException;
-    
     public CodeHolder buildCodeHolder(
-            List<AbsoluteCodingSchemeVersionReference> references,
+            Set<? extends AbsoluteCodingSchemeVersionReference> references,
             Query query) throws LBInvocationException, LBParameterException;
+    
+    public CodeHolder buildCodeHolder(CodeHolder additiveHolder,
+            Set<? extends AbsoluteCodingSchemeVersionReference> references,
+            Query query) throws LBInvocationException, LBParameterException;
+
 }

@@ -18,19 +18,30 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 //import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImplTest;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetSerializationTest;
 import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 //import org.LexGrid.LexBIG.Impl.ServiceManagerTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.ScoreDocIteratoSerializationTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchScoreDocIteratorTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.AbstractSearchTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.AbstractSortTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeJsonNameSpaceTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.service.MultipleNamspaceErrorLEXEVS_598_Test;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImplTest;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceTest;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceTest;
 import org.LexGrid.LexBIG.Impl.bugs.GForge15976;
@@ -51,7 +62,6 @@ import org.LexGrid.LexBIG.Impl.bugs.GForge21923;
 import org.LexGrid.LexBIG.Impl.bugs.GForge21935;
 import org.LexGrid.LexBIG.Impl.bugs.GForge22826;
 import org.LexGrid.LexBIG.Impl.bugs.GForge23103;
-import org.LexGrid.LexBIG.Impl.bugs.GForge25067;
 import org.LexGrid.LexBIG.Impl.bugs.GForge26741;
 import org.LexGrid.LexBIG.Impl.bugs.GForge27457;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29772;
@@ -63,6 +73,7 @@ import org.LexGrid.LexBIG.Impl.bugs.GForge29860;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29924;
 import org.LexGrid.LexBIG.Impl.bugs.GForge29940;
 import org.LexGrid.LexBIG.Impl.bugs.TestBugFixes;
+import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtilityTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.RegistryTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.ResourceManagerTest;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethodsTest;
@@ -71,7 +82,6 @@ import org.LexGrid.LexBIG.Impl.dataAccess.TestPasswordEncryption;
 import org.LexGrid.LexBIG.Impl.featureRequests.AddNamespaceToIndex;
 import org.LexGrid.LexBIG.Impl.featureRequests.ChangeConfigFileName;
 import org.LexGrid.LexBIG.Impl.featureRequests.GForge17019;
-import org.LexGrid.LexBIG.Impl.featureRequests.GForge24191;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.CodedNodeSetOperationsTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.DifferenceTest;
 import org.LexGrid.LexBIG.Impl.function.codednodeset.ExtensionCodedNodeSetTest;
@@ -116,7 +126,6 @@ import org.LexGrid.LexBIG.Impl.function.query.TestMembershipinVocabulary;
 import org.LexGrid.LexBIG.Impl.function.query.TestOWLLoaderPreferences;
 import org.LexGrid.LexBIG.Impl.function.query.TestOtherMatchingTechniques;
 import org.LexGrid.LexBIG.Impl.function.query.TestPagedReturns;
-import org.LexGrid.LexBIG.Impl.function.query.TestPreLoadManifest;
 import org.LexGrid.LexBIG.Impl.function.query.TestQuerybyRelationshipDomain;
 import org.LexGrid.LexBIG.Impl.function.query.TestRelationshipInquiry;
 import org.LexGrid.LexBIG.Impl.function.query.TestRestrictToDirectionalNames;
@@ -154,7 +163,6 @@ import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStr
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStringLiteralSubString;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestSubStringNonLeadingWildcardLiteralSubString;
 import org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestWeightedDoubleMetaphone;
-import org.LexGrid.LexBIG.Impl.helpers.AbstractListBackedResolvedConceptReferencesIteratorTest;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturnTest;
 import org.LexGrid.LexBIG.Impl.helpers.ConfigureTest;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferencesIteratorImplTest;
@@ -174,51 +182,50 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
-import org.junit.runner.RunWith;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
+import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
+import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsRemoveTest;
+import org.lexevs.dao.index.operation.SameSessionLoadandQueryTest;
+import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
+import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
+import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
+import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorTest;
+import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
+import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
-import edu.mayo.informatics.indexer.api.generators.QueryGeneratorTest;
-import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzerTest;
-import edu.mayo.informatics.indexer.lucene.analyzers.StringAnalyzerTest;
-import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorTest;
-import edu.mayo.informatics.indexer.lucene.hitcollector.BitSetBestScoreOfEntityHitCollectorTest;
-import edu.mayo.informatics.indexer.lucene.hitcollector.HitCollectorMergerTest;
-import edu.mayo.informatics.indexer.lucene.query.SerializableRegexCapabilitiesTest;
-import edu.mayo.informatics.indexer.lucene.query.SerializableRegexQueryTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
-
-import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeJsonNameSpaceTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeTest;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.service.MultipleNamspaceErrorLEXEVS_598_Test;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImplTest;
 
 
 public class AllTestsNormalConfig {
+
+    private static final java.lang.String TREE_TESTS_ENV = "TREE_TESTS";
 
     public static Test suite() throws Exception {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
         ServiceHolder.configureForSingleConfig();
 
         mainSuite.addTestSuite(ConfigureTest.class);
-        mainSuite.addTestSuite(LoadTestDataTest.class);
+        mainSuite.addTestSuite(OrderingTestRunnerTest.class);
+        mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
         mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
         mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
         mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
         mainSuite.addTestSuite(CodedNodeSetImplTest.class);
+        mainSuite.addTestSuite(CodedNodeSetSerializationTest.class);
         mainSuite.addTestSuite(TestMetaDataSearch.class);
         mainSuite.addTestSuite(ServiceManagerTest.class);
         mainSuite.addTestSuite(RegistryTest.class);
@@ -226,7 +233,6 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(ResourceManagerTest.class); 
         mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
         mainSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
-        mainSuite.addTestSuite(AbstractListBackedResolvedConceptReferencesIteratorTest.class);
         
         mainSuite.addTestSuite(AbstractSortTest.class);
         mainSuite.addTestSuite(AbstractSearchTest.class);
@@ -248,6 +254,10 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
 
         mainSuite.addTest(metaLoaderSuite);
+        
+        TestSuite owlLoaderSuite = new TestSuite("OWL Tests");
+        owlLoaderSuite.addTestSuite(OWLUnitTests.class);
+        mainSuite.addTest(owlLoaderSuite);
         
         TestSuite owl2LoaderSuite = new TestSuite("OWL2 Tests");
         owl2LoaderSuite.addTestSuite(PresentationPropertyTestIT.class);
@@ -279,13 +289,10 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(hl7MifVocabularyLoaderSuite);
         
         TestSuite luceneSuite = new TestSuite("Lucene Tests");
-        luceneSuite.addTestSuite(QueryGeneratorTest.class);
         luceneSuite.addTestSuite(SnowballAnalyzerTest.class);
         luceneSuite.addTestSuite(StringAnalyzerTest.class);
         luceneSuite.addTestSuite(WhiteSpaceLowerCaseAnalyzerTest.class);
         luceneSuite.addTestSuite(BestScoreOfEntityHitCollectorTest.class);
-        luceneSuite.addTestSuite(BitSetBestScoreOfEntityHitCollectorTest.class);
-        luceneSuite.addTestSuite(HitCollectorMergerTest.class);
         luceneSuite.addTestSuite(LuceneLoaderCodeTest.class);
         luceneSuite.addTestSuite(SerializableRegexCapabilitiesTest.class);
         luceneSuite.addTestSuite(SerializableRegexQueryTest.class);
@@ -334,6 +341,9 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(RestrictToMatchingPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
+        
+        
+        
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
@@ -358,7 +368,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(codedNodeGraphSuite);
 
         TestSuite functionalTests = new TestSuite("Functional Tests");
-        functionalTests.addTestSuite(TestProductionTags.class);
+        functionalTests.addTest(orderedSuite(TestProductionTags.class));
         functionalTests.addTestSuite(TestApproximateStringMatch.class);
         functionalTests.addTestSuite(TestAttributePresenceMatch.class);
         functionalTests.addTestSuite(TestAttributeValueMatch.class);
@@ -402,28 +412,30 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestCodingSchemesWithSupportedAssociation.class);
         functionalTests.addTestSuite(TestEnumerateAssociationNames.class);
         functionalTests.addTestSuite(TestChildIndicator.class);
-        functionalTests.addTestSuite(TestPreLoadManifest.class);
+//        functionalTests.addTestSuite(TestPreLoadManifest.class);
         functionalTests.addTestSuite(TestMRRANK.class);
         functionalTests.addTestSuite(TestLoaderPreferences.class);
         functionalTests.addTestSuite(TestOWLLoaderPreferences.class);
         functionalTests.addTestSuite(TestSameCodeDifferentNamespace.class);
         functionalTests.addTestSuite(TestPasswordEncryption.class);
-
+//
         mainSuite.addTest(functionalTests);
-       
-        TestSuite treeTests = new TestSuite("tree extension tests");
-        treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
-        treeTests.addTestSuite(LexEvsTreeNodeTest.class);
-        treeTests.addTestSuite(LexEvsTreeTest.class);
-        treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
-        treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
-        treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
-        
-        mainSuite.addTest(treeTests);
+
+        if(System.getProperty(TREE_TESTS_ENV) != null) {
+            TestSuite treeTests = new TestSuite("tree extension tests");
+            treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
+            treeTests.addTestSuite(LexEvsTreeNodeTest.class);
+            treeTests.addTestSuite(LexEvsTreeTest.class);
+            treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
+            treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
+            treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
+
+            mainSuite.addTest(treeTests);
+        }
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
-        bugTests.addTestSuite(GForge19650.class);
+        bugTests.addTest(orderedSuite(GForge19650.class));
         bugTests.addTestSuite(GForge19492.class);
         bugTests.addTestSuite(GForge19573.class);
         bugTests.addTestSuite(GForge19628.class);
@@ -460,8 +472,6 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(AddNamespaceToIndex.class);
         featureRequestTests.addTestSuite(ChangeConfigFileName.class);  
         featureRequestTests.addTestSuite(GForge17019.class);
-        //No longer supporting the MSAccess Load
-        //featureRequestTests.addTestSuite(GForge24191.class);
         mainSuite.addTest(featureRequestTests);
         
         //Mapping tests
@@ -471,9 +481,12 @@ public class AllTestsNormalConfig {
       
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
+		mainSuite.addTestSuite(MappingExtensionSerializationTest.class);
         
-        //Search Extesion tests
+        //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);
+        mainSuite.addTestSuite(ScoreDocIteratoSerializationTest.class);
+        mainSuite.addTestSuite(SearchScoreDocIteratorTest.class);
         
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
@@ -489,11 +502,22 @@ public class AllTestsNormalConfig {
         //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
-        //CTS2 tests
-        //Run this outside of this scope.
-        //mainSuite.addTest(new JUnit4TestAdapter(Cts2IntegrationTestRunner.class));
+        //Broken Load Clean Up Function tests
+
+        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
+        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         // $JUnit-END$
 
         return mainSuite;
+    }
+
+    public static Test orderedSuite(Class<?> clazz) throws InitializationError {
+        JUnit4TestAdapter adapter = new JUnit4TestAdapter(clazz);
+
+        return adapter;
     }
 }

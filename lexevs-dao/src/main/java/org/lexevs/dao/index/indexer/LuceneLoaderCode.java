@@ -18,22 +18,32 @@
  */
 package org.lexevs.dao.index.indexer;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.commons.codec.language.DoubleMetaphone;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
+import org.apache.lucene.analysis.phonetic.DoubleMetaphoneFilter;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.util.AttributeFactory;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
-
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.api.generators.DocumentFromStringsGenerator;
-import edu.mayo.informatics.indexer.lucene.analyzers.EncoderAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.NormAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.SnowballAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.StringAnalyzer;
-import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer;
+import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
 
 /**
  * Base Lucene Loader code.
@@ -41,6 +51,7 @@ import edu.mayo.informatics.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzer
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust</A>
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ * @author <A HREF="mailto:scott.bauer@mayo.edu">Scott Bauer</A>
  */
 public abstract class LuceneLoaderCode {
 	
@@ -83,6 +94,9 @@ public abstract class LuceneLoaderCode {
     /** The Constant LITERAL_AND_REVERSE_PREFIX. */
     public static final String LITERAL_AND_REVERSE_PREFIX = LITERAL_PREFIX + REVERSE_PREFIX;
     
+    /** The entity code. */
+    protected static String UNIQUE_ID = "code";
+    
     /** The PROPERT y_ valu e_ field. */
     public static String PROPERTY_VALUE_FIELD = "propertyValue";
     
@@ -90,7 +104,7 @@ public abstract class LuceneLoaderCode {
     public static String CODING_SCHEME_NAME_FIELD = "codingSchemeName";
     
     /** The CODIN g_ schem e_ i d_ field. */
-    public static String CODING_SCHEME_ID_FIELD = "codingSchemeId";
+    public static String CODING_SCHEME_ID_FIELD = "codingSchemeUri";
     
     /** The CODIN g_ schem e_ i d_ field. */
     public static String CODING_SCHEME_VERSION_FIELD = "codingSchemeVersion";
@@ -124,39 +138,40 @@ public abstract class LuceneLoaderCode {
     
     public static String CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD = "codingSchemeUriVersionCodeNamespaceKey";
 
-    /** The create boundry documents. */
-    protected boolean createBoundryDocuments = true;
+    /** Used to identify the parent document as opposed to the child document. */
+    protected boolean isParent = true;
     
     /** The analyzer_. */
-    protected PerFieldAnalyzerWrapper analyzer_ = null;
+    protected static PerFieldAnalyzerWrapper analyzer_ = null;
 
     /** The Constant STRING_TOKEINZER_TOKEN. */
-    public static final String STRING_TOKEINZER_TOKEN = "<:>";
+    public static final String STRING_TOKENIZER_TOKEN = "<:>";
     
     /** The Constant QUALIFIER_NAME_VALUE_SPLIT_TOKEN. */
     public static final String QUALIFIER_NAME_VALUE_SPLIT_TOKEN = ":";
+
+	private static final String ENTITY_TYPE = "entityType";
  
     private LuceneEntityDao luceneEntityDao;
     
     protected LuceneLoaderCode(){
     	try {
 			this.initIndexes();
-		} catch (InternalErrorException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(e);
 		}
     }
-
-    // by default, the index stores a copy of most of the information. Switching
-    // this to
-    // true will cause the indexer to only store the values that are required by
-    // the LexBIG
-    // implementation at runtime.
-
-    // TODO add a GUI option for the codeBoundry stuff.
     
     /** The literal analyzer. */
-    public static Analyzer literalAnalyzer = new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-            new char[]{}, new char[]{}); 
+    public static Analyzer literalAnalyzer = new Analyzer() {
+    	
+		@Override
+		protected TokenStreamComponents createComponents(String fieldName) {
+			final WhitespaceTokenizer source = new WhitespaceTokenizer();
+			TokenStream filter = new LowerCaseFilter(source);
+			return new TokenStreamComponents(source, filter);
+		}
+	};
     /**
      * Adds the entity.
      * 
@@ -193,40 +208,27 @@ public abstract class LuceneLoaderCode {
             String degreeOfFidelity, Boolean matchIfNoContext, String representationalForm, String[] sources,
             String[] usageContexts, Qualifier[] qualifiers) throws Exception {
 
-        String idFieldName = SQLTableConstants.TBLCOL_ENTITYCODE;
         String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
         String formatFieldName = SQLTableConstants.TBLCOL_FORMAT;
        
         generator_.startNewDocument(codingSchemeName + "-" + entityCode + "-" + propertyId);
-        generator_.addTextField(CODING_SCHEME_NAME_FIELD, codingSchemeName, true, true, false);
-
-        generator_.addTextField(CODING_SCHEME_ID_FIELD, codingSchemeId, true, true, false);
-        generator_.addTextField(CODING_SCHEME_VERSION_FIELD, codingSchemeVersion, true, true, false);
-        generator_.addTextField(idFieldName + "Tokenized", entityCode, false, true, true);
-        generator_.addTextField(idFieldName, entityCode, true, true, false);
-        generator_.addTextField(idFieldName + "LC", entityCode.toLowerCase(), false, true, false);
+        generator_.addTextField(UNIQUE_ID + "Tokenized", entityCode, false, true, true);
+        generator_.addTextField(UNIQUE_ID, entityCode, false, true, false);// must be anyalyzed with KeywordAnalyzer
+        generator_.addTextField(UNIQUE_ID + "LC", entityCode.toLowerCase(), false, true, false);
         
         if(entityTypes != null) {
         	for(String entityType : entityTypes) {
-        		generator_.addTextField("entityType", entityType, true, true, false);
+        		generator_.addTextField(ENTITY_TYPE, entityType, false, true, false);// must be analyzed with KeywordAnalyzer
         	}
         }
         
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityCode, entityNamespace), false, true, false);
-       
-        if(StringUtils.isNotBlank(entityUid)) {
-        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
-        }
-        
-        //If the EntityDescription is an empty String, replace it with a single space.
-        //Lucene will not index an empty String but it will index a space.
-        if(StringUtils.isBlank(entityDescription)){
-            entityDescription = " ";
-        }
-        generator_.addTextField("entityDescription", entityDescription, true, true, false);
-      
-        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, true, true, false);
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
+        		createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
+        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+        		createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, 
+        				entityCode, entityNamespace), false, true, false);
+     // must be analyzed with KeywordAnalyzer
+        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityNamespace, false, true, false);
 
         String tempPropertyType;
         if (propertyType == null || propertyType.length() == 0) {
@@ -261,8 +263,10 @@ public abstract class LuceneLoaderCode {
 
             // This copy of the content is required for making "startsWith" or
             // "exactMatch" types of queries
-            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.toLowerCase(), false, true, false);
-
+            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.getBytes().length > 32000? propertyValue.substring(0, 1000) : propertyValue.toLowerCase(), false, true, false);
+            if(propertyValue.getBytes().length > 32000){
+            	logger.warn("Term is of a size exceeding 32k bytes.  Truncating term that starts with: \"" + propertyValue.substring(0, 100) + "\"");
+            }
             if (normEnabled_) {
                 generator_.addTextField(NORM_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
             }
@@ -282,6 +286,8 @@ public abstract class LuceneLoaderCode {
             } else {
                 generator_.addTextField("isActive", "F", false, true, false);
             }
+        }else{
+        	generator_.addTextField("isActive", "T", false, true, false);
         }
         
         if (isAnonymous != null) {
@@ -290,8 +296,15 @@ public abstract class LuceneLoaderCode {
             } else {
                 generator_.addTextField("isAnonymous", "F", false, true, false);
             }
+        }else{
+        	generator_.addTextField("isAnonymous", "F", false, true, false);
         }
         
+        if(entityTypes != null) {
+        	for(String entityType : entityTypes) {
+        		generator_.addTextField("entityType", entityType, true, true, false);
+        	}
+        }
         if (isPreferred != null) {
             if (isPreferred.booleanValue()) {
                 generator_.addTextField("isPreferred", "T", false, true, false);
@@ -340,7 +353,7 @@ public abstract class LuceneLoaderCode {
             for (int i = 0; i < sources.length; i++) {
                 temp.append(sources[i]);
                 if (i + 1 < sources.length) {
-                    temp.append(STRING_TOKEINZER_TOKEN);
+                    temp.append(STRING_TOKENIZER_TOKEN);
                 }
             }
             generator_.addTextField("sources", temp.toString(), false, true, true);
@@ -351,7 +364,7 @@ public abstract class LuceneLoaderCode {
             for (int i = 0; i < usageContexts.length; i++) {
                 temp.append(usageContexts[i]);
                 if (i + 1 < usageContexts.length) {
-                    temp.append(STRING_TOKEINZER_TOKEN);
+                    temp.append(STRING_TOKENIZER_TOKEN);
                 }
             }
             generator_.addTextField("usageContexts", temp.toString(), false, true, true);
@@ -363,7 +376,7 @@ public abstract class LuceneLoaderCode {
                 temp.append(qualifiers[i].qualifierName + QUALIFIER_NAME_VALUE_SPLIT_TOKEN
                         + qualifiers[i].qualifierValue);
                 if (i + 1 < qualifiers.length) {
-                    temp.append(STRING_TOKEINZER_TOKEN);
+                    temp.append(STRING_TOKENIZER_TOKEN);
                 }
             }
             generator_.addTextField("qualifiers", temp.toString(), false, true, true);
@@ -372,11 +385,7 @@ public abstract class LuceneLoaderCode {
         return generator_.getDocument();
     }
 
-    /*
-     * caGrid used these "boundry" documents to speed up multiple successive
-     * queries. A boundry document should be added whenever a new entity id is
-     * started.
-     */
+
     /**
      * Adds the entity boundry document.
      * 
@@ -387,21 +396,59 @@ public abstract class LuceneLoaderCode {
      * 
      * @throws Exception the exception
      */
-    protected Document addEntityBoundryDocument(
-    		String codingSchemeName, 
-    		String codingSchemeId, 
-    		String codingSchemeVersion, 
-    		String entityId,
-    		String entityCodeNamespace) throws Exception {
-        generator_.startNewDocument(codingSchemeName + "-" + entityId);
-        generator_.addTextField("codingSchemeName", codingSchemeName, false, true, false);
-        generator_.addTextField("codingSchemeId", codingSchemeId, false, true, false);
-        generator_.addTextField("codeBoundry", "T", false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, createCodingSchemeUriVersionKey(codingSchemeId, codingSchemeVersion), false, true, false);
-        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeId, codingSchemeVersion, entityId, entityCodeNamespace), false, true, false);
+    
+    protected Document createParentDocument(
+    		String codingSchemeName,
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String entityCode, 
+			String entityCodeNamespace,
+			EntityDescription entityDescription, 
+			Boolean isActive,
+			Boolean isAnonymous, 
+			Boolean isDefined,
+			String[] entityTypes,
+			String conceptStatus,
+			String entityUid,
+			Boolean isParentDoc) {
+    	
+    	generator_.startNewDocument(codingSchemeName + "-" + entityCode);
+    	generator_.addTextField("codingSchemeName", codingSchemeName, true, true, false);
+    	generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
+    	generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
+    	generator_.addTextField("entityCode", entityCode, true, true, false);
+    	generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
+    	generator_.addTextField("entityDescription", entityDescription !=null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true, false);
+    
+    	
+        if (isDefined != null) {
+            if (isDefined.booleanValue()) {
+                generator_.addTextField("isDefined", "T", false, true, false);
+            } else {
+                generator_.addTextField("isDefined", "F", false, true, false);
+            }
+        }
+        
+        if(StringUtils.isNotBlank(entityUid)) {
+        	generator_.addTextField(ENTITY_UID_FIELD, entityUid, true, false, false);
+        }
+        
+        if (isParentDoc != null) {
+        	generator_.addTextField("isParentDoc", Boolean.toString(isParentDoc), true, true, false);
+        }else {
+        	throw new RuntimeException("isParentDoc is not defined.");
+        }
+    	for(String entityType: entityTypes){
+    		generator_.addTextField("type", entityType, true, true, false);
+    	}
+    	generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
+    			createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
+    	generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
+    			createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeUri, codingSchemeVersion, entityCode, entityCodeNamespace), false, true, false);
+        
+    	return generator_.getDocument();
+	}
 
-        return generator_.getDocument();
-    }
 
     /**
      * Inits the indexes.
@@ -409,50 +456,92 @@ public abstract class LuceneLoaderCode {
      * @param indexName the index name
      * @param indexLocation the index location
      * 
-     * @throws InternalErrorException the internal error exception
+     * @throws RuntimeException
      */
-    protected void initIndexes() throws InternalErrorException {
+    protected void initIndexes() throws RuntimeException {
     	this.analyzer_ = getAnaylzer();
         generator_ = new DocumentFromStringsGenerator();
     }
     
     public static PerFieldAnalyzerWrapper getAnaylzer() {
-    	   // no stop words, default character removal set.
-    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new WhiteSpaceLowerCaseAnalyzer(new String[] {},
-                WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet));
-        
+    	
+    	Map<String,Analyzer> analyzerPerField = new HashMap<>();
+    	    	
         //add a literal analyzer -- keep all special characters
-        analyzer.addAnalyzer(LITERAL_PROPERTY_VALUE_FIELD, literalAnalyzer); 
-        analyzer.addAnalyzer(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer);    
+    	analyzerPerField.put(LITERAL_PROPERTY_VALUE_FIELD, literalAnalyzer);
+    	analyzerPerField.put(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, literalAnalyzer); 
+    	
+    	//treat as string field by analyzing with the KeywordAnalyzer
+    	analyzerPerField.put(UNIQUE_ID, new KeywordAnalyzer());
+    	analyzerPerField.put(ENTITY_TYPE, new KeywordAnalyzer());
+        analyzerPerField.put("isPreferred", new KeywordAnalyzer());
+    	analyzerPerField.put(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, new KeywordAnalyzer());
 
         if (doubleMetaphoneEnabled_) {
-            EncoderAnalyzer temp = new EncoderAnalyzer(new DoubleMetaphone(), new String[] {},
-                    WhiteSpaceLowerCaseAnalyzer.getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
-            analyzer.addAnalyzer(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, temp);
+            Analyzer temp = new Analyzer() {
+            	
+                @Override
+                protected TokenStreamComponents createComponents(String fieldName) {
+                    final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                    source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                    TokenStream filter = new StandardFilter(source);
+                    filter = new LowerCaseFilter( filter);
+                    filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
+                    filter = new DoubleMetaphoneFilter(filter, 4, false);
+                    return new TokenStreamComponents(source, filter);
+                }
+            };
+            analyzerPerField.put(DOUBLE_METAPHONE_PROPERTY_VALUE_FIELD, temp);
         }
 
         if (normEnabled_) {
             try {
-                NormAnalyzer temp = new NormAnalyzer(false, new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                        .getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
-                analyzer.addAnalyzer(NORM_PROPERTY_VALUE_FIELD, temp);
+                Analyzer temp = new StandardAnalyzer(CharArraySet.EMPTY_SET);
+                analyzerPerField.put(NORM_PROPERTY_VALUE_FIELD, temp);
             } catch (NoClassDefFoundError e) {
                //
             }
         }
 
         if (stemmingEnabled_) {
-            SnowballAnalyzer temp = new SnowballAnalyzer(false, "English", new String[] {}, WhiteSpaceLowerCaseAnalyzer
-                    .getDefaultCharRemovalSet(), lexGridWhiteSpaceIndexSet);
-            analyzer.addAnalyzer(STEMMING_PROPERTY_VALUE_FIELD, temp);
+        Analyzer temp = new Analyzer() {
+            	
+                @Override
+                protected TokenStreamComponents createComponents(String fieldName) {
+                    final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                    source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                    TokenStream filter = new StandardFilter(source);
+                    filter = new LowerCaseFilter( filter);
+                    filter = new StopFilter(filter, StandardAnalyzer.STOP_WORDS_SET);
+                    filter = new SnowballFilter(filter, "English");
+                    return new TokenStreamComponents(source, filter);
+                }
+            };
+            analyzerPerField.put(STEMMING_PROPERTY_VALUE_FIELD, temp);
         }
-
-        // these fields just get simple analyzing.
-        StringAnalyzer sa = new StringAnalyzer(STRING_TOKEINZER_TOKEN);
-        analyzer.addAnalyzer("sources", sa);
-        analyzer.addAnalyzer("usageContexts", sa);
-        analyzer.addAnalyzer("qualifiers", sa);
         
+        final CharArraySet dividerList = new CharArraySet(10, true);
+        dividerList.add(STRING_TOKENIZER_TOKEN);
+        Analyzer sa = new StandardAnalyzer(new CharArraySet(dividerList, true));
+        Analyzer qualifierAnalyzer = new Analyzer(){
+
+			@Override
+			protected TokenStreamComponents createComponents(String arg0) {
+                final StandardTokenizer source = new StandardTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+                source.setMaxTokenLength(StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH);
+                TokenStream filter = new LowerCaseFilter( source);
+                Pattern pattern = Pattern.compile("\\-|\\;|\\(|\\)|\\{|\\}|\\[|\\]|\\<|\\>|\\||(\\<\\:\\>)");
+				filter = new PatternReplaceFilter(filter, pattern, " ", true);
+                return new TokenStreamComponents(source, filter);
+			}
+        	
+        };
+        analyzerPerField.put("sources", sa);
+        analyzerPerField.put("usageContexts", sa);
+        analyzerPerField.put("qualifiers", qualifierAnalyzer);
+        
+        // no stop words, default character removal set.
+    	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET), analyzerPerField);
         return analyzer;
     }
 
@@ -500,7 +589,7 @@ public abstract class LuceneLoaderCode {
 	}
 	
 	public Analyzer getAnalyzer() {
-		return this.analyzer_;
+		return analyzer_;
 	}
 
 	/**

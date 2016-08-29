@@ -19,10 +19,13 @@
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.AbstractJoinQueryRestriction;
+import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.lucene.search.Query;
+import org.lexevs.exceptions.InternalException;
 
 /**
  * Holder for the RestrictToCodes operation.
@@ -31,7 +34,7 @@ import org.LexGrid.annotations.LgClientSideSafe;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class RestrictToCodes implements Restriction, Operation {
+public class RestrictToCodes extends AbstractJoinQueryRestriction {
 
     private static final long serialVersionUID = -8005913414543273170L;
     private ConceptReferenceList conceptReferenceList_;
@@ -51,6 +54,11 @@ public class RestrictToCodes implements Restriction, Operation {
         } catch (LBParameterException e) {
             throw e;
         }
+    }
+
+    @Override
+    protected Query doGetQuery() throws LBException, InternalException {
+        return RestrictionImplementations.getQuery(this);
     }
 
     /**

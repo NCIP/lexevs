@@ -24,13 +24,18 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.util.PrintUtility;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class IntersectionTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class IntersectionTest extends BaseCodedNodeSetTest {
     
     /** The cns2. */
@@ -50,6 +55,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
      * @see org.LexGrid.LexBIG.Impl.function.codednodeset.BaseCodedNodeSetTest#setUp()
      */
     @Override
+    @Before
     public void setUp(){
         super.setUp();
         try {
@@ -66,11 +72,12 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testIntersection() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy" }, "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
         CodedNodeSet intersect = cns.intersect(cns2);
 
@@ -80,6 +87,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
         assertTrue(contains(rcr, "005", "Automobiles"));
     }
     
+    @Test
     public void testIntersectionDifferentCodingSchemes() throws LBException {
 
     	CodedNodeSet intersect = cns.intersect(cns3);
@@ -90,6 +98,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
     }
     
     //Jaguar A0001 005 C0002 Ford C0001
+    @Test
     public void testIntersectionDifferentWithMapping() throws LBException {
 
     	CodedNodeSet intersect = cns.intersect(testMapping);
@@ -102,6 +111,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
     }
     
     //Jaguar A0001 005 C0002 Ford C0001
+    @Test
     public void testIntersectionDifferentWithMappingWithoutRestriction() throws LBException {
 
     	CodedNodeSet intersect = cns.intersect(testMapping);
@@ -114,6 +124,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
     }
     
     // A0001
+    @Test
     public void testIntersectionDifferentWithMappingWithRestriction() throws LBException {
 
     	testMapping = testMapping.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "LuceneQuery", null);
@@ -128,6 +139,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
     }
     
     // none
+    @Test
     public void testIntersectionDifferentWithMappingWithRestrictionAndExtraIntersection() throws LBException {
 
     	testMapping = testMapping.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "LuceneQuery", null);
@@ -144,6 +156,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
     }
     
     // none
+    @Test
     public void testIntersectionDifferentShouldBeNone() throws LBException {
 
     	cns = cns.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "LuceneQuery", null);
@@ -156,6 +169,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
     }
     
     // none
+    @Test
     public void testIntersectionDifferentComplex1() throws LBException {
 
     	cns = cns.restrictToMatchingDesignations("automobile", SearchDesignationOption.ALL, "LuceneQuery", null);
@@ -171,6 +185,7 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
         assertEquals(1, rcr.getResolvedConceptReferenceCount());
     }
     
+    @Test
     public void testIntersectionDifferentComplex2() throws LBException {
 
     	//none
@@ -193,11 +208,12 @@ public class IntersectionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testIntersectionWithAddedRestriction() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford" }, "Automobiles"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005", "Chevy", "Ford" }, "Automobiles"));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford", "005" }, "Automobiles"));
 
         CodedNodeSet cns3 = cns.intersect(cns2);
         

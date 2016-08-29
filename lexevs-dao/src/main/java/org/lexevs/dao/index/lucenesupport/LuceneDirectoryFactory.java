@@ -18,17 +18,23 @@
  */
 package org.lexevs.dao.index.lucenesupport;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.join.ToParentBlockJoinIndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.store.MMapDirectory;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 
@@ -39,6 +45,8 @@ public class LuceneDirectoryFactory implements FactoryBean {
 	private Resource indexDirectory;
 	
 	private LuceneDirectoryCreator luceneDirectoryCreator;
+	
+	
 
 	@Override
 	public Object getObject() throws Exception {
@@ -84,6 +92,7 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		private Directory directory;
 		private String indexName;
 		private IndexSearcher indexSearcher;
+		private ToParentBlockJoinIndexSearcher blockJoinSearcher;
 		private IndexReader indexReader;
 
 		public NamedDirectory(Directory directory, String indexName) {
@@ -94,10 +103,12 @@ public class LuceneDirectoryFactory implements FactoryBean {
 				this.initIndexDirectory(directory);
 				this.indexReader = this.createIndexReader(directory);
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
+				this.blockJoinSearcher = this.createBlockJoinIndexSearcher(this.indexReader);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
+
 		public Directory getDirectory() {
 			return directory;
 		}
@@ -117,6 +128,17 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		public void setIndexSearcher(IndexSearcher indexSearcher) {
 			this.indexSearcher = indexSearcher;
 		}
+		
+		
+		public ToParentBlockJoinIndexSearcher getBlockJoinSearcher() {
+			return blockJoinSearcher;
+		}
+
+		public void setBlockJoinSearcher(
+				ToParentBlockJoinIndexSearcher blockJoinSearcher) {
+			this.blockJoinSearcher = blockJoinSearcher;
+		}
+
 		public IndexReader getIndexReader() {
 			return indexReader;
 		}
@@ -127,50 +149,55 @@ public class LuceneDirectoryFactory implements FactoryBean {
 		protected IndexSearcher createIndexSearcher(IndexReader indexReader) throws Exception {
 			return new IndexSearcher(indexReader);
 		}
-
+		private ToParentBlockJoinIndexSearcher createBlockJoinIndexSearcher(
+				IndexReader indexReader) {
+			return new ToParentBlockJoinIndexSearcher(indexReader);
+		}
 		protected IndexReader createIndexReader(Directory directory) throws Exception {
-			IndexReader reader = IndexReader.open(directory, true);
+			IndexReader reader = DirectoryReader.open(directory);
 			return reader;
 		}
 
 		private void initIndexDirectory(Directory directory) throws IOException,
 			CorruptIndexException, LockObtainFailedException {
 
-			if(!IndexReader.indexExists(directory)){
-				IndexWriter writer = new IndexWriter(
-						directory, 
-						LuceneLoaderCode.getAnaylzer(), 
-						IndexWriter.MaxFieldLength.UNLIMITED);
+
+				IndexWriterConfig config = new IndexWriterConfig(LuceneLoaderCode.getAnaylzer());
+				IndexWriter writer = new IndexWriter(directory, config);
 
 				writer.close();
-			}
 		}
 		
-		public void refresh() {
+		public NamedDirectory refresh() {
 			try {
-				IndexReader reopenedReader = this.indexReader.reopen();
+				IndexReader reopenedReader = DirectoryReader.open(this.directory);
 				
 				if(reopenedReader != this.indexReader){
 					this.indexReader.close();
 					this.indexReader = this.createIndexReader(this.directory);
 				}
-				
-				this.indexSearcher.close();
 				this.indexSearcher = this.createIndexSearcher(this.indexReader);
+				LoggerFactory.getLogger().warn("Refreshing index: " + this.indexName);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+			
+			return this;
 		}
 
 		public void remove() {
 			try {
-				this.indexSearcher.close();
 				this.indexReader.close();
 
 				if(this.directory instanceof FSDirectory) {
 					FSDirectory dir = (FSDirectory)this.directory;
-					FileUtils.deleteDirectory(dir.getFile());
+					FileUtils.deleteDirectory(new File(dir.getDirectory().toUri()));
 				}
+				else if (this.directory instanceof MMapDirectory){
+					MMapDirectory dir = (MMapDirectory)this.directory;
+					FileUtils.deleteDirectory(new File(dir.getDirectory().toUri()));
+				}
+				
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

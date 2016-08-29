@@ -6,4 +6,4 @@ REM   -f,--full  List full detail for each scheme.
 REM 
 REM Example: ListSchemes
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.ListSchemes %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.ListSchemes %*

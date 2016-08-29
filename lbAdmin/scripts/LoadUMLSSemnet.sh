@@ -28,4 +28,4 @@
 # Example: LoadUMLSSemnet -in "file:///path/to/directory/" -a
 #          LoadUMLSSemnet -in "file:///path/to/directory/" -v 0
 #
-java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadUMLSSemnet $@
+java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadUMLSSemnet $@

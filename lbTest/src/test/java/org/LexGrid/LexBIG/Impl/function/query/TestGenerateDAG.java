@@ -29,7 +29,11 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(IncludeForDistributedTests.class)
 public class TestGenerateDAG extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_04";
 
@@ -38,11 +42,12 @@ public class TestGenerateDAG extends LexBIGServiceTestCase {
         return testID;
     }
 
+    @Test
     public void testT1_FNC_04() throws LBException {
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         CodedNodeGraph cng = lbs.getNodeGraph(AUTO_SCHEME, null, "relations");
-        
-        cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), null);
+
+        cng = cng.restrictToAssociations(Constructors.createNameAndValueList("hasSubtype"), null);
 
         ResolvedConceptReference[] rcr = cng.resolveAsList(Constructors.createConceptReference("Ford", AUTO_SCHEME),
                 true, true, 10, -1, null, null, null, 0).getResolvedConceptReference();

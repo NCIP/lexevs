@@ -38,13 +38,17 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.commonTypes.Property;
@@ -65,6 +69,10 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.junit.Test;
+import org.junit.experimental.categories.Categories.ExcludeCategory;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
@@ -76,6 +84,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  */
+@RunWith(BlockJUnit4ClassRunner.class)
 public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	private LexEVSValueSetDefinitionServices vds_;
 	
@@ -287,7 +296,184 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 //		assertTrue(propES.getPrevRevision().equals("PR00A"));
 //		assertTrue(propES.getChangeType().name().equals(ChangeType.NEW.value()));
 	}
+	
+	@Test
+	public void testGetValueSetDefinitionFromOWL2() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null);
+		
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2NoAnonymousDefault() throws LBException, URISyntaxException {
+		
+		// Don't pass in an AnonymousOption. It will default to NON_ANONYMOUS_ONLY
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 
+		     while (iterator.hasNext()) {
+		    	 ResolvedConceptReference conRef = iterator.next();
+		         assertFalse(conRef.getEntity().isIsAnonymous()); 
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2NoAnonymousExplicit() throws LBException, URISyntaxException {
+		
+		// Explicitly pass in an AnonymousOption.NON_ANONYMOUS_ONLY. 
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.NON_ANONYMOUS_ONLY);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            assertFalse(conRef.getEntity().isIsAnonymous()); 
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2OnlyAnonymous() throws LBException, URISyntaxException {
+		
+		// pass in option ANONYMOUS_ONLY
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.ANONYMOUS_ONLY);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            assertTrue(conRef.getEntity().isIsAnonymous()); 
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testResolveValueSetDefinitionFromOWL2AnonymousAll() throws LBException, URISyntaxException {
+		
+		// pass in option AnonymousOption ALL
+		ResolvedValueSetCodedNodeSet resolvedVSDCNS = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null, null, 
+						AnonymousOption.ALL);
+		
+		CodedNodeSet finalCNS = null;
+		
+		 if (resolvedVSDCNS != null) {
+			 finalCNS = resolvedVSDCNS.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator = finalCNS.resolve(null, null, null, null, true);
+			 boolean foundAnonymous = false;
+			 boolean foundNonAnonymous = false;
+			 
+		     while (iterator.hasNext()) {
+	            ResolvedConceptReference conRef = iterator.next();
+	            if (conRef.getEntity().isIsAnonymous()) { 
+	            	foundAnonymous = true;
+	            }
+	            else { 
+	            	foundNonAnonymous = true;
+	            }
+	            assertTrue(foundAnonymous); 
+	            assertTrue(foundNonAnonymous);
+		     }
+		 }	
+	}
+	
+	@Test
+	public void testGetValueSetEntitiesForTermFromOWL2() throws LBException, URISyntaxException {
+		
+		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().
+				getValueSetDefinitionEntitiesForTerm("VerySickCancerPatient", 
+						MatchAlgorithms.exactMatch.name(), new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null);
+		
+		CodedNodeSet cns = null;
+		@SuppressWarnings("unused")
+		AbsoluteCodingSchemeVersionReferenceList csvrList = null;
+		ResolvedConceptReferenceList rcrList = null;
+		
+		if (vdcns != null)
+		{
+			cns = vdcns.getCodedNodeSet();
+			csvrList = vdcns.getCodingSchemeVersionRefList();
+			
+			rcrList = cns.resolveToList(null, null, null, null, false, 1024);
+			
+			assertTrue(rcrList.getResolvedConceptReferenceCount() == 1);
+			
+			for (int i = 0; i < rcrList.getResolvedConceptReferenceCount(); i++)
+			{
+				ResolvedConceptReference rcr =  rcrList.getResolvedConceptReference(i);
+				assertTrue(rcr.getCode().equalsIgnoreCase("VerySickCancerPatient"));
+			}
+		}
+	}
+	
+	@Test
+	 @Category(RemoveFromDistributedTests.class)
+	public void testResolveValueSetDefinitionNoVersion() throws LBException, URISyntaxException {
 
+		CodedNodeSet finalCNS = null;
+		AbsoluteCodingSchemeVersionReferenceList csVersionList =  null;
+		
+		String valueSetDefintionRevisionId = null;
+		String csVersionTag = null;
+		
+		ResolvedValueSetCodedNodeSet rvs_cns = getValueSetDefinitionService().
+				getCodedNodeSetForValueSetDefinition(new URI("SRITEST:AUTO:PropertyRefTest1"), 
+						valueSetDefintionRevisionId, csVersionList, csVersionTag);
+			
+		 if (rvs_cns != null) {
+			 finalCNS = rvs_cns.getCodedNodeSet(); 
+			 
+			 ResolvedConceptReferencesIterator iterator	= null;			     
+			 CodedNodeSet.SearchDesignationOption option = null;
+			 String language = null;
+			 String matchText = "GM";
+			 String matchAlgorithm = MatchAlgorithms.exactMatch.name();
+			 
+			 finalCNS = finalCNS.restrictToAnonymous(CodedNodeSet.AnonymousOption.NON_ANONYMOUS_ONLY);
+			 finalCNS = finalCNS.restrictToMatchingDesignations(matchText, option, matchAlgorithm, language);
+             SortOptionList sortOptions = null;
+             LocalNameList filterOptions = null;
+             LocalNameList propertyNames = null;
+             CodedNodeSet.PropertyType[] propertyTypes = null;
+             boolean resolveObjects = false;
+             
+             iterator = finalCNS.resolve(sortOptions, filterOptions, propertyNames, propertyTypes, resolveObjects);
+             while (iterator.hasNext()) {
+            	 ResolvedConceptReference conRef = iterator.next();
+            	 System.out.println("Coding Scheme Name: " + conRef.getCodingSchemeName());
+		    	 System.out.println("Coding Scheme Reference Version: " + conRef.getCodingSchemeVersion());
+		    	 System.out.println("Name Space: " + conRef.getCodeNamespace());
+		    	 assertEquals("1.1", conRef.getCodingSchemeVersion());
+             }
+		 }	
+	}
+	
 	@Test
 	public void testGetValueSetEntitiesForTerm() throws LBException, URISyntaxException {
 		
@@ -375,6 +561,9 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 			}
 		}		
 	}
+	
+	
+	
 
 	@Test
 	public void testIsEntityInVSResolution() throws LBException, URISyntaxException {
@@ -425,6 +614,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testIsEntityInValueSetResolution() throws LBException, URISyntaxException {
 	    AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
@@ -443,6 +633,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testListValueSetsWithEntityCode() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
 	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0"));	    
@@ -492,6 +683,16 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	public void testListValueSetsWithEntityCodeForOWL2() throws LBException, URISyntaxException {
+		AbsoluteCodingSchemeVersionReferenceList incsvrl = new AbsoluteCodingSchemeVersionReferenceList();
+	    incsvrl.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.1"));	    
+		
+	    List<String> uris = getValueSetDefinitionService().
+	    		listValueSetsWithEntityCode("Person", new URI("OWL2LEXEVS:VerySickCancerPatient"), incsvrl, null);
+	    assertTrue(uris.size() == 0);
+	}
+	
+	@Test
 	public void testIsSubSet() throws LBException, URISyntaxException {
 
 		assertFalse(getValueSetDefinitionService().isSubSet(new URI("SRITEST:AUTO:DomesticAutoMakers"), new URI("SRITEST:AUTO:GM"), null, null));
@@ -513,6 +714,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	@Category(RemoveFromDistributedTests.class)
 	public void testCompilerDecoratorCacheSize(){
 		assertEquals(FileSystemCachingValueSetDefinitionCompilerDecorator.MAX_IN_CACHE, 1000);
 	}
@@ -536,6 +738,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
@@ -614,6 +817,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		assertTrue(codes.contains("GMC"));
 		codes.clear();
 		
+		// no versionTag specified.  This will attempt to retrieve the PRODUCTION version.
         rvdDef = getValueSetDefinitionService().resolveValueSetDefinition(new URI("SRITEST:AUTO:AllDomesticANDGM1"), null, null, null, null);
         
         codes = new HashSet<String>();
@@ -622,9 +826,10 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
             ResolvedConceptReference rcr = rvdDef.getResolvedConceptReferenceIterator().next();
             codes.add(rcr.getCode());
         }
-        assertTrue("Size: " + codes.size(), codes.size() == 2);
+        assertTrue("Size: " + codes.size(), codes.size() == 3);
         assertTrue(codes.contains("GM"));
         assertTrue(codes.contains("Chevy"));
+        assertTrue(codes.contains("GMC"));
         codes.clear();
 	}
 	
@@ -635,6 +840,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws URISyntaxException
 	 */
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveNodeOnlyValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
@@ -665,6 +871,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws URISyntaxException
 	 */
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveNodeAndImmediateChildrenOnlyValueSetDef() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList csvList = new AbsoluteCodingSchemeVersionReferenceList();
 		csvList.addAbsoluteCodingSchemeVersionReference(Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.1"));
@@ -690,11 +897,13 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testIsDomain() throws LBException {
 		assertTrue(getValueSetDefinitionService().isValueSetDefinition("VD005", "Automobiles", Constructors.createCodingSchemeVersionOrTag(null, "1.1")));
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testPropertyReference() throws LBException, URISyntaxException {
 		AbsoluteCodingSchemeVersionReferenceList acsvrList = new AbsoluteCodingSchemeVersionReferenceList();
 		AbsoluteCodingSchemeVersionReference autoVersion_10 = Constructors.createAbsoluteCodingSchemeVersionReference("Automobiles", "1.0");
@@ -796,6 +1005,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		assertTrue(vsdURIs.size() == 0);
 	}
 	
+	@Test
 	public void testGetVSDURIForConceptDomainAndUsageContext(){
 		List<String> usageContexts = new ArrayList<String>();
 		usageContexts.add("GM");
@@ -846,6 +1056,8 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * 		This resolve method should use the passed VSD, not the one that is available in the service.
 	 * 		This should return 1 concept from SRITEST:AUTO:GM_AND_IMMI_NODE and a FORD concept using Automobiles 1.1	  
 	 */
+	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveVSDWithRefVSDObjects() throws LBException, URISyntaxException{
 		ValueSetDefinition vsd = new ValueSetDefinition();
 		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
@@ -947,6 +1159,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws MarshalException
 	 * @throws ValidationException
 	 */
+	@Test
 	public void testExportValueSetDefinitionByURI() throws LBException, URISyntaxException, MarshalException, ValidationException{
 		StringBuffer sb = getValueSetDefinitionService().exportValueSetDefinition(new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
 		
@@ -1116,6 +1329,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws MarshalException
 	 * @throws ValidationException
 	 */
+	@Test
 	public void testExportValueSetDefinitionByObject() throws LBException, MarshalException, ValidationException{
 		ValueSetDefinition vsd = new ValueSetDefinition();
 		vsd.setValueSetDefinitionURI("SRITEST:AUTO:VSDREF_GM_IMMI_NODE_AND_FORD");
@@ -1185,6 +1399,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	 * @throws IOException
 	 */
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testExportVSResolutionByVSDObject() throws LBException, URISyntaxException, IOException{
 		
 		File tempExportFile = new File(System.getProperty("java.io.tmpdir"));		
@@ -1332,6 +1547,14 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		}
 		return vds_;
 	}
+	
+	public LexEVSValueSetDefinitionServices setValueSetDefinitionService(LexEVSValueSetDefinitionServices svcs){
+		if (vds_ == null) {
+			vds_ = svcs;
+		}
+		return vds_;
+	}
+	
 	
 	protected void dumpValueSetDefinitionResolution(URI vdURI, AbsoluteCodingSchemeVersionReferenceList csvs) {
 	    try {     

@@ -20,7 +20,7 @@ public class PresentationPropertyDataTestIT extends DataLoadTestBase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		cns.restrictToCodes(Constructors.createConceptReferenceList("AA:16022"));
+		cns.restrictToCodes(Constructors.createConceptReferenceList("16022:AA"));
 		ResolvedConceptReference rcr1 = cns.resolveToList(null, null, null, -1).getResolvedConceptReference()[0];
 	
 		testEntity = rcr1.getEntity();

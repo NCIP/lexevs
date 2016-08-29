@@ -9,4 +9,4 @@
 # -f, --force Force output directory creation.
 #
 # Example: ExportDDLScripts -p lb -0 "file:///path/to/dir" -f 
-java -Xmx200m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexevs.dao.database.operation.tools.ScriptProducingLauncher $@
+java -Xmx200m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexevs.dao.database.operation.tools.ScriptProducingLauncher $@

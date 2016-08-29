@@ -1,6 +1,8 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
@@ -22,7 +24,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		graphFocus = cng.resolveAsList(Constructors.createConceptReference("ADL:10651", 
+		graphFocus = cng.resolveAsList(Constructors.createConceptReference("10651:ADL", 
 				LexBIGServiceTestCase.HL7_MIF_VOCABULARY_URN), true, true, 1, 1, null, null, null, -1).getResolvedConceptReference(0);
 	}
 	
@@ -65,7 +67,7 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	public void testSourceAssociatedConceptCode() throws Exception {	
 		AssociatedConcept[] concepts = graphFocus.getSourceOf().getAssociation()[0].getAssociatedConcepts().getAssociatedConcept();	
 
-		assertTrue(DataTestUtils.isAssociatedConceptPresent(concepts, "AL:22619"));
+		assertTrue(DataTestUtils.isAssociatedConceptPresent(concepts, "22619:AL"));
 	}
 	
 	/**
@@ -75,9 +77,38 @@ public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testTargetCount() throws Exception {	
-		// The concept ADL:10651 is a target for the codeSystem entity and other code concepts
+		// The concept 10651:ADL is a target for the codeSystem entity and other code concepts
 		assertNotNull(graphFocus.getTargetOf());
 	}
+		
+	@Test
+	public void testCorrectConceptIsPresent() throws Exception {
+		
+		graphFocus = cng.resolveAsList(Constructors.createConceptReference("10458:BRTH", 
+				LexBIGServiceTestCase.HL7_MIF_VOCABULARY_URN), true, true, 1, 1, null, null, null, -1).getResolvedConceptReference(0);
+		
+		assertTrue(graphFocus != null);
+	}
 	
+	@Test
+	public void testNamespace() throws Exception {
 
+		String code = "10458:BRTH";
+		String namespace = "HL7";
+		String codingScheme = "1189-20121121";
+		
+	    ConceptReference sourceConRef = new ConceptReference();
+	    sourceConRef.setCode(code);
+	    sourceConRef.setCodeNamespace(namespace);
+	    sourceConRef.setCodingSchemeName(codingScheme);
+	    
+	    ResolvedConceptReferenceList resolvedConRefList = cng.resolveAsList(sourceConRef, true, false, 0, 1,
+	            null, null, null, -1);
+	    
+	    assertTrue(resolvedConRefList != null);
+	    
+	    assertEquals(code, resolvedConRefList.getResolvedConceptReference(0).getCode());
+	    assertEquals(namespace, resolvedConRefList.getResolvedConceptReference(0).getCodeNamespace());
+	    assertEquals(codingScheme, resolvedConRefList.getResolvedConceptReference(0).getCodingSchemeName());
+	}
 }

@@ -136,6 +136,19 @@ public class BasicXMLParser extends DefaultHandler {
                 + ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_SOURCE_DATE)) {
             tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_GO_SOURCE_DATE, value);
         } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + ProtegeOwl2LGConstants.COMP_PROP_TAG_RELATIONSHIP_TO_TARGET)) {
+            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_RELATIONSHIP_TO_TARGET, value);
+        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + ProtegeOwl2LGConstants.COMP_PROP_TAG_TARGET_TERM_TYPE)) {
+            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_TARGET_TERM_TYPE, value);
+        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + ProtegeOwl2LGConstants.COMP_PROP_TAG_TARGET_CODE)) {
+            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_TARGET_CODE, value);
+        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + ProtegeOwl2LGConstants.COMP_PROP_TAG_TARGET_TERMINOLOGY)) {
+            tagAndValue.put(ProtegeOwl2LGConstants.COMP_PROP_TAG_TARGET_TERMINOLOGY, value);
+
+        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
                 + ProtegeOwl2LGConstants.COMP_PROP_TAG_COMPLEXDEFINITION)) {
             // Top Level Tag -- do nothing
         } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
@@ -143,6 +156,12 @@ public class BasicXMLParser extends DefaultHandler {
             // Top Level Tag -- do nothing
         } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
                 + ProtegeOwl2LGConstants.COMP_PROP_TAG_COMPLEXTERM)) {
+            // Top Level Tag -- do nothing
+        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + ProtegeOwl2LGConstants.COMP_PROP_TAG_MAPSTO)) {
+            // Top Level Tag -- do nothing
+        } else if (qName.equals(ProtegeOwl2LGConstants.COMP_PROP_NAMESPACE + ":"
+                + ProtegeOwl2LGConstants.COMP_PROP_TAG_MAPSTOCOMPLEX)) {
             // Top Level Tag -- do nothing
         } else {
             // tag is undefined as property type -- load as potential generic

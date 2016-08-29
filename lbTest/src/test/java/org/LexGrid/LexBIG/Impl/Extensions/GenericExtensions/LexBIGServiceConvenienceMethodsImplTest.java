@@ -26,7 +26,6 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -36,26 +35,36 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedProperty;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runner.RunWith;
 
+@RunWith(BlockJUnit4ClassRunner.class)
 public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCase {
     final static String testID = "LexBIGServiceConvenienceMethodsImplTest";
 
     private LexBIGService lbs;
     private LexBIGServiceConvenienceMethodsImpl lbscm;
     
-    public void setUp(){
+    @Before
+    public void setUp() throws LBException{
         lbs = ServiceHolder.instance().getLexBIGService(); 
-        lbscm = new LexBIGServiceConvenienceMethodsImpl();
+        lbscm = (LexBIGServiceConvenienceMethodsImpl)lbs.getGenericExtension("LexBIGServiceConvenienceMethods");
         lbscm.setLexBIGService(lbs);
     }
+
     
     @Override
     protected String getTestID() {
         return testID;
     }
     
+    @Test
     public void testGetNodespath() throws LBException {
     	String codingSchemeUri = "urn:oid:11.11.0.1";
     	CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
@@ -131,63 +140,81 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
 
     }
     
+    @Test
     public void testGetAssociationForwardName() throws LBException {
     	String forwardName = lbscm.getAssociationForwardName("A1", AUTO_SCHEME, null);
     	assertEquals("GoingForward", forwardName);
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
     public void testThreadSafeCodingSchemeCaches() throws Throwable {
         Map cache = lbscm.getCache_CodingSchemes();
         runCacheThreadSaveTest(cache);       
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
     public void testThreadSafeCopyRightsCaches() throws Throwable {
         Map cache = lbscm.getCache_CopyRights();
         runCacheThreadSaveTest(cache);        
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
     public void testThreadSafeHIDCaches() throws Throwable {
         Map cache = lbscm.getCache_HIDs();
         runCacheThreadSaveTest(cache);      
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
     public void testThreadSafeHPathToRootExistsCaches() throws Throwable {
         Map cache = lbscm.getCache_HPathToRootExists();
         runCacheThreadSaveTest(cache);      
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
     public void testThreadSafeHRootCodesCaches() throws Throwable {
         Map cache = lbscm.getCache_HRootCodes();
         runCacheThreadSaveTest(cache);       
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
     public void testThreadSafeHRootsCaches() throws Throwable {
         Map cache = lbscm.getCache_HRoots();
         runCacheThreadSaveTest(cache);      
     }
     
+    @Test
     public void testGetAssociationNameFromAssociationCode() throws Exception {
     	String assocName = lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "AssocEntity");
     	assertTrue(assocName.equals("A1"));
     }
     
+    @Test
     public void testGetAssociationCodeFromAssociationName() throws Exception {
     	String assocCode = lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "A1");
     	assertTrue(assocCode.equals("AssocEntity"));
     }
     
+    @Test
     public void testGetAssociationNameForDirectionalNameReverseName() throws Exception {
     	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "isA");
     	assertEquals(1, assocNames.length);
     	assertEquals("hasSubtype", assocNames[0]);
     }
     
+    @Test
     public void testGetAssociationNameForDirectionalNameForwardName() throws Exception {
     	String[] assocNames = lbscm.getAssociationNameForDirectionalName(AUTO_SCHEME, null, "hasSubtype");
     	assertEquals(1, assocNames.length);
     	assertEquals("hasSubtype", assocNames[0]);
     }
     
+    @Test
     public void testGetAssociationNameFromAssociationCodeWrong() throws Exception {
     	try {
 			lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "A1WRONG");
@@ -198,6 +225,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
 		fail("Should have thrown an exception.");
     }
     
+    @Test
     public void testGetAssociationCodeFromAssociationNameWrong() throws Exception {
     	try {
 			lbscm.getAssociationCodeFromAssociationName(AUTO_SCHEME, null, "differentEntityCodeAssocWRONG");
@@ -212,6 +240,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
      * fix for gForge # 24699. Identify supportedProperty by propertyType.
      * @throws Exception
      */
+    @Test
     public void testGetSupportedPropertiesOfTypePresentation() throws Exception {
     	List<SupportedProperty> props = lbscm.getSupportedPropertiesOfTypePresentation(AUTO_SCHEME, null);
     	assertTrue(props.size() >= 1);
@@ -221,6 +250,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	}
     }
     
+    @Test
     public void testGetDistinctNamespacesOfCode() throws Exception {
     	List<String> namespaces = lbscm.getDistinctNamespacesOfCode(AUTO_SCHEME, null, "C0001");
     	
@@ -229,6 +259,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertEquals("Automobiles",namespaces.get(0));
     }
     
+    @Test
     public void testGetDistinctNamespacesOfCodeWithMultiple() throws Exception {
     	List<String> namespaces = lbscm.getDistinctNamespacesOfCode(PARTS_SCHEME, null, "codeWithMultipleNs");
     	
@@ -240,6 +271,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(namespaces.contains("ns4"));
     }
     
+    @Test
     public void testGetAncestorsInTransitiveClosure( ) throws LBParameterException{
     	List<ResolvedConceptReference> refs = lbscm.getAncestorsInTransitiveClosure(AUTO_SCHEME, null, "005", "hasSubtype");
     	assertTrue(refs.size() > 0);
@@ -248,6 +280,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(refs.get(0).getEntityDescription().getContent().equals("Ford Motor Company"));    	
     }
     
+    @Test
     public void testGetDecendentsInTransitiveClosure( ) throws LBParameterException{
     	List<ResolvedConceptReference> refs = lbscm.getDescendentsInTransitiveClosure(AUTO_SCHEME, null, "B", "hasSubtype");
     	assertTrue(refs.size() > 0);
@@ -256,6 +289,8 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(refs.get(0).getEntityDescription().getContent().equals("First Code in cycle"));    	
     }
     
+    @Test
+    @Category(RemoveFromDistributedTests.class)
 	public void testGetAllIncomingConcepts() throws LBInvocationException, LBParameterException, LBException{
     	AssociatedConceptList refs = lbscm.getallIncomingConceptsForAssociation(AUTO_SCHEME, null, "B", "hasSubtype", 10);
     	assertTrue(refs.getAssociatedConceptCount() > 0);
@@ -264,6 +299,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(refs.getAssociatedConcept(0).getEntityDescription().getContent().equals("First Code in cycle"));
     	
     }
+    
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {
         TestRunnable[] runnables = {
                 new TestCachePut(cache, 1000, 1),

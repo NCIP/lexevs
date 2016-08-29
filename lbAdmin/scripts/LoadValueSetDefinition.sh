@@ -9,4 +9,4 @@
 #         1 = Verify document is valid
 # Example: LoadValueSetDefinition -in "file:///path/to/file.xml"
 #
-java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.valuesets.admin.LoadValueSetDefinition $@
+java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.valuesets.admin.LoadValueSetDefinition $@

@@ -39,7 +39,7 @@ public class TestApproximateStringMatch extends LexBIGServiceTestCase {
 
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(THES_SCHEME, null);
 
-        cns.restrictToMatchingDesignations("heaart base", SearchDesignationOption.ALL, "DoubleMetaphoneLuceneQuery",
+        cns = cns.restrictToMatchingDesignations("heaart base", SearchDesignationOption.ALL, "DoubleMetaphoneLuceneQuery",
                 null);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
