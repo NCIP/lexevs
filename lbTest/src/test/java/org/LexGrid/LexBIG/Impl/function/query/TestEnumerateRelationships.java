@@ -29,7 +29,11 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(IncludeForDistributedTests.class)
 public class TestEnumerateRelationships extends LexBIGServiceTestCase {
     final static String testID = "T1_FNC_31";
 
@@ -41,6 +45,7 @@ public class TestEnumerateRelationships extends LexBIGServiceTestCase {
     /*
      * Example of listCodeRelationships
      */
+    @Test
     public void testT1_FNC_31() throws LBException {
         LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         CodedNodeGraph cng = lbs.getNodeGraph(AUTO_SCHEME, null, null);

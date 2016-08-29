@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<import resource="classpath:lexevsDao.xml" /> 	
+
+	<bean id="concurrentCodingSchemeFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiIndexMetaDataFactory"/>
+	<!-- bean id="luceneMultiIndexMetaDataFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiIndexMetaDataFactory"/-->
+	
+		
+	<bean id="metadataFactoryTest" class="org.lexevs.dao.indexer.utility.LuceneMultiIndexMetaDataFactoryTest" >
+		<property name="metadataFactory" ref="concurrentCodingSchemeFactory"/>
+	</bean>
+	
+	<bean id="luceneMultiDirectoryFactoryTest" class="org.lexevs.dao.indexer.utility.LuceneMultiDirectoryFactoryTest">
+		<property name="indexDirectory" ref="multiIndexLocation"/>
+		<property name=	"luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
+	</bean>
+	
+</beans>

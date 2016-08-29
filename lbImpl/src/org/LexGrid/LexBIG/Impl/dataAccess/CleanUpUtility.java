@@ -19,22 +19,25 @@
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
 import java.io.File;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.LexGrid.util.sql.DBUtility;
-import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
+import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.lexevs.dao.database.prefix.CyclingCharDbPrefixGenerator;
+import org.lexevs.dao.indexer.api.IndexerService;
+import org.lexevs.dao.indexer.utility.Utility;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.registry.service.XmlRegistry.DBEntry;
-import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
-import org.lexevs.system.ResourceManager;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 
-import edu.mayo.informatics.indexer.api.IndexerService;
 
 /**
  * This class implements methods useful for cleaning up orphaned databases and
@@ -44,89 +47,66 @@ import edu.mayo.informatics.indexer.api.IndexerService;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+/**
+ * @author m029206
+ *
+ */
 public class CleanUpUtility {
+    
+    public static final String URI_VERSION_SEPARATOR = "~`~";
     protected static LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
     public static String[] listUnusedDatabases() throws LBInvocationException {
-        SystemVariables vars = ResourceManager.instance().getSystemVariables();
-        if (vars.getAutoLoadSingleDBMode()) {
             return listUnusedTables();
-        } else {
-            String errorMessage = "This utility has been disabled for Multi-database mode.";
-            String logId = getLogger().error(errorMessage);
-            throw new LBInvocationException(errorMessage, logId);   
-        }
     }
 
     private static String[] listUnusedTables() throws LBInvocationException {
         try {
-            SystemVariables vars = ResourceManager.instance().getSystemVariables();
-            DBEntry[] regEntries = ResourceManager.instance().getRegistry().getDBEntries();
+            SystemVariables vars = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
+            List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
             HashSet<String> registeredDBPrefixes = new HashSet<String>();
             HashSet<String> registeredHistoryPrefixes = new HashSet<String>();
-            for (int i = 0; i < regEntries.length; i++) {
-                registeredDBPrefixes.add(regEntries[i].prefix);
+            for (RegistryEntry reg : regEntries) {
+                registeredDBPrefixes.add(reg.getPrefix());
             }
 
-            HistoryEntry[] hisEntriesPrefixes = ResourceManager.instance().getRegistry().getHistoryEntries();
-            for (int i = 0; i < hisEntriesPrefixes.length; i++) {
-                registeredHistoryPrefixes.add(hisEntriesPrefixes[i].prefix);
+            List<RegistryEntry> hisEntriesPrefixes = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntriesOfType(ResourceType.NCI_HISTORY);
+            for (RegistryEntry reg : hisEntriesPrefixes) {
+                registeredHistoryPrefixes.add(reg.getPrefix());
             }
 
             // figure out which sets of lexgrid tables aren't in use.
             ArrayList<String> unusedPrefixes = new ArrayList<String>();
             String userPrefix = vars.getAutoLoadDBPrefix();
-            String max = ResourceManager.instance().getRegistry().getNextDBIdentifier();
+            String max = LexEvsServiceLocator.getInstance().getRegistry().getNextDBIdentifier();
 
-            // a0 is the prefix we start with in LexBig
-            String prefix = "a0";
+            // aaaa is the prefix we start with in LexBig
+            String prefix = "aaaa";
 
             int count = 0;
             boolean incrementCounter = false;
+            CyclingCharDbPrefixGenerator gen = new CyclingCharDbPrefixGenerator();
             // go through all the registered prefixes, plus 50.
             while (count < 50) {
-                if (!registeredDBPrefixes.contains(userPrefix + prefix + "_")) {
+                if (!registeredDBPrefixes.contains(prefix)) {
                     if (doesTableExist(vars.getAutoLoadDBURL() + vars.getAutoLoadDBParameters(), vars
                             .getAutoLoadDBDriver(), vars.getAutoLoadDBUsername(), vars.getAutoLoadDBPassword(),
-                            userPrefix + prefix + "_", false)) {
-                        unusedPrefixes.add(userPrefix + prefix + "_");
+                            userPrefix + prefix + SQLTableConstants.TBL_CODING_SCHEME)) {
+                        unusedPrefixes.add(userPrefix + prefix);
                     }
                 }
                 if (prefix.equals(max)) {
                     incrementCounter = true;
                 }
-                prefix = DBUtility.computeNextIdentifier(prefix);
+                String movePrefixtoUC = prefix.toUpperCase();
+                prefix = String.valueOf(gen.incrementByOne(movePrefixtoUC.toCharArray())).toLowerCase();
                 if (incrementCounter) {
                     count++;
                 }
             }
 
-            // figure out which sets of history tables aren't in use
-            max = ResourceManager.instance().getRegistry().getNextHistoryIdentifier();
-
-            prefix = "a0";
-
-            count = 0;
-            incrementCounter = false;
-            // go through all the registered prefixes, plus 50.
-            while (count < 50) {
-                if (!registeredHistoryPrefixes.contains(userPrefix + "h" + prefix + "_")) {
-                    if (doesTableExist(vars.getAutoLoadDBURL() + vars.getAutoLoadDBParameters(), vars
-                            .getAutoLoadDBDriver(), vars.getAutoLoadDBUsername(), vars.getAutoLoadDBPassword(),
-                            userPrefix + "h" + prefix + "_", true)) {
-                        unusedPrefixes.add("(history)" + userPrefix + "h" + prefix + "_");
-                    }
-                }
-                if (prefix.equals(max)) {
-                    incrementCounter = true;
-                }
-                prefix = DBUtility.computeNextIdentifier(prefix);
-                if (incrementCounter) {
-                    count++;
-                }
-            }
             return unusedPrefixes.toArray(new String[unusedPrefixes.size()]);
 
         } catch (LBInvocationException e) {
@@ -137,18 +117,24 @@ public class CleanUpUtility {
         }
 
     }
+    
 
     public static String[] listUnusedIndexes() throws LBParameterException, LBInvocationException {
         try {
-            DBEntry[] regEntries = ResourceManager.instance().getRegistry().getDBEntries();
-            boolean singleIndexMode = ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode();
-            HashSet<String> registeredDBs = new HashSet<String>();
-            for (int i = 0; i < regEntries.length; i++) {
+            List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
 
-                registeredDBs.add(singleIndexMode ? regEntries[i].prefix : regEntries[i].dbName);
+            HashSet<String> registeredDBs = new HashSet<String>();
+            for (RegistryEntry reg : regEntries) {
+            	if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null){
+                AbsoluteCodingSchemeVersionReference reference = new AbsoluteCodingSchemeVersionReference();
+                reference.setCodingSchemeURN(reg.getResourceUri());
+                reference.setCodingSchemeVersion(reg.getResourceVersion());
+                registeredDBs.add(Utility.getIndexName(reference));
+            	}
             }
 
-            String indexLocation = ResourceManager.instance().getSystemVariables().getAutoLoadIndexLocation();
+            String indexLocation = LexEvsServiceLocator.getInstance().getSystemResourceService().
+                    getSystemVariables().getAutoLoadIndexLocation();
             File indexParentFolder = new File(indexLocation);
 
             File[] indexes = indexParentFolder.listFiles();
@@ -156,7 +142,6 @@ public class CleanUpUtility {
                 throw new LBParameterException("The file '" + indexParentFolder.getAbsolutePath()
                         + "' does not exist, or is not a folder");
             }
-
             ArrayList<String> unusedIndexes = new ArrayList<String>();
             for (int i = 0; i < indexes.length; i++) {
                 if (indexes[i].isDirectory() && !registeredDBs.contains(indexes[i].getName())
@@ -172,6 +157,15 @@ public class CleanUpUtility {
             throw new LBInvocationException("There was a problem trying to read the indexes", logId);
         }
     }
+    
+   public static String[] listUnusedMetadata(){
+       List<AbsoluteCodingSchemeVersionReference> list = listOrphanedMetaData();
+       String[] md = new String[list.size()];
+       for(int i=0; i < list.size() ; i++){
+           md[i] = list.get(i).getCodingSchemeURN()+ URI_VERSION_SEPARATOR + list.get(i).getCodingSchemeVersion();
+       }
+       return md;
+   }
 
     public static void removeAllUnusedResources() throws LBParameterException, LBInvocationException {
         String[] temp = listUnusedDatabases();
@@ -200,28 +194,36 @@ public class CleanUpUtility {
         }
         return temp;
     }
+    
+    public static void removeAllUnusedMetaData() throws LBParameterException, LBInvocationException {
+
+        List<AbsoluteCodingSchemeVersionReference> temp = listOrphanedMetaData();
+        List<String> returnValues = new ArrayList<String>();
+        for (AbsoluteCodingSchemeVersionReference ref :temp) {
+            removeMetadataEntry(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+            returnValues.add(ref.getCodingSchemeURN()+URI_VERSION_SEPARATOR+ ref.getCodingSchemeVersion());
+        }
+    }
 
     public static void removeUnusedIndex(String index) throws LBParameterException, LBInvocationException {
         try {
             getLogger().debug("Removing index '" + index + "'.");
-            DBEntry[] regEntries = ResourceManager.instance().getRegistry().getDBEntries();
-            if (ResourceManager.instance().getSystemVariables().getAutoLoadSingleDBMode()) {
-                for (int i = 0; i < regEntries.length; i++) {
-                    if (regEntries[i].prefix.equals(index)) {
+            List<RegistryEntry> regEntries =  LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+                for (RegistryEntry reg: regEntries) {
+                	if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null){
+                    AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+                    ref.setCodingSchemeURN(reg.getResourceUri());
+                    ref.setCodingSchemeVersion(reg.getResourceVersion());
+                    String indexName = Utility.getIndexName(ref);
+                    if (indexName.equals(index)) {
                         throw new LBParameterException(
                                 "That index is registered with the service.  Please use the appropriate service delete method.");
                     }
+                	}
                 }
-            } else {
-                for (int i = 0; i < regEntries.length; i++) {
-                    if (regEntries[i].dbName.equals(index)) {
-                        throw new LBParameterException(
-                                "That index is registered with the service.  Please use the appropriate service delete method.");
-                    }
-                }
-            }
 
-            String indexLocation = ResourceManager.instance().getSystemVariables().getAutoLoadIndexLocation();
+            String indexLocation = LexEvsServiceLocator.getInstance().getSystemResourceService().
+                    getSystemVariables().getAutoLoadIndexLocation();
             File indexParentFolder = new File(indexLocation);
             File theIndexFolder = new File(indexParentFolder, index);
             if (!theIndexFolder.exists() || !theIndexFolder.isDirectory()) {
@@ -231,7 +233,8 @@ public class CleanUpUtility {
 
             IndexerService is = new IndexerService(indexParentFolder.getAbsolutePath(), false);
             is.deleteIndex(index);
-            is.getMetaData().removeAllIndexMetaDataValue(index);
+            //TODO Check correctness of the index value
+            is.getMetaData().removeIndexMetaDataValue(index);
         } catch (LBParameterException e) {
             throw e;
         } catch (Exception e) {
@@ -244,32 +247,19 @@ public class CleanUpUtility {
 
         try {
             getLogger().debug("Removing database '" + dbName + "'.");
-            SystemVariables vars = ResourceManager.instance().getSystemVariables();
-            if (vars.getAutoLoadSingleDBMode()) {
-                removeUnusedTables(dbName);
-                return;
-            }
+            
+          List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+          for (RegistryEntry reg: regEntries) {
+              if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getPrefix() != null){
+              if (reg.getPrefix().equals(dbName)) {
+                  throw new LBParameterException(
+                          "That database is registered with the service.  Please use the appropriate service delete method.");
+              }
+              }
+          }
+               
+            removeUnusedTables(dbName);
 
-            String server = vars.getAutoLoadDBURL() + vars.getAutoLoadDBParameters();
-            String driver = vars.getAutoLoadDBDriver();
-
-            if (!DBUtility.doesDBExist(server, driver, dbName, vars.getAutoLoadDBParameters(), vars
-                    .getAutoLoadDBUsername(), vars.getAutoLoadDBPassword())) {
-                throw new LBParameterException("The database '" + dbName + "' does not seem to exist");
-            }
-
-            // Ok, the db exists - make sure its not registered.
-            DBEntry[] regEntries = ResourceManager.instance().getRegistry().getDBEntries();
-            for (int i = 0; i < regEntries.length; i++) {
-                if (regEntries[i].dbName.equals(dbName)) {
-                    throw new LBParameterException(
-                            "That database is registered with the service.  Please use the appropriate service delete method.");
-                }
-            }
-
-            // finally, delete the DB.
-            DBUtility.dropDatabase(server, vars.getAutoLoadDBDriver(), dbName, vars.getAutoLoadDBUsername(), vars
-                    .getAutoLoadDBPassword());
         } catch (LBParameterException e) {
             throw e;
         } catch (Exception e) {
@@ -280,55 +270,95 @@ public class CleanUpUtility {
     }
 
     private static void removeUnusedTables(String prefix) throws Exception {
-        SystemVariables vars = ResourceManager.instance().getSystemVariables();
+        SystemVariables vars = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
         String server = vars.getAutoLoadDBURL() + vars.getAutoLoadDBParameters();
         String driver = vars.getAutoLoadDBDriver();
         String username = vars.getAutoLoadDBUsername();
         String password = vars.getAutoLoadDBPassword();
 
-        boolean history = false;
-        if (prefix.startsWith("(history)")) {
-            prefix = prefix.substring("(history)".length());
-            history = true;
-        }
 
-        if (!doesTableExist(server, driver, username, password, prefix, history)) {
+        if (!doesTableExist(server, driver, username, password, prefix + SQLTableConstants.TBL_CODING_SCHEME)) {
             throw new LBParameterException("The tables do not seem to exist");
         }
 
         // Ok, the table exists - make sure its not registered.
-        if (history) {
-            HistoryEntry[] hisEntries = ResourceManager.instance().getRegistry().getHistoryEntries();
-            for (int i = 0; i < hisEntries.length; i++) {
-                if (hisEntries[i].prefix.equals(prefix)) {
+            List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+            for (RegistryEntry reg: regEntries) {
+                if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getPrefix() != null){
+                if (reg.getPrefix().equals(prefix)) {
                     throw new LBParameterException(
                             "That table prefix is registered with the service.  Please use the appropriate service delete method.");
                 }
-            }
-        } else {
-            DBEntry[] regEntries = ResourceManager.instance().getRegistry().getDBEntries();
-            for (int i = 0; i < regEntries.length; i++) {
-                if (regEntries[i].prefix.equals(prefix)) {
-                    throw new LBParameterException(
-                            "That table prefix is registered with the service.  Please use the appropriate service delete method.");
                 }
             }
-        }
 
         // finally, delete the tables.
-        Connection connection = DBUtility.connectToDatabase(server, driver, username, password);
-        SQLTableUtilities stu = new SQLTableUtilities(connection, prefix);
-        stu.dropTables();
-        connection.close();
+
+        LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().dropCodingSchemeTablesByPrefix(prefix);
 
     }
+    
+    public static List<AbsoluteCodingSchemeVersionReference> listOrphanedMetaData() {
+        AbsoluteCodingSchemeVersionReferenceList indexRefs = LexEvsServiceLocator.getInstance()
+                .getIndexServiceManager().getMetadataIndexService().listCodingSchemes();
 
-    private static boolean doesTableExist(String server, String driver, String username, String password,
-            String prefix, boolean history) {
-        if (history) {
-            return SQLTableUtilities.doHistoryTablesExist(server, driver, username, password, prefix);
-        } else {
-            return SQLTableUtilities.doTablesExist(server, driver, username, password, prefix);
+        List<RegistryEntry> regEntries = LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+
+        List<AbsoluteCodingSchemeVersionReference> registeredMD = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+        boolean notFound = true;
+        for (AbsoluteCodingSchemeVersionReference ref : indexRefs.getAbsoluteCodingSchemeVersionReference()) {
+
+            for (RegistryEntry reg : regEntries) {
+                if (reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null) {
+                    if (!reg.getResourceUri().equals(ref.getCodingSchemeURN())
+                           || !reg.getResourceVersion().equals(ref.getCodingSchemeVersion())) {
+                       notFound = true;
+                    }
+                    else{
+                        notFound = false;
+                        break;
+                    }
+                }
+
+            }
+            if(notFound){registeredMD.add(ref);}
         }
+        return registeredMD;
+    }
+    
+    
+
+    public static void removeMetadataEntry(String codingSchemeURI, String version) throws LBInvocationException, LBParameterException {
+            getLogger().debug("Removing MetaData '" + codingSchemeURI + "'.");
+            List<RegistryEntry> regEntries =  LexEvsServiceLocator.getInstance().getRegistry().getAllRegistryEntries();
+                for (RegistryEntry reg: regEntries) {
+                    if(reg.getResourceType().equals(ResourceType.CODING_SCHEME) && reg.getResourceVersion() != null){
+
+                    if (reg.getResourceUri().equals(codingSchemeURI) && reg.getResourceVersion().equals(version)) {
+                        throw new LBParameterException(
+                                "That MetaData is associated with an entity registered with the service.  Please use the appropriate service delete method.");
+                    }
+                    }
+                }
+        
+        LexEvsServiceLocator.getInstance().getIndexServiceManager().getMetadataIndexService().removeMetadata(codingSchemeURI, version);
+    }
+    
+    
+    
+    private static boolean doesTableExist(String server, String driver, String username, String password,
+            String prefix) {
+            return LexEvsServiceLocator.getInstance().getLexEvsDatabaseOperations().getDatabaseUtility().doesTableExist(prefix);
+    }
+
+    public static void removeUnusedMetaData(String temp){
+        String[] entry = temp.split(URI_VERSION_SEPARATOR);
+       try {
+        removeMetadataEntry(entry[0], entry[1]);
+    } catch (LBInvocationException e) {
+        throw new RuntimeException("There was a problem removing the Metadata for value: " + temp, e);
+    } catch (LBParameterException e) {
+        throw new RuntimeException("There was a problem removing the Metadata for value: " + temp, e);
+    }
     }
 }

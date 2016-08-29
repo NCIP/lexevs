@@ -680,4 +680,12 @@ public interface CodedNodeSet extends Serializable {
 	 */
 	CodedNodeSet union(CodedNodeSet codes) throws LBInvocationException,LBParameterException;
 
+	/**
+	 * @param crl is the list of concepts to restrict to
+	 * @return A new CodedNodeSet restriction based on non entity mapping nodes
+	 * @throws LBParameterException
+	 * @throws LBInvocationException
+	 */
+	CodedNodeSet restrictToMappingCodes(ConceptReferenceList crl) throws LBParameterException, LBInvocationException;
+
 }

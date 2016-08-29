@@ -18,13 +18,10 @@
  */
 package org.lexevs.dao.index.factory;
 
-import java.io.File;
-
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
 
 public class IndexLocationFactory implements FactoryBean {
 
@@ -36,14 +33,13 @@ public class IndexLocationFactory implements FactoryBean {
 
 	@Override
 	public Object getObject() throws Exception {
-		Assert.hasText(indexName);
+	//	Assert.hasText(indexName);
 
-		return new FileSystemResource(systemVariables.getAutoLoadIndexLocation() +
-			File.separator + indexName);
+		return new FileSystemResource(systemVariables.getAutoLoadIndexLocation());
 	}
 
 	@Override
-	public Class getObjectType() {
+	public Class<Resource> getObjectType() {
 		return Resource.class;
 	}
 

@@ -5,9 +5,9 @@
 # http://www.nlm.nih.gov/research/umls/metaa1.html.
 #
 # Options:
-#   -in,--input <uri> URI or path of the directory containing the NLM files
+#   -in,--input <uri> URI or path of the directory containing the NLM files. Path string must be preceded by "file:",
 #   -s,--source vocabularies to load.
 #
 # Example: LoadUMLSBatch -in "file:///path/to/directory/" -s "PSY"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher $@

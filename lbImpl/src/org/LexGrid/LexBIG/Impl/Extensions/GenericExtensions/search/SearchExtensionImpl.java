@@ -1,3 +1,21 @@
+/*
+ * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
+ * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
+ * triple-shield Mayo logo are trademarks and service marks of MFMER.
+ *
+ * Except as contained in the copyright notice above, or as used to identify 
+ * MFMER as the author of this software, the trade names, trademarks, service
+ * marks, or product names of the copyright holder shall not be used in
+ * advertising, promotion or otherwise in connection with this software without
+ * prior written authorization of the copyright holder.
+ * 
+ * Licensed under the Eclipse Public License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ * 
+ *      http://www.eclipse.org/legal/epl-v10.html
+ * 
+ */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.io.IOException;
@@ -8,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -22,18 +41,26 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.QueryParser.Operator;
-import org.apache.lucene.analysis.Token;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
-import org.lexevs.dao.index.service.search.SearchIndexService;
+import org.apache.lucene.search.join.QueryBitSetProducer;
+import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -42,6 +69,8 @@ import org.springframework.util.CollectionUtils;
 public class SearchExtensionImpl extends AbstractExtendable implements SearchExtension {
 
     private static final long serialVersionUID = 8704782086137708226L;
+    private static final Term baseQuery = new Term("propertyType", "presentation");
+    private static final Term preferred = new Term("isPreferred","T");
 
     @Override
     public ResolvedConceptReferencesIterator search(String text, MatchAlgorithm matchAlgorithm) throws LBParameterException {
@@ -91,140 +120,190 @@ public class SearchExtensionImpl extends AbstractExtendable implements SearchExt
         List<RegistryEntry> entries = 
                 lexEvsServiceLocator.getRegistry().getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
         
+        codeSystemsToInclude = sanitizeReferences(codeSystemsToInclude);
+        codeSystemsToExclude = sanitizeReferences(codeSystemsToExclude);
+        
+        Set<CodingSchemeReference> tempSystemsToInclude = new HashSet<CodingSchemeReference>();
         for(RegistryEntry entry : entries){
+            CodingSchemeReference ref = new CodingSchemeReference();
+            ref.setCodingScheme(entry.getResourceUri());
+            ref.setVersionOrTag(
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
             if(! entry.getStatus().equals(CodingSchemeVersionStatus.ACTIVE.toString())){
-                CodingSchemeReference ref = new CodingSchemeReference();
-                ref.setCodingScheme(entry.getResourceUri());
-                ref.setVersionOrTag(
-                        Constructors.createCodingSchemeVersionOrTagFromVersion(entry.getResourceVersion()));
-                
+
                 if(codeSystemsToExclude == null){
-                    codeSystemsToExclude = new HashSet<CodingSchemeReference>();
+                    codeSystemsToExclude  = new HashSet<CodingSchemeReference>();
                 }
-                
                 codeSystemsToExclude.add(ref);
             }
+            tempSystemsToInclude.add(ref);
         }
         
-        SearchIndexService service = LexEvsServiceLocator.getInstance().
-                getIndexServiceManager().
-                getSearchIndexService();
-        
-        Analyzer analyzer = service.getAnalyzer();
+        //We'll want any and all systems if this contains none.
+        if(codeSystemsToInclude == null){
+            codeSystemsToInclude = tempSystemsToInclude;
+        }
 
-        Query query = this.parseQuery(this.decorateQueryString(text, analyzer, matchAlgorithm), analyzer);
-        
+        Query query = this.buildOnMatchAlgorithm(text, matchAlgorithm);
+        BooleanQuery.Builder newBuilder = new BooleanQuery.Builder();
+
         if(! includeAnonymous || ! includeInactive){
-            BooleanQuery booleanQuery = new BooleanQuery();
-            booleanQuery.add(query, Occur.MUST);
+
+            newBuilder.add(query, Occur.MUST);
             
             if(! includeAnonymous){
-                booleanQuery.add(new TermQuery(new Term("anonymous", "true")), Occur.MUST_NOT);
+                newBuilder.add(new TermQuery(new Term("isAnonymous", "T")), Occur.MUST_NOT);
             }
             if(! includeInactive){
-                booleanQuery.add(new TermQuery(new Term("active", "false")), Occur.MUST_NOT);
+                newBuilder.add(new TermQuery(new Term("isActive", "F")), Occur.MUST_NOT);
             }
-            
-            query = booleanQuery; 
         }
 
+        newBuilder.add(query, Occur.MUST);
+        newBuilder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+
+        query = newBuilder.build();
+
+        QueryBitSetProducer parentFilter;
+        try {
+            parentFilter = new QueryBitSetProducer(new QueryParser("isParentDoc", 
+                    new StandardAnalyzer(new CharArraySet( 0, true))).parse("true"));
+        } catch (ParseException e) {
+            throw new RuntimeException("Query Parser Failed against parent query: ", e);
+        }
+        ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(
+                query, parentFilter, ScoreMode.Total);
+
+        if(codeSystemsToExclude != null &&
+                codeSystemsToInclude.size() > 0 && 
+                codeSystemsToExclude.size() > 0){
+        codeSystemsToInclude.removeAll(codeSystemsToExclude);
+        }
+        Set<AbsoluteCodingSchemeVersionReference> codeSystemRefs = this.resolveCodeSystemReferences(codeSystemsToInclude);
         List<ScoreDoc> scoreDocs = lexEvsServiceLocator.
                 getIndexServiceManager().
                 getSearchIndexService().
-                query(this.resolveCodeSystemReferences(codeSystemsToInclude), 
-                        this.resolveCodeSystemReferences(codeSystemsToExclude),
-                        query);
-
-        return new SearchScoreDocIterator(scoreDocs);
+                query(codeSystemRefs, 
+                        blockJoinQuery);
+        return new SearchScoreDocIterator( codeSystemRefs, scoreDocs);
     }
     
-    protected String decorateQueryString(String text, Analyzer analyzer, MatchAlgorithm matchAlgorithm) {
-        if(StringUtils.isBlank(text)) {
-          return text;  
+    protected BooleanQuery buildOnMatchAlgorithm(String text, MatchAlgorithm matchAlgorithm){
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
+        if(StringUtils.isBlank(text))
+        {
+            builder.add(new MatchAllDocsQuery(), Occur.MUST);
+            return builder.build();
         }
-        
         switch(matchAlgorithm){
         case PRESENTATION_EXACT:
-            return "exactDescription:\"" + QueryParser.escape(text) + "\"";
+            builder.add(new TermQuery(baseQuery), Occur.MUST);
+            builder.add(new TermQuery(new Term(
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text.toLowerCase())), Occur.MUST);
+            return  builder.build();
         case CODE_EXACT:
-            return "code:" + QueryParser.escape(text);
+            builder.add(new TermQuery(new Term("code",text)),Occur.MUST);
+            return builder.build();
         case PRESENTATION_CONTAINS:
-            text = QueryParser.escape(text);
-            List<String> tokens = tokenize(analyzer, "description", text);
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append("(");
-            for(String token : tokens){
-               sb.append("description:");
-               sb.append(token);
-               sb.append("* ");
+            builder.add(new TermQuery(baseQuery), Occur.MUST);
+            builder.add(new TermQuery(preferred), Occur.SHOULD);
+           text = text.toLowerCase();
+
+            List<String> tokens;
+            Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
+            try {
+                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, text);
+            } catch (IOException e) {
+               throw new RuntimeException("Tokenizing query text failed", e);
             }
-            sb.append(")");
-            sb.append(" OR description:\""+text+"\"");
-            sb.append(" OR exactDescription:\"" + QueryParser.escape(text) + "\"");
-            return sb.toString().trim();
+            QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
+            for(String token : tokens){
+                builder.add(new PrefixQuery(new Term(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), Occur.MUST);
+            }
+            text = QueryParser.escape(text);
+            try {
+                builder.add(parser.parse(text), Occur.SHOULD);
+            } catch (ParseException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            builder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
+            return builder.build();
         case LUCENE:
-            return text;
+            builder.add(new TermQuery(baseQuery), Occur.MUST);
+            builder.add(new TermQuery(preferred), Occur.SHOULD);
+            QueryParser luceneParser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
+            Query query;
+            try {
+                query = luceneParser.parse(text);
+            } catch (ParseException e) {
+                throw new RuntimeException("Parser failed parsing text: " + text);
+            }
+            builder.add(query, Occur.MUST);
+            return builder.build();
         default:
             throw new IllegalStateException("Unrecognized MatchAlgorithm: " + matchAlgorithm.name());
         }
     }
 
-    protected Query parseQuery(String text, Analyzer analyzer) {
-        if (StringUtils.isBlank(text)) {
-            return new MatchAllDocsQuery();
-        } else {
-            QueryParser parser = this.createQueryParser(analyzer);
-
-            try {
-                return parser.parse(text);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-    
-    protected QueryParser createQueryParser(Analyzer analyzer){
-        QueryParser parser = new QueryParser("description", analyzer);
-        parser.setDefaultOperator(Operator.AND);
-        
-        return parser;
-    }
-    
-    private Set<AbsoluteCodingSchemeVersionReference> 
+    protected Set<AbsoluteCodingSchemeVersionReference> 
         resolveCodeSystemReferences(Set<CodingSchemeReference> references) throws LBParameterException{
         if(CollectionUtils.isEmpty(references)){
             return null;
         }
         
         Set<AbsoluteCodingSchemeVersionReference> returnSet = new HashSet<AbsoluteCodingSchemeVersionReference>();
-        
+        ConcurrentMetaData metadata = ConcurrentMetaData.getInstance();
         for(CodingSchemeReference ref : references){
-            returnSet.add(
-                    ServiceUtility.getAbsoluteCodingSchemeVersionReference(
-                            ref.getCodingScheme(),
-                            ref.getVersionOrTag(), 
-                            true));
+        	CodingSchemeMetaData csm = metadata.getCodingSchemeMetaDataForNameAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());
+        	if(csm == null){csm = metadata.getCodingSchemeMetaDataForUriAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());}
+        	if(csm == null){ continue;}
+        	if((ref.getCodingScheme().equals(csm.getCodingSchemeName()) || ref.getCodingScheme().equals(csm.getCodingSchemeUri()) 
+        			&& ref.getVersionOrTag().getVersion().equals(csm.getCodingSchemeVersion()))){
+            returnSet.add(csm.getRef());
+        	}
         }
-        
         return returnSet;
     }
     
-    public List<String> tokenize(Analyzer analyzer, String field, String keywords) {
+    private Set<CodingSchemeReference> sanitizeReferences(Set<CodingSchemeReference> references) throws LBParameterException{
+        if(CollectionUtils.isEmpty(references)){
+            return null;
+        }
+        Set<CodingSchemeReference> tempReferences = new HashSet<CodingSchemeReference>();
+        for(CodingSchemeReference ref: references){
+            AbsoluteCodingSchemeVersionReference abc = ServiceUtility.getAbsoluteCodingSchemeVersionReference(
+                    ref.getCodingScheme(),
+                    ref.getVersionOrTag(), 
+                    true);
+                    if(!ref.equals(abc.getCodingSchemeURN())){
+                        ref.setCodingScheme(abc.getCodingSchemeURN());
+                    }
+                    if(ref.getVersionOrTag() == null) {
+                        ref.setVersionOrTag(new CodingSchemeVersionOrTag());
+                    }
+                    if(  ref.getVersionOrTag().getVersion() == null){
+                        ref.getVersionOrTag().setVersion(abc.getCodingSchemeVersion());
+                    }
+                    tempReferences.add(ref);
+        }
+        return tempReferences;
+    }
+    
+    public List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException  {
         List<String> result = new ArrayList<String>();
-        TokenStream stream  = analyzer.tokenStream(field, new StringReader(keywords));
-
-        Token token = new Token();
-        try {
-            Token t;
-            while((t = stream.next(token)) != null) {
-                result.add(t.term());
+        StringReader reader = new StringReader(keywords);
+        TokenStream stream  = analyzer.tokenStream(field, reader);
+        CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
+        try{
+            stream.reset();
+            while(stream.incrementToken()){
+                result.add(termAtt.toString());
             }
-        }
-        catch(IOException e) {
-            throw new IllegalStateException(e);
-        }
-
+            stream.close();
+        }finally{
+            stream.close();
+        }   
         return result;
     }  
 

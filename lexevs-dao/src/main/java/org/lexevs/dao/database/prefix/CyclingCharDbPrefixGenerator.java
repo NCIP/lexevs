@@ -118,7 +118,7 @@ public class CyclingCharDbPrefixGenerator implements InitializingBean, NextDatab
 	 * 
 	 * @return the char[]
 	 */
-	protected char[] incrementByOne(char[] chars){
+	public char[] incrementByOne(char[] chars){
 		for(int i=chars.length-1;i>=0;i--){
 			if(chars[i] != LAST_CHARACTER){
 				chars[i] = findNextChar(chars[i]);

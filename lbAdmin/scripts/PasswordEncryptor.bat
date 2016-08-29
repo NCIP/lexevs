@@ -10,4 +10,4 @@ REM NOTE: The encrypted password will be placed @ lbAdmin/password.txt
 REM
 REM Example: PasswordEncryptor -p lexgrid
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.admin.PasswordEncryptor %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.PasswordEncryptor %*

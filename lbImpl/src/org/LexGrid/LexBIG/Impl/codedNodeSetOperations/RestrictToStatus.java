@@ -18,11 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.AbstractJoinQueryRestriction;
+import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.annotations.LgClientSideSafe;
+import org.apache.lucene.search.Query;
+import org.lexevs.exceptions.InternalException;
 
 /**
  * Holder for the RestrictToStatus operation.
@@ -31,7 +34,7 @@ import org.LexGrid.annotations.LgClientSideSafe;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class RestrictToStatus implements Restriction, Operation {
+public class RestrictToStatus extends AbstractJoinQueryRestriction {
 
     private static final long serialVersionUID = 4030470756164999491L;
     private ActiveOption activeOption_;
@@ -51,6 +54,11 @@ public class RestrictToStatus implements Restriction, Operation {
     @LgClientSideSafe
     public ActiveOption getActiveOption() {
         return this.activeOption_;
+    }
+
+    @Override
+    protected Query doGetQuery() throws LBException, InternalException {
+        return RestrictionImplementations.getQuery(this);
     }
 
     /**

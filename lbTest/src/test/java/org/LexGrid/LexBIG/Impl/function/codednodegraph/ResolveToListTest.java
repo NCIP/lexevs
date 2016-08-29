@@ -20,12 +20,16 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class ResolveToListTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class ResolveToListTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -33,6 +37,7 @@ public class ResolveToListTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testResolveToListAssociatedConceptCount() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("005", AUTO_SCHEME), 

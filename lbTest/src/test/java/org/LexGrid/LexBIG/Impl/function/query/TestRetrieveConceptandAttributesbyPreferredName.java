@@ -26,8 +26,8 @@ import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 
 public class TestRetrieveConceptandAttributesbyPreferredName extends LexBIGServiceTestCase {
@@ -42,7 +42,7 @@ public class TestRetrieveConceptandAttributesbyPreferredName extends LexBIGServi
         LexBIGService lbsvc = ServiceHolder.instance().getLexBIGService();
         
         CodedNodeSet cns = lbsvc.getCodingSchemeConcepts(THES_SCHEME, null);
-        cns.restrictToMatchingDesignations("Vallecula", SearchDesignationOption.PREFERRED_ONLY, "exactMatch", null);
+        cns = cns.restrictToMatchingDesignations("Vallecula", SearchDesignationOption.PREFERRED_ONLY, "exactMatch", null);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, Constructors.createLocalNameList("Semantic_Type"),
                 null, 0).getResolvedConceptReference();

@@ -18,27 +18,33 @@
  */
 package org.lexevs.dao.index.lucene.v2013.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.HitCollector;
+import org.apache.lucene.search.LeafCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.ScoreDocComparator;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.Scorer;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.access.search.SearchDao;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.lucene.AbstractFilteringLuceneIndexTemplateDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
-import org.lexevs.dao.index.lucenesupport.custom.NonScoringTermQuery;
+import org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
+import org.lexevs.logging.LoggerFactory;
 
 /**
  * The Class LuceneEntityDao.
@@ -50,14 +56,7 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 	/** The supported index version2013. */
 	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion.parseStringToVersion("2013");
 	
-	private LuceneIndexTemplate luceneIndexTemplate;
-	
-	private static final Comparator<ScoreDoc> SCORE_DOC_COMPARATOR = new Comparator<ScoreDoc>(){
-		@Override
-		public int compare(ScoreDoc o1, ScoreDoc o2) {
-			return ScoreDocComparator.RELEVANCE.compare(o1, o2);
-		}
-	};
+	private static LgLoggerIF logger = LoggerFactory.getLogger();
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version,
@@ -78,58 +77,90 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 
 	@Override
 	public Filter getCodingSchemeFilter(String uri, String version) {
-		return this.getCodingSchemeFilterForCodingScheme(uri, version);
+		return null;
 	}
 
 	@Override
 	public Document getById(int id) {
 		return this.getLuceneIndexTemplate().getDocumentById(id);
 	}
+	
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude, int id) {
+		List<AbsoluteCodingSchemeVersionReference> list = Arrays.asList(codeSystemsToInclude.
+				toArray(new AbsoluteCodingSchemeVersionReference[codeSystemsToInclude.size()]));
+		return this.getLuceneIndexTemplate(list).getDocumentById(id);
+	}
+
 
 	@Override
 	public List<ScoreDoc> query(Query query) {
 		try {
 			LuceneIndexTemplate template = this.getLuceneIndexTemplate();
 	
-			final List<ScoreDoc> docs = new ArrayList<ScoreDoc>();
-					
-			HitCollector collector = new HitCollector(){
+			int maxDoc = template.getMaxDoc();
+			
+			if (maxDoc == 0) {
+				String errorMsg = "Index does not exist: " + template.getIndexName();
+			    logger.error(errorMsg);
+			    throw new RuntimeException(errorMsg);
+			}
+			
+			final List<ScoreDoc> scoreDocs = new ArrayList<ScoreDoc>();
+			
+						
+			template.search(query, null, new Collector() {
 
 				@Override
-				public void collect(int doc, float score) {
-					ScoreDoc scoreDoc = new ScoreDoc(doc, score);
-					docs.add(scoreDoc);
+				public LeafCollector getLeafCollector(final LeafReaderContext context)
+						throws IOException {
+					return new LeafCollector() {
+						
+						private Scorer scorer;
+
+						@Override
+						public void collect(int docId) throws IOException {
+							scoreDocs.add(new ScoreDoc(context.docBase + docId, this.scorer.score()));
+						}
+
+						@Override
+						public void setScorer(Scorer scorer) throws IOException {
+							this.scorer = scorer;
+						}
+						
+					};
+				}
+
+				@Override
+				public boolean needsScores() {
+					return true;
+				}
+			
+			});
+			
+			Collections.sort(scoreDocs, new Comparator<ScoreDoc>() {
+
+				@Override
+				public int compare(ScoreDoc o1, ScoreDoc o2) {
+					if(o1.score > o2.score)return -1;
+					if(o1.score < o2.score)return 1;
+					return 0;
 				}
 				
-			};
-			
-			template.search(query, null, collector);
-
-			Collections.sort(docs, SCORE_DOC_COMPARATOR);
-			
-			return docs;
+			});
+			return scoreDocs;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.lexevs.dao.index.access.entity.EntityDao#getMatchAllDocsQuery(org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference)
-	 */
-	public Query getMatchAllDocsQuery(
-			String codingSchemeUri, String version) {
-		TermQuery query = new NonScoringTermQuery(
-						new Term(
-						LuceneLoaderCode.CODING_SCHEME_URI_VERSION_KEY_FIELD,
-						LuceneLoaderCode.createCodingSchemeUriVersionKey(codingSchemeUri, version)));
-
-		return query;
-	}
-
+	
 	@Override
-	public void optimizeIndex() {
-		this.luceneIndexTemplate.optimize();
+	public List<ScoreDoc> query(Query query,
+			Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude) {
+		List<AbsoluteCodingSchemeVersionReference> list = Arrays.asList(codeSystemsToInclude.
+				toArray(new AbsoluteCodingSchemeVersionReference[codeSystemsToInclude.size()]));
+		return getIndexRegistry().getCommonLuceneIndexTemplate(list).search(query, null);
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.index.access.AbstractBaseIndexDao#doGetSupportedLexEvsIndexFormatVersions()
@@ -139,19 +170,17 @@ public class LuceneSearchDao extends AbstractFilteringLuceneIndexTemplateDao imp
 		return DaoUtility.createList(LexEvsIndexFormatVersion.class, supportedIndexVersion2013);
 	}
 	
-	@Override
 	protected LuceneIndexTemplate getLuceneIndexTemplate(
 			String codingSchemeUri, String version) {
-		return this.luceneIndexTemplate;
+		return getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
 	}
-
-	public void setLuceneIndexTemplate(LuceneIndexTemplate luceneIndexTemplate) {
-		this.luceneIndexTemplate = luceneIndexTemplate;
+	
+	protected LuceneIndexTemplate getLuceneIndexTemplate( List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
+		return getIndexRegistry().getCommonLuceneIndexTemplate(codingSchemes);
 	}
 
 	public LuceneIndexTemplate getLuceneIndexTemplate() {
-		return luceneIndexTemplate;
+		return new MultiBaseLuceneIndexTemplate(MultiBaseLuceneIndexTemplate.getNamedDirectories(ConcurrentMetaData.getInstance()));
 	}
-
 
 }

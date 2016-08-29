@@ -181,27 +181,27 @@ public class ResolveTest extends BaseCodedNodeSetTest {
        assertEquals("T0001", itr.next().getCode());   
      }
     
-    /**
-     * Test multiple code system sort more resuts.
-     * 
-     * @throws Exception the exception
-     */
-    public void testMultipleCodeSystemSortMoreResuts() throws Exception{
-        
-        CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
-        
-        CodedNodeSet union = cns2.union(cns);
-        
-        union.restrictToMatchingDesignations("(  an OR tires OR car OR automobile^4 OR truck^2 OR piston^3 OR rims^5 OR general )", SearchDesignationOption.ALL, "LuceneQuery", null);
-
-        ResolvedConceptReferencesIterator itr = union.resolve(
-                Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null);
-
-       assertEquals("R0001", itr.next().getCode());
-       assertEquals("A0001", itr.next().getCode());  
-       assertEquals("P0001", itr.next().getCode()); 
-       assertEquals("T0001",itr.next().getCode());   
-     }
+//    /**
+//     * Test multiple code system sort more resuts.
+//     * 
+//     * @throws Exception the exception
+//     */
+//    public void testMultipleCodeSystemSortMoreResuts() throws Exception{
+//        
+//        CodedNodeSet cns2 = lbs.getCodingSchemeConcepts(PARTS_SCHEME, null);
+//        
+//        CodedNodeSet union = cns2.union(cns);
+//        
+//        union.restrictToMatchingDesignations("(  an OR tires OR car OR automobile^4 OR truck^2 OR piston^3 OR rims^5 OR general )", SearchDesignationOption.ALL, "LuceneQuery", null);
+//
+//        ResolvedConceptReferencesIterator itr = union.resolve(
+//                Constructors.createSortOptionList(new String[]{"matchToQuery"}), null, null);
+//
+//       assertEquals("R0001", itr.next().getCode());
+//       assertEquals("A0001", itr.next().getCode());  
+//       assertEquals("P0001", itr.next().getCode()); 
+//       assertEquals("T0001",itr.next().getCode());   
+//     }
     
     /**
      * Test filter options.
@@ -248,7 +248,7 @@ public class ResolveTest extends BaseCodedNodeSetTest {
      * @throws Exception the exception
      */
     public void testResolvePropertyNamesPresentation() throws Exception {
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferencesIterator itr = cns.resolve(null, null, Constructors.createLocalNameList("textualPresentation"), null, true);  
         
         ResolvedConceptReference ref = itr.next();
@@ -267,7 +267,7 @@ public class ResolveTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyNamesDefinition() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferencesIterator itr = cns.resolve(null, null, Constructors.createLocalNameList("definition"), null, true);     
         
         ResolvedConceptReference ref = itr.next();
@@ -287,7 +287,7 @@ public class ResolveTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyTypesPresentation() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null, new PropertyType[]{PropertyType.PRESENTATION}, true);
 
         ResolvedConceptReference ref = itr.next();
@@ -307,7 +307,7 @@ public class ResolveTest extends BaseCodedNodeSetTest {
      * @throws LBException the LB exception
      */
     public void testResolvePropertyTypesDefinition() throws LBException{
-        cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("A0001"));
         ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null, new PropertyType[]{PropertyType.DEFINITION}, true);
 
         ResolvedConceptReference ref = itr.next();

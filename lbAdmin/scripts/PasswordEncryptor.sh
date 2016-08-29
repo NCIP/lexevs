@@ -9,4 +9,4 @@
 #
 # NOTE: The encrypted password will be placed @ lbAdmin/password.txt
 #
-java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.PasswordEncryptor $@
+java -Xmx1500m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.PasswordEncryptor $@

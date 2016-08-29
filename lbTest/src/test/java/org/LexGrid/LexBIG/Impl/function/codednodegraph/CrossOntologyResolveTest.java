@@ -23,12 +23,18 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class SortGraphTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -36,6 +42,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testResolveMappingRelationshWithFocus() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
 
@@ -64,6 +71,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
         assertTrue(assocCons[0].getCode().equals("E0001"));
     }
     
+	@Test
     public void testEntityDescriptions() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
 
@@ -96,6 +104,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
         assertTrue(assocCons[0].getEntityDescription() != null);
     }
     
+	@Test
     public void testResolveMappingRelationshNoFocusLength() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
 
@@ -115,6 +124,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
                 rcr.length);
     }
     
+	@Test
     public void testResolveMappingRelationshNoFocusRelationships() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
 
@@ -144,6 +154,7 @@ public class CrossOntologyResolveTest extends BaseCodedNodeGraphTest {
         }
     }
     
+	@Test
     public void testResolveMappingRelationshNoFocusEntityDescriptions() throws Exception {
     	CodedNodeGraph cng = lbs.getNodeGraph(MAPPING_SCHEME_URI, null, null);
 

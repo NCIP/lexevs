@@ -18,8 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.dataAccess;
 
-import java.util.ArrayList;
-
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
@@ -43,19 +41,30 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
 
+import java.util.ArrayList;
+
 /**
+ * 
+ * Legacy documentation below:  Currently we are using Lucene 5.3.1 which allows 
+ * us to use the toParentBlockJoint mechanism to group related entity properties.
+ * 
+ * this was finessed to some extent by creating a boolean query over to parent block
+ * join queries for each term insuring that parent docs returned contained both 
+ * terms when the restrictions are "anded"
+ * 
+ * ***legacy docuementation of the bitset implementation*******
+ * 
  * Class which implements all of the restriction operations using Lucene
  * searches.
  * 
@@ -94,12 +103,11 @@ public class RestrictionImplementations {
         return LoggerFactory.getLogger();
     }
 
-    public static Query getQuery(Restriction restriction,
-            String internalCodeSystemName, String internalVersionString) throws UnexpectedInternalError,
+    public static BooleanQuery getQuery(Restriction restriction) throws UnexpectedInternalError,
             MissingResourceException, LBParameterException {
         try {             
            
-            String codeField = SQLTableConstants.TBLCOL_ENTITYCODE;
+            String codeField = "code";
             String propertyNameField = SQLTableConstants.TBLCOL_PROPERTYNAME;
             String language = null;
             Query textQueryPart = null;
@@ -162,8 +170,7 @@ public class RestrictionImplementations {
                         + restriction);
             }
             
-            BooleanQuery masterQuery = new BooleanQuery();
-            masterQuery.add(new MatchAllDocsQuery(), Occur.MUST);
+            BooleanQuery.Builder masterQuery = new BooleanQuery.Builder();
 
             if (textQueryPart != null) {
                 masterQuery.add(new BooleanClause(textQueryPart, Occur.MUST));
@@ -177,11 +184,21 @@ public class RestrictionImplementations {
             if (activeOption != null) {
                 if (activeOption.equals(ActiveOption.ACTIVE_ONLY)) {
                     // This is a MUST_NOT query - do not set addedSomething to true
-                    masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "F")),
-                            Occur.MUST_NOT));
+                    //Remove the MUST_NOT to make this work with BlockJoin.
+                    masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "T")),
+                            Occur.MUST));
                 } else if (activeOption.equals(ActiveOption.INACTIVE_ONLY)) {
                     masterQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "F")),
                             Occur.MUST));
+                } else if (activeOption.equals(ActiveOption.ALL)) {
+                    BooleanQuery.Builder builder = new BooleanQuery.Builder();
+                    builder.add(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "T")),
+                            Occur.SHOULD);
+                    builder.add(new TermQuery(new Term(SQLTableConstants.TBLCOL_ISACTIVE, "F")),
+                            Occur.SHOULD);
+
+
+                    masterQuery.add(builder.build(), Occur.MUST);
                 }
             }
 
@@ -190,19 +207,20 @@ public class RestrictionImplementations {
                     masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "T")),
                             Occur.MUST));
                 } else if (anonymousOption.equals(AnonymousOption.NON_ANONYMOUS_ONLY)) {
-                    masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "T")),
-                            Occur.MUST_NOT));
+                    masterQuery.add(new BooleanClause(new TermQuery(new Term("isAnonymous", "F")),
+                            Occur.MUST));
                 }
             }
             
             if (conceptStatus != null && conceptStatus.length > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < conceptStatus.length; i++) {
                     nestedQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_CONCEPTSTATUS,
                             conceptStatus[i])), Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             if (preferredOnly != null) {
@@ -219,95 +237,98 @@ public class RestrictionImplementations {
 
             if (propertyName != null && propertyName.size() > 0) {
                 int propertiesSize = propertyName.size();
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < propertiesSize; i++) {
                     nestedQuery.add(new BooleanClause(new TermQuery(new Term(propertyNameField, propertyName.get(i))),
                             Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             // propertyType
             if (propertyType != null && propertyType.length > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
+
                 for (int i = 0; i < propertyType.length; i++) {
                     nestedQuery.add(new BooleanClause(new TermQuery(new Term("propertyType",
                             mapPropertyType(propertyType[i]))), Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             // sources
             if (sources != null && sources.size() > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < sources.size(); i++) {
                     nestedQuery
                             .add(new BooleanClause(new TermQuery(new Term("sources", sources.get(i))), Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             // usage contexts
             if (usageContexts != null && usageContexts.size() > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < usageContexts.size(); i++) {
                     nestedQuery.add(new BooleanClause(new TermQuery(new Term("usageContexts", usageContexts.get(i))),
                             Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             // propertyQualifiers
             if (propertyQualifiers != null && propertyQualifiers.getNameAndValueCount() > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < propertyQualifiers.getNameAndValueCount(); i++) {
                     NameAndValue qualNameAndValue = propertyQualifiers.getNameAndValue(i);
                     String name = qualNameAndValue.getName();
                     String value = qualNameAndValue.getContent();
-
+                    QueryParser parser = new QueryParser("qualifiers",LuceneLoaderCode.getAnaylzer());
+                    Query queryNameAndValue = parser.parse("\"" +name
+                                + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
+                                + value + "\"");
+                    Query nameOnly = parser.parse(name
+                            + "*");
                     if(StringUtils.isNotBlank(value)){
-                        nestedQuery.add(new BooleanClause(new TermQuery(new Term("qualifiers", name
-                                + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
-                                + value)), Occur.SHOULD));
+                        nestedQuery.add(new BooleanClause(queryNameAndValue, Occur.SHOULD));
                     } else {
-                        nestedQuery.add(new BooleanClause(new WildcardQuery(new Term("qualifiers", name
-                                + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
-                                + "*")), Occur.SHOULD));
+                        nestedQuery.add(new BooleanClause(nameOnly, Occur.SHOULD));
                     }
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             // entityTypes
             if (entityTypes != null && entityTypes.length > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < entityTypes.length; i++) {
                     nestedQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ENTITYTYPE,
                             entityTypes[i])), Occur.SHOULD));
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
 
             if (crl != null && crl.getConceptReferenceCount() > 0) {
-                BooleanQuery nestedQuery = new BooleanQuery();
+                BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
+                nestedQuery.setMinimumNumberShouldMatch(1);
+
                 for (int i = 0; i < crl.getConceptReferenceCount(); i++) {
                     ConceptReference cr = crl.getConceptReference(i);
 
-                    // if no coding scheme in the concept reference, substitute
-                    // the existing one.
-                    // This seems awkward in the next comparison but it prevents
-                    // creating another
-                    // String object.
-                    if (cr.getCodingSchemeName() == null)
-                        cr.setCodingSchemeName(internalCodeSystemName);
-
                     if (cr.getConceptCode() != null && cr.getConceptCode().length() > 0) {
-                        BooleanQuery codeAndNamespaceQuery = new BooleanQuery();
+                        BooleanQuery.Builder codeAndNamespaceQuery = new BooleanQuery.Builder();
                         
                         codeAndNamespaceQuery.add(new BooleanClause(new TermQuery(new Term(codeField, cr.getConceptCode())),
                                 Occur.MUST));
@@ -315,18 +336,18 @@ public class RestrictionImplementations {
                             codeAndNamespaceQuery.add(new BooleanClause(new TermQuery(new Term(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, cr.getCodeNamespace())),
                                     Occur.MUST));
                         }
-                      nestedQuery.add(codeAndNamespaceQuery, Occur.SHOULD);
+                      nestedQuery.add(codeAndNamespaceQuery.build(), Occur.SHOULD);
                     }
                 }
-                masterQuery.add(nestedQuery, Occur.MUST);
+                masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
-
-            masterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST_NOT));
 
             getLogger().debug("Generated Query: " + masterQuery.toString());          
 
-            return masterQuery;
+            return masterQuery.build();
 
+        } catch (LBParameterException e) {
+            throw e;
         } catch (UnexpectedInternalError e) {
             throw e;
         } catch (Exception e) {

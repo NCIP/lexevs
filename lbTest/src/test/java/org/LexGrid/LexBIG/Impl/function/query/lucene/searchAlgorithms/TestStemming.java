@@ -21,12 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class TestStemming.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class TestStemming extends BaseSearchAlgorithmTest {
 
     /** The algorithm. */
@@ -51,9 +55,10 @@ public class TestStemming extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStemmedLuceneQueryMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("Automobiles", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Automobiles", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -67,11 +72,12 @@ public class TestStemming extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStemmedLuceneQueryMatchOtherThanPlural() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
 
         // Note 'Automobiled'... cool word huh?
-        cns.restrictToMatchingDesignations("Automobiled", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("Automobiled", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -85,9 +91,10 @@ public class TestStemming extends BaseSearchAlgorithmTest {
      * 
      * @throws Exception the exception
      */
+    @Test
     public void testStemmedLuceneQueryCaseInsensitive() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns.restrictToMatchingDesignations("automobiles", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("automobiles", SearchDesignationOption.PREFERRED_ONLY, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

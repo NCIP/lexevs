@@ -25,8 +25,9 @@ import junit.framework.TestCase;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.document.AbstractField;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.TextField;
 
 /**
  * The Class LazyLoadableCodeToReturnTest.
@@ -116,7 +117,7 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
      * 
      * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
      */
-    private class TestField extends AbstractField {
+    private class TestField extends FieldType {
 
         /** The value. */
         private String value;
@@ -128,9 +129,9 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
          * @param value the value
          */
         public TestField(String name, String value){
-            this.name = name;
+ //           this.name = name;
             this.value = value;
-            super.name = name;
+//            super. = name;
         }
         
         /* (non-Javadoc)
@@ -201,12 +202,12 @@ public class LazyLoadableCodeToReturnTest extends TestCase {
         @Override
         protected Document buildDocument(){
             Document doc = new Document();
-            doc.add(new TestField(SQLTableConstants.TBLCOL_ENTITYCODE, "id"));  
-            doc.add(new TestField("codingSchemeId","cs"));  
-            doc.add(new TestField(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,"description"));  
-            doc.add(new TestField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,"namespace"));  
-            doc.add(new TestField("entityType","type1"));
-            doc.add(new TestField("entityType","type2"));
+            doc.add(new TextField(SQLTableConstants.TBLCOL_ENTITYCODE, "id", null));  
+            doc.add(new TextField("codingSchemeUri","cs", null));  
+            doc.add(new TextField(SQLTableConstants.TBLCOL_ENTITYDESCRIPTION,"description", null));  
+            doc.add(new TextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE,"namespace", null));  
+            doc.add(new TextField("entityType","type1", null));
+            doc.add(new TextField("entityType","type2", null));
             
             return doc;
         }

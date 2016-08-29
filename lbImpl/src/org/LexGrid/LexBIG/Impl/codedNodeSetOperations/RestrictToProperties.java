@@ -18,15 +18,14 @@
  */
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations;
 
-import java.util.Enumeration;
-
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Operation;
-import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.Restriction;
+import org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces.AbstractJoinQueryRestriction;
+import org.LexGrid.LexBIG.Impl.dataAccess.RestrictionImplementations;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedContext;
@@ -34,7 +33,11 @@ import org.LexGrid.naming.SupportedProperty;
 import org.LexGrid.naming.SupportedPropertyQualifier;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.URIMap;
+import org.apache.lucene.search.Query;
+import org.lexevs.exceptions.InternalException;
 import org.lexevs.locator.LexEvsServiceLocator;
+
+import java.util.Enumeration;
 
 /**
  * Holder for the RestrictToProperties operation.
@@ -43,13 +46,13 @@ import org.lexevs.locator.LexEvsServiceLocator;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
-public class RestrictToProperties implements Restriction, Operation {
+public class RestrictToProperties extends AbstractJoinQueryRestriction {
 
     private static final long serialVersionUID = 7762452729573553393L;
     protected LocalNameList propertyList_;
-    private LocalNameList sourceList_;
-    private LocalNameList contextList_;
-    private NameAndValueList qualifierList_;
+    protected LocalNameList sourceList_;
+    protected LocalNameList contextList_;
+    protected NameAndValueList qualifierList_;
     protected PropertyType[] propertyTypes_;
 
     @LgClientSideSafe
@@ -150,6 +153,11 @@ public class RestrictToProperties implements Restriction, Operation {
                 throw new LBParameterException("Attribute with Id: " + localId + " is not valid, or is not registered as a " + supportedAttributeClass.getSimpleName());
             }
         }
+    }
+
+    @Override
+    protected Query doGetQuery() throws LBException, InternalException {
+        return RestrictionImplementations.getQuery(this);
     }
 
     /**

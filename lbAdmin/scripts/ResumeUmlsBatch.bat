@@ -10,4 +10,4 @@ REM   -version,--version of vocabulary to resume.
 REM
 REM Example: ResumeUmlsBatch.bat -in "file:///path/to/directory/" -s "PSY" -uri "urn:123.4" -version "2.0"
 REM
-java -Xmx800m -cp "../runtime/lbPatch.jar;../runtime/lbRuntime.jar" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher %*
+java -Xmx800m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher %*

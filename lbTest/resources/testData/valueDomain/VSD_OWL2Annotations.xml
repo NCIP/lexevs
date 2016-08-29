@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<systemRelease xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:data="data"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    releaseURI="http://testRelease/04"
+    releaseDate="2008-11-07T14:55:51.615-06:00">
+    <lgCommon:entityDescription>Sample value set definition for OW2 Annotation</lgCommon:entityDescription>
+    <lgVer:valueSetDefinitions>
+        <lgVD:mappings>
+            <lgNaming:supportedCodingScheme localId="owl2lexevs" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">OWL To LEXEVS</lgNaming:supportedCodingScheme>
+            <lgNaming:supportedHierarchy localId="is_a" associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>    
+            <lgNaming:supportedLanguage localId="en" uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
+            <lgNaming:supportedNamespace localId="owl2lexevs" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" equivalentCodingScheme="owl2lexevs">Automobiles</lgNaming:supportedNamespace>
+            <lgNaming:supportedProperty localId="textualPresentation">textualPresentation</lgNaming:supportedProperty>
+            <lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
+        </lgVD:mappings>
+        
+        <lgVD:valueSetDefinition valueSetDefinitionURI="OWL2LEXEVS:VerySickCancerPatient" valueSetDefinitionName="Very Sick Cancer Patient" defaultCodingScheme="owl2lexevs" conceptDomain="Owl2" effectiveDate="2016-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+            <lgVD:mappings>
+                <lgNaming:supportedConceptDomain localId="Owl2" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">Owl2</lgNaming:supportedConceptDomain>
+                <lgNaming:supportedContext localId="VerySickCancerPatient">VerySickCancerPatient</lgNaming:supportedContext>                
+            </lgVD:mappings>
+            <lgVD:properties>
+                <lgCommon:property propertyName="textualPresentation">
+                    <lgCommon:value>Very Sick Cancer Patients</lgCommon:value>
+                </lgCommon:property>
+            </lgVD:properties>
+            <lgVD:definitionEntry ruleOrder="1" operator="OR">
+                <lgVD:entityReference entityCode="VerySickCancerPatient" referenceAssociation="subClassOf" transitiveClosure="true"  targetToSource="false" leafOnly="false"/>
+            </lgVD:definitionEntry>
+        </lgVD:valueSetDefinition>
+         
+    </lgVer:valueSetDefinitions>    
+</systemRelease>

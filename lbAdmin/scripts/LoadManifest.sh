@@ -11,4 +11,4 @@
 # 
 # Example:	LoadManifest -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\" -mf \"file://path//to//manifest.xml\"" 
 #			LoadManifest -mf \"file://path//to//manifest.xml\"
-java -Xmx1300m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadManifest $@
+java -Xmx1300m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadManifest $@

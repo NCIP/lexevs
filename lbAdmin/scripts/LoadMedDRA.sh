@@ -13,7 +13,7 @@
 #   -cui  Uri to MRCONSO.RRF from the NCI Metathesaurus allows loading of CUI's
 #         for a given term. (Slows load time considerably)
 #
-# Example: LoadMedDRA -in "file:///path/to/file.asc" -a
-#        LoadMedDRA -in "file:///path/to/file.asc" -v 0
-#        LoadMedDRA  -in "file:///path/to/file.asc" -cui "file:///path/to/MRCONSO.RRF
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadMedDRA $@
+# Example: LoadMedDRA -in "file:///path/to/MedDRAFolder" -a
+#        LoadMedDRA -in "file:///path/to/MedDRAFolder" -v 0
+#        LoadMedDRA  -in "file:///path/to/MedDRAFolder" -cui "file:///path/to/MRCONSO.RRF
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadMedDRA $@

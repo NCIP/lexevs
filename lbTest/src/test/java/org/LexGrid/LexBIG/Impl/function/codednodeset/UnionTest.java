@@ -20,20 +20,21 @@ package org.LexGrid.LexBIG.Impl.function.codednodeset;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.util.PrintUtility;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class UnionTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class UnionTest extends BaseCodedNodeSetTest {
     
     /** The cns2. */
@@ -54,6 +55,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * @see org.LexGrid.LexBIG.Impl.function.codednodeset.BaseCodedNodeSetTest#setUp()
      */
     @Override
+    @Before
     public void setUp(){
         super.setUp();
         try {
@@ -69,11 +71,12 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testUnion() throws LBException {
         
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
         CodedNodeSet cnsUnion = cns.union(cns2);
 
@@ -89,15 +92,16 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testUnionWithAddedRestriction() throws LBException {
         
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
         CodedNodeSet cns3 = cns.union(cns2);
         
-        cns3.restrictToCodes(Constructors.createConceptReferenceList("005"));
+        cns3 = cns3.restrictToCodes(Constructors.createConceptReferenceList("005"));
 
         ResolvedConceptReference[] rcr = cns3.resolveToList(null, null, null, 50).getResolvedConceptReference();
 
@@ -110,9 +114,10 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testUnionToSelf() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
         CodedNodeSet union = cns.union(cns);
 
@@ -127,12 +132,13 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testUnionCrossCodingScheme() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
         CodedNodeSet gmCns = lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.PARTS_SCHEME, null);
-        gmCns.restrictToCodes(Constructors.createConceptReferenceList("P0001"));
+        gmCns = gmCns.restrictToCodes(Constructors.createConceptReferenceList("P0001"));
         
         CodedNodeSet union = cns.union(gmCns);
 
@@ -148,13 +154,14 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testUnionToAUnion() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
         
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
         
-        cns3.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "GM" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns3 = cns3.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "GM" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
         CodedNodeSet union = cns.union(cns2);
         
@@ -173,13 +180,14 @@ public class UnionTest extends BaseCodedNodeSetTest {
      * 
      * @throws LBException the LB exception
      */
+    @Test
     public void testUnionWithAUnion() throws LBException {
 
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "005" }, LexBIGServiceTestCase.AUTO_SCHEME));
         
-        cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns2 = cns2.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "Ford" }, LexBIGServiceTestCase.AUTO_SCHEME));
         
-        cns3.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "GM" }, LexBIGServiceTestCase.AUTO_SCHEME));
+        cns3 = cns3.restrictToCodes(Constructors.createConceptReferenceList(new String[] { "GM" }, LexBIGServiceTestCase.AUTO_SCHEME));
 
         CodedNodeSet union = cns.union(cns2);
         
@@ -193,6 +201,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
         assertTrue(contains(rcr, "GM", LexBIGServiceTestCase.AUTO_SCHEME));
     }
     
+    @Test
     public void testMultipleUnions() throws Exception {
     	CodedNodeSet cns1 = 
 			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
@@ -216,6 +225,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
 		assertEquals(4, cns5.resolve(null, null, null).numberRemaining());
     }
     
+    @Test
     public void testMultipleUnionsWithRestriction() throws Exception {
     	CodedNodeSet cns1 = 
 			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
@@ -240,6 +250,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
 		assertEquals(1, cns5.resolve(null, null, null).numberRemaining());
     }
     
+    @Test
     public void testUnionWithCodesAndPropertyRestriction() throws Exception {
     	CodedNodeSet cns1 = 
 			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);
@@ -253,6 +264,7 @@ public class UnionTest extends BaseCodedNodeSetTest {
 		assertEquals(3, cns1.union(cns2).resolve(null, null, null).numberRemaining());
     }
     
+    @Test
     public void testUnionWithCodesAndPropertyRestrictionUnionOtherWay() throws Exception {
     	CodedNodeSet cns1 = 
 			lbs.getNodeSet(LexBIGServiceTestCase.AUTO_SCHEME, null, null);

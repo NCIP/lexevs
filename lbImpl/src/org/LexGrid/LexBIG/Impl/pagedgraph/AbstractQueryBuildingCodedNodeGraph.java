@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.SortOptionList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -39,8 +40,8 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.codednodeset.LuceneOnlyToNodeListCodedNodeSet;
 import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl.ArtificialRootResolvePolicy;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.CycleDetectingCallback;
 import org.LexGrid.LexBIG.Impl.pagedgraph.paging.callback.ReferenceReturningCycleDetectingCallback;
@@ -54,10 +55,14 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedContainerName;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
+import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -359,10 +364,10 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
             (MappingExtension) LexBIGServiceImpl.defaultInstance().getGenericExtension("MappingExtension");
         
         ConceptReferenceList codeList;
-        
+        String altSchemeName = null;
+        String altUri = null;
+        String altVersion = null;
         if( graphFocus == null 
-                &&
-                this.isNotRestricted()
                 &&
                 mappingExtension.isMappingCodingScheme(
                 codingSchemeUri, 
@@ -377,6 +382,19 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                             getCodedNodeGraphService().
                                 getRelationNamesForCodingScheme(codingSchemeUri, version);
             }
+            CodingSchemeVersionOrTag mappingVersion = new CodingSchemeVersionOrTag();
+            mappingVersion.setVersion(version);
+            CodingScheme mappingScheme = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(codingSchemeUri, mappingVersion);
+           
+            if(!this.getGraphQueryBuilder().getQuery().getRestrictToSourceCodeSystem().isEmpty()){
+                altSchemeName =  mappingScheme.getRelations()[0].getSourceCodingScheme();
+                
+            }
+            else if(!this.getGraphQueryBuilder().getQuery().getRestrictToTargetCodeSystem().isEmpty()){
+                altSchemeName = mappingScheme.getRelations()[0].getTargetCodingScheme();;
+            }
+            
+            
             
             codeList = new ConceptReferenceList();
             
@@ -386,20 +404,31 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                         Constructors.createCodingSchemeVersionOrTagFromVersion(version), 
                         relationContainerName, 
                         null);
+                //We don't want to modify a cached result.  
+                //So we need to clone it and reassign it before modification.
+               ResolvedConceptReference[] rcrl = null;
                 try {
-                    while(itr.hasNext()) {
-                        ResolvedConceptReference ref = itr.next();
+                    rcrl = itr.next(itr.numberRemaining()).getResolvedConceptReference();
+                    ResolvedConceptReference[] deepCopy = DaoUtility.deepClone(rcrl);
+                    for( ResolvedConceptReference ref: deepCopy){
                         if(resolveForward || (resolveBackward && resolveAssociationDepth > 0)) {
+                            ref.setCodeNamespace(correctNamepsaceForEquivalentCodingScheme(ref.getCodeNamespace(), mappingScheme));
                             codeList.addConceptReference(ref);
                         }
                         for(Association assoc : ref.getSourceOf().getAssociation()) {
                             for(AssociatedConcept ac : assoc.getAssociatedConcepts().getAssociatedConcept()) {
                                 if(resolveBackward || (resolveForward && resolveAssociationDepth > 0)) {
+                                	ac.setCodeNamespace(correctNamepsaceForEquivalentCodingScheme(ref.getCodeNamespace(), mappingScheme));
                                     codeList.addConceptReference(ac);
                                 }
                             }
                         }
                     }
+                    
+                    altUri = ServiceUtility.getUriForCodingSchemeName(altSchemeName);
+                    CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
+                    csvt.setTag("PRODUCTION");
+                    altVersion = ServiceUtility.getVersion(altUri, csvt);
                 } catch (LBResourceUnavailableException e) {
                     throw new RuntimeException(e);
                 } 
@@ -422,41 +451,44 @@ public abstract class AbstractQueryBuildingCodedNodeGraph extends AbstractCodedN
                         new ReferenceReturningCycleDetectingCallback());
             
             codeList = this.traverseGraph(list, resolveForward, resolveBackward, maxToReturn);
+
         }
    
         try {
-   
-            return new LuceneOnlyToNodeListCodedNodeSet(this.getCodingSchemeUri(), this.getVersion(), codeList);
-        } catch (LBResourceUnavailableException e) {
+            if(altUri != null){
+                this.setCodingSchemeUri(altUri);
+                this.setVersion(altVersion);
+            }
+            CodedNodeSetImpl cns = new CodedNodeSetImpl(
+                    this.getCodingSchemeUri(),
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(this.getVersion()), null, null);
+
+            return cns.restrictToCodes(codeList);
+        } catch (Exception e) {
            throw new RuntimeException(e);
         }
     }
 
-    private boolean isNotRestricted() {
-        GraphQuery query = 
-            this.getGraphQueryBuilder().getQuery();
-
-        return CollectionUtils.isEmpty(
-                query.getRestrictToAssociations())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToAssociationsQualifiers())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToEntityTypes())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToSourceCodes()) 
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToSourceCodeSystem())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToTargetCodes())
-                &&
-                CollectionUtils.isEmpty(
-                query.getRestrictToTargetCodeSystem());
+    private String correctNamepsaceForEquivalentCodingScheme(String codeNamespace, CodingScheme mapping) {
+       List<SupportedNamespace> namespaces = mapping.getMappings().getSupportedNamespaceAsReference();
+       for(SupportedNamespace sn : namespaces){
+           if(sn.getLocalId().equals(codeNamespace)){
+               return getEquivalentCodingSchemeForNamespace(codeNamespace, mapping, sn);
+           }
+       }
+        return codeNamespace;
     }
+
+    private String getEquivalentCodingSchemeForNamespace(String codeNamespace, CodingScheme mapping, SupportedNamespace sn) {
+        List<SupportedCodingScheme> schemes = mapping.getMappings().getSupportedCodingSchemeAsReference();
+        for(SupportedCodingScheme scheme : schemes){
+            if(scheme.getLocalId().equals(sn.getEquivalentCodingScheme())){
+               return null;
+            }
+        }
+        return codeNamespace;
+    }
+    
 
     private ConceptReferenceList traverseGraph(
             ResolvedConceptReferenceList list, 

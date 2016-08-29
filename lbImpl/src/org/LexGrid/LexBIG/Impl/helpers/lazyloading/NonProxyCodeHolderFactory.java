@@ -18,11 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl.helpers.lazyloading;
 
-import java.util.List;
-
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Impl.helpers.CodeToReturn;
 import org.apache.lucene.search.ScoreDoc;
+
+import java.util.List;
 
 /**
  * A factory for creating NonProxyCodeHolder objects.
@@ -43,4 +43,6 @@ public class NonProxyCodeHolderFactory extends AbstractLazyCodeHolderFactory {
     protected CodeToReturn buildCodeToReturn(ScoreDoc doc, List<AbsoluteCodingSchemeVersionReference> references) {
         return new CommonIndexLazyLoadableCodeToReturn(references, doc);
     }
+
+
 }

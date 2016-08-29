@@ -22,12 +22,19 @@ import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.LexGrid.LexBIG.Utility.RemoteApiSafeTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Categories.IncludeCategory;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class FocusTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@RemoteApiSafeTest
+@Category(IncludeForDistributedTests.class)
 public class FocusTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -35,6 +42,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testFocusWithJustCode() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -46,6 +54,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("005",roots.getResolvedConceptReference(0).getCode());
     }
     
+	@Test
     public void testFocusWithWrongCode() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("WRONG_CODE");
@@ -56,6 +65,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals(0,roots.getResolvedConceptReferenceCount());
     }
     
+	@Test
     public void testFocusWithCodeAndNamespace() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -68,6 +78,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("005",roots.getResolvedConceptReference(0).getCode());
     }
     
+	@Test
     public void testFocusWithCodeAndNonExistentNamespace() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -82,6 +93,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
 		fail();
     }
     
+	@Test
     public void testFocusWithCodeAndWrongNamespace() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -93,6 +105,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals(0,roots.getResolvedConceptReferenceCount());
     }
     
+	@Test
     public void testFocusWithCodeAndCodingScheme() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -105,6 +118,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("005",roots.getResolvedConceptReference(0).getCode());
     }
 
+	@Test
     public void testFocusWithCodeAndNamespaceAndCodingScheme() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -118,6 +132,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("005",roots.getResolvedConceptReference(0).getCode());
     }
     
+	@Test
     public void testFocusWithCodeAndNonExistentNamespaceAndCorrectCodingScheme() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -133,6 +148,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
 		fail();
     }
     
+	@Test
     public void testFocusWithCodeAndCorrectNamespaceAndWrongCodingScheme() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -148,6 +164,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
 		fail();
     }
     
+	@Test
     public void testFocusWithCodeAndCorrectNamespaceAndCorrectCodingSchemeWithUnion() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("E0001");
@@ -165,6 +182,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("E0001",roots.getResolvedConceptReference(0).getCode());
     }
     
+	@Test
     public void testFocusWithCodeAndCorrectNamespaceAndCorrectCodingSchemeWithUnionOtherCodingScheme() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("A0001");
@@ -182,6 +200,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals("A0001",roots.getResolvedConceptReference(0).getCode());
     }
     
+	@Test
     public void testFocusWithCodeAndCorrectNamespaceAndWrongCodingSchemeWithUnion() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");
@@ -198,6 +217,7 @@ public class FocusTest extends BaseCodedNodeGraphTest {
     	assertEquals(0,roots.getResolvedConceptReferenceCount());
     }
     
+	@Test
     public void testFocusWithCodeAndCorrectNamespaceAndWrongCodingSchemeWithIntersection() throws Exception {
     	ConceptReference ref = new ConceptReference();
     	ref.setCode("005");

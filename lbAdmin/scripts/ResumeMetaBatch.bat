@@ -9,4 +9,4 @@ REM   -version,--version of vocabulary to resume.
 REM
 REM Example: ResumeMetaBatch -in "file:///path/to/directory/" -uri "urn:123.4" -version "2.0"
 REM
-java -Xmx1600m -XX:PermSize=256m -cp "../runtime/lbPatch.jar;../runtime/lbRuntime.jar" org.lexgrid.loader.meta.launch.MetaBatchLoaderLauncher %*
+java -Xmx1600m -XX:PermSize=256m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.loader.meta.launch.MetaBatchLoaderLauncher %*

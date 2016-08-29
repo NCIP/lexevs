@@ -20,9 +20,10 @@ package org.lexevs.dao.index.access;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.apache.commons.lang.StringUtils;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
@@ -31,11 +32,10 @@ import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.v2010.entity.SingleTemplateDisposableLuceneCommonEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.system.model.LocalCodingScheme;
 import org.lexevs.system.service.SystemResourceService;
 import org.springframework.util.Assert;
-
-import edu.mayo.informatics.indexer.utility.MetaData;
 
 /**
  * The Class IndexDaoManager.
@@ -56,7 +56,7 @@ public class IndexDaoManager {
 	/** The system resource service. */
 	private SystemResourceService systemResourceService;
 	
-	private MetaData metaData;
+	private ConcurrentMetaData concurrentMetaData;
 	
 	private IndexRegistry indexRegistry;
 
@@ -78,6 +78,12 @@ public class IndexDaoManager {
 		return this.searchDaos.get(0);
 	}
 	
+	public SearchDao getSearchDao(
+			Set<CodingSchemeReference> codeSystemsToInclude) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public CommonEntityDao getCommonEntityDao(List<AbsoluteCodingSchemeVersionReference> codingSchemes) {
 
 		LuceneIndexTemplate template = 
@@ -118,17 +124,10 @@ public class IndexDaoManager {
 	protected LexEvsIndexFormatVersion getLexGridSchemaVersion(String uri, String version){
 		try {
 			String codingSchemeName = systemResourceService.getInternalCodingSchemeNameForUserCodingSchemeName(uri, version);
+			LexEvsIndexFormatVersion indexVersion = new LexEvsIndexFormatVersion();
+			indexVersion.setModelFormatVersion("2010");
+			return indexVersion;
 			
-			LocalCodingScheme lcs = LocalCodingScheme.getLocalCodingScheme(codingSchemeName, version);
-			String indexName = metaData.getIndexMetaDataValue(lcs.getKey());
-	
-			String indexVersion = metaData.getIndexMetaDataValue(indexName, "lgModel");
-			
-			Assert.state(StringUtils.isNotBlank(indexName) &&
-					StringUtils.isNotBlank(indexVersion), "A Lucene Index could not be found for URI: " +
-					uri + " Version: " + version + ". Reindexing may be needed.");
-			
-			return LexEvsIndexFormatVersion.parseStringToVersion(indexVersion);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -206,12 +205,12 @@ public class IndexDaoManager {
 		return metadataDaos;
 	}
 
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
 	}
 
-	public MetaData getMetaData() {
-		return metaData;
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
 	}
 
 	public IndexRegistry getIndexRegistry() {

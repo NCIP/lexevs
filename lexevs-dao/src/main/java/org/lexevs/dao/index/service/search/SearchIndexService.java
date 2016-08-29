@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -39,8 +40,6 @@ public interface SearchIndexService {
 	
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity);
 
-	public void optimize();
-
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
 			String codingSchemeVersion, 
@@ -52,7 +51,6 @@ public interface SearchIndexService {
 	
 	public List<ScoreDoc> query(
 		Set<AbsoluteCodingSchemeVersionReference> codeSystemToInclude, 
-		Set<AbsoluteCodingSchemeVersionReference> codeSystemToExclude,
 		Query query);
 	
 	public Document getById(int id);
@@ -60,5 +58,8 @@ public interface SearchIndexService {
 	public Analyzer getAnalyzer();
 
 	public void createIndex(AbsoluteCodingSchemeVersionReference ref);
+
+	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
+			int doc);
 
 }

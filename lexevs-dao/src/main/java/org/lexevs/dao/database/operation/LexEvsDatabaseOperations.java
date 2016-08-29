@@ -71,6 +71,8 @@ public interface LexEvsDatabaseOperations {
 	
 	public void dropCodingSchemeTables(String codingSchemeUri, String version);
 	
+	public void dropCodingSchemeTablesByPrefix(String prefix);
+	
 	public void dropCodingSchemeHistoryTables();
 	
 	public void dropCodingSchemeTables();
@@ -136,6 +138,8 @@ public interface LexEvsDatabaseOperations {
 	public void addRootRelationNode(String codingSchemeUri, String codingSchemeVersion, 
 			List<String> associationNames, String relationContainerName, 
 			RootOrTail rootOrTail, TraverseAssociations traverse);
+
+	void dropCodingSchemeHistoryTablesByPrefix(String prefix);
 
 	
 }

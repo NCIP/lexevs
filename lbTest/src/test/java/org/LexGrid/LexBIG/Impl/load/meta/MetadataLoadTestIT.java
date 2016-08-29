@@ -58,6 +58,7 @@ public class MetadataLoadTestIT extends DataLoadTestBase {
 	 */
 	@Test
 	public void testMetadataLoadCount() throws LBException{
+		//TODO needs a replacement for ChainedFilter in AbstractLazyCodeHolderFactory;
 		assertTrue(lbsm.listCodingSchemes().getAbsoluteCodingSchemeVersionReferenceCount() > 0);
 	}
 	

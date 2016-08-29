@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document documentID="47">
-	<intField name="age" store="true" padTo="3" index="true">5</intField>
-	<dateField name="dob" store="true" index="true">2002-05-25</dateField>
-	<textField name="title" store="true" tokenize="true" index="true">my title</textField>
-	<textField name="body" store="false" tokenize="true" index="true">This document has been reviewed by W3C Members and other interested parties and has been endorsed by the Director as a W3C Recommendation. It is a stable document and may be used as reference material or cited as a normative reference from an other document. W3C's role in making the Recommendation is to draw attention to the specification and to promote its widespread deployment. This enhances the functionality and interoperability of the Web."</textField>
-</document>

@@ -18,6 +18,9 @@
  */
 package org.lexevs.dao.database.utility;
 
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.springframework.core.io.Resource;
 
 /**

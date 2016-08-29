@@ -8,4 +8,4 @@
 #
 # Example: LoadMIFVocabulary -in "file:///path/to/file.xml" -a
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadMIFVocabulary $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadMIFVocabulary $@

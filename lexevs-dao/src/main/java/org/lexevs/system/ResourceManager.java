@@ -248,7 +248,6 @@ public class ResourceManager implements SystemResourceService {
 
         codingSchemeToServerMap_ = new Hashtable<String, String>();
         sqlServerInterfaces_ = new Hashtable<String, SQLInterface>();
-        //sqlServerBaseInterfaces_ = new Hashtable<String, SQLInterfaceBase>();
         historySqlServerInterfaces_ = new Hashtable<String, SQLHistoryInterface>();
         codingSchemeLocalNamesToInternalNameMap_ = new Hashtable<String, Hashtable<String, String>>();
         internalCodingSchemeNameUIDMap_ = new Hashtable<String, List<LocalCodingScheme>>();
@@ -339,22 +338,6 @@ public class ResourceManager implements SystemResourceService {
             }
         }
         historySqlServerInterfaces_ = temp;
-    }
-
-    /**
-     * Reread auto load indexes.
-     * 
-     * @throws LBInvocationException the LB invocation exception
-     * @throws UnexpectedInternalError the unexpected internal error
-     */
-    public void rereadAutoLoadIndexes() throws LBInvocationException, UnexpectedInternalError {
-        // This wont handle removes - but does handle additions.
-        IndexInterface is = indexInterfaces_.get(getSystemVariables().getAutoLoadIndexLocation());
-        is.initCodingSchemes();
-        ArrayList<String> keys = is.getCodeSystemKeys();
-        for (int i = 0; i < keys.size(); i++) {
-            codingSchemeToIndexMap_.put(keys.get(i), getSystemVariables().getAutoLoadIndexLocation());
-        }
     }
 
     /**
@@ -933,16 +916,6 @@ public class ResourceManager implements SystemResourceService {
         return indexInterfaces_.get(indexKey);
     }
 
-    /**
-     * Gets the meta data index interface.
-     * 
-     * @return the meta data index interface
-     */
-    public IndexInterface getMetaDataIndexInterface() {
-        logger_.debug("Returning MetaData index interface");
-        // metadata index is always in the autoload index location
-        return indexInterfaces_.get(systemVars_.getAutoLoadIndexLocation());
-    }
 
     /**
      * Gets the all sql interfaces.
@@ -1185,13 +1158,6 @@ public class ResourceManager implements SystemResourceService {
                 // clear the lru cache.
 
                 cache_.clear();
-                // remove it from the metadata search
-                
-                //TODO: Move this to the service layer
-                //BaseMetaDataLoader.removeMeta(codingSchemeReference.getCodingSchemeURN(), codingSchemeReference
-                //       .getCodingSchemeVersion());
-
-                // remove it from the registry
                 registry_.remove(codingSchemeReference);
                 WriteLockManager.instance().releaseLock(codingSchemeReference.getCodingSchemeURN(),
                         codingSchemeReference.getCodingSchemeVersion());

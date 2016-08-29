@@ -14,4 +14,4 @@
 # Example: LoadUMLSHistory -in "file:///path/to/META.folder" -r
 #          LoadUMLSHistory -in "file:///path/to/META.folder" -v 0
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.LoadUMLSHistory $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadUMLSHistory $@

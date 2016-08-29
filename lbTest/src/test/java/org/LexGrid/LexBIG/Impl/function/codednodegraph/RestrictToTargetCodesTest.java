@@ -21,12 +21,16 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class RestrictToTargetCodesTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -34,12 +38,13 @@ public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToTargetCodes() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList("Ford", AUTO_SCHEME));
- 
-        cng.restrictToTargetCodes(cns);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList("Ford", AUTO_SCHEME));
+
+        cng = cng.restrictToTargetCodes(cns);
         
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(null, 
@@ -64,12 +69,13 @@ public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToTargetCodesTwoCodes() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[]{"Ford", "T0001"}));
- 
-        cng.restrictToTargetCodes(cns);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[]{"Ford", "T0001"}));
+
+        cng = cng.restrictToTargetCodes(cns);
         
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(null, 
@@ -93,12 +99,13 @@ public class RestrictToTargetCodesTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testRestrictToTargetCodesNoMatch() throws Exception {
         
         CodedNodeSet cns = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
-        cns.restrictToCodes(Constructors.createConceptReferenceList(new String[]{"NO_MATCH"}));
- 
-        cng.restrictToTargetCodes(cns);
+        cns = cns.restrictToCodes(Constructors.createConceptReferenceList(new String[]{"NO_MATCH"}));
+
+        cng = cng.restrictToTargetCodes(cns);
         
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(null, 

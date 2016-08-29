@@ -20,8 +20,8 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Query.Search;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
@@ -57,7 +57,8 @@ public class LuceneSearch extends AbstractSearch {
         
         try {
             return queryParser.parse(LuceneLoaderCode.PROPERTY_VALUE_FIELD + ":(" + 
-                    super.handleWhiteSpaceCharacters(searchText) + ")");
+                            searchText
+                            + ")");
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

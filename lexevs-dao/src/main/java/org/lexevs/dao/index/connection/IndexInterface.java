@@ -19,39 +19,17 @@
 package org.lexevs.dao.index.connection;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.DocIdSetIterator;
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.QueryFilter;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.indexer.api.IndexerService;
 import org.lexevs.exceptions.InternalException;
 import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.model.LocalCodingScheme;
-
-import edu.mayo.informatics.indexer.api.IndexerService;
-import edu.mayo.informatics.indexer.api.SearchServiceInterface;
-import edu.mayo.informatics.indexer.api.exceptions.IndexNotFoundException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalErrorException;
-import edu.mayo.informatics.indexer.api.exceptions.InternalIndexerErrorException;
-import edu.mayo.informatics.indexer.lucene.IDFNeutralSimilarity;
-import edu.mayo.informatics.indexer.lucene.LuceneIndexReader;
 
 /**
  * This classes manages the interactions with a single lucene index directory.
@@ -65,21 +43,9 @@ public class IndexInterface {
     
     /** The service_. */
     private IndexerService service_;
-
-    /** The index searchers_. */
-    private Hashtable<String, SearchServiceInterface> indexSearchers_;
-    
-    /** The index readers_. */
-    private Hashtable<String, LuceneIndexReader> indexReaders_;
     
     /** The code system to index map_. */
     private Hashtable<String, String> codeSystemToIndexMap_;
-    
-    /** The boundry doc id set map. */
-    private HashMap<String, DocIdSet> boundryDocIdSetMap;
-
-    /** The code boundry filter_. */
-    private Filter codeBoundryFilter_;
 
     /**
      * Gets the logger.
@@ -118,9 +84,6 @@ public class IndexInterface {
         }
     }
 
-    /*
-     * Initialize all of the lucene index reading/searching parts.
-     */
     /**
      * Inits the.
      * 
@@ -128,15 +91,6 @@ public class IndexInterface {
      * @throws UnexpectedInternalError the unexpected internal error
      */
     private void init() throws LBInvocationException, UnexpectedInternalError {
-        indexSearchers_ = new Hashtable<String, SearchServiceInterface>();
-        indexReaders_ = new Hashtable<String, LuceneIndexReader>();
-        boundryDocIdSetMap = new HashMap<String, DocIdSet>();
-
-        // See the top of the class for a description of what the codeBoundry
-        // stuff is used for.
-        BooleanQuery includesFilterQuery = new BooleanQuery();
-        includesFilterQuery.add(new BooleanClause(new TermQuery(new Term("codeBoundry", "T")), Occur.MUST));
-        codeBoundryFilter_ = new QueryFilter(includesFilterQuery);
        
         initCodingSchemes();
     }
@@ -148,66 +102,24 @@ public class IndexInterface {
      */
     public void initCodingSchemes() throws LBInvocationException {
         Hashtable<String, String> temp = new Hashtable<String, String>();
-
         try {
             service_.refreshAvailableIndexes();
-        } catch (InternalErrorException e) {
+        } catch (RuntimeException e) {
             String logId = getLogger()
                     .error(
                             "There was an unexpected error while rereading the index metadata at "
                                     + service_.getRootLocation(), e);
             throw new LBInvocationException("There was an unexpected internal error", logId);
         }
-
         try {
             String[] codingSchemeVersionPairs = service_.getMetaData().getIndexMetaDataKeys();
-
-            // The index metadata file has notes that at the top level map
-            // coding system / version combination
-            // strings to the index that contains them. I want to find all of
-            // the unique index locations.
-            //HashSet<String> uniqueIndexLocations = new HashSet<String>();
             for (int i = 0; i < codingSchemeVersionPairs.length; i++) {
             	temp.put(codingSchemeVersionPairs[i], service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
-                
-            	//Don't bother with this...
-            	//uniqueIndexLocations.add(service_.getMetaData().getIndexMetaDataValue(codingSchemeVersionPairs[i]));
             }
-
-            // TODO: This index metadata file is.... weird.
-            // We don't need the code below if we are consistent about key creation.
-            // It would be nice to do this differently -- Castor/XStream marshalling... etc...
-            // This should simplify things and keep backward compatiblity.
-            // TODO:
-            
-            // now, for each index location, read the coding scheme name and
-            // version information, and
-            // add that to the hashtable.
-            /*
-            Iterator<String> indexLocations = uniqueIndexLocations.iterator();
-            while (indexLocations.hasNext()) {
-                String currentLocation = indexLocations.next();
-
-                LocalCodingScheme lcs = new LocalCodingScheme();
-                lcs.codingSchemeName = service_.getMetaData().getIndexMetaDataValue(currentLocation, "codingScheme");
-                lcs.version = service_.getMetaData().getIndexMetaDataValue(currentLocation, "version");
-
-                temp.put(lcs.getKey(), currentLocation);
-            } 
-            */
             codeSystemToIndexMap_ = temp;
-        } catch (InternalErrorException e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("There was a problem reading the index metadata.", e);
         }
-    }
-
-    /**
-     * Gets the code boundry filter.
-     * 
-     * @return the code boundry filter
-     */
-    public Filter getCodeBoundryFilter() {
-        return codeBoundryFilter_;
     }
 
     /**
@@ -223,200 +135,7 @@ public class IndexInterface {
         }
         return keys;
     }
-    
-    /**
-     * Gets the boundary document iterator.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @return the boundary document iterator
-     */
-    public DocIdSetIterator getBoundaryDocumentIterator(String internalCodeSystemName, String internalVersionString){
-        String indexName = this.mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-        
-        if(!boundryDocIdSetMap.containsKey(indexName)){
-            try {
-                IndexReader reader = getIndexReader(internalCodeSystemName, internalVersionString).getBaseIndexReader();
-                
-                boundryDocIdSetMap.put(indexName, this.getCodeBoundryFilter().getDocIdSet(reader));
 
-            } catch (Exception e) {
-                throw new RuntimeException("There was a problem initializing the index.", e);
-            } 
-        }
-        
-        return boundryDocIdSetMap.get(indexName).iterator();
-    }
-
-    /*
-     * Get a index reader for a given code system.
-     */
-    /**
-     * Gets the index reader.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @return the index reader
-     */
-    public LuceneIndexReader getIndexReader(String internalCodeSystemName, String internalVersionString) {
-        String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-
-        LuceneIndexReader lir = (LuceneIndexReader) indexReaders_.get(indexName);
-
-        if (lir != null) {
-            return lir;
-        }
-        // if it did equal null, its not in the cache - open one up and put it
-        // in the cache.
-        try {
-            lir = service_.getLuceneIndexReader(indexName);
-            indexReaders_.put(indexName, lir);
-
-            return lir;
-        } catch (IndexNotFoundException e) {
-            throw new RuntimeException("There was an error opening the index for " + internalCodeSystemName
-                    + ".  I tried to open the index " + indexName + " from " + service_.getRootLocation(), e);
-        } catch (InternalIndexerErrorException e) {
-            throw new RuntimeException("There was an error opening the index for " + internalCodeSystemName
-                    + ".  I tried to open the index " + indexName + " from " + service_.getRootLocation(), e);
-        }
-    }
-
-    /**
-     * Reopen meta data index reader.
-     */
-    public void reopenMetaDataIndexReader() {
-        // clear out the current reader, it will be reopened when necessary.
-        String indexName = SystemVariables.getMetaDataIndexName();
-        indexReaders_.remove(indexName);
-        indexSearchers_.remove(indexName);
-    }
-
-    /**
-     * Gets the meta data index reader.
-     * 
-     * @return the meta data index reader
-     */
-    public LuceneIndexReader getMetaDataIndexReader() {
-        String indexName = SystemVariables.getMetaDataIndexName();
-        LuceneIndexReader lir = (LuceneIndexReader) indexReaders_.get(indexName);
-
-        if (lir != null) {
-            return lir;
-        }
-        // if it did equal null, its not in the cache - open one up and put it
-        // in the cache.
-        try {
-            lir = service_.getLuceneIndexReader(indexName);
-            indexReaders_.put(indexName, lir);
-
-            return lir;
-        } catch (IndexNotFoundException e) {
-            throw new RuntimeException("There was an error opening the index for the MetaData Index", e);
-        } catch (InternalIndexerErrorException e) {
-            throw new RuntimeException("There was an error opening the index for the MetaData Index", e);
-        }
-    }
-
-    /**
-     * Reopen index.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @throws LBInvocationException the LB invocation exception
-     */
-    public void reopenIndex(String internalCodeSystemName, String internalVersionString) throws LBInvocationException {
-        // remove the index searcher, so a new one gets constructed.
-        String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-        SearchServiceInterface ssi = indexSearchers_.remove(indexName);
-        // tell the lucene index to reopen its internal readers.
-        try {
-            LuceneIndexReader lir = indexReaders_.get(indexName);
-            if (lir != null) {
-                lir.reopen();
-            }
-        } catch (Exception e1) {
-            String id = getLogger().error("Problem reopening index", e1);
-            throw new LBInvocationException("Unexpected problem reopening index", id);
-        }
-        
-        boundryDocIdSetMap.remove(indexName);
-
-        try {
-            if (ssi != null) {
-                ssi.close();
-            }
-        } catch (InternalIndexerErrorException e) {
-            // ignore these errors. These interfaces won't be used again anyway.
-        }
-    }
-
-    /*
-     * Get an index searcher for a given code system.
-     */
-    /**
-     * Gets the searcher.
-     * 
-     * @param internalCodeSystemName the internal code system name
-     * @param internalVersionString the internal version string
-     * 
-     * @return the searcher
-     */
-    public SearchServiceInterface getSearcher(String internalCodeSystemName, String internalVersionString){
-        String indexName = mapCodeSystemToIndexName(internalCodeSystemName, internalVersionString);
-
-        SearchServiceInterface si = (SearchServiceInterface) indexSearchers_.get(indexName);
-
-        if (si != null) {
-            return si;
-        }
-        // if it did equal null, its not in the cache - open one up and put it
-        // in the cache.
-        try {
-            si = service_.getIndexSearcher(indexName);
-            si.setSimilarity(new IDFNeutralSimilarity());
-            indexSearchers_.put(indexName, si);
-
-            return si;
-        } catch (IndexNotFoundException e) {
-            throw new RuntimeException("There was an error opening the index searcher for "
-                    + internalCodeSystemName, e);
-        } catch (InternalIndexerErrorException e) {
-            throw new RuntimeException("There was an error opening the index searcher for "
-                    + internalCodeSystemName, e);
-        }
-    }
-
-    /**
-     * Gets the meta data searcher.
-     * 
-     * @return the meta data searcher
-     */
-    public SearchServiceInterface getMetaDataSearcher() {
-        String indexName = SystemVariables.getMetaDataIndexName();
-
-        SearchServiceInterface si = (SearchServiceInterface) indexSearchers_.get(indexName);
-
-        if (si != null) {
-            return si;
-        }
-        // if it did equal null, its not in the cache - open one up and put it
-        // in the cache.
-        try {
-            si = service_.getIndexSearcher(indexName);
-            si.setSimilarity(new IDFNeutralSimilarity());
-            indexSearchers_.put(indexName, si);
-
-            return si;
-        } catch (IndexNotFoundException e) {
-            throw new RuntimeException("There was an error opening the metadata index searcher", e);
-        } catch (InternalIndexerErrorException e) {
-            throw new RuntimeException("There was an error opening the metadata index searcher.", e);
-        }
-    }
 
     /**
      * Delete index.
@@ -436,24 +155,6 @@ public class IndexInterface {
 
             String indexName = codeSystemToIndexMap_.get(lcs.getKey());
             codeSystemToIndexMap_.remove(lcs.getKey());
-
-            SearchServiceInterface ssi = indexSearchers_.get(indexName);
-            if (ssi != null) {
-                ssi.close();
-            }
-
-            indexSearchers_.remove(indexName);
-
-            LuceneIndexReader lir = indexReaders_.get(indexName);
-            if (lir != null) {
-                lir.close();
-            }
-
-            indexReaders_.remove(indexName);
-
-            // clean up the index metadata file.
-
-            service_.getMetaData().removeAllIndexMetaDataValue(indexName);
             service_.getMetaData().removeIndexMetaDataValue(lcs.getKey());
 
             // delete the index
@@ -486,19 +187,6 @@ public class IndexInterface {
     }
 
     /**
-     * Gets the meta location.
-     * 
-     * @return the meta location
-     */
-    public String getMetaLocation() {
-        try {
-            return service_.getMetaData().getMetaLocation();
-        } catch (IOException e) {
-            throw new RuntimeException("Unexpected Error", e);
-        }
-    }
-
-    /**
      * Gets the base indexer service.
      * 
      * @return the base indexer service
@@ -524,26 +212,4 @@ public class IndexInterface {
         }
     }
 
-    /**
-     * Close.
-     */
-    public void close() {
-        Enumeration<SearchServiceInterface> ssi = indexSearchers_.elements();
-        while (ssi.hasMoreElements()) {
-            try {
-                ssi.nextElement().close();
-            } catch (InternalIndexerErrorException e) {
-                // do nothing
-            }
-        }
-
-        Enumeration<LuceneIndexReader> lir = indexReaders_.elements();
-        while (lir.hasMoreElements()) {
-            try {
-                lir.nextElement().close();
-            } catch (InternalIndexerErrorException e) {
-                // do nothing
-            }
-        }
-    }
 }

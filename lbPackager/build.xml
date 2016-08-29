@@ -26,7 +26,7 @@ You may obtain a copy of the License at
 	<!-- *** TO BE CUSTOMIZED FOR EACH BUILD *** -->
 	<!-- *************************************** -->
 	<property name="prodID" value="LexEVS"/> <!-- Product ID -->
-	<property name="prodTitle" value = "LexGrid Enterprise Vocabulary Services for EVS, LexEVS"/><!-- Product Title -->
+	<property name="prodTitle" value = "LexEVS"/><!-- Product Title -->
 	
 	<target name="init-ivy">
 	
@@ -400,9 +400,6 @@ You may obtain a copy of the License at
 
 	
 	<target name="predef" description="copy predefined content to the build directory">
-		<!-- Product docs -->
-		<copy toDir="${pkg-doc}" file="${file.dir}/LexBIG_Installation_Admin_Guide.pdf"/>
-		<copy toDir="${pkg-doc}" file="${file.dir}/LexBIG_Programmer_Guide.pdf"/>
         <!-- Config files -->
 		<copy toFile="${pkg-resources-config}/lbconfig.props" file="${file.dir}/config-lexbig.props"/>
 		<copy toDir="${pkg-resources}" file="${lbTest}/resources/testData/SystemReleaseHistory.txt"/>
@@ -436,7 +433,7 @@ You may obtain a copy of the License at
 	
 	<target name="predef-cbio" depends="predef" description="copy predefined content specific to cBIO projects">
 		<copy toFile="${pkg-resources-config}/lbconfig.props" file="${file.dir}/config-lexbio.props" overwrite="true"/>
-		<copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbio.txt" overwrite="true"/>
+		<!--copy toFile="${pkg-root}/readme.txt" file="${file.dir}/readme-lexbio.txt" overwrite="true"/-->
 		<copy toFile="${basedir}/langsel-image.png" file="${file.dir}/langsel-image-lexbio.png" overwrite="true"/>
 	</target>	
 
@@ -447,13 +444,6 @@ You may obtain a copy of the License at
   		</antcall>
 	</target>
 		
-	<target name="Indexer"   description="packages Indexer classes">
-		<antcall target="common-project-build">
-   			<param name="project" value="Indexer"/>
-			<param name="module" value="indexer"/>
-  		</antcall>
-	</target>
-	
 	<target name="lgResourceReader"  depends="lgUtility" description="packages lgResourceReader classes">	
 		<antcall target="common-project-build">
    			<param name="project" value="lgResourceReader"/>
@@ -495,15 +485,8 @@ You may obtain a copy of the License at
 			<param name="module" value="umls-loader"/>
   		</antcall>
 	</target>
-			
-	<target name="rxnorm-loader"   description="packages Umls Loader classes">
-		<antcall target="common-project-build">
-   			<param name="project" value="rxnorm-loader"/>
-			<param name="module" value="rxnorm-loader"/>
-  		</antcall>
-	</target>
 	
-	<target name="lgConverter" depends="lgUtility, Indexer, lgResourceReader"  description="packages LexGrid Converter classes">
+	<target name="lgConverter" depends="lgUtility, lgResourceReader"  description="packages LexGrid Converter classes">
 		<antcall target="common-project-build">
    			<param name="project" value="lgConverter"/>
 			<param name="module" value="lexgrid-converter"/>
@@ -517,7 +500,7 @@ You may obtain a copy of the License at
   		</antcall>
 	</target>
 	
-	<target name="lexevs-dao" depends="lgModel,lbModel,Indexer,lgUtility" description="packages the LexEVS DAO">
+	<target name="lexevs-dao" depends="lgModel,lbModel,lgUtility" description="packages the LexEVS DAO">
 		<antcall target="common-project-build">
    			<param name="project" value="lexevs-dao"/>
 			<param name="module" value="lexevs-dao"/>
@@ -624,75 +607,78 @@ You may obtain a copy of the License at
 			</fileset>
   		</copy>
 		
+		<!-- copy and rename the versioned gui jar to lexbig-gui.jar -->
+		<copy toFile="${pkg-gui}/lbGUI.jar" file="${lbGui.dir}/target/lexbig-gui-${vBuild}.jar" overwrite="true"/>
+		
 		<!--create the start scripts-->
-		<echo file="${pkg-gui}/Windows-lbGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+		<!--echo file="${pkg-gui}/Windows-lbGUI.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 pause
-		</echo>	
+		</echo-->	
 		<echo file="${pkg-gui}/Windows_64-lbGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 pause
 		</echo>	
-		<echo file="${pkg-gui}/Linux-lbGUI.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
-		</echo>
+		<!--echo file="${pkg-gui}/Linux-lbGUI.sh">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
+		</echo-->
 		<echo file="${pkg-gui}/OSX-lbGUI.sh">
-java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI
 		</echo>
 		<!--create the start scripts-->
-		<echo file="${pkg-gui}/Windows-lbGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+		<!--echo file="${pkg-gui}/Windows-lbGUI-browser.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 pause
-		</echo>	
+		</echo-->	
 		<echo file="${pkg-gui}/Windows_64-lbGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 pause
 		</echo>	
-		<echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
-		</echo>
+		<!--echo file="${pkg-gui}/Linux-lbGUI-browser.sh">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
+		</echo-->
 		<echo file="${pkg-gui}/OSX-lbGUI-browser.sh">
-			java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+			java -Xmx3000M -XX:MaxPermSize=256M -d64 -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-browser-lbGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_GUI -d
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_GUI -d
 		</echo>
 		
 		<!-- Start Value Sets GUI scripts-->
-		<echo file="${pkg-gui}/Windows-lbVSGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+		<!--echo file="${pkg-gui}/Windows-lbVSGUI.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
-				</echo>
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
+				</echo-->
 				<echo file="${pkg-gui}/OSX-lbVSGUI.sh">
-java  -Xmx3000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java  -Xmx3000M -XX:MaxPermSize=256M -Djava.library.path=OSX/ -XstartOnFirstThread -cp lbGUI.jar:OSX/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 		<echo file="${pkg-gui}/Windows_64-lbVSGUI.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 pause
 		</echo>
 		<echo file="${pkg-gui}/Windows_64-lbVSGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx1000M -XX:MaxPermSize=256M -cp lbGUI.jar;windows_64/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 pause
 		</echo>
 		<echo file="${pkg-gui}/Linux_64-lbVSGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI
 				</echo>
 				<!--create the start scripts-->
-				<echo file="${pkg-gui}/Windows-lbVSGUI-browser.bat">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+				<!--echo file="${pkg-gui}/Windows-lbVSGUI-browser.bat">
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=windows/ -cp lbGUI.jar;windows/swt.jar;../runtime/lbPatch.jar;../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 		pause
 				</echo>	
 				<echo file="${pkg-gui}/Linux-lbVSGUI-browser.sh">
-java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
-				</echo>
+java -Xmx1000M -XX:MaxPermSize=256M -Djava.library.path=linux/ -cp lbGUI.jar:linux/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+				</echo-->
 				<echo file="${pkg-gui}/Linux_64-browser-lbVSGUI.sh">
-java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime/lbRuntime.jar org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
+java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.jar:linux_x86_64/swt.jar:../runtime/lbPatch.jar:../runtime-components/extLib/* org.LexGrid.LexBIG.gui.LB_VSD_GUI -d
 				</echo>
 		<!-- End Value Sets GUI scripts -->
 		<fixcrlf srcdir="${pkg-gui}/" eol="lf" includes="*.command" />
@@ -742,14 +728,15 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 			    <include name="lib/**/*.jar"/>
 			</fileset>
 		</copy>
+		
 	</target>
 	
 	<!--Construct the runtime.jar, merging it's manifests together at the same time-->
 	<target name="lexbig.jar" depends="lbModel, lbInterfaces, 
 		lexevs-dao, lgConverter, lexrdf, lbImpl, lbAdmin, 
-		Indexer, lgResourceReader, lgValueSets,lbExamples,
+		lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
-		umls-loader, meta-loader, rxnorm-loader, lbGUI, lbTest">
+		umls-loader, meta-loader, lbGUI, lbTest">
 		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
@@ -763,13 +750,13 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 			includes="META-INF/*"
 			update="true"/>
 
-		<jar jarfile="${pkg-runtime}/lbRuntime.jar" filesetmanifest="merge" duplicate="preserve">
+		<!--jar jarfile="${pkg-runtime}/lbRuntime.jar" filesetmanifest="merge" duplicate="preserve">
 			<manifest>
 				  <attribute name="Sealed" value="false"/>
 			</manifest>
         	<zipgroupfileset file="${pkg-components}/lexbig.jar" />
 			<zipgroupfileset file="${dist.dir}/LexEVS_localRuntime_dependencies.jar" />
-		</jar>
+		</jar-->
 		
 		<mkdir dir="${pkg-runtime}/sqlDrivers"/>
 		<copy todir="${pkg-runtime}/sqlDrivers">
@@ -780,6 +767,10 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 					<include name="*.html"/>
 			</fileset>
 		</copy>
+		
+		<!-- copy the lexbig.jar to the dist dir and rename it to the versioned name. --> 
+		<copy toFile="${dist.dir}/lexbig-${vBuild}.jar" file="${pkg-components}/lexbig.jar" overwrite="true"/>
+				
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
@@ -833,7 +824,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		lgModel, lgUtility,
 		lgResourceReader,
 		lbModel, lbInterfaces, lbImpl, lbAdmin,
-		lbExamples, lbGUI, lbTest, Indexer, lgConverter,
+		lbExamples, lbGUI, lbTest, lgConverter,
 		lexbig.jar" >
 		<delete dir="${basedir}/../lbPackager/junit-results" />
 		<mkdir dir="${basedir}/../lbPackager/junit-results" />
@@ -917,15 +908,9 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		<property name="cmdLineInstallFile" value="${prodID}-install-config-${vBuild}.xml"/>
 		<copy file="${file.dir}/izpack-lexbig-cmdline-install.xml" tofile="${dist.dir}/${cmdLineInstallFile}"/>
 		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_INSTALLPATH@@" value="/home/LexGrid/${prodID}/${vBuild}"/>
-		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_PRODID@@" value="${prodID}"/>
-		<!-- Copy the install/admin guide for separate upload -->
-		<!-- The guide is imbedded, but they also need the guide to -->
-		<!-- perform the initial installation. -->
-		<copy file="${file.dir}/LexBIG_Installation_Admin_Guide.pdf" tofile="${dist.dir}/LexBIG-install-admin-guide-${vBuild}.pdf"/>
-		<!-- Also copy the programmer guide for separate upload -->
-		<!-- The guide is imbedded, but they may want to reference the guide -->
-		<!-- to learn about the API before installation. -->
-		<copy file="${file.dir}/LexBIG_Programmer_Guide.pdf" tofile="${dist.dir}/LexBIG-programmer-guide-${vBuild}.pdf"/>
+		<replace file="${dist.dir}/${cmdLineInstallFile}" token="@@REPLACED_BY_BUILD_PRODID@@" value="${prodID}"/>	
+		<!-- copy the extLib dir to the dist dir, zip and add a versioned name. --> 
+		<zip destfile="${dist.dir}/extLib-${vBuild}.zip" basedir="${pkg-components}/extLib"/> 	
 	</target>
 
 	 <!-- depends="lexbig.jar, javadoc" -->

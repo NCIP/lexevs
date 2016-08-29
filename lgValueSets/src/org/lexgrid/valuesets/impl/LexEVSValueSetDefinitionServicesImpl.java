@@ -52,6 +52,7 @@ import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MessageDirector;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -313,6 +314,22 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
             AbsoluteCodingSchemeVersionReferenceList csVersionList,
             String versionTag) throws LBException {
         getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
+
+        return getCodedNodeSetForValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionRevisionId, 
+        		csVersionList, versionTag, AnonymousOption.NON_ANONYMOUS_ONLY);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getCodedNodeSetForValueSetDefinition(java.net.URI, java.lang.String, org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList, java.lang.String, org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption)
+	 */
+	public ResolvedValueSetCodedNodeSet getCodedNodeSetForValueSetDefinition(
+            URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, 
+            AbsoluteCodingSchemeVersionReferenceList csVersionList,
+            String versionTag, AnonymousOption anonymousOption)
+			throws LBException {
+		
+		getLogger().logMethod(new Object[] { valueSetDefinitionURI, csVersionList, versionTag });
         if (valueSetDefinitionURI == null)
         	throw new LBException("Value Set Definition URI can not be empty");
         
@@ -326,8 +343,15 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
         
         if(vdDef != null) {
             domainNodes = getServiceHelper().getResolvedCodedNodeSetForValueSet(vdDef, csVersionList, versionTag, null);
-            if (domainNodes != null && domainNodes.getCodedNodeSet() != null)
-            	domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null);            
+            
+            if (domainNodes != null && domainNodes.getCodedNodeSet() != null) {
+            	domainNodes.getCodedNodeSet().restrictToStatus(ActiveOption.ACTIVE_ONLY, null);  
+            
+	            if (anonymousOption == null) {
+	                anonymousOption = AnonymousOption.NON_ANONYMOUS_ONLY;
+	            }
+	            domainNodes.getCodedNodeSet().restrictToAnonymous(anonymousOption);
+            }
         }
         return domainNodes;
 	}
@@ -1048,6 +1072,5 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	private ValueSetDefinitionService getValueSetDefinitionService() {
 		return this.getDatabaseServiceManager().getValueSetDefinitionService();
 	}
-
 	
 }

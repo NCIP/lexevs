@@ -58,7 +58,7 @@ public class TestOWLLoaderPreferences extends LexBIGServiceTestCase {
         cr.setCodingSchemeName(CAMERA_SCHEME_MANIFEST_URN);
         cr.setConceptCode("BUCKS");
         crl.addConceptReference(cr);
-        cns.restrictToCodes(crl);
+        cns = cns.restrictToCodes(crl);
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 

@@ -21,6 +21,7 @@ package org.LexGrid.valueset.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig;
 import org.LexGrid.valueset.impl.LexEVSPickListServicesImplTest;
 import org.LexGrid.valueset.impl.LexEVSResolvedValueSetTest;
 import org.LexGrid.valueset.impl.LexEVSValueSetDefServicesImplTest;
@@ -32,11 +33,11 @@ import org.LexGrid.valueset.impl.LexEVSValueSetDefServicesImplTest;
  */
 public class VDAllTests {
 
-	public static Test suite() {
+	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite(
 				"LG Value Set and Pick List Definition Test");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(LoadTestDataTest.class);
+		suite.addTest(AllTestsNormalConfig.orderedSuite(LoadTestDataTest.class));
 		suite.addTestSuite(LexEVSValueSetDefServicesImplTest.class);
 		suite.addTestSuite(LexEVSPickListServicesImplTest.class);
 		suite.addTestSuite(LexEVSResolvedValueSetTest.class);

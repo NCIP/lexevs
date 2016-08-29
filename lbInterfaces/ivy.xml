@@ -12,7 +12,7 @@
     <dependencies>
     	<dependency org="lexevs" name="lexgrid-model" rev="${vBuild}" conf="default"/>
     	<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
-   		<dependency org="org.apache.lucene" name="lucene-core" rev="2.4.1" conf="default"/> 	
+   		<dependency org="org.apache.lucene" name="lucene-core" rev="5.3.1" conf="default"/> 	
     	<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" conf="default" />
     </dependencies>
 </ivy-module>

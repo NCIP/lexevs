@@ -24,16 +24,11 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -43,7 +38,6 @@ import org.junit.Test;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 
 /**
  * JUnit for Resolved Value Set Service.
@@ -54,8 +48,6 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 
 	LexEVSResolvedValueSetService service;
 
-	private LexEVSValueSetDefinitionServices vds_;
-
 	public void setUp() {
 		service = new LexEVSResolvedValueSetServiceImpl();
 	}
@@ -65,11 +57,13 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		List<CodingScheme> list = service.listAllResolvedValueSets();
 		assertTrue(list.size() > 0);
 		CodingScheme scheme = list.get(0);
+		
+		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
 		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
 			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
 				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
 						"Automobiles"));
-				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.0"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
 				System.out.println("Coding Scheme: "
 						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
 				System.out.println("Version: "
@@ -102,13 +96,15 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 
 	@Test
 	public void testGetCodingSchemeMetadataForResolvedValueSetURI() throws URISyntaxException {
+		
+		// No coding scheme version or tag defined.  This will resolve against RPODCUTION tag of automobiles.
 		URI uri = new URI("SRITEST:AUTO:AllDomesticButGM");
 		CodingScheme scheme = service.getResolvedValueSetForValueSetURI(uri);
 		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
 			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
 				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
 						"Automobiles"));
-				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.0"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
 			}
 		}
 	}

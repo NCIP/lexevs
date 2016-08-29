@@ -22,12 +22,16 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class SortGraphTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class SortGraphTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -35,6 +39,7 @@ public class SortGraphTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testSortGNodeAscending() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("GM", AUTO_SCHEME), 
@@ -61,6 +66,7 @@ public class SortGraphTest extends BaseCodedNodeGraphTest {
         assertTrue(assocCons[1].getCode().equals("Chevy"));
     }
     
+	@Test
     public void testSortGNodeDescending() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("GM", AUTO_SCHEME), 
@@ -87,6 +93,7 @@ public class SortGraphTest extends BaseCodedNodeGraphTest {
         assertTrue(assocCons[1].getCode().equals("73"));
     }
     
+	@Test
     public void testSortGAssociationAscending() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("A0001", AUTO_SCHEME), 
@@ -114,6 +121,7 @@ public class SortGraphTest extends BaseCodedNodeGraphTest {
         
     }
     
+	@Test
     public void testSortGAssociationDescending() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("A0001", AUTO_SCHEME), 
@@ -141,6 +149,7 @@ public class SortGraphTest extends BaseCodedNodeGraphTest {
         
     }
     
+	@Test
     public void testTwoSortsAscending() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("A0001", AUTO_SCHEME), 
@@ -175,6 +184,7 @@ public class SortGraphTest extends BaseCodedNodeGraphTest {
                 .getAssociatedConcept(0).getCode().equals("Batteries"));      
     }
     
+	@Test
     public void testTwoSortsDescending() throws Exception {
         ResolvedConceptReference[] rcr = 
             cng.resolveAsList(Constructors.createConceptReference("A0001", AUTO_SCHEME), 

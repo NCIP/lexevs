@@ -26,13 +26,17 @@ import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class MappingTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class MappingToNodeListTest extends LexBIGServiceTestCase {
 
 	@Override
@@ -40,6 +44,7 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
 		return this.getClass().getName();
 	}
 	
+    @Test
     public void testGetSourceCodesToNodeList() throws Exception {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         
@@ -70,6 +75,7 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     	assertTrue(foundCodes.contains("C0002"));
     } 
     
+    @Test
     public void testGetTargetCodesToNodeList() throws Exception {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
         
@@ -89,8 +95,9 @@ public class MappingToNodeListTest extends LexBIGServiceTestCase {
     		foundCodes.add(itr.next().getCode());
     	}
      
-    	assertEquals(2,foundCodes.size());
+    	assertEquals(3,foundCodes.size());
     	
+    	assertTrue(foundCodes.contains("R0001"));
     	assertTrue(foundCodes.contains("E0001"));
     	assertTrue(foundCodes.contains("P0001"));
     } 

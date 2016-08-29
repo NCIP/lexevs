@@ -17,4 +17,4 @@
 # Example: ExportOwlRdf -out "file:///path/to/dir" -f
 # Example: ExportOwlRdf -out "file:///path/to/dir" -u "NCI_Thesaurus" -v "PRODUCTION" -f
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.admin.ExportOwlRdf $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.ExportOwlRdf $@

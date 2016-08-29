@@ -47,20 +47,19 @@ public class MetaDataQuery {
                 && (acsvr.getCodingSchemeVersion() == null || acsvr.getCodingSchemeVersion().length() == 0)) {
             throw new LBParameterException("The coding name or version is required");
         }
-
-        BooleanQuery query = new BooleanQuery();
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
 
         if (acsvr.getCodingSchemeURN() != null && acsvr.getCodingSchemeURN().length() > 0) {
-            query.add(new BooleanClause(new TermQuery(
+            builder.add(new BooleanClause(new TermQuery(
                     new Term("codingSchemeRegisteredName", acsvr.getCodingSchemeURN())), Occur.MUST));
         }
 
         if (acsvr.getCodingSchemeVersion() != null && acsvr.getCodingSchemeVersion().length() > 0) {
-            query.add(new BooleanClause(new TermQuery(new Term("codingSchemeVersion", acsvr.getCodingSchemeVersion())),
+            builder.add(new BooleanClause(new TermQuery(new Term("codingSchemeVersion", acsvr.getCodingSchemeVersion())),
                     Occur.MUST));
         }
 
-        return query;
+        return builder.build();
 
     }
 
@@ -68,12 +67,12 @@ public class MetaDataQuery {
         if (properties == null || properties.length == 0) {
             throw new LBParameterException("At least one property name is required");
         }
-        BooleanQuery query = new BooleanQuery();
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
         for (int i = 0; i < properties.length; i++) {
-            query.add(new BooleanClause(new TermQuery(new Term("propertyName", properties[i])), Occur.MUST));
+            builder.add(new BooleanClause(new TermQuery(new Term("propertyName", properties[i])), Occur.MUST));
         }
 
-        return query;
+        return builder.build();
 
     }
 
@@ -81,12 +80,12 @@ public class MetaDataQuery {
         if (propertyParents == null || propertyParents.length == 0) {
             throw new LBParameterException("At least one property parent is required");
         }
-        BooleanQuery query = new BooleanQuery();
+        BooleanQuery.Builder builder = new BooleanQuery.Builder();
         for (int i = 0; i < propertyParents.length; i++) {
-            query.add(new BooleanClause(new TermQuery(new Term("parentContainers", propertyParents[i])), Occur.MUST));
+            builder.add(new BooleanClause(new TermQuery(new Term("parentContainers", propertyParents[i])), Occur.MUST));
         }
 
-        return query;
+        return builder.build();
     }
 
     public static Query makeValueRestriction(String matchText, String matchAlgorithm) throws LBParameterException {

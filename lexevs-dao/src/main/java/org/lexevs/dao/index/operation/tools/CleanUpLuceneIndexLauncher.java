@@ -41,12 +41,7 @@ public class CleanUpLuceneIndexLauncher {
 	private boolean reindexMissing;
 
 	private void execute() {
-		boolean isSingleIndex = 
-			LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getIsSingleIndex();
-		
-		if(! isSingleIndex) {
-			throw new RuntimeException("Lucene Clean Up can only be executed in Single Index Mode.");
-		}
+
 		try {
 			List<AbsoluteCodingSchemeVersionReference> expectedList = 
 				new ArrayList<AbsoluteCodingSchemeVersionReference>();

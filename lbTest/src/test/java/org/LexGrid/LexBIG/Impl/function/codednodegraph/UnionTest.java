@@ -21,21 +21,21 @@ package org.LexGrid.LexBIG.Impl.function.codednodegraph;
 import java.util.Arrays;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.util.PrintUtility;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * The Class UnionTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Category(IncludeForDistributedTests.class)
 public class UnionTest extends BaseCodedNodeGraphTest {
 
     /**
@@ -43,25 +43,26 @@ public class UnionTest extends BaseCodedNodeGraphTest {
      * 
      * @throws Exception the exception
      */
+	@Test
     public void testMultipleToNodeListUnionsWithPropertyRestriction() throws Exception {
     	CodedNodeSet cns1 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("A0001", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns2 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("T0001", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns3 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("C0001", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns4 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("Ford", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns5 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					null, true, false, -1, -1);
 		
 		cns5 = cns5.restrictToMatchingDesignations("General", SearchDesignationOption.ALL, "LuceneQuery", null);
@@ -83,25 +84,26 @@ public class UnionTest extends BaseCodedNodeGraphTest {
 		DataTestUtils.isConceptReferencePresent(Arrays.asList(list.getResolvedConceptReference()), "Ford");
     }
     
+	@Test
     public void testMultipleToNodeListUnionsWithOverallPropertyRestriction() throws Exception {
     	CodedNodeSet cns1 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("A0001", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns2 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("T0001", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns3 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("C0001", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns4 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					Constructors.createConceptReference("Ford", AUTO_SCHEME), true, false, 0, -1);
 		
 		CodedNodeSet cns5 = 
-			LexBIGServiceImpl.defaultInstance().getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
+			this.lbs.getNodeGraph(AUTO_SCHEME, null, null).toNodeList(
 					null, true, false, -1, -1);
 		
 		CodedNodeSet cns6 = cns1.union(cns2).union(cns3).union(cns4).union(cns5);

@@ -18,9 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.function.history;
 
-import java.io.File;
-import java.util.Arrays;
-
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -42,11 +39,19 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.LBConstants.KnownTags;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.springframework.core.annotation.Order;
 
+import java.io.File;
+import java.util.Arrays;
+
+@RunWith(OrderingTestRunner.class)
 public class TestProductionTags extends LexBIGServiceTestCase {
     final static String testID = "T1_HIS_01";
 
@@ -57,14 +62,9 @@ public class TestProductionTags extends LexBIGServiceTestCase {
 
     String updatedVersion = "1.1";
 
-/**
-     * 01 Load/Activate version 1.1 of Automobiles vocabulary
-     * 
-     * @throws InterruptedException
-     * @throws LBException
-     * 
-     */
-public void testProductionTags01() throws InterruptedException, LBException {
+    @Test
+    @Order(2)
+    public void testProductionTags01() throws InterruptedException, LBException {
         // info("01 Load/Activate version 1.1 of Automobiles vocabulary (see
         // TestUtil.loadLgXML() as
         // reference)");
@@ -83,10 +83,11 @@ public void testProductionTags01() throws InterruptedException, LBException {
             Thread.sleep(500);
         }
 
-        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE))
+        if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.INACTIVE)) {
             assertTrue(TestUtil.activateScheme(AUTO_URN, updatedVersion));
-        assertTrue(TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE));
+        }
 
+        assertTrue(TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE));
     }
 
     /**
@@ -97,6 +98,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBParameterException
      * 
      */
+    @Test
+    @Order(2)
     public void testProductionTags02() throws LBParameterException, LBInvocationException, LBException {
         // info("02 Assign 'PRODUCTION' tag to 1.0 version; verify tag assignment ");
         CodingSchemeVersionOrTag tag = new CodingSchemeVersionOrTag();
@@ -122,6 +125,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(3)
     public void testProductionTags03() throws LBException {
         // info("03 Perform concept lookup by coding scheme name/tag; verify
         // that 'Chrysler' is not included
@@ -145,6 +150,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(4)
     public void testProductionTags04() throws LBException {
         // info("04 Perform concept lookup by coding scheme name only; verify
         // that 'Chrysler' is not included
@@ -167,6 +174,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(5)
     public void testProductionTags05() throws LBException {
         // info("05 Perform relation lookup by coding scheme name/tag; verify
         // that 'Domestic Auto Makers' has
@@ -234,6 +243,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(6)
     public void testProductionTags06() throws LBException {
         // info("06 Perform relation lookup by coding scheme name only; verify
         // that 'Domestic Auto Makers' has
@@ -276,6 +287,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBParameterException
      * 
      */
+    @Test
+    @Order(7)
     public void testProductionTags07() throws LBParameterException, LBInvocationException, LBException {
     	 AbsoluteCodingSchemeVersionReference ref1;
          ref1 = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION);
@@ -301,6 +314,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBInvocationException
      * 
      */
+    @Test
+    @Order(8)
     public void testProductionTags08() throws LBInvocationException, LBException {
         // info("08 Perform concept lookup by coding scheme name/tag; verify that 'Chrysler' is included ");
         CodedNodeSet cns;
@@ -322,6 +337,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(9)
     public void testProductionTags09() throws LBException {
         // info("09 Perform concept lookup by coding scheme name only; verify that 'Chrysler' is included ");
         // not providing a version number gets you the PRODUCTION (which can be
@@ -342,6 +359,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(10)
     public void testProductionTags10() throws LBException {
         // info("10 Perform relation lookup by coding scheme name/tag; verify
         // that 'Domestic Auto Makers' has
@@ -386,6 +405,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBException
      * 
      */
+    @Test
+    @Order(11)
     public void testProductionTags11() throws LBException {
         // info("11 Perform relation lookup by coding scheme name only; verify
         // that 'Domestic Auto Makers' has
@@ -429,6 +450,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBParameterException
      * 
      */
+    @Test
+    @Order(12)
     public void testProductionTags12() throws LBParameterException, LBInvocationException, LBException {
         // info("12 Clear 'PRODUCTION' tag on 1.1 version by setting to empty
         // string; verify tag is cleared
@@ -454,6 +477,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * exception
      * 
      */
+    @Test
+    @Order(13)
     public void testProductionTags13() {
         // info("13 Attempt to perform concept lookup without specifying a version; verify exception ");
         CodedNodeSet cns;
@@ -475,6 +500,8 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBParameterException
      * 
      */
+    @Test
+    @Order(14)
     public void testProductionTags14() throws LBParameterException, LBInvocationException, LBException {
         // info("14 Assign 'TEST' tag to 1.0 version; verify tag assignment ");
         CodingSchemeVersionOrTag tag = new CodingSchemeVersionOrTag();
@@ -490,7 +517,9 @@ public void testProductionTags01() throws InterruptedException, LBException {
 
     }
 
-    public void testProductionTags14b() throws LBException {
+    @Test
+    @Order(15)
+    public void testProductionTags15() throws LBException {
         // lets do a search on the 'TEST' coding scheme, make sure it doesn't
         // have chrysler
         CodedNodeSet cns;
@@ -514,7 +543,9 @@ public void testProductionTags01() throws InterruptedException, LBException {
      * @throws LBInvocationException
      * 
      */
-    public void testProductionTags15() throws LBInvocationException, LBException {
+    @Test
+    @Order(16)
+    public void testProductionTags16() throws LBInvocationException, LBException {
         // info("15 Deactivate/Remove version 1.1 (see deactivate/remove methods on TestUtil as reference)");
         if (TestUtil.verifyScheme(AUTO_SCHEME, AUTO_URN, updatedVersion, CodingSchemeVersionStatus.ACTIVE))
             assertTrue(TestUtil.deactivateScheme(AUTO_URN, updatedVersion));
@@ -524,4 +555,5 @@ public void testProductionTags01() throws InterruptedException, LBException {
         Logger temp = Logger.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
         temp.setLevel(Level.DEBUG);
     }
+
 }
