@@ -1864,6 +1864,24 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/obi.owl"/>
     </owl:Class>
 
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Infectious_Disorder"/>
+        <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</FULL_SYN>
+        <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</Preferred_Name>
+        <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLScheme#string">Disease of Syndrome</Semantic_Type>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C128366</code>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</owl:annotatedTarget>
+        <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PT</term-group>
+        <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
+    </owl:Axiom>
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
