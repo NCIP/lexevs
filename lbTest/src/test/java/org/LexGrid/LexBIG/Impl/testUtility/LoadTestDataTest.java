@@ -642,6 +642,9 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		catch(ClassCastException e){
 			fail("Failed on class cast exception: " + e.getMessage());
 		}
+		catch(NullPointerException e){
+			fail("Failed on null pointer exception" + e.getMessage());
+		}
 
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(1000);
