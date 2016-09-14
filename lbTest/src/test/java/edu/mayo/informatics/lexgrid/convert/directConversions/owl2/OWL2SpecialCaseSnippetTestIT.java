@@ -42,6 +42,17 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	assertTrue(validateTarget("Cold", itr));
 	}
 	
+	@Test
+	public void testRestrictOnAssociationLoadedByCodeFromByName() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.6");	
+    CodedNodeGraph specialGraph = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag, null);
+	specialGraph = specialGraph.restrictToAssociations(Constructors.createNameAndValueList("Chemotherapy_Regimen_Has_Component"), null);
+	ResolvedConceptReferenceList list = specialGraph.resolveAsList(null, true, false, 1, 1, null, null, null, null, -1);
+	assertTrue(list.getResolvedConceptReferenceCount() > 0);
+	}
+	
 	
 	@Test
 	public void testContinuantHasCorrectPropertyQualification() 
@@ -59,6 +70,18 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		}
 	}
 	fail();
+	}
+	
+	@Test
+	public void testdataTypeWithCorrectBuiltinLoads() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("Clinical_Infection"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(itr.hasNext());
 	}
 	
 	@Test
