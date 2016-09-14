@@ -1143,7 +1143,9 @@ public class OwlApi2LG {
     private boolean isAnyURIDatatype(OWLAnnotationAssertionAxiom annotationAxiom) {
        Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
        while(itr.hasNext()){
-           if(itr.next().getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
+           OWLDatatype dt = itr.next();
+
+           if(dt.isBuiltIn() && dt.getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
                return true;
            }
        }
@@ -3195,9 +3197,8 @@ public class OwlApi2LG {
             String uri = lgScheme_.getCodingSchemeURI();
             String version = lgScheme_.getRepresentsVersion();
 
-            AssociationWrapper wrapper = this.assocManager.getAssociation(aw.getAssociationEntity().getEntityCode());
             databaseServiceManager.getAssociationService().insertAssociationSource(uri, version,
-                    wrapper.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
+                    aw.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
 
         } catch (Exception e) {
             this.messages_.warn("Error Inserting AssociationSource.", e);
