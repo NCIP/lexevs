@@ -266,8 +266,12 @@ public class RestrictionImplementations {
                 nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < sources.size(); i++) {
+                    String name = sources.get(i);
+                    QueryParser parser = new QueryParser("sources",LuceneLoaderCode.getAnaylzer());
+                    Query nameOnly = parser.parse(name
+                            + "*");
                     nestedQuery
-                            .add(new BooleanClause(new TermQuery(new Term("sources", sources.get(i))), Occur.SHOULD));
+                            .add(new BooleanClause(nameOnly, Occur.SHOULD));
                 }
                 masterQuery.add(nestedQuery.build(), Occur.MUST);
             }
