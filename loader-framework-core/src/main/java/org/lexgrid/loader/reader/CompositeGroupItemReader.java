@@ -1,3 +1,4 @@
+
 /*
  * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
  * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
@@ -100,43 +101,12 @@ public class CompositeGroupItemReader<I1,I2> implements ItemReader<CompositeRead
 		this.slaveGroupItemReader = slaveGroupItemReader;
 	}
 
-	/**
-	 * Sets the master group item reader.
-	 * 
-	 * @param masterGroupItemReader the new master group item reader
-	 */
-	public void setMasterGroupItemReader(
-			BufferedGroupItemReader<I1> masterGroupItemReader) {
-		this.masterGroupItemReader = masterGroupItemReader;
-	}
-
-
-	/**
-	 * Sets the slave group item reader.
-	 * 
-	 * @param slaveGroupItemReader the new slave group item reader
-	 */
-	public void setSlaveGroupItemReader(
-			BufferedGroupItemReader<I2> slaveGroupItemReader) {
-		this.slaveGroupItemReader = slaveGroupItemReader;
-	}
-
-	/**
-	 * Gets the composite group comparator.
-	 * 
-	 * @return the composite group comparator
-	 */
 	public CompositeGroupComparator<I1, I2> getCompositeGroupComparator() {
 		return compositeGroupComparator;
 	}
 
-	/**
-	 * Sets the composite group comparator.
-	 * 
-	 * @param compositeGroupComparator the composite group comparator
-	 */
-	public void setCompositeGroupComparator(
-			CompositeGroupComparator<I1, I2> compositeGroupComparator) {
+	public void setCompositeGroupComparator(CompositeGroupComparator<I1, I2> compositeGroupComparator) {
 		this.compositeGroupComparator = compositeGroupComparator;
 	}
+
 }
