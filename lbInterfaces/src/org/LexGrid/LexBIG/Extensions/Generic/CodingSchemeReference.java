@@ -57,7 +57,23 @@ public class CodingSchemeReference implements Serializable {
 	public void setVersionOrTag(CodingSchemeVersionOrTag versionOrTag) {
 		this.versionOrTag = versionOrTag;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codingScheme == null) ? 0 : codingScheme.hashCode());
+		if(versionOrTag == null){
+		return result = prime * result + 0;
+		}
+		else{
+		result = prime * result + ((versionOrTag.getTag() == null) ? 0 : versionOrTag.getTag().hashCode());
+		result = prime * result + ((versionOrTag.getVersion() == null ? 0 : versionOrTag.getVersion().hashCode()));
+		}
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object o){
 		
 		if(o == null){return false;}
@@ -78,13 +94,5 @@ public class CodingSchemeReference implements Serializable {
 		return true;
 	}
 	
-	public int hashCode(){
-		int prime = 402653189;
-		int hash = prime + 
-				(this.versionOrTag == null? 0 : this.versionOrTag.getTag() == null? 0 : this.versionOrTag.getTag().hashCode() + 
-						this.versionOrTag.getVersion() == null? 0 : this.versionOrTag.getVersion().hashCode()) +
-				(this.codingScheme == null? 0 : this.codingScheme.hashCode());
-		return hash;
-	}
 
 }
