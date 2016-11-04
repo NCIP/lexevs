@@ -1,0 +1,2189 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:ncicp="http://ncicb.nci.nih.gov/xml/owl/EVS/ComplexProperties.xsd#"
+  xml:base="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >05.09.bvt</owl:versionInfo>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >NCI Thesaurus, a controlled vocabulary in support of 
+NCI administrative and scientific activities.
+
+Produced by the Enterprise Vocabulary System (EVS), a 
+collaborative project by the NCI Office of Communications 
+and the NCI Center for Bioinformatics.  National Cancer Institute,
+National Institutes of Health, Bethesda, MD 20892, U.S.A.
+
+The OWL version of the NCI Thesaurus is produced by the 
+EVS in collaboration with Jim Hendler and Jen Golbeck, 
+Maryland Information and Network Dynamics Lab, 
+Semantic Web Agents Project (Mindswap)
+University of Maryland, College Park, Maryland, U.S.A.
+</rdfs:comment>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Toe_Joint">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Joint_By_Site"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Toe Joint</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33789</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Toe Joint&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Toe Joint</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Toe Joint</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:about="#Cell_Part">
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C34070</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Normal Cell Part</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Normal Cell Part</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Normal Cell Part</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Normal Cell Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:about="#Vertebral_Column">
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Spine</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Musculoskeletal_System_Part"/>
+    </rdfs:subClassOf>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Spinal Column&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0037949</UMLS_CUI>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Spinal Column&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Spinal Column</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Spine&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Spine&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Spine&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>ICDO3&lt;/def-source>&lt;def-definition>excludes sacrum and coccyx C41.4&lt;/def-definition></dDEFINITION>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vertebral Column&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebral Column</Preferred_Name>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Spine</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vertebral Column&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="#Skeletal_System"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>MSH2001&lt;/def-source>&lt;def-definition>The spinal or vertebral column.&lt;/def-definition></dDEFINITION>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12998</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebral Column</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebral Column</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#Vertebra">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebra</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vertebra&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebrae</Synonym>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#Vertebral_Column"/>
+        </owl:someValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebra</Preferred_Name>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebrae</Display_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vertebra</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vertebrae&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Bone"/>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12933</code>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0549207</UMLS_CUI>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vertebra&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:ID="External_Lip">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Lip, NOS&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Lip, NOS&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lip</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lip</rdfs:label>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lip, NOS</Synonym>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lip, NOS</Display_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12223</code>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+        <owl:someValuesFrom>
+          <owl:Class rdf:ID="Lip"/>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lip</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Head_and_Neck_Part"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Lip">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lip</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <DesignNote rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ICD-O3: excludes skin of lip C44.0</DesignNote>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12220</code>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:ID="Head"/>
+        </owl:someValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lip</rdfs:label>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lip</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Mitelman_Code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >201</Mitelman_Code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Lip&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Location or Region</Semantic_Type>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Either of the two fleshy, full-blooded margins of the mouth. (MeSH)&lt;/def-definition></dDEFINITION>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lip</Display_Name>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Head_and_Neck_Part"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Organ_of_Special_Sense_Part">
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organ of Special Sense Part</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C38626</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organ of Special Sense Part</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organ of Special Sense Part</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Organ of Special Sense Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+  </owl:Class>
+
+ <!-- This is for testing a class with no Entity Code -->
+ <owl:Class rdf:about="#">
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organ of Special Sense Part</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C38626</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organ of Special Sense Part</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organ of Special Sense Part</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Organ of Special Sense Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+  </owl:Class>
+  <!-- End testing class -->
+
+  <owl:Class rdf:about="#Ear_Part">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Organ_of_Special_Sense_Part"/>
+    </rdfs:subClassOf>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Ear Part</Display_Name>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Ear Part</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Ear Part</rdfs:label>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Ear Part</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Ear Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13043</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Ear Part&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Ear Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:ID="Female_Genital_System_Fluid_or_Secretion">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Female Genital System Fluid and Secretion&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Body_Fluid_or_Substance"/>
+    </rdfs:subClassOf>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Female Genital System Fluid or Secretion</Preferred_Name>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Substance</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32589</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Female Genital System Fluid and Secretion</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Female Genital System Fluid or Secretion&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Female Genital System Fluid or Secretion</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Female Genital System Fluid or Secretion</rdfs:label>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="Reproductive_System_Part">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Reproductive System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Body_Part"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Reproductive System Part</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C34061</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Reproductive System Part</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Reproductive System Part</Preferred_Name>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+  </owl:Class>
+  <owl:Class rdf:ID="Hard_Palate">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12230</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Hard Palate&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Hard Palate&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hard Palate</Synonym>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>The anteriorly located rigid section of the palate. (MeSH)&lt;/def-definition></dDEFINITION>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#Palate"/>
+        </owl:someValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Head_and_Neck_Part"/>
+    </rdfs:subClassOf>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hard Palate</Preferred_Name>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hard Palate</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Hard Palate&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hard Palate</rdfs:label>
+  </owl:Class>
+    <owl:Class rdf:about="#Palate">
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0226901</UMLS_CUI>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Palate&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Palate</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>palate&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI-GLOSS&lt;/term-source>&lt;source-code>CDR0000046253&lt;/source-code></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >palate</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Palate</Preferred_Name>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Palate</Synonym>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12229</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Palate&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Palate</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Palate&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI-GLOSS&lt;/def-source>&lt;def-definition>(PAL-et) The roof of the mouth. The front portion is bony (hard palate), and the back portion is muscular (soft palate).&lt;/def-definition></dDEFINITION>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Head_and_Neck_Part"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Vallecula">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12237</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vallecula</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vallecula</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vallecula</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vallecula&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vallecula&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vallecula&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Brain_Part"/>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vallecula</Display_Name>
+  </owl:Class>
+  <owl:Class rdf:about="#Central_Nervous_System_Part">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Central Nervous System Part</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Central Nervous System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Central Nervous System Part</Preferred_Name>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Nervous_System_Part"/>
+    </rdfs:subClassOf>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Central Nervous System Part</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33966</code>
+  </owl:Class>
+  <owl:Class rdf:about="#Brain_Part">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brain Part</Preferred_Name>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Central_Nervous_System_Part"/>
+    </rdfs:subClassOf>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Brain Part&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Brain Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brain Part</Display_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13031</code>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brain Part</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Brain Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brain Part</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#Bone">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="#Skeletal_System"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12366</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bones&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone</Synonym>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bones</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tissue</Semantic_Type>
+    <rdfs:subClassOf rdf:resource="#Musculoskeletal_System_Part"/>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone</Display_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CADSR&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>UWDA142&lt;/def-source>&lt;def-definition>is an organ that primarily consists of bone tissue organized into compact (cortical) and cancellous bone (macroscopic organ components); together with other bones, cartilages and joints, it constitutes the skeletal system. Example(s): femur, sternum, maxilla, vertebra, talus.&lt;/def-definition></dDEFINITION>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <NCI_META_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >CL033021</NCI_META_CUI>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>A rigid connective tissue that makes up the skeleton of vertebrates.&lt;/def-definition></dDEFINITION>
+  </owl:Class>
+  <owl:Class rdf:ID="Skeletal_System">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skeletal System</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body System</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skeleton</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>skeleton&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI-GLOSS&lt;/term-source>&lt;source-code>CDR0000044221&lt;/source-code></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>skeletal&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI-GLOSS&lt;/term-source>&lt;source-code>CDR0000044350&lt;/source-code></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Skeletal System&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skeletal System</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skeletal</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Musculoskeletal_System_Part"/>
+    </rdfs:subClassOf>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Skeletal System&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skeletal System</rdfs:label>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skeletal System</Display_Name>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI-GLOSS&lt;/def-source>&lt;def-definition>Having to do with the skeleton (boney part of the body).&lt;/def-definition></dDEFINITION>
+    <Mitelman_Code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >901</Mitelman_Code>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12788</code>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI-GLOSS&lt;/def-source>&lt;def-definition>The framework that supports the soft tissues of vertebrate animals and protects many of their internal organs.  The skeletons of vertebrates are made of bone and/or cartilage.&lt;/def-definition></dDEFINITION>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Skeleton&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Skeletal System&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skeleton</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Skeleton&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0037253</UMLS_CUI>
+  </owl:Class>
+  <owl:Class rdf:about="#Thoracic_Vertebra">
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Thoracic Vertebrae</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Thoracic Vertebra&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Thoracic Vertebra</Preferred_Name>
+    <rdfs:subClassOf rdf:resource="#Vertebra"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Thoracic Vertebrae&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Thoracic Vertebra&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Thoracic Vertebrae</Display_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12798</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Thoracic Vertebra</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Thoracic Vertebra</rdfs:label>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0039987</UMLS_CUI>
+  </owl:Class>
+  <owl:Class rdf:about="#Anatomic_Surface">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C34022</code>
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Surface</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Anatomic Surface&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Surface</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Surface</Synonym>
+  </owl:Class>
+  <owl:Class rdf:about="#Bone_Surface">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone Surface</Preferred_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32224</code>
+    <rdfs:subClassOf rdf:resource="#Anatomic_Surface"/>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#Bone"/>
+        </owl:someValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone Surface</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone Surface</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone Surface&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:about="#Bone_of_the_Extremity">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32223</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone of Extremity&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone of Extremity</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone of the Extremity</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Bone of the Extremity&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone of the Extremity</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bone of the Extremity</Preferred_Name>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Bone"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="External_Upper_Lip">
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Upper Lip&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12221</code>
+    <rdfs:subClassOf rdf:resource="#External_Lip"/>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Upper Lip</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Upper Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Upper Lip</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Upper Lip</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Upper Lip</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Upper Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:ID="External_Lower_Lip">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lower Lip</Preferred_Name>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lower Lip</Display_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lower Lip</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12222</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Lower Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >External Lower Lip</Synonym>
+    <rdfs:subClassOf rdf:resource="#External_Lip"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Lower Lip&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>External Lower Lip&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:about="#Musculoskeletal_System_Part">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Musculoskeletal System Part</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Musculoskeletal System Part</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Musculoskeletal System Part</Preferred_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C25769</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Musculoskeletal System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Body_Fluid_or_Substance">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Fluids and Substances&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Fluids&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Fluids and Substances</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Fluids or Substances&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>fluids&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI-GLOSS&lt;/term-source>&lt;source-code>CDR0000044669&lt;/source-code></FULL_SYN>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13236</code>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Fluid or Substance</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Fluid or Substance&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI-GLOSS&lt;/def-source>&lt;def-definition>Liquids.&lt;/def-definition></dDEFINITION>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fluids</Synonym>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fluids</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Fluid or Substance</Preferred_Name>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0016287</UMLS_CUI>
+    <rdfs:subClassOf rdf:resource="#Anatomic_Structure_System_or_Substance"/>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Fluids or Substances</Synonym>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Fluid or Substance</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Substance</Semantic_Type>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Liquid and semi liquid substances produced by living organisms to fulfill specific functions or excreted as waste; does not include hormones or enzymes.&lt;/def-definition></dDEFINITION>
+  </owl:Class>
+  <owl:Class rdf:about="#Body_Region">
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Region</Display_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12680</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Region</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Anatomic Region&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Region</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#Anatomic_Structure_System_or_Substance"/>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Region</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Location or Region</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Region&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Region&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Region</Synonym>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0005898</UMLS_CUI>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Named areas of the body.&lt;/def-definition></dDEFINITION>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Region&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+  </owl:Class>
+    <owl:Class rdf:ID="Otolymph">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Otolymph&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_Has_Location"/>
+        </owl:onProperty>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#Membranous_Labyrinth"/>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Otolymph</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Substance</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33231</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Otolymph</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Otolymph</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Body_Fluid_or_Substance"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#Membranous_Labyrinth">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33090</code>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Membranous Labyrinth&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Membranous Labyrinth</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Ear_Part"/>
+    </rdfs:subClassOf>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Membranous Labyrinth</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Membranous Labyrinth</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#Body_Part">
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Anatomic_Structure_System_or_Substance"/>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32221</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part</Synonym>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Any part of an organism.&lt;/def-definition></dDEFINITION>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Body Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:ID="Urine">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>urine&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI-GLOSS&lt;/term-source>&lt;source-code>CDR0000046642&lt;/source-code></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>The fluid that is excreted by the kidneys.  It is stored in the bladder and discharged through the urethra.&lt;/def-definition></dDEFINITION>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Urine</rdfs:label>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Urine</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Body_Fluid_or_Substance"/>
+    </rdfs:subClassOf>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Urine</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Urine&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Urinary System, Urine</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Urinary System, Urine&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13283</code>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI-GLOSS&lt;/def-source>&lt;def-definition>(YOO-rin) Fluid containing water and waste products. Urine is made by the kidneys, stored in the bladder, and leaves the body through the urethra.&lt;/def-definition></dDEFINITION>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0042036</UMLS_CUI>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >urine</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Substance</Semantic_Type>
+  </owl:Class>
+  <owl:Class rdf:ID="Peripheral_Nervous_System_Part">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Peripheral Nervous System Part</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Nervous_System_Part"/>
+    </rdfs:subClassOf>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Peripheral Nervous System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Peripheral Nervous System Part</Preferred_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33968</code>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Peripheral Nervous System Part</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="Haversian_Canal">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Haversian Canal</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Haversian Canal</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32713</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Haversian Canal</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Osteonal Canal</Synonym>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Musculoskeletal_System_Part"/>
+    </rdfs:subClassOf>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Haversian Canal&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Osteonal Canal&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:about="#Anatomy_Kind">
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Conceptual Entity</Semantic_Type>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Naturally occurring human biological structures, fluids, and substances.  Includes embryological, gross and micro anatomic structures.  Excludes proteins and protein complexes smaller than that that can be visualized by light microscopy.&lt;/def-definition></dDEFINITION>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomy_Kind</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomy_Kind</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C43652</code>
+  </owl:Class>
+    <owl:Class rdf:about="#Anatomic_Structure_System_or_Substance">
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Concepts</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Anatomic Structures and Systems&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Structure, System, or Substance</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Anatomic Structure, System, or Substance&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Anatomic Structures and Systems&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Structure, System, or Substance</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Classification</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Structures and Systems</Synonym>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Naturally occurring human biological structures, fluids, and substances.  Includes embryological, gross and micro anatomic structures.  Excludes proteins and protein complexes smaller than that that can be visualized by light microscopy.&lt;/def-definition></dDEFINITION>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomic Structure, System, or Substance</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="Anatomy_Kind"/>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12219</code>
+    <NCI_META_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >CL024589</NCI_META_CUI>
+  </owl:Class>
+  <owl:Class rdf:about="#Cardiovascular_System_Part">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Circulatory System Part&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C25762</code>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cardiovascular System Part</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cardiovascular System Part</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Cardiovascular System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cardiovascular System Part</Synonym>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Circulatory System Part</Synonym>
+  </owl:Class>
+  <owl:Class rdf:about="#Heart_Part">
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Heart Part</Display_Name>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Heart Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Heart Part</Synonym>
+    <rdfs:subClassOf rdf:resource="#Cardiovascular_System_Part"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Heart Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Heart Part</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13023</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Heart Part&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Heart Part</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:ID="Base_of_the_Heart">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Base of the Heart&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Heart_Part"/>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Base of the Heart</Synonym>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C48589</code>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Base of the Heart</rdfs:label>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Base of the Heart</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:about="#Nucleolus">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Nucleolus&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nucleolus</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nucleolus</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cell Component</Semantic_Type>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0007609</UMLS_CUI>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>MSH2001&lt;/def-source>&lt;def-definition>Within most types of eukaryotic CELL NUCLEUS, a distinct region, not delimited by a membrane, in which some species of rRNA (RNA, RIBOSOMAL) are synthesized and assembled into ribonucleoprotein subunits of ribosomes. In the nucleolus rRNA is transcribed from a nucleolar organizer, i.e., a group of tandemly repeated chromosomal genes which encode rRNA and which are transcribed by RNA polymerase I. (Singleton &amp; Sainsbury, Dictionary of Microbiology &amp; Molecular Biology, 2d ed)&lt;/def-definition></dDEFINITION>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Within most types of eukaryotic CELL NUCLEUS, a distinct region, not delimited by a membrane, in which some species of rRNA (RNA, RIBOSOMAL) are synthesized and assembled into ribonucleoprotein subunits of ribosomes. In the nucleolus rRNA is transcribed from a nucleolar organizer, i.e., a group of tandemly repeated chromosomal genes which encode rRNA and which are transcribed by RNA polymerase I.&lt;/def-definition></dDEFINITION>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Cell_Part"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nucleolus</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13196</code>
+  </owl:Class>
+  <owl:Class rdf:ID="Dentition">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dentition</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Dentition&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Dentition&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Head_and_Neck_Part"/>
+    </rdfs:subClassOf>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dentition</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Dentition&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dentition</rdfs:label>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13072</code>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>The teeth collectively in the dental arch. Dentition ordinarily refers to the natural teeth in position in their alveoli. (MeSH)&lt;/def-definition></dDEFINITION>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dentition</Synonym>
+  </owl:Class>
+  <owl:Class rdf:ID="T3_Vertebra">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >T3 Vertebra</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Thoracic_Vertebra"/>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33725</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>T3 Vertebra&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >T3 Vertebra</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >T3 Vertebra</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:ID="Subscapularis">
+    <rdfs:subClassOf rdf:resource="#Rotator_Cuff"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Subscapularis&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33651</code>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Subscapularis</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Subscapularis</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Subscapularis</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:about="#Joint_By_Site">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Joint by Site</Preferred_Name>
+    <rdfs:subClassOf rdf:resource="#Joint"/>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32889</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Joint by Site</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Joint by Site&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Joint by Site</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#Head">
+    <rdfs:subClassOf rdf:resource="#Body_Region"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12419</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head</Synonym>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Location or Region</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Head&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>The anterior or superior part of an animal, containing the brain, or chief ganglia of the nervous system, the mouth, and in the higher animals, the chief sensory organs. (On-line Medical Dictionary)&lt;/def-definition></dDEFINITION>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Head&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CADSR&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Head&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0018670</UMLS_CUI>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Head&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+  </owl:Class>
+  <owl:Class rdf:about="#Extremity_Part">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C38630</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Extremity Part</Preferred_Name>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Extremity Part</Synonym>
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Extremity Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Extremity Part</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="#Head_and_Neck_Part">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Head and Neck Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head and Neck Part</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head and Neck Part</Preferred_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C38617</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Head and Neck Part</Synonym>
+  </owl:Class>
+  <owl:Class rdf:about="#Basal_Domain_of_the_Epithelium">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32185</code>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Basal Domain of the Epithelium</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Basal Domain of the Epithelium</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Basal Domain of the Epithelium&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Epithelium_Part"/>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Basal Domain of the Epithelium</Synonym>
+  </owl:Class>
+  <owl:Class rdf:about="#Nervous_System_Part">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nervous System Part</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#Body_Part"/>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Nervous System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nervous System Part</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Nervous System Part&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Nervous System Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13040</code>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nervous System Part</Display_Name>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nervous System Part</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:about="#Cerebral_Sulcus">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Cerebral Sulcus&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Brain_Part"/>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cerebral Sulcus</Preferred_Name>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32292</code>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cerebral Sulcus</rdfs:label>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Cerebral Sulcus</Synonym>
+  </owl:Class>
+  <owl:Class rdf:ID="Sphincter_Pupillae_Muscle">
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sphincter Pupillae Muscle</Synonym>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33586</code>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#Iris"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sphincter Pupillae Muscle</Preferred_Name>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Muscle"/>
+    </rdfs:subClassOf>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Sphincter Pupillae Muscle&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sphincter Pupillae Muscle</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="Postcentral_Sulcus">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Postcentral Sulcus</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Postcentral Sulcus</rdfs:label>
+    <rdfs:subClassOf rdf:resource="#Cerebral_Sulcus"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Postcentral Sulcus&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33347</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Postcentral Sulcus</Synonym>
+  </owl:Class>
+  <owl:Class rdf:ID="Sarcolemma">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Sarcolemma&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Musculoskeletal_System_Part"/>
+    </rdfs:subClassOf>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sarcolemma</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33512</code>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sarcolemma</rdfs:label>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sarcolemma</Preferred_Name>
+  </owl:Class>
+  <owl:Class rdf:about="#Muscle">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Musculoskeletal_System_Part"/>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13056</code>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0026845</UMLS_CUI>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MM</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Muscle&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Muscle</Display_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Muscle&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CADSR&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Muscle&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>Muscle; one of the contractile organs of the body.&lt;/def-definition></dDEFINITION>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Muscle</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tissue</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>MM&lt;/term-name>&lt;term-group>AB&lt;/term-group>&lt;term-source>CADSR&lt;/term-source></FULL_SYN>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Muscle</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Muscle&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Muscle</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="Upper_Esophageal_Sphincter">
+    <rdfs:subClassOf rdf:resource="#Gastrointestinal_Sphincter"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33836</code>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Upper Esophageal Sphincter</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >UES</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Upper Esophageal Sphincter&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Upper Esophageal Sphincter</rdfs:label>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Upper Esophageal Sphincter</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>UES&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+  </owl:Class>
+  <owl:Class rdf:about="#Eustachian_Tube">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Tuba Auditoria&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Pharyngotympanic Tube</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eustachian Tube</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Auditory Tube&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Pharyngotympanic Tube&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tuba Auditoria</Synonym>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C12500</code>
+    <UMLS_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C0015183</UMLS_CUI>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Auditory Tube&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eustachian Tube</Synonym>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>A tubular structure that runs from the middle ear to the nasopharynx and is approximately 3-4 cm length. Its lumen is roughly triangular and has average diameter of 2-3 mm. The lumen is lined by ciliated pseudostratified, columnar epithelium, which sweeps material from the middle ear to the nasopharynx.  functionally collapsed at rest, with slight negative pressure present in the middle ear. It is closed at rest and opens during swallowing, sneezing, and yawning.  It serves to ventilate pressure differences between the middle ear and nasopharynx. This tube also allows middle ear secretions to drain into the nasopharynx.&lt;/def-definition></dDEFINITION>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eustachian Tube</rdfs:label>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Eustachian Tube&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Tuba Auditoria&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Eustachian Tube&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Auditory Tube</Synonym>
+    <rdfs:subClassOf rdf:resource="#Ear_Part"/>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Eustachian Tube&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Pharyngotympanic Tube&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eustachian Tube</Display_Name>
+  </owl:Class>
+  <owl:Class rdf:ID="Short_Saphenous_Vein">
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Short Saphenous Vein</Preferred_Name>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Short Saphenous Vein</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Short Saphenous Vein&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Short Saphenous Vein</Synonym>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33546</code>
+    <rdfs:subClassOf rdf:resource="#Saphenous_Vein"/>
+  </owl:Class>
+  <owl:Class rdf:about="#Eye_Part">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Eye Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eye Part</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Organ_of_Special_Sense_Part"/>
+    </rdfs:subClassOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13019</code>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eye Part</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Eye Part&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eye Part</Preferred_Name>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Eye Part&lt;/term-name>&lt;term-group>DN&lt;/term-group>&lt;term-source>CTRM&lt;/term-source></FULL_SYN>
+    <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Eye Part</Display_Name>
+  </owl:Class>
+  <owl:Class rdf:ID="Photosensitive_Region_of_the_Retina">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C33319</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Photosensitive Region of the Retina&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Eye_Part"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Photosensitive Region of the Retina</rdfs:label>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Photosensitive Region of the Retina</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Photosensitive Region of the Retina</Synonym>
+  </owl:Class>
+  <owl:Class rdf:ID="Vater-Pacini_Corpuscle">
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vater-Pacini Corpuscle&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <dDEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;def-source>NCI&lt;/def-source>&lt;def-definition>A specialized bulblike nerve ending located in the subcutaneous tissue of the skin; occurs abundantly in the skin of palms and soles and joints and genitals.&lt;/def-definition></dDEFINITION>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Vater's Corpuscle&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vater's Corpuscle</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vater-Pacini Corpuscle</Preferred_Name>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vater-Pacini Corpuscle</Synonym>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Pacinian Corpuscle</Synonym>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lamellated Corpuscle</Synonym>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Pacinian Corpuscle&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Corpuscula Lamellosa</Synonym>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Body Part, Organ, or Organ Component</Semantic_Type>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C13172</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Corpuscula Lamellosa&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Lamellated Corpuscle&lt;/term-name>&lt;term-group>SY&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:subClassOf rdf:resource="#Skin_Part"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vater-Pacini Corpuscle</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:ID="Foramen_of_Monroe">
+    <rdfs:subClassOf rdf:resource="#Brain_Part"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >C32627</code>
+    <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;term-name>Foramen of Monroe&lt;/term-name>&lt;term-group>PT&lt;/term-group>&lt;term-source>NCI&lt;/term-source></FULL_SYN>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Foramen of Monroe</rdfs:label>
+    <Synonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Foramen of Monroe</Synonym>
+    <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Foramen of Monroe</Preferred_Name>
+    <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Anatomical Structure</Semantic_Type>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="EO_Disease_Has_Associated_Cell_Type">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R23</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Disease_Has_Property_or_Attribute">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R26</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Associated_With_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R151</code>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="Gene_Associated_With_Disease"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Cytogenetic_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R141</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Target_Anatomy">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R59</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R133</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Is_Element_in_Pathway">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R131</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Primary_Anatomic_Site">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R135</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_is_Physical_Part_of">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R51</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Has_Mechanism_Of_Action">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R124</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Metastatic_Anatomic_Site">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R102</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Normal_Tissue_Origin">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R103</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Absent_From_Wild-type_Chromosomal_Location">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="Gene_In_Chromosomal_Location"/>
+    </rdfs:subPropertyOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R156</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Abnormal_Cell">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R139</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#Anatomic_Structure_Has_Location">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R81</code>
+    <rdfs:domain rdf:resource="#Anatomy_Kind"/>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Target_Protein">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R65</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Has_Associated_Location">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R30</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Has_Result_Biological_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R34</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Normal_Tissue_Origin">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R137</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Purpose">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R55</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#Anatomic_Structure_is_Physical_Part_of">
+    <rdfs:domain rdf:resource="#Anatomy_Kind"/>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R82</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_is_Biomarker_Type">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R36</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Molecular_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R106</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Has_Initiator_Chemical_or_Drug">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R32</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Uses_Equipment">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R63</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_is_Biomarker_of">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R39</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Derived_by_Technique">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R80</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Disease_Maps_to_Human_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R24</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Is_Element_in_Pathway">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R130</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Ceases_Function_In_Pathway">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R157</code>
+    <rdfs:subPropertyOf rdf:resource="#Gene_Is_Element_in_Pathway"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Finding">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R115</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Finding">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R108</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Primary_Anatomic_Site">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R101</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Associated_Anatomic_Site">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R100</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Not_Associated_With_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R154</code>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="Gene_Has_Abnormality"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Is_Used_In_Technique">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R64</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Cytogenetic_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R107</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Has_Result_Chemical_or_Drug">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R29</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Molecular_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R140</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Is_Grade">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R110</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Has_Initiator_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R28</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_is_Biomarker_Type">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R42</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_In_Chromosomal_Location">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#Gene_In_Chromosomal_Location"/>
+    </rdfs:subPropertyOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R155</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Has_Accepted_Therapeutic_Use_For">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R120</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Normal_Tissue_Origin">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R111</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Sample_or_Specimen_Anatomy">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R58</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Plays_Role_In_Biological_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R53</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Expressed_In_Tissue">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R49</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Found_In_Organism">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R41</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemotherapy_Regimen_Has_Component">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R123</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Not_Associated_With_Disease">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#Gene_Associated_With_Disease"/>
+    </rdfs:subPropertyOf>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R152</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Normal_Cell_Origin">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R112</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Associated_Condition">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R56</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Normal_Cell_Origin">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R104</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Has_Physiologic_Effect">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R125</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Molecular_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R89</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Finding">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R142</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Chemical_Classification">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R44</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Biochemical_Function">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R52</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Develops_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R78</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Associated_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R126</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Is_Metabolized_By_Enzyme">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R122</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Disease_Metastatic_to_EO_Anatomy">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R87</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Malfunction_Associated_With_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R48</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_FDA_Approved_for_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R70</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Has_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R153</code>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#Gene_Has_Abnormality"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Associated_Anatomy">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R46</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Organism_Source">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R45</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Plays_Altered_Role_In_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R158</code>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="Gene_Plays_Role_in_Process"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Metastatic_Anatomic_Site">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R136</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#Gene_Associated_With_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R38</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Target_Organism">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R60</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Disease_Has_Associated_EO_Anatomy">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R25</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Abnormal_Cell">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R113</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Is_Part_of_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R35</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_is_Biomarker_of">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R47</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Biological_Process_Has_Result_Anatomy">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R31</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Conceptual_Part_Of">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R27</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Models_Human_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R79</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Encoded_by_Gene">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R54</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Sample_or_Specimen_Chemical_or_Drug">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R62</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_Or_Drug_Affects_Gene_Product">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R146</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Target_Chemical_or_Drug">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R61</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_Or_Drug_Affects_Abnormal_Cell">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R150</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Has_Activity">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R159</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#Gene_Plays_Role_in_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R37</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Associated_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R116</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Plays_Role_In_Metabolism_Of_Chemical_Or_Drug">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R160</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Has_Physical_Location">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R145</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_May_Have_Cytogenetic_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R114</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Plays_Role_in_Biological_Process">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R66</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#Gene_Has_Abnormality">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R132</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Excludes_Normal_Cell_Origin">
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R138</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Has_Study_Therapeutic_Use_For">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R121</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_is_Stage">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R88</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="EO_Anatomic_Structure_is_Physical_Part_of">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R22</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#Gene_In_Chromosomal_Location">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R40</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Allele_Is_Cancer_Related_Type">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R161</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Technique_Has_Target_Disease">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R57</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Chemical_or_Drug_Affects_Cell_Type_or_Tissue">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R72</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Malfunction_Type">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R43</code>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Gene_Product_Has_Structural_Domain_Or_Motif">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R50</code>
+    <rdfs:range rdf:resource="#Anatomy_Kind"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="Disease_Has_Abnormal_Cell">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >R105</code>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="Maps_To_LASH">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P169</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="DesignNote">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P98</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="ID">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >AHC1</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Relative_Enzyme_Activity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P316</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="OLD_ROLE">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P204</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="FULL_SYN">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P90</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Mitelman_Code">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P170</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Related_MedDRA_Code">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P181</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Synonym">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P104</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="IND_Code">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P304</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="SNP_ID">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P315</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Related_Lash_Concept">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P209</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="FDA_UNII_Code">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P319</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="dNSC_Code">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P175</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="OMIM_Number">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P100</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="OLD_PARENT">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P200</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="FDA_Table">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P317</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="BioCarta_ID">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P216</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="PubMedID_Primary_Reference">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P171</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="OID">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P320</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Locus_ID">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P94</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Swiss_Prot">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P93</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="Image_Link">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P167</code>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="GenBank_Accession_Number">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P102</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+      <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Has_Salt_Form -->
+
+    <owl:AnnotationProperty rdf:about="#A5">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Has_Salt_Form</rdfs:label>
+        <P97 rdf:parseType="Literal"
+            ><ncicp:ComplexDefinition><ncicp:def-definition>Used to associate a drug with its various salt forms.</ncicp:def-definition><ncicp:def-source>NCI</ncicp:def-source></ncicp:ComplexDefinition></P97>
+        <P90 rdf:parseType="Literal"
+            ><ncicp:ComplexTerm><ncicp:term-name>Has_Salt_Form</ncicp:term-name><ncicp:term-group>PT</ncicp:term-group><ncicp:term-source>NCI</ncicp:term-source></ncicp:ComplexTerm></P90>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A5</code>
+        <P106 rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Conceptual Entity</P106>
+        <P107 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Has Salt Form</P107>
+        <P108 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Has_Salt_Form</P108>
+        <P98 rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >USAGE NOTE: A salt form of a drug consists of 2 parts, one acidic and one basic group that are readily disassociated in liquid phase. Salt forms are either salts of strong acids and basic drugs (e.g. Atropine Sulfate, Cetirizine Hydrochloride) or salts of strong bases and acidic drugs (Allopurinol Sodium). This association is usually used in conjunction with Has_Free_Acid_Or_Base_Form.</P98>
+    </owl:AnnotationProperty>
+
+  <owl:AnnotationProperty rdf:ID="dConcept_Status">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P310</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="KEGG_ID">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P215</code>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="Preferred_Name">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P108</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="GO_Annotation">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P211</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="NCI_META_CUI">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P208</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="OLD_STATE">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P205</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="dCitation">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P172</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="Accepted_Therapeutic_Use_For">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P302</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="CAS_Registry">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P210</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="NDFRT_Code">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P301</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="OLD_CHILD">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P201</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="Display_Name">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P107</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="LONG_DEFINITION">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P206</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="dHomologous_Gene">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P101</code>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="dDEFINITION">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P97</code>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="hasType">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >AHC2</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="code">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >AHC0</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="UMLS_CUI">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P207</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="OLD_KIND">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P203</code>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="Subsource">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P92</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="NDFRT_Name">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P300</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="Semantic_Type">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P106</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="Gene_Encodes_Product">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P96</code>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:AnnotationProperty>
+  <owl:AnnotationProperty rdf:ID="In_Clinical_Trial_For">
+    <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >P303</code>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:AnnotationProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 2.1, Build 284)  http://protege.stanford.edu -->
