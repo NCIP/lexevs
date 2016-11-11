@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -40,6 +41,9 @@ import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
@@ -192,15 +196,26 @@ public class LoadTestDataTest {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, null);
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "PRODUCTION");
 
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(3000);
 		}
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+		
+		AbsoluteCodingSchemeVersionReference ref = loader.getCodingSchemeReferences()[0];
+		lbsm.activateCodingSchemeVersion(ref);
+		
+		lbsm.setVersionTag(ref, "PRODUCTION");
+		
+		RegistryEntry entry = LexEvsServiceLocator.getInstance()
+				.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(Registry.ResourceType.CODING_SCHEME, 
+						ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).get(0);
+		
+		assertTrue(entry != null);
+		assertTrue(entry.getTag() != null);
+		assertTrue(entry.getTag().equals("PRODUCTION"));
 
 	}
 
