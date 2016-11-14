@@ -40,7 +40,7 @@ public interface ResolvedValueSetDefinitionLoader  extends Loader {
 	 * @param csVersionTag - the tag (e.g "devel", "production", ...) to be used to reconcile coding schemes when more than one is present. Note that non-tagged versions will be used if the tagged version is missing.
 	 */
 
-	public void load(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag) throws Exception;
+	public void load(URI valueSetDefinitionURI, String valueSetDefinitionRevisionId, AbsoluteCodingSchemeVersionReferenceList csVersionList, String csVersionTag, String version) throws Exception;
 
 	public void validate(URI valueSetDefinitionURI, int validationLevel) throws Exception;
 
