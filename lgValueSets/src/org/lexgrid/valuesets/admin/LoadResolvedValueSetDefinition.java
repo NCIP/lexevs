@@ -48,7 +48,8 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  *   -l, &lt;id&gt; List of coding scheme versions to use for the resolution
  *       in format "csuri1::version1, csuri2::version2"
  *   -csSourceTag, Resolves against scheme bearing this tag, eg: development, production" 
- *   -vsTag, Tag to apply to the resulting resolved value set scheme   
+ *   -vsTag, User defined Tag to apply to the resulting resolved value set scheme  
+ *   -vsVersion, Optional user defined version that can be applied to the resolved value set scheme
  * 
  * Note: If the URN and version values are unspecified, a
  * list of available coding schemes will be presented for
