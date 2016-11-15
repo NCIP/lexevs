@@ -20,8 +20,6 @@ package org.LexGrid.LexBIG.gui.codeSystemView;
 
 import java.text.Collator;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.Locale;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
@@ -199,8 +197,6 @@ public class CodeSystemLabelProvider implements ITableLabelProvider {
                 Collator collator = Collator.getInstance(Locale.getDefault());
                 TableColumn column = (TableColumn) e.widget;
 
-                System.out.println("Columnn: " + column.getText());
-
                 if (column == table.getColumns()[0])
                     index = 0;
                 else if (column == table.getColumns()[1])
@@ -219,7 +215,6 @@ public class CodeSystemLabelProvider implements ITableLabelProvider {
                     index = 7;
                 else if (column == table.getColumns()[8])
                     index = 8;
-
                 
                 for (int i = 1; i < items.length; i++) {
                     String value1 = items[i].getText(index);
