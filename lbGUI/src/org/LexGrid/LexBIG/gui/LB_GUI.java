@@ -1151,7 +1151,6 @@ public class LB_GUI {
                     cns = null;
                     cng = (CodedNodeGraph) codeSets.get(selection[0]);
                 }
-                System.out.println("LgExport button pressed.");
                 
                 AbsoluteCodingSchemeVersionReference acsvr = getSelectedCodeSystem();
                 org.LexGrid.LexBIG.Impl.exporters.LexGridExport exporter;
@@ -1860,9 +1859,7 @@ public class LB_GUI {
     	            if(extension.getName() != "ResolvedValueSetDefinitionLoader"){
                         MenuItem loadItem = new MenuItem(loadMenu, SWT.NONE);
                         loadItem.setText(extension.getName() + " - " + extension.getDescription());
-                        
-                        System.out.println(extension.getName() + " - " + extension.getDescription() );
-                        
+                                                
                         loadItem.addSelectionListener(new SelectionListener() {
     
                             public void widgetSelected(SelectionEvent arg0) {
