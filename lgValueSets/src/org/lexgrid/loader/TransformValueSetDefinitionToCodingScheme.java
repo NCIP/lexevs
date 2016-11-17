@@ -25,9 +25,11 @@ public class TransformValueSetDefinitionToCodingScheme {
 	String valueSetDefinitionRevisionId;
 	AbsoluteCodingSchemeVersionReferenceList csVersionList;
 	String csVersionTag;
+	String vsVersion;
 
 	private LexEVSValueSetDefinitionServicesImpl vds_;
 
+	
 	TransformValueSetDefinitionToCodingScheme(URI valueSetDefinitionURI,
 			String valueSetDefinitionRevisionId,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
@@ -37,6 +39,19 @@ public class TransformValueSetDefinitionToCodingScheme {
 		this.csVersionList = csVersionList;
 		this.csVersionTag = csVersionTag;
 	}
+	
+	TransformValueSetDefinitionToCodingScheme(URI valueSetDefinitionURI,
+			String valueSetDefinitionRevisionId,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String csVersionTag,
+			String vsVersion) {
+		this.valueSetDefinitionURI = valueSetDefinitionURI;
+		this.valueSetDefinitionRevisionId = valueSetDefinitionRevisionId;
+		this.csVersionList = csVersionList;
+		this.csVersionTag = csVersionTag;
+		this.vsVersion = vsVersion;
+	}
+
 
 	CodingScheme transform() throws Exception {
 
@@ -50,7 +65,11 @@ public class TransformValueSetDefinitionToCodingScheme {
 
 		
 		codingScheme = CodingScheme.unmarshalCodingScheme(br);
+		if(vsVersion == null){
 		setCodingSchemeVersion(codingScheme);
+		}else{
+			codingScheme.setRepresentsVersion(vsVersion);
+		}
 		return codingScheme;
 
 	}

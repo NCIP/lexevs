@@ -43,6 +43,7 @@ public class ResolvedValueSetDefinitionLoaderImpl extends BaseLoader implements
 	String valueSetDefinitionRevisionId;
 	AbsoluteCodingSchemeVersionReferenceList csVersionList;
 	String csVersionTag;
+	String vsVersion;
 	@Override
 	    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
 	        return holder;
@@ -53,7 +54,8 @@ public class ResolvedValueSetDefinitionLoaderImpl extends BaseLoader implements
 	    	TransformValueSetDefinitionToCodingScheme tvsd2cs= new TransformValueSetDefinitionToCodingScheme(valueSetDefinitionURI,
 					 valueSetDefinitionRevisionId,
 					 csVersionList,
-					 csVersionTag);
+					 csVersionTag,
+					 vsVersion);
 	        CodingScheme codingScheme = tvsd2cs.transform();
 	        
 	        this.persistCodingSchemeToDatabase(codingScheme);
@@ -82,11 +84,13 @@ public class ResolvedValueSetDefinitionLoaderImpl extends BaseLoader implements
 		public void load(URI valueSetDefinitionURI,
 				String valueSetDefinitionRevisionId,
 				AbsoluteCodingSchemeVersionReferenceList csVersionList,
-				String csVersionTag) throws Exception {
+				String csVersionTag, 
+				String vsVersion) throws Exception {
 			this.valueSetDefinitionURI= valueSetDefinitionURI;
 			this.valueSetDefinitionRevisionId= valueSetDefinitionRevisionId;
 			this.csVersionList= csVersionList;
 			this.csVersionTag= csVersionTag;
+			this.vsVersion= vsVersion;
 			this.load(valueSetDefinitionURI);
 			
 		}

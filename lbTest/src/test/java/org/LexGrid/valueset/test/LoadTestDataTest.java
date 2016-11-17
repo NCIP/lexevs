@@ -196,7 +196,7 @@ public class LoadTestDataTest {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "PRODUCTION");
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "PRODUCTION", "12.03test");
 
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(3000);
@@ -216,6 +216,7 @@ public class LoadTestDataTest {
 		assertTrue(entry != null);
 		assertTrue(entry.getTag() != null);
 		assertTrue(entry.getTag().equals("PRODUCTION"));
+		assertTrue(entry.getResourceVersion().equals("12.03test"));
 
 	}
 
@@ -226,7 +227,7 @@ public class LoadTestDataTest {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName"), null, null, null);
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName"), null, null, null, null);
 
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(3000);

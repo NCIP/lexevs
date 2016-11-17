@@ -48,7 +48,8 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  *   -l, &lt;id&gt; List of coding scheme versions to use for the resolution
  *       in format "csuri1::version1, csuri2::version2"
  *   -csSourceTag, Resolves against scheme bearing this tag, eg: development, production" 
- *   -vsTag, Tag to apply to the resulting resolved value set scheme   
+ *   -vsTag, User defined Tag to apply to the resulting resolved value set scheme  
+ *   -vsVersion, Optional user defined version that can be applied to the resolved value set scheme
  * 
  * Note: If the URN and version values are unspecified, a
  * list of available coding schemes will be presented for
@@ -56,7 +57,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
  *  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition
- *    -u &quot;Automobiles:valuesetDefinitionURI&quot; -l &quot;Automobiles::version1, GM::version2&quot; -csSourceTag &quot;production&quot -vsTag &quot;PRODUCTION&quot
+ *    -u &quot;Automobiles:valuesetDefinitionURI&quot; -l &quot;Automobiles::version1, GM::version2&quot; -csSourceTag &quot;production&quot -vsTag &quot;PRODUCTION&quot -vsVersion &quot;MyVSVersion&quot
  * </pre>
  * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
@@ -101,6 +102,7 @@ public class LoadResolvedValueSetDefinition {
         String csList = cl.getOptionValue("l");
         String csSourceTag = cl.getOptionValue("csSourceTag");
         String vsTag = cl.getOptionValue("vsTag");
+        String vsVersion = cl.getOptionValue("vsVersion");
         activate = cl.hasOption("a");
 
         // Find in list of valueset definitions  ...
@@ -117,7 +119,7 @@ public class LoadResolvedValueSetDefinition {
         }
         AbsoluteCodingSchemeVersionReferenceList acsvl= getCodingSchemeVersions(csList);
        
-        load(urn, acsvl, null, csSourceTag, vsTag);
+        load(urn, acsvl, null, csSourceTag, vsTag, vsVersion);
     }
 
     
@@ -142,10 +144,10 @@ public class LoadResolvedValueSetDefinition {
     }
 
     protected void load(String valueSetDefinitionURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String valueSetDefinitionRevisionId,
-            String  csVersionTag, String vsTag) throws Exception {
+            String  csVersionTag, String vsTag, String vsVersion) throws Exception {
     	//ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoader.NAME);
     	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
-    	loader.load(new URI(valueSetDefinitionURI), valueSetDefinitionRevisionId, csVersionList, csVersionTag);
+    	loader.load(new URI(valueSetDefinitionURI), valueSetDefinitionRevisionId, csVersionList, csVersionTag, vsVersion);
     	Util.displayLoaderStatus(loader);
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(2000);
@@ -201,6 +203,10 @@ public class LoadResolvedValueSetDefinition {
         options.addOption(o);
         
         o = new Option("vsTag", "vsTag", true, "Tag for target resolved value set scheme");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("vsVersion", "vsVersion", true, "Tag for target resolved value set scheme");
         o.setRequired(false);
         options.addOption(o);
 
