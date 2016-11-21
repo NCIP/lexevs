@@ -323,7 +323,11 @@ public class LB_GUI {
 
 		cslp.setupColumns(codeSystemsTV_.getTable());
 		codeSystemsTV_.setInput("");
-
+		
+		// set initial column to sort on
+		codeSystemsTV_.getTable().setSortColumn(codeSystemsTV_.getTable().getColumn(0));
+		codeSystemsTV_.getTable().setSortDirection(SWT.UP);
+		
 		codeSystemsTV_
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 
