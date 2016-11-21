@@ -81,9 +81,9 @@ public class CodeSystemContentProvider implements IStructuredContentProvider {
 			Comparator<CodingSchemeRendering> {
 
 		public int compare(CodingSchemeRendering o1, CodingSchemeRendering o2) {
-			return o1.getCodingSchemeSummary().getCodingSchemeURI()
+			return o1.getCodingSchemeSummary().getFormalName()
 					.compareToIgnoreCase(
-							o2.getCodingSchemeSummary().getCodingSchemeURI());
+							o2.getCodingSchemeSummary().getFormalName());
 		}
 
 	}
