@@ -28,7 +28,20 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		super.setUp();
 		
 	}
-		
+	
+	@Test
+	public void testLoadofLabelsWhenPreferredSourceHasEmptyValue() throws LBInvocationException, LBParameterException{
+
+		String[] stringList = {"OBI_0000699"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+				
+		assertTrue(rcr.getEntity().getEntityDescription().getContent().equals("survival assessment"));;
+	}
 
 	@Test
 	public void testRestrictOnSubClassOfToProperty() 
