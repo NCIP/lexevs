@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -33,17 +34,21 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
+import org.LexGrid.LexBIG.admin.Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
+import org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
@@ -251,6 +256,34 @@ public class LoadTestDataTest {
 	public void testLoadOWLValueSetDef() throws Exception {
 		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VSD_OWL2Annotations.xml", true);
 	}
+	
+	@Test
+	@Order(11)
+	public void testLoadEmptyValueSetDef() throws Exception {
+		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VDForEmptyResolution.xml", true);
+	}
+	
+	@Test
+	@Order(12)
+	public void testloadEmptyResolvedValueSet() throws URISyntaxException, Exception{
+		
+	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+	ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+    	AbsoluteCodingSchemeVersionReferenceList csVersionList = new AbsoluteCodingSchemeVersionReferenceList(); 
+    	AbsoluteCodingSchemeVersionReference vRef = Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+    	csVersionList.addAbsoluteCodingSchemeVersionReference(vRef);
+
+		loader.load(new URI("SCOTTEST:No.Node.ValueSet"), null, csVersionList, "PRODUCTION", "1.0");
+
+    	Util.displayLoaderStatus(loader);
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(2000);
+		}
+        assertTrue(loader.getStatus().getState().equals(ProcessState.FAILED));
+        assertTrue(loader.getStatus().getErrorsLogged().booleanValue());
+        getValueSetDefService().removeValueSetDefinition(new URI("SCOTTEST:No.Node.ValueSet"));
+        
+     }
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
@@ -265,4 +298,6 @@ public class LoadTestDataTest {
 		}
 		return pls_;
 	}
+	
+
 }
