@@ -1270,8 +1270,8 @@ public class OwlApi2LG {
         // is set to indicate where the value was found. Also support
         // explicit requests for "rdfs:label" as the preferred property.
         boolean generatePreferred = prefManager.getPrioritized_presentation_names().size() == 0
-                || OwlApi2LGConstants.PROPNAME_RDFS_LABEL.equalsIgnoreCase(prefManager
-                        .getPrioritized_presentation_names().get(0)) || presentationCount == 0;
+                || prefManager
+                .getPrioritized_presentation_names().contains(OwlApi2LGConstants.PROPNAME_RDFS_LABEL) || presentationCount == 0;
         if (generatePreferred) {
             String entityDesc = lgEntity.getEntityDescription().getContent();
             sortedProps.add(CreateUtils.createPresentation(generatePropertyID(++i),
