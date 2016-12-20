@@ -14,6 +14,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
@@ -65,6 +67,9 @@ public class TransformValueSetDefinitionToCodingScheme {
 
 		
 		codingScheme = CodingScheme.unmarshalCodingScheme(br);
+		if(codingScheme.getEntities().getEntityCount() <= 1){
+			throw new LBException("ValueSet defines one or less values, will not load as resolved value set");
+		}
 		if(vsVersion == null){
 		setCodingSchemeVersion(codingScheme);
 		}else{
