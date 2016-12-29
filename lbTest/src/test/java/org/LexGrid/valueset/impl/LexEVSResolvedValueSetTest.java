@@ -24,6 +24,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -120,6 +121,16 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 			}
 		}
 	}
+	
+	@Test
+	public void testVerifyLoadOfChildNodeOnly() throws URISyntaxException {
+		URI uri = new URI("XTEST:One.Node.ValueSet");
+		ResolvedConceptReferenceList list = service.getValueSetEntitiesForURI(uri.toString());
+		assertTrue(list.getResolvedConceptReferenceCount() == 1);
+		assertTrue(list.getResolvedConceptReference(0).getConceptCode().equals("C0011(5564)"));
+	}
+	
+	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
 		for (PropertyQualifier pq : prop.getPropertyQualifier()) {
 			if (pq.getPropertyQualifierName().equals(qualifierName)) {

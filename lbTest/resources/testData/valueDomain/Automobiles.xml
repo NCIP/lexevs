@@ -116,6 +116,19 @@
         <lgCommon:value>Car</lgCommon:value>
       </lgCon:presentation>
     </lgCon:entity>
+    	<lgCon:entity entityCode="C0011(5564)"
+			entityCodeNamespace="Automobiles" status="asf" isActive="true">
+		<lgCommon:entityDescription>Car With Trailer</lgCommon:entityDescription>
+		<lgCon:entityType>concept</lgCon:entityType>
+		<lgCon:presentation language="en" propertyName="textualPresentation"
+				propertyId="c1" isPreferred="true" matchIfNoContext="true">
+			<lgCommon:value>TrailerCar(Yahoo)</lgCommon:value>
+		</lgCon:presentation>
+		<lgCon:presentation language="en" propertyName="textualPresentation"
+				propertyId="c2" isPreferred="false" matchIfNoContext="true">
+			<lgCommon:value>Car (with special) Trailer!</lgCommon:value>
+		</lgCon:presentation>
+	</lgCon:entity>
     <lgCon:entity entityCode="Chevy" entityCodeNamespace="Automobiles" isActive="true">
       <lgCommon:entityDescription>Chevrolet</lgCommon:entityDescription>
       <lgCon:entityType>concept</lgCon:entityType>
@@ -198,6 +211,16 @@
         </lgRel:target>
         <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="T0001"/>
       </lgRel:source>
+      	<lgRel:source sourceEntityCodeNamespace="Automobiles"
+				sourceEntityCode="C0001">
+			<lgRel:target targetEntityCodeNamespace="Automobiles"
+					targetEntityCode="C0011(5564)">
+				<lgRel:associationQualification
+						associationQualifier="hasTrailer">
+				<lgRel:qualifierText>true</lgRel:qualifierText>
+				</lgRel:associationQualification>
+			</lgRel:target>
+		</lgRel:source>
       <lgRel:source sourceEntityCodeNamespace="Automobiles" sourceEntityCode="Ford">
         <lgRel:target targetEntityCodeNamespace="Automobiles" targetEntityCode="Jaguar">
           <lgRel:associationQualification associationQualifier="since">
