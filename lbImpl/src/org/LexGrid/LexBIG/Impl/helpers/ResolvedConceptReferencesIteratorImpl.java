@@ -189,6 +189,11 @@ public class ResolvedConceptReferencesIteratorImpl implements ResolvedConceptRef
                         this.filters_,
                         this.resolveEntities_);
                 
+                if (codesToReturn_ == null) {
+                    throw new LBResourceUnavailableException("This iterator is no longer valid. "
+                            + "You may be attempting to retrieve too large a list or iterator page");
+                }
+                
                 compactCodesToReturn(pos_, max);
                 
                 for(ResolvedConceptReference ref : returnedRefs.getResolvedConceptReference()){
