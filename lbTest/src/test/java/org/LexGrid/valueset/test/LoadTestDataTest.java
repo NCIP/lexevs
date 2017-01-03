@@ -265,6 +265,12 @@ public class LoadTestDataTest {
 	
 	@Test
 	@Order(12)
+	public void testChildNodeValueSetDef() throws Exception {
+		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VDForOneChild.xml", true);
+	}
+	
+	@Test
+	@Order(13)
 	public void testloadEmptyResolvedValueSet() throws URISyntaxException, Exception{
 		
 	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
@@ -282,6 +288,28 @@ public class LoadTestDataTest {
         assertTrue(loader.getStatus().getState().equals(ProcessState.FAILED));
         assertTrue(loader.getStatus().getErrorsLogged().booleanValue());
         getValueSetDefService().removeValueSetDefinition(new URI("SCOTTEST:No.Node.ValueSet"));
+        
+     }
+	
+	@Test
+	@Order(14)
+	public void testloadOneChildResolvedValueSet() throws URISyntaxException, Exception{
+		
+	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+	ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+	AbsoluteCodingSchemeVersionReferenceList csVersionList = new AbsoluteCodingSchemeVersionReferenceList(); 
+	AbsoluteCodingSchemeVersionReference vRef = Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+	csVersionList.addAbsoluteCodingSchemeVersionReference(vRef);
+
+		loader.load(new URI("XTEST:One.Node.ValueSet"), null, csVersionList, "devel", "1.0");;
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(3000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         
      }
 

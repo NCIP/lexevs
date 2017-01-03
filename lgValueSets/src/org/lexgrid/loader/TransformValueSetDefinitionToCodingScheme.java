@@ -14,6 +14,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
@@ -61,15 +63,28 @@ public class TransformValueSetDefinitionToCodingScheme {
 				.exportValueSetResolution(valueSetDefinitionURI,
 						valueSetDefinitionRevisionId, csVersionList,
 						csVersionTag, false);
+		
+		ValueSetDefinition vsd = getValueSetDefinitionService().getValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionRevisionId);
 		CodingScheme codingScheme;
 		// read it with BufferedReader
 		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
 		
 		codingScheme = CodingScheme.unmarshalCodingScheme(br);
-		if(codingScheme.getEntities().getEntityCount() <= 1){
-			throw new LBException("ValueSet defines one or less values, will not load as resolved value set");
+		if(codingScheme.getEntities().getEntityCount() < 1){
+			throw new LBException("ValueSet defines no values, will not load as resolved value set");
 		}
+		else if (codingScheme.getEntities().getEntityCount() == 1){
+			for(DefinitionEntry entry: vsd.getDefinitionEntry()){
+				if(entry.getEntityReference().getEntityCode().equals(codingScheme.getEntities().getEntity(0).getEntityCode())){
+					throw new LBException("ValueSet defines a single value, "
+							+ "which is the same as the defining entity, "
+							+ "will not load as resolved value set");
+				}
+				}
+			
+		}
+		
 		if(vsVersion == null){
 		setCodingSchemeVersion(codingScheme);
 		}else{
