@@ -14,7 +14,7 @@
   <name>OBO foundry unique label</name>
   <name>IAO_0000589</name>
   <name>rdfs:Label</name>
-  <name>rdfs:label</name>
+  <name>label</name>
   <name>ISA alternative term</name>
   <name>OBI_0001847</name>
   <name>NIAID GSCID-BRC alternative term</name>

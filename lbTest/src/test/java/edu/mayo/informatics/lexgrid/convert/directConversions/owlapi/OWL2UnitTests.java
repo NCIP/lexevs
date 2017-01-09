@@ -2,12 +2,20 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
 
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OwlApi2LG;
 
@@ -54,6 +62,27 @@ public class OWL2UnitTests extends TestCase {
 		OwlApi2LG owl2 = new OwlApi2LG(null, null, null, 0, null);
 		assertTrue(owl2.stripQuotes(value).equals(expected));
 
+	}
+	
+	@Test
+	public void testResolveLabels() throws OWLOntologyCreationException{
+		OwlApi2LG api = new OwlApi2LG(null, null, null, 1, null);
+		
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		IRI iri = IRI.create(new File("resources/testData/owl2/owl2-special-cases-Defined-Annotated.owl")
+				.toURI());
+		OWLOntology ontology = manager.loadOntologyFromOntologyDocument(iri);
+		api.setOntology(ontology);
+		List<String> list = null;
+		for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
+			if(prop.getIRI().getFragment().equals("IAO_0000111")){
+				list = api.resolveLabels(prop);
+			}
+		}
+		assertNotNull(list);
+		assertTrue(list.size() > 4);
+		assertTrue(list.get(0).equals("editor preferred term~editor preferred label"));
+		
 	}
 
 }
