@@ -2091,8 +2091,9 @@ public class LB_GUI {
 	private void displayCodeSystemDetails() throws LBException {
 		CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
 		csvt.setVersion(getSelectedCodeSystem().getCodingSchemeVersion());
+		String metadata = null;
 		new CodeSystemDetails(this.shell_, this, getLbs().resolveCodingScheme(
-				getSelectedCodeSystem().getCodingSchemeURN(), csvt));
+				getSelectedCodeSystem().getCodingSchemeURN(), csvt), metadata );
 	}
 
 	private void resolveCodeSet() throws LBException {
