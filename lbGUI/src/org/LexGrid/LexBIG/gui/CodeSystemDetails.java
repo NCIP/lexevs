@@ -52,9 +52,8 @@ public class CodeSystemDetails {
 		buildComponents(codeSystemDetails, mdResults);
 
 		shell_.setVisible(true);
-		mdResults ="placeholder string";
 		codeSystemResults_.setText(ObjectToString.toString(codeSystemDetails));
-		metaDataResults_.setText(mdResults);
+		metaDataResults_.setText(mdResults != null? mdResults: "This scheme has no user defined Metadata");
 	}
 
 	public void buildComponents(final CodingScheme codeSystemDetails, final String mdResults) {
@@ -73,13 +72,13 @@ public class CodeSystemDetails {
 	}
 	
 	  private Control getTabOneControl(TabFolder tabFolder) {
-	      codeSystemResults_ = new StyledText(tabFolder, SWT.BORDER | SWT.MULTI
+	      codeSystemResults_ = new StyledText(tabFolder, SWT.RESIZE | SWT.BORDER | SWT.MULTI
                   | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
 	      return codeSystemResults_;
 	    }
 	  
 	   private Control getTabTwoControl(TabFolder tabFolder) {
-	       metaDataResults_ =  new StyledText(tabFolder,  SWT.BORDER | SWT.MULTI
+	       metaDataResults_ =  new StyledText(tabFolder,  SWT.RESIZE | SWT.BORDER | SWT.MULTI
 	                | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
 	       return metaDataResults_;
 	        }

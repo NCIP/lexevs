@@ -25,13 +25,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.prefs.Preferences;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
+import org.LexGrid.LexBIG.DataModel.Collections.MetadataPropertyList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -43,6 +47,7 @@ import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.gui.codeSet.CodeSet;
@@ -2091,12 +2096,24 @@ public class LB_GUI {
 	private void displayCodeSystemDetails() throws LBException {
 		CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
 		csvt.setVersion(getSelectedCodeSystem().getCodingSchemeVersion());
-		String metadata = null;
+		CodeSystemUserMetaData metadata = getCodeSystemMetaData();
 		new CodeSystemDetails(this.shell_, this, getLbs().resolveCodingScheme(
-				getSelectedCodeSystem().getCodingSchemeURN(), csvt), metadata );
+				getSelectedCodeSystem().getCodingSchemeURN(), csvt), metadata.toString() );
 	}
 
-	private void resolveCodeSet() throws LBException {
+	private CodeSystemUserMetaData getCodeSystemMetaData() throws LBException {
+	    Map<String, String> map = new HashMap<String, String>();
+        LexBIGServiceMetadata smd = getLbs().getServiceMetadata();
+        smd.restrictToCodingScheme(getSelectedCodeSystem());
+        MetadataPropertyList list = smd.resolve();
+        MetadataProperty[] properties =list.getMetadataProperty();
+        for(MetadataProperty prop : properties){
+            map.put(prop.getName(), prop.getValue());
+        }
+        return new CodeSystemUserMetaData(map);
+    }
+
+    private void resolveCodeSet() throws LBException {
 		CodedNodeSet cnsData = (CodedNodeSet) getSelectedCodeSet();
 		org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = cnsData
 				.getRealCodedNodeSet(getLbs());
