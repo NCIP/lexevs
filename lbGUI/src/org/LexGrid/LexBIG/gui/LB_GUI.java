@@ -2098,7 +2098,7 @@ public class LB_GUI {
 		csvt.setVersion(getSelectedCodeSystem().getCodingSchemeVersion());
 		CodeSystemUserMetaData metadata = getCodeSystemMetaData();
 		new CodeSystemDetails(this.shell_, this, getLbs().resolveCodingScheme(
-				getSelectedCodeSystem().getCodingSchemeURN(), csvt), metadata.toString() );
+				getSelectedCodeSystem().getCodingSchemeURN(), csvt), metadata.toString());
 	}
 
 	private CodeSystemUserMetaData getCodeSystemMetaData() throws LBException {
