@@ -27,6 +27,10 @@ public class CodeSystemUserMetaData {
         Formatter formatter = new Formatter(builder, Locale.US);
         formatter.format("  %-2s:  %-2s%n",  "Name",  "Value");
         builder.append("\n");
+        if(userMetaData == null | userMetaData.size() == 0){
+            formatter.close();
+            return "No user metaData defined for this coding scheme";
+        }
         for (Map.Entry<String, String> entry : userMetaData.entrySet()) {
             formatter.format("  %-2s:  %-2s%n", entry.getKey(),  entry.getValue());
         }

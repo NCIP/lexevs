@@ -52,13 +52,7 @@ public class CodeSystemDetails {
 
 		shell_.setVisible(true);
 		codeSystemResults_.setText(ObjectToString.toString(codeSystemDetails));
-		metaDataResults_.setText(mdResults != null? mdResults: "This scheme has no user defined Metadata");
-		
-        StyleRange styleRange = new StyleRange();
-        styleRange.start = 0;
-        styleRange.length = 14;
-        styleRange.fontStyle = SWT.BOLD;
-        metaDataResults_.setStyleRange(styleRange);
+		metaDataResults_.setText(mdResults);
 	}
 
 	public void buildComponents(final CodingScheme codeSystemDetails, final String mdResults) {
@@ -73,7 +67,7 @@ public class CodeSystemDetails {
 	    TabItem two = new TabItem(tabFolder, SWT.NONE);
 	    two.setText("USER DEFINED METADATA");
 	    two.setToolTipText("Metadata authored by the code system user");
-	    two.setControl(getTabTwoControl(tabFolder ));
+	    two.setControl(getTabTwoControl(tabFolder));
 	}
 	
     private Control getTabOneControl(TabFolder tabFolder) {
