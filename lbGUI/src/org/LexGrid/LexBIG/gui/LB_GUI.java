@@ -2105,7 +2105,16 @@ public class LB_GUI {
 	    Map<String, String> map = new HashMap<String, String>();
         LexBIGServiceMetadata smd = getLbs().getServiceMetadata();
         smd.restrictToCodingScheme(getSelectedCodeSystem());
-        MetadataPropertyList list = smd.resolve();
+        MetadataPropertyList list = null;
+        try{
+        list = smd.resolve();
+        }
+        catch(Exception e){
+            // We don't want the lack of a meta data 
+            // index to blow up the coding scheme
+            // details along with it.
+            return new CodeSystemUserMetaData(map);
+        }
         MetadataProperty[] properties =list.getMetadataProperty();
         for(MetadataProperty prop : properties){
             map.put(prop.getName(), prop.getValue());
