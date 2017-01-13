@@ -12,7 +12,6 @@ public class CodeSystemUserMetaData {
     public CodeSystemUserMetaData(Map <String, String> metadata){
         userMetaData = metadata;
     }
-    
 
     public Map<String, String> getUserMetaData() {
         return userMetaData;
@@ -29,7 +28,7 @@ public class CodeSystemUserMetaData {
         builder.append("\n");
         if(userMetaData == null | userMetaData.size() == 0){
             formatter.close();
-            return "No user metaData defined for this coding scheme";
+            return "No user meta data defined for this coding scheme";
         }
         for (Map.Entry<String, String> entry : userMetaData.entrySet()) {
             formatter.format("  %-2s:  %-2s%n", entry.getKey(),  entry.getValue());
@@ -37,13 +36,4 @@ public class CodeSystemUserMetaData {
         formatter.close();
        return builder.toString();
     }
-    
-    public static void main(String[] args){
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("this", "That");
-        map.put("another","thing");
-        map.put("verylongnamehere", "sowhat");
-        System.out.println(new CodeSystemUserMetaData(map).toString());
-    }
-
 }
