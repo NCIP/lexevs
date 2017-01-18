@@ -3,21 +3,21 @@
 	<properties file="build.properties" />
 	<property name="ivy.revision" value="${vBuild}"/>
 		
-	<property name="lexevs.snapshots.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty" />
-	<property name="lexevs.releases.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVSRelease" />
-	<property name="lexevs.thirdparty.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty" /> 
+	<property name="ncimvn.snapshots.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty" />
+	<property name="ncimvn.releases.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVSRelease" />
+	<property name="ncimvn.thirdparty.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty" /> 
 	
 	<settings defaultResolver="nci-chain" />
 	<caches defaultCacheDir="${user.home}/.ivy2" useOrigin="true"/>
 	
 	<!-- 
-		Add `-Dinformatics.password=xxxx` to the ant build command
-		to publish the artifact to informatics.
+		Add `-Dncimvn.password=xxxx` to the ant build command
+		to publish the artifact to ncimvn.
 	 -->
-	<credentials host="informatics.mayo.edu" 
-		username="deployment" 
+	<credentials host="ncimvn.nci.nih.gov" 
+		username="NCI_lexevs_nexus" 
 		realm="Sonatype Nexus Repository Manager" 
-		passwd="${informatics.password}"/>
+		passwd="${ncimvn.password}"/>
 	
 	<resolvers>
 		<filesystem name="user-local-repo" local="true" m2compatible="true" changingPattern=".*-SNAPSHOT">
@@ -29,18 +29,18 @@
 	      <artifact pattern="${user.home}/.m2/repository/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
 	    </filesystem>
    		
-		<chain name="lexevs">
-			<url name="lexevs-releases" m2compatible="true">
+		<chain name="ncimvn">
+			<url name="ncimvn-releases" m2compatible="true">
 				<ivy
-					pattern="${lexevs.releases.repo}/[organisation]/[module]/[revision]/ivy.xml" />
+					pattern="${ncimvn.releases.repo}/[organisation]/[module]/[revision]/ivy.xml" />
 				<artifact
-					pattern="${lexevs.releases.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
+					pattern="${ncimvn.releases.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 			</url>
-			<url name="lexevs-snapshots" m2compatible="true" changingPattern=".*-SNAPSHOT">
+			<url name="ncimvn-snapshots" m2compatible="true" changingPattern=".*-SNAPSHOT">
 				<ivy
-					pattern="${lexevs.snapshots.repo}/[organisation]/[module]/[revision]/ivy.xml" />
+					pattern="${ncimvn.snapshots.repo}/[organisation]/[module]/[revision]/ivy.xml" />
 				<artifact
-					pattern="${lexevs.snapshots.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
+					pattern="${ncimvn.snapshots.repo}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 			</url>		
 		</chain>
 	
@@ -69,7 +69,7 @@
       		<url name="maven-central" m2compatible="true">
       			  <artifact pattern="http://repo1.maven.org/maven2/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
       		</url>
-      		    <ibiblio name="lexevs-thirdparty-works" m2compatible="true" root="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty/"/>
+      		    <ibiblio name="ncimvn-thirdparty-works" m2compatible="true" root="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty/"/>
 			
 		</chain>
 	</resolvers>
