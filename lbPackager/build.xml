@@ -1031,11 +1031,11 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		build-lexbig-jar, javadoc, pack"/>
 	
 	<target name="deploy" description="build and deploy externally">
-		<fail message="Property &quot;informatics.password&quot; needs to be set to deploy.&#xa;
-			Example: ant -Dinformatics.password=xxxx">
+		<fail message="Property &quot;ncimvn.password&quot; needs to be set to deploy.&#xa;
+			Example: ant -Dncimvn.password=xxxx">
 		    <condition>
 	            <not>
-	                <isset property="informatics.password"/>
+	                <isset property="ncimvn.password"/>
 	            </not>
 		   </condition>
 		</fail>

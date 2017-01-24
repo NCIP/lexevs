@@ -278,7 +278,7 @@
 	   		<mapping conf="system" scope="system"/>
 	   	</ivy:makepom>
 
-		<ivy:publish resolver="informatics" forcedeliver="true" overwrite="true">
+		<ivy:publish resolver="ncimvn" forcedeliver="true" overwrite="true">
 		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>
