@@ -49,12 +49,16 @@ public class RemoveAllResolvedValueSets {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
-
+		Util.displayMessage("REMOVING ALL RESOLVED VALUE SETS. "
+				+ "DO YOU REALLY WANT TO DO THIS? ('Y' to confirm, any other key to cancel)");
+		char choice = Util.getConsoleCharacter();
+		if (choice == 'Y' || choice == 'y'){
 		LexEVSResolvedValueSetService resolved_vs_service = new LexEVSResolvedValueSetServiceImpl();
 		for (CodingScheme cs : resolved_vs_service.listAllResolvedValueSets()) {
 			AbsoluteCodingSchemeVersionReference remove_acst = Constructors
 					.createAbsoluteCodingSchemeVersionReference(cs.getCodingSchemeURI(), cs.getRepresentsVersion());
 			remove(remove_acst, true);
+		}
 		}
 	}
 
