@@ -39,7 +39,6 @@ public class RemoveAllValueSetDefinitions {
 			try {
 				vss.removeValueSetDefinition(URI.create(urn));
 			} catch (LBException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			Util.displayMessage("ValueSetDefinition removed: " + urn);

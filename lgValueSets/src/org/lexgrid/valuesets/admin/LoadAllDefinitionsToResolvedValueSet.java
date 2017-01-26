@@ -12,24 +12,25 @@ import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.admin.Util;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.registry.model.RegistryEntry;
-import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 public class LoadAllDefinitionsToResolvedValueSet {
+	private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
 	
 	public void run(String[] args){
-
+		synchronized (service) {
         CommandLine cl = null;
+        String vsdName = null;
         Options options = getCommandOptions();
         try {
             cl = new BasicParser().parse(options, args);
@@ -46,7 +47,7 @@ public class LoadAllDefinitionsToResolvedValueSet {
 		LexEVSValueSetDefinitionServices valueSetService =  LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 		LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
 
-    	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
+ //   	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
     	int counter = 0;
 		long start = System.nanoTime();	
 		String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
@@ -56,14 +57,19 @@ public class LoadAllDefinitionsToResolvedValueSet {
 		List<String> list = valueSetService.listValueSetDefinitionURIs();
 
 		for(String uri : list){
-			try {
+			try {	
+				
+				ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
+				Util.displayMessage("Attempting to load value set for: " + uri + " :" +
+						vsdName);
 				LexBIGServiceManager lbsm = lbsvc.getServiceManager(null);
-		
+				ValueSetDefinition def = valueSetService.getValueSetDefinition(new URI(uri), null);
 			    AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 			    ref.setCodingSchemeURN(codingSchemeUri);			
 			    ref.setCodingSchemeVersion(lbsvc.resolveCodingScheme(codingSchemeUri, null).getRepresentsVersion());
 			    AbsoluteCodingSchemeVersionReferenceList refList = new AbsoluteCodingSchemeVersionReferenceList();
 			    refList.addAbsoluteCodingSchemeVersionReference(ref);
+			    vsdName = def.getValueSetDefinitionName();
 				loader.load(new URI(uri), null, refList, ref.getCodingSchemeVersion(), null);
 				Util.displayLoaderStatus(loader);
 				while(loader.getStatus().getEndTime() == null){
@@ -71,10 +77,13 @@ public class LoadAllDefinitionsToResolvedValueSet {
 				}				
 				if(!loader.getStatus().getErrorsLogged()){
 				lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-				Util.displayMessage("Loaded and activiated resolved value set for: " + uri);
+				lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],"PRODUCTION");
+				Util.displayMessage("Loaded and activiated resolved value set for: " + uri + " :" +
+				vsdName);
 				}
 				else{
-				Util.displayMessage("Error loading value set: " + uri);	
+				Util.displayMessage("Error loading value set: " + uri + " :" +
+						vsdName);	
 				}
 				counter++;
 				if(counter % 100 == 0){
@@ -82,12 +91,14 @@ public class LoadAllDefinitionsToResolvedValueSet {
 					Util.displayMessage("Total time expended: " + TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - start) + " seconds");
 				}
 			} catch (LBException e) {
-				throw new RuntimeException("Error getting value set definition: " + uri, e);
+				throw new RuntimeException("Error getting value set definition: " + uri + " :" +
+						vsdName, e);
 			} catch (URISyntaxException e) {
 				throw new RuntimeException("Malformed URI.  Check ValueSet Definition", e);
 			} catch (Exception e) {
 				throw new RuntimeException("Value Set failed to resolve/load: ", e);
 			}
+		}
 		}
 	}
 	

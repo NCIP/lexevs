@@ -19,10 +19,8 @@
 package org.lexgrid.valuesets.admin;
 
 import java.io.File;
-import java.net.URI;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.admin.Util;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.apache.commons.cli.BasicParser;
