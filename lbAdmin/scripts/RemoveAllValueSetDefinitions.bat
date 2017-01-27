@@ -4,4 +4,4 @@ REM
 REM
 REM Example: RemoveAllResolvedValueSets.bat
 REM
-java -Xmx3000m -cp "../runtime/lbPatch.jar;../runtime-components/extLib/*" org.lexgrid.valuesets.admin.RemoveAllResolvedValueSets %*
+java -Xmx3000m -cp "../runtime/lbPatch.jar;../runtime-components/extLib/*" org.lexgrid.valuesets.admin.RemoveAllValueSetDefinitions %*

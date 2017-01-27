@@ -47,7 +47,6 @@ public class LoadAllDefinitionsToResolvedValueSet {
 		LexEVSValueSetDefinitionServices valueSetService =  LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 		LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
 
- //   	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
     	int counter = 0;
 		long start = System.nanoTime();	
 		String codingSchemeUri = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
