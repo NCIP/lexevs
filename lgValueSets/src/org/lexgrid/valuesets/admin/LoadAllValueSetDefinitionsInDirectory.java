@@ -71,16 +71,13 @@ public class LoadAllValueSetDefinitionsInDirectory {
                 return;
             }
             
-           
-
-            LexEVSValueSetDefinitionServices vds = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
-            
             
             File dir = new File(cl.getOptionValue("in"));
             File[] directoryListing = dir.listFiles();
             if (directoryListing != null && directoryListing.length > 0) {
               for (File source : directoryListing) {
-            	  
+
+                  LexEVSValueSetDefinitionServices vds = LexEVSValueSetDefinitionServicesImpl.defaultInstance(); 
                 try {
 					vds.loadValueSetDefinition(source.toString(), false);
 				} catch (LBException e) {
