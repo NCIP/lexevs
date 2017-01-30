@@ -19,8 +19,10 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.SupportedHierarchy;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -404,5 +406,22 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 				.iterateResolvedConceptReference();
 		assertTrue(validateTarget("obi.owl", itr));
 	}
+	
+	@Test
+	public void testLoadTransitivePropertiesAsHierarchies() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodingScheme scheme = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		List<SupportedHierarchy> hrchy = scheme.getMappings().getSupportedHierarchyAsReference();
+		boolean exists = false;
+		for(SupportedHierarchy sh :hrchy){
+			if(sh.getLocalId().equals("Anatomic_Structure_Has_Location")){
+				exists = true;
+			}
+		}
+		assertTrue(exists);
+	}
+
 
 }

@@ -2197,8 +2197,15 @@ public class OwlApi2LG {
         }
         if (owlProp instanceof OWLObjectProperty) {
             OWLObjectProperty objectProp = (OWLObjectProperty) owlProp;
+            boolean isTransitive = objectProp.isTransitive(ontology);
             resolveAssociationProperty(assocWrap.getAssociationEntity(), objectProp);
-            assocWrap.setIsTransitive(objectProp.isTransitive(ontology));
+            assocWrap.setIsTransitive(isTransitive);
+            List<String> list = new ArrayList<String>();
+            list.add(label);
+            if(isTransitive){
+                lgSupportedMappings_.registerSupportedHierarchy(label, 
+                        owlProp.getIRI().toString(), label, "@@", list, false, true);
+            }
         } else if (owlProp instanceof OWLDataProperty) {
             OWLDataProperty dataProp = (OWLDataProperty) owlProp;
             resolveAssociationProperty(assocWrap.getAssociationEntity(), dataProp);
@@ -2214,6 +2221,7 @@ public class OwlApi2LG {
 
         lgSupportedMappings_.registerSupportedAssociation(label, owlProp.getIRI().toString(), label, propertyName,
                 nameSpace, true);
+        
         return assocWrap;
 
     }
