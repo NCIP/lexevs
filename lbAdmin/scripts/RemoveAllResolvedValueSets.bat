@@ -1,4 +1,5 @@
 @echo off
+REM
 REM WARNING:  REMOVES ALL RESOLVED VALUE SETS. 
 REM
 REM Example: ./RemoveAllResolvedValueSets.sh

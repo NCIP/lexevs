@@ -1,4 +1,5 @@
 @echo off
+REM
 REM WARNING: Removes all resolved value set coding schemes without discrimination
 REM
 REM

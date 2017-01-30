@@ -43,6 +43,7 @@ public class RemoveAllValueSetDefinitions {
 			}
 			Util.displayMessage("ValueSetDefinition removed: " + urn);
 		}
+		
 		}
 	}
 }

@@ -49,6 +49,7 @@ public class RemoveAllResolvedValueSets {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
+		
 		Util.displayMessage("REMOVING ALL RESOLVED VALUE SETS. "
 				+ "DO YOU REALLY WANT TO DO THIS? ('Y' to confirm, any other key to cancel)");
 		char choice = Util.getConsoleCharacter();
