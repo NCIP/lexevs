@@ -56,6 +56,7 @@ public class ManifestLoadWithAssociationTest {
 	
 	@Test
 	 public void LoadOwlWithConflictingProductionTag() throws InterruptedException, LBException {
+		
 		        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
 		        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
