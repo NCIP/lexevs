@@ -15,15 +15,18 @@ import java.util.Properties;
  */
 public class UmlsBatchLoaderSabVerifier {
 
+	private static final String SAB_FILE = "MRSAB.RRF";
 	private static final String DELIMETER = "[|]";
+	private static final String PROP_RRF_DIR = "rrfDir";
+	private static final String PROP_SAB = "sab";
+	private static final int SAB_INDEX = 3;
 	
 	private String rrfDir = null;
 	private String sab = null;
 	
-	public UmlsBatchLoaderSabVerifier(Properties props){
-		
-		rrfDir = props.getProperty("rrfDir");
-		sab = props.getProperty("sab");
+	public UmlsBatchLoaderSabVerifier(Properties props) {
+		rrfDir = props.getProperty(PROP_RRF_DIR);
+		sab = props.getProperty(PROP_SAB);
 	}
 	
 	protected boolean isSabValid() {
@@ -31,10 +34,9 @@ public class UmlsBatchLoaderSabVerifier {
 		URI uri = null;
 		
 		try {
-			uri = new URI(rrfDir + "MRSAB.RRF");
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			uri = new URI(rrfDir + SAB_FILE);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Invalid RRF file: " + rrfDir, e);
 		}
 		
 		File file = new File(uri.getPath());
@@ -43,16 +45,13 @@ public class UmlsBatchLoaderSabVerifier {
 		    br = new BufferedReader(new FileReader(file));
 		    String line;
 		    while ((line = br.readLine()) != null && !valid) {
-		       // process the line.
+		    	// process the line.
 		    	valid = sab.equals(getSab(line));
-		    	System.out.println(getSab(line));
 		    }
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Invalid RRF file: " + rrfDir, e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Invalid RRF file contents: " + rrfDir, e);
 		}
 		finally {
 			if (br != null) {
@@ -64,28 +63,12 @@ public class UmlsBatchLoaderSabVerifier {
 			}
 		}
 		
-		
 		return valid;
 	}
 	
 	private String getSab(String entry) {
 		String[] tokens = entry.split(DELIMETER);
-		return tokens[3];
+		return tokens[SAB_INDEX];
 	}
 	
-	public static void main(String[] args) {
-		
-		URI uri = new File("/Users/endlecm/deployment/lexevs6412/test/resources/testData/sampleUMLS-AIRs").toURI();
-		String sab = "AIR";
-		
-		Properties props = new Properties();
-		props.put("sab", sab);
-		props.put("rrfDir", uri.toString());
-		
-		
-		UmlsBatchLoaderSabVerifier verifier = new UmlsBatchLoaderSabVerifier(props);
-		
-		boolean isValid = verifier.isSabValid();
-		System.out.println("SAB found = " + isValid);
-    }
 }
