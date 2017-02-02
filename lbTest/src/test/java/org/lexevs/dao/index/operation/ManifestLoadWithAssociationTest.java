@@ -14,16 +14,20 @@ import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 import org.LexGrid.LexOnt.CsmfCodingSchemeURI;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.springframework.core.annotation.Order;
 
+@RunWith(OrderingTestRunner.class)
 public class ManifestLoadWithAssociationTest {
 	private static String codingSchemeURI  = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
 	private static String sampleVersion = "16.Teste";
@@ -35,6 +39,7 @@ public class ManifestLoadWithAssociationTest {
 	}
 
 	@Test
+	@Order(0)
 	public void LoadOwlWAssocDefManifest() throws InterruptedException, LBException {
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -55,6 +60,7 @@ public class ManifestLoadWithAssociationTest {
 	}
 	
 	@Test
+	@Order(1)
 	 public void LoadOwlWithConflictingProductionTag() throws InterruptedException, LBException {
 		
 		        LexBIGServiceManager lbsm = getLexBIGServiceManager();
