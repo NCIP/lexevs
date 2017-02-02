@@ -203,6 +203,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2Unanno
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCaseSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
@@ -267,6 +268,7 @@ public class AllTestsNormalConfig {
         owl2LoaderSuite.addTestSuite(NewOWL2UnannotatedSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesUnannotatedSnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2SpecialCaseSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
         mainSuite.addTest(owl2LoaderSuite);
         

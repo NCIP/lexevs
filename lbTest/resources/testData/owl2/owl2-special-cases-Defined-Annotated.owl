@@ -287,7 +287,15 @@
         <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/RO_0000081"/><!-- role of -->
     </owl:ObjectProperty>                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-    
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Anatomic_Structure_Has_Location -->
+
+    <owl:ObjectProperty rdf:about="#R81">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anatomic_Structure_Has_Location</rdfs:label>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">R81</code>
+        <rdfs:range rdf:resource="#C12219"/>
+        <rdfs:domain rdf:resource="#C12219"/>
+    </owl:ObjectProperty>
 
 
     <!-- 
