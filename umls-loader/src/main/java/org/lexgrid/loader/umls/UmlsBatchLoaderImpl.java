@@ -135,7 +135,8 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 			connectionProps.put("sab", this.getOptions().getStringOption(SAB_OPTION).getOptionValue());
 			connectionProps.put("rrfDir", this.getResourceUri().toString());
 			connectionProps.put("retry", "false");
-						
+				
+			// Verify the SAB is valid before continuing
 			UmlsBatchLoaderSabVerifier verifier = new UmlsBatchLoaderSabVerifier(connectionProps);
 			
 			boolean isValid = verifier.isSabValid();
