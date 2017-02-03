@@ -380,6 +380,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             } catch (Exception e) {
                 status_.setState(ProcessState.FAILED);
                 md_.fatal("Failed while running the conversion", e);
+                getLogger().warn("Load failed: " + e.getCause());
             } finally {
                 if (status_.getState() == null || 
                         (
@@ -397,7 +398,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
                             }
                         }
 
-                        if(doRemoveOnFailure) {
+                        if(doRemoveOnFailure && codingSchemeReferences.length >0) {
                             getLogger().warn("Load failed.  Removing temporary resources...");
                             SystemResourceService service = 
                                    LexEvsServiceLocator.getInstance().getSystemResourceService();

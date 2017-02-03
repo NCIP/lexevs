@@ -756,9 +756,45 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertTrue(metaLoader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
     }
-
+    
     @Test
     @Order(29)
+    public void testLoadUMLSFail1() throws Exception {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        UmlsBatchLoader loader = (UmlsBatchLoader) lbsm.getLoader("UmlsBatchLoader");
+
+        // Test invalid file
+        loader.loadUmls(new File("resources/wrong/dir").toURI(), "AIR");
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+        assertTrue(loader.getCodingSchemeReferences().length == 0);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.FAILED));
+        assertTrue(loader.getStatus().getErrorsLogged().booleanValue());
+    }
+    
+    @Test
+    @Order(30)
+    public void testLoadUMLSFail2() throws Exception {
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        UmlsBatchLoader loader = (UmlsBatchLoader) lbsm.getLoader("UmlsBatchLoader");
+
+        // Test invalid SAB
+        loader.loadUmls(new File("resources/testData/sampleUMLS-AIR").toURI(), "XXXXXX");
+
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+        assertTrue(loader.getCodingSchemeReferences().length == 0);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.FAILED));
+        assertTrue(loader.getStatus().getErrorsLogged().booleanValue());
+    }
+
+    @Test
+    @Order(31)
     public void testLoadUMLS() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -773,12 +809,11 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
 
     @Test
-    @Order(30)
+    @Order(32)
     public void testLoadMappingWithDefaultSettings() throws LBException{
     	
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -820,7 +855,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(31)
+    @Order(33)
     public void testLoadCodingSchemeWithMoreMetaData() throws LBException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
         LexEVSAuthoringServiceImpl authoring = new LexEVSAuthoringServiceImpl();
@@ -867,7 +902,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(32)
+    @Order(34)
     public void testLoadAuthoringShellSystem() throws LBException, LBInvocationException, InterruptedException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -888,7 +923,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(33)
+    @Order(35)
     public void testLoadMappinglSystem() throws LBException, LBInvocationException, InterruptedException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
