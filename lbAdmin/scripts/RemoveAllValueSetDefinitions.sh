@@ -1,4 +1,4 @@
-# WARNING: Removes all resolved value set coding schemes without discrimination
+# WARNING: Removes all value set definitions without discrimination
 #
 #
 # Example: ./RemoveAllValueSetDefinitions.sh
