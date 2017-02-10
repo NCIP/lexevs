@@ -790,12 +790,6 @@
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
     </owl:Axiom>
     <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationURI.</note>
-        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
-    </owl:Axiom>
-    <owl:Axiom>
         <note rdf:datatype="&xsd;string">annotation on an AssociationURI of a class (rdf:resource).</note>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
