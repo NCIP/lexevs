@@ -135,8 +135,8 @@ public class CodeSystemLabelProvider implements ITableLabelProvider {
 
 	public void setupColumns(Table table) {
 	    setupSortListener(table);
-	    TableColumn tc = new TableColumn(table, SWT.LEFT, 0);
-	    
+		TableColumn tc = new TableColumn(table, SWT.LEFT, 0);
+
 		tc.setText("Code System Name");
 		tc.addListener(SWT.Selection, sortListener);
 		tc.setWidth(140);
@@ -182,8 +182,7 @@ public class CodeSystemLabelProvider implements ITableLabelProvider {
 		tc.setWidth(300);
 	}
 	
-private void setupSortListener(final Table table) {
-        
+	private void setupSortListener(final Table table) {
         sortListener = new Listener() {
             public void handleEvent(Event e) {
 
@@ -279,5 +278,4 @@ private void setupSortListener(final Table table) {
             
         };
     }
-
 }

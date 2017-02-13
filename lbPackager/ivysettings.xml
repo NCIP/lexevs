@@ -3,7 +3,7 @@
 	<properties file="build.properties" />
 	<property name="ivy.revision" value="${vBuild}"/>
 		
-	<property name="lexevs.snapshots.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty" />
+	<property name="lexevs.snapshots.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVSSnapshots" />
 	<property name="lexevs.releases.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVSRelease" />
 	<property name="lexevs.thirdparty.repo" value="https://ncimvn.nci.nih.gov/nexus/content/repositories/LexEVS3rdParty" /> 
 	

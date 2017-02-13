@@ -32,7 +32,7 @@ You may obtain a copy of the License at
                 name="Mayo Clinic for National Institutes of Health (NIH), National Cancer Institute (NCI) Enterprise Vocabulary Services (EVS)"/>
         </authors>
         <url>@@REPLACED_BY_BUILD_INFO_URL@@</url>
-        <javaversion>1.7</javaversion>
+        <javaversion>1.8</javaversion>
     </info>
     <guiprefs height="600" resizable="yes" width="800">
         <laf name="liquid">
