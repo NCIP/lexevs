@@ -1,6 +1,8 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
+import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -17,9 +19,21 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OwlApi2LG;
 
 public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 
@@ -28,7 +42,40 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		super.setUp();
 		
 	}
-		
+	
+	@Test
+	public void testLoadofLabelsWhenPreferredSourceHasEmptyValue() throws LBInvocationException, LBParameterException{
+
+		String[] stringList = {"OBI_0000699"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+				
+		assertTrue(rcr.getEntity().getEntityDescription().getContent().equals("survival assessment"));;
+		assertTrue(rcr.getEntity().getPresentationCount() > 2);
+		List<Presentation> presentations = rcr.getEntity().getPresentationAsReference();
+		Boolean hasEmptyPresentation = false;
+		boolean hasLabel = false;
+		boolean hasEditorTerm = false;
+		for(Presentation p: presentations){
+			if(p.getPropertyName().equals("OBI_9991118") && StringUtils.isBlank(p.getValue().getContent())){
+				hasEmptyPresentation = true;
+			}
+			if(p.getPropertyName().equals("editor preferred term") && p.getValue().getContent().equals("survival assessment") ){
+				hasEditorTerm = true;
+			}
+			if(p.getPropertyName().equals("label") && p.getValue().getContent().equals("survival assessment") ){
+				hasLabel = true;
+			}
+		}
+		assertTrue(hasEmptyPresentation);
+		assertTrue(hasLabel);
+		assertTrue(hasEditorTerm);
+	}
+
 
 	@Test
 	public void testRestrictOnSubClassOfToProperty() 
@@ -359,5 +406,22 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 				.iterateResolvedConceptReference();
 		assertTrue(validateTarget("obi.owl", itr));
 	}
+	
+	@Test
+	public void testLoadTransitivePropertiesAsHierarchies() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodingScheme scheme = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		List<SupportedHierarchy> hrchy = scheme.getMappings().getSupportedHierarchyAsReference();
+		boolean exists = false;
+		for(SupportedHierarchy sh :hrchy){
+			if(sh.getLocalId().equals("Anatomic_Structure_Has_Location")){
+				exists = true;
+			}
+		}
+		assertTrue(exists);
+	}
+
 
 }

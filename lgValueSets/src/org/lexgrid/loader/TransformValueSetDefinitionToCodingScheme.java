@@ -14,6 +14,10 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.valueSets.DefinitionEntry;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.lexevs.logging.messaging.impl.CachingMessageDirectorImpl;
 import org.lexevs.logging.messaging.impl.CommandLineMessageDirector;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
@@ -25,9 +29,11 @@ public class TransformValueSetDefinitionToCodingScheme {
 	String valueSetDefinitionRevisionId;
 	AbsoluteCodingSchemeVersionReferenceList csVersionList;
 	String csVersionTag;
+	String vsVersion;
 
 	private LexEVSValueSetDefinitionServicesImpl vds_;
 
+	
 	TransformValueSetDefinitionToCodingScheme(URI valueSetDefinitionURI,
 			String valueSetDefinitionRevisionId,
 			AbsoluteCodingSchemeVersionReferenceList csVersionList,
@@ -37,6 +43,19 @@ public class TransformValueSetDefinitionToCodingScheme {
 		this.csVersionList = csVersionList;
 		this.csVersionTag = csVersionTag;
 	}
+	
+	TransformValueSetDefinitionToCodingScheme(URI valueSetDefinitionURI,
+			String valueSetDefinitionRevisionId,
+			AbsoluteCodingSchemeVersionReferenceList csVersionList,
+			String csVersionTag,
+			String vsVersion) {
+		this.valueSetDefinitionURI = valueSetDefinitionURI;
+		this.valueSetDefinitionRevisionId = valueSetDefinitionRevisionId;
+		this.csVersionList = csVersionList;
+		this.csVersionTag = csVersionTag;
+		this.vsVersion = vsVersion;
+	}
+
 
 	CodingScheme transform() throws Exception {
 
@@ -44,13 +63,33 @@ public class TransformValueSetDefinitionToCodingScheme {
 				.exportValueSetResolution(valueSetDefinitionURI,
 						valueSetDefinitionRevisionId, csVersionList,
 						csVersionTag, false);
+		
+		ValueSetDefinition vsd = getValueSetDefinitionService().getValueSetDefinition(valueSetDefinitionURI, valueSetDefinitionRevisionId);
 		CodingScheme codingScheme;
 		// read it with BufferedReader
 		BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
 		
 		codingScheme = CodingScheme.unmarshalCodingScheme(br);
+		if(codingScheme.getEntities().getEntityCount() < 1){
+			throw new LBException("ValueSet defines no values, will not load as resolved value set");
+		}
+		else if (codingScheme.getEntities().getEntityCount() == 1){
+			for(DefinitionEntry entry: vsd.getDefinitionEntry()){
+				if(entry.getEntityReference().getEntityCode().equals(codingScheme.getEntities().getEntity(0).getEntityCode())){
+					throw new LBException("ValueSet defines a single value, "
+							+ "which is the same as the defining entity, "
+							+ "will not load as resolved value set");
+				}
+				}
+			
+		}
+		
+		if(vsVersion == null){
 		setCodingSchemeVersion(codingScheme);
+		}else{
+			codingScheme.setRepresentsVersion(vsVersion);
+		}
 		return codingScheme;
 
 	}

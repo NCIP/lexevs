@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
@@ -111,7 +112,8 @@ public class CleanUpTest extends TestCase {
 		
 		for (String uri : uris)
 		{
-			if (uri.startsWith("SRITEST:") || uri.startsWith("OWL2LEXEVS:"))
+			if (uri.startsWith("SRITEST:") || uri.startsWith("OWL2LEXEVS:") 
+					|| uri.startsWith("XTEST:"))
 				getValueSetDefService().removeValueSetDefinition(new URI(uri));
 		}
 		
@@ -120,7 +122,8 @@ public class CleanUpTest extends TestCase {
 		
 		for (String uri : uris)
 		{
-			if (uri.toString().startsWith("SRITEST:") || uri.toString().startsWith("OWL2LEXEVS:"))
+			if (uri.toString().startsWith("SRITEST:") || uri.toString().startsWith("OWL2LEXEVS:")
+					|| uri.startsWith("XTEST:"))
 				assertFalse("Not all test value domains were deleted.",true);
 		}
 	}
@@ -170,6 +173,31 @@ public class CleanUpTest extends TestCase {
     	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
     	remove_rvs.remove(acsvrl, true);
+    }
+    
+    @Test 
+    public void testRemoveResolvedValueSe2t() throws Exception {
+    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.1");
+    	remove_rvs.remove(acsvrl, true);
+    }
+    
+    @Test 
+    public void testRemoveResolvedAllButGM() throws Exception {
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+        AbsoluteCodingSchemeVersionReference acsvr = Constructors.
+    			createAbsoluteCodingSchemeVersionReference("SRITEST:AUTO:AllDomesticButGM", "12.03test");
+        lbsm.deactivateCodingSchemeVersion(acsvr , null);
+    	lbsm.removeCodingSchemeVersion(acsvr);
+    }
+    
+    @Test 
+    public void testRemoveXTest() throws Exception {
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+    	AbsoluteCodingSchemeVersionReference acsvr = Constructors.
+    			createAbsoluteCodingSchemeVersionReference("XTEST:One.Node.ValueSet", "1.0");
+    	        lbsm.deactivateCodingSchemeVersion(acsvr , null);
+    	    	lbsm.removeCodingSchemeVersion(acsvr);
     }
         
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

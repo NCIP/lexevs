@@ -50,9 +50,9 @@ import org.lexevs.system.ResourceManager;
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  */
 public class ListSchemes {
-    static final String Dash10 = "----------";
-    static final String Dash20 = "--------------------";
-    static final String Dash35 = "-----------------------------------";
+    static final String Dash25 = "-------------------------";
+    static final String Dash30 = "------------------------------";
+    static final String Dash55 = "-------------------------------------------------------";
 
     public static void main(String[] args) {
         try {
@@ -103,8 +103,8 @@ public class ListSchemes {
                 } else {
                     Formatter f = new Formatter();
 
-                    String format = "%-20.20s|%-10.10s|%-35.35s|%-10.10s\n";
-                    Object[] hSep = new Object[] { Dash20, Dash10, Dash35, Dash10 };
+                    String format = "%-30.30s|%-25.25s|%-55.55s|%-25.25s\n";
+                    Object[] hSep = new Object[] { Dash30, Dash25, Dash55, Dash25 };
                     f.format(format, hSep);
                     f.format(format, new Object[] { "Local Name", "Version", "URN", "Tag" });
                     f.format(format, hSep);
@@ -112,28 +112,28 @@ public class ListSchemes {
                         CodingSchemeSummary css = csr.getCodingSchemeSummary();
                         // Evaluate local name
                         String localName = css.getLocalName();
-                        if (localName != null && localName.length() > 20)
-                            localName = localName.substring(0, 18) + ">>";
+                        if (localName != null && localName.length() > 30)
+                            localName = localName.substring(0, 28) + ">>";
                         // Evaluate version
                         String version = css.getRepresentsVersion();
-                        if (version != null && version.length() > 10)
-                            version = version.substring(0, 8) + ">>";
+                        if (version != null && version.length() > 25)
+                            version = version.substring(0, 23) + ">>";
                         // Evaluate urn
                         String urn = css.getCodingSchemeURI();
-                        if (urn != null && urn.length() > 35)
-                            urn = urn.substring(0, 33) + ">>";
+                        if (urn != null && urn.length() > 55)
+                            urn = urn.substring(0, 53) + ">>";
                         // Evaluate tag(s)
                         String[] tags = csr.getRenderingDetail().getVersionTags().getTag();
                         String tag = tags.length > 0 ? tags[0] : "";
-                        if (tag != null && tag.length() > 10)
-                            tag = tag.substring(0, 8) + ">>";
+                        if (tag != null && tag.length() > 25)
+                            tag = tag.substring(0, 23) + ">>";
                         // Output the first line
                         f.format(format, new Object[] { localName, version, urn, tag });
                         // Output additional tags
                         for (int i = 1; i < tags.length; i++) {
                             tag = tags[i];
-                            if (tag != null && tag.length() > 10)
-                                tag = tag.substring(0, 8) + ">>";
+                            if (tag != null && tag.length() > 25)
+                                tag = tag.substring(0, 23) + ">>";
                             f.format(format, "", "", "", tag);
                         }
                         // Output separator
