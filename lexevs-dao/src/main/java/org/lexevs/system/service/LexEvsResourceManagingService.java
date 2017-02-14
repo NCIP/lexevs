@@ -505,6 +505,14 @@ public class LexEvsResourceManagingService
 			AbsoluteCodingSchemeVersionReference codingScheme, String newTag)
 			throws LBParameterException {
 		RegistryEntry entry = registry.getCodingSchemeEntry(codingScheme);
+		List<RegistryEntry> list = registry.getAllRegistryEntriesOfTypeAndURI(
+				ResourceType.CODING_SCHEME, codingScheme.getCodingSchemeURN());
+		for(RegistryEntry re: list){
+			if(re.getTag() != null && re.getTag().equals("PRODUCTION")){
+				re.setTag("");
+				registry.updateEntry(re);
+			}
+		}
 		entry.setTag(newTag);
 		registry.updateEntry(entry);
 		this.readCodingSchemeAliasesFromServer();

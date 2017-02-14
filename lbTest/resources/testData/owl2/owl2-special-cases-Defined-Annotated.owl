@@ -171,7 +171,23 @@
         <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000125"/><!-- pending final vetting -->
     </owl:AnnotationProperty>
     
+    
+        <!-- http://purl.obolibrary.org/obo/IAO_0000111 -->
 
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000111"><!-- editor preferred label -->
+        <rdfs:label>editor preferred term</rdfs:label>
+        <rdfs:label>editor preferred term~editor preferred label</rdfs:label>
+        <rdfs:label>editor preferred label</rdfs:label>
+        <rdfs:label xml:lang="en">editor preferred label</rdfs:label>
+        <rdfs:label xml:lang="en">editor preferred term</rdfs:label>
+        <obo:IAO_0000119 xml:lang="en">GROUP:OBI:&lt;http://purl.obolibrary.org/obo/obi></obo:IAO_0000119>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Daniel Schober</obo:IAO_0000117>
+        <obo:IAO_0000115 xml:lang="en">The concise, meaningful, and human-friendly name for a class or property preferred by the ontology developers. (US-English)</obo:IAO_0000115>
+        <obo:IAO_0000111 xml:lang="en">editor preferred label</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/><!-- ready for release -->
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
+    </owl:AnnotationProperty>
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -271,7 +287,15 @@
         <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/RO_0000081"/><!-- role of -->
     </owl:ObjectProperty>                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-    
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Anatomic_Structure_Has_Location -->
+
+    <owl:ObjectProperty rdf:about="#R81">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anatomic_Structure_Has_Location</rdfs:label>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">R81</code>
+        <rdfs:range rdf:resource="#C12219"/>
+        <rdfs:domain rdf:resource="#C12219"/>
+    </owl:ObjectProperty>
 
 
     <!-- 
@@ -1882,6 +1906,45 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
     </owl:Axiom>
 
+    <!-- http://purl.obolibrary.org/obo/OBI_0000699 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/OBI_0000699"><!-- survival assessment -->
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">survival assessment</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/OBI_0000070"/><!-- assay -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000417"/><!-- achieves_planned_objective -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0000441"/><!-- assay objective -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000293"/><!-- has_specified_input -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0100026"/><!-- organism -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000299"/><!-- has_specified_output -->
+                <owl:someValuesFrom>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="http://purl.obolibrary.org/obo/OBI_0000789"/><!-- survival rate -->
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000136"/><!-- is about -->
+                                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0100026"/><!-- organism -->
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:OBI_9991118 rdf:datatype="http://www.w3.org/2001/XMLSchema#string"/>
+        <obo:IAO_0000116 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Need to point out more specifically that survival / death is measured.</obo:IAO_0000116>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Survival assessment is an assay that measures the occurrence of death events in one or more organisms that are monitored over time</obo:IAO_0000115>
+        <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">survival assessment</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000123"/><!-- metadata incomplete -->
+    </owl:Class>
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //

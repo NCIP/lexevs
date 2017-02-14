@@ -18,21 +18,17 @@
  */
 package org.LexGrid.LexBIG.gui;
 
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
-import org.LexGrid.LexBIG.gui.edit.CodingSchemeEditDialog;
-import org.LexGrid.LexBIG.gui.edit.EntityEditDialog;
-import org.LexGrid.LexBIG.gui.edit.ItemUpdateListener;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 
 /**
  * Class for displaying code system details.
@@ -42,61 +38,47 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class CodeSystemDetails {
 	private Shell shell_;
-	private StyledText results_;
-	private LB_GUI lbGui;
+	private StyledText codeSystemResults_;
+	private StyledText metaDataResults_;
 
-	public CodeSystemDetails(Shell parent, LB_GUI lbGui, CodingScheme codeSystemDetails) {
+	public CodeSystemDetails(Shell parent, LB_GUI lbGui, CodingScheme codeSystemDetails, String mdResults) {
 		shell_ = new Shell(parent.getDisplay());
 		shell_.setText("Code System Viewer");
 		shell_.setSize(700, 550);
 		shell_.setImage(new Image(shell_.getDisplay(), this.getClass()
 				.getResourceAsStream("/icons/icon.gif")));
-
-		this.lbGui = lbGui;
 		
-		buildComponents(codeSystemDetails);
+		buildComponents(codeSystemDetails, mdResults);
 
 		shell_.setVisible(true);
-
-		results_.setText(ObjectToString.toString(codeSystemDetails));
+		codeSystemResults_.setText(ObjectToString.toString(codeSystemDetails));
+		metaDataResults_.setText(mdResults);
 	}
 
-	public void buildComponents(final CodingScheme codeSystemDetails) {
-		shell_.setLayout(new GridLayout(1, true));
+	public void buildComponents(final CodingScheme codeSystemDetails, final String mdResults) {
+	    shell_.setLayout(new FillLayout());
+	    final TabFolder tabFolder = new TabFolder(shell_, SWT.NONE);
 
-		// results area
+	    TabItem one = new TabItem(tabFolder, SWT.NONE);
+	    one.setText("CODE SYSTEM METADATA");
+	    one.setToolTipText("MetaData asserted by this code system");
+	    one.setControl(getTabOneControl(tabFolder));
 
-		results_ = new StyledText(shell_, SWT.WRAP | SWT.BORDER | SWT.MULTI
-				| SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
-		results_.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
-//		Button editButton = new Button(shell_, SWT.BUTTON1);
-//        editButton
-//                .setText("Edit Coding Scheme");
-//        editButton.addSelectionListener(new SelectionListener() {
-//
-//            public void widgetDefaultSelected(SelectionEvent arg0) {
-//                //
-//            }
-
-//            public void widgetSelected(SelectionEvent arg0) {
-//                CodingSchemeEditDialog editDialog;
-//                try {
-//                    editDialog = new CodingSchemeEditDialog(lbGui, null, false, "Edit CodingScheme", shell_, codeSystemDetails, new DialogHandler(shell_));
-//                } catch (Exception e) {
-//                   throw new RuntimeException(e);
-//                }
-//                
-//                editDialog.addItemUpdateListener(new ItemUpdateListener<CodingScheme>() {
-//
-//                    public void onItemUpdate(CodingScheme item) {
-//                        results_.setText(ObjectToString.toString(item));
-//                        lbGui.refreshCodingSchemeList();
-//                    }
-//                    
-//                });
-//                editDialog.open();
-//            }  
-//        });
+	    TabItem two = new TabItem(tabFolder, SWT.NONE);
+	    two.setText("USER DEFINED METADATA");
+	    two.setToolTipText("Metadata authored by the code system user");
+	    two.setControl(getTabTwoControl(tabFolder));
 	}
+	
+    private Control getTabOneControl(TabFolder tabFolder) {
+        codeSystemResults_ = new StyledText(tabFolder,
+                SWT.RESIZE | SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
+        return codeSystemResults_;
+    }
+
+    private Control getTabTwoControl(TabFolder tabFolder) {
+        metaDataResults_ = new StyledText(tabFolder,
+                SWT.RESIZE | SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
+        return metaDataResults_;
+    }
 }

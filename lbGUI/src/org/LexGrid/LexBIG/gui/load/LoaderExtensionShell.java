@@ -649,6 +649,13 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     throw new RuntimeException("Error while waiting for load to complete.", e);
                 }
             }
+            // Wait an extra 3 seconds to give time for the screen to update completely (XWindows sessions)
+            // JIRA issue lexevs-2461
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Error while waiting extra time.", e);
+            }
             
             // Needs to be called from the SWT Display thread.
             Display.getDefault().syncExec(new Runnable() {
@@ -658,9 +665,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     setLoading(false);
                 }
             });
-            
         }
-    
     }
     
     /**

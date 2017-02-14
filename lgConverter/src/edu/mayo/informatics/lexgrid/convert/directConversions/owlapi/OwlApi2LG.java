@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -1293,8 +1294,13 @@ public class OwlApi2LG {
             if (!assignedPreferredPres && (prop instanceof Presentation)) {
                 // Tag the property
                 Presentation pres = (Presentation) prop;
+                //We don't want a property with an empty value to populate the 
+                //entity description
+                if(StringUtils.isEmpty(pres.getValue().getContent())){
+                    continue;
+                }
                 pres.setIsPreferred(Boolean.TRUE);
-
+                
                 // Entity description on concept should match preferred
                 // presentation.
                 EntityDescription ed = new EntityDescription();
@@ -1993,12 +1999,26 @@ public class OwlApi2LG {
     }
 
     protected void initAnnotationProperties() {
-        for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
+        outer:for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
             String propertyName = getLocalName(prop);
-            // Correlate first assigned label to the primary ID.
-            String label = resolveLabel(prop);
-            if (isNoopNamespace(label))
-                continue;
+            // Check all for multiple labels for this property
+            String label = null;
+            List<String> labels = resolveLabels(prop);
+            prop.toString();
+            //Page through to see if it is a no op or a prioritized preference
+            //Noop continues the outer loop, a prioritized preference defines the label
+            //We try to capture whether the property is a label by calling to string on it
+            for(String s: labels){
+            if (isNoopNamespace(s))
+                continue outer;
+            if(prefManager.getPrioritized_presentation_names().contains(s) ||
+                    prefManager.getPrioritized_presentation_names().contains(prop.toString()))
+                label = s;
+            }
+            //We didn't find any prioritized preferences so we'll just use the first label
+            if(label == null){
+                label = resolveLabel(prop);
+            }
             addToSupportedPropertyAndMap(label, propertyName, prop);
             owlDatatypeName2label_.put(propertyName, label);
         }
@@ -2177,8 +2197,15 @@ public class OwlApi2LG {
         }
         if (owlProp instanceof OWLObjectProperty) {
             OWLObjectProperty objectProp = (OWLObjectProperty) owlProp;
+            boolean isTransitive = objectProp.isTransitive(ontology);
             resolveAssociationProperty(assocWrap.getAssociationEntity(), objectProp);
-            assocWrap.setIsTransitive(objectProp.isTransitive(ontology));
+            assocWrap.setIsTransitive(isTransitive);
+            List<String> list = new ArrayList<String>();
+            list.add(label);
+            if(isTransitive){
+                lgSupportedMappings_.registerSupportedHierarchy(label, 
+                        owlProp.getIRI().toString(), label, "@@", list, false, true);
+            }
         } else if (owlProp instanceof OWLDataProperty) {
             OWLDataProperty dataProp = (OWLDataProperty) owlProp;
             resolveAssociationProperty(assocWrap.getAssociationEntity(), dataProp);
@@ -2194,6 +2221,7 @@ public class OwlApi2LG {
 
         lgSupportedMappings_.registerSupportedAssociation(label, owlProp.getIRI().toString(), label, propertyName,
                 nameSpace, true);
+        
         return assocWrap;
 
     }
@@ -2437,6 +2465,19 @@ public class OwlApi2LG {
         }
         return getLocalName(entity);
 
+    }
+    
+    protected List<String> resolveLabels(OWLEntity entity){
+        List<String> list = new ArrayList<String>();
+        LabelExtractor le = new LabelExtractor();
+        Set<OWLAnnotation> annotations = entity.getAnnotations(ontology);
+        for (OWLAnnotation anno : annotations) {
+            String result = anno.accept(le);
+            if(result != null || StringUtils.isNotBlank(result)){
+                list.add(result);
+            }
+        }
+        return list;
     }
 
     protected Map<String, String> resolveXMLTagsAndValues(String src) {
@@ -3340,6 +3381,14 @@ public class OwlApi2LG {
                 }
             }
     }
+    }
+
+    public OWLOntology getOntology() {
+        return ontology;
+    }
+
+    public void setOntology(OWLOntology ontology) {
+        this.ontology = ontology;
     }
 
 } // end of the class
