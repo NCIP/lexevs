@@ -1437,9 +1437,9 @@ public class OwlApi2LG {
             if(itr.hasNext()){
                 while(itr.hasNext()){
                     OWLAnnotation annot = itr.next();
-                    if(annot.getValue() instanceof OWLLiteral){
-                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
-                    break;
+                    if(annot.getProperty().isLabel()){
+                        annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
+                        break;
                     }
                 }
             }
