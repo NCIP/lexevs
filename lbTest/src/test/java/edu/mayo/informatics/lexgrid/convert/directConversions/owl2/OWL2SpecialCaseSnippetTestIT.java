@@ -92,7 +92,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	@Test
 	public void testLoadOfAssociationURIAsResource() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURI"), null);
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURIAsResource"), null);
 	ResolvedConceptReferenceList list = cng.resolveAsList(
 			Constructors.createConceptReference("HappyPatientDrivingAround", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -104,7 +104,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	@Test
 	public void testNoLoadOfAssociationV1AsResource() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationV1"), null);
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("InvalidAssociationV1AsResource"), null);
 	ResolvedConceptReferenceList list = cng.resolveAsList(
 			Constructors.createConceptReference("HappyPatientDrivingAround", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 

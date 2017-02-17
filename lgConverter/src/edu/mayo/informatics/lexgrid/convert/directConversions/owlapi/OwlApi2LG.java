@@ -144,6 +144,7 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
+import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
@@ -1142,6 +1143,7 @@ public class OwlApi2LG {
     }
 
     private boolean isAnyURIDatatype(OWLAnnotationAssertionAxiom annotationAxiom) {
+        //Do we declare this as anyURI locally?
        Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
        while(itr.hasNext()){
            OWLDatatype dt = itr.next();
@@ -1150,6 +1152,16 @@ public class OwlApi2LG {
                return true;
            }
        }
+    //If not, then check the declaration of the annotation property to see if it is declared there
+    Set<OWLAxiom> annotationAxioms = annotationAxiom.getProperty().getReferencingAxioms(ontology);
+    for(OWLAxiom ax : annotationAxioms){
+        if(ax instanceof OWLAnnotationPropertyRangeAxiomImpl){
+            if(((OWLAnnotationPropertyRangeAxiomImpl) ax).getRange().equals(OWL2Datatype.XSD_ANY_URI.getIRI())){
+            return true;
+            }
+        }
+    }
+    //If we get here this does not have the range or data type of anyURI.
         return false;
     }
 
