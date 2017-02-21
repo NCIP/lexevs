@@ -18,6 +18,8 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -2960,7 +2962,8 @@ public class OwlApi2LG {
             try {
                 writeEntity(lgEntity);
             } catch (Exception e) {
-                // Exception logged by SQLReadWrite
+               System.out.println("Error on Entity Insertion for Code: " + lgEntity.getEntityCode() + " *** SQL Stack Trace:  " + e.toString());
+               messages_.error("Error on Entity Insertion for Code: " + lgEntity.getEntityCode() + " *** SQL Stack Trace:  " + e.toString());
                 return;
             }
         }
@@ -2970,6 +2973,7 @@ public class OwlApi2LG {
     }
 
     protected void addEntity(AssociationEntity lgEntity) {
+        String trace = null;
         if (isEntityCodeRegistered(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode())) {
             messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
@@ -2980,8 +2984,16 @@ public class OwlApi2LG {
             try {
                 writeEntity(lgEntity);
             } catch (Exception e) {
-                // Exception logged by SQLReadWrite
+                trace = e.getStackTrace().toString();
+                messages_.warn("Entity failed to load for Entity Code: " + lgEntity.getEntityCode() 
+                + " *** SQL Exception logged: " + trace);
+                
                 return;
+            }
+            finally{
+                if(trace != null){
+                    System.out.println(trace);
+                }
             }
         }
         registeredNameSpaceCode_.add(bindNamespaceAndCode(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode()));

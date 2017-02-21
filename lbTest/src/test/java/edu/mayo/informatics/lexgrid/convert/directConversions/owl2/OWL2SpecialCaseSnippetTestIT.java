@@ -446,6 +446,23 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		}
 		assertTrue(exists);
 	}
+	
+	@Test
+	public void testLoadValidOWL2ComplexPropsOff() throws LBInvocationException, LBParameterException{
+		String[] stringList = {"C61410"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		for(Property prop :rcr.getEntity().getAllProperties()){
+			if(prop.getPropertyName().equals("Term_Browser_Value_Set_Description")){
+				assertNotNull(prop.getValue());
+			}
+		}
+		
+	}
 
 
 }
