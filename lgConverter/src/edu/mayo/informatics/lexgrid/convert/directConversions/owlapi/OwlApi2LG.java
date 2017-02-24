@@ -218,6 +218,10 @@ public class OwlApi2LG {
 
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
+
+    private static final Object PROPERTY_SOURCE = "term-source";
+
+    private static final Object REPRESENTATIONAL_FORM = "term-group";
     
     /**
      * Create a new instance for conversion.
@@ -1446,18 +1450,25 @@ public class OwlApi2LG {
      * @param lgProp
      */
     private void processAnnotationsOfAnnotationAssertionAxiom(OWLAnnotationAssertionAxiom prop, Property lgProp) {
+        List<Source> sources = new ArrayList<Source>();
         for (OWLAnnotation annotation : prop.getAnnotations()) {
             String annotationName = getLocalName(annotation.getProperty());
-            Iterator<OWLAnnotation> itr = annotation.getProperty().asOWLAnnotationProperty().getAnnotations(ontology).iterator();
-            if(itr.hasNext()){
-                while(itr.hasNext()){
-                    OWLAnnotation annot = itr.next();
-                    if(annot.getValue() instanceof OWLLiteral){
-                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
-                    break;
-                    }
-                }
+            if(owlDatatypeName2label_.get(annotationName) != null){
+                annotationName = owlDatatypeName2label_.get(annotationName);
             }
+            else{
+                annotationName = resolveLabel(annotation.getProperty());
+            }
+ //           Iterator<OWLAnnotation> itr = annotation.getProperty().asOWLAnnotationProperty().getAnnotations(ontology).iterator();
+//            if(itr.hasNext()){
+//                while(itr.hasNext()){
+//                    OWLAnnotation annot = itr.next();
+//                    if(annot.getValue() instanceof OWLLiteral){
+//                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
+//                    break;
+//                    }
+//                }
+//            }
             String annotationValue = "";
             OWLAnnotationValue value = annotation.getValue();
             if (value instanceof OWLLiteral) {
@@ -1474,6 +1485,22 @@ public class OwlApi2LG {
                 annotationValue = iri.toString();
                 }
             }
+            
+            //If this is a presentation we are going to try to populate the source
+            //or representational form
+            if(lgProp instanceof Presentation){
+            if(isRepresentationalForm(annotationName)){
+                ((Presentation) lgProp).setRepresentationalForm(annotationValue);
+                continue;
+            }
+            else if(isSource(annotationName)){
+                 Source source = new Source();
+                 source.setContent(annotationValue);
+                 sources.add(source);
+                 continue;
+                }
+            }
+                
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
                         lgSupportedMappings_));
@@ -1484,7 +1511,24 @@ public class OwlApi2LG {
                         getNameSpace(annotation.getProperty()), annotationName, false);
             }
         }
+        Source[] sourceArray = new Source[sources.size()];
+        int i = 0;
+        for(Source s: sources){
+            sourceArray[i] = s;
+            i++;
+        }
+        lgProp.setSource(sourceArray);
+        }
 
+
+    private boolean isSource(String annotationValue) {
+        // TODO Auto-generated method stub
+        return annotationValue.equals(PROPERTY_SOURCE);
+    }
+
+    private boolean isRepresentationalForm(String annotationValue) {
+        // TODO Auto-generated method stub
+        return annotationValue.equals(REPRESENTATIONAL_FORM);
     }
 
     private void processComplexXMLPropertyValue(Property lgProp, String lgClass, String lgID, String lgLabel,
@@ -2019,7 +2063,6 @@ public class OwlApi2LG {
             // Check all for multiple labels for this property
             String label = null;
             List<String> labels = resolveLabels(prop);
-            prop.toString();
             //Page through to see if it is a no op or a prioritized preference
             //Noop continues the outer loop, a prioritized preference defines the label
             //We try to capture whether the property is a label by calling to string on it
@@ -2035,7 +2078,9 @@ public class OwlApi2LG {
                 label = resolveLabel(prop);
             }
             addToSupportedPropertyAndMap(label, propertyName, prop);
+            if(!owlDatatypeName2label_.containsKey(propertyName)){
             owlDatatypeName2label_.put(propertyName, label);
+            }
         }
     }
 
