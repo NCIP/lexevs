@@ -90,6 +90,30 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	}
 	
 	@Test
+	public void testLoadOfAssociationURIAsResource() 
+			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURIAsResource"), null);
+	ResolvedConceptReferenceList list = cng.resolveAsList(
+			Constructors.createConceptReference("HappyPatientDrivingAround", 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+			true, true, 1, 1, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateTarget("PrognosisGood", itr));
+	}
+	
+	@Test
+	public void testNoLoadOfAssociationV1AsResource() 
+			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("InvalidAssociationV1AsResource"), null);
+	ResolvedConceptReferenceList list = cng.resolveAsList(
+			Constructors.createConceptReference("HappyPatientDrivingAround", 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+			true, true, 1, 1, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertFalse(validateTarget("PrognosisGood", itr));
+	}
+	
+	@Test
 	public void testRestrictOnAssociationLoadedByCodeFromByName() 
 			throws LBException{
 		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();

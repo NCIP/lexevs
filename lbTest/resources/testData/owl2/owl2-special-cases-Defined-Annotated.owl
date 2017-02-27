@@ -67,7 +67,15 @@
         <rdfs:range rdf:resource="&xsd;anyURI"/>
     </owl:AnnotationProperty>
     
-
+     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURIAsResource -->
+     
+   <owl:AnnotationProperty rdf:about="&owl2lexevs;AssociationURIAsResource">
+        <term rdf:datatype="&xsd;string">Association</term>
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
+    </owl:AnnotationProperty>
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#InvalideAssociationURIAsResource -->
+ 	<owl:AnnotationProperty rdf:about="&owl2lexevs;InvalidAssociationURIAsResource"/>
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1 -->
 
@@ -777,7 +785,9 @@
 
     <owl:Class rdf:about="&owl2lexevs;HappyPatientDrivingAround">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
-        <AssociationURI rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationURI>
+        <AssociationURIAsResource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <InvalidAssociationURIAsResource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <AssociationURI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
         <AssociationSTR rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationSTR>
         <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</AssociationLIT>
         <AssociationV1 rdf:resource="&owl2lexevs;PrognosisGood"/>
@@ -787,12 +797,6 @@
         <note rdf:datatype="&xsd;string">annotation on an AssociationLIT.</note>
         <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationURI.</note>
-        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
     </owl:Axiom>
     <owl:Axiom>
