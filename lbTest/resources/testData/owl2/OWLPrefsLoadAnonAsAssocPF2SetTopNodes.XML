@@ -4,7 +4,6 @@
   xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences
   http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
-  <ProcessComplexProps>true</ProcessComplexProps>
   <StrictOWLImplementation>false</StrictOWLImplementation>
   <PrioritizedPresentationNames>
   <name>editor preferred term</name>
