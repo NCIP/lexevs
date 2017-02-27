@@ -18,8 +18,6 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -146,16 +144,15 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
-import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
-
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
+import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 /**
  * This is the main class containing the logic for the conversion from OWL to
@@ -1239,6 +1236,10 @@ public class OwlApi2LG {
             String propClass = owlDatatypeName2lgPropClass_.get(propName);
             if (isNoop(propClass))
                 continue;
+            
+            if(isAnyURIDatatype(annotationAxiom)){
+                continue;
+            }
 
             // Determine the property name and datatype ...
             String lgDType = owlDatatypeName2lgDatatype_.get(propName);

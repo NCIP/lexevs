@@ -152,7 +152,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		ResolvedConceptReference rcr = itr.next();		
-		assertTrue(validateProperty("AssociationURI", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
+		assertFalse(validateProperty("AssociationURI", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
 	}
 	
 	@Test

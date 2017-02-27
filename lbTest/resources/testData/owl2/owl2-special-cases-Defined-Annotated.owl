@@ -236,6 +236,25 @@
         <owl:annotatedTarget>Term_Browser_Value_Set_Description</owl:annotatedTarget>
     </owl:Axiom>
     
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_In_Subset -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#A8">
+        <P90>Concept_In_Subset</P90>
+        <rdfs:label>Concept_In_Subset</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#A8"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
+        <owl:annotatedTarget>Used to associate the concept defining a particular terminology subset with concepts that belong to this subset.</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#A8"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Concept_In_Subset</owl:annotatedTarget>
+    </owl:Axiom>
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -2017,6 +2036,59 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C61410"/>
         <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
         <owl:annotatedTarget>Clinical Data Interchange Standards Consortium Terminology</owl:annotatedTarget>
+    </owl:Axiom>
+    
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Color -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C37927">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C25377"/>
+        <A8 rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C117743</A8>
+        <P90>COLOR</P90>
+        <P90>Color</P90>
+        <rdfs:label>Color</rdfs:label>
+    </owl:Class>
+       <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C37927"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P325"/>
+        <owl:annotatedTarget>The appearance of objects (or light sources) described in terms of a person&apos;s perception of their hue and lightness (or brightness) and saturation. (NCI)</owl:annotatedTarget>
+    </owl:Axiom>
+    
+     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#CDISC_SDTM_Ophthalmic_Exam_Test_Code_Terminology -->
+     
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C117743">
+        <P90>CDISC SDTM Ophthalmic Exam Test Code Terminology</P90>
+        <P90>OETESTCD</P90>
+        <P90>Ophthalmic Exam Test Code</P90>
+        <P90>SDTM-OETESTCD</P90>
+        <rdfs:label>CDISC SDTM Ophthalmic Exam Test Code Terminology</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>CDISC SDTM Ophthalmic Exam Test Code Terminology</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>OETESTCD</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Ophthalmic Exam Test Code</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>SDTM-OETESTCD</owl:annotatedTarget>
+        <P383>AB</P383>
+        <P384>NCI</P384>
     </owl:Axiom>
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
