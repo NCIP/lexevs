@@ -15,4 +15,4 @@ REM 		for a given term. (Slows load time considerably)
 REM Example: LoadMedDRA -in "file:///path/to/MedDRAFolder" -a
 REM			LoadMedDRA -in "file:///path/to/MedDRAFolder" -v 0
 REM			LoadMedDRA  -in "file:///path/to/MedDRAFolder" -cui "file:///path/to/MRCONSO.RRF"
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadMedDRA %*
+java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadMedDRA %*

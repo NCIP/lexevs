@@ -15,4 +15,4 @@ REM
 REM Example: LoadLgXML -in "file:///path/to/file.xml" -a
 REM        LoadLgXML -in "file:///path/to/file.xml" -v 0
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadLgXML %*
+java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadLgXML %*
