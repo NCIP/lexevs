@@ -18,4 +18,4 @@ REM
 REM Example: LoadHL7RIM -in "file:///path/to/somefile.mdb" -a
 REM          LoadHL7RIM -in "file:///path/to/somefile.mdb" -v 0
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadHL7RIM %*
+java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadHL7RIM %*

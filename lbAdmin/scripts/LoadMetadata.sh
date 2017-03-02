@@ -21,4 +21,4 @@
 #  Example: LoadMetadata -in "file:///path/to/file.xml"
 #  Example: LoadMetadata -in "file:///path/to/file.xml" -o
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadMetadata $@
+java -Xmx1000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadMetadata $@

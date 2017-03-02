@@ -16,4 +16,4 @@ REM
 REM Example: LoadText -in "file:///path/to/file.txt" -a
 REM        LoadText -in "file:///path/to/file.txt" -v 0
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadText %*
+java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadText %*
