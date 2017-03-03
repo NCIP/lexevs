@@ -17,4 +17,4 @@ REM
 REM Example: Example: LoadNCIHistory -in "file:///path/to/history.file" 
 REM                 LoadNCIHistory -in "file:///path/to/history.file" -v 0
 REM
-java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadNCIHistory %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadNCIHistory %*

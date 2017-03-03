@@ -15,4 +15,4 @@ REM
 REM Example: LoadUMLSHistory -in "file:///path/to/META.folder" -r
 REM          LoadUMLSHistory -in "file:///path/to/META.folder" -v 0
 REM
-java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadUMLSHistory %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadUMLSHistory %*
