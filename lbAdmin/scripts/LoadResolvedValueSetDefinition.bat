@@ -13,4 +13,4 @@ REM
 REM Example: LoadRevolvedValueSetDefinition LoadResolvedValueSetDefinition -u "Automobiles:valuesetDefinitionURI" 
 REM -l "Automobiles::version1, GM::version2" -csVersionTag "production" -vsTag "PRODUCTION" -vsVersion "MyVersion"
 REM
-java -Xmx1500m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*"  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition %*
+java -Xmx1500m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*"  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition %*

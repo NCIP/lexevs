@@ -14,4 +14,4 @@ REM
 REM Example: LoadOBO -in "file:///path/to/file.obo" -a
 REM        LoadOBO -in "file:///path/to/file.obo" -v 0
 REM
-java -Xmx1000m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadOBO %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadOBO %*

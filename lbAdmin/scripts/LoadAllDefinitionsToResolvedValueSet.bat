@@ -7,4 +7,4 @@ REM	defaults to http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#
 REM        
 REM Example: LoadAllDefinitionsToResolvedValueSet  -uri "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#" 
 REM
-java -Xmx3000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar;../runtime-components/extLib/*"  org.lexgrid.valuesets.admin.LoadAllDefinitionsToResolvedValueSet %*
+java -Xmx3000m -cp "../runtime/lbPatch.jar;../runtime-components/extLib/*"  org.lexgrid.valuesets.admin.LoadAllDefinitionsToResolvedValueSet %*

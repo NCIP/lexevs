@@ -6,4 +6,4 @@
 #
 # Example: LoadMetaBatch -in "file:///path/to/directory/"
 #
-java -Xmx2000m -XX:PermSize=256m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.loader.meta.launch.MetaBatchLoaderLauncher $@
+java -Xmx2000m -XX:PermSize=256m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.loader.meta.launch.MetaBatchLoaderLauncher $@

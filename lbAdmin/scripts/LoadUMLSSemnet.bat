@@ -29,4 +29,4 @@ REM
 REM Example: LoadUMLSSemnet -in "file:///path/to/directory/" -a
 REM          LoadUMLSSemnet -in "file:///path/to/directory/" -v 0
 REM
-java -Xmx1300m -Djava.awt.headless=true -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadUMLSSemnet %*
+java -Xmx1300m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.LoadUMLSSemnet %*

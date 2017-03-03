@@ -6,5 +6,5 @@ REM   -in, Path to directory
 REM        
 REM Example: LoadAllValueSetDefinitionsInDirectory -in /path/to/directory
 REM
-java -Xmx3000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar;../runtime-components/extLib/*" org.lexgrid.valuesets.admin.LoadAllValueSetDefinitionsInDirectory %*
+java -Xmx3000m -cp "../runtime/lbPatch.jar;../runtime-components/extLib/*" org.lexgrid.valuesets.admin.LoadAllValueSetDefinitionsInDirectory %*
 
