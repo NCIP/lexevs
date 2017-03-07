@@ -53,7 +53,7 @@
 		<lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
 		<lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
 		<lgNaming:supportedHierarchy localId="is_a"
-			associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>
+			associationNames="hasSubtype,is_a" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>
 		<lgNaming:supportedLanguage localId="en"
 			uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
 		<lgNaming:supportedNamespace localId="Automobiles"

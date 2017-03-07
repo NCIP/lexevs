@@ -42,6 +42,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNodeTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.service.MultipleNamspaceErrorLEXEVS_598_Test;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.tree.test.TestGetTree;
 import org.LexGrid.LexBIG.Impl.History.NCIThesaurusHistoryServiceTest;
 import org.LexGrid.LexBIG.Impl.History.UMLSHistoryServiceTest;
 import org.LexGrid.LexBIG.Impl.bugs.GForge15976;
@@ -432,6 +433,7 @@ public class AllTestsNormalConfig {
             treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
             treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
             treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
+            treeTests.addTestSuite(TestGetTree.class);
 
             mainSuite.addTest(treeTests);
         }
