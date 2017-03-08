@@ -1469,6 +1469,7 @@ public class OwlApi2LG {
 //                    }
 //                }
 //            }
+
             String annotationValue = "";
             OWLAnnotationValue value = annotation.getValue();
             if (value instanceof OWLLiteral) {

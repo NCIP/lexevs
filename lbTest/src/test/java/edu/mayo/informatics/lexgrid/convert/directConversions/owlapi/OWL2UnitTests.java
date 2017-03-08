@@ -81,7 +81,7 @@ public class OWL2UnitTests extends TestCase {
 		}
 		assertNotNull(list);
 		assertTrue(list.size() > 4);
-		assertTrue(list.get(0).equals("editor preferred term~editor preferred label"));
+		assertTrue(list.contains("editor preferred term~editor preferred label"));
 		
 	}
 
