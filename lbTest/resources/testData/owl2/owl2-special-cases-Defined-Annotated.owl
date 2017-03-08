@@ -67,7 +67,15 @@
         <rdfs:range rdf:resource="&xsd;anyURI"/>
     </owl:AnnotationProperty>
     
-
+     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURIAsResource -->
+     
+   <owl:AnnotationProperty rdf:about="&owl2lexevs;AssociationURIAsResource">
+        <term rdf:datatype="&xsd;string">Association</term>
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
+    </owl:AnnotationProperty>
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#InvalideAssociationURIAsResource -->
+ 	<owl:AnnotationProperty rdf:about="&owl2lexevs;InvalidAssociationURIAsResource"/>
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1 -->
 
@@ -188,6 +196,151 @@
         <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
     </owl:AnnotationProperty>
     
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90">
+        <P90>FULL_SYN</P90>
+        <P90>Synonym with Source Data</P90>
+        <rdfs:label>FULL_SYN</rdfs:label>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Fully qualified synonym, contains the string, term type, source, and an optional source code if appropriate. Each subfield is deliniated to facilitate interpretation by software.</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>FULL_SYN</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Synonym with Source Data</owl:annotatedTarget>
+    </owl:Axiom>
+    
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97">
+        <P97>English language definitions of what NCI means by the concept. These are limited to 1024 characters. They may also include information about the definition&apos;s source and attribution in a form that can easily be interpreted by software.</P97>
+        <P107>Definition</P107>
+        <P90>DEFINITION</P90>
+        <P108>DEFINITION</P108>
+        <P106>Conceptual Entity</P106>
+        <NHC0>P97</NHC0>
+        <rdfs:label>DEFINITION</rdfs:label>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>English language definitions of what NCI means by the concept. These are limited to 1024 characters. They may also include information about the definition&apos;s source and attribution in a form that can easily be interpreted by software.</owl:annotatedTarget>
+        <P380>060127</P380>
+        <P379>DEFAULT_Review</P379>
+        <P378>NCI</P378>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>DEFINITION</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Term_Browser_Value_Set_Description -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P376">
+        <P90>Term_Browser_Value_Set_Description</P90>
+        <rdfs:label>Term_Browser_Value_Set_Description</rdfs:label>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P376"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Used to house the text on the introductory page on the NCI Term Browser for the Value Set named by a concept when that text differs from the DEFINITION for that concept.</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P376"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Term_Browser_Value_Set_Description</owl:annotatedTarget>
+    </owl:Axiom>
+    
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Concept_In_Subset -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#A8">
+        <P90>Concept_In_Subset</P90>
+        <rdfs:label>Concept_In_Subset</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#A8"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Used to associate the concept defining a particular terminology subset with concepts that belong to this subset.</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#A8"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Concept_In_Subset</owl:annotatedTarget>
+    </owl:Axiom>
+    
+    
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name -->
+    
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P108">
+        <P90>Preferred Name</P90>
+        <P90>Preferred Term</P90>
+        <P90>Preferred_Name</P90>
+        <P108>Preferred_Name</P108>
+        <NHC0>P108</NHC0>
+        <rdfs:label>Preferred_Name</rdfs:label>
+    </owl:AnnotationProperty>
+
+    
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#code -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NHC0">
+        <P90>code</P90>
+        <P108>code</P108>
+        <NHC0>NHC0</NHC0>
+        <protege:readOnly rdf:datatype="http://www.w3.org/2001/XMLSchema#string">true</protege:readOnly>
+        <rdfs:label>code</rdfs:label>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NHC0"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>code</owl:annotatedTarget>
+        <P383>PT</P383>
+    </owl:Axiom>
+    
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P383">
+        <P108>term-group</P108>
+        <NHC0>P383</NHC0>
+        <rdfs:label>term-group</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-name -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P382">
+        <P108>term-name</P108>
+        <NHC0>P382</NHC0>
+        <rdfs:label>term-name</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-source -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P384">
+        <P108>term-source</P108>
+        <NHC0>P384</NHC0>
+        <rdfs:label>term-source</rdfs:label>
+    </owl:AnnotationProperty>
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -287,7 +440,7 @@
         <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/RO_0000081"/><!-- role of -->
     </owl:ObjectProperty>                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Anatomic_Structure_Has_Location -->
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Anatomic_Structure_Has_Location -->
 
     <owl:ObjectProperty rdf:about="#R81">
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
@@ -777,7 +930,9 @@
 
     <owl:Class rdf:about="&owl2lexevs;HappyPatientDrivingAround">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
-        <AssociationURI rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationURI>
+        <AssociationURIAsResource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <InvalidAssociationURIAsResource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <AssociationURI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
         <AssociationSTR rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationSTR>
         <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</AssociationLIT>
         <AssociationV1 rdf:resource="&owl2lexevs;PrognosisGood"/>
@@ -787,12 +942,6 @@
         <note rdf:datatype="&xsd;string">annotation on an AssociationLIT.</note>
         <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
         <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
-        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
-    </owl:Axiom>
-    <owl:Axiom>
-        <note rdf:datatype="&xsd;string">annotation on an AssociationURI.</note>
-        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
-        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
         <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
     </owl:Axiom>
     <owl:Axiom>
@@ -1888,10 +2037,10 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/obi.owl"/>
     </owl:Class>
 
-        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection -->
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Clinical_Infection -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Infectious_Disorder"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Clinical_Infection">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Infectious_Disorder"/>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</Preferred_Name>
         <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLScheme#string">Disease of Syndrome</Semantic_Type>
@@ -1899,8 +2048,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Clinical_Infection"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PT</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
@@ -1945,6 +2094,88 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">survival assessment</obo:IAO_0000111>
         <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000123"/><!-- metadata incomplete -->
     </owl:Class>
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C61410">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54443"/>
+        <P90>CDISC</P90>
+        <P90>CDISC Terminology</P90>
+        <P90>Clinical Data Interchange Standards Consortium Terminology</P90>
+        <P376>&lt;p&gt;&lt;a href=&quot;http://www.cdisc.org/&quot;&gt;Clinical Data Interchange Standards Consortium (CDISC)&lt;/a&gt; is an international, non-profit organization that develops and supports global data standards for medical research. &lt;a href=&quot;http://www.cancer.gov/cancertopics/cancerlibrary/terminologyresources/cdisc&quot;&gt;CDISC collaborates with EVS&lt;/a&gt; to develop and support controlled terminology for a wide spectrum of clinical and nonclinical studies.  CDISC terminology goes through an extensive process of content development and public review before it is declared ready for release.&lt;/p&gt;&lt;p&gt;The value sets presented here represent the various CDISC codesets stored within the NCI Thesaurus.  These are also available for download from the &lt;a href=&quot;http://evs.nci.nih.gov/ftp1/CDISC&quot;&gt;EVS FTP site&lt;/a&gt;&lt;/p&gt;</P376>
+        <rdfs:label>Clinical Data Interchange Standards Consortium Terminology</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C61410"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>The terminology that includes terms relevant to the Clinical Data Interchange Standards Consortium.</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C61410"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>CDISC</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C61410"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>CDISC Terminology</owl:annotatedTarget>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C61410"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Clinical Data Interchange Standards Consortium Terminology</owl:annotatedTarget>
+    </owl:Axiom>
+    
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Color -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C37927">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C25377"/>
+        <A8 rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743</A8>
+        <P90>COLOR</P90>
+        <P90>Color</P90>
+        <rdfs:label>Color</rdfs:label>
+    </owl:Class>
+       <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C37927"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325"/>
+        <owl:annotatedTarget>The appearance of objects (or light sources) described in terms of a person&apos;s perception of their hue and lightness (or brightness) and saturation. (NCI)</owl:annotatedTarget>
+    </owl:Axiom>
+    
+     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CDISC_SDTM_Ophthalmic_Exam_Test_Code_Terminology -->
+     
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743">
+        <P90>CDISC SDTM Ophthalmic Exam Test Code Terminology</P90>
+        <P90>OETESTCD</P90>
+        <P90>Ophthalmic Exam Test Code</P90>
+        <P90>SDTM-OETESTCD</P90>
+        <rdfs:label>CDISC SDTM Ophthalmic Exam Test Code Terminology</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>CDISC SDTM Ophthalmic Exam Test Code Terminology</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>OETESTCD</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Ophthalmic Exam Test Code</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>SDTM-OETESTCD</owl:annotatedTarget>
+        <P383>AB</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
