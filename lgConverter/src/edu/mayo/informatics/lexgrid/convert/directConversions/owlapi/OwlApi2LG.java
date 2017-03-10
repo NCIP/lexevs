@@ -1245,7 +1245,17 @@ public class OwlApi2LG {
             if (isNoop(propClass))
                 continue;
             
-            Boolean isAnyURIDataType = owlIRIToIsAnyUIRDataType_.get(annotationAxiom.getProperty().getIRI());         
+            // if the IRI is not in the cache, call isAnyURIDataType() method, get the result, and add it to the cache
+            Boolean isAnyURIDataType;
+                 
+            if (!owlIRIToIsAnyUIRDataType_.containsKey(annotationAxiom.getProperty().getIRI())){
+                isAnyURIDataType = isAnyURIDatatype(annotationAxiom);
+                owlIRIToIsAnyUIRDataType_.put(annotationAxiom.getProperty().getIRI(), new Boolean(isAnyURIDataType)); 
+            }
+            else {
+                isAnyURIDataType = owlIRIToIsAnyUIRDataType_.get(annotationAxiom.getProperty().getIRI());             
+            }
+            
             if (isAnyURIDataType.booleanValue()) {
                 continue;
             }
@@ -2066,19 +2076,14 @@ public class OwlApi2LG {
         
         outer:for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
             String propertyName = getLocalName(prop);
-
-            IRI iri = prop.getIRI();
             Boolean isAnyDataType;
-
+                        
             Set <OWLAnnotationAssertionAxiom> annotationAxioms = prop.getAnnotationAssertionAxioms(ontology);
             if (annotationAxioms != null && annotationAxioms.size() > 0) {
                 for(OWLAnnotationAssertionAxiom ax : annotationAxioms){
                     isAnyDataType = isAnyURIDatatype(ax);
-                    owlIRIToIsAnyUIRDataType_.put(iri, isAnyDataType);
+                    owlIRIToIsAnyUIRDataType_.put(ax.getProperty().getIRI(), isAnyDataType);
                 }
-            }
-            else {
-                owlIRIToIsAnyUIRDataType_.put(iri, new Boolean(false));
             }
             
             // Check all for multiple labels for this property
