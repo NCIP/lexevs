@@ -202,6 +202,8 @@ public class OwlApi2LG {
     private Map<String, AssociationSource> lgAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
     private Map<String, String> owlInstanceName2code_ = null;
     private Map<String, String> owlAnnotationPropertiesTocode_  = null;
+    private Map<IRI, Boolean> owlIRIToIsAnyUIRDataType_  = new HashMap<IRI, Boolean>();
+    
     //this Map provides us with a set of values that can be used to determine punned individuals
 //    private Map<String, String> owlPunnedClassesToCode_ = new HashMap<String, String>();
 
@@ -393,9 +395,11 @@ public class OwlApi2LG {
      */
     protected void processAllConceptsAndProperties(Snapshot snap) {
         int count = 0;
+                
         // The idea is to iterate through all the OWL classes
         messages_.info("Processing concepts: ");
         for (OWLClass namedClass : ontology.getClassesInSignature()) {
+
             resolveConcept(namedClass);
             count++;
             if (count % 5000 == 0) {
@@ -437,14 +441,13 @@ public class OwlApi2LG {
 
     }
 
-
-
     private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
 
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
-            
-            if (isAnyURIDatatype(annotationAxiom)) {
+                                   
+            Boolean isAnyURIDataType = owlIRIToIsAnyUIRDataType_.get(annotationAxiom.getProperty().getIRI());   
+            if (isAnyURIDataType) {
                 AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
                 if (lgAssoc == null) {
                     return;
@@ -455,9 +458,10 @@ public class OwlApi2LG {
                        source, anno, annotationAxiom, prefix);
             }
             
-            for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
-                //TODO
-            }
+//            for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
+//                //TODO
+//            }
+            
             Iterator<OWLAnnotation> itr = owlClass.getAnnotations(ontology).iterator();
             while (itr.hasNext()) {
                 OWLAnnotation annot = itr.next();
@@ -651,7 +655,6 @@ public class OwlApi2LG {
      * @return The resolved concept; null if a new concept was not generated.
      */
     protected Entity resolveConcept(OWLClass owlClass) {
-
         String rdfName = getLocalName(owlClass);
 
         if (isNoopNamespace(rdfName))
@@ -690,7 +693,7 @@ public class OwlApi2LG {
         concept.setIsDefined(owlClass.isDefined(ontology));
 
         // Resolve all the concept properties and add to entities.
-        resolveEntityProperties(concept, owlClass);
+        resolveEntityProperties(concept, owlClass);     
         addEntity(concept);
 
         // Remember the rdf to code mapping and return.
@@ -1147,24 +1150,25 @@ public class OwlApi2LG {
 
     private boolean isAnyURIDatatype(OWLAnnotationAssertionAxiom annotationAxiom) {
         //Do we declare this as anyURI locally?
-       Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
-       while(itr.hasNext()){
-           OWLDatatype dt = itr.next();
+        Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
+        while(itr.hasNext()){
+            OWLDatatype dt = itr.next();
 
-           if(dt.isBuiltIn() && dt.getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
-               return true;
-           }
-       }
-    //If not, then check the declaration of the annotation property to see if it is declared there
-    Set<OWLAxiom> annotationAxioms = annotationAxiom.getProperty().getReferencingAxioms(ontology);
-    for(OWLAxiom ax : annotationAxioms){
-        if(ax instanceof OWLAnnotationPropertyRangeAxiomImpl){
-            if(((OWLAnnotationPropertyRangeAxiomImpl) ax).getRange().equals(OWL2Datatype.XSD_ANY_URI.getIRI())){
-            return true;
+            if(dt.isBuiltIn() && dt.getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
+                return true;
             }
         }
-    }
-    //If we get here this does not have the range or data type of anyURI.
+       
+        //If not, then check the declaration of the annotation property to see if it is declared there
+        Set<OWLAxiom> annotationAxioms = annotationAxiom.getProperty().getReferencingAxioms(ontology);
+        for(OWLAxiom ax : annotationAxioms){
+            if(ax instanceof OWLAnnotationPropertyRangeAxiomImpl){
+                if(((OWLAnnotationPropertyRangeAxiomImpl) ax).getRange().equals(OWL2Datatype.XSD_ANY_URI.getIRI())){
+                    return true;
+                }
+            }
+        }
+        //If we get here this does not have the range or data type of anyURI.
         return false;
     }
 
@@ -1241,7 +1245,18 @@ public class OwlApi2LG {
             if (isNoop(propClass))
                 continue;
             
-            if(isAnyURIDatatype(annotationAxiom)){
+            // if the IRI is not in the cache, call isAnyURIDataType() method, get the result, and add it to the cache
+            Boolean isAnyURIDataType;
+                 
+            if (!owlIRIToIsAnyUIRDataType_.containsKey(annotationAxiom.getProperty().getIRI())){
+                isAnyURIDataType = isAnyURIDatatype(annotationAxiom);
+                owlIRIToIsAnyUIRDataType_.put(annotationAxiom.getProperty().getIRI(), new Boolean(isAnyURIDataType)); 
+            }
+            else {
+                isAnyURIDataType = owlIRIToIsAnyUIRDataType_.get(annotationAxiom.getProperty().getIRI());             
+            }
+            
+            if (isAnyURIDataType.booleanValue()) {
                 continue;
             }
 
@@ -2058,8 +2073,19 @@ public class OwlApi2LG {
     }
 
     protected void initAnnotationProperties() {
+        
         outer:for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
             String propertyName = getLocalName(prop);
+            Boolean isAnyDataType;
+                        
+            Set <OWLAnnotationAssertionAxiom> annotationAxioms = prop.getAnnotationAssertionAxioms(ontology);
+            if (annotationAxioms != null && annotationAxioms.size() > 0) {
+                for(OWLAnnotationAssertionAxiom ax : annotationAxioms){
+                    isAnyDataType = isAnyURIDatatype(ax);
+                    owlIRIToIsAnyUIRDataType_.put(ax.getProperty().getIRI(), isAnyDataType);
+                }
+            }
+            
             // Check all for multiple labels for this property
             String label = null;
             List<String> labels = resolveLabels(prop);
@@ -2079,7 +2105,7 @@ public class OwlApi2LG {
             }
             addToSupportedPropertyAndMap(label, propertyName, prop);
             if(!owlDatatypeName2label_.containsKey(propertyName)){
-            owlDatatypeName2label_.put(propertyName, label);
+                owlDatatypeName2label_.put(propertyName, label);
             }
         }
     }
@@ -2091,11 +2117,8 @@ public class OwlApi2LG {
      */
     protected void initSupportedDataProperties() {
         for (OWLDataProperty prop : ontology.getDataPropertiesInSignature()) {
-
-           
             addAssociation(prop);
         }
-
     }
 
     protected void addToSupportedPropertyAndMap(String label, String propertyName, OWLNamedObject rdfProp) {
