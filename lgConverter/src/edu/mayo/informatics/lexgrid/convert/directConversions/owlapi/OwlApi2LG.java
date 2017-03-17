@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -143,15 +144,15 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
-import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
-
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
+import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 /**
  * This is the main class containing the logic for the conversion from OWL to
@@ -201,6 +202,8 @@ public class OwlApi2LG {
     private Map<String, AssociationSource> lgAssocToAssocSrc_ = new HashMap<String, AssociationSource>();
     private Map<String, String> owlInstanceName2code_ = null;
     private Map<String, String> owlAnnotationPropertiesTocode_  = null;
+    private Map<IRI, Boolean> owlIRIToIsAnyUIRDataType_  = new HashMap<IRI, Boolean>();
+    
     //this Map provides us with a set of values that can be used to determine punned individuals
 //    private Map<String, String> owlPunnedClassesToCode_ = new HashMap<String, String>();
 
@@ -217,6 +220,10 @@ public class OwlApi2LG {
 
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
+
+    private static final Object PROPERTY_SOURCE = "term-source";
+
+    private static final Object REPRESENTATIONAL_FORM = "term-group";
     
     /**
      * Create a new instance for conversion.
@@ -388,9 +395,11 @@ public class OwlApi2LG {
      */
     protected void processAllConceptsAndProperties(Snapshot snap) {
         int count = 0;
+                
         // The idea is to iterate through all the OWL classes
         messages_.info("Processing concepts: ");
         for (OWLClass namedClass : ontology.getClassesInSignature()) {
+
             resolveConcept(namedClass);
             count++;
             if (count % 5000 == 0) {
@@ -432,14 +441,13 @@ public class OwlApi2LG {
 
     }
 
-
-
     private void resolveAnnotationPropertyRelations(AssociationSource source, OWLClass owlClass) {
 
         for (OWLAnnotationAssertionAxiom annotationAxiom : ontology.getAnnotationAssertionAxioms(owlClass.getIRI())) {
             String propName = getLocalName(annotationAxiom.getProperty());
-            
-            if (isAnyURIDatatype(annotationAxiom)) {
+                                   
+            Boolean isAnyURIDataType = owlIRIToIsAnyUIRDataType_.get(annotationAxiom.getProperty().getIRI());   
+            if (isAnyURIDataType) {
                 AssociationWrapper lgAssoc = assocManager.getAssociation(propName);
                 if (lgAssoc == null) {
                     return;
@@ -450,9 +458,10 @@ public class OwlApi2LG {
                        source, anno, annotationAxiom, prefix);
             }
             
-            for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
-                //TODO
-            }
+//            for( OWLClassAxiom classAx : ontology.getAxioms(owlClass)){
+//                //TODO
+//            }
+            
             Iterator<OWLAnnotation> itr = owlClass.getAnnotations(ontology).iterator();
             while (itr.hasNext()) {
                 OWLAnnotation annot = itr.next();
@@ -646,7 +655,6 @@ public class OwlApi2LG {
      * @return The resolved concept; null if a new concept was not generated.
      */
     protected Entity resolveConcept(OWLClass owlClass) {
-
         String rdfName = getLocalName(owlClass);
 
         if (isNoopNamespace(rdfName))
@@ -685,7 +693,7 @@ public class OwlApi2LG {
         concept.setIsDefined(owlClass.isDefined(ontology));
 
         // Resolve all the concept properties and add to entities.
-        resolveEntityProperties(concept, owlClass);
+        resolveEntityProperties(concept, owlClass);     
         addEntity(concept);
 
         // Remember the rdf to code mapping and return.
@@ -1141,12 +1149,26 @@ public class OwlApi2LG {
     }
 
     private boolean isAnyURIDatatype(OWLAnnotationAssertionAxiom annotationAxiom) {
-       Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
-       while(itr.hasNext()){
-           if(itr.next().getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
-               return true;
-           }
-       }
+        //Do we declare this as anyURI locally?
+        Iterator<OWLDatatype> itr = annotationAxiom.getDatatypesInSignature().iterator();
+        while(itr.hasNext()){
+            OWLDatatype dt = itr.next();
+
+            if(dt.isBuiltIn() && dt.getBuiltInDatatype().equals(OWL2Datatype.XSD_ANY_URI)){
+                return true;
+            }
+        }
+       
+        //If not, then check the declaration of the annotation property to see if it is declared there
+        Set<OWLAxiom> annotationAxioms = annotationAxiom.getProperty().getReferencingAxioms(ontology);
+        for(OWLAxiom ax : annotationAxioms){
+            if(ax instanceof OWLAnnotationPropertyRangeAxiomImpl){
+                if(((OWLAnnotationPropertyRangeAxiomImpl) ax).getRange().equals(OWL2Datatype.XSD_ANY_URI.getIRI())){
+                    return true;
+                }
+            }
+        }
+        //If we get here this does not have the range or data type of anyURI.
         return false;
     }
 
@@ -1222,6 +1244,21 @@ public class OwlApi2LG {
             String propClass = owlDatatypeName2lgPropClass_.get(propName);
             if (isNoop(propClass))
                 continue;
+            
+            // if the IRI is not in the cache, call isAnyURIDataType() method, get the result, and add it to the cache
+            Boolean isAnyURIDataType;
+                 
+            if (!owlIRIToIsAnyUIRDataType_.containsKey(annotationAxiom.getProperty().getIRI())){
+                isAnyURIDataType = isAnyURIDatatype(annotationAxiom);
+                owlIRIToIsAnyUIRDataType_.put(annotationAxiom.getProperty().getIRI(), new Boolean(isAnyURIDataType)); 
+            }
+            else {
+                isAnyURIDataType = owlIRIToIsAnyUIRDataType_.get(annotationAxiom.getProperty().getIRI());             
+            }
+            
+            if (isAnyURIDataType.booleanValue()) {
+                continue;
+            }
 
             // Determine the property name and datatype ...
             String lgDType = owlDatatypeName2lgDatatype_.get(propName);
@@ -1291,8 +1328,13 @@ public class OwlApi2LG {
             if (!assignedPreferredPres && (prop instanceof Presentation)) {
                 // Tag the property
                 Presentation pres = (Presentation) prop;
+                //We don't want a property with an empty value to populate the 
+                //entity description
+                if(StringUtils.isEmpty(pres.getValue().getContent())){
+                    continue;
+                }
                 pres.setIsPreferred(Boolean.TRUE);
-
+                
                 // Entity description on concept should match preferred
                 // presentation.
                 EntityDescription ed = new EntityDescription();
@@ -1423,18 +1465,26 @@ public class OwlApi2LG {
      * @param lgProp
      */
     private void processAnnotationsOfAnnotationAssertionAxiom(OWLAnnotationAssertionAxiom prop, Property lgProp) {
+        List<Source> sources = new ArrayList<Source>();
         for (OWLAnnotation annotation : prop.getAnnotations()) {
             String annotationName = getLocalName(annotation.getProperty());
-            Iterator<OWLAnnotation> itr = annotation.getProperty().asOWLAnnotationProperty().getAnnotations(ontology).iterator();
-            if(itr.hasNext()){
-                while(itr.hasNext()){
-                    OWLAnnotation annot = itr.next();
-                    if(annot.getValue() instanceof OWLLiteral){
-                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
-                    break;
-                    }
-                }
+            if(owlDatatypeName2label_.get(annotationName) != null){
+                annotationName = owlDatatypeName2label_.get(annotationName);
             }
+            else{
+                annotationName = resolveLabel(annotation.getProperty());
+            }
+ //           Iterator<OWLAnnotation> itr = annotation.getProperty().asOWLAnnotationProperty().getAnnotations(ontology).iterator();
+//            if(itr.hasNext()){
+//                while(itr.hasNext()){
+//                    OWLAnnotation annot = itr.next();
+//                    if(annot.getValue() instanceof OWLLiteral){
+//                    annotationName = ((OWLLiteral)annot.getValue()).getLiteral();
+//                    break;
+//                    }
+//                }
+//            }
+
             String annotationValue = "";
             OWLAnnotationValue value = annotation.getValue();
             if (value instanceof OWLLiteral) {
@@ -1451,6 +1501,22 @@ public class OwlApi2LG {
                 annotationValue = iri.toString();
                 }
             }
+            
+            //If this is a presentation we are going to try to populate the source
+            //or representational form
+            if(lgProp instanceof Presentation){
+            if(isRepresentationalForm(annotationName)){
+                ((Presentation) lgProp).setRepresentationalForm(annotationValue);
+                continue;
+            }
+            else if(isSource(annotationName)){
+                 Source source = new Source();
+                 source.setContent(annotationValue);
+                 sources.add(source);
+                 continue;
+                }
+            }
+                
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
                         lgSupportedMappings_));
@@ -1461,7 +1527,24 @@ public class OwlApi2LG {
                         getNameSpace(annotation.getProperty()), annotationName, false);
             }
         }
+        Source[] sourceArray = new Source[sources.size()];
+        int i = 0;
+        for(Source s: sources){
+            sourceArray[i] = s;
+            i++;
+        }
+        lgProp.setSource(sourceArray);
+        }
 
+
+    private boolean isSource(String annotationValue) {
+        // TODO Auto-generated method stub
+        return annotationValue.equals(PROPERTY_SOURCE);
+    }
+
+    private boolean isRepresentationalForm(String annotationValue) {
+        // TODO Auto-generated method stub
+        return annotationValue.equals(REPRESENTATIONAL_FORM);
     }
 
     private void processComplexXMLPropertyValue(Property lgProp, String lgClass, String lgID, String lgLabel,
@@ -1991,14 +2074,40 @@ public class OwlApi2LG {
     }
 
     protected void initAnnotationProperties() {
-        for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
+        
+        outer:for (OWLAnnotationProperty prop : ontology.getAnnotationPropertiesInSignature()) {
             String propertyName = getLocalName(prop);
-            // Correlate first assigned label to the primary ID.
-            String label = resolveLabel(prop);
-            if (isNoopNamespace(label))
-                continue;
+            Boolean isAnyDataType;
+                        
+            Set <OWLAnnotationAssertionAxiom> annotationAxioms = prop.getAnnotationAssertionAxioms(ontology);
+            if (annotationAxioms != null && annotationAxioms.size() > 0) {
+                for(OWLAnnotationAssertionAxiom ax : annotationAxioms){
+                    isAnyDataType = isAnyURIDatatype(ax);
+                    owlIRIToIsAnyUIRDataType_.put(ax.getProperty().getIRI(), isAnyDataType);
+                }
+            }
+            
+            // Check all for multiple labels for this property
+            String label = null;
+            List<String> labels = resolveLabels(prop);
+            //Page through to see if it is a no op or a prioritized preference
+            //Noop continues the outer loop, a prioritized preference defines the label
+            //We try to capture whether the property is a label by calling to string on it
+            for(String s: labels){
+            if (isNoopNamespace(s))
+                continue outer;
+            if(prefManager.getPrioritized_presentation_names().contains(s) ||
+                    prefManager.getPrioritized_presentation_names().contains(prop.toString()))
+                label = s;
+            }
+            //We didn't find any prioritized preferences so we'll just use the first label
+            if(label == null){
+                label = resolveLabel(prop);
+            }
             addToSupportedPropertyAndMap(label, propertyName, prop);
-            owlDatatypeName2label_.put(propertyName, label);
+            if(!owlDatatypeName2label_.containsKey(propertyName)){
+                owlDatatypeName2label_.put(propertyName, label);
+            }
         }
     }
 
@@ -2009,11 +2118,8 @@ public class OwlApi2LG {
      */
     protected void initSupportedDataProperties() {
         for (OWLDataProperty prop : ontology.getDataPropertiesInSignature()) {
-
-           
             addAssociation(prop);
         }
-
     }
 
     protected void addToSupportedPropertyAndMap(String label, String propertyName, OWLNamedObject rdfProp) {
@@ -2175,8 +2281,15 @@ public class OwlApi2LG {
         }
         if (owlProp instanceof OWLObjectProperty) {
             OWLObjectProperty objectProp = (OWLObjectProperty) owlProp;
+            boolean isTransitive = objectProp.isTransitive(ontology);
             resolveAssociationProperty(assocWrap.getAssociationEntity(), objectProp);
-            assocWrap.setIsTransitive(objectProp.isTransitive(ontology));
+            assocWrap.setIsTransitive(isTransitive);
+            List<String> list = new ArrayList<String>();
+            list.add(label);
+            if(isTransitive){
+                lgSupportedMappings_.registerSupportedHierarchy(label, 
+                        owlProp.getIRI().toString(), label, "@@", list, false, true);
+            }
         } else if (owlProp instanceof OWLDataProperty) {
             OWLDataProperty dataProp = (OWLDataProperty) owlProp;
             resolveAssociationProperty(assocWrap.getAssociationEntity(), dataProp);
@@ -2192,6 +2305,7 @@ public class OwlApi2LG {
 
         lgSupportedMappings_.registerSupportedAssociation(label, owlProp.getIRI().toString(), label, propertyName,
                 nameSpace, true);
+        
         return assocWrap;
 
     }
@@ -2435,6 +2549,19 @@ public class OwlApi2LG {
         }
         return getLocalName(entity);
 
+    }
+    
+    protected List<String> resolveLabels(OWLEntity entity){
+        List<String> list = new ArrayList<String>();
+        LabelExtractor le = new LabelExtractor();
+        Set<OWLAnnotation> annotations = entity.getAnnotations(ontology);
+        for (OWLAnnotation anno : annotations) {
+            String result = anno.accept(le);
+            if(result != null || StringUtils.isNotBlank(result)){
+                list.add(result);
+            }
+        }
+        return list;
     }
 
     protected Map<String, String> resolveXMLTagsAndValues(String src) {
@@ -2905,7 +3032,8 @@ public class OwlApi2LG {
             try {
                 writeEntity(lgEntity);
             } catch (Exception e) {
-                // Exception logged by SQLReadWrite
+               System.out.println("Error on Entity Insertion for Code: " + lgEntity.getEntityCode() + " *** SQL Stack Trace:  " + e.toString());
+               messages_.error("Error on Entity Insertion for Code: " + lgEntity.getEntityCode() + " *** SQL Stack Trace:  " + e.toString());
                 return;
             }
         }
@@ -2915,6 +3043,7 @@ public class OwlApi2LG {
     }
 
     protected void addEntity(AssociationEntity lgEntity) {
+        String trace = null;
         if (isEntityCodeRegistered(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode())) {
             messages_.info("Entity " + lgEntity.getEntityCode() + " already exists.");
             return;
@@ -2925,8 +3054,16 @@ public class OwlApi2LG {
             try {
                 writeEntity(lgEntity);
             } catch (Exception e) {
-                // Exception logged by SQLReadWrite
+                trace = e.getStackTrace().toString();
+                messages_.warn("Entity failed to load for Entity Code: " + lgEntity.getEntityCode() 
+                + " *** SQL Exception logged: " + trace);
+                
                 return;
+            }
+            finally{
+                if(trace != null){
+                    System.out.println(trace);
+                }
             }
         }
         registeredNameSpaceCode_.add(bindNamespaceAndCode(lgEntity.getEntityCodeNamespace(), lgEntity.getEntityCode()));
@@ -3195,9 +3332,8 @@ public class OwlApi2LG {
             String uri = lgScheme_.getCodingSchemeURI();
             String version = lgScheme_.getRepresentsVersion();
 
-            AssociationWrapper wrapper = this.assocManager.getAssociation(aw.getAssociationEntity().getEntityCode());
             databaseServiceManager.getAssociationService().insertAssociationSource(uri, version,
-                    wrapper.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
+                    aw.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
 
         } catch (Exception e) {
             this.messages_.warn("Error Inserting AssociationSource.", e);
@@ -3339,6 +3475,14 @@ public class OwlApi2LG {
                 }
             }
     }
+    }
+
+    public OWLOntology getOntology() {
+        return ontology;
+    }
+
+    public void setOntology(OWLOntology ontology) {
+        this.ontology = ontology;
     }
 
 } // end of the class

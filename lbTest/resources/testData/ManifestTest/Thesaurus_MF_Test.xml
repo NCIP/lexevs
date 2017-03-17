@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodingSchemeManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest.xsd"
+	xmlns:owldef="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest"
+	xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+	xmlns:lgRel="http://LexGrid.org/schema/2010/01/LexGrid/relations"
+	xmlns="http://LexGrid.org/schema/2010/01/LexOnt/CodingSchemeManifest"
+	id="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#">
+	<codingScheme toOverride="true">NCI_Thesaurus</codingScheme>
+	<entityDescription toOverride="true">NCI Thesaurus</entityDescription>
+	<formalName toOverride="true">NCI Thesaurus</formalName>
+        <codingSchemeURI>http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#</codingSchemeURI>
+	<defaultLanguage toOverride="true">en</defaultLanguage>
+	<representsVersion toOverride="true">16.Teste</representsVersion>
+	<localName toAdd="true">NCI Thesaurus</localName>
+	<localName toAdd="true">NCI_Thesaurus</localName>
+	<localName toAdd="true">NCI</localName>
+        <localName toAdd="true">urn:oid:2.16.840.1.113883.3.26.1.1</localName>
+	<source toUpdate="true" role="creator">NCI</source>
+	<owldef:mappings xmlns="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes">
+		<lgNaming:supportedCodingScheme  localId="NCI_Thesaurus" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#" isImported="true"/>
+		<lgNaming:supportedRepresentationalForm localId="text_plain" uri="urn:oid:2.16.840.1.113883.6.10:text_plain"/>
+	</owldef:mappings>
+	<owldef:associationDefinitions toUpdate="true">
+		<assoc associationName="Has_Salt_Form" entityCode="A5" forwardName="Has_Salt_Form" reverseName="Has_Free_Acid_Or_Base_Form"/>
+    	</owldef:associationDefinitions>
+</CodingSchemeManifest>

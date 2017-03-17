@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lgVD:valueSetDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"
+    xmlns="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgVer="http://LexGrid.org/schema/2010/01/LexGrid/versions"
+    xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes"
+    xmlns:data="data"
+    xmlns:lgVD="http://LexGrid.org/schema/2010/01/LexGrid/valueSets"
+    xmlns:lgNaming="http://LexGrid.org/schema/2010/01/LexGrid/naming"
+    valueSetDefinitionURI="SCOTTEST:No.Node.ValueSet" valueSetDefinitionName="Empty Value Set" defaultCodingScheme="Automobiles" effectiveDate="2009-01-01T11:00:00Z" isActive="true" status="ACTIVE">
+    <lgVD:mappings>
+        <lgNaming:supportedCodingScheme localId="Automobiles" uri="urn:oid:11.11.0.1"></lgNaming:supportedCodingScheme>
+        <lgNaming:supportedConceptDomain localId="Autos">Autos</lgNaming:supportedConceptDomain>
+        <lgNaming:supportedSource localId="GM">GM</lgNaming:supportedSource>
+        <lgNaming:supportedSource localId="Ford">Ford</lgNaming:supportedSource>
+    </lgVD:mappings>
+    <lgVD:source role="role1" subRef="subRef1">GM</lgVD:source>
+    <lgVD:source role="role2" subRef="subRef2">Ford</lgVD:source>
+    <lgVD:representsRealmOrContext>Automobiles</lgVD:representsRealmOrContext>
+    <lgVD:representsRealmOrContext>Ford</lgVD:representsRealmOrContext>
+    <lgVD:representsRealmOrContext>GM</lgVD:representsRealmOrContext>
+	<lgVD:properties>
+		<lgCommon:property propertyName="textualPresentation">
+			<lgCommon:value>GM Only</lgCommon:value>
+		</lgCommon:property>
+	</lgVD:properties>
+	<lgVD:definitionEntry ruleOrder="1" operator="OR">
+		<lgVD:entityReference entityCode="T0001" transitiveClosure="true"  targetToSource="false" leafOnly="true"/>
+	</lgVD:definitionEntry>
+</lgVD:valueSetDefinition>
