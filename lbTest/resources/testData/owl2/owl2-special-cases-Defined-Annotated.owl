@@ -247,6 +247,28 @@
         <P384>NCI</P384>
     </owl:Axiom>
     
+       <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325">
+        <P97>English language definitions of what a source other than NCI means by the concept. These are limited to 1024 characters. They include information about the definition&apos;s source in a form that can easily be interpreted by software.</P97>
+        <P90>ALT_DEFINITION</P90>
+        <NHC0>P325</NHC0>
+        <rdfs:label>ALT_DEFINITION</rdfs:label>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>English language definitions of what a source other than NCI means by the concept. These are limited to 1024 characters. They include information about the definition&apos;s source in a form that can easily be interpreted by software.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>ALT_DEFINITION</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    
        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Term_Browser_Value_Set_Description -->
 
     <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P376">
@@ -312,6 +334,14 @@
         <owl:annotatedTarget>code</owl:annotatedTarget>
         <P383>PT</P383>
     </owl:Axiom>
+    
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#def-source -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P378">
+        <P108>def-source</P108>
+        <NHC0>P378</NHC0>
+        <rdfs:label>def-source</rdfs:label>
+    </owl:AnnotationProperty>
     
         <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group -->
 
@@ -2148,6 +2178,12 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P90>SDTM-OETESTCD</P90>
         <rdfs:label>CDISC SDTM Ophthalmic Exam Test Code Terminology</rdfs:label>
     </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325"/>
+        <owl:annotatedTarget>Terminology relevant to the test codes that describe findings from ophthalmic examinations.</owl:annotatedTarget>
+        <P378>CDISC</P378>
+    </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
         <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
